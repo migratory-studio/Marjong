@@ -8,6 +8,7 @@ import { decideDiscard, decideCall, decideAbilityActivations } from "./ai/simple
 import { CanvasRenderer } from "./ui/canvasRenderer.js";
 import { TileImages, CharacterImages, AudioManager, tilePath } from "./ui/assets.js";
 import { initSettingsUI } from "./ui/settings.js";
+import { playScenario } from "./scenario/scenarioPlayer.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -206,6 +207,15 @@ function buildSelectScreen() {
   }
 
   el("start-btn").onclick = startGame;
+
+  // シナリオ（紙芝居）サンプル再生。マスタを読み込んで再生 → 終了で選択画面へ戻る。
+  const scBtn = el("scenario-demo-btn");
+  if (scBtn) scBtn.onclick = () => {
+    el("select-screen").classList.add("hidden");
+    playScenario("twin-chun-yao-01", {
+      onEnd: () => el("select-screen").classList.remove("hidden"),
+    });
+  };
 }
 
 // ----------------------------------------------------------------- start

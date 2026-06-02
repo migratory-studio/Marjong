@@ -19,6 +19,72 @@ body {
 .screen { padding: 24px; }
 .hidden { display: none !important; }
 
+/* ---- scenario player (紙芝居) ---- */
+#scenario-screen {
+  position: fixed; inset: 0; padding: 0; overflow: hidden;
+  cursor: pointer; user-select: none; z-index: 50;
+}
+.sc-bg { position: absolute; inset: 0; background: #1c140e; transition: background .4s ease; }
+.sc-stage { position: absolute; inset: 0; }
+/* 立ち絵スロット: left / center / right の3配置。底辺合わせ。 */
+.sc-slot { position: absolute; bottom: 0; transform: translateX(-50%); }
+.sc-pos-left { left: 22%; }
+.sc-pos-center { left: 50%; }
+.sc-pos-right { left: 78%; }
+/* 高さだけ全キャラ共通に揃え、幅は元画像の比率なり（クロップなし＝全身が必ず収まる）。
+   元画像のアスペクト比はバラバラ（0.33〜1.25）なので横幅は差が出て、複数表示時は
+   重なることがあるが「ちぎれ無し」を優先。小さい画像は拡大されジャギるが許容。 */
+.sc-standing {
+  display: block; height: 82vh; width: auto; max-width: none;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.55)) brightness(.9);
+  opacity: 1; transition: opacity .25s ease, filter .25s ease, transform .25s ease;
+}
+/* 話者は明るく前面、非話者は減光して後退 */
+.sc-standing.sc-active { filter: drop-shadow(0 8px 24px rgba(0,0,0,.55)) brightness(1.05); opacity: 1; z-index: 2; transform: translateY(-6px); }
+.sc-standing.sc-dim { filter: drop-shadow(0 6px 18px rgba(0,0,0,.5)) brightness(.55) saturate(.85); opacity: .8; z-index: 1; }
+.sc-fx-screen { position: absolute; inset: 0; pointer-events: none; }
+.sc-textbox {
+  position: absolute; left: 50%; bottom: 4vh; transform: translateX(-50%);
+  width: min(92vw, 980px); background: rgba(8,12,10,.82); border: 1px solid rgba(246,179,82,.35);
+  border-radius: 14px; padding: 18px 24px 30px; box-shadow: 0 10px 30px rgba(0,0,0,.5); backdrop-filter: blur(3px);
+}
+.sc-name {
+  display: inline-block; font-size: 20px; font-weight: 700; color: var(--accent);
+  border-left: 4px solid var(--accent); padding: 2px 12px; margin: -34px 0 10px; background: rgba(8,12,10,.9);
+  border-radius: 6px;
+}
+.sc-text { font-size: 21px; line-height: 1.7; min-height: 2.6em; }
+.sc-hint { position: absolute; right: 18px; bottom: 8px; font-size: 12px; color: var(--muted); animation: sc-blink 1.4s infinite; }
+.sc-progress { position: absolute; top: 14px; left: 18px; font-size: 13px; color: var(--muted); background: rgba(0,0,0,.4); padding: 3px 10px; border-radius: 10px; }
+.sc-close {
+  position: absolute; top: 12px; right: 14px; z-index: 2; cursor: pointer;
+  background: rgba(0,0,0,.45); color: var(--ink); border: 1px solid rgba(255,255,255,.2);
+  border-radius: 10px; padding: 6px 12px; font-size: 13px;
+}
+.sc-close:hover { background: rgba(0,0,0,.7); }
+@keyframes sc-blink { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+/* 立ち絵演出 (characterEffect) — duration は --sc-dur で上書き */
+.scfx-ch-jump { animation: sc-jump var(--sc-dur,400ms) ease; }
+.scfx-ch-shake { animation: sc-shake var(--sc-dur,350ms) ease; }
+.scfx-ch-fade_in { animation: sc-fade-in var(--sc-dur,600ms) ease; }
+.scfx-ch-fade_out { animation: sc-fade-out var(--sc-dur,600ms) ease forwards; }
+@keyframes sc-jump { 0%,100%{transform:translateY(0)} 30%{transform:translateY(-40px)} 55%{transform:translateY(0)} 70%{transform:translateY(-14px)} 85%{transform:translateY(0)} }
+@keyframes sc-shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-14px)} 40%{transform:translateX(12px)} 60%{transform:translateX(-8px)} 80%{transform:translateX(5px)} }
+@keyframes sc-fade-in { from{opacity:0} to{opacity:1} }
+@keyframes sc-fade-out { from{opacity:1} to{opacity:.15} }
+
+/* 画面演出 (screenEffect) */
+.scfx-sc-flash { animation: sc-flash var(--sc-dur,300ms) ease; }
+.scfx-sc-shake { animation: sc-screen-shake var(--sc-dur,350ms) ease; }
+.scfx-sc-fade_in { animation: sc-veil-in var(--sc-dur,600ms) ease; }
+.scfx-sc-fade_out { animation: sc-veil-out var(--sc-dur,600ms) ease; }
+@keyframes sc-flash { 0%{background:rgba(255,255,255,0)} 25%{background:rgba(255,255,255,.85)} 100%{background:rgba(255,255,255,0)} }
+@keyframes sc-screen-shake { 0%,100%{transform:translate(0,0)} 25%{transform:translate(-10px,6px)} 50%{transform:translate(8px,-6px)} 75%{transform:translate(-6px,4px)} }
+@keyframes sc-veil-in { from{background:rgba(0,0,0,1)} to{background:rgba(0,0,0,0)} }
+@keyframes sc-veil-out { from{background:rgba(0,0,0,0)} to{background:rgba(0,0,0,1)} }
+
 /* ---- select screen ---- */
 #select-screen { max-width: 1120px; margin: 0 auto; }
 .select-head { text-align: center; margin-bottom: 18px; }
@@ -147,6 +213,11 @@ button.primary {
   font-size: 18px; font-weight: 700; padding: 12px 28px; border-radius: 10px; cursor: pointer;
 }
 button.primary:disabled { opacity: .4; cursor: default; }
+button.secondary {
+  background: transparent; color: var(--ink); border: 1px solid rgba(246,179,82,.55);
+  padding: 12px 22px; border-radius: 10px; font-size: 16px; cursor: pointer;
+}
+button.secondary:hover { background: rgba(246,179,82,.12); }
 
 /* ---- game screen ---- */
 #game-screen { display: flex; gap: 16px; height: 100vh; padding: 12px; }

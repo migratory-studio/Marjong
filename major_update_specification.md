@@ -1,0 +1,2029 @@
+# 能力系麻雀ゲーム 大型アップデート仕様書
+
+更新日: 2026-06-02  
+ステータス: 実装前仕様案  
+対象プロジェクト: HTML + CSS + JavaScript + Canvas 製「麻雀RPG プロトタイプ」
+
+---
+
+## 1. 本仕様書の目的
+
+本仕様書は、現行の能力系麻雀ゲームを、
+単発 CPU 対局を楽しむプロトタイプから、
+自分だけの雀士を育成し、師匠キャラクターとの関係性を積み上げる継続型ゲームへ拡張するための基準文書である。
+
+大型アップデートは一括実装しない。
+既存のフリー対戦を壊さず、各 Phase の終了時点で動作確認できる状態を保ちながら段階導入する。
+
+本仕様書では、次を定義する。
+
+- 現行実装の前提
+- 大型アップデート後のモード構成
+- Canvas と HTML/CSS の責務分離
+- MVP の範囲
+- マイキャラ、師匠、育成、能力変更、シナリオ、大会、アイテムの仕様
+- localStorage 先行と Supabase 移行の方針
+- マスタデータとユーザーデータ
+- 対局エンジンとの接続方法
+- 実装順序、変更対象、完了条件
+- 未決事項と初期推奨値
+
+---
+
+## 2. 現行実装の前提
+
+### 2.1 現在の構成
+
+現行プロジェクトは、依存パッケージなしで動作する静的 Web アプリである。
+
+```text
+/
+  index.html
+  styles.css
+  server.mjs
+  package.json
+  README.md
+  graphic/
+  sound/
+  src/
+    main.js
+    core/
+      game.js
+      events.js
+      tiles.js
+      wall.js
+      meld.js
+      rules/
+    abilities/
+      ability.js
+      hooks.js
+      registry.js
+      builtins/
+    characters/
+      characters.js
+    data/
+      characterMaster.js
+      abilityMaster.js
+    ai/
+      simpleAI.js
+    ui/
+      canvasRenderer.js
+      assets.js
+      settings.js
+  test/
+    smoke.mjs
+    sanma.mjs
+    rounds.mjs
+    balance.mjs
+```
+
+### 2.2 現在の画面
+
+現行 HTML には 2 つの主要画面がある。
+
+| 画面 | DOM | 内容 |
+| --- | --- | --- |
+| キャラクター選択 | `#select-screen` | キャラ選択、四麻/三麻、東風/半荘、対局開始 |
+| 対局 | `#game-screen` | Canvas 卓、アクションバー、ログ、演出、設定 |
+
+対局画面内には次の HTML overlay がある。
+
+- 鳴き演出
+- ロン、ツモ演出
+- 点数増減演出
+- 能力カットイン
+- 局リザルト
+- 最終順位
+- 音量設定
+
+画面遷移はルーターを使わず、`src/main.js` が `hidden` クラスを切り替えている。
+
+### 2.3 Canvas の現在の責務
+
+`src/ui/canvasRenderer.js` は、状態変更を行わない純描画層である。
+
+- 卓中央
+- ドラ
+- キャラクター名、アイコン、持ち点ゲージ
+- 手牌、ツモ牌、牌裏
+- 河
+- 鳴き牌
+- 危険牌ハイライト
+- 手牌クリック判定
+- ホバー時の待ち牌表示
+
+この責務は大型アップデート後も維持する。
+
+### 2.4 対局エンジンの現在の責務
+
+`src/core/game.js` は UI 非依存の同期型エンジンである。
+
+実装済み:
+
+- 四人麻雀
+- 三人麻雀
+- 東風戦
+- 半荘戦
+- ツモ、打牌、ポン、チー、カン、リーチ、ロン
+- 三麻の北抜き
+- 山、王牌、ドラ、嶺上
+- 和了、役、符、飜、点数
+- 本場、供託、親流れ、流局テンパイ料、流し満貫
+- トビ終了
+- 最終順位
+
+現行では `Player.points` が麻雀の持ち点であり、キャラクターの HP としても扱われている。
+
+### 2.5 キャラクターと能力
+
+`src/data/characterMaster.js` には 13 キャラクターが定義されている。
+各キャラクターは、初期持ち点、画像、プロフィール、固有能力を持つ。
+
+`src/data/abilityMaster.js` には 13 能力の表示定義があり、
+実際の挙動は `src/abilities/builtins/` に分離されている。
+
+能力システムは `src/abilities/hooks.js` と `src/abilities/registry.js` を使うフック方式である。
+
+主なフック:
+
+- `MODIFY_DRAW`
+- `MODIFY_CALL_ELIGIBILITY`
+- `MODIFY_SCORE`
+- `MODIFY_POINT_DELTA`
+- `PROVIDE_DANGER_INFO`
+- `ON_HAND_START`
+- `ON_TURN_START`
+- `ON_DRAW`
+- `ON_DISCARD`
+- `ON_MELD`
+- `ON_WIN`
+- `ON_HAND_END`
+
+### 2.6 特殊対応が必要な既存能力
+
+能力の多くはフックだけで動作する。
+ただし、次の能力は専用 UI またはエンジン補助を持つ。
+
+| 能力 | 現在の特殊対応 |
+| --- | --- |
+| リコール・ディール | 河の牌選択 UI、`Game.recallSwap()` |
+| 強制ツモ切り | 対象選択 UI、`Player.forcedTsumogiri` |
+| 大博打 | 賭け金選択 UI、発動時の持ち点消費 |
+
+育成用の能力候補へ追加する際は、単純な能力 ID 差し替えで済む能力と分けて扱う。
+
+### 2.7 現在の保存
+
+localStorage へ保存されるのは音量設定だけである。
+
+```text
+mahjong-rpg.audio
+```
+
+育成、所持ソウル、シナリオ既読、アイテム、戦績、認証、オンライン保存は未実装である。
+
+### 2.8 現在のテスト
+
+2026-06-02 時点で次を確認済み。
+
+| コマンド | 結果 |
+| --- | --- |
+| `node test/smoke.mjs` | 成功。四麻 40 ゲーム自動対局 |
+| `node test/sanma.mjs` | 成功。三麻 40 ゲーム自動対局 |
+| `node test/rounds.mjs` | 成功。東風、半荘、連荘、流局、トビ終了 |
+
+大型アップデート中も、この 3 テストを回帰確認として維持する。
+
+---
+
+## 3. 大型アップデートの設計方針
+
+### 3.1 基本原則
+
+1. 既存フリー対戦を壊さない。
+2. 対局エンジンへ育成、報酬、保存、認証の責務を持たせない。
+3. Canvas は麻雀卓と対局表現へ限定する。
+4. ホーム、師弟、育成、紙芝居、アイテム、設定、ログインは HTML/CSS で作る。
+5. マスタデータ駆動に寄せる。
+6. 初期は localStorage で保存し、後から Supabase repository へ差し替える。
+7. 画像はプリセット ID だけを保存する。
+8. 通信対戦とカスタム画像アップロードは初期対象外にする。
+9. 紙芝居は軽量 CSS animation に限定し、対局以外にも再利用可能にする。
+
+### 3.2 既存コードを保護する範囲
+
+初期 Phase では、次を大きく変更しない。
+
+- `src/core/game.js` の局進行
+- `src/core/rules/`
+- `src/core/wall.js`
+- `src/core/tiles.js`
+- `src/ui/canvasRenderer.js`
+- 既存能力ロジック
+- `src/main.js` の対局中ループ
+
+### 3.3 拡張時に分離する責務
+
+`src/main.js` は 900 行超で、選択画面、対局起動、入力、CPU タイマー、演出、リザルトを持つ。
+新しい HTML 画面を直接追加し続けない。
+
+段階的に次を追加する。
+
+```text
+src/
+  app/
+    router.js
+    appState.js
+  screens/
+  progression/
+    profileRepository.js
+    localProfileRepository.js
+    progressionService.js
+    rewardService.js
+    matchResultAdapter.js
+  scenario/
+    scenarioService.js
+    scenarioPlayer.js
+  items/
+  auth/
+  data/
+```
+
+---
+
+## 4. 更新後のモード構成
+
+### 4.1 ホーム
+
+ホームには次を置く。
+
+- フリー対戦
+- 通信対戦
+- 師弟モード
+- 設定
+
+### 4.2 フリー対戦
+
+#### 通常フリー対戦
+
+初期から提供する。
+現行のキャラクター選択と CPU 対局をそのまま再利用する。
+
+- 育成結果を反映しない
+- 既存キャラクターの固定性能を使う
+- 既存キャラクターの固定性能はスキル Lv5 相当とする
+- 四麻、三麻を選択できる
+- 東風戦、半荘戦を選択できる
+- 報酬なし
+- すぐに能力麻雀を遊ぶ入口
+
+#### 育成反映フリー対戦
+
+Phase 7 で追加する。
+
+- マイキャラを使用する
+- キャラ Lv、HP、能力種類、対応済みスキル Lv、装備を反映する
+- 大会前の練習に使う
+- 報酬は大会より少なくする
+
+### 4.3 通信対戦
+
+初期は Coming Soon 表示だけを作る。
+
+将来候補:
+
+- 育成あり PvE
+- 育成制限あり PvP
+- フラット PvP
+
+通信対戦本体では、クライアントだけで山、手牌、結果、報酬を確定しない。
+
+### 4.4 師弟モード
+
+師弟モードは継続プレイの中心である。
+
+最終的なメニュー:
+
+- 師弟ホーム
+- マイキャラ
+- 休憩
+- 育成
+- 能力変更
+- シナリオ
+- 鍛錬
+- 大会
+- アイテム
+
+初期は使える機能だけを表示し、
+未実装メニューを大量に並べない。
+
+---
+
+## 5. MVP の再定義
+
+大型構想を一度に実装しない。
+初期 MVP は 3 段階に分ける。
+
+### 5.1 MVP-A: 既存対局を守る入口
+
+- ホーム
+- フリー対戦メニュー
+- 通常フリー対戦
+- 通信対戦 Coming Soon
+- 設定
+
+### 5.2 MVP-B: ローカル師弟モード
+
+- 1 ユーザー 1 マイキャラ
+- プリセット式のアイコン、立ち絵、背景、フレーム
+- 師匠選択
+- 初期能力種類選択
+- ソウル
+- キャラ Lv
+- HP 成長
+- スキル Lv 成長
+- 能力変更
+- 能力変更時のスキル Lv リセット
+- 師弟ホーム
+- 休憩
+- localStorage 保存
+
+### 5.3 MVP-C: 師匠との関係性
+
+- シナリオ一覧
+- 紙芝居再生
+- 既読保存
+- 再閲覧
+- 初回読了報酬
+- 立ち絵ジャンプ
+- 立ち絵シェイク
+- 画面フラッシュ
+- 画面シェイク
+- フェードイン
+- フェードアウト
+
+MVP-C 完了時点で、
+「師匠を選ぶ、日々休憩する、育成する、能力を変える、会話を見る」
+という師弟モードの芯を確認できる。
+
+---
+
+## 6. 初期対象外
+
+次は初期 MVP に含めない。
+
+- 通信対戦本体
+- カスタム画像アップロード
+- 他プレイヤーへのカスタム画像表示
+- ランキング
+- フレンド
+- ギルド、道場
+- ショップ
+- プレミアムパス
+- アイテム合成
+- 複数師匠
+- 師匠変更
+- 能力継承
+- 複数マイキャラ
+- ボイス
+- 紙芝居の複雑なタイムライン
+- 複数キャラ同時演出
+- シナリオ選択肢
+- バックログ
+- オート再生
+- スキップ
+- 本格リアルタイム対戦サーバー
+
+---
+
+## 7. 画面構成
+
+### 7.1 画面遷移
+
+```mermaid
+flowchart TD
+  HOME["ホーム"] --> FREE["フリー対戦"]
+  HOME --> ONLINE["通信対戦 Coming Soon"]
+  HOME --> MENTOR["師弟モード"]
+  HOME --> SETTINGS["設定"]
+
+  FREE --> NORMAL["通常フリー対戦"]
+  FREE --> GROWTHFREE["育成反映フリー対戦 Phase 7"]
+  NORMAL --> SELECT["既存キャラクター選択"]
+  SELECT --> MATCH["既存 Canvas 対局"]
+  MATCH --> RESULT["局リザルト / 最終順位"]
+
+  MENTOR --> CREATE["マイキャラ作成"]
+  MENTOR --> MH["師弟ホーム"]
+  MH --> REST["休憩"]
+  MH --> GROWTH["育成"]
+  MH --> CHANGE["能力変更"]
+  MH --> SCENARIOS["シナリオ一覧"]
+  MH --> TRAINING["鍛錬 Phase 4"]
+  MH --> TOURNAMENT["大会 Phase 4"]
+  MH --> ITEMS["アイテム Phase 5"]
+  MH --> AVATAR["マイキャラ確認"]
+
+  SCENARIOS --> PLAYER["紙芝居再生"]
+  TRAINING --> MATCH
+  TOURNAMENT --> MATCH
+```
+
+### 7.2 HTML 画面
+
+| 画面 ID 案 | 画面 | 導入 Phase | 責務 |
+| --- | --- | --- | --- |
+| `home` | ホーム | 1 | 主要モード入口 |
+| `free-battle` | フリー対戦 | 1 | 通常フリー、将来の育成反映フリー |
+| `online-coming-soon` | 通信対戦 | 1 | 未実装案内 |
+| `settings` | 設定 | 1 | 音量設定 |
+| `avatar-create` | マイキャラ作成 | 2A | 名前、プロフィール、プリセット、師匠、能力 |
+| `avatar-detail` | マイキャラ確認 | 2A | 現在値、見た目、師匠、能力 |
+| `mentor-home` | 師弟ホーム | 2B | 日次導線、師匠、ソウル |
+| `rest` | 休憩 | 2B | 回復、会話、日次報酬 |
+| `growth` | 育成 | 2B | HP、スキル Lv |
+| `ability-change` | 能力変更 | 2B | 候補、コスト、リセット確認 |
+| `scenario-list` | シナリオ一覧 | 3 | 解放、未読、報酬 |
+| `scenario-player` | 紙芝居 | 3 | 会話、演出、進行 |
+| `training-list` | 鍛錬一覧 | 4A | 鍛錬選択 |
+| `training-result` | 鍛錬リザルト | 4A | 報酬 |
+| `tournament-list` | 大会一覧 | 4B | 大会選択 |
+| `tournament-run` | 大会進行 | 4B | `runHp`、戦数、再開 |
+| `tournament-result` | 大会リザルト | 4B | 完走、敗退、報酬 |
+| `item-list` | アイテム | 5 | 所持、装備、制限 |
+| `login` | ログイン | 6 | Google 認証 |
+| `account` | アカウント | 6 | 同期状態、ログアウト |
+| `growth-free-setup` | 育成反映フリー | 7 | マイキャラ、装備、ルール |
+
+### 7.3 対局画面
+
+既存 `#game-screen` を維持する。
+
+Canvas に残す:
+
+- 麻雀卓
+- 牌
+- 河
+- 鳴き牌
+- 卓内持ち点
+- 卓内キャラクター
+- 危険牌表示
+
+HTML overlay に残す:
+
+- アクションバー
+- 能力ボタン
+- 鳴きボタン
+- 能力カットイン
+- ロン、ツモ演出
+- 局リザルト
+- 最終順位
+- 将来の限定的な対局中アイテム
+
+Canvas に追加しない:
+
+- ホーム
+- ソウル
+- 育成
+- 能力変更
+- アイテム一覧
+- シナリオ一覧
+- 紙芝居本文
+- 大会一覧
+- アカウント
+
+### 7.4 師弟ホーム
+
+初期構成:
+
+```text
+[ソウル]                               [設定]
+
+                 師匠立ち絵
+              「今日はどうする？」
+
+[休憩] [育成] [能力変更]
+[シナリオ] [マイキャラ]
+```
+
+Phase 4 以降:
+
+```text
+[鍛錬] [大会] [アイテム]
+```
+
+---
+
+## 8. マイキャラ仕様
+
+### 8.1 基本仕様
+
+初期 MVP では、1 ユーザーにつき 1 マイキャラだけを作成できる。
+
+設定項目:
+
+- キャラクター名
+- プロフィール文
+- アイコン
+- 立ち絵
+- 背景
+- フレーム
+- 師匠キャラクター
+- 初期能力種類
+
+将来追加:
+
+- 称号プレート
+- 師匠バッジ
+- 装飾エフェクト
+- マイキャラ追加枠
+
+### 8.2 画像
+
+初期はプリセット選択式とする。
+自由アップロードは行わない。
+
+保存するのは ID だけとする。
+
+```text
+icon
+standing
+background
+frame
+titlePlate
+mentorBadge
+effect
+```
+
+画像本体は静的ファイルとして配信する。
+
+---
+
+## 9. 師匠仕様
+
+### 9.1 基本仕様
+
+既存キャラクターを師匠候補として使う。
+
+師匠の役割:
+
+- 能力候補の基準
+- 育成メニューの案内役
+- 休憩会話
+- シナリオ相手
+- レベルアップ演出
+- 能力変更演出
+- 絆 Lv の対象
+
+### 9.2 師匠変更
+
+初期対象外とする。
+能力種類を変更しても、師匠は変わらない。
+
+### 9.3 初期候補数
+
+初期実装では 13 キャラ全員へ同時対応しない。
+
+推奨:
+
+- 初期師匠 3 人
+- 攻撃系 1 人
+- 守備系 1 人
+- ギャンブル系 1 人
+
+理由:
+
+- 能力候補とシナリオの品質を確保しやすい
+- 初期データ量を抑えられる
+- 師匠追加をアップデート要素にできる
+
+---
+
+## 10. ソウル、育成、能力変更
+
+### 10.1 ソウル
+
+ソウルは育成用通貨である。
+
+初期入手元:
+
+- 初回作成ボーナス
+- 休憩
+- シナリオ初回読了
+
+Phase 4 以降:
+
+- 鍛錬
+- 大会
+
+将来:
+
+- デイリーミッション
+- ウィークリーミッション
+- ログインボーナス
+- 実績
+
+### 10.2 キャラ Lv
+
+初期はソウルを消費してキャラ Lv を上げる。
+
+初期 MVP では、複雑なステータスポイント割り振りを行わない。
+
+推奨:
+
+- HP 強化を個別購入
+- スキル Lv 強化を個別購入
+- キャラ Lv は節目解放と成長段階の表示に使う
+
+将来:
+
+- ステータスポイント
+- アイテムスロット
+- 絆補正
+
+### 10.3 HP の再定義
+
+現行の `Player.points` と大会用 HP を分離する。
+
+| 用語 | 意味 | 使用場所 |
+| --- | --- | --- |
+| `startingPoints` | 既存キャラの対局開始持ち点 | 通常フリー対戦 |
+| `avatarHpMax` | 育成したマイキャラの最大耐久 HP | 師弟モード、大会 |
+| `avatarHpCurrent` | 休憩で回復するマイキャラの現在耐久 HP | 師弟モード |
+| `runHp` | 大会中に持ち越す現在 HP | 大会ラン |
+
+初級大会では、試合終了時に対局結果を `runHp` ダメージへ変換する。
+局中リアルタイム HP 連動は初期対象外とする。
+
+大会開始時は `avatarHpCurrent` を `runHp` へコピーする。
+大会のクリア、敗退、離脱時は、残った `runHp` を `avatarHpCurrent` へ反映する。
+大会進行中は休憩で `runHp` を直接回復できない。
+
+### 10.4 能力種類
+
+マイキャラが選ぶ能力種類は、既存能力を直接複製せず、
+育成用 `SkillTemplateMaster` から選ぶ。
+
+```text
+SkillTemplateMaster
+  -> runtimeAbilityId
+  -> mentorCharacterIds
+  -> familyId
+  -> rarity
+  -> levelTableId
+  -> integrationTier
+```
+
+### 10.5 スキル Lv
+
+スキル Lv 上昇で変化させられる要素:
+
+- 発動回数
+- 効果量
+- コスト
+- クールダウン
+- 条件緩和
+- 派生効果
+
+ただし、初期はすべての能力へ数値差分を実装しない。
+
+初期方針:
+
+- スキル Lv は保存、表示、育成できる
+- Lv 差分は対応済みテンプレートだけ反映する
+- 未対応テンプレートは説明解放または使用回数差分だけにする
+
+#### スキル Lv の基準レベル
+
+スキル Lv には、文脈ごとの基準値を定める。
+
+| 文脈 | スキル Lv | 用途 |
+| --- | --- | --- |
+| フリー対戦の既存キャラクター | 5 | 通常フリー対戦の標準性能 |
+| 師匠の初期スキル Lv | 5 | 育成の到達目標、対戦相手としての基準 |
+| 育成開始時のマイキャラ | 1 | 能力習得時・能力変更直後の初期値 |
+
+意図:
+
+- 既存キャラと師匠は「完成された Lv5」を標準とし、フリー対戦の手応えを一定に保つ。
+- マイキャラは Lv1 から育て、Lv5（師匠相当）を当面の到達目標にする。
+- `SkillLevelMaster` の `levelTableId` は最低でも Lv1〜Lv5 をカバーし、Lv5 の `runtimeParams` を既存キャラクターの現行性能と一致させる。
+- `SkillTemplateMaster.initialSkillLevel` はマイキャラ向けに 1 とする。
+- 能力種類変更後は §10.6 のとおりスキル Lv を初期値（Lv1）へ戻す。
+
+### 10.6 能力種類変更
+
+能力種類変更では、次を行う。
+
+- 師匠は変えない
+- 師匠の許可候補から変更先を選ぶ
+- ソウルを消費する
+- 変更後のスキル Lv を初期値へ戻す
+- 変更回数を記録する
+- 能力変更シナリオの解放条件に使える
+
+初期コスト式:
+
+```text
+soulCost =
+  baseCost
+  + avatarLevel * levelCoefficient
+  + currentSkillLevel * skillLevelCoefficient
+  + targetRarityCost
+```
+
+---
+
+## 11. 休憩仕様
+
+### 11.1 目的
+
+毎日短時間でも師弟モードへ戻る理由を作る。
+
+### 11.2 初期仕様
+
+- 1 日 1 回
+- 師匠の一言を表示
+- `avatarHpCurrent` を `avatarHpMax` の範囲内で回復
+- 絆経験値
+- 少量ソウル
+- 実行済み日付を保存
+
+ローカル版では端末日付を使う。
+Supabase 移行時に、運用地域に応じた日付境界を再定義する。
+大会進行中の `runHp` は休憩では回復しない。
+
+---
+
+## 12. 紙芝居シナリオ仕様
+
+### 12.1 初期対応
+
+- 背景画像
+- 立ち絵 最大 3 体（left / center / right 配置。各行 `standings` 配列で明示）
+- 話者の自動強調（`speakerCharacterId`。非話者は減光）
+- 話者名
+- セリフ本文
+- クリックまたはタップで進行
+- シナリオ終了
+- 解放条件
+- 既読保存
+- 再閲覧
+- 初回読了報酬
+- 軽量 CSS 演出
+
+### 12.2 シナリオ種別
+
+| ID | 種別 |
+| --- | --- |
+| `bond` | 絆 |
+| `ability_guide` | 能力指南 |
+| `tournament_before` | 大会前 |
+| `tournament_after` | 大会後 |
+| `ability_change` | 能力変更 |
+| `event` | イベント |
+| `tutorial` | チュートリアル |
+
+### 12.3 軽量演出
+
+立ち絵:
+
+| ID | 内容 |
+| --- | --- |
+| `none` | 通常 |
+| `jump` | ジャンプ |
+| `shake` | シェイク |
+| `fade_in` | フェードイン |
+| `fade_out` | フェードアウト |
+
+画面:
+
+| ID | 内容 |
+| --- | --- |
+| `none` | 通常 |
+| `flash` | 白フラッシュ |
+| `shake` | 画面シェイク |
+| `fade_in` | フェードイン |
+| `fade_out` | フェードアウト |
+
+### 12.4 初期対象外
+
+- 4 体以上の同時立ち絵（初期上限は 3 体）
+- 選択肢
+- 分岐
+- ボイス
+- BGM 同期
+- SE 同期
+- 表情差分
+- 高度なタイムライン
+- バックログ
+- オート
+- スキップ
+
+### 12.5 解放条件
+
+Phase 3:
+
+- `always`
+- `bond_level`
+- `avatar_level`
+- `skill_level`
+- `scenario_read`
+- `ability_changed_count`
+
+Phase 4 以降:
+
+- `training_clear_count`
+- `tournament_clear`
+- `item_owned`
+- `days_since_first_login`
+
+複数条件は初期から AND とする。
+
+### 12.6 初回報酬
+
+初期はソウルだけとする。
+プリセット解放は素材が揃った後に追加する。
+
+報酬は必ず `RewardService` を経由し、同じシナリオで 1 回だけ付与する。
+
+---
+
+## 13. 鍛錬仕様
+
+### 13.1 導入時期
+
+Phase 4A で追加する。
+
+### 13.2 初期仕様
+
+- 固定 1 種類
+- 既存の東風戦を使う
+- CPU 対戦
+- 終了後に鍛錬リザルトへ戻る
+- ソウル
+- 絆経験値
+- 鍛錬回数
+
+初期は短縮ルール、複雑なミッション、素材ドロップを入れない。
+
+---
+
+## 14. 大会仕様
+
+### 14.1 導入時期
+
+Phase 4B で追加する。
+
+### 14.2 初級大会
+
+- 大会 1 種
+- 固定 3 戦
+- CPU 対戦
+- 開始時に `avatarHpCurrent` を `runHp` へコピーする
+- 試合間で `runHp` を持ち越す
+- リロード後に再開できる
+- `runHp` が 0 以下で敗退
+- 3 戦完走でクリア
+- 終了時に残り `runHp` を `avatarHpCurrent` へ反映する
+- 報酬は 1 回だけ付与する
+- シナリオ解放条件に利用できる
+
+### 14.3 大会 HP
+
+初級大会では、試合終了時に結果 DTO からダメージを計算する。
+
+初期推奨:
+
+- 最終順位
+- 最終持ち点
+- トビの有無
+
+を使って `runHp` ダメージを決める。
+
+局ごとの失点を即時反映する方式は後続で検討する。
+
+### 14.4 将来
+
+- 中級大会
+- 上級大会
+- 師匠試練
+- 特殊ルール
+- 敵 Lv 帯
+- レアアイテム
+- 称号
+- プリセット素材
+
+---
+
+## 15. アイテム仕様
+
+### 15.1 導入時期
+
+Phase 5 で追加する。
+
+### 15.2 初期アイテムの範囲
+
+初期は 3 から 5 種類に限定する。
+
+- 大会画面で使う HP 回復
+- 対局開始前に消費する 1 試合限定補正
+- 対局中に自動発動する 1 回限定パッシブ
+
+初期対象外:
+
+- 対局中に任意タイミングで押すアイテム
+- アイテム合成
+- ショップ
+
+### 15.3 所持と装備
+
+推奨:
+
+- 消耗品は数量管理する
+- 同一アイテムは複数所持できる
+- 同一アイテムの同時装備は不可
+- 強力な同カテゴリ装備は併用不可
+- 倍率系は能力との合算上限を設ける
+
+### 15.4 将来のカテゴリ
+
+- 攻撃
+- 防御
+- 補助
+- 大会用
+
+---
+
+## 16. データ設計
+
+### 16.1 現行マスタの再利用
+
+| マスタ | 扱い |
+| --- | --- |
+| `src/data/characterMaster.js` | 既存キャラ、通常フリー、師匠候補の基礎 |
+| `src/data/abilityMaster.js` | 対局ランタイム能力の基礎 |
+
+### 16.2 追加マスタ
+
+#### `SkillTemplateMaster`
+
+| 項目 | 内容 |
+| --- | --- |
+| `skillTemplateId` | 永続 ID |
+| `runtimeAbilityId` | 既存能力 ID |
+| `name` | 表示名 |
+| `description` | 育成画面用説明 |
+| `familyId` | 能力系統 |
+| `rarity` | レアリティ |
+| `mentorCharacterIds` | 選択可能な師匠 |
+| `integrationTier` | 接続難易度 |
+| `levelTableId` | Lv テーブル |
+| `initialSkillLevel` | 初期 Lv |
+| `isEnabled` | 利用可否 |
+
+`integrationTier`:
+
+| 値 | 意味 |
+| --- | --- |
+| `hook_only` | 既存フックと通常ボタンで動く |
+| `target_select` | 対象選択 UI が必要 |
+| `engine_assisted` | エンジン補助メソッドが必要 |
+
+#### `SkillLevelMaster`
+
+| 項目 | 内容 |
+| --- | --- |
+| `levelTableId` | テーブル ID |
+| `skillLevel` | Lv |
+| `soulCost` | 強化費用 |
+| `runtimeParams` | 対局投入時パラメータ |
+| `maxChargesOverride` | 使用回数差分 |
+| `cooldownOverride` | クールダウン差分 |
+| `unlockDescription` | 解放説明 |
+
+#### `AvatarLevelMaster`
+
+| 項目 | 内容 |
+| --- | --- |
+| `avatarLevel` | Lv |
+| `soulCost` | 費用 |
+| `unlockIds` | 解放要素 |
+
+#### `AbilityChangeCostMaster`
+
+| 項目 | 内容 |
+| --- | --- |
+| `baseCost` | 基本費用 |
+| `levelCoefficient` | キャラ Lv 係数 |
+| `skillLevelCoefficient` | 現スキル Lv 係数 |
+| `rarityCosts` | レアリティ差分 |
+
+#### `AvatarPresetMaster`
+
+| 項目 | 内容 |
+| --- | --- |
+| `presetId` | ID |
+| `presetType` | 種別 |
+| `name` | 表示名 |
+| `assetPath` | 静的ファイル |
+| `rarity` | レアリティ |
+| `unlockConditions` | 解放条件 |
+| `isPaid` | 将来用 |
+| `isDefault` | 初期所持 |
+
+#### `ScenarioMaster`
+
+| 項目 | 内容 |
+| --- | --- |
+| `scenarioId` | ID |
+| `mentorCharacterId` | 師匠。共通は null |
+| `title` | タイトル |
+| `scenarioType` | 種別 |
+| `unlockConditions` | 解放条件配列 |
+| `firstReadReward` | 初回報酬 |
+| `sortOrder` | 並び順 |
+| `isEnabled` | 公開可否 |
+| `scenarioVersion` | 内容版 |
+
+#### `ScenarioLineMaster`
+
+| 項目 | 初期対応 | 内容 |
+| --- | --- | --- |
+| `scenarioId` | 対応 | シナリオ ID |
+| `lineNo` | 対応 | 行番号 |
+| `backgroundId` | 対応 | 背景 |
+| `standings` | 対応 | 立ち絵配列（最大3体）。各要素 `{ characterId, position(left/center/right), standingId }`。行ごとに在席を明示 |
+| `speakerCharacterId` | 対応 | 話者（自動強調対象）。非null なら `standings` に含む。地の文は null |
+| `speakerNameOverride` | 対応 | 名前上書き |
+| `standingId` | 旧形式 | 単体立ち絵（後方互換。`standings` 不使用時のみ。中央1体扱い） |
+| `text` | 対応 | セリフ |
+| `characterEffect` | 対応 | 立ち絵演出 |
+| `screenEffect` | 対応 | 画面演出 |
+| `effectDurationMs` | 対応 | 演出時間 |
+| `expressionId` | 予約 | 表情 |
+| `bgmId` | 予約 | BGM |
+| `seId` | 予約 | SE |
+| `nextDelayMs` | 予約 | 待機 |
+| `autoAdvance` | 予約 | 自動進行 |
+
+`effect_type` は新規マスタでは使わず、
+`characterEffect` と `screenEffect` へ統合する。
+
+#### `TrainingMaster`
+
+| 項目 | 内容 |
+| --- | --- |
+| `trainingId` | ID |
+| `name` | 表示名 |
+| `matchRuleId` | 対局ルール |
+| `enemyPoolId` | CPU 候補 |
+| `rewardTableId` | 報酬 |
+| `dailyLimit` | 日次制限 |
+
+#### `TournamentMaster`
+
+| 項目 | 内容 |
+| --- | --- |
+| `tournamentId` | ID |
+| `name` | 表示名 |
+| `rank` | 初級、中級など |
+| `matchCount` | 初期は 3 |
+| `matchRuleIds` | 各戦ルール |
+| `enemyPoolIds` | CPU 候補 |
+| `initialRunHpRule` | HP 初期化 |
+| `damageRuleId` | HP 損耗 |
+| `rewardTableId` | 報酬 |
+
+#### `ItemMaster`
+
+| 項目 | 内容 |
+| --- | --- |
+| `itemId` | ID |
+| `name` | 表示名 |
+| `category` | カテゴリ |
+| `rarity` | レアリティ |
+| `timing` | 使用タイミング |
+| `effectType` | 効果 |
+| `effectValue` | 値 |
+| `useLimit` | 使用回数 |
+| `stackable` | 重複可否 |
+| `equipRules` | 装備制限 |
+| `allowedModes` | 使用可能モード |
+
+---
+
+## 17. ユーザーデータ
+
+### 17.1 localStorage
+
+初期保存キー:
+
+```text
+mahjong-rpg.profile.v1
+```
+
+全体:
+
+```json
+{
+  "schemaVersion": 1,
+  "profile": {},
+  "wallet": {
+    "soul": 0
+  },
+  "activeAvatarId": "avatar-001",
+  "avatars": [],
+  "inventory": [],
+  "scenarioProgress": [],
+  "tournamentRuns": [],
+  "records": {},
+  "daily": {},
+  "unlockedPresetIds": [],
+  "rewardLedger": []
+}
+```
+
+### 17.2 `UserAvatar`
+
+| 項目 | 内容 |
+| --- | --- |
+| `avatarId` | ID |
+| `name` | 名前 |
+| `profileText` | プロフィール |
+| `mentorCharacterId` | 師匠 |
+| `skillTemplateId` | 能力種類 |
+| `skillLevel` | スキル Lv |
+| `avatarLevel` | キャラ Lv |
+| `avatarHpMax` | 最大 HP |
+| `avatarHpCurrent` | 現在 HP |
+| `bondLevel` | 絆 Lv |
+| `bondExp` | 絆経験値 |
+| `itemSlotCount` | アイテム枠 |
+| `equippedItemInstanceIds` | 装備 |
+| `presetIds` | 見た目 ID 群 |
+| `abilityChangedCount` | 能力変更回数 |
+| `createdAt` | 作成日時 |
+| `updatedAt` | 更新日時 |
+
+### 17.3 `UserScenarioProgress`
+
+| 項目 | 内容 |
+| --- | --- |
+| `scenarioId` | ID |
+| `isRead` | 既読 |
+| `readAt` | 初回読了 |
+| `rewardReceived` | 報酬付与済み |
+| `rewardReceivedAt` | 付与日時 |
+
+解放状態は原則としてマスタ条件から毎回計算する。
+
+### 17.4 `TournamentRun`
+
+| 項目 | 内容 |
+| --- | --- |
+| `runId` | ID |
+| `tournamentId` | 大会 |
+| `avatarId` | マイキャラ |
+| `currentMatchIndex` | 次戦 |
+| `runHp` | 現在 HP |
+| `runHpMax` | 最大 HP |
+| `status` | `active`、`cleared`、`failed`、`abandoned` |
+| `equippedSnapshot` | 開始時装備 |
+| `results` | 各戦結果 |
+| `startedAt` | 開始日時 |
+| `updatedAt` | 更新日時 |
+
+### 17.5 `rewardLedger`
+
+報酬の二重付与を防ぐ。
+
+例:
+
+```text
+scenario:mentor-shiyue-bond-01
+training:training-basic-01:local-match-uuid
+tournament:tournament-beginner-01:run-uuid
+```
+
+---
+
+## 18. 対局エンジンとの接続
+
+### 18.1 通常フリー対戦
+
+現行の起動方式を維持する。
+
+```text
+ホーム
+  -> フリー対戦
+  -> 通常フリー対戦
+  -> 既存キャラ選択
+  -> 既存 Game
+```
+
+### 18.2 育成系モード
+
+保存データ全体を `Game` へ渡さない。
+対局開始時に `MatchLaunchConfig` を作る。
+
+```json
+{
+  "mode": "tournament",
+  "playerCount": 4,
+  "maxRounds": 1,
+  "humanRuntimeCharacter": {},
+  "cpuRuntimeCharacters": [],
+  "rewardContext": {},
+  "tournamentRunId": "run-uuid"
+}
+```
+
+変換:
+
+```text
+UserAvatar
+  + SkillTemplateMaster
+  + SkillLevelMaster
+  + equipped items
+  -> runtime character
+  -> runtime abilities
+  -> Game
+```
+
+### 18.3 対局終了
+
+既存 `Game.lastResult` と `Game.rankings()` から `MatchResult` を作る。
+
+```json
+{
+  "matchId": "local-match-uuid",
+  "mode": "tournament",
+  "playerCount": 4,
+  "roundType": "east",
+  "finishedAt": "2026-06-02T00:00:00.000Z",
+  "ranking": [],
+  "human": {
+    "rank": 2,
+    "finalPoints": 18000,
+    "busted": false
+  },
+  "summary": {
+    "wins": 1,
+    "dealIns": 0,
+    "handsPlayed": 5
+  }
+}
+```
+
+通常フリー:
+
+- フリー対戦メニューへ戻る
+
+鍛錬:
+
+- 鍛錬リザルトへ戻る
+
+大会:
+
+- `runHp` を更新する
+- 次戦、大会クリア、大会敗退へ分岐する
+
+---
+
+## 19. 保存と Supabase
+
+### 19.1 localStorage 先行
+
+初期 MVP は localStorage だけで実装できる。
+
+保存対象:
+
+- プロフィール
+- マイキャラ
+- 師匠
+- プリセット
+- ソウル
+- キャラ Lv
+- HP
+- スキル Lv
+- 能力種類
+- 絆
+- 休憩済み日付
+- シナリオ既読
+- シナリオ初回報酬
+- アイテム
+- 初級大会
+- 小規模戦績
+
+### 19.2 IndexedDB
+
+初期は不要。
+
+次が必要になった時点で検討する。
+
+- 数千件の対局履歴
+- 大量シナリオキャッシュ
+- 大容量オフラインデータ
+- 将来の端末内画像
+
+### 19.3 Repository
+
+保存先を隠す。
+
+```js
+class ProfileRepository {
+  async loadProfile() {}
+  async saveProfile(profile) {}
+  async migrateProfile(raw) {}
+}
+```
+
+```text
+HTML Screen
+  -> ProgressionService
+  -> ProfileRepository
+       -> LocalProfileRepository
+       -> SupabaseProfileRepository
+```
+
+### 19.4 Supabase 導入
+
+Phase 6 で追加する。
+
+利用候補:
+
+- Supabase Auth
+- Google 認証
+- Supabase Database
+- Row Level Security
+- RPC または Edge Functions
+- 将来 Supabase Storage
+- 将来 Supabase Realtime
+
+### 19.5 Supabase テーブル
+
+| テーブル | 内容 |
+| --- | --- |
+| `profiles` | 表示名、設定 |
+| `user_wallets` | ソウル |
+| `user_avatars` | マイキャラ |
+| `user_items` | 所持 |
+| `user_equipped_items` | 装備 |
+| `user_scenario_progress` | 既読、報酬 |
+| `user_preset_unlocks` | プリセット |
+| `tournament_runs` | 大会 |
+| `match_records` | 戦績 |
+| `reward_ledger` | 報酬台帳 |
+| `login_history` | ログイン履歴 |
+
+### 19.6 サーバーで検証する処理
+
+- ソウル増減
+- レベルアップ
+- 能力変更
+- スキル Lv リセット
+- アイテム入手
+- アイテム消費
+- 大会報酬
+- シナリオ初回報酬
+- 通信対戦結果
+- ランキング
+- 不正値
+
+ウォレットと報酬台帳は、クライアントから直接更新させない。
+
+### 19.7 ローカルからの移行
+
+1. 保存データに `schemaVersion` を持つ。
+2. Google ログイン後、ローカルデータの有無を確認する。
+3. サーバーデータと競合した場合は、初期はユーザーに選択させる。
+4. マスタ ID とプリセット ID は変更せず送る。
+5. 報酬台帳はサーバー側で検証する。
+6. 通常フリー対戦は未ログインでも遊べる状態を維持する。
+
+---
+
+## 20. 実装ロードマップ
+
+### Phase 0: 仕様確定
+
+#### 目的
+
+現行実装との境界、MVP、データ、未決事項を確定する。
+
+#### 実施内容
+
+- 本仕様書のレビュー
+- 初期師匠 3 人の決定
+- 初期能力候補の決定
+- プリセット素材数の決定
+- ソウル初期値、育成コストの仮値決定
+
+#### 既存コード影響
+
+なし。
+
+#### 完了条件
+
+- Phase 1、Phase 2 の判断事項が確定している
+- 初期マスタの作成に入れる
+
+### Phase 1: ホームと通常フリー対戦導線
+
+#### 目的
+
+既存対局を守りながら、将来のモード追加に耐えられる入口を作る。
+
+#### 作る画面
+
+- `home`
+- `free-battle`
+- `online-coming-soon`
+- `settings`
+
+#### 作る機能
+
+- 小さな画面切替ヘルパ
+- ホームから通常フリー対戦へ遷移
+- 通信対戦 Coming Soon
+- 既存設定の再利用
+
+#### 主な変更対象
+
+- `index.html`
+- `styles.css`
+- `src/main.js`
+- `src/ui/settings.js`
+
+追加候補:
+
+- `src/app/router.js`
+- `src/screens/homeScreen.js`
+- `src/screens/freeBattleScreen.js`
+
+#### 完了条件
+
+- ホームから既存フリー対戦へ入れる
+- 四麻、三麻、東風、半荘が従来どおり遊べる
+- 通信対戦は Coming Soon と表示される
+- 既存テストが通る
+
+#### リスク
+
+- `src/main.js` の初期化タイミング
+- `location.reload()` 前提の戻り動線
+
+### Phase 2A: ローカル保存とマイキャラ
+
+#### 目的
+
+Supabase 前に、移行可能なローカル保存境界を作る。
+
+#### 作る画面
+
+- `avatar-create`
+- `avatar-detail`
+
+#### 作る機能
+
+- `schemaVersion`
+- repository interface
+- localStorage repository
+- 初回プロフィール
+- 1 マイキャラ
+- プリセット選択
+- 師匠選択
+- 初期能力種類
+
+#### 主な変更対象
+
+- `index.html`
+- `styles.css`
+- `src/data/characterMaster.js`
+
+追加候補:
+
+- `src/progression/profileRepository.js`
+- `src/progression/localProfileRepository.js`
+- `src/data/avatarPresetMaster.js`
+- `src/data/skillTemplateMaster.js`
+- `src/screens/avatarCreateScreen.js`
+- `src/screens/avatarDetailScreen.js`
+
+#### 完了条件
+
+- マイキャラを作れる
+- リロード後も残る
+- 画像本体を保存しない
+- 保存データは ID 中心である
+
+### Phase 2B: 師弟ホーム、休憩、育成、能力変更
+
+#### 目的
+
+対局なしでも短い日次サイクルを体験できる状態にする。
+
+#### 作る画面
+
+- `mentor-home`
+- `rest`
+- `growth`
+- `ability-change`
+
+#### 作る機能
+
+- 師匠立ち絵
+- 一言会話
+- ソウル
+- 日次休憩
+- 絆経験値
+- HP 成長
+- 現在 HP 回復
+- スキル Lv 成長
+- 能力変更
+- スキル Lv リセット
+
+#### 主な変更対象
+
+- `index.html`
+- `styles.css`
+- `src/data/characterMaster.js`
+
+追加候補:
+
+- `src/progression/progressionService.js`
+- `src/progression/rewardService.js`
+- `src/data/avatarLevelMaster.js`
+- `src/data/skillLevelMaster.js`
+- `src/data/abilityChangeCostMaster.js`
+- `src/screens/mentorHomeScreen.js`
+- `src/screens/restScreen.js`
+- `src/screens/growthScreen.js`
+- `src/screens/abilityChangeScreen.js`
+
+#### 完了条件
+
+- 休憩は日次 1 回だけ
+- ソウル不足時は強化不可
+- HP とスキル Lv を強化できる
+- 休憩で現在 HP を最大 HP の範囲内で回復できる
+- 能力変更後にスキル Lv が初期化される
+- リロード後も残る
+
+### Phase 3: 紙芝居
+
+#### 目的
+
+師匠との関係性を表現する。
+
+#### 作る画面
+
+- `scenario-list`
+- `scenario-player`
+
+#### 作る機能
+
+- 解放判定
+- 一覧
+- 再生
+- 既読
+- 再閲覧
+- 初回報酬
+- 報酬二重付与防止
+- 軽量 CSS 演出
+
+#### 主な変更対象
+
+- `index.html`
+- `styles.css`
+
+追加候補:
+
+- `src/data/scenarioMaster.js`
+- `src/data/scenarioLineMaster.js`
+- `src/scenario/scenarioService.js`
+- `src/scenario/scenarioPlayer.js`
+- `src/screens/scenarioListScreen.js`
+- `src/screens/scenarioPlayerScreen.js`
+
+#### 完了条件
+
+- 解放済みシナリオだけ再生できる
+- 既読、未読が分かる
+- 初回報酬は 1 回だけ
+- 6 種の軽量演出を確認できる
+
+### Phase 4A: 対局結果 DTO と鍛錬
+
+#### 目的
+
+既存対局を報酬付きモードから呼び出せるようにする。
+
+#### 作る画面
+
+- `training-list`
+- `training-result`
+
+#### 作る機能
+
+- `MatchLaunchConfig`
+- `MatchResult`
+- モード別戻り先
+- 固定鍛錬 1 種
+- 鍛錬報酬
+
+#### 主な変更対象
+
+- `src/main.js`
+- 必要に応じて `src/core/events.js`
+
+追加候補:
+
+- `src/progression/matchResultAdapter.js`
+- `src/data/trainingMaster.js`
+- `src/screens/trainingListScreen.js`
+- `src/screens/trainingResultScreen.js`
+
+#### 完了条件
+
+- 鍛錬から既存対局へ入れる
+- 鍛錬リザルトへ戻る
+- 報酬は 1 回だけ
+- 通常フリー対戦は変わらない
+
+### Phase 4B: 初級大会
+
+#### 目的
+
+育成成果を試す最小の連戦を作る。
+
+#### 作る画面
+
+- `tournament-list`
+- `tournament-run`
+- `tournament-result`
+
+#### 作る機能
+
+- 初級大会 1 種
+- 固定 3 戦
+- 開始時に `avatarHpCurrent` を `runHp` へコピー
+- `runHp`
+- 中断再開
+- クリア
+- 敗退
+- 報酬
+- シナリオ解放
+
+#### 主な変更対象
+
+- `src/main.js`
+- 必要に応じて `src/core/events.js`
+
+追加候補:
+
+- `src/data/tournamentMaster.js`
+- `src/progression/tournamentService.js`
+- `src/screens/tournamentListScreen.js`
+- `src/screens/tournamentRunScreen.js`
+- `src/screens/tournamentResultScreen.js`
+
+#### 完了条件
+
+- 3 戦を順番に遊べる
+- `runHp` が更新される
+- HP 0 で敗退する
+- 終了後に残り HP が `avatarHpCurrent` へ反映される
+- 完走で報酬が 1 回だけ付与される
+- リロード後に再開できる
+
+### Phase 5: アイテム
+
+#### 目的
+
+大会準備と報酬に幅を持たせる。
+
+#### 作る画面
+
+- `item-list`
+- 大会進行内の回復操作
+
+#### 作る機能
+
+- 所持
+- 装備
+- 装備制限
+- 大会 HP 回復
+- 対局前消費
+- 自動発動パッシブ
+
+#### 主な変更対象
+
+- `src/main.js`
+- `src/abilities/hooks.js`
+- `src/abilities/registry.js`
+- `src/ai/simpleAI.js`
+
+追加候補:
+
+- `src/items/itemService.js`
+- `src/items/itemEffectManager.js`
+- `src/data/itemMaster.js`
+- `src/screens/itemListScreen.js`
+
+#### 完了条件
+
+- 装備、解除できる
+- 重複制限を検証できる
+- 回復アイテムを 1 回だけ消費できる
+- 能力との倍率競合をテストできる
+
+### Phase 6: Supabase と Google 認証
+
+#### 目的
+
+ローカル MVP をオンライン保存へ移行する。
+
+#### 作る画面
+
+- `login`
+- `account`
+- 初回同期確認
+
+#### 作る機能
+
+- Google 認証
+- Supabase repository
+- RLS
+- RPC または Edge Functions
+- localStorage 移行
+- 同期状態
+- 通信失敗時の扱い
+
+#### 主な変更対象
+
+- アプリシェル
+- progression service
+- repository
+- 設定
+
+追加候補:
+
+- `src/auth/authService.js`
+- `src/progression/supabaseProfileRepository.js`
+- `src/config/supabase.js`
+- Supabase migration SQL
+- Edge Functions
+
+#### 完了条件
+
+- Google ログインできる
+- データを端末間で保存できる
+- 他ユーザーの行を読めない
+- ソウル、報酬、能力変更をサーバー検証できる
+- localStorage から移行できる
+- 通常フリー対戦は未ログインでも遊べる
+
+### Phase 7: 育成反映フリー対戦
+
+#### 目的
+
+育成結果を気軽に試せる場を作る。
+
+#### 作る画面
+
+- `growth-free-setup`
+- `growth-free-result`
+- 更新版 `online-coming-soon`
+
+#### 作る機能
+
+- マイキャラのランタイム生成
+- HP 反映
+- 能力種類反映
+- 対応済みスキル Lv 反映
+- 装備反映
+- 控えめな報酬
+
+#### 主な変更対象
+
+- `src/characters/characters.js`
+- `src/main.js`
+- `src/ai/simpleAI.js`
+- 必要に応じて能力マスタと能力ロジック
+
+追加候補:
+
+- `src/progression/runtimeCharacterFactory.js`
+- `src/screens/growthFreeSetupScreen.js`
+- `src/screens/growthFreeResultScreen.js`
+
+#### 完了条件
+
+- マイキャラで CPU 対戦できる
+- 育成値と装備が反映される
+- 通常フリーは固定性能のまま
+- 大会より報酬が少ない
+- 自動対局で極端な勝率差を検出できる
+
+---
+
+## 21. Phase ごとの影響まとめ
+
+| Phase | 対局コア | `src/main.js` | HTML 画面 | 保存 |
+| --- | --- | --- | --- | --- |
+| 0 | なし | なし | なし | 設計 |
+| 1 | なし | 小 | 追加 | 設定のみ |
+| 2A | なし | 小 | 追加 | localStorage |
+| 2B | なし | 小 | 追加 | localStorage |
+| 3 | なし | 小 | 追加 | localStorage |
+| 4A | 原則なし | 中 | 追加 | localStorage |
+| 4B | 必要時のみ小 | 中 | 追加 | localStorage |
+| 5 | 小から中 | 中 | 追加 | localStorage |
+| 6 | なし | 小 | 追加 | Supabase |
+| 7 | 能力ごとに小 | 中 | 追加 | Supabase または localStorage |
+
+---
+
+## 22. テスト計画
+
+### 22.1 維持する既存テスト
+
+- `node test/smoke.mjs`
+- `node test/sanma.mjs`
+- `node test/rounds.mjs`
+- `node test/balance.mjs`
+
+### 22.2 追加するテスト
+
+Phase 2:
+
+- localStorage migration
+- マイキャラ作成
+- ソウル不足
+- HP 強化
+- スキル Lv 強化
+- 能力変更
+- スキル Lv リセット
+- 休憩の日次制限
+
+Phase 3:
+
+- シナリオ解放
+- 既読
+- 初回報酬
+- 二重受取防止
+- 演出 class の解除
+
+Phase 4:
+
+- `MatchResult`
+- 鍛錬報酬
+- 大会 `runHp`
+- 大会中断再開
+- 大会報酬
+
+Phase 5:
+
+- 装備制限
+- 消費
+- 倍率上限
+- 能力との競合
+
+Phase 6:
+
+- RLS
+- RPC
+- localStorage 移行
+- 複数端末競合
+
+Phase 7:
+
+- ランタイム能力生成
+- 育成反映
+- 通常フリー非影響
+- 勝率シミュレーション
+
+---
+
+## 23. AI による調整対象
+
+既存の `test/balance.mjs` を発展させ、次を計測する。
+
+- キャラ別勝率
+- 能力別勝率
+- 平均順位
+- トビ率
+- スキル Lv ごとの差
+- アイテム装備時の差
+- 大会クリア率
+- 敵 Lv 帯ごとの勝率
+- ソウル収支
+- 能力使用率
+- アイテム使用率
+- 育成反映フリーの報酬効率
+
+人間側で決める:
+
+- キャラクター性
+- 能力コンセプト
+- 師匠との関係性
+- シナリオの方向性
+- 能力の面白さ
+- ゲーム全体の体感
+
+---
+
+## 24. マネタイズ方針
+
+初期は販売処理を実装しない。
+
+将来候補:
+
+- 追加アイコン
+- 追加立ち絵
+- 限定背景
+- 限定フレーム
+- 師匠テーマ装飾
+- 称号プレート
+- 装飾エフェクト
+- カスタム画像アップロード枠
+- 追加マイキャラ枠
+- プレミアムパス
+
+慎重に扱う:
+
+- ソウル販売
+- スキル Lv 販売
+- 能力性能販売
+- 大会勝敗へ直接影響する販売
+
+---
+
+## 25. 実装前に確定する事項
+
+Phase 1、Phase 2 の開始前に決める。
+
+| 項目 | 推奨初期値 |
+| --- | --- |
+| ゲーム表示名 | 仮称を決定する |
+| 初期師匠 | 3 人 |
+| 師匠の系統 | 攻撃、守備、ギャンブル |
+| 師匠ごとの初期能力候補 | 1 から 2 種 |
+| 能力候補の優先 tier | `hook_only` |
+| マイキャラ数 | 1 人 |
+| 育成方式 | HP とスキル Lv の個別購入 |
+| スキル Lv の基準 | フリー対戦と師匠は Lv5、育成開始は Lv1 |
+| 休憩 | 端末日付で 1 日 1 回 |
+| 初期シナリオ | 師匠ごと 2 本、共通 1 本、能力変更 1 本 |
+| シナリオ初回報酬 | ソウル |
+| 初級大会 | 固定 3 戦 |
+| 初期アイテム | 3 から 5 種 |
+| 対局中任意アイテム | 初期対象外 |
+| localStorage | 師弟 MVP の正式な先行保存 |
+| Supabase | Phase 6 |
+| 通信対戦 | Coming Soon のみ |
+
+---
+
+## 26. 実装前の注意事項
+
+### 26.1 README
+
+現行 README には、過去の 4 キャラ構成や古い追加手順が残っている。
+実装開始時に、現在の 13 キャラ構成とマスタ分離へ合わせて更新する。
+
+### 26.2 バランス結果
+
+`test/balance-result.txt` は現行 13 キャラより古い結果である。
+能力や育成反映へ着手する前に再生成する。
+
+### 26.3 Git
+
+調査時点で、対象フォルダは Git リポジトリとして初期化されていない。
+大型アップデート実装前に、変更履歴を管理できる状態にすることを推奨する。
+
+---
+
+## 27. 最終判断
+
+大型アップデートは実現可能である。
+
+成功条件は、対局エンジンを最初から作り直さず、
+次の順番を守ることである。
+
+1. ホームを追加し、既存フリー対戦を保護する。
+2. localStorage repository を追加する。
+3. マイキャラ、師匠、休憩、ソウル、育成を作る。
+4. 紙芝居を HTML/CSS の独立機能として追加する。
+5. 対局結果 DTO を追加する。
+6. 鍛錬と初級大会を追加する。
+7. 限定的なアイテムを追加する。
+8. Supabase と Google 認証を追加する。
+9. 育成反映フリー対戦を追加する。
+10. 通信対戦は別プロジェクト級の拡張として扱う。
+
+初期実装の到達点は、通信機能の多さではなく、
+「自分の雀士を作り、師匠と過ごし、育て、会話を読み、次に進みたくなる」
+という師弟モードの体験を成立させることである。
