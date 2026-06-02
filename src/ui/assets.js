@@ -113,6 +113,8 @@ const clamp01v = (v) => Math.max(0, Math.min(1, Number(v) || 0));
 // File names contain Japanese characters & full-width digits, so URL-encode.
 const enc = (p) => p.split("/").map(encodeURIComponent).join("/");
 const BGM_TRACKS = ["mahjong-ingame1.mp3", "mahjong-ingame2.mp3"].map((n) => enc(`sound/bgm/${n}`));
+const BGM_HOME = enc("sound/bgm/Peritune_Hanadoki.mp3");              // title / home screen
+const BGM_SELECT = enc("sound/bgm/PerituneMaterial_Amenoshita3.mp3"); // character select
 const SE_DAHAI = ["１", "２", "３", "４"].map((n) => enc(`sound/se/dahai/牌を置く・その${n}.mp3`));
 const SE_SHUFFLE = enc("sound/se/麻雀牌をまぜる.mp3"); // start of hand (deal)
 const SE_KINGAKU = enc("sound/se/金額表示.mp3");     // on win (score reveal)
@@ -125,6 +127,7 @@ export class AudioManager {
     this.bgmVolume = bgmVolume;
     this.seVolume = seVolume;
     this.currentBgm = null;
+    this.currentBgmSrc = null;
     this._sePool = this._buildPool(SE_DAHAI, seVolume, 4);
     this._seShuffle = this._buildPool([SE_SHUFFLE], seVolume, 1);
     this._seKingaku = this._buildPool([SE_KINGAKU], seVolume, 1);
@@ -205,23 +208,38 @@ export class AudioManager {
     else this.playNaki(); // pon / chi / kan (and any unknown key)
   }
 
-  // Start a random BGM track (loops). Called at the start of each hand.
+  // Start a random in-game BGM track (loops). Called at the start of each hand.
   playRandomBgm() {
+    this.playBgm(BGM_TRACKS[(Math.random() * BGM_TRACKS.length) | 0], { force: true });
+  }
+
+  // Title / home and character-select screen BGM.
+  playHomeBgm() { this.playBgm(BGM_HOME); }
+  playSelectBgm() { this.playBgm(BGM_SELECT); }
+
+  // Play a specific looping BGM, cross-fading from the current track. A no-op when
+  // that same track is already playing, so re-entering a screen doesn't restart it
+  // (pass force:true to always swap, e.g. random per-hand picks). If autoplay is
+  // blocked (no user gesture yet) currentBgmSrc is cleared so a later retry works.
+  playBgm(src, { force = false } = {}) {
     if (!this.enabled) return;
-    const src = BGM_TRACKS[(Math.random() * BGM_TRACKS.length) | 0];
-    // fade out the old track, then swap.
+    if (!force && this.currentBgm && this.currentBgmSrc === src) return;
     const old = this.currentBgm;
     const next = new Audio();
     next.src = src;
     next.loop = true;
     next.volume = 0;
     this.currentBgm = next;
-    next.play().then(() => this._fade(next, this.bgmVolume, 600)).catch(() => {});
+    this.currentBgmSrc = src;
+    next.play().then(() => this._fade(next, this.bgmVolume, 600)).catch(() => {
+      if (this.currentBgm === next) this.currentBgmSrc = null; // allow retry after a gesture
+    });
     if (old) this._fade(old, 0, 500, () => old.pause());
   }
 
   stopBgm() {
     if (this.currentBgm) { this.currentBgm.pause(); this.currentBgm = null; }
+    this.currentBgmSrc = null;
   }
 
   // Play a random dahai SE. Called on every discard (any player).

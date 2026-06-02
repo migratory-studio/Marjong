@@ -9,6 +9,7 @@ import { CanvasRenderer } from "./ui/canvasRenderer.js";
 import { TileImages, CharacterImages, AudioManager, tilePath } from "./ui/assets.js";
 import { initSettingsUI, applyAudioSettings, wireSettingsControls } from "./ui/settings.js";
 import { showScreen } from "./app/router.js";
+import { initStage } from "./app/stage.js";
 import { playScenario } from "./scenario/scenarioPlayer.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
@@ -94,12 +95,14 @@ const roleDef = (id) =>
 const MAX_HP = Math.max(...CHARACTERS.map((c) => c.stats.startingPoints));
 const hpPips = (sp) => Math.max(1, Math.min(5, Math.round((sp / MAX_HP) * 5)));
 
-// One ▮▮▮▯▯ gauge row. `value` filled of `max` segments.
-function gaugeRow(label, value, accent) {
+// One ▮▮▮▯▯ gauge row. `value` filled of `max` segments. `overlay` (optional)
+// draws a value on top of the pips (used for the HP number).
+function gaugeRow(label, value, accent, overlay) {
   let pips = "";
   for (let i = 0; i < 5; i++) pips += `<span class="pip${i < value ? " on" : ""}"></span>`;
   const style = accent ? ` style="--pip-on:${accent}"` : "";
-  return `<div class="gauge"${style}><span class="g-label">${label}</span><span class="g-pips">${pips}</span></div>`;
+  const ov = overlay != null ? `<span class="g-overlay">${overlay}</span>` : "";
+  return `<div class="gauge"${style}><span class="g-label">${label}</span><span class="g-pips">${pips}${ov}</span></div>`;
 }
 
 // Render the right-hand detail panel for a character (or a prompt when null).
@@ -112,27 +115,32 @@ function renderCharDetail(c) {
   }
   detail.classList.remove("empty");
   const p = c.params || { attack: 3, defense: 3, quirk: 3, difficulty: 3 };
+  // The ability is the key gameplay info, so it's shown expanded (name + desc).
   const ability = c.abilities.map((a) => {
     const d = abilityDef(a.abilityId);
-    return `<div class="detail-ability-name">${d.name}</div><div class="detail-ability-desc">${d.desc}</div>`;
+    return `<div class="ability-item"><div class="detail-ability-name">${d.name}</div><div class="detail-ability-desc">${d.desc}</div></div>`;
   }).join("");
+  // Flavor text (bio + profile) is secondary, so it lives in a popover revealed
+  // by hovering the name (see .detail-name-wrap:hover in styles.css).
+  const flavor = `${c.bio ? `<div class="detail-bio">${c.bio}</div>` : ""}${c.profile ? `<div class="detail-profile">${c.profile}</div>` : ""}`;
   const sp = c.stats.startingPoints;
   const role = roleDef(c.role);
   detail.innerHTML = `
     <div class="detail-portrait-wrap"></div>
     <div class="detail-body">
       <div class="detail-reading">${c.reading || ""}</div>
-      <div class="detail-name" style="color:${c.color}">${c.name}</div>
+      <div class="detail-name-wrap">
+        <span class="detail-name" style="color:${c.color}">${c.name}</span>
+        ${flavor ? `<div class="detail-flavor">${flavor}</div>` : ""}
+      </div>
       <div class="detail-role" style="--role:${role.color}">${role.label}</div>
-      <div class="detail-bio">${c.bio}</div>
       <div class="detail-gauges">
-        ${gaugeRow("ＨＰ", hpPips(sp), c.color)}<span class="hp-num">${sp}</span>
+        ${gaugeRow("ＨＰ", hpPips(sp), c.color, sp)}
         ${gaugeRow("攻め", p.attack, "#e85d75")}
         ${gaugeRow("守り", p.defense, "#4ea1d3")}
         ${gaugeRow("癖", p.quirk, "#a78bfa")}
         ${gaugeRow("難易度", p.difficulty, "#f6b352")}
       </div>
-      <div class="detail-profile">${c.profile || ""}</div>
       <div class="detail-ability"><div class="detail-ability-head">固有能力</div>${ability}</div>
     </div>`;
   detail.querySelector(".detail-portrait-wrap").appendChild(makeCharPortrait(c));
@@ -150,10 +158,11 @@ function buildSelectScreen() {
     card.className = "char-card";
     card.style.setProperty("--role", role.color);
     card.appendChild(makeCharIcon(c));
-    const hp = document.createElement("div");
-    hp.className = "card-hp";
-    hp.innerHTML = `<span class="card-hp-label">HP</span> ${c.stats.startingPoints}`;
-    card.appendChild(hp);
+    // Horizontal card: icon + name (HP is shown in the detail panel's gauges).
+    const name = document.createElement("div");
+    name.className = "card-name";
+    name.textContent = c.name;
+    card.appendChild(name);
     card.onmouseenter = () => { audio.playClick(); renderCharDetail(c); };
     card.onclick = () => {
       selectedCharId = c.id;
@@ -214,7 +223,7 @@ function buildSelectScreen() {
   if (scBtn) scBtn.onclick = () => {
     showScreen("scenario-screen");
     playScenario("twin-chun-yao-01", {
-      onEnd: () => showScreen("select-screen"),
+      onEnd: () => goScreen("select-screen"),
     });
   };
 }
@@ -230,11 +239,22 @@ const NAV_TARGETS = {
   settings: "settings-screen",
   select: "select-screen",
 };
+// Menu BGM per screen. Tracks that aren't listed leave the current BGM playing,
+// so the title theme carries through the free-battle / settings submenus and only
+// swaps to the select theme on the character screen. In-game uses random per-hand BGM.
+const SCREEN_BGM = {
+  "home-screen": () => audio.playHomeBgm(),
+  "select-screen": () => audio.playSelectBgm(),
+};
+function goScreen(id) {
+  showScreen(id);
+  SCREEN_BGM[id]?.();
+}
 function navigate(target) {
   const id = NAV_TARGETS[target];
   if (!id) return;
   if (target === "settings") resyncHomeSettings(); // reflect in-game edits
-  showScreen(id);
+  goScreen(id);
 }
 function bootHome() {
   for (const btn of document.querySelectorAll("[data-nav]")) {
@@ -248,7 +268,12 @@ function bootHome() {
     bgm: "home-bgm-volume", bgmVal: "home-bgm-volume-val",
     se: "home-se-volume", seVal: "home-se-volume-val",
   });
-  showScreen("home-screen");
+  goScreen("home-screen");
+  // Browsers block audio before the first user gesture, so the home BGM may not
+  // start at boot. Retry once on the first interaction (playHomeBgm no-ops if it
+  // already started).
+  const kickBgm = () => { audio.playHomeBgm(); window.removeEventListener("pointerdown", kickBgm); };
+  window.addEventListener("pointerdown", kickBgm, { once: true });
 }
 
 // ----------------------------------------------------------------- start
@@ -539,15 +564,20 @@ function showHumanActions() {
     }));
   }
 
-  // Ability activation buttons / indicators (発動種別ごと)。
+  // Ability activation buttons / indicators (発動種別ごと)。These go in the side
+  // panel (#ability-bar), not the action bar, so they never cover the hand tiles.
+  const abilityBar = el("ability-bar");
   for (const a of game.abilityStatus(idx)) {
     if (a.activation === "passive") {
-      bar.appendChild(mkChip(`常時: ${a.name}`, "ability-chip passive"));
+      abilityBar.appendChild(mkChip(`常時: ${a.name}`, "ability-chip passive"));
     } else if (a.active) {
-      bar.appendChild(mkChip(`発動中: ${a.name}`, "ability-chip active"));
+      abilityBar.appendChild(mkChip(`発動中: ${a.name}`, "ability-chip active"));
     } else {
-      const remain = a.maxCharges === Infinity ? "" : `（残${a.charges}）`;
-      const btn = mkBtn(`発動: ${a.name}${remain}`, "btn-ability", () => {
+      // remaining-count UI sits above the activation button (not inline in it).
+      if (a.maxCharges !== Infinity) {
+        abilityBar.appendChild(mkChip(`${a.name}　残り ${a.charges}/${a.maxCharges}`, "ability-remain"));
+      }
+      const btn = mkBtn(`発動: ${a.name}`, "btn-ability", () => {
         // recall-deal needs a target: enter a "pick a river tile" selection mode
         // instead of firing immediately. The click handler completes the swap.
         if (a.id === "recall-deal") {
@@ -578,7 +608,7 @@ function showHumanActions() {
         render();
       });
       if (!a.canActivate) btn.disabled = true;
-      bar.appendChild(btn);
+      abilityBar.appendChild(btn);
     }
   }
 
@@ -975,7 +1005,11 @@ function mkChip(label, cls) {
   s.className = cls;
   return s;
 }
-function clearActions() { el("action-bar").innerHTML = ""; }
+function clearActions() {
+  el("action-bar").innerHTML = "";
+  const ab = el("ability-bar");
+  if (ab) ab.innerHTML = ""; // ability controls live in the side panel now
+}
 
 // Fisher–Yates copy shuffle (used for random CPU character selection).
 function shuffled(arr) {
@@ -1013,5 +1047,6 @@ function addLog(msg) {
   log.scrollTop = log.scrollHeight;
 }
 
+initStage(); // fixed 1280x720 stage, scaled to fit the window (letterboxed)
 buildSelectScreen();
 bootHome();

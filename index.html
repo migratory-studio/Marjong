@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Letterbox viewport: centers the fixed-size stage and fills the remaining
+       space with the bg color. Everything in #app is authored at 1280x720 and
+       uniformly scaled to fit the window (see src/app/stage.js). -->
+  <div id="stage-viewport">
   <div id="app">
     <!-- Home: top-level mode entry -->
     <section id="home-screen" class="screen menu-screen">
@@ -144,9 +148,16 @@
       <aside class="side">
         <h3>実況ログ</h3>
         <div id="log" class="log"></div>
+        <!-- ability controls live at the bottom of the side space (not over the
+             table) so they never cover the hand tiles. The remaining-count chip
+             renders above the activation button. Hidden via CSS when empty. -->
+        <div class="side-abilities">
+          <div id="ability-bar" class="ability-bar"></div>
+        </div>
       </aside>
     </section>
   </div>
+  </div><!-- /#stage-viewport -->
 
   <!-- Shown only on touch devices held in portrait: ask the player to rotate.
        Pure CSS toggle (see styles.css @media), no JS required. -->

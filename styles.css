@@ -6,22 +6,40 @@
   --muted: #9bb3a6;
   --accent: #f6b352;
   --danger: #e85d75;
+  /* virtual stage dimensions (16:9) — must match STAGE_W/STAGE_H in app/stage.js */
+  --stage-w: 1280px;
+  --stage-h: 720px;
 }
 
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; }
+html, body { margin: 0; height: 100%; overflow: hidden; }
 body {
-  background: var(--bg);
+  background: #000; /* letterbox bars around the stage */
   color: var(--ink);
   font-family: "Segoe UI", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
 }
 
-.screen { padding: 24px; }
+/* Letterbox viewport: fills the window, centers the fixed-size stage. */
+#stage-viewport {
+  position: fixed; inset: 0; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+/* The stage itself: a fixed 1280x720 canvas, scaled by JS (transform:scale).
+   transform-origin defaults to center, matching the flex centering above. */
+#app {
+  position: relative; flex: none;
+  width: var(--stage-w); height: var(--stage-h);
+  background: var(--bg); overflow: hidden;
+}
+
+/* Each screen fills the stage. The active one shows; if its content exceeds the
+   stage it scrolls internally rather than pushing buttons out of view. */
+.screen { position: absolute; inset: 0; overflow: auto; padding: 24px; }
 .hidden { display: none !important; }
 
 /* ---- scenario player (紙芝居) ---- */
 #scenario-screen {
-  position: fixed; inset: 0; padding: 0; overflow: hidden;
+  position: absolute; inset: 0; padding: 0; overflow: hidden;
   cursor: pointer; user-select: none; z-index: 50;
 }
 .sc-bg { position: absolute; inset: 0; background: #1c140e; transition: background .4s ease; }
@@ -35,7 +53,7 @@ body {
    元画像のアスペクト比はバラバラ（0.33〜1.25）なので横幅は差が出て、複数表示時は
    重なることがあるが「ちぎれ無し」を優先。小さい画像は拡大されジャギるが許容。 */
 .sc-standing {
-  display: block; height: 82vh; width: auto; max-width: none;
+  display: block; height: calc(var(--stage-h) * 0.82); width: auto; max-width: none;
   object-fit: contain;
   filter: drop-shadow(0 8px 24px rgba(0,0,0,.55)) brightness(.9);
   opacity: 1; transition: opacity .25s ease, filter .25s ease, transform .25s ease;
@@ -45,8 +63,8 @@ body {
 .sc-standing.sc-dim { filter: drop-shadow(0 6px 18px rgba(0,0,0,.5)) brightness(.55) saturate(.85); opacity: .8; z-index: 1; }
 .sc-fx-screen { position: absolute; inset: 0; pointer-events: none; }
 .sc-textbox {
-  position: absolute; left: 50%; bottom: 4vh; transform: translateX(-50%);
-  width: min(92vw, 980px); background: rgba(8,12,10,.82); border: 1px solid rgba(246,179,82,.35);
+  position: absolute; left: 50%; bottom: calc(var(--stage-h) * 0.04); transform: translateX(-50%);
+  width: min(92%, 980px); background: rgba(8,12,10,.82); border: 1px solid rgba(246,179,82,.35);
   border-radius: 14px; padding: 18px 24px 30px; box-shadow: 0 10px 30px rgba(0,0,0,.5); backdrop-filter: blur(3px);
 }
 .sc-name {
@@ -87,7 +105,7 @@ body {
 
 /* ---- menu screens (home / free-battle / online / settings) ---- */
 .menu-screen {
-  max-width: 560px; margin: 0 auto; min-height: 100vh;
+  max-width: 560px; margin: 0 auto; min-height: 100%;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
 }
 .menu-head { text-align: center; }
@@ -132,40 +150,45 @@ body {
   display: grid; grid-template-columns: 1fr 380px; gap: 22px; align-items: start;
 }
 
-/* roster: role-grouped sections, each a labeled header + a grid of icon/HP tiles */
-.char-list { display: flex; flex-direction: column; gap: 22px; }
+/* roster: role-grouped sections, each a labeled header + a grid of horizontal
+   icon+name tiles. Cards are kept short (wide, not tall) so the whole roster
+   fits the fixed 720px-tall stage without scrolling. */
+.char-list { display: flex; flex-direction: column; gap: 14px; }
 .role-group { --role: var(--accent); }
-.role-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.role-header { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
 .role-name {
   font-size: 15px; font-weight: 800; letter-spacing: .04em;
   color: var(--role); text-shadow: 0 1px 2px rgba(0,0,0,.4); white-space: nowrap;
 }
 .role-line { flex: 1; height: 2px; border-radius: 2px; background: linear-gradient(to right, var(--role), transparent); opacity: .6; }
-.role-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 12px; }
+.role-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
 .char-card {
   --role: var(--accent);
-  background: #1c2c24; border: 2px solid color-mix(in srgb, var(--role) 45%, #2a3f34); border-radius: 14px;
-  padding: 12px 8px 10px; cursor: pointer; transition: .14s ease; text-align: center;
+  display: flex; align-items: center; gap: 11px;
+  background: #1c2c24; border: 2px solid color-mix(in srgb, var(--role) 45%, #2a3f34); border-radius: 12px;
+  padding: 8px 12px; cursor: pointer; transition: .14s ease; text-align: left;
 }
-.char-card:hover { border-color: var(--role); transform: translateY(-3px); box-shadow: 0 8px 18px rgba(0,0,0,.35); }
+.char-card:hover { border-color: var(--role); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,.35); }
 .char-card.selected { border-color: var(--role); box-shadow: 0 0 0 3px color-mix(in srgb, var(--role) 35%, transparent); }
 .char-card .char-icon {
-  display: block; width: 72px; height: 72px; margin: 0 auto 7px;
+  display: block; width: 50px; height: 50px; margin: 0; flex-shrink: 0;
   border-radius: 50%; object-fit: cover; border: 2px solid color-mix(in srgb, var(--role) 45%, #2a3f34);
 }
 .char-card:hover .char-icon, .char-card.selected .char-icon { border-color: var(--role); }
 .char-card .char-icon-fallback { opacity: .55; }
-.card-hp { font-size: 14px; font-weight: 700; color: var(--accent); }
-.card-hp-label { font-size: 10px; color: var(--muted); font-weight: 600; }
+.card-name { font-size: 14px; font-weight: 700; line-height: 1.2; min-width: 0; }
 
 /* detail panel */
 .char-detail {
   background: linear-gradient(160deg, #20322a, #16241d);
   border: 2px solid #2a3f34; border-radius: 18px;
-  position: sticky; top: 18px;
+  position: relative; /* containing block for the absolute portrait-wrap, so
+                          overflow:hidden below clips the portrait to this panel */
+  height: 452px; /* fixed so the whole select screen fits the 720px stage; long
+                    bios scroll inside .detail-body rather than growing the panel */
   overflow: hidden; /* clips the portrait so it reveals from the right edge */
 }
-.char-detail.empty { display: flex; align-items: center; justify-content: center; min-height: 470px; padding: 18px; }
+.char-detail.empty { display: flex; align-items: center; justify-content: center; padding: 18px; }
 .detail-prompt { color: var(--muted); text-align: center; line-height: 1.8; font-size: 14px; }
 
 /* portrait: anchored to the right, full-height, fully visible (contain = no crop),
@@ -193,37 +216,64 @@ body {
   to   { opacity: 1; transform: translateX(0); }
 }
 
-/* info: in normal flow (gives the panel its height), bottom-aligned in the
-   lower-left, layered above the portrait. */
+/* info: fills the fixed-height panel, layered above the portrait. Content is
+   bottom-aligned when it's shorter than the panel (margin-top:auto on the first
+   child) and scrolls from the top when it's taller. */
 .detail-body {
-  position: relative; z-index: 2; width: 62%; min-height: 430px; padding: 18px;
-  display: flex; flex-direction: column; justify-content: flex-end; gap: 6px;
+  /* full width so the scrollbar sits at the panel's right edge (not over the
+     portrait); the text is kept in the left column by a large right padding. */
+  position: relative; z-index: 2; width: 100%; height: 100%; padding: 16px 16px 16px 16px;
+  padding-right: 38%;
+  display: flex; flex-direction: column; gap: 5px; overflow-y: auto;
   text-shadow: 0 1px 4px rgba(0,0,0,.7);
 }
+.detail-body > :first-child { margin-top: auto; }
 .detail-reading { font-size: 12px; color: var(--muted); letter-spacing: .06em; }
-.detail-name { font-size: 28px; font-weight: 800; line-height: 1.15; margin: 1px 0 4px; }
+/* name doubles as the trigger for the flavor (bio + profile) popover */
+.detail-name-wrap { position: relative; align-self: flex-start; max-width: 100%; cursor: help; margin: 1px 0 4px; }
+.detail-name {
+  font-size: 28px; font-weight: 800; line-height: 1.15;
+  border-bottom: 1px dotted color-mix(in srgb, currentColor 45%, transparent);
+}
+.detail-flavor {
+  position: absolute; top: 100%; left: 0; z-index: 6; width: 300px; margin-top: 5px;
+  background: #0e1813f7; border: 1px solid #2f4a3b; border-radius: 8px; padding: 10px 12px;
+  text-shadow: none; box-shadow: 0 10px 24px #000b;
+  opacity: 0; visibility: hidden; transform: translateY(4px); pointer-events: none;
+  transition: opacity .16s ease, transform .16s ease, visibility .16s;
+}
+.detail-name-wrap:hover .detail-flavor { opacity: 1; visibility: visible; transform: translateY(0); }
 .detail-role {
   display: inline-block; margin: 0 0 7px; padding: 2px 10px; border-radius: 999px;
   font-size: 11px; font-weight: 800; letter-spacing: .05em;
   color: var(--role); border: 1px solid color-mix(in srgb, var(--role) 60%, transparent);
   background: color-mix(in srgb, var(--role) 16%, transparent);
 }
-.detail-bio { font-size: 13px; color: var(--muted); line-height: 1.5; }
+/* bio + profile now live inside the .detail-flavor popover */
+.detail-bio { font-size: 13px; color: var(--ink); line-height: 1.5; }
 
 /* gauges */
-.detail-gauges { margin: 14px 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; }
+.detail-gauges { margin: 10px 0; display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; align-items: center; }
 .gauge { display: contents; --pip-on: var(--accent); }
 .g-label { font-size: 12px; color: var(--muted); font-weight: 700; white-space: nowrap; }
-.g-pips { display: inline-flex; gap: 4px; }
+.g-pips { display: inline-flex; gap: 4px; position: relative; justify-self: start; }
 .pip { width: 22px; height: 9px; border-radius: 3px; background: #2c4034; transition: .1s; }
 .pip.on { background: var(--pip-on); box-shadow: 0 0 6px color-mix(in srgb, var(--pip-on) 60%, transparent); }
-.hp-num { grid-column: 2; font-size: 12px; color: var(--accent); font-weight: 700; margin-top: -2px; }
+/* HP number drawn on top of its gauge (no separate row) */
+.g-overlay {
+  position: absolute; right: 7px; top: 50%; transform: translateY(-50%);
+  font-size: 11.5px; font-weight: 800; color: #fff; pointer-events: none;
+  text-shadow: 0 1px 2px #000, 0 0 3px #000;
+}
 
-.detail-profile { font-size: 12.5px; color: var(--muted); line-height: 1.7; margin: 10px 0; }
-.detail-ability { background: #142019; border-radius: 10px; padding: 10px 12px; border: 1px solid #25382d; }
+.detail-profile { font-size: 12.5px; color: var(--muted); line-height: 1.55; margin-top: 8px; }
+/* ability: the key gameplay info — shown expanded (name + description) where the
+   flavor text used to sit. */
+.detail-ability { background: #142019; border-radius: 10px; padding: 9px 12px; border: 1px solid #25382d; }
 .detail-ability-head { font-size: 11px; color: var(--accent); font-weight: 700; letter-spacing: .08em; margin-bottom: 4px; }
+.ability-item + .ability-item { margin-top: 6px; }
 .detail-ability-name { font-size: 15px; font-weight: 700; color: var(--ink); }
-.detail-ability-desc { font-size: 12px; color: var(--muted); line-height: 1.6; margin-top: 2px; }
+.detail-ability-desc { font-size: 12px; color: var(--muted); line-height: 1.45; margin-top: 2px; }
 
 /* footer: mode toggle + start */
 .select-footer { display: flex; align-items: center; justify-content: center; gap: 26px; margin-top: 24px; flex-wrap: wrap; }
@@ -239,11 +289,6 @@ body {
 .mode-btn:hover { color: var(--ink); }
 .mode-btn.selected { background: var(--accent); color: #20140a; }
 
-@media (max-width: 860px) {
-  .select-layout { grid-template-columns: 1fr; }
-  .char-detail { position: relative; top: auto; } /* keep positioned (portrait anchor), drop sticky */
-}
-
 button.primary {
   margin-top: 20px; background: var(--accent); color: #20140a; border: none;
   font-size: 18px; font-weight: 700; padding: 12px 28px; border-radius: 10px; cursor: pointer;
@@ -256,7 +301,7 @@ button.secondary {
 button.secondary:hover { background: rgba(246,179,82,.12); }
 
 /* ---- game screen ---- */
-#game-screen { display: flex; gap: 16px; height: 100vh; padding: 12px; }
+#game-screen { display: flex; gap: 16px; height: 100%; padding: 12px; }
 .table-wrap { position: relative; flex: 1 1 auto; display: flex; align-items: center; justify-content: center; }
 #table {
   /* fit inside table-wrap on BOTH axes (auto size + dual max) so the 4:3 board
@@ -267,8 +312,11 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   border: 10px solid var(--felt-edge); border-radius: 18px;
 }
 .action-bar {
-  position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
-  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  /* jantama-style: lower-right, right-aligned, sitting just above the hand
+     (the hand occupies the bottom ~74px of the board) so it never covers tiles. */
+  position: absolute; bottom: 88px; right: 20px; left: auto; transform: none;
+  display: flex; gap: 10px; flex-wrap: wrap-reverse; justify-content: flex-end;
+  align-items: flex-end; max-width: 66%;
 }
 .action-bar button {
   font-size: 16px; font-weight: 700; padding: 10px 18px; border-radius: 10px;
@@ -305,10 +353,30 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   pointer-events: none;
 }
 
-.side { width: 320px; flex: 0 0 320px; display: flex; flex-direction: column; }
+.side { width: 320px; flex: 0 0 320px; display: flex; flex-direction: column; min-height: 0; }
 .side h3 { margin: 8px 0; color: var(--muted); font-size: 14px; text-transform: uppercase; letter-spacing: .08em; }
+
+/* ability controls: stacked full-width buttons/chips in the side panel. The
+   whole section collapses when there are no abilities to show (your turn ends),
+   handing the space back to the log. */
+.side-abilities { flex: 0 0 auto; display: flex; flex-direction: column; margin-top: 10px; }
+.side-abilities:has(#ability-bar:empty) { display: none; }
+.ability-bar { display: flex; flex-direction: column; gap: 6px; }
+.ability-bar button, .ability-bar .ability-chip {
+  width: 100%; align-self: stretch; text-align: center;
+  font-size: 14px; font-weight: 700; padding: 9px 12px; border-radius: 9px;
+}
+.ability-bar button { border: 2px solid #0003; color: #1a120a; cursor: pointer; }
+.ability-bar button:disabled { opacity: .4; cursor: default; }
+/* remaining-count chip, shown above the activation button */
+.ability-remain {
+  align-self: stretch; text-align: center; font-size: 12px; font-weight: 700;
+  color: #cfe0d6; background: #233b30; border: 1px solid #ffffff14;
+  border-radius: 8px; padding: 5px 8px;
+}
+
 .log {
-  flex: 1 1 auto; overflow-y: auto; background: #0e1813; border-radius: 10px; padding: 10px;
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; background: #0e1813; border-radius: 10px; padding: 10px;
   font-size: 13px; line-height: 1.6;
 }
 .log div { padding: 2px 0; border-bottom: 1px solid #ffffff08; }
@@ -526,19 +594,9 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   72%, 88%      { transform: rotate(-90deg); }
 }
 
-/* ---- short landscape (phones held sideways): compact the chrome so the
-   board gets the room. keyed on height since landscape phones are short. ---- */
-@media (orientation: landscape) and (max-height: 540px) {
-  #game-screen { padding: 6px; gap: 8px; }
-  .side { width: 180px; flex: 0 0 180px; }
-  .side h3 { margin: 2px 0; font-size: 11px; }
-  .log { font-size: 11px; line-height: 1.5; padding: 6px; }
-  .nonaki-btn { top: 8px; left: 8px; padding: 6px 10px; font-size: 12px; }
-  .settings-btn { top: 8px; right: 8px; width: 34px; height: 34px; font-size: 18px; }
-  .action-bar { bottom: 8px; gap: 6px; }
-  .action-bar button { padding: 7px 12px; font-size: 14px; }
-}
-/* note: we intentionally keep the log visible even on very short screens — the
-   board is height-constrained there, so hiding the log wouldn't enlarge it; the
-   log just occupies otherwise-unused horizontal space. */
+/* note: the fixed stage (app/stage.js) now scales the whole 1280x720 layout to
+   fit any window, so the old viewport-based responsive rules for the game/select
+   screens were removed — the stage handles "small window" by scaling down. The
+   rotate-to-landscape prompt above stays viewport-based on purpose: it lives
+   outside the stage and targets portrait phones. */
 
