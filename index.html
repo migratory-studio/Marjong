@@ -23,6 +23,10 @@
           <span class="menu-btn-title">フリー対戦</span>
           <span class="menu-btn-sub">既存キャラで CPU 対局</span>
         </button>
+        <button type="button" class="menu-btn" data-nav="mentor">
+          <span class="menu-btn-title">師弟モード</span>
+          <span class="menu-btn-sub">マイキャラを作って育てる</span>
+        </button>
         <button type="button" class="menu-btn" data-nav="online">
           <span class="menu-btn-title">通信対戦</span>
           <span class="menu-btn-sub">Coming Soon</span>
@@ -110,6 +114,10 @@
         <button id="scenario-demo-btn" class="secondary" type="button">シナリオ（サンプル）</button>
       </div>
     </section>
+
+    <!-- Mentor mode: avatar create / detail (Phase 2A). Mounted by JS. -->
+    <section id="avatar-create-screen" class="screen menu-screen hidden"></section>
+    <section id="avatar-detail-screen" class="screen menu-screen hidden"></section>
 
     <!-- Scenario player (紙芝居) -->
     <section id="scenario-screen" class="screen hidden"></section>

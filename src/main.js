@@ -11,6 +11,10 @@ import { initSettingsUI, applyAudioSettings, wireSettingsControls } from "./ui/s
 import { showScreen } from "./app/router.js";
 import { initStage } from "./app/stage.js";
 import { playScenario } from "./scenario/scenarioPlayer.js";
+import { LocalProfileRepository } from "./progression/localProfileRepository.js";
+import { activeAvatar } from "./progression/avatarFactory.js";
+import { showAvatarCreate } from "./screens/avatarCreateScreen.js";
+import { showAvatarDetail } from "./screens/avatarDetailScreen.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -250,7 +254,28 @@ function goScreen(id) {
   showScreen(id);
   SCREEN_BGM[id]?.();
 }
+// 師弟モード: マイキャラがいれば確認画面、いなければ作成画面へ（Phase 2A）。
+const profileRepo = new LocalProfileRepository();
+async function openMentorMode() {
+  const profile = await profileRepo.loadProfile();
+  if (activeAvatar(profile)) {
+    showAvatarDetail(el("avatar-detail-screen"), { profile, onBack: () => navigate("home") });
+    goScreen("avatar-detail-screen");
+  } else {
+    showAvatarCreate(el("avatar-create-screen"), {
+      repository: profileRepo,
+      onBack: () => navigate("home"),
+      onCreated: (saved) => {
+        showAvatarDetail(el("avatar-detail-screen"), { profile: saved, onBack: () => navigate("home") });
+        goScreen("avatar-detail-screen");
+      },
+    });
+    goScreen("avatar-create-screen");
+  }
+}
+
 function navigate(target) {
+  if (target === "mentor") { openMentorMode(); return; }
   const id = NAV_TARGETS[target];
   if (!id) return;
   if (target === "settings") resyncHomeSettings(); // reflect in-game edits
