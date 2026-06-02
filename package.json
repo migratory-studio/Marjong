@@ -1,0 +1,10 @@
+{
+  "name": "mahjong-rpg-prototype",
+  "version": "0.1.0",
+  "description": "Browser mahjong game with character abilities (points as HP). Prototype.",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "license": "MIT"
+}

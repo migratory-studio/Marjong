@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>麻雀RPG プロトタイプ</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Character select -->
+    <section id="select-screen" class="screen">
+      <header class="select-head">
+        <h1>麻雀RPG <small>プロトタイプ</small></h1>
+        <p class="lead">アイコンを選んでください。<b>持ち点 = HP</b>、各キャラに固有能力。</p>
+      </header>
+      <div class="select-layout">
+        <div id="char-list" class="char-list"></div>
+        <aside id="char-detail" class="char-detail"></aside>
+      </div>
+      <div class="select-footer">
+        <div class="mode-select">
+          <span class="mode-label">対局方式:</span>
+          <div class="mode-toggle" id="mode-toggle">
+            <button type="button" class="mode-btn selected" data-rounds="1">東風戦</button>
+            <button type="button" class="mode-btn" data-rounds="2">半荘戦</button>
+          </div>
+        </div>
+        <button id="start-btn" class="primary" disabled>対局開始</button>
+      </div>
+    </section>
+
+    <!-- Game table -->
+    <section id="game-screen" class="screen hidden">
+      <div class="table-wrap">
+        <canvas id="table" width="960" height="720"></canvas>
+        <div id="action-bar" class="action-bar"></div>
+        <div id="banner" class="banner hidden"></div>
+        <div id="naki-fx" class="naki-fx"></div>
+        <div id="point-fx" class="point-fx"></div>
+        <div id="ability-cutin" class="ability-cutin hidden"></div>
+        <div id="win-overlay" class="win-overlay hidden"></div>
+        <button id="nonaki-btn" class="nonaki-btn" type="button" aria-pressed="false">鳴きなし: OFF</button>
+        <button id="settings-btn" class="settings-btn" title="設定" aria-label="設定">⚙</button>
+        <div id="settings-panel" class="settings-panel hidden">
+          <div class="settings-header">
+            <span>設定</span>
+            <button id="settings-close" aria-label="閉じる">×</button>
+          </div>
+          <label class="settings-row">
+            <input type="checkbox" id="audio-enabled" checked />
+            <span>音声を有効化</span>
+          </label>
+          <div class="settings-row">
+            <label for="bgm-volume">BGM 音量 <span id="bgm-volume-val" class="vol-val">40%</span></label>
+            <input type="range" id="bgm-volume" min="0" max="100" value="40" />
+          </div>
+          <div class="settings-row">
+            <label for="se-volume">SE 音量 <span id="se-volume-val" class="vol-val">80%</span></label>
+            <input type="range" id="se-volume" min="0" max="100" value="80" />
+          </div>
+        </div>
+      </div>
+      <aside class="side">
+        <h3>実況ログ</h3>
+        <div id="log" class="log"></div>
+      </aside>
+    </section>
+  </div>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
