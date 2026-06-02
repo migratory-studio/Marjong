@@ -8,9 +8,78 @@
 </head>
 <body>
   <div id="app">
+    <!-- Home: top-level mode entry -->
+    <section id="home-screen" class="screen menu-screen">
+      <header class="menu-head">
+        <h1>麻雀RPG <small>プロトタイプ</small></h1>
+        <p class="lead">能力で戦う麻雀。まずはフリー対戦から。</p>
+      </header>
+      <nav class="menu-list">
+        <button type="button" class="menu-btn" data-nav="free-battle">
+          <span class="menu-btn-title">フリー対戦</span>
+          <span class="menu-btn-sub">既存キャラで CPU 対局</span>
+        </button>
+        <button type="button" class="menu-btn" data-nav="online">
+          <span class="menu-btn-title">通信対戦</span>
+          <span class="menu-btn-sub">Coming Soon</span>
+        </button>
+        <button type="button" class="menu-btn" data-nav="settings">
+          <span class="menu-btn-title">設定</span>
+          <span class="menu-btn-sub">音量</span>
+        </button>
+      </nav>
+    </section>
+
+    <!-- Free battle menu -->
+    <section id="free-battle-screen" class="screen menu-screen hidden">
+      <header class="menu-head"><h1>フリー対戦</h1></header>
+      <nav class="menu-list">
+        <button type="button" class="menu-btn" data-nav="select">
+          <span class="menu-btn-title">通常フリー対戦</span>
+          <span class="menu-btn-sub">既存キャラの固定性能・報酬なし</span>
+        </button>
+        <button type="button" class="menu-btn" disabled>
+          <span class="menu-btn-title">育成反映フリー対戦</span>
+          <span class="menu-btn-sub">準備中（Phase 7）</span>
+        </button>
+      </nav>
+      <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
+    </section>
+
+    <!-- Online (coming soon) -->
+    <section id="online-screen" class="screen menu-screen hidden">
+      <header class="menu-head"><h1>通信対戦</h1></header>
+      <div class="coming-soon">
+        <div class="coming-soon-badge">Coming Soon</div>
+        <p>通信対戦は今後のアップデートで実装予定です。</p>
+      </div>
+      <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
+    </section>
+
+    <!-- Settings -->
+    <section id="settings-screen" class="screen menu-screen hidden">
+      <header class="menu-head"><h1>設定</h1></header>
+      <div class="settings-card">
+        <label class="settings-row">
+          <input type="checkbox" id="home-audio-enabled" checked />
+          <span>音声を有効化</span>
+        </label>
+        <div class="settings-row">
+          <label for="home-bgm-volume">BGM 音量 <span id="home-bgm-volume-val" class="vol-val">40%</span></label>
+          <input type="range" id="home-bgm-volume" min="0" max="100" value="40" />
+        </div>
+        <div class="settings-row">
+          <label for="home-se-volume">SE 音量 <span id="home-se-volume-val" class="vol-val">80%</span></label>
+          <input type="range" id="home-se-volume" min="0" max="100" value="80" />
+        </div>
+      </div>
+      <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
+    </section>
+
     <!-- Character select -->
-    <section id="select-screen" class="screen">
+    <section id="select-screen" class="screen hidden">
       <header class="select-head">
+        <button type="button" class="ghost-back select-back" data-nav="free-battle">← 戻る</button>
         <h1>麻雀RPG <small>プロトタイプ</small></h1>
         <p class="lead">アイコンを選んでください。<b>持ち点 = HP</b>、各キャラに固有能力。</p>
       </header>

@@ -7,7 +7,8 @@ import { abilityDef } from "./data/abilityMaster.js";
 import { decideDiscard, decideCall, decideAbilityActivations } from "./ai/simpleAI.js";
 import { CanvasRenderer } from "./ui/canvasRenderer.js";
 import { TileImages, CharacterImages, AudioManager, tilePath } from "./ui/assets.js";
-import { initSettingsUI } from "./ui/settings.js";
+import { initSettingsUI, applyAudioSettings, wireSettingsControls } from "./ui/settings.js";
+import { showScreen } from "./app/router.js";
 import { playScenario } from "./scenario/scenarioPlayer.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
@@ -211,11 +212,43 @@ function buildSelectScreen() {
   // シナリオ（紙芝居）サンプル再生。マスタを読み込んで再生 → 終了で選択画面へ戻る。
   const scBtn = el("scenario-demo-btn");
   if (scBtn) scBtn.onclick = () => {
-    el("select-screen").classList.add("hidden");
+    showScreen("scenario-screen");
     playScenario("twin-chun-yao-01", {
-      onEnd: () => el("select-screen").classList.remove("hidden"),
+      onEnd: () => showScreen("select-screen"),
     });
   };
+}
+
+// ----------------------------------------------------------------- navigation
+// Wire every [data-nav] control to a screen. Home is the boot screen; the
+// existing 選択 -> 対局 flow lives behind フリー対戦 > 通常フリー対戦.
+let resyncHomeSettings = () => {};
+const NAV_TARGETS = {
+  home: "home-screen",
+  "free-battle": "free-battle-screen",
+  online: "online-screen",
+  settings: "settings-screen",
+  select: "select-screen",
+};
+function navigate(target) {
+  const id = NAV_TARGETS[target];
+  if (!id) return;
+  if (target === "settings") resyncHomeSettings(); // reflect in-game edits
+  showScreen(id);
+}
+function bootHome() {
+  for (const btn of document.querySelectorAll("[data-nav]")) {
+    btn.addEventListener("click", () => { audio.playClick?.(); navigate(btn.dataset.nav); });
+  }
+  // Volumes apply regardless of starting screen; the home 設定 controls share
+  // the same AudioManager + storage as the in-game gear panel.
+  applyAudioSettings(audio);
+  resyncHomeSettings = wireSettingsControls(audio, {
+    enabled: "home-audio-enabled",
+    bgm: "home-bgm-volume", bgmVal: "home-bgm-volume-val",
+    se: "home-se-volume", seVal: "home-se-volume-val",
+  });
+  showScreen("home-screen");
 }
 
 // ----------------------------------------------------------------- start
@@ -262,8 +295,7 @@ function startGame() {
     showAbilityCutIn(player, name);
   });
 
-  el("select-screen").classList.add("hidden");
-  el("game-screen").classList.remove("hidden");
+  showScreen("game-screen");
   el("table").addEventListener("click", onCanvasClick);
   el("table").addEventListener("mousemove", onCanvasHover);
   el("table").addEventListener("mouseleave", () => { renderer.setHover(null); render(); });
@@ -982,3 +1014,4 @@ function addLog(msg) {
 }
 
 buildSelectScreen();
+bootHome();
