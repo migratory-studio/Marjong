@@ -78,10 +78,15 @@ export function kindShort(kind) {
 }
 
 // The dora tile that an indicator of `kind` points to (next in sequence).
-export function doraFromIndicator(kind) {
+// In 三麻 (sanma=true), manzu has only 1m and 9m, so they cycle 1m⇄9m.
+export function doraFromIndicator(kind, sanma = false) {
   if (kind < HONOR0) {
     const r = rankOf(kind);
     const base = kind - (r - 1); // first tile of this suit
+    if (sanma && suitOf(kind) === SUITS.MAN) {
+      // only 1m (rank 1) and 9m (rank 9) exist; 1m→9m, 9m→1m
+      return r === 1 ? base + 8 : base; // 9m's base is 1m
+    }
     return base + (r % 9); // 9 wraps to 1
   }
   if (isWind(kind)) {

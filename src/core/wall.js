@@ -5,16 +5,19 @@ import { TILES, KINDS, doraFromIndicator } from "./tiles.js";
 // using the first physical copy of each. Red fives count as extra dora.
 const RED_KINDS = new Set([4, 13, 22]);
 
-function buildAllTiles() {
+// In 三麻 (sanma), manzu 2..8 (kinds 1..7) are removed, leaving 27 kinds × 4 =
+// 108 tiles. The kind numbering itself is unchanged; we just omit those kinds.
+function buildAllTiles(sanma = false) {
   const tiles = [];
   let id = 0;
   for (let kind = 0; kind < KINDS; kind++) {
+    if (sanma && kind >= 1 && kind <= 7) continue; // drop 2m..8m
     for (let copy = 0; copy < 4; copy++) {
       const red = RED_KINDS.has(kind) && copy === 0;
       tiles.push({ id: id++, kind, red });
     }
   }
-  return tiles; // length === TILES (136)
+  return tiles; // length === 136 (4p) or 108 (sanma)
 }
 
 // Mulberry32 seeded PRNG so games are reproducible when a seed is given.
@@ -37,15 +40,17 @@ function shuffle(arr, rng) {
 }
 
 export class Wall {
-  constructor(seed = (Math.random() * 2 ** 32) >>> 0) {
+  constructor(seed = (Math.random() * 2 ** 32) >>> 0, options = {}) {
     this.seed = seed >>> 0;
+    this.sanma = !!options.sanma;
     const rng = makeRng(this.seed);
-    this.tiles = buildAllTiles();
+    this.tiles = buildAllTiles(this.sanma);
     shuffle(this.tiles, rng);
 
-    // Dead wall = last 14 tiles. Live wall = the rest (122 after dealing).
-    this.deadWall = this.tiles.slice(TILES - 14);
-    this.live = this.tiles.slice(0, TILES - 14);
+    // Dead wall = last 14 tiles. Live wall = the rest.
+    const total = this.tiles.length; // 136 or 108
+    this.deadWall = this.tiles.slice(total - 14);
+    this.live = this.tiles.slice(0, total - 14);
     this.liveIndex = 0; // next live draw
 
     // Dead wall layout (indices into this.deadWall):
@@ -87,6 +92,13 @@ export class Wall {
     return t;
   }
 
+  // 北抜き (sanma kita) replacement tile. Simplified: pull from the front of the
+  // live wall, which naturally reduces the remaining draws by one and avoids
+  // dead-wall exhaustion bookkeeping.
+  drawReplacement() {
+    return this.drawLive();
+  }
+
   // Reveal one more kan dora indicator (max 5).
   revealKanDora() {
     if (this.doraRevealed < 5) this.doraRevealed++;
@@ -104,9 +116,9 @@ export class Wall {
   }
 
   doraKinds() {
-    return this.doraIndicators().map((t) => doraFromIndicator(t.kind));
+    return this.doraIndicators().map((t) => doraFromIndicator(t.kind, this.sanma));
   }
   uraKinds() {
-    return this.uraIndicators().map((t) => doraFromIndicator(t.kind));
+    return this.uraIndicators().map((t) => doraFromIndicator(t.kind, this.sanma));
   }
 }

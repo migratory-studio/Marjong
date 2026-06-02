@@ -20,6 +20,13 @@
       </div>
       <div class="select-footer">
         <div class="mode-select">
+          <span class="mode-label">人数:</span>
+          <div class="mode-toggle" id="players-toggle">
+            <button type="button" class="mode-btn selected" data-players="4">4人</button>
+            <button type="button" class="mode-btn" data-players="3">3人</button>
+          </div>
+        </div>
+        <div class="mode-select">
           <span class="mode-label">対局方式:</span>
           <div class="mode-toggle" id="mode-toggle">
             <button type="button" class="mode-btn selected" data-rounds="1">東風戦</button>
@@ -66,6 +73,16 @@
         <div id="log" class="log"></div>
       </aside>
     </section>
+  </div>
+
+  <!-- Shown only on touch devices held in portrait: ask the player to rotate.
+       Pure CSS toggle (see styles.css @media), no JS required. -->
+  <div id="rotate-prompt" class="rotate-prompt" aria-hidden="true">
+    <div class="rotate-prompt-inner">
+      <div class="rotate-icon">📱</div>
+      <p class="rotate-title">端末を横にしてください</p>
+      <p class="rotate-sub">麻雀RPGは横画面でのプレイに最適化されています。</p>
+    </div>
   </div>
 
   <script type="module" src="src/main.js"></script>

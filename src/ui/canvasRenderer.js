@@ -52,9 +52,14 @@ export class CanvasRenderer {
     this.riverHitboxes = [];
 
     this._drawCenterInfo();
-    // seat positions relative to human: 0=bottom(self),1=right,2=top,3=left
-    for (let seat = 0; seat < 4; seat++) {
-      const pIndex = (this.humanIndex + seat) % 4;
+    // Map each player (by turn-order offset from the human) to a visual seat slot:
+    //   4p: offset 0,1,2,3 -> seat 0(bottom),1(right),2(top),3(left)
+    //   3p: offset 0,1,2   -> seat 0(bottom),1(right),3(left)  (no top seat)
+    const N = this.game.numPlayers;
+    const slots = this._seatSlots(N);
+    for (let offset = 0; offset < N; offset++) {
+      const pIndex = (this.humanIndex + offset) % N;
+      const seat = slots[offset];
       this._drawPlayer(pIndex, seat);
       this._drawRiver(pIndex, seat);
     }
@@ -96,6 +101,11 @@ export class CanvasRenderer {
   }
 
   setHover(hover) { this.hover = hover; }
+
+  // Turn-order offset -> visual seat slot. Shared by the controller's FX helpers.
+  _seatSlots(n) {
+    return n === 3 ? [0, 1, 3] : [0, 1, 2, 3];
+  }
 
   _drawCenterInfo() {
     const ctx = this.ctx;
@@ -193,6 +203,13 @@ export class CanvasRenderer {
       ctx.fillStyle = "#f0d264";
       ctx.font = "bold 12px sans-serif";
       ctx.fillText("● リーチ", x, y + 32);
+    }
+
+    // 北抜き (sanma nuki-dora) count, shown opposite the riichi indicator row.
+    if (p.kita && p.kita.length > 0) {
+      ctx.fillStyle = "#7fd1ff";
+      ctx.font = "bold 12px sans-serif";
+      ctx.fillText(`北 ×${p.kita.length}`, x, p.riichi ? y + 46 : y + 32);
     }
   }
 
@@ -320,9 +337,11 @@ export class CanvasRenderer {
     const n = m.tiles.length;
     let rotIndex = 0; // default 上家
     if (m.from != null) {
-      if (m.from === (mi + 2) % 4) rotIndex = 1;        // 対面 -> middle
-      else if (m.from === (mi + 1) % 4) rotIndex = n - 1; // 下家 -> right
-      else rotIndex = 0;                                  // 上家 -> left
+      const N = this.game.numPlayers;
+      const rel = (m.from - mi + N) % N; // 1 = 下家, 2 = 対面(4p), N-1 = 上家
+      if (rel === 1) rotIndex = n - 1;            // 下家 -> right
+      else if (rel === 2 && N === 4) rotIndex = 1; // 対面 -> middle (4p only)
+      else rotIndex = 0;                           // 上家 -> left
     }
     return m.tiles.map((t, i) => ({ kind: t.kind, red: t.red, rotated: i === rotIndex }));
   }

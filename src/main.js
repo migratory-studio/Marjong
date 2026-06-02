@@ -23,6 +23,7 @@ tileImages.load(); // preload in background; renderer falls back until ready
 charImages.load(CHARACTERS); // icons/portraits; null fallback until present
 let selectedCharId = null;
 let selectedRounds = 1; // 1 = 東風戦, 2 = 半荘戦
+let selectedPlayers = 4; // 4 = 四人麻雀, 3 = 三人麻雀(三麻)
 let pendingCpuCallDecisions = null; // cached while waiting on human call
 let riichiMode = false;
 let recallMode = false; // リコール・ディール: 自分の河の牌を選択中
@@ -184,6 +185,16 @@ function buildSelectScreen() {
   list.onmouseleave = () => renderCharDetail(selectedChar());
   renderCharDetail(null);
 
+  // 人数 (4人 / 3人) toggle
+  const playersToggle = el("players-toggle");
+  for (const btn of playersToggle.querySelectorAll(".mode-btn")) {
+    btn.onclick = () => {
+      selectedPlayers = Number(btn.dataset.players);
+      playersToggle.querySelectorAll(".mode-btn").forEach((b) => b.classList.remove("selected"));
+      btn.classList.add("selected");
+    };
+  }
+
   // 東風戦 / 半荘戦 toggle
   const toggle = el("mode-toggle");
   for (const btn of toggle.querySelectorAll(".mode-btn")) {
@@ -200,11 +211,12 @@ function buildSelectScreen() {
 // ----------------------------------------------------------------- start
 function startGame() {
   humanIndex = 0;
-  // human picks their character; the 3 CPUs are drawn at random (no duplicates)
-  // from the remaining roster — there are now more than 4 characters.
+  // human picks their character; the remaining CPUs are drawn at random (no
+  // duplicates) from the rest of the roster. Seat count depends on the chosen
+  // mode: 4 players (四人) or 3 players (三麻).
   const human = CHARACTERS.find((c) => c.id === selectedCharId);
   const pool = shuffled(CHARACTERS.filter((c) => c.id !== selectedCharId));
-  const order = [human, ...pool.slice(0, 3)];
+  const order = [human, ...pool.slice(0, selectedPlayers - 1)];
   const seated = order.map((c) => ({
     character: c,
     abilities: instantiateAbilities(c),
@@ -318,6 +330,7 @@ function cpuDiscard(index) {
   if (!d) return;
   if (d.type === "tsumo") { game.doTsumo(index); return; }
   if (d.type === "kan") { game.declareKan(index, d.kind, d.kanType); return; }
+  if (d.type === "nuki") { game.nukiKita(index); return; }
   game.discard(index, d.tileId, d.riichi);
 }
 
@@ -472,6 +485,15 @@ function showHumanActions() {
       clearActions();
       game.declareKan(idx, k.kind, k.type);
       loop();
+    }));
+  }
+  // 北抜き (三麻): pull a North tile as nuki-dora, then act again (no turn passes).
+  if (opts.nuki) {
+    bar.appendChild(mkBtn("北抜き", "btn-kan", () => {
+      clearActions();
+      game.nukiKita(idx);
+      showHumanActions();
+      render();
     }));
   }
 
@@ -803,8 +825,17 @@ function showWinCallFx(playerIndex, type) {
   showSeatCall(playerIndex, type === "tsumo" ? "ツモ" : "ロン", "naki-call win-call");
 }
 
+// Map a player index to its on-screen seat slot (matches the renderer's layout:
+// 4p offsets -> [0,1,2,3]; 3p offsets -> [0,1,3], i.e. self/right/left).
+function visualSeat(playerIndex) {
+  const N = game.numPlayers;
+  const offset = (playerIndex - humanIndex + N) % N;
+  const slots = N === 3 ? [0, 1, 3] : [0, 1, 2, 3];
+  return slots[offset];
+}
+
 function showSeatCall(playerIndex, text, className) {
-  const seat = (playerIndex - humanIndex + 4) % 4;
+  const seat = visualSeat(playerIndex);
   const pos = SEAT_FX_POS[seat];
   const e = document.createElement("div");
   e.className = className;
@@ -822,7 +853,7 @@ function showPointFx(deltas) {
   const fx = el("point-fx");
   deltas.forEach((d, pIndex) => {
     if (!d) return;
-    const seat = (pIndex - humanIndex + 4) % 4;
+    const seat = visualSeat(pIndex);
     const pos = SEAT_FX_POS[seat];
     const e = document.createElement("div");
     e.className = `point-delta ${d > 0 ? "plus" : "minus"}`;

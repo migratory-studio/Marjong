@@ -185,6 +185,7 @@ function evaluateChiitoi(pairs, ctx) {
   for (const dk of ctx.doraKinds || []) dora += tiles.filter((k) => k === dk).length;
   if (ctx.riichi) for (const uk of ctx.uraKinds || []) dora += tiles.filter((k) => k === uk).length;
   dora += ctx.redCount || 0;
+  dora += ctx.kitaCount || 0; // 北抜き nuki-dora (sanma)
   return { yaku, yakuman: [], dora };
 }
 

@@ -152,7 +152,11 @@ button.primary:disabled { opacity: .4; cursor: default; }
 #game-screen { display: flex; gap: 16px; height: 100vh; padding: 12px; }
 .table-wrap { position: relative; flex: 1 1 auto; display: flex; align-items: center; justify-content: center; }
 #table {
-  width: 100%; max-width: 960px; height: auto; background: var(--felt);
+  /* fit inside table-wrap on BOTH axes (auto size + dual max) so the 4:3 board
+     never overflows on short landscape phone screens. min() keeps the 960 cap. */
+  width: auto; height: auto;
+  max-width: min(960px, 100%); max-height: 100%;
+  background: var(--felt);
   border: 10px solid var(--felt-edge); border-radius: 18px;
 }
 .action-bar {
@@ -389,4 +393,45 @@ button.primary:disabled { opacity: .4; cursor: default; }
 }
 .settings-row input[type="checkbox"] { accent-color: var(--accent); cursor: pointer; }
 .settings-row label { cursor: pointer; }
+
+/* ---- mobile: rotate-to-landscape prompt ---- */
+/* Hidden everywhere by default; only revealed on touch devices in portrait. */
+.rotate-prompt { display: none; }
+@media (orientation: portrait) and (pointer: coarse) {
+  /* covers the whole viewport so the (landscape-designed) game underneath is
+     hidden until the device is turned. pointer:coarse keeps desktops exempt. */
+  .rotate-prompt {
+    display: flex; position: fixed; inset: 0; z-index: 1000;
+    align-items: center; justify-content: center; padding: 32px;
+    background: radial-gradient(120% 120% at 50% 30%, #1b2c24, var(--bg));
+    text-align: center;
+  }
+  .rotate-prompt-inner { max-width: 320px; }
+  .rotate-icon {
+    font-size: 64px; line-height: 1; margin-bottom: 18px;
+    animation: rotateHint 1.8s ease-in-out infinite;
+  }
+  .rotate-title { font-size: 22px; font-weight: 800; margin: 0 0 10px; color: var(--ink); }
+  .rotate-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin: 0; }
+}
+@keyframes rotateHint {
+  0%, 55%, 100% { transform: rotate(0deg); }
+  72%, 88%      { transform: rotate(-90deg); }
+}
+
+/* ---- short landscape (phones held sideways): compact the chrome so the
+   board gets the room. keyed on height since landscape phones are short. ---- */
+@media (orientation: landscape) and (max-height: 540px) {
+  #game-screen { padding: 6px; gap: 8px; }
+  .side { width: 180px; flex: 0 0 180px; }
+  .side h3 { margin: 2px 0; font-size: 11px; }
+  .log { font-size: 11px; line-height: 1.5; padding: 6px; }
+  .nonaki-btn { top: 8px; left: 8px; padding: 6px 10px; font-size: 12px; }
+  .settings-btn { top: 8px; right: 8px; width: 34px; height: 34px; font-size: 18px; }
+  .action-bar { bottom: 8px; gap: 6px; }
+  .action-bar button { padding: 7px 12px; font-size: 14px; }
+}
+/* note: we intentionally keep the log visible even on very short screens — the
+   board is height-constrained there, so hiding the log wouldn't enlarge it; the
+   log just occupies otherwise-unused horizontal space. */
 

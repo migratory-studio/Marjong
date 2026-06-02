@@ -241,5 +241,6 @@ function countDora(groups, pair, ctx) {
   }
   if (ctx.riichi) for (const uk of ctx.uraKinds || []) dora += kinds.filter((k) => k === uk).length;
   dora += ctx.redCount || 0;
+  dora += ctx.kitaCount || 0; // 北抜き nuki-dora (sanma): each pulled North = +1
   return dora;
 }

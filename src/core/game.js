@@ -36,6 +36,7 @@ export class Player {
     this.hand = []; // concealed tiles
     this.melds = [];
     this.discards = []; // river
+    this.kita = []; // 北抜き: pulled North tiles (sanma nuki-dora), each = +1 dora
     this.discardCalled = false; // any of own discards was called (disqualifies 流し満貫)
     this.riichi = false;
     this.doubleRiichi = false;
@@ -66,6 +67,9 @@ export class Game {
       (c, i) => new Player(i, c.character, c.abilities, i === humanIndex)
     );
     this.humanIndex = humanIndex;
+    // Player count is derived from the seated roster: 3 = 三人麻雀 (sanma), 4 = 四人麻雀.
+    this.numPlayers = this.players.length;
+    this.sanma = this.numPlayers === 3;
     this.maxRounds = options.maxRounds === 2 ? 2 : 1; // default 東風
     this.roundWind = 27; // 27=東, 28=南
     this.kyoku = 1; // hand number WITHIN the current round (1..4)
@@ -92,22 +96,27 @@ export class Game {
   // ----------------------------------------------------------------- hand setup
   startHand() {
     this.handNumber++;
-    this.wall = new Wall(this.seed != null ? this.seed + this.handNumber : undefined);
+    this.wall = new Wall(
+      this.seed != null ? this.seed + this.handNumber : undefined,
+      { sanma: this.sanma }
+    );
     this.lastDiscard = null;
     this.lastDiscardFrom = null;
     this.pendingCalls = null;
     this.firstGoAround = true;
 
-    for (let i = 0; i < 4; i++) {
+    const N = this.numPlayers;
+    for (let i = 0; i < N; i++) {
       const p = this.players[i];
       p.reset();
       p.isDealer = i === this.dealerIndex;
-      p.seatWind = SEAT_WINDS[(i - this.dealerIndex + 4) % 4];
+      // seat winds use the first N of E,S,W,N (sanma has no North seat)
+      p.seatWind = SEAT_WINDS[(i - this.dealerIndex + N) % N];
       for (const ab of p.abilities) ab.resetForHand();
     }
     // deal 13 each
     for (let n = 0; n < 13; n++) {
-      for (let i = 0; i < 4; i++) this.players[i].hand.push(this.wall.drawLive());
+      for (let i = 0; i < N; i++) this.players[i].hand.push(this.wall.drawLive());
     }
     for (const p of this.players) this._sortHand(p);
 
@@ -159,6 +168,8 @@ export class Game {
     }
     // kans (closed kan / added kan)
     opts.kans = this._kanOptions(p);
+    // 北抜き (sanma only): pull a North tile from hand as nuki-dora.
+    opts.nuki = this.sanma && !p.riichi && p.hand.some((t) => t.kind === 30);
     return opts;
   }
 
@@ -327,7 +338,7 @@ export class Game {
       this._exhaustiveDraw();
       return;
     }
-    this.turn = (this.turn + 1) % 4;
+    this.turn = (this.turn + 1) % this.numPlayers;
     // first uninterrupted go-around ends once play returns to the dealer
     if (this.turn === this.dealerIndex) this.firstGoAround = false;
     this._beginTurn();
@@ -336,9 +347,10 @@ export class Game {
   // Who can call on this discard, and with what.
   _collectCallers(tile, fromPlayer) {
     let elig = emptyEligibility();
-    const next = (fromPlayer + 1) % 4;
+    const N = this.numPlayers;
+    const next = (fromPlayer + 1) % N;
 
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < N; i++) {
       if (i === fromPlayer) continue;
       const p = this.players[i];
       const counts = p.counts();
@@ -348,16 +360,18 @@ export class Game {
       if (counts[tile.kind] >= 2 && !p.riichi) elig.pon.add(i);
       // kan (open, needs 3)
       if (counts[tile.kind] >= 3 && !p.riichi) elig.kan.add(i);
-      // chi (only from left/kamicha by default; needs sequence)
-      if (i === next && !p.riichi && this._chiSequences(p, tile.kind).length > 0) {
+      // chi (only from left/kamicha by default; needs sequence). 三麻ではチー禁止。
+      if (!this.sanma && i === next && !p.riichi && this._chiSequences(p, tile.kind).length > 0) {
         elig.chi.add(i);
       }
     }
     // let abilities expand eligibility (e.g. omni-chi)
     elig = this.abilities.resolveEligibility(tile, fromPlayer, elig);
+    // 三麻ではチー禁止。能力（全方位チー等）が広げた分もここで打ち消す。
+    if (this.sanma) elig.chi.clear();
 
     const callers = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < N; i++) {
       const o = {
         ron: elig.ron.has(i),
         pon: elig.pon.has(i),
@@ -517,6 +531,32 @@ export class Game {
     this.emitState();
   }
 
+  // 北抜き (sanma nuki-dora): pull one North tile from hand, set it aside as a
+  // dora, and draw a replacement. Does not open a call window and does not reveal
+  // kan-dora. The player stays in AWAIT_DISCARD and acts again afterwards.
+  nukiKita(playerIndex) {
+    if (!this.sanma) return false;
+    if (this.phase !== Phase.AWAIT_DISCARD || this.turn !== playerIndex) return false;
+    const p = this.players[playerIndex];
+    if (p.riichi) return false;
+    const i = p.hand.findIndex((t) => t.kind === 30);
+    if (i < 0) return false;
+    const tile = p.hand.splice(i, 1)[0];
+    p.kita.push(tile);
+    p.drawnTileId = null;
+    this._sortHand(p);
+    this.log(`${p.character.name} が北抜き（抜きドラ ${p.kita.length}）`);
+    const repl = this.wall.drawReplacement();
+    if (!repl) { this._exhaustiveDraw(); return true; }
+    p.hand.push(repl);
+    p.drawnTileId = repl.id;
+    this._lastDraw = repl;
+    this._rinshanFlag = false; // nuki replacement is not 嶺上開花
+    this.bus.emit(Events.TILE_DRAWN, { player: p, tile: repl });
+    this.emitState();
+    return true;
+  }
+
   // closed kan / added kan from one's own hand (during AWAIT_DISCARD)
   declareKan(playerIndex, kind, type) {
     const p = this.players[playerIndex];
@@ -573,7 +613,7 @@ export class Game {
   // Opponents who can rob an added kan of `kind` (ron only; never the kanner).
   _collectChankanCallers(kannerIndex, kind) {
     const callers = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < this.numPlayers; i++) {
       if (i === kannerIndex) continue;
       if (this._canRon(this.players[i], kind)) {
         callers.push({ index: i, options: { ron: true, pon: false, kan: false, chi: [] } });
@@ -616,7 +656,7 @@ export class Game {
   _doRon(winnerIndices, fromIndex, kind) {
     // head-bump: take the first winner in turn order after discarder
     const order = [];
-    for (let n = 1; n <= 3; n++) order.push((fromIndex + n) % 4);
+    for (let n = 1; n <= this.numPlayers - 1; n++) order.push((fromIndex + n) % this.numPlayers);
     const winners = order.filter((i) => winnerIndices.includes(i));
     const winnerIndex = winners[0];
     const p = this.players[winnerIndex];
@@ -656,6 +696,7 @@ export class Game {
       doraKinds: this.wall.doraKinds(),
       uraKinds: this.wall.uraKinds(),
       redCount: this._redCount(p, winningTileKind, tsumo),
+      kitaCount: p.kita.length, // 北抜き nuki-dora (sanma): each pulled North = +1 dora
     };
   }
 
@@ -674,26 +715,27 @@ export class Game {
   // 勝者の獲得からその総額を差し引く。失点が「増えた」場合（ネビュラの暗黒星など）は
   // HPロスとして消えるだけなので勝者へは移さない（軽減方向のみ対象）。
   _settle(rawDeltas, meta) {
+    const N = this.numPlayers;
     const adjusted = [];
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < N; i++) {
       adjusted[i] = this.abilities.modifyPointDelta(this.players[i], rawDeltas[i] || 0, meta);
     }
     const wi = meta && meta.winnerIndex;
     if ((meta?.reason === "ron" || meta?.reason === "tsumo") && wi != null) {
       let blocked = 0;
-      for (let i = 0; i < 4; i++) {
+      for (let i = 0; i < N; i++) {
         if (i === wi) continue;
         const raw = rawDeltas[i] || 0;
         if (raw < 0) blocked += Math.max(0, adjusted[i] - raw); // 軽減された失点ぶん
       }
       adjusted[wi] -= blocked;
     }
-    for (let i = 0; i < 4; i++) this.players[i].points += adjusted[i];
+    for (let i = 0; i < N; i++) this.players[i].points += adjusted[i];
   }
 
   _applyTsumo(p, res) {
     const before = this.players.map((q) => q.points);
-    const raw = [0, 0, 0, 0];
+    const raw = Array(this.numPlayers).fill(0);
     if (p.isDealer) {
       const each = res.tsumoEach.nonDealer;
       for (const o of this.players) if (o !== p) raw[o.index] -= each;
@@ -703,7 +745,11 @@ export class Game {
         raw[o.index] -= o.isDealer ? res.tsumoEach.dealer : res.tsumoEach.nonDealer;
       }
     }
-    raw[p.index] += res.total + this.kyotaku;
+    // Credit the winner with what was ACTUALLY collected from the seated players
+    // (not res.total). In 三麻 this yields ツモ損 naturally — only the present
+    // opponents pay. In 4p the sum equals res.total, so behavior is unchanged.
+    const collected = this.players.reduce((s, o) => s - (o === p ? 0 : raw[o.index]), 0);
+    raw[p.index] += collected + this.kyotaku;
     this.kyotaku = 0;
     this._settle(raw, { reason: "tsumo", winnerIndex: p.index });
     this._finishWin(p, res, null, before, this._lastDraw.kind);
@@ -711,7 +757,7 @@ export class Game {
 
   _applyRon(p, loser, res, kind) {
     const before = this.players.map((q) => q.points);
-    const raw = [0, 0, 0, 0];
+    const raw = Array(this.numPlayers).fill(0);
     raw[loser.index] -= res.ron;
     raw[p.index] += res.ron + this.kyotaku;
     this.kyotaku = 0;
@@ -762,11 +808,12 @@ export class Game {
     }
 
     // tenpai payments
+    const N = this.numPlayers;
     const tenpai = this.players.map((p) => this._isTenpai(p));
     const tenpaiCount = tenpai.filter(Boolean).length;
-    if (tenpaiCount > 0 && tenpaiCount < 4) {
+    if (tenpaiCount > 0 && tenpaiCount < N) {
       const recvEach = 3000 / tenpaiCount; // each tenpai player receives
-      const payEach = 3000 / (4 - tenpaiCount); // each noten player pays
+      const payEach = 3000 / (N - tenpaiCount); // each noten player pays
       const raw = this.players.map((_, i) => (tenpai[i] ? recvEach : -payEach));
       this._settle(raw, { reason: "draw", winnerIndex: null });
     }
@@ -798,7 +845,7 @@ export class Game {
     const honbaEach = (this.honba || 0) * 100;
     let dealerNagashi = false;
     let display = null;
-    const raw = [0, 0, 0, 0];
+    const raw = Array(this.numPlayers).fill(0);
     for (const p of list) {
       let res;
       if (p.isDealer) {
@@ -850,9 +897,10 @@ export class Game {
     } else {
       // 親流れ: honba resets on a win, but a draw carries honba +1.
       this.honba = ryuukyoku ? this.honba + 1 : 0;
-      this.dealerIndex = (this.dealerIndex + 1) % 4;
+      this.dealerIndex = (this.dealerIndex + 1) % this.numPlayers;
       this.kyoku++;
-      if (this.kyoku > 4) {
+      // a round has numPlayers hands (4p: 東1-4 / sanma: 東1-3).
+      if (this.kyoku > this.numPlayers) {
         // round finished -> advance wind (東→南), reset 局 to 1.
         this.kyoku = 1;
         this.roundWind++;

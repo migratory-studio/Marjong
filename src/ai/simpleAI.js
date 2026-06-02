@@ -18,6 +18,10 @@ export function decideDiscard(game, playerIndex) {
     return { type: "discard", tileId: p.drawnTileId, riichi: false };
   }
 
+  // 北抜き (三麻): North is never yakuhai here and can't form a useful run, so
+  // pulling it for a free nuki-dora is almost always correct. Do it before riichi.
+  if (opts.nuki) return { type: "nuki" };
+
   // Declare riichi whenever legal (showcases the mechanic).
   if (opts.riichi) {
     const kind = opts.riichiDiscards[0];
@@ -149,7 +153,7 @@ function decideJaneDoe(game, p) {
 function decideBibi(game, p) {
   const threat = game.players.some((o) => o !== p && o.riichi);
   if (!threat) return false;
-  const turnsLeft = Math.floor(game.wall.liveRemaining / 4);
+  const turnsLeft = Math.floor(game.wall.liveRemaining / game.numPlayers);
   return turnsLeft > 4; // 残り4巡以内では発動しない
 }
 
