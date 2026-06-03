@@ -9,32 +9,26 @@ set "URL=http://localhost:%PORT%/?debug=1"
 rem --- Node.js check ---
 where node >nul 2>nul
 if errorlevel 1 (
-  echo.
-  echo [ERROR] Node.js が見つかりません / Node.js not found.
-  echo https://nodejs.org/ からインストールしてください。
-  echo.
+  echo [ERROR] Node.js not found. Install from https://nodejs.org/
   pause
   exit /b 1
 )
 
-rem --- already running? (port in use) -> just open the browser in debug mode ---
+rem --- already running? (port in use) -> just open browser in debug mode ---
 netstat -ano | findstr ":%PORT%" | findstr "LISTENING" >nul
 if not errorlevel 1 (
-  echo サーバーは既に起動中です。デバッグモードで開きます... / Already running (debug).
+  echo Server already running. Opening browser in DEBUG mode...
   start "" "%URL%"
   exit /b 0
 )
 
-echo 麻雀RPG を【デバッグモード】で起動します... / Starting Mahjong RPG (DEBUG)
-echo サーバー / server: http://localhost:%PORT%
-echo デバッグ: シナリオ全解放（?debug=1） / debug: all scenarios unlocked
-echo （サーバーウィンドウを閉じると停止します / close the server window to stop）
+echo Starting Mahjong RPG in DEBUG mode...
+echo server: http://localhost:%PORT%
+echo DEBUG: all scenarios unlocked via ?debug=1
+echo (close the server window to stop)
 echo.
 
-rem サーバーを別ウィンドウで起動 (ASCII title to avoid encoding issues)
 start "Mahjong RPG Server" cmd /k "chcp 65001 >nul & node server.mjs"
-
-rem サーバー起動を待ってからブラウザをデバッグモードで開く
 timeout /t 2 >nul
 start "" "%URL%"
 
