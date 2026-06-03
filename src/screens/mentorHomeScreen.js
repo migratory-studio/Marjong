@@ -10,6 +10,10 @@ import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { activeAvatar } from "../progression/avatarFactory.js";
 import { canRestToday } from "../progression/progressionService.js";
+import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
+import { isScenarioRead } from "../progression/scenarioService.js";
+import { scenariosForMentor } from "./scenarioListScreen.js";
+import { isDebugMode } from "../app/debug.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
 
@@ -89,7 +93,15 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   menu.appendChild(mkBtn("休憩", rested ? "今日は休憩済み" : "HP回復・絆・ソウル", "rest", { disabled: rested }));
   menu.appendChild(mkBtn("育成", "HP / スキルLv を強化", "growth"));
   menu.appendChild(mkBtn("能力変更", "能力種類を変える", "ability-change"));
-  menu.appendChild(mkBtn("シナリオ", "Phase 3 で解放", "scenario", { disabled: true }));
+  // シナリオ: この師匠の物語のうち「解放済みかつ未読」の件数をバッジに出す。
+  const scList = scenariosForMentor(avatar.mentorCharacterId);
+  const ctx = buildUnlockContext(profile);
+  const debug = isDebugMode();
+  const unread = scList.filter((s) => (debug || evaluateUnlock(s, ctx).unlocked) && !isScenarioRead(profile, s.scenarioId)).length;
+  const scSub = scList.length === 0 ? "まだありません"
+    : debug ? `未読 ${unread} 件（DEBUG 全解放）`
+    : unread > 0 ? `未読 ${unread} 件` : "物語を読む";
+  menu.appendChild(mkBtn("シナリオ", scSub, "scenario", { disabled: scList.length === 0 }));
   menu.appendChild(mkBtn("マイキャラ", "ステータス確認", "avatar"));
   container.appendChild(menu);
 }

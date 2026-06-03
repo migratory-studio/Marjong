@@ -19,6 +19,7 @@ import { showMentorHome } from "./screens/mentorHomeScreen.js";
 import { showRest } from "./screens/restScreen.js";
 import { showGrowth } from "./screens/growthScreen.js";
 import { showAbilityChange } from "./screens/abilityChangeScreen.js";
+import { showScenarioList } from "./screens/scenarioListScreen.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -300,8 +301,18 @@ async function openMentorSub(target) {
     const profile = await profileRepo.loadProfile();
     showAvatarDetail(el("avatar-detail-screen"), { profile, onBack: back });
     goScreen("avatar-detail-screen");
+  } else if (target === "scenario") {
+    // シナリオ一覧 → 選択で #scenario-screen 再生 → 終了で一覧へ戻り既読/報酬を反映。
+    await showScenarioList(el("scenario-list-screen"), {
+      repository: profileRepo,
+      onBack: back,
+      onPlay: (scenarioId, onEnd) => {
+        showScreen("scenario-screen");
+        playScenario(scenarioId, { onEnd: () => { goScreen("scenario-list-screen"); onEnd?.(); } });
+      },
+    });
+    goScreen("scenario-list-screen");
   }
-  // "scenario" は Phase 3 で接続（師弟ホームでは無効表示）。
 }
 
 function navigate(target) {

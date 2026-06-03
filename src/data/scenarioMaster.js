@@ -16,6 +16,28 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 10,
     "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "mentorCharacterId": "shiyue",
+    "title": "数えない人",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-01"
+      },
+      {
+        "type": "bond_level",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 120
+    },
+    "sortOrder": 20,
+    "isEnabled": true,
     "scenarioVersion": 1
   },
   {
@@ -32,6 +54,222 @@ export const SCENARIO_MASTER = [
       "soul": 100
     },
     "sortOrder": 20,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "mentorCharacterId": "shiyue",
+    "title": "速さの理由",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-02"
+      },
+      {
+        "type": "avatar_level",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 140
+    },
+    "sortOrder": 30,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "mentorCharacterId": "shiyue",
+    "title": "鏡のような人",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-03"
+      },
+      {
+        "type": "bond_level",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 160
+    },
+    "sortOrder": 40,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "mentorCharacterId": "shiyue",
+    "title": "降りない約束",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-04"
+      },
+      {
+        "type": "avatar_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 180
+    },
+    "sortOrder": 50,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "mentorCharacterId": "shiyue",
+    "title": "恩師の卓",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-05"
+      },
+      {
+        "type": "bond_level",
+        "value": 4
+      }
+    ],
+    "firstReadReward": {
+      "soul": 200
+    },
+    "sortOrder": 60,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "mentorCharacterId": "shiyue",
+    "title": "正しい降り",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-06"
+      },
+      {
+        "type": "bond_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 220
+    },
+    "sortOrder": 70,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "mentorCharacterId": "shiyue",
+    "title": "見られなかったツモ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-07"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 240
+    },
+    "sortOrder": 80,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "mentorCharacterId": "shiyue",
+    "title": "冷たい声",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-08"
+      },
+      {
+        "type": "bond_level",
+        "value": 6
+      }
+    ],
+    "firstReadReward": {
+      "soul": 260
+    },
+    "sortOrder": 90,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "mentorCharacterId": "shiyue",
+    "title": "マモリの理由",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-09"
+      },
+      {
+        "type": "avatar_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 280
+    },
+    "sortOrder": 100,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "mentorCharacterId": "shiyue",
+    "title": "二人の九蓮",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-10"
+      },
+      {
+        "type": "tournament_won",
+        "value": 1
+      }
+    ],
+    "firstReadReward": {
+      "soul": 320
+    },
+    "sortOrder": 110,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "mentorCharacterId": "shiyue",
+    "title": "ツモれば、ふたりの勝ち",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-11"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 400
+    },
+    "sortOrder": 120,
     "isEnabled": true,
     "scenarioVersion": 1
   }

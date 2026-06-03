@@ -287,6 +287,26 @@ body {
 .growth-buy { align-self: flex-start; }
 .growth-buy:disabled { opacity: .45; cursor: default; }
 
+/* scenario list (Phase 3) */
+.sclist { display: flex; flex-direction: column; gap: 8px; width: 100%; max-height: 470px; overflow-y: auto; padding-right: 4px; }
+.sclist-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  width: 100%; text-align: left; padding: 10px 14px;
+  background: #1c2c24; border: 2px solid #2a3f34; border-radius: 12px; cursor: pointer;
+}
+.sclist-row:hover:not(:disabled) { border-color: var(--accent); }
+.sclist-row:disabled { opacity: .5; cursor: default; }
+.sclist-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sclist-title { font-size: 15px; font-weight: 800; }
+.sclist-sub { font-size: 11px; color: var(--muted); }
+.sclist-status { font-size: 12px; font-weight: 700; flex: none; white-space: nowrap; text-align: right; }
+.sclist-status.is-new { color: var(--accent); }
+.sclist-status.is-read { color: var(--muted); }
+.sclist-status.is-lock { color: #d6b07a; font-weight: 600; font-size: 11px; max-width: 320px; white-space: normal; }
+.sclist-flash { font-size: 13px; color: var(--accent); font-weight: 700; margin: 0; min-height: 18px; }
+.sclist-empty { font-size: 14px; color: var(--muted); }
+.sclist-debug { font-size: 12px; font-weight: 800; color: #e0a44b; margin: 0; letter-spacing: .03em; }
+
 /* ability change */
 .ac-top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; width: 100%; }
 .ac-current { font-size: 13px; color: var(--muted); }
