@@ -1,7 +1,7 @@
 // マイキャラ確認画面 (avatar-detail) — major_update_specification.md §8 / Phase 2A。
 //
 // 作成済みのマイキャラの現在値・見た目・師匠・能力を表示する読み取り専用画面。
-// 師弟ホーム / 育成 / 能力変更は Phase 2B で接続する（ここでは導線だけ無効表示）。
+// 休憩 / 育成 / 能力変更への導線は師弟ホーム（mentorHomeScreen, Phase 2B）が持つ。
 //
 //   import { showAvatarDetail } from "./screens/avatarDetailScreen.js";
 //   showAvatarDetail(container, { profile, onBack });
@@ -91,16 +91,9 @@ export function showAvatarDetail(container, { profile, onBack } = {}) {
 
   if (tmpl) stats.appendChild(elt("p", "av-detail-bio", { textContent: tmpl.description }));
 
-  // 2B 以降の導線（準備中）
-  const soon = elt("div", "av-detail-soon");
-  for (const label of ["師弟ホーム", "育成", "能力変更"]) {
-    soon.appendChild(elt("button", "menu-btn", { type: "button", disabled: true, textContent: `${label}（Phase 2B）` }));
-  }
-  stats.appendChild(soon);
-
   layout.appendChild(stats);
 
-  const back = elt("button", "ghost-back", { type: "button", textContent: "← ホームへ" });
+  const back = elt("button", "ghost-back", { type: "button", textContent: "← 師弟ホームへ" });
   back.onclick = () => onBack?.();
   container.appendChild(back);
 }

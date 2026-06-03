@@ -231,6 +231,75 @@ body {
 .av-hp-box { position: relative; flex: 1; height: 22px; background: #16241d; border-radius: 6px; overflow: hidden; }
 .av-hp-bar { height: 100%; background: linear-gradient(90deg,#7bb274,#4ea1d3); }
 .av-hp-text { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+/* ---- mentor mode: home / rest / growth / ability-change (Phase 2B) ---- */
+/* Fixed 1280x720 stage, no internal scroll. Hub is centered; sub-screens stack. */
+.mentor-screen.menu-screen {
+  max-width: 720px; gap: 16px; padding: 18px 24px; justify-content: center;
+}
+.mentor-h1 { font-size: 30px; margin: 2px 0; }
+
+/* soul chip (shared) */
+.mh-soul, .growth-soul {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #1c2c24; border: 2px solid #2a3f34; border-radius: 12px; padding: 7px 14px;
+}
+.mh-soul-label, .growth-soul .mh-soul-label { font-size: 12px; color: var(--muted); }
+.mh-soul-val { font-size: 18px; font-weight: 800; color: var(--accent); }
+
+/* hub */
+.mh-topbar { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+.mh-stage {
+  display: flex; align-items: center; gap: 18px; width: 100%;
+  background: var(--felt, #1c2c24); border: 2px solid #2a3f34; border-radius: 16px; padding: 12px 16px;
+}
+/* Standing art is full-body & portrait-shaped; cover from the TOP so the face shows
+   (center-cover crops to the hips/legs). */
+.mh-portrait { width: 120px; height: 150px; object-fit: cover; object-position: top center; border-radius: 12px; flex: none; }
+.mh-bubble { flex: 1; }
+.mh-bubble-name { font-size: 13px; font-weight: 700; color: var(--accent); }
+.mh-bubble-text { font-size: 16px; line-height: 1.6; margin: 6px 0 0; }
+.mh-summary { font-size: 13px; color: var(--muted); }
+.mh-menu { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; }
+.mh-menu-btn { align-items: flex-start; padding: 12px 16px; }
+
+/* shared card (rest) */
+.mentor-card {
+  width: 100%; display: flex; flex-direction: column; gap: 14px;
+  background: #1c2c24; border: 2px solid #2a3f34; border-radius: 16px; padding: 18px 20px;
+}
+.mentor-card-bubble { margin: 0; }
+.rest-hp { display: flex; align-items: center; gap: 12px; }
+.rest-hp-label { width: 72px; font-size: 13px; color: var(--muted); flex: none; }
+.rest-result { font-size: 14px; color: var(--accent); margin: 0; font-weight: 700; }
+.mentor-card .primary { align-self: flex-start; min-width: 180px; }
+
+/* growth */
+.growth-err { margin: 0; }
+.growth-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; }
+.growth-card {
+  display: flex; flex-direction: column; gap: 8px;
+  background: #1c2c24; border: 2px solid #2a3f34; border-radius: 14px; padding: 14px 16px;
+}
+.growth-card-title { font-size: 16px; font-weight: 800; }
+.growth-card-now { font-size: 14px; }
+.growth-card-next { font-size: 13px; color: var(--muted); line-height: 1.5; flex: 1; }
+.growth-card-max { font-size: 13px; color: var(--accent); flex: 1; }
+.growth-buy { align-self: flex-start; }
+.growth-buy:disabled { opacity: .45; cursor: default; }
+
+/* ability change */
+.ac-top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; width: 100%; }
+.ac-current { font-size: 13px; color: var(--muted); }
+.ac-warn { font-size: 13px; color: var(--danger); margin: 0; }
+.ac-err { margin: 0; }
+.ac-err.ac-ok { color: var(--accent); }
+.ac-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.ac-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
+.ac-cost { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.ac-cost-short { color: var(--danger); }
+.ac-footer { display: flex; align-items: center; gap: 14px; width: 100%; margin-top: 4px; }
+.ac-footer .primary { margin-left: auto; min-width: 240px; }
+
 .av-detail-soon { display: flex; gap: 8px; margin-top: 8px; }
 .av-detail-soon .menu-btn { flex: 1; padding: 9px 12px; }
 

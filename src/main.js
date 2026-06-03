@@ -15,6 +15,10 @@ import { LocalProfileRepository } from "./progression/localProfileRepository.js"
 import { activeAvatar } from "./progression/avatarFactory.js";
 import { showAvatarCreate } from "./screens/avatarCreateScreen.js";
 import { showAvatarDetail } from "./screens/avatarDetailScreen.js";
+import { showMentorHome } from "./screens/mentorHomeScreen.js";
+import { showRest } from "./screens/restScreen.js";
+import { showGrowth } from "./screens/growthScreen.js";
+import { showAbilityChange } from "./screens/abilityChangeScreen.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -254,24 +258,50 @@ function goScreen(id) {
   showScreen(id);
   SCREEN_BGM[id]?.();
 }
-// 師弟モード: マイキャラがいれば確認画面、いなければ作成画面へ（Phase 2A）。
+// 師弟モード: マイキャラがいれば師弟ホーム、いなければ作成画面へ（Phase 2A/2B）。
 const profileRepo = new LocalProfileRepository();
 async function openMentorMode() {
   const profile = await profileRepo.loadProfile();
   if (activeAvatar(profile)) {
-    showAvatarDetail(el("avatar-detail-screen"), { profile, onBack: () => navigate("home") });
-    goScreen("avatar-detail-screen");
+    openMentorHome();
   } else {
     showAvatarCreate(el("avatar-create-screen"), {
       repository: profileRepo,
       onBack: () => navigate("home"),
-      onCreated: (saved) => {
-        showAvatarDetail(el("avatar-detail-screen"), { profile: saved, onBack: () => navigate("home") });
-        goScreen("avatar-detail-screen");
-      },
+      onCreated: () => openMentorHome(),
     });
     goScreen("avatar-create-screen");
   }
+}
+
+// 師弟ホーム（ハブ）。休憩 / 育成 / 能力変更 / マイキャラへ振り分ける（Phase 2B）。
+// 各サブ画面は自前で profile を読み込み、戻ると師弟ホームが再読込で最新値を反映する。
+function openMentorHome() {
+  showMentorHome(el("mentor-home-screen"), {
+    repository: profileRepo,
+    onBack: () => navigate("home"),
+    onNavigate: (target) => openMentorSub(target),
+  });
+  goScreen("mentor-home-screen");
+}
+
+async function openMentorSub(target) {
+  const back = () => openMentorHome();
+  if (target === "rest") {
+    await showRest(el("rest-screen"), { repository: profileRepo, onBack: back });
+    goScreen("rest-screen");
+  } else if (target === "growth") {
+    await showGrowth(el("growth-screen"), { repository: profileRepo, onBack: back });
+    goScreen("growth-screen");
+  } else if (target === "ability-change") {
+    await showAbilityChange(el("ability-change-screen"), { repository: profileRepo, onBack: back });
+    goScreen("ability-change-screen");
+  } else if (target === "avatar") {
+    const profile = await profileRepo.loadProfile();
+    showAvatarDetail(el("avatar-detail-screen"), { profile, onBack: back });
+    goScreen("avatar-detail-screen");
+  }
+  // "scenario" は Phase 3 で接続（師弟ホームでは無効表示）。
 }
 
 function navigate(target) {
