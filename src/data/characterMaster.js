@@ -213,4 +213,17 @@ export const CHARACTER_MASTER = [
     params: { attack: 2, defense: 5, quirk: 2, difficulty: 1 },
     abilities: [{ abilityId: "bibi", params: {} }],
   },
+  {
+    id: "charybdis",
+    name: "カリュブディス",
+    reading: "",
+    color: "#4a8fb5",
+    role: "extra",
+    bio: "和了を捨て流局に賭ける異形の打ち手。和了不可だが、流局の受取が3倍・流し満貫が役満になる。超高HP。",
+    profile: "全てを呑み込む深淵の渦を宿した打ち手。アガりという果実を永遠に手放した代償に、場が流れるたび点棒を蒐集する（流局の受取3倍）。誰も和了れぬまま局が枯れることこそ彼女の狩り——終局へ引きずり込む流し満貫は、役満の威をもって相手を沈める。",
+    stats: { startingPoints: 23000 }, // 和了で攻めれない分の高HP。ネビュラ(25000)のちょい下。
+    assets: assetsFor("charybdis"),
+    params: { attack: 1, defense: 3, quirk: 5, difficulty: 5 },
+    abilities: [{ abilityId: "abyss-collection", params: {} }],
+  },
 ];

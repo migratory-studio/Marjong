@@ -29,6 +29,18 @@ export const Hooks = {
   //   ctx: { winner, result }  -> return modified result or undefined.
   MODIFY_SCORE: "modifyScore",
 
+  // Veto a player's ability to declare a win (和了) by ron or tsumo. Threaded as
+  // a boolean (default true = may win); an ability returns false to forbid it.
+  // Note: this only blocks ron/tsumo — 流し満貫 is a 流局 payout, not a 和了, so
+  // it is unaffected.
+  //   ctx: { player, kind, tsumo }  -> return false to block, or undefined.
+  MODIFY_CAN_WIN: "modifyCanWin",
+
+  // Transform a player's 流し満貫 result before its 流局 settlement (e.g. upgrade
+  // the rank to 役満). Threads the base 流し満貫 result object.
+  //   ctx: { player }  -> return a modified result object, or undefined to keep.
+  MODIFY_NAGASHI: "modifyNagashi",
+
   // Adjust the point change a player is about to receive at hand settlement.
   // Runs per player against THEIR OWN abilities, for every payout: tsumo, ron,
   // exhaustive-draw tenpai/noten payments, and 流し満貫. Intentionally NOT

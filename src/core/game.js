@@ -245,7 +245,9 @@ export class Game {
     if (!isAgari(counts, p.numMeldSets())) return false;
     const ctx = this._winContext(p, this._lastDraw.kind, /*tsumo*/ true);
     const res = scoreHand(counts, p.melds, ctx);
-    return res.valid;
+    if (!res.valid) return false;
+    // abilities may forbid 和了 entirely (e.g. カリュブディスの「淵の蒐集」)
+    return this.abilities.canWin(p, this._lastDraw.kind, /*tsumo*/ true);
   }
 
   // Tile ids that, if discarded, keep the hand tenpai (legal riichi declarations).
@@ -397,7 +399,9 @@ export class Game {
     const ctx = this._winContext(p, kind, /*tsumo*/ false);
     const res = scoreHand(counts, p.melds, ctx);
     counts[kind]--;
-    return res.valid;
+    if (!res.valid) return false;
+    // abilities may forbid 和了 entirely (e.g. カリュブディスの「淵の蒐集」)
+    return this.abilities.canWin(p, kind, /*tsumo*/ false);
   }
 
   _chiSequences(p, kind) {
@@ -730,6 +734,28 @@ export class Game {
       }
       adjusted[wi] -= blocked;
     }
+    // 流局の精算はゼロサムを保つ。能力で「受け取りが増えた」分（余剰）が出た場合、
+    // その増分を支払い側（罰符を払った＝raw<0 のプレイヤー）へ按分して上乗せ請求する。
+    // 例: カリュブディスの受け取り3倍 → 増えた分はノーテン側が負担する（端数は最後の
+    // 支払者で吸収して厳密にゼロサム）。失点を増やす方向（ネビュラ等）は余剰にならない
+    // ので対象外（従来どおりHPロストとして消える）。
+    if (meta?.reason === "draw") {
+      let surplus = 0;
+      for (let i = 0; i < N; i++) surplus += adjusted[i];
+      const payTotal = rawDeltas.reduce((s, r) => s + (r < 0 ? -r : 0), 0);
+      if (surplus > 0 && payTotal > 0) {
+        const payers = [];
+        for (let i = 0; i < N; i++) if ((rawDeltas[i] || 0) < 0) payers.push(i);
+        let remaining = surplus;
+        payers.forEach((i, k) => {
+          const share = k === payers.length - 1
+            ? remaining
+            : Math.round(surplus * (-rawDeltas[i] / payTotal));
+          adjusted[i] -= share;
+          remaining -= share;
+        });
+      }
+    }
     for (let i = 0; i < N; i++) this.players[i].points += adjusted[i];
   }
 
@@ -847,26 +873,31 @@ export class Game {
     let display = null;
     const raw = Array(this.numPlayers).fill(0);
     for (const p of list) {
-      let res;
-      if (p.isDealer) {
-        const each = 4000 + honbaEach;
-        for (const o of this.players) if (o !== p) { raw[o.index] -= each; raw[p.index] += each; }
-        res = { tsumoEach: { nonDealer: each }, total: each * 3 };
-        dealerNagashi = true;
-      } else {
-        const fromDealer = 4000 + honbaEach;
-        const fromNon = 2000 + honbaEach;
-        for (const o of this.players) {
-          if (o === p) continue;
-          const pay = o.isDealer ? fromDealer : fromNon;
-          raw[o.index] -= pay; raw[p.index] += pay;
-        }
-        res = { tsumoEach: { dealer: fromDealer, nonDealer: fromNon }, total: fromDealer + fromNon * 2 };
-      }
+      // base 流し満貫 (paid like a tsumo mangan)
+      let res = p.isDealer
+        ? { tsumoEach: { nonDealer: 4000 + honbaEach }, total: (4000 + honbaEach) * 3 }
+        : {
+            tsumoEach: { dealer: 4000 + honbaEach, nonDealer: 2000 + honbaEach },
+            total: (4000 + honbaEach) + (2000 + honbaEach) * 2,
+          };
       res = {
         valid: true, yaku: [{ name: "流し満貫", han: 5 }], yakuman: [],
         dora: 0, yakuHan: 5, totalHan: 5, fu: 0, rank: "満貫", ...res,
       };
+      // abilities may upgrade the result (e.g. 流し満貫→役満). Payments are
+      // collected from the (possibly upgraded) result so they stay consistent.
+      res = this.abilities.modifyNagashi(p, res) || res;
+      if (p.isDealer) {
+        const each = res.tsumoEach.nonDealer;
+        for (const o of this.players) if (o !== p) { raw[o.index] -= each; raw[p.index] += each; }
+        dealerNagashi = true;
+      } else {
+        for (const o of this.players) {
+          if (o === p) continue;
+          const pay = o.isDealer ? res.tsumoEach.dealer : res.tsumoEach.nonDealer;
+          raw[o.index] -= pay; raw[p.index] += pay;
+        }
+      }
       if (!display) display = { winner: p.index, result: res };
     }
     this._settle(raw, { reason: "nagashi", winnerIndex: display.winner });

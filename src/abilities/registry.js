@@ -120,6 +120,19 @@ export class AbilityManager {
     return this.modifyForPlayer(Hooks.MODIFY_SCORE, winner, ctx, result);
   }
 
+  // May this player declare a win (和了) right now? Abilities may veto by
+  // returning false from MODIFY_CAN_WIN. Default: allowed.
+  canWin(player, kind, tsumo) {
+    const ctx = { player, kind, tsumo };
+    return this.modifyForPlayer(Hooks.MODIFY_CAN_WIN, player, ctx, true) !== false;
+  }
+
+  // Let a player's abilities transform their 流し満貫 result (e.g. → 役満).
+  modifyNagashi(player, result) {
+    const ctx = { player };
+    return this.modifyForPlayer(Hooks.MODIFY_NAGASHI, player, ctx, result);
+  }
+
   // Let a player's own abilities adjust the point change they're about to take
   // at settlement (e.g. double a loss / halve a win). `meta` carries the reason
   // and the winning player's index so abilities can tell a loss from a gain.

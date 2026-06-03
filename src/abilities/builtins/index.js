@@ -9,3 +9,4 @@ import "./homuraAbility.js";
 import "./janeDoeAbility.js";
 import "./bibiAbility.js";
 import "./kakehaRuinaAbility.js";
+import "./charybdisAbility.js";

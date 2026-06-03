@@ -123,6 +123,15 @@ export const ABILITY_MASTER = {
     maxCharges: 2,
     cooldown: 0,
   },
+  "abyss-collection": {
+    name: "淵の蒐集",
+    desc: "常時発動。このキャラは和了できない（ロン・ツモ不可）。その代わり、流局時にこのキャラへ渡る得点（テンパイ料の受け取り）が3倍になり、流し満貫が役満扱いになる。",
+    blurb: "淵の蒐集 — 常時 和了不可／流局の受取3倍・流し満貫が役満",
+    activation: "passive",
+    chargeScope: "hand",
+    maxCharges: Infinity,
+    cooldown: 0,
+  },
   "bibi": {
     name: "無敵の守り",
     desc: "1局1回・1ゲーム2局まで。発動後、自分が6回打牌するまでロン・ツモをされても点棒を取られない（流局の罰符などは対象外）。",
