@@ -140,12 +140,12 @@ export const CHARACTER_MASTER = [
     name: "エージェント・RE",
     reading: "エージェント・アールイー",
     color: "#7f8c99",
-    role: "extra",
+    role: "blocker",
     bio: "捨て牌を回収する諜報型。1局1回、ツモ牌を安全に河へ捨てつつ過去の捨て牌を取り戻す。",
     profile: "あらゆる情報を「回収（リコール）」する寡黙なエージェント。一度手放した牌すら取引材料に変える老獪な打ち回しで、攻めにも守りにも化ける器用さを持つ。",
     stats: { startingPoints: 15000 }, // 1局1回の小回り能力。標準的なHP。
     assets: assetsFor("agentRE"),
-    params: { attack: 3, defense: 3, quirk: 3, difficulty: 3 },
+    params: { attack: 3, defense: 4, quirk: 3, difficulty: 3 },
     abilities: [{ abilityId: "recall-deal", params: {} }],
   },
   {
