@@ -77,6 +77,7 @@ for (const c of CHARACTERS) {
     id: c.id, name: c.name, start: c.stats.startingPoints,
     games: 0, firsts: 0, placeSum: 0, pointSum: 0, busts: 0,
     wins: 0, hanSum: 0,
+    dealIns: 0, oyaTsumoPaid: 0, drawTenpai: 0, drawNoten: 0,
   };
 }
 
@@ -90,13 +91,30 @@ for (let g = 0; g < schedule.length; g++) {
   const seed = 1_000_000 + g;
   const game = new Game(seated, -1, seed);
 
-  // アガリを購読: 和了者キャラのアガリ回数と totalHan を加算。
+  // アガリを購読: 和了者の回数/翻、放銃者、親被り(親ツモを払った子)を加算。
   game.bus.on(Events.HAND_WON, (r) => {
     const wp = game.players[r.winner];
-    if (!wp) return;
-    const s = stat[wp.character.id];
-    s.wins++;
-    s.hanSum += (r.result && r.result.totalHan) || 0;
+    if (wp) {
+      const s = stat[wp.character.id];
+      s.wins++;
+      s.hanSum += (r.result && r.result.totalHan) || 0;
+    }
+    // 放銃: ロンの放銃者(loser)
+    if (r.loser != null) stat[game.players[r.loser].character.id].dealIns++;
+    // 親被り: 親のツモ和了を、子が支払ったケース
+    if (r.tsumo && wp && wp.isDealer) {
+      game.players.forEach((p, i) => {
+        if (i !== r.winner && (r.deltas[i] || 0) < 0) stat[p.character.id].oyaTsumoPaid++;
+      });
+    }
+  });
+  // 流局を購読: 各キャラのテンパイ/ノーテンを加算。
+  game.bus.on(Events.HAND_DRAWN, (r) => {
+    if (!r || !r.tenpai) return;
+    game.players.forEach((p, i) => {
+      if (r.tenpai[i]) stat[p.character.id].drawTenpai++;
+      else stat[p.character.id].drawNoten++;
+    });
   });
 
   let ok = false;
@@ -123,18 +141,20 @@ const padL = (s, n) => String(s).padStart(n);
 const lines = [];
 lines.push(`全キャラ・拡張バランス結果  (各キャラ${PER_CHAR}戦目標 / 完了 ${completed}/${schedule.length} ゲーム, 東風戦・全CPU)`);
 lines.push("");
-lines.push(`${pad("順", 3)} ${pad("キャラ", 14)} ${padL("出場", 5)} ${padL("勝率", 7)} ${padL("得点平均", 9)} ${padL("トビ率", 7)} ${padL("平均順位", 8)} ${padL("平均アガリハン", 13)} ${padL("アガリ数", 7)}`);
-lines.push("-".repeat(90));
+lines.push(`${pad("順", 3)} ${pad("キャラ", 14)} ${padL("出場", 5)} ${padL("勝率", 7)} ${padL("得点平均", 9)} ${padL("トビ率", 7)} ${padL("平均順位", 8)} ${padL("平均ハン", 9)} ${padL("アガリ", 6)} ${padL("放銃", 6)} ${padL("親被り", 7)} ${padL("流局聴牌", 8)} ${padL("流局ノテン", 9)}`);
+lines.push("-".repeat(120));
 rows.forEach((s, i) => {
   const winRate = (100 * s.firsts / s.games).toFixed(1) + "%";
   const avgPlace = (s.placeSum / s.games).toFixed(2);
   const avgPts = Math.round(s.pointSum / s.games);
   const bustRate = (100 * s.busts / s.games).toFixed(1) + "%";
   const avgHan = s.wins > 0 ? (s.hanSum / s.wins).toFixed(2) : "-";
-  lines.push(`${pad(i + 1, 3)} ${pad(s.name, 14)} ${padL(s.games, 5)} ${padL(winRate, 7)} ${padL(avgPts, 9)} ${padL(bustRate, 7)} ${padL(avgPlace, 8)} ${padL(avgHan, 13)} ${padL(s.wins, 7)}`);
+  lines.push(`${pad(i + 1, 3)} ${pad(s.name, 14)} ${padL(s.games, 5)} ${padL(winRate, 7)} ${padL(avgPts, 9)} ${padL(bustRate, 7)} ${padL(avgPlace, 8)} ${padL(avgHan, 9)} ${padL(s.wins, 6)} ${padL(s.dealIns, 6)} ${padL(s.oyaTsumoPaid, 7)} ${padL(s.drawTenpai, 8)} ${padL(s.drawNoten, 9)}`);
 });
 lines.push("");
-lines.push("勝率=4人中1着の割合 / 得点平均=最終点の平均 / トビ率=最終点マイナスの割合 / 平均順位 1.00最良〜4.00最悪 / 平均アガリハン=和了1回あたりの合計翻(ドラ込, 役満は13翻換算)");
+lines.push("勝率=4人中1着の割合 / 得点平均=最終点の平均 / トビ率=最終点マイナスの割合 / 平均順位 1.00最良〜4.00最悪");
+lines.push("平均ハン=和了1回あたりの合計翻(ドラ込, 役満13翻換算) / アガリ・放銃・親被り・流局聴牌・流局ノテンは全戦の合計回数");
+lines.push("放銃=ロンで振り込んだ回数 / 親被り=親のツモ和了を子として支払った回数");
 
 const out = lines.join("\n");
 writeFileSync(new URL("./balance-full-result.txt", import.meta.url), out + "\n");
