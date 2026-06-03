@@ -208,7 +208,7 @@ export const CHARACTER_MASTER = [
     role: "blocker",
     bio: "鉄壁の守りを誇る防御型。発動後6打牌のあいだロン・ツモで失点しない。",
     profile: "あどけない見た目に反して鉄壁の守りを誇る打ち手。一度身を固めれば（6打牌のあいだ）どんなアガりも己の点棒には届かない。攻めずとも沈まない、粘り勝ちの申し子。",
-    stats: { startingPoints: 14000 }, // defensive immunity window; standard-ish HP
+    stats: { startingPoints: 12000 }, // trimmed: 両モードで勝率トップだったため減点（守備で粘れる分HP低め）
     assets: assetsFor("bibi"),
     params: { attack: 2, defense: 5, quirk: 2, difficulty: 1 },
     abilities: [{ abilityId: "bibi", params: {} }],

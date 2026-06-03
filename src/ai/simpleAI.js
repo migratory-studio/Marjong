@@ -22,8 +22,12 @@ export function decideDiscard(game, playerIndex) {
   // pulling it for a free nuki-dora is almost always correct. Do it before riichi.
   if (opts.nuki) return { type: "nuki" };
 
-  // Declare riichi whenever legal (showcases the mechanic).
-  if (opts.riichi) {
+  // 和了不可キャラ（カリュブディス）は手牌の上がり目がゼロ。リーチは
+  // 「二度と回収できない供託1000点 + 強制ツモ切りで放銃率増」の純損失なので絶対に打たない。
+  const noWin = cannotWin(p);
+
+  // Declare riichi whenever legal (showcases the mechanic) — except for noWin chars.
+  if (opts.riichi && !noWin) {
     const kind = opts.riichiDiscards[0];
     const tile = pickDiscardTile(p, kind);
     return { type: "discard", tileId: tile.id, riichi: true };
@@ -36,7 +40,7 @@ export function decideDiscard(game, playerIndex) {
 
   // Otherwise discard the least useful tile (with basic safety vs riichi).
   const danger = riichiThreat(game, playerIndex);
-  const kind = chooseDiscardKind(game, p, danger);
+  const kind = chooseDiscardKind(game, p, danger, noWin);
   const tile = pickDiscardTile(p, kind);
   return { type: "discard", tileId: tile.id, riichi: false };
 }
@@ -191,6 +195,12 @@ export function decideCall(game, playerIndex, options) {
 }
 
 // ---------------------------------------------------------------- heuristics
+// 和了が常時不可なキャラ（カリュブディス「淵の蒐集」）かどうか。
+// この判定で AI はリーチを封じ、脅威に対し聴牌でも降りる。
+function cannotWin(p) {
+  return (p.abilities || []).some((a) => a.id === "abyss-collection");
+}
+
 function isValuableTriplet(game, p, kind) {
   if (isDragon(kind)) return true;
   if (kind === p.seatWind || kind === game.roundWind) return true;
@@ -213,15 +223,17 @@ function chiReachesTenpai(p, kind, seqKinds) {
 // to a worse shanten, only breaks near-ties in favour of value.
 const DORA_WEIGHT = 3;
 
-function chooseDiscardKind(game, p, danger) {
+function chooseDiscardKind(game, p, danger, noWin = false) {
   const counts = p.counts();
   const m = p.numMeldSets();
   const kinds = [...new Set(p.hand.map((t) => t.kind))];
   const doraCostFor = doraCost(game, p);
 
   // If threatened and far from tenpai, fold: prioritise safety over speed.
+  // 和了不可キャラ（カリュブディス）は押しても上がり目ゼロ＝放銃リスクだけ負うので、
+  // 脅威があればシャンテン数に関係なく（聴牌でも）常にベタ降りする。
   const ownShanten = shanten(counts, m);
-  const defend = danger.active && ownShanten >= 2;
+  const defend = danger.active && (noWin || ownShanten >= 2);
 
   let best = kinds[0];
   let bestKey = null;
