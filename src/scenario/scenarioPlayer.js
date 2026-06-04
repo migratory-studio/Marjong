@@ -32,6 +32,7 @@ const BG_GRADIENT = {
   "bg-white": "#f3f1ec",
 };
 const bgStyle = (id) => BG_GRADIENT[id] || "linear-gradient(160deg,#2a2018,#1c140e)";
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
 // 行の立ち絵リストを正規化（新形式 standings[] / 旧形式 standingId を吸収）。
 function standingsOf(line) {
@@ -84,6 +85,7 @@ export function playScenario(scenarioId, { onEnd } = {}) {
 
   let i = -1;
   let curBg = null;
+  let currentSpeakerImg = null;
   let stopEmote = null; // 再生中エモートの停止関数（次の行/終了で呼ぶ）
 
   function finish() {
@@ -101,24 +103,46 @@ export function playScenario(scenarioId, { onEnd } = {}) {
 
   // 行の emoteId を見て、話者の立ち位置の頭上にスプライトアニメを表示する。
   // スプライトシート（cols×rows）を JS でフレーム送り（backgroundPosition）する。
-  function renderEmote(line) {
+  function renderEmote(line, speakerImg) {
     clearEmote();
     const def = line.emoteId ? emoteDef(line.emoteId) : null;
     if (!def || !elEmote) return;
+    speakerImg = speakerImg || currentSpeakerImg;
 
     // 話者の立ち位置に x を合わせる（地の文＝話者なしは中央）。
     const sp = standingsOf(line).find((s) => s.characterId === line.speakerCharacterId);
     const pos = sp ? sp.position : "center";
-    const xPct = pos === "left" ? 26 : pos === "right" ? 74 : 50;
+    const fallbackXPct = pos === "left" ? 26 : pos === "right" ? 74 : 50;
+    const ch = line.speakerCharacterId ? charById(line.speakerCharacterId) : null;
+    const customPos = ch?.emotePos || null;
 
     const e = document.createElement("div");
     e.className = "sc-emote";
-    e.style.left = `${xPct}%`;
     e.style.width = `${def.size}px`;
     e.style.height = `${def.size}px`;
     e.style.backgroundImage = `url("${def.sheet}")`;
     e.style.backgroundSize = `${def.cols * def.size}px ${def.rows * def.size}px`;
     elEmote.appendChild(e);
+
+    const rootRect = root.getBoundingClientRect();
+    const imgRect = speakerImg?.getBoundingClientRect?.();
+    if (imgRect && rootRect.width > 0 && rootRect.height > 0) {
+      const scaleX = rootRect.width / root.clientWidth;
+      const scaleY = rootRect.height / root.clientHeight;
+      const imgLeft = (imgRect.left - rootRect.left) / scaleX;
+      const imgRight = (imgRect.right - rootRect.left) / scaleX;
+      const imgTop = (imgRect.top - rootRect.top) / scaleY;
+      const side = customPos?.side === "right" ? 1 : customPos?.side === "left" ? -1 : pos === "left" ? 1 : -1;
+      const edgeOffset = customPos?.x ?? def.size * 0.42;
+      const topOffset = customPos?.y ?? def.size * 0.02;
+      const x = side > 0 ? imgRight + edgeOffset : imgLeft - edgeOffset;
+      const y = imgTop + topOffset;
+      e.style.left = `${clamp(x, def.size * 0.55, root.clientWidth - def.size * 0.55)}px`;
+      e.style.top = `${clamp(y, 12, root.clientHeight - def.size - 12)}px`;
+    } else {
+      e.style.left = `${fallbackXPct}%`;
+      e.style.top = "7%";
+    }
 
     const place = (f) => {
       const col = f % def.cols;
@@ -182,6 +206,7 @@ export function playScenario(scenarioId, { onEnd } = {}) {
       curBg = line.backgroundId;
     }
     const speakerImg = renderStage(line);
+    currentSpeakerImg = speakerImg;
 
     const ch = line.speakerCharacterId ? charById(line.speakerCharacterId) : null;
     const name = line.speakerNameOverride || ch?.name || "";
@@ -196,7 +221,7 @@ export function playScenario(scenarioId, { onEnd } = {}) {
     applyEffect(elFx, line.screenEffect, "scfx-sc", line.effectDurationMs);
 
     // エモート（感情アイコン）: 行に emoteId があれば話者の頭上に再生。
-    renderEmote(line);
+    renderEmote(line, speakerImg);
   }
 
   function advance() {

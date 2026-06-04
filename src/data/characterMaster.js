@@ -49,6 +49,7 @@ export const CHARACTER_MASTER = [
     profile: "「ツモれば勝ち」が口癖の楽天家。理屈より勘、守りより速さを信じる。引きの強さは天性だが、点棒の管理だけはからっきし。",
     stats: { startingPoints: 14000 }, // glass cannon raised a touch (low win rate / high bust)
     assets: assetsFor("shiyue"),
+    emotePos: { side: "left", x: -10, y: -82 },
     // 選択画面ゲージ用パラメータ（1〜5）: attack 攻め / defense 守り / quirk 癖 / difficulty 難易度
     params: { attack: 4, defense: 2, quirk: 3, difficulty: 2 },
     abilities: [{ abilityId: "lucky-draw", params: {} }],
