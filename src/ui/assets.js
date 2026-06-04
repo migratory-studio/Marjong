@@ -242,6 +242,18 @@ export class AudioManager {
     this.currentBgmSrc = null;
   }
 
+  // Play an arbitrary one-shot SE by URL (used by the scenario player's seId).
+  // A fresh Audio per call — fine for the occasional scenario cue. `volume` is a
+  // 0..1 multiplier on top of the SE slider. No-ops when audio is off or src empty.
+  playSe(src, volume = 1) {
+    if (!this.enabled || !src) return;
+    try {
+      const a = new Audio(src);
+      a.volume = clamp01v(volume) * this.seVolume;
+      a.play().catch(() => {});
+    } catch { /* ignore */ }
+  }
+
   // Play a random dahai SE. Called on every discard (any player).
   playDahai() { this._playFromPool(this._sePool); }
   // Hand-start shuffle / win-jingle / naki (pon-chi-kan) call.

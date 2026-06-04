@@ -44,11 +44,16 @@ body {
 }
 .sc-bg { position: absolute; inset: 0; background: #1c140e; transition: background .4s ease; }
 .sc-stage { position: absolute; inset: 0; }
-/* 立ち絵スロット: left / center / right の3配置。底辺合わせ。 */
-.sc-slot { position: absolute; bottom: 0; transform: translateX(-50%); }
-.sc-pos-left { left: 22%; }
-.sc-pos-center { left: 50%; }
-.sc-pos-right { left: 78%; }
+/* 立ち絵スロット: left は JS が % で指定（left/center/right=22/50/78%）。底辺合わせ。
+   left/opacity に transition を効かせることで、position 変更=左右スライド、登場/退場=
+   フェードを実現する（scenarioPlayer の reconcileStage が要素を使い回す）。 */
+.sc-slot {
+  position: absolute; bottom: 0; transform: translateX(-50%);
+  opacity: 1; transition: left .45s cubic-bezier(.22,.61,.36,1), opacity .4s ease;
+}
+/* 登場直前の状態（次フレームで外してフェードイン）／退場（フェードアウトして除去） */
+.sc-slot.sc-enter { opacity: 0; }
+.sc-slot.sc-exit { opacity: 0; }
 /* 高さだけ全キャラ共通に揃え、幅は元画像の比率なり（クロップなし＝全身が必ず収まる）。
    元画像のアスペクト比はバラバラ（0.33〜1.25）なので横幅は差が出て、複数表示時は
    重なることがあるが「ちぎれ無し」を優先。小さい画像は拡大されジャギるが許容。 */

@@ -1052,7 +1052,7 @@ Phase 5 で追加する。
 | --- | --- | --- |
 | `scenarioId` | 対応 | シナリオ ID |
 | `lineNo` | 対応 | 行番号 |
-| `backgroundId` | 対応 | 背景 |
+| `backgroundId` | 対応 | 背景（変化した行でクロスフェード。`backgroundMaster`。画像が無ければグラデーション） |
 | `standings` | 対応 | 立ち絵配列（最大3体）。各要素 `{ characterId, position(left/center/right), standingId }`。行ごとに在席を明示 |
 | `speakerCharacterId` | 対応 | 話者（自動強調対象）。非null なら `standings` に含む。地の文は null |
 | `speakerNameOverride` | 対応 | 名前上書き |
@@ -1061,14 +1061,19 @@ Phase 5 で追加する。
 | `characterEffect` | 対応 | 立ち絵演出 |
 | `screenEffect` | 対応 | 画面演出 |
 | `effectDurationMs` | 対応 | 演出時間 |
+| `bgmId` | 対応 | BGM 切替（任意。値が変わった行でクロスフェード。`bgm-none` で停止。`scenarioAudioMaster`） |
+| `seId` | 対応 | 効果音（任意。その行で1回。`scenarioAudioMaster`） |
+| `emoteId` | 対応 | 感情アイコン（任意。話者の頭上にスプライト再生。`emoteMaster`） |
 | `expressionId` | 予約 | 表情 |
-| `bgmId` | 予約 | BGM |
-| `seId` | 予約 | SE |
 | `nextDelayMs` | 予約 | 待機 |
 | `autoAdvance` | 予約 | 自動進行 |
 
 `effect_type` は新規マスタでは使わず、
 `characterEffect` と `screenEffect` へ統合する。
+
+立ち絵の **登場 / 退場 / 左右移動** は専用フィールドを持たない。プレイヤーが前行との
+`standings` 差分を取り、登場＝フェードイン・退場＝フェードアウト・同一キャラの `position`
+変更＝左右スライド を自動付与する（状態を持たない VN 方式のまま「出す/消す/動かす」を表現）。
 
 #### `TrainingMaster`
 

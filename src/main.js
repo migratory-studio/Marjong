@@ -232,6 +232,7 @@ function buildSelectScreen() {
   if (scBtn) scBtn.onclick = () => {
     showScreen("scenario-screen");
     playScenario("twin-chun-yao-01", {
+      audio,
       onEnd: () => goScreen("select-screen"),
     });
   };
@@ -308,7 +309,7 @@ async function openMentorSub(target) {
       onBack: back,
       onPlay: (scenarioId, onEnd) => {
         showScreen("scenario-screen");
-        playScenario(scenarioId, { onEnd: () => { goScreen("scenario-list-screen"); onEnd?.(); } });
+        playScenario(scenarioId, { audio, onEnd: () => { goScreen("scenario-list-screen"); onEnd?.(); } });
       },
     });
     goScreen("scenario-list-screen");

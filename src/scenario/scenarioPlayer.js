@@ -2,15 +2,23 @@
 //
 // マスタ（SCENARIO_MASTER / SCENARIO_LINE_MASTER）を読み込み、scenarioId を
 // 指定すると #scenario-screen に1本ぶんを再生する。クリックで進行、最後の行を
-// 越えたら onEnd を呼ぶ。演出は CSS animation（characterEffect / screenEffect）。
+// 越えたら onEnd を呼ぶ。
 //
-// 立ち絵は1画面に最大3体（left / center / right）。各行は標準で `standings` 配列
-// （{ characterId, position, standingId }）で「その瞬間に出ている立ち絵」を明示する。
-// 喋っているキャラ（speakerCharacterId）は強調表示され、他はやや暗くなる。
-// 旧形式（standings 無し・speakerCharacterId + standingId のみ）も後方互換で中央1体描画。
+// 演出（すべて任意・後方互換）:
+//   - 立ち絵: 1画面に最大3体（left / center / right）。各行は `standings` 配列で
+//     「その瞬間に出ている立ち絵」を明示する（状態を持たない VN 方式）。プレイヤーは
+//     前行との差分を取り、登場=フェードイン / 退場=フェードアウト / 同一キャラの
+//     position 変更=左右スライド を自動で付ける（＝generator は position を変えるだけで移動）。
+//   - 話者（speakerCharacterId）は強調表示、他はやや暗くなる。
+//   - characterEffect: 話者立ち絵への一発アクセント（jump/shake/fade_in/fade_out）。
+//   - screenEffect: 画面全体（flash/shake/fade_in/fade_out）。
+//   - backgroundId: 背景切替（backgroundMaster。画像があれば cover、無ければグラデーション）。
+//   - bgmId: BGM 切替（変化した行でクロスフェード。"bgm-none" で停止）。
+//   - seId: ワンショット効果音。
+//   - emoteId: 話者の頭上に感情アイコン（スプライト）を再生。
 //
 //   import { playScenario, listScenarios } from "./scenario/scenarioPlayer.js";
-//   playScenario("twin-chun-yao-01", { onEnd: () => {...} });
+//   playScenario("twin-chun-yao-01", { onEnd: () => {...}, audio });
 //
 // マスタ仕様は major_update_specification.md §12 / §16.2、
 // 生成は scenario-forge プロジェクト（dist/ を src/data/ へ持ち込む）。
@@ -18,21 +26,27 @@ import { SCENARIO_MASTER } from "../data/scenarioMaster.js";
 import { SCENARIO_LINE_MASTER } from "../data/scenarioLineMaster.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { emoteDef } from "../data/emoteMaster.js";
+import { bgDef } from "../data/backgroundMaster.js";
+import { bgmDef, seDef } from "../data/scenarioAudioMaster.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
-
-// 背景IDは現状プリセット画像が無いので CSS グラデーションへフォールバック。
-// 画像を graphic/bg/<id>.png として置けば差し替え可能（未実装でも崩れない）。
-const BG_GRADIENT = {
-  "bg-dojo": "linear-gradient(160deg,#2a2018 0%,#3c2c20 55%,#1c140e 100%)",
-  "bg-dojo-night": "linear-gradient(160deg,#10141f 0%,#1b2233 60%,#0a0d15 100%)",
-  "bg-table": "radial-gradient(circle at 50% 40%,#246048 0%,#163a2b 80%)",
-  "bg-street": "linear-gradient(160deg,#33384a 0%,#4a5168 60%,#20242f 100%)",
-  "bg-black": "#0a0a0c",
-  "bg-white": "#f3f1ec",
-};
-const bgStyle = (id) => BG_GRADIENT[id] || "linear-gradient(160deg,#2a2018,#1c140e)";
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+// 立ち位置(left/center/right) → 横位置(%)。スライド移動はこの差を CSS transition で繋ぐ。
+const POS_PCT = { left: 22, center: 50, right: 78 };
+const posPct = (p) => POS_PCT[p] ?? 50;
+
+// 背景画像のプローブ結果キャッシュ（url -> true/false）。同じ背景を何度も試さない。
+const bgProbe = new Map();
+function probeBg(url) {
+  if (bgProbe.has(url)) return Promise.resolve(bgProbe.get(url));
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => { bgProbe.set(url, true); resolve(true); };
+    img.onerror = () => { bgProbe.set(url, false); resolve(false); };
+    img.src = url;
+  });
+}
 
 // 行の立ち絵リストを正規化（新形式 standings[] / 旧形式 standingId を吸収）。
 function standingsOf(line) {
@@ -48,7 +62,7 @@ export function listScenarios() {
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-export function playScenario(scenarioId, { onEnd } = {}) {
+export function playScenario(scenarioId, { onEnd, audio } = {}) {
   const meta = SCENARIO_MASTER.find((s) => s.scenarioId === scenarioId);
   const lines = SCENARIO_LINE_MASTER
     .filter((l) => l.scenarioId === scenarioId)
@@ -85,11 +99,20 @@ export function playScenario(scenarioId, { onEnd } = {}) {
 
   let i = -1;
   let curBg = null;
+  let curBgmId = null;          // 現在鳴らしているシナリオ BGM の id
+  let bgmTouched = false;       // 一度でも BGM をいじったか（finish 時の復元判定）
+  const prevBgmSrc = audio?.currentBgmSrc ?? null; // 入室前の BGM（終了時に復元）
   let currentSpeakerImg = null;
-  let stopEmote = null; // 再生中エモートの停止関数（次の行/終了で呼ぶ）
+  let stopEmote = null;         // 再生中エモートの停止関数（次の行/終了で呼ぶ）
+  const slots = new Map();      // characterId -> { slot, img, position }（差分描画用）
 
   function finish() {
     clearEmote();
+    // BGM を触っていたら入室前の状態へ戻す（メニュー BGM の継続性）。
+    if (bgmTouched && audio) {
+      if (prevBgmSrc) audio.playBgm(prevBgmSrc);
+      else audio.stopBgm();
+    }
     root.removeEventListener("click", onClick);
     root.classList.add("hidden");
     root.innerHTML = "";
@@ -99,6 +122,37 @@ export function playScenario(scenarioId, { onEnd } = {}) {
   function clearEmote() {
     if (stopEmote) { stopEmote(); stopEmote = null; }
     if (elEmote) elEmote.innerHTML = "";
+  }
+
+  // 背景切替: まずグラデーションを即時適用、画像があればプローブして cover で被せる。
+  function applyBg(id) {
+    if (id === curBg) return;
+    curBg = id;
+    const def = bgDef(id);
+    elBg.style.background = def.gradient;
+    if (def.image) {
+      probeBg(def.image).then((ok) => {
+        if (curBg !== id) return; // 進んでしまっていたら何もしない
+        if (ok) {
+          // 可読性のため薄い暗幕を画像に重ねる。
+          elBg.style.backgroundImage = `linear-gradient(rgba(0,0,0,.12),rgba(0,0,0,.32)), url("${def.image}")`;
+          elBg.style.backgroundSize = "cover";
+          elBg.style.backgroundPosition = "center";
+        }
+      });
+    }
+  }
+
+  // 行の bgmId / seId に応じて音を鳴らす（audio が無ければ no-op）。
+  function applyAudio(line) {
+    if (!audio) return;
+    if (line.bgmId && line.bgmId !== curBgmId) {
+      curBgmId = line.bgmId;
+      bgmTouched = true;
+      if (line.bgmId === "bgm-none") { audio.stopBgm(); }
+      else { const d = bgmDef(line.bgmId); if (d?.file) audio.playBgm(d.file); }
+    }
+    if (line.seId) { const d = seDef(line.seId); if (d?.file) audio.playSe(d.file); }
   }
 
   // 行の emoteId を見て、話者の立ち位置の頭上にスプライトアニメを表示する。
@@ -174,38 +228,67 @@ export function playScenario(scenarioId, { onEnd } = {}) {
     setTimeout(clear, (ms && ms > 0 ? ms : 500) + 80); // 保険
   }
 
-  // その行の立ち絵スロット（最大3）を組み直し、話者の <img> を返す。
-  function renderStage(line) {
-    elStage.innerHTML = "";
-    const stands = standingsOf(line);
+  // 立ち絵スロットを前行との差分で更新する（要素を使い回すので CSS transition が効く）:
+  //   登場 = フェードイン / 退場 = フェードアウト後に除去 / 継続&位置変更 = 左右スライド。
+  // 話者の <img> を返す（emote/効果の対象）。
+  function reconcileStage(line) {
+    const stands = standingsOf(line).filter((st) => {
+      const ch = charById(st.characterId);
+      return ch && ch.assets?.portrait;
+    });
+    const nextIds = new Set(stands.map((s) => s.characterId));
+
+    // 退場: 今行に居ないキャラはフェードアウトして除去。
+    for (const [id, rec] of slots) {
+      if (!nextIds.has(id)) {
+        rec.slot.classList.add("sc-exit");
+        const el = rec.slot;
+        setTimeout(() => el.remove(), 420);
+        slots.delete(id);
+      }
+    }
+
     let speakerImg = null;
     for (const st of stands) {
       const ch = charById(st.characterId);
-      if (!ch || !ch.assets?.portrait) continue;
-      const slot = document.createElement("div");
-      slot.className = `sc-slot sc-pos-${st.position || "center"}`;
-      const img = document.createElement("img");
-      img.className = "sc-standing";
-      img.alt = ch.name || "";
-      img.src = ch.assets.portrait;
-      img.style.objectPosition = ch.portraitPos || "top center";
-      img.onerror = () => { slot.style.display = "none"; };
+      const targetLeft = posPct(st.position);
+      let rec = slots.get(st.characterId);
+      if (!rec) {
+        // 登場: スロット生成 → 次フレームで sc-enter を外してフェードイン。
+        const slot = document.createElement("div");
+        slot.className = "sc-slot sc-enter";
+        slot.style.left = `${targetLeft}%`;
+        const img = document.createElement("img");
+        img.className = "sc-standing";
+        img.alt = ch.name || "";
+        img.src = ch.assets.portrait;
+        img.style.objectPosition = ch.portraitPos || "top center";
+        img.onerror = () => { slot.style.display = "none"; };
+        slot.appendChild(img);
+        elStage.appendChild(slot);
+        rec = { slot, img, position: st.position };
+        slots.set(st.characterId, rec);
+        requestAnimationFrame(() => slot.classList.remove("sc-enter"));
+      } else if (rec.position !== st.position) {
+        // 継続表示で立ち位置が変わった → left の変化を transition がスライドにする。
+        rec.slot.style.left = `${targetLeft}%`;
+        rec.position = st.position;
+      }
+
       // 話者は強調、それ以外は減光。話者なし（地の文）は全員ニュートラル。
-      const isSpeaker = line.speakerCharacterId && st.characterId === line.speakerCharacterId;
-      if (line.speakerCharacterId) img.classList.add(isSpeaker ? "sc-active" : "sc-dim");
-      if (isSpeaker) speakerImg = img;
-      slot.appendChild(img);
-      elStage.appendChild(slot);
+      const isSpeaker = !!line.speakerCharacterId && st.characterId === line.speakerCharacterId;
+      rec.img.classList.toggle("sc-active", isSpeaker);
+      rec.img.classList.toggle("sc-dim", !!line.speakerCharacterId && !isSpeaker);
+      rec.slot.style.zIndex = isSpeaker ? 2 : 1;
+      if (isSpeaker) speakerImg = rec.img;
     }
     return speakerImg;
   }
 
   function show(line) {
-    if (line.backgroundId !== curBg) {
-      elBg.style.background = bgStyle(line.backgroundId);
-      curBg = line.backgroundId;
-    }
-    const speakerImg = renderStage(line);
+    applyBg(line.backgroundId);
+    applyAudio(line);
+    const speakerImg = reconcileStage(line);
     currentSpeakerImg = speakerImg;
 
     const ch = line.speakerCharacterId ? charById(line.speakerCharacterId) : null;
