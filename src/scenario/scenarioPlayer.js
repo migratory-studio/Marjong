@@ -17,6 +17,7 @@
 import { SCENARIO_MASTER } from "../data/scenarioMaster.js";
 import { SCENARIO_LINE_MASTER } from "../data/scenarioLineMaster.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
+import { emoteDef } from "../data/emoteMaster.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
 
@@ -62,6 +63,7 @@ export function playScenario(scenarioId, { onEnd } = {}) {
   root.innerHTML = `
     <div class="sc-bg"></div>
     <div class="sc-stage"></div>
+    <div class="sc-emote-layer"></div>
     <div class="sc-fx-screen"></div>
     <div class="sc-textbox">
       <div class="sc-name"></div>
@@ -74,6 +76,7 @@ export function playScenario(scenarioId, { onEnd } = {}) {
 
   const elBg = root.querySelector(".sc-bg");
   const elStage = root.querySelector(".sc-stage");
+  const elEmote = root.querySelector(".sc-emote-layer");
   const elFx = root.querySelector(".sc-fx-screen");
   const elName = root.querySelector(".sc-name");
   const elText = root.querySelector(".sc-text");
@@ -81,12 +84,58 @@ export function playScenario(scenarioId, { onEnd } = {}) {
 
   let i = -1;
   let curBg = null;
+  let stopEmote = null; // 再生中エモートの停止関数（次の行/終了で呼ぶ）
 
   function finish() {
+    clearEmote();
     root.removeEventListener("click", onClick);
     root.classList.add("hidden");
     root.innerHTML = "";
     onEnd?.();
+  }
+
+  function clearEmote() {
+    if (stopEmote) { stopEmote(); stopEmote = null; }
+    if (elEmote) elEmote.innerHTML = "";
+  }
+
+  // 行の emoteId を見て、話者の立ち位置の頭上にスプライトアニメを表示する。
+  // スプライトシート（cols×rows）を JS でフレーム送り（backgroundPosition）する。
+  function renderEmote(line) {
+    clearEmote();
+    const def = line.emoteId ? emoteDef(line.emoteId) : null;
+    if (!def || !elEmote) return;
+
+    // 話者の立ち位置に x を合わせる（地の文＝話者なしは中央）。
+    const sp = standingsOf(line).find((s) => s.characterId === line.speakerCharacterId);
+    const pos = sp ? sp.position : "center";
+    const xPct = pos === "left" ? 26 : pos === "right" ? 74 : 50;
+
+    const e = document.createElement("div");
+    e.className = "sc-emote";
+    e.style.left = `${xPct}%`;
+    e.style.width = `${def.size}px`;
+    e.style.height = `${def.size}px`;
+    e.style.backgroundImage = `url("${def.sheet}")`;
+    e.style.backgroundSize = `${def.cols * def.size}px ${def.rows * def.size}px`;
+    elEmote.appendChild(e);
+
+    const place = (f) => {
+      const col = f % def.cols;
+      const row = Math.floor(f / def.cols);
+      e.style.backgroundPosition = `-${col * def.size}px -${row * def.size}px`;
+    };
+    let frame = 0;
+    place(0);
+    const timer = setInterval(() => {
+      frame++;
+      if (frame >= def.frameCount) {
+        if (def.loop) { frame = 0; }
+        else { place(def.frameCount - 1); clearInterval(timer); stopEmote = null; return; }
+      }
+      place(frame);
+    }, 1000 / (def.fps || 24));
+    stopEmote = () => clearInterval(timer);
   }
 
   function applyEffect(target, effect, prefix, ms) {
@@ -145,6 +194,9 @@ export function playScenario(scenarioId, { onEnd } = {}) {
     // 立ち絵演出は「話者の立ち絵」に適用（地の文なら対象なし）。
     applyEffect(speakerImg, line.characterEffect, "scfx-ch", line.effectDurationMs);
     applyEffect(elFx, line.screenEffect, "scfx-sc", line.effectDurationMs);
+
+    // エモート（感情アイコン）: 行に emoteId があれば話者の頭上に再生。
+    renderEmote(line);
   }
 
   function advance() {

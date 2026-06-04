@@ -307,6 +307,15 @@ body {
 .sclist-empty { font-size: 14px; color: var(--muted); }
 .sclist-debug { font-size: 12px; font-weight: 800; color: #e0a44b; margin: 0; letter-spacing: .03em; }
 
+/* scenario emote (感情アイコン・スプライトシート) — scenarioPlayer が JS でフレーム送り */
+.sc-emote-layer { position: absolute; inset: 0; pointer-events: none; z-index: 6; overflow: hidden; }
+.sc-emote {
+  position: absolute; top: 7%;
+  transform: translateX(-50%);
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,.45));
+}
+
 /* ability change */
 .ac-top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; width: 100%; }
 .ac-current { font-size: 13px; color: var(--muted); }
