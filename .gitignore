@@ -3,3 +3,8 @@ node_modules/
 .DS_Store
 Thumbs.db
 *.log
+
+# 背景アセットの生ライブラリ（DLツール成果物含む・本番には厳選分のみ graphic/bg/ に配置）
+background/
+# 立ち絵グリッド等の作業用一時ファイル
+tmp/

@@ -17,7 +17,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "道場の戸を開けると、線香と古い畳のにおいが鼻をくすぐった。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 600
+    "effectDurationMs": 600,
+    "seId": "se-door"
   },
   {
     "scenarioId": "mentor-shiyue-bond-01",
@@ -217,7 +218,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "ツモれば、勝ち。",
     "characterEffect": "jump",
     "screenEffect": "flash",
-    "effectDurationMs": 400
+    "effectDurationMs": 400,
+    "seId": "se-flash"
   },
   {
     "scenarioId": "mentor-shiyue-bond-01",
@@ -525,7 +527,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "詩玥が牌をかき混ぜる。じゃらり、と軽やかな音が、道場いっぱいに満ちていく。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
   },
   {
     "scenarioId": "mentor-shiyue-bond-01",
@@ -597,7 +600,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "終盤、誰も警戒していなかった筋から、ふっとツモり上げて。まるで、最初からそこにあると知っていたみたいに。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
   },
   {
     "scenarioId": "mentor-shiyue-bond-02",
@@ -979,7 +983,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "ほら、牌混ぜるの手伝ってヨ。じゃらじゃらってやると、いやなこと全部、流れてくんだから。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
   },
   {
     "scenarioId": "mentor-shiyue-bond-02",
@@ -1198,7 +1203,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "稽古が始まる。詩玥の打ち方は、とにかく速い。考えるより先に、指が牌を選んでいる。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-tile"
   },
   {
     "scenarioId": "mentor-shiyue-bond-03",
@@ -1525,7 +1531,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "言われるまま、また牌をかき混ぜる。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
   },
   {
     "scenarioId": "mentor-shiyue-bond-03",
@@ -1674,7 +1681,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "小柄な体に、隙のない佇まい。冷たく澄んだ目が、まっすぐ詩玥を見ていた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-step"
   },
   {
     "scenarioId": "mentor-shiyue-bond-04",
@@ -2249,7 +2257,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "戸が閉まる。残された道場で、詩玥はしばらく、自分の手のひらを、じっと見つめていた。",
     "characterEffect": "none",
     "screenEffect": "fade_out",
-    "effectDurationMs": 600
+    "effectDurationMs": 600,
+    "seId": "se-door"
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
@@ -2393,7 +2402,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "けれど詩玥は、ほんの一瞬の迷いもなく、その牌を河に置いた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-tile"
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
@@ -2411,7 +2421,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "「ロン」。乾いた声が落ちる。詩玥の点棒が、ごっそりと削られていく。",
     "characterEffect": "none",
     "screenEffect": "flash",
-    "effectDurationMs": 300
+    "effectDurationMs": 300,
+    "seId": "se-score"
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
@@ -3229,7 +3240,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "照れたように牌を片付ける手が、いつもより少しだけ、ゆっくりだった。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-tile"
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
@@ -3288,7 +3300,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3306,7 +3318,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3324,7 +3336,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3342,7 +3354,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3360,7 +3372,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3591,7 +3603,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3604,12 +3616,13 @@ export const SCENARIO_LINE_MASTER = [
     "text": "雨の音が、ふいに大きくなった。詩玥は、転がしていた牌を、ことりと置いた。",
     "characterEffect": "none",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "seId": "se-tile"
   },
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3628,7 +3641,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3646,7 +3659,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3664,7 +3677,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3682,7 +3695,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3700,7 +3713,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3718,7 +3731,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3736,7 +3749,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3755,7 +3768,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -3773,7 +3786,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-rain",
     "standings": [
       {
         "characterId": "shiyue",
@@ -4168,7 +4181,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "ツモれば、勝ち。——それだけで、いい。",
     "characterEffect": "jump",
     "screenEffect": "flash",
-    "effectDurationMs": 400
+    "effectDurationMs": 400,
+    "seId": "se-flash"
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
@@ -4446,7 +4460,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "『ここは降りろ』『ここは無理をするな』『確率は、こっちだ』。……ぜんぶ、正しい声。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-flash"
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
@@ -5391,7 +5406,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "初めての個人戦を、勝ち抜いた。九つの宝の、最初の一つ。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "seId": "se-success"
   },
   {
     "scenarioId": "mentor-shiyue-bond-11",
@@ -5469,7 +5485,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "約束どおり、その人は来た。マモリ。詩玥の、古い相棒。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-step"
   },
   {
     "scenarioId": "mentor-shiyue-bond-11",
@@ -6396,7 +6413,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "ツモ。",
     "characterEffect": "jump",
     "screenEffect": "flash",
-    "effectDurationMs": 450
+    "effectDurationMs": 450,
+    "seId": "se-tsumo"
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
@@ -6419,7 +6437,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "場が、沸いた。逆転の、満貫ツモ。二つ目の宝が、三人の手に転がり込む。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-score"
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
@@ -6697,7 +6716,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "だからさ。ツモれば、勝ち。……ううん。あんたとなら、“ふたりの勝ち”、ダヨ。",
     "characterEffect": "jump",
     "screenEffect": "flash",
-    "effectDurationMs": 400
+    "effectDurationMs": 400,
+    "seId": "se-flash"
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",

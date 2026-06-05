@@ -117,7 +117,7 @@ const BGM_HOME = enc("sound/bgm/Peritune_Hanadoki.mp3");              // title /
 const BGM_SELECT = enc("sound/bgm/PerituneMaterial_Amenoshita3.mp3"); // character select
 const SE_DAHAI = ["１", "２", "３", "４"].map((n) => enc(`sound/se/dahai/牌を置く・その${n}.mp3`));
 const SE_SHUFFLE = enc("sound/se/麻雀牌をまぜる.mp3"); // start of hand (deal)
-const SE_KINGAKU = enc("sound/se/金額表示.mp3");     // on win (score reveal)
+const SE_KINGAKU = enc("sound/se/shakiin2.mp3");     // on win (score reveal)
 const SE_NAKI = enc("sound/se/naki.mp3");            // shared call SE (pon/chi/kan executed)
 const SE_NAKITAKU = enc("sound/se/nakitaku.mp3");    // call-prompt SE (pon/chi/kan options offered)
 

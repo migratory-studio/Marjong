@@ -35,20 +35,20 @@ export const BGM_MASTER = {
 
 // ── SE（ワンショット）。一部は既存の同梱素材を再利用 ─────────────────
 export const SE_MASTER = {
-  // 既存素材の再利用（即・鳴る）
+  // 既存・追加の同梱素材を再利用（即・鳴る）
   "se-shuffle": { label: "牌をかき混ぜる",     file: enc("sound/se/麻雀牌をまぜる.mp3") },
   "se-tile":    { label: "牌を置く",           file: enc("sound/se/dahai/牌を置く・その1.mp3") },
   "se-score":   { label: "点数表示（金額）",   file: enc("sound/se/金額表示.mp3") },
-  // 規約パス（素材が来たら自動で鳴る）
-  "se-door":    { label: "戸・障子を開ける",   file: enc(`${SE_DIR}/se-door.mp3`) },
-  "se-tsumo":   { label: "ツモる快音",         file: enc(`${SE_DIR}/se-tsumo.mp3`) },
+  "se-door":    { label: "戸・障子を開ける",   file: enc("sound/se/ふすまを開ける1.mp3") },
+  "se-tsumo":   { label: "ツモる快音",         file: enc("sound/se/シャキーン2.mp3") },
+  "se-flash":   { label: "閃光・ひらめき",     file: enc("sound/se/シャキーン1.mp3") },
+  "se-step":    { label: "足音・登場",         file: enc("sound/se/畳の上を歩く.mp3") },
+  "se-success": { label: "成功・前向きな締め", file: enc("sound/se/指パッチン1.mp3") },
+  // 規約パス（素材が来たら自動で鳴る・未収集なら no-op）
   "se-heartbeat": { label: "鼓動・動揺",       file: enc(`${SE_DIR}/se-heartbeat.mp3`) },
   "se-impact":  { label: "ドン・衝撃ヒット",   file: enc(`${SE_DIR}/se-impact.mp3`) },
-  "se-flash":   { label: "閃光・ひらめき",     file: enc(`${SE_DIR}/se-flash.mp3`) },
-  "se-step":    { label: "足音・登場",         file: enc(`${SE_DIR}/se-step.mp3`) },
   "se-wind":    { label: "風・間（ま）",       file: enc(`${SE_DIR}/se-wind.mp3`) },
   "se-bell":    { label: "鈴・場面転換",       file: enc(`${SE_DIR}/se-bell.mp3`) },
-  "se-success": { label: "成功・前向きな締め", file: enc(`${SE_DIR}/se-success.mp3`) },
 };
 
 export function bgmDef(id) { return id ? BGM_MASTER[id] || null : null; }
