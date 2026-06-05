@@ -18,7 +18,8 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
     "effectDurationMs": 600,
-    "seId": "se-door"
+    "seId": "se-door",
+    "bgmId": "bgm-daily"
   },
   {
     "scenarioId": "mentor-shiyue-bond-01",
@@ -564,7 +565,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "半荘が終わり、卓の上に点棒が散らばっていた。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-daily"
   },
   {
     "scenarioId": "mentor-shiyue-bond-02",
@@ -984,7 +986,8 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "seId": "se-shuffle"
+    "seId": "se-shuffle",
+    "bgmId": "bgm-playful"
   },
   {
     "scenarioId": "mentor-shiyue-bond-02",
@@ -1093,7 +1096,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "道場の朝。障子越しの光が、卓に淡い格子の影を落としている。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-playful"
   },
   {
     "scenarioId": "mentor-shiyue-bond-03",
@@ -1130,7 +1134,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "九蓮宝士の一個目、取りにいくヨ。まずは個人戦。あんたの初舞台、ダネ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
   },
   {
     "scenarioId": "mentor-shiyue-bond-03",
@@ -1604,7 +1609,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "その日の稽古は、いつもより静かだった。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-daily"
   },
   {
     "scenarioId": "mentor-shiyue-bond-04",
@@ -1658,7 +1664,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "道場の戸口に、見知らぬ人影が立っている。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
   },
   {
     "scenarioId": "mentor-shiyue-bond-04",
@@ -2276,7 +2283,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "団体戦が、すぐそこまで来ていた。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-tension"
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
@@ -2804,7 +2812,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "稽古を終えても、その夜、詩玥はなかなか牌から手を離さなかった。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-night"
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
@@ -3313,7 +3322,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "次にその話を聞いたのは、雨の夜だった。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-night"
   },
   {
     "scenarioId": "mentor-shiyue-bond-07",
@@ -3549,7 +3559,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "我は、降りたヨ。きれいに、一枚も放銃せずに。……教わったとおりに。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
   },
   {
     "scenarioId": "mentor-shiyue-bond-07",
@@ -3817,7 +3828,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "その話の、続き。詩玥は、自分から口を開いた。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-sorrow"
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
@@ -4315,7 +4327,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "数日が過ぎても、あの夜の話は、胸の奥でずっと、燻っていた。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-tension"
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
@@ -4714,7 +4727,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "だから、言った。ひとりで振り切らなくていい。その声が聞こえたら、隣で、一緒に数えますから、と。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
@@ -4861,7 +4875,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "大会が近づいたある日。道場の帰り道で、その人と、ばったり会った。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-daily"
   },
   {
     "scenarioId": "mentor-shiyue-bond-10",
@@ -5151,7 +5166,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "でも——気づいたんです。私が降り、あの人が押す。二人で、なら。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
   },
   {
     "scenarioId": "mentor-shiyue-bond-10",
@@ -5407,7 +5423,8 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
     "effectDurationMs": 500,
-    "seId": "se-success"
+    "seId": "se-success",
+    "bgmId": "bgm-resolve"
   },
   {
     "scenarioId": "mentor-shiyue-bond-11",
@@ -6065,7 +6082,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "団体戦、最終戦。三人で挑む、二つ目の宝。",
     "characterEffect": "fade_in",
     "screenEffect": "fade_in",
-    "effectDurationMs": 500
+    "effectDurationMs": 500,
+    "bgmId": "bgm-resolve"
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",

@@ -70,7 +70,7 @@ node test/sanma.mjs   # 3人戦: 牌構成108枚・チーなし・北抜き + 40
 - 打牌SE: `sound/se/dahai/牌を置く・その１〜４.mp3` … **誰か（自分含む）の打牌ごとにランダムに1つ**（`TILE_DISCARDED`）
 - 配牌SE: `sound/se/麻雀牌をまぜる.mp3`（`HAND_STARTED`）
 - 鳴きSE: `sound/se/naki.mp3` … ポン/チー/カン共通（`MELD_CALLED`、卓に大きく演出テキスト＋ウェイト）
-- 点数表示SE: `sound/se/金額表示.mp3`（和了画面の点数表示時）
+- 点数表示SE: `sound/se/shakiin2.mp3`（和了画面の点数表示時）
 - リーチ音: 専用ファイルが無いため WebAudio で生成したチャイム（`RIICHI_DECLARED`）
 
 > ファイル名に日本語/全角を含むため `enc()`（URLエンコード）経由で取得。和了演出は画面中央に
@@ -78,6 +78,24 @@ node test/sanma.mjs   # 3人戦: 牌構成108枚・チーなし・北抜き + 40
 
 > ブラウザの自動再生制限のため、BGMは「対局開始」ボタン押下（ユーザー操作）を起点に再生開始します。
 > 音量は `AudioManager` の `bgmVolume` / `seVolume` で調整できます。
+
+### シナリオ紙芝居の演出素材（BGM / SE / 背景）
+
+師弟シナリオの紙芝居は、行データの `bgmId` / `seId` / `backgroundId` を見て演出を切り替えます
+（レジストリは `src/data/scenarioAudioMaster.js`・`src/data/backgroundMaster.js`、再生は
+`src/scenario/scenarioPlayer.js`）。いずれも任意でグレースフル——素材が無ければ no-op／
+グラデーション表示にフォールバックし、進行は崩れません。
+
+- シナリオBGM: `sound/bgm/scenario/bgm-<mood>.mp3`（`bgm-daily` / `bgm-playful` /
+  `bgm-tension` / `bgm-night` / `bgm-sorrow` / `bgm-resolve`）。感情の節目で行に `bgmId` を置くと
+  クロスフェード切替。`bgm-none` で停止。シナリオ終了時は入室前のBGMへ復帰。
+- シナリオSE: `seId` のワンショット。新規同梱素材を再利用（`se-door`＝襖、`se-step`＝畳の足音、
+  `se-flash`/`se-tsumo`＝シャキーン、`se-success`＝指パッチン 等）。
+- 背景画像: `graphic/bg/<id>.png`（あれば cover で表示・無ければ各IDのCSSグラデーション）。
+  現状 `bg-dojo`（和室）・`bg-street`（住宅街）を同梱。
+
+> 音源クレジット: シナリオBGMは **PeriTune**（https://peritune.com）の楽曲を使用。
+> サードパーティ音源の帰属表示は本節にまとめて記載すること。
 
 ## アーキテクチャ（拡張性の肝）
 
