@@ -17,7 +17,8 @@
 //   "tenpai"           聴牌した瞬間
 //   "tenpaiDrop"       聴牌をくずした／降りた
 //   "tsumogiriStreak"  ツモ切りが続いている（手が動かない）
-//   "handStuck"        なかなか手が進まない（シャンテンが長く変わらない）
+//   "handStuck"        なかなか手が進まない（シャンテンが長く変わらない＝まだ遠い）
+//   "iishantenHell"    イーシャンテン地獄（一向聴のまま長く足踏み＝あと一歩が遠い）
 //   "handSmooth"       さくさく進んでいる（連続で手が進んだ）
 //   "lastTiles"        流局間際（山が残りわずか）
 //
@@ -57,6 +58,7 @@ function templateLines(name) {
     L("tenpaiDrop", {}, t("聴牌くずし")),
     L("tsumogiriStreak", {}, t("ツモ切り続き")),
     L("handStuck", {}, t("手詰まり")),
+    L("iishantenHell", {}, t("イーシャンテン地獄")),
     L("handSmooth", {}, t("好調")),
     L("lastTiles", {}, t("流局間際")),
   ];
@@ -124,6 +126,10 @@ const SHIYUE = [
   // なかなか進まない
   L("handStuck", {}, "うーん、手が伸びないネ……我のツモ、どこ行ったヨ。"),
   L("handStuck", {}, "じれったいダヨ……でも焦らない、焦らないネ。"),
+  // イーシャンテン地獄（あと一歩が遠い。素のじれったさが少し滲む）
+  L("iishantenHell", {}, "またイーシャンテン……あと一枚が、遠いヨぉ……。"),
+  L("iishantenHell", {}, "ずーっと一向聴ネ。我のアガリ牌、どこで油売ってるヨ?"),
+  L("iishantenHell", {}, "イーシャンテン地獄ってやつ……? 笑えないんですけど、ネ。"),
   // さくさく進む
   L("handSmooth", {}, "おっ、いい感じ! ツモが噛み合ってきたヨ♪"),
   L("handSmooth", {}, "ね、これだヨこれ。我のターン、来てるネ～。"),
