@@ -941,3 +941,66 @@ button.secondary { color: var(--ink); }
 
 /* 選択画面: フッターのボタンが枠で背高化した分の余白を詰め、固定ステージ(720px)に収める。 */
 #select-screen .select-footer { margin-top: 8px; }
+
+/* ============================================================================
+   購入UIセット 第2弾スイープ — 見出しプレート / 結果画面 / シナリオ / キャラ選択
+   ============================================================================ */
+
+/* --- ① 画面見出しの統一プレート化（text_plate を 9スライス）--- */
+.menu-head h1, .mentor-h1, #select-screen .select-head h1 {
+  display: inline-block; margin: 4px auto; padding: 2px 24px; font-size: 28px; white-space: nowrap; line-height: 1.15;
+  border: 11px solid transparent;
+  border-image: url("graphic/ui/sc/plate.png") 14 18 fill / 11px 16px / 0 stretch;
+  border-radius: 0; color: #f4e3b4; text-shadow: 0 2px 4px rgba(0,0,0,.7);
+}
+/* 見出しプレート化に伴う上部の詰め（選択画面は情報量が多いので余白を最小化）。 */
+#select-screen .select-head { margin-bottom: 6px; }
+.menu-head h1 small { color: var(--accent); }
+
+/* --- ② 結果画面の作り込み --- */
+/* 対局終了の順位行を木目プレートに。 */
+.rank-list { display: flex; flex-direction: column; gap: 8px; margin: 14px auto; max-width: 460px; }
+.rank-row {
+  border: 11px solid transparent;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 11px 15px / 0 stretch;
+  border-radius: 0; font-size: 18px; padding: 6px 6px;
+}
+/* 役行は金縁を強めて読みやすく。 */
+.yaku-item { background: rgba(20,32,25,.86); border-left-color: var(--accent); border-radius: 0; }
+/* 勝利タイトル・スコアに金の発光を添える。 */
+.win-title { text-shadow: 0 2px 8px rgba(0,0,0,.6), 0 0 18px rgba(246,179,82,.25); }
+.win-score { text-shadow: 0 0 16px rgba(246,179,82,.4); }
+/* 結果画面のボタンも木目枠に統一（色は据え置きで視認性確保）。 */
+.win-buttons button {
+  border: 12px solid transparent;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 12px 15px / 0 stretch;
+  border-radius: 0; background: none; color: var(--accent); font-weight: 800;
+}
+.win-buttons button:hover { border-image-source: url("graphic/ui/sc/btn_hover.png"); }
+/* アビリティ・カットインの帯を白→金縁へ。 */
+.cutin-band { border-top-color: var(--accent); border-bottom-color: var(--accent); }
+
+/* --- ③ シナリオ周りの仕上げ --- */
+/* 一覧の「NEW」に新着アイコン(!)を前置。 */
+.sclist-status.is-new::before {
+  content: ""; display: inline-block; width: 18px; height: 18px; vertical-align: -3px;
+  margin-right: 6px; background: url("graphic/ui/sc/new_icon.png") no-repeat center / contain;
+}
+/* ソウル残高チップを金縁プレート化。 */
+.mh-soul, .growth-soul {
+  border: 11px solid transparent;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 11px 15px / 0 stretch;
+  border-radius: 0; background: none;
+}
+
+/* --- ④ キャラ選択の作り込み --- */
+/* ロール見出しはタブ素材を「背景」で敷く（border-image だと箱が太り一覧が縦に伸びるため、
+   レイアウト高を変えない背景方式にする）。 */
+.role-name {
+  background: url("graphic/ui/sc/tab.png") no-repeat left center / 100% 100%;
+  color: #f4e3b4; border: 0; border-radius: 0; padding: 4px 18px; text-shadow: 0 1px 2px rgba(0,0,0,.7);
+}
+/* キャラカードは枠を太らせず、金のリング＋選択時のロール色リングで装飾（多数並ぶので高さ据え置き）。 */
+.char-card { border-color: rgba(246,179,82,.5); }
+.char-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,.4); }
+.char-card.selected { border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--role) 60%, transparent); }
