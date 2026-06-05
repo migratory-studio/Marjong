@@ -20,6 +20,7 @@ import { showRest } from "./screens/restScreen.js";
 import { showGrowth } from "./screens/growthScreen.js";
 import { showAbilityChange } from "./screens/abilityChangeScreen.js";
 import { showScenarioList } from "./screens/scenarioListScreen.js";
+import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -360,7 +361,23 @@ function startGame() {
   // to the shared SE inside AudioManager.playVoice().
   for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
 
-  game = new Game(seated, humanIndex, undefined, { maxRounds: selectedRounds });
+  // 起家（最初の親）をランダムに決め、対局開始演出で見せる。演出が終わったら
+  // その親で実対局を始める（beginGame）。全対局共通の入口。
+  const dealerIndex = Math.floor(Math.random() * seated.length);
+  showScreen("match-intro-screen");
+  showMatchIntro(el("match-intro-screen"), {
+    seated,
+    humanIndex,
+    mode: { rounds: selectedRounds, players: selectedPlayers },
+    dealerIndex,
+    audio,
+    onComplete: () => beginGame(seated, dealerIndex),
+  });
+}
+
+// 実対局の生成と開始。対局開始演出（showMatchIntro）の onComplete から呼ばれる。
+function beginGame(seated, dealerIndex) {
+  game = new Game(seated, humanIndex, undefined, { maxRounds: selectedRounds, dealerIndex });
   renderer = new CanvasRenderer(el("table"), game, humanIndex, tileImages, charImages);
   if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; } // debug handle
 

@@ -73,7 +73,14 @@ export class Game {
     this.maxRounds = options.maxRounds === 2 ? 2 : 1; // default 東風
     this.roundWind = 27; // 27=東, 28=南
     this.kyoku = 1; // hand number WITHIN the current round (1..4)
-    this.dealerIndex = 0;
+    // 起家（最初の親）。対局開始演出の親決めで決まった席を注入できる。
+    // 未指定 / 範囲外なら従来どおり席0（人間）が起家。
+    this.dealerIndex =
+      Number.isInteger(options.dealerIndex) &&
+      options.dealerIndex >= 0 &&
+      options.dealerIndex < this.numPlayers
+        ? options.dealerIndex
+        : 0;
     this.honba = 0;
     this.kyotaku = 0; // riichi sticks on the table
     this.seed = seed;
