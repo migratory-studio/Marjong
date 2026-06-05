@@ -1814,10 +1814,12 @@ function resetMatchTalk() {
     discards: 0,      // この局の自分の打牌数
     lastImprove: 0,   // 最後にシャンテンが進んだ打牌番号
     improveRun: 0,    // 連続でシャンテンが進んだ回数
-    tsumogiri: 0,     // 連続ツモ切り数
-    wasTenpai: false, // 直前まで聴牌していたか
-    saidStuck: false, // 手詰まりセリフを今局すでに出したか
-    saidLast: false,  // 流局間際セリフを今局すでに出したか
+    tsumogiri: 0,        // 連続ツモ切り数
+    iishanten: 0,        // 一向聴のまま足踏みした自分の打牌数
+    wasTenpai: false,    // 直前まで聴牌していたか
+    saidStuck: false,    // 手詰まりセリフを今局すでに出したか
+    saidIishanten: false,// イーシャンテン地獄セリフを今局すでに出したか
+    saidLast: false,     // 流局間際セリフを今局すでに出したか
   };
 }
 
@@ -1857,11 +1859,22 @@ function setupMatchTalk(g) {
       if (matchTalk.improveRun >= 2 && sh >= 1) fireSelfTalk("handSmooth");
     } else {
       matchTalk.improveRun = 0;
-      // しばらく進まず、まだ遠い → 手詰まり（1局1回）。
+      // しばらく進まず、まだ遠い → 手詰まり（1局1回、sh>=2）。
       if (!matchTalk.saidStuck && matchTalk.discards - matchTalk.lastImprove >= 4 && sh >= 2) {
         matchTalk.saidStuck = true;
         fireSelfTalk("handStuck");
       }
+    }
+
+    // イーシャンテン地獄: 一向聴(sh===1)のまま足踏みが続いたら一度だけ（手詰まりとは別枠）。
+    if (sh === 1) {
+      matchTalk.iishanten++;
+      if (!matchTalk.saidIishanten && matchTalk.iishanten >= 4) {
+        matchTalk.saidIishanten = true;
+        fireSelfTalk("iishantenHell");
+      }
+    } else {
+      matchTalk.iishanten = 0;
     }
     matchTalk.prevShanten = sh;
   });
