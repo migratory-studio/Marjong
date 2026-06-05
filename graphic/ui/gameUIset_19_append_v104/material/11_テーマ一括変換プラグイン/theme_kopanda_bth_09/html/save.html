@@ -1,0 +1,93 @@
+<div id="menu_save_wrapper">
+
+  <!-- 閉じるボタン -->
+	<div class='menu_item menu_close' style='position: absolute; top: 20px; left: 1168px;'>
+	<a href="javascript:void(0)"><img src="data/others/plugin/theme_kopanda_bth_09/image/system/btn_back.png"></a>
+	</div>
+
+  <!-- スクロールボタン -->
+	<img class="button_smart button_arrow_up"   src='data/others/plugin/theme_kopanda_bth_09/image/system/arrow_up.png'   style='cursor:pointer;left: 56px; top: 320px; position: absolute;'>
+	<img class="button_smart button_arrow_down" src='data/others/plugin/theme_kopanda_bth_09/image/system/arrow_down.png' style='cursor:pointer;left: 56px; top: 480px; position: absolute;'>
+
+	<div style="clear:both"></div>
+
+  <!-- セーブデータリスト -->
+	<div class="area_save_list">
+
+		<ul class='save_list'>
+			{{for array_save}}
+				<li class='save_display_area save_list_item' data-num='{{:num}}'>
+					<span class='save_list_item_thumb'>
+					{{if img_data != ""}}
+						<img src="{{:img_data}}">
+					{{/if}}
+					</span>
+					<span class='save_list_item_area'>
+						<span class='save_list_item_date'>{{:save_date}}</span>
+						<span class='save_list_item_text'>{{:title}}</span>
+					</span>
+				</li>
+			{{/for}}
+		</ul>
+	</div>
+
+  <!-- 背景画像 -->
+	<img class="img_bg_base" src='data/others/plugin/theme_kopanda_bth_09/image/system/menu_save_bg.jpg' style='z-index:-1;left:0;top:0;width:100%;height:100%;position:absolute;'>
+
+	<!-- ボタンホバー時に画像を変更する -->
+	<script>
+
+	// 1.閉じるボタンのマウスダウン時に画像を変更
+	// 2.タッチデバイス使用時、タップしたときに画像を変更
+
+	$("#menu_save_wrapper .menu_item img").each((i, elm) => {
+		const j_elm = $(elm);
+		const original_src = j_elm.attr("src");
+		const hover_src = original_src.replace(".png", "_hov.png");
+		const click_src = original_src.replace(".png", "_clk.png");
+
+		// ホバー時
+		j_elm.hover(
+			() => {
+				j_elm.attr("src", hover_src);
+			},
+			() => {
+				j_elm.attr("src", original_src);
+			}
+		);
+
+		// タッチデバイス
+		j_elm.on("touchstart", () => {
+			j_elm.attr("src", hover_src);
+		});
+		j_elm.on("touchend touchcancel", () => {
+			j_elm.attr("src", original_src);
+		});
+
+		// 押下イベント
+		if (j_elm.closest(".menu_close").length > 0) {
+			// 押したとき
+			j_elm.on("mousedown", () => {
+				j_elm.attr("src", click_src);
+			});
+
+			// 離したとき（ホバー中ならホバー、離れたら元に戻す）
+			$(document).on("mouseup", () => {
+				if (j_elm.is(":hover")) {
+					j_elm.attr("src", hover_src);
+				} else {
+					j_elm.attr("src", original_src);
+				}
+			});
+
+			// 押したままカーソルが外れたら元に戻す
+			j_elm.on("mouseleave", (e) => {
+				if (e.buttons === 1) {
+					j_elm.attr("src", original_src);
+				}
+			});
+		}
+	});
+	</script>
+
+</div>

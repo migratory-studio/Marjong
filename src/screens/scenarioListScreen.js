@@ -80,10 +80,11 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
         const unlocked = debug || ev.unlocked;
         const forced = debug && !ev.unlocked; // 本来ロックだがデバッグで解放
 
-        const row = elt("button", "sclist-row", { type: "button", disabled: !unlocked });
+        const kouhen = (s.sortOrder ?? 0) >= 130; // 覇道編（後編）は青枠で明示
+        const row = elt("button", `sclist-row${kouhen ? " is-kouhen" : ""}`, { type: "button", disabled: !unlocked });
         const main = elt("div", "sclist-main");
         main.appendChild(elt("span", "sclist-title", { textContent: unlocked ? s.title : "？？？" }));
-        main.appendChild(elt("span", "sclist-sub", { textContent: `第${idx + 1}話` }));
+        main.appendChild(elt("span", "sclist-sub", { textContent: `${kouhen ? "覇道編 ・ " : ""}第${idx + 1}話` }));
         row.appendChild(main);
 
         const status = elt("span", "sclist-status");

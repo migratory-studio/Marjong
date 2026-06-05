@@ -85,7 +85,16 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
       <div class="sc-text"></div>
       <div class="sc-hint">クリックで進む ▶</div>
     </div>
-    <button class="sc-close" type="button" aria-label="閉じる">× とじる</button>
+    <div class="sc-sysbar">
+      <button class="sc-sys sc-sys-auto" data-act="auto" type="button" aria-label="オート">自動</button>
+      <button class="sc-sys sc-sys-skip" data-act="skip" type="button" aria-label="スキップ">早送</button>
+      <button class="sc-sys sc-sys-log" data-act="log" type="button" aria-label="バックログ">履歴</button>
+      <button class="sc-sys sc-sys-menu" data-act="menu" type="button" aria-label="閉じる">目録</button>
+    </div>
+    <div class="sc-backlog hidden" aria-hidden="true">
+      <div class="sc-backlog-inner"></div>
+      <div class="sc-backlog-hint">クリックで閉じる ✕</div>
+    </div>
     <div class="sc-progress"></div>`;
   root.classList.remove("hidden");
 
@@ -96,6 +105,9 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
   const elName = root.querySelector(".sc-name");
   const elText = root.querySelector(".sc-text");
   const elProgress = root.querySelector(".sc-progress");
+  const elSysbar = root.querySelector(".sc-sysbar");
+  const elBacklog = root.querySelector(".sc-backlog");
+  const elBacklogInner = root.querySelector(".sc-backlog-inner");
 
   let i = -1;
   let curBg = null;
@@ -106,7 +118,22 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
   let stopEmote = null;         // 再生中エモートの停止関数（次の行/終了で呼ぶ）
   const slots = new Map();      // characterId -> { slot, img, position }（差分描画用）
 
+  // ---- システムバー状態（オート/早送/履歴/目録）----
+  const history = [];           // 表示済みの行 { name, text }（バックログ用）
+  let autoOn = false;           // オート送り
+  let skipOn = false;           // 早送り（スキップ）
+  let autoTimer = null;         // オートの次行タイマー
+  let skipTimer = null;         // スキップの連続送りタイマー
+  const AUTO_DELAY = 1700;      // オート1行あたりの待ち（ms）
+  const SKIP_INTERVAL = 60;     // スキップの送り間隔（ms）
+
+  function clearTimers() {
+    if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+    if (skipTimer) { clearInterval(skipTimer); skipTimer = null; }
+  }
+
   function finish() {
+    clearTimers();
     clearEmote();
     // BGM を触っていたら入室前の状態へ戻す（メニュー BGM の継続性）。
     if (bgmTouched && audio) {
@@ -298,6 +325,7 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
     if (ch?.color) elName.style.borderColor = ch.color;
     elText.textContent = line.text;
     elProgress.textContent = `${line.lineNo} / ${lines.length}`;
+    history.push({ name, text: line.text }); // バックログ（履歴）用に蓄積
 
     // 立ち絵演出は「話者の立ち絵」に適用（地の文なら対象なし）。
     applyEffect(speakerImg, line.characterEffect, "scfx-ch", line.effectDurationMs);
@@ -311,12 +339,74 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
     i++;
     if (i >= lines.length) { finish(); return; }
     show(lines[i]);
+    if (autoOn && !skipOn) scheduleAuto(); // オート中は次行を予約
   }
 
+  // ---- オート（自動送り）----
+  function scheduleAuto() {
+    if (autoTimer) clearTimeout(autoTimer);
+    autoTimer = setTimeout(() => { autoTimer = null; if (autoOn) advance(); }, AUTO_DELAY);
+  }
+  function setAuto(on) {
+    autoOn = on;
+    root.querySelector(".sc-sys-auto")?.classList.toggle("is-on", on);
+    if (on) { setSkip(false); scheduleAuto(); }
+    else if (autoTimer) { clearTimeout(autoTimer); autoTimer = null; }
+  }
+  // ---- スキップ（早送り）----
+  function setSkip(on) {
+    skipOn = on;
+    root.querySelector(".sc-sys-skip")?.classList.toggle("is-on", on);
+    if (on) {
+      setAuto(false);
+      if (skipTimer) clearInterval(skipTimer);
+      skipTimer = setInterval(() => { if (skipOn) advance(); }, SKIP_INTERVAL);
+    } else if (skipTimer) { clearInterval(skipTimer); skipTimer = null; }
+  }
+  // ---- バックログ（履歴）----
+  function backlogOpen() { return !elBacklog.classList.contains("hidden"); }
+  function openBacklog() {
+    setAuto(false); setSkip(false); // 読んでいる間は送りを止める
+    elBacklogInner.innerHTML = history.map((h) =>
+      `<div class="sc-bl-row">${h.name ? `<span class="sc-bl-name">${escapeHtml(h.name)}</span>` : ""}<span class="sc-bl-text">${escapeHtml(h.text)}</span></div>`
+    ).join("");
+    elBacklog.classList.remove("hidden");
+    elBacklog.setAttribute("aria-hidden", "false");
+    elBacklogInner.scrollTop = elBacklogInner.scrollHeight; // 最新（末尾）へ
+  }
+  function closeBacklog() {
+    elBacklog.classList.add("hidden");
+    elBacklog.setAttribute("aria-hidden", "true");
+  }
+
+  // システムバー: 自前のハンドラ＋stopPropagation で本文クリック送りを抑止。
+  elSysbar.addEventListener("click", (ev) => {
+    ev.stopPropagation();
+    const btn = ev.target.closest(".sc-sys");
+    if (!btn) return;
+    const act = btn.dataset.act;
+    if (act === "auto") setAuto(!autoOn);
+    else if (act === "skip") setSkip(!skipOn);
+    else if (act === "log") openBacklog();
+    else if (act === "menu") finish();
+  });
+  // バックログはクリックで閉じる（本文送りには伝播させない）。
+  elBacklog.addEventListener("click", (ev) => { ev.stopPropagation(); closeBacklog(); });
+
   function onClick(ev) {
-    if (ev.target.closest(".sc-close")) { finish(); return; }
+    if (ev.target.closest(".sc-sysbar") || ev.target.closest(".sc-backlog")) return;
+    if (backlogOpen()) { closeBacklog(); return; }
+    // 手動クリックはオート/スキップを解除してユーザへ制御を戻す。
+    if (autoOn) setAuto(false);
+    if (skipOn) setSkip(false);
     advance();
   }
   root.addEventListener("click", onClick);
   advance(); // 1行目を表示
+}
+
+// バックログ表示用の最小 HTML エスケープ（マスタ文字列を素で innerHTML に入れない）。
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }

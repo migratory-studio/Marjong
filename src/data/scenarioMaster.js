@@ -272,5 +272,181 @@ export const SCENARIO_MASTER = [
     "sortOrder": 120,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "mentorCharacterId": "shiyue",
+    "title": "七つの宝へ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-12"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 350
+    },
+    "sortOrder": 130,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-14",
+    "mentorCharacterId": "shiyue",
+    "title": "読めない、という事実",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-13"
+      },
+      {
+        "type": "tournament_won",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 360
+    },
+    "sortOrder": 140,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "mentorCharacterId": "shiyue",
+    "title": "冷たい声、ふたたび",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-14"
+      },
+      {
+        "type": "tournament_won",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 360
+    },
+    "sortOrder": 150,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "mentorCharacterId": "shiyue",
+    "title": "恩師の翼",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-15"
+      },
+      {
+        "type": "tournament_won",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 420
+    },
+    "sortOrder": 160,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-17",
+    "mentorCharacterId": "shiyue",
+    "title": "読んで、引く",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-16"
+      },
+      {
+        "type": "tournament_won",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 420
+    },
+    "sortOrder": 170,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "mentorCharacterId": "shiyue",
+    "title": "アビスの壁",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-17"
+      },
+      {
+        "type": "tournament_won",
+        "value": 4
+      }
+    ],
+    "firstReadReward": {
+      "soul": 450
+    },
+    "sortOrder": 180,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "mentorCharacterId": "shiyue",
+    "title": "三人の九蓮",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-18"
+      },
+      {
+        "type": "tournament_won",
+        "value": 6
+      }
+    ],
+    "firstReadReward": {
+      "soul": 480
+    },
+    "sortOrder": 190,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "mentorCharacterId": "shiyue",
+    "title": "神算鬼謀",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-shiyue-bond-19"
+      },
+      {
+        "type": "tournament_won",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 600
+    },
+    "sortOrder": 200,
+    "isEnabled": true,
+    "scenarioVersion": 2
   }
 ];

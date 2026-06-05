@@ -62,7 +62,7 @@ function freshProfile({ soul = 0, bondLevel = 1, avatarLevel = 1, readIds = [], 
 // --- 実データ: 1話目は always 解放、2話目は親密度2+読了でゲート ---
 {
   const list = scenariosForMentor("shiyue");
-  ok("shiyue の bond シナリオが12本", list.length === 12);
+  ok("shiyue の bond シナリオが20本", list.length === 20);
   ok("表示順に並ぶ", list[0].scenarioId === "mentor-shiyue-bond-01");
 
   const ctxFresh = buildUnlockContext(freshProfile()); // bond1, 既読なし

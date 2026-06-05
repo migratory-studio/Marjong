@@ -67,27 +67,70 @@ body {
 .sc-standing.sc-active { filter: drop-shadow(0 8px 24px rgba(0,0,0,.55)) brightness(1.05); opacity: 1; z-index: 2; transform: translateY(-6px); }
 .sc-standing.sc-dim { filter: drop-shadow(0 6px 18px rgba(0,0,0,.5)) brightness(.55) saturate(.85); opacity: .8; z-index: 1; }
 .sc-fx-screen { position: absolute; inset: 0; pointer-events: none; }
+/* メッセージ枠は購入UIセット(gameUIset_19 v100)の message_window.png を採用。
+   1280×228 の全幅バー画像で、上部 0–48px に名前タブ／48–190px に本文帯／192–228px に底枠。
+   画像が枠・装飾を担うので、独自の border/影/角丸は外し、テキストを座標で帯に載せる。 */
 .sc-textbox {
   /* 立ち絵(.sc-slot は transform で stacking context を作る)より前面に。メッセージ最優先で表示。 */
-  position: absolute; z-index: 5; left: 50%; bottom: calc(var(--stage-h) * 0.04); transform: translateX(-50%);
-  width: min(92%, 980px); background: rgba(8,12,10,.82); border: 1px solid rgba(246,179,82,.35);
-  border-radius: 14px; padding: 18px 24px 30px; box-shadow: 0 10px 30px rgba(0,0,0,.5); backdrop-filter: blur(3px);
+  position: absolute; z-index: 5; left: 0; bottom: 0; width: var(--stage-w); height: 228px;
+  background: url("graphic/ui/sc/msgwin.png") no-repeat center / 100% 100%;
 }
+/* 名前 = 左上の金タブ（〜x543 × 〜48px）に中央寄せ。画像側に枠があるので文字だけ。 */
 .sc-name {
-  display: inline-block; font-size: 20px; font-weight: 700; color: var(--accent);
-  border-left: 4px solid var(--accent); padding: 2px 12px; margin: -34px 0 10px; background: rgba(8,12,10,.9);
-  border-radius: 6px;
+  position: absolute; top: 4px; left: 24px; width: 500px; height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 21px; font-weight: 700; color: #f4e3b4; letter-spacing: .08em;
+  text-shadow: 0 1px 2px rgba(0,0,0,.85);
+  margin: 0; padding: 0; background: none; border: 0; border-radius: 0;
 }
-.sc-text { font-size: 21px; line-height: 1.7; min-height: 2.6em; }
-.sc-hint { position: absolute; right: 18px; bottom: 8px; font-size: 12px; color: var(--muted); animation: sc-blink 1.4s infinite; }
-.sc-progress { position: absolute; top: 14px; left: 18px; font-size: 13px; color: var(--muted); background: rgba(0,0,0,.4); padding: 3px 10px; border-radius: 10px; }
-.sc-close {
-  position: absolute; top: 12px; right: 14px; z-index: 2; cursor: pointer;
-  background: rgba(0,0,0,.45); color: var(--ink); border: 1px solid rgba(255,255,255,.2);
-  border-radius: 10px; padding: 6px 12px; font-size: 13px;
+/* 本文 = 中央の帯。青海波の装飾を避けて左右に余白。 */
+.sc-text {
+  position: absolute; left: 78px; right: 78px; top: 66px;
+  font-size: 21px; line-height: 1.6; color: #f6efe1; text-shadow: 0 1px 3px rgba(0,0,0,.9);
 }
-.sc-close:hover { background: rgba(0,0,0,.7); }
+/* クリック待ち = pagebreak グリフ（24×24）を帯の右下で点滅。 */
+.sc-hint {
+  position: absolute; right: 40px; bottom: 46px; width: 24px; height: 24px;
+  color: transparent; font-size: 0;
+  background: url("graphic/ui/sc/pagebreak.png") no-repeat center / contain;
+  animation: sc-blink 1.4s infinite;
+}
+.sc-progress { position: absolute; top: auto; bottom: 7px; left: 28px; font-size: 12px; color: #d8c79a; background: transparent; padding: 0; border-radius: 0; }
 @keyframes sc-blink { 0%,100%{opacity:.4} 50%{opacity:1} }
+
+/* システムバー（自動/早送/履歴/目録）= 文字焼込みのシステムボタン素材。右上に横並び。 */
+.sc-sysbar { position: absolute; top: 12px; right: 14px; z-index: 6; display: flex; gap: 6px; }
+.sc-sys {
+  width: 86px; height: 34px; cursor: pointer; padding: 0; border: 0;
+  color: transparent; font-size: 0; /* 文字は画像側に焼込み済み */
+  background: no-repeat center / contain;
+}
+.sc-sys-auto { background-image: url("graphic/ui/sc/sys_auto.png"); }
+.sc-sys-skip { background-image: url("graphic/ui/sc/sys_skip.png"); }
+.sc-sys-log  { background-image: url("graphic/ui/sc/sys_log.png"); }
+.sc-sys-menu { background-image: url("graphic/ui/sc/sys_menu.png"); }
+.sc-sys-auto:hover { background-image: url("graphic/ui/sc/sys_auto_hover.png"); }
+.sc-sys-skip:hover { background-image: url("graphic/ui/sc/sys_skip_hover.png"); }
+.sc-sys-log:hover  { background-image: url("graphic/ui/sc/sys_log_hover.png"); }
+.sc-sys-menu:hover { background-image: url("graphic/ui/sc/sys_menu_hover.png"); }
+/* オン状態（オート/スキップ作動中）= active 素材へ。 */
+.sc-sys-auto.is-on { background-image: url("graphic/ui/sc/sys_auto_on.png"); }
+.sc-sys-skip.is-on { background-image: url("graphic/ui/sc/sys_skip_on.png"); }
+
+/* バックログ（履歴）オーバーレイ。クリックで閉じる。 */
+.sc-backlog {
+  position: absolute; inset: 0; z-index: 8; cursor: pointer;
+  background: rgba(8,10,8,.82); backdrop-filter: blur(2px);
+  display: flex; flex-direction: column; align-items: center;
+}
+.sc-backlog-inner {
+  width: min(86%, 920px); max-height: calc(var(--stage-h) - 96px); margin-top: 40px;
+  overflow-y: auto; padding: 8px 18px; cursor: default;
+}
+.sc-bl-row { padding: 12px 4px; border-bottom: 1px solid rgba(246,179,82,.16); line-height: 1.6; }
+.sc-bl-name { display: inline-block; min-width: 5em; margin-right: 12px; font-weight: 700; color: #f4e3b4; }
+.sc-bl-text { color: #eef0e8; }
+.sc-backlog-hint { margin-top: 6px; font-size: 13px; color: var(--muted); }
 
 /* 立ち絵演出 (characterEffect) — duration は --sc-dur で上書き */
 .scfx-ch-jump { animation: sc-jump var(--sc-dur,400ms) ease; }
@@ -302,6 +345,10 @@ body {
 }
 .sclist-row:hover:not(:disabled) { border-color: var(--accent); }
 .sclist-row:disabled { opacity: .5; cursor: default; }
+/* 覇道編（後編）= 青枠で前後編を見分ける */
+.sclist-row.is-kouhen { background: #19243a; border-color: #34507a; }
+.sclist-row.is-kouhen:hover:not(:disabled) { border-color: #5b86c4; }
+.sclist-row.is-kouhen .sclist-sub { color: #7fa8da; }
 .sclist-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .sclist-title { font-size: 15px; font-weight: 800; }
 .sclist-sub { font-size: 11px; color: var(--muted); }
@@ -800,3 +847,97 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
    rotate-to-landscape prompt above stays viewport-based on purpose: it lives
    outside the stage and targets portrait phones. */
 
+
+/* ============================================================================
+   購入UIセット（gameUIset_19）全体スキン  — 和風(青海波＋金枠)テーマ
+   画像は graphic/ui/sc/ に集約。後方互換のため末尾追記（後勝ちで既存定義を上書き）。
+   ・汎用ボタン枠 = button_rectangle_01 を 9スライス(border-image, fill)で任意サイズへ
+   ・パネル枠     = window_01_01 を 9スライス(枠のみ)＝既存の暗色背景に金縁を付与
+   ・全画面背景   = background.png(1280×720)
+   ・HPゲージ/チェック/スライダー/設定アイコン = 専用素材へ差し替え
+   ※在ゲームの行動ボタン(ツモ/ロン/ポン…)は色分けが機能なので対象外。
+   ============================================================================ */
+
+/* --- 全画面背景 --- */
+#app {
+  background-color: #15110d;
+  background-image: url("graphic/ui/sc/bg.png");
+  background-size: cover; background-position: center;
+}
+
+/* --- 汎用ボタン枠（9スライス＋中央塗り）--- */
+.menu-btn,
+.ghost-back,
+button.primary,
+button.secondary,
+.mode-btn,
+.sclist-row {
+  background: none;
+  border: 12px solid transparent;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 12px 15px / 0 stretch;
+  border-radius: 0; box-shadow: none; color: var(--ink);
+}
+.menu-btn:hover:not(:disabled),
+.ghost-back:hover,
+button.primary:hover:not(:disabled),
+button.secondary:hover,
+.mode-btn:hover,
+.sclist-row:hover:not(:disabled) {
+  border-image-source: url("graphic/ui/sc/btn_hover.png");
+  background: none; transform: translateY(-1px);
+}
+.menu-btn:disabled, button.primary:disabled, .sclist-row:disabled { opacity: .5; transform: none; }
+button.primary { color: var(--accent); font-weight: 800; }
+button.secondary { color: var(--ink); }
+/* セグメント(人数/対局方式)は枠を個別ボタン化。選択中は点灯枠＋金文字。 */
+.mode-toggle { border: 0; border-radius: 0; overflow: visible; gap: 6px; }
+.mode-btn { color: var(--muted); }
+.mode-btn + .mode-btn { border-left: 12px solid transparent; }
+.mode-btn.selected { border-image-source: url("graphic/ui/sc/btn_hover.png"); background: none; color: var(--accent); }
+/* シナリオ一覧: 覇道編(青)の区別は内側の青リングで維持。 */
+.sclist-row.is-kouhen { background: none; box-shadow: inset 0 0 0 2px rgba(91,134,196,.9); }
+.sclist-row.is-kouhen:hover:not(:disabled) { box-shadow: inset 0 0 0 2px rgba(127,168,218,1); }
+
+/* --- パネル枠（金縁・中央は既存の暗色背景を温存）--- */
+.settings-card,
+.settings-panel,
+.char-detail,
+.win-card {
+  border: 16px solid transparent;
+  /* fill を付けない＝金縁だけ採用し、中央は各パネル従来の暗色背景を温存（可読性優先）。 */
+  border-image: url("graphic/ui/sc/panel.png") 18 / 16px / 0 stretch;
+  border-radius: 0;
+}
+.settings-card { background: rgba(20,32,26,.94); }
+.settings-panel { background: rgba(20,32,26,.97); }
+.char-detail { background: rgba(20,32,26,.86); }
+
+/* --- HPゲージ（detail パネル）= ヘルスゲージ素材へ --- */
+.g-pips {
+  background: url("graphic/ui/sc/gauge_base.png") no-repeat center / 100% 100%;
+  padding: 4px 7px; gap: 3px;
+}
+.pip { background: #34211a; border-radius: 1px; box-shadow: none; }
+.pip.on { background: linear-gradient(#b5413f, #7c2422); box-shadow: none; }
+
+/* --- 設定: チェックボックス／スライダー差し替え --- */
+.settings-row input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; width: 26px; height: 26px; margin: 0;
+  background: url("graphic/ui/sc/check_off.png") center / contain no-repeat; cursor: pointer;
+}
+.settings-row input[type="checkbox"]:checked { background-image: url("graphic/ui/sc/check_on.png"); }
+.settings-row input[type="range"] { -webkit-appearance: none; appearance: none; height: 26px; background: transparent; cursor: pointer; }
+.settings-row input[type="range"]::-webkit-slider-runnable-track { height: 8px; background: url("graphic/ui/sc/slider_base.png") no-repeat center / 100% 8px; }
+.settings-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; margin-top: -9px; background: url("graphic/ui/sc/slider_handle.png") center / contain no-repeat; border: 0; }
+.settings-row input[type="range"]::-moz-range-track { height: 8px; background: url("graphic/ui/sc/slider_base.png") no-repeat center / 100% 8px; }
+.settings-row input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; background: url("graphic/ui/sc/slider_handle.png") center / contain no-repeat; border: 0; }
+
+/* --- 在ゲームの設定(⚙) = config アイコンへ --- */
+.settings-btn {
+  background: url("graphic/ui/sc/btn_config.png") center / contain no-repeat;
+  border: 0; color: transparent; font-size: 0; width: 46px; height: 48px;
+}
+.settings-btn:hover { background: url("graphic/ui/sc/btn_config_hover.png") center / contain no-repeat; color: transparent; transform: none; }
+
+/* 選択画面: フッターのボタンが枠で背高化した分の余白を詰め、固定ステージ(720px)に収める。 */
+#select-screen .select-footer { margin-top: 8px; }

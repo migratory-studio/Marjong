@@ -1,0 +1,23 @@
+■CGモードサンプルの導入について
+
+①「cgmode_bth09」フォルダを data > image フォルダ内に配置
+②「cg.ks」を scenario フォルダ内に配置
+
+※大文字・小文字を間違えないようご注意ください
+
+CGモードの作成方法等につきましては下記の記事をご参照ください
+https://tyranos.me/archives/686
+
+
+＊＊＊＊＊
+
+
+■How to Install the CG Mode Sample
+
+①Place the "cgmode_bth09" folder inside the data > image folder.
+②Place "cg.ks" inside the scenario folder.
+
+*Note: Please be careful with uppercase and lowercase letters.
+
+For details on how to create a CG mode, please refer to the article below.
+https://tyranos.me/archives/686

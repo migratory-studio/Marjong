@@ -7,6 +7,8 @@ import { MeldType } from "../core/meld.js";
 const TILE_W = 38;
 const TILE_H = 52;
 const SMALL = 0.62;
+// 自分の手牌だけ拡大して見やすくする倍率（牌サイズ・間隔・当たり判定すべてに適用）。
+const HAND_SCALE = 1.3;
 
 const SUIT_COLOR = {
   [SUITS.MAN]: "#b5341f",
@@ -36,6 +38,23 @@ export class CanvasRenderer {
     this.hover = null; // {x, y, waits:[kind...]} for the wait tooltip
     this.W = canvas.width;
     this.H = canvas.height;
+
+    // 購入UIセットのヘルスゲージ素材で点棒(=HP)バーを描く。枠＋塗り3段階(低=赤/中=橙/高=緑)。
+    // 読込前/失敗時は従来の手描きバーにフォールバックする（後方互換）。読み込み完了で再描画。
+    const loadImg = (src) => {
+      const im = new Image();
+      im.onload = () => this.render();
+      im.src = src;
+      return im;
+    };
+    this.gaugeBase = loadImg("graphic/ui/sc/gauge_base.png");
+    this.gaugeFills = [
+      loadImg("graphic/ui/sc/gauge_fill_low.png"),  // 低 (赤)
+      loadImg("graphic/ui/sc/gauge_fill_mid.png"),  // 中 (橙)
+      loadImg("graphic/ui/sc/gauge_fill_high.png"), // 高 (緑)
+    ];
+    // リーチ宣言で場に出す点棒(1000点)の立ち絵素材。縦長(10×124)なので描画時に横倒しにする。
+    this.riichiStick = loadImg("graphic/b_1_1.gif");
   }
 
   setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false } = {}) {
@@ -187,17 +206,39 @@ export class CanvasRenderer {
     ctx.font = "bold 15px sans-serif";
     ctx.fillText(`${windName} ${p.character.name}${p.isDealer ? "(親)" : ""}`, x, y - 8);
 
-    // HP bar (points)
+    // HP bar (points) — 購入UIセットのヘルスゲージ素材。読込前/失敗時は手描きにフォールバック。
     const maxHP = p.character.stats.startingPoints;
     const ratio = Math.max(0, Math.min(1, p.points / Math.max(maxHP, 1)));
-    const barW = 150;
-    ctx.fillStyle = "#0c150f";
-    roundRect(ctx, x - barW / 2, y + 4, barW, 12, 6); ctx.fill();
-    ctx.fillStyle = p.points < 0 ? "#7a2030" : hpColor(ratio);
-    roundRect(ctx, x - barW / 2, y + 4, barW * ratio, 12, 6); ctx.fill();
-    ctx.fillStyle = "#e8efe9";
+    const barW = 150, barH = 14;
+    const bx = x - barW / 2, by = y + 2;
+    const base = this.gaugeBase;
+    // 体力に応じて塗り色を切替（高=緑 / 中=橙 / 低・マイナス=赤）。従来 hpColor と同じ段階感。
+    const fillImg = (p.points < 0 || ratio < 0.3) ? this.gaugeFills[0]
+      : ratio < 0.6 ? this.gaugeFills[1]
+      : this.gaugeFills[2];
+    const ready = base?.complete && base.naturalWidth > 0 && fillImg?.complete && fillImg.naturalWidth > 0;
+    if (ready) {
+      ctx.drawImage(base, bx, by, barW, barH);          // 金枠
+      // 塗りは枠素材の余白に合わせてインセット（横 4/240・縦 4/20）。幅を ratio でクリップ。
+      const insetX = barW * 4 / 240, insetY = barH * 4 / 20;
+      const fillFullW = barW * 232 / 240, fillH = barH * 12 / 20;
+      const w = fillFullW * ratio;
+      if (w > 0) {
+        const sw = Math.max(1, fillImg.naturalWidth * ratio);
+        ctx.drawImage(fillImg, 0, 0, sw, fillImg.naturalHeight, bx + insetX, by + insetY, w, fillH);
+      }
+    } else {
+      ctx.fillStyle = "#0c150f";
+      roundRect(ctx, bx, by + 2, barW, 12, 6); ctx.fill();
+      ctx.fillStyle = p.points < 0 ? "#7a2030" : hpColor(ratio);
+      roundRect(ctx, bx, by + 2, barW * ratio, 12, 6); ctx.fill();
+    }
+    ctx.save();
+    ctx.fillStyle = "#fff";
     ctx.font = "bold 12px sans-serif";
-    ctx.fillText(`${p.points}`, x, y + 14);
+    ctx.shadowColor = "rgba(0,0,0,.85)"; ctx.shadowBlur = 3;
+    ctx.fillText(`${p.points}`, x, y + 13);
+    ctx.restore();
 
     if (p.riichi) {
       ctx.fillStyle = "#f0d264";
@@ -246,29 +287,33 @@ export class CanvasRenderer {
 
   _drawHumanHand(p) {
     const ctx = this.ctx;
+    const s = HAND_SCALE;
+    const tw = TILE_W * s, th = TILE_H * s;
+    const gap = 4 * s, drawnGap = 12 * s;
     const hand = p.hand.filter((t) => t.id !== p.drawnTileId);
     const drawn = p.hand.find((t) => t.id === p.drawnTileId);
     const tiles = drawn ? [...hand, "gap", drawn] : hand;
     const count = hand.length + (drawn ? 1 : 0);
-    const totalW = count * (TILE_W + 4) + (drawn ? 12 : 0);
+    const totalW = count * (tw + gap) + (drawn ? drawnGap : 0);
     let x = this.W / 2 - totalW / 2;
-    const y = this.H - 74;
+    // 拡大した牌が画面下にはみ出さないよう、下端から積み上げて上端 y を決める。
+    const y = this.H - 8 - th;
 
     // dora kinds (incl. red fives) get a small ★ above the tile in your own hand
     const doraKinds = new Set(this.game.wall.doraKinds());
 
     for (const t of tiles) {
-      if (t === "gap") { x += 12; continue; }
+      if (t === "gap") { x += drawnGap; continue; }
       const dangerLevel = this.danger ? this.danger.get(t.kind) : 0;
       const canPick =
         this.game.phase === Phase.AWAIT_DISCARD &&
         this.game.turn === p.index &&
         (!this.riichiMode || (this.riichiKinds && this.riichiKinds.includes(t.kind)));
       const dim = this.riichiMode && this.riichiKinds && !this.riichiKinds.includes(t.kind);
-      this._tile(x, y, t.kind, { red: t.red, danger: dangerLevel, dim });
-      if (doraKinds.has(t.kind) || t.red) this._doraStar(x, y, TILE_W, dim);
-      this.handHitboxes.push({ tileId: t.id, kind: t.kind, x, y, w: TILE_W, h: TILE_H, enabled: canPick });
-      x += TILE_W + 4;
+      this._tile(x, y, t.kind, { red: t.red, danger: dangerLevel, dim, scale: s });
+      if (doraKinds.has(t.kind) || t.red) this._doraStar(x, y, tw, dim);
+      this.handHitboxes.push({ tileId: t.id, kind: t.kind, x, y, w: tw, h: th, enabled: canPick });
+      x += tw + gap;
     }
   }
 
@@ -414,6 +459,19 @@ export class CanvasRenderer {
     // is un-rotated (angle 0, translated by the table centre), so local coords map
     // to screen coords by a simple offset. We record them while drawing.
     const selfHitboxes = seat === 0;
+
+    // リーチ宣言中はその家の手前(河と中央箱の間)に点棒を横倒しで1本置く。
+    if (p.riichi) {
+      const stick = this.riichiStick;
+      if (stick && stick.complete && stick.naturalWidth > 0) {
+        const len = 120, thick = 10; // 点棒の長辺/短辺（素材アスペクト≈10:124を維持）
+        ctx.save();
+        ctx.translate(0, 80); // 中央箱(局所y=70)と河(同92)の隙間
+        ctx.rotate(Math.PI / 2); // 縦長素材を横向きへ（局所yが画面x＝長辺方向になる）
+        ctx.drawImage(stick, -thick / 2, -len / 2, thick, len);
+        ctx.restore();
+      }
+    }
 
     let rowIndex = -1;
     let rowX = ox;

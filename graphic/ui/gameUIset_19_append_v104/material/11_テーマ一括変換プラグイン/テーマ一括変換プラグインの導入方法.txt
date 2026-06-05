@@ -1,0 +1,23 @@
+■テーマ一括変換プラグインの導入方法
+
+① data > others > plugin フォルダに「theme_kopanda_bth_09」を配置
+② first.ks に [plugin name="theme_kopanda_bth_09"] と記述
+③ システムボタンを表示するときは [add_theme_button] と記述
+④ システムボタンを非表示にするときは [clearfix name="role_button"] と記述
+⑤ glinkタグ の color パラメータに「bth09」と書くと、お揃いのボタンデザインになります
+
+詳細は下記にて解説しています（動画もあるよ）
+https://kopacurve.blog.fc2.com/blog-entry-437.html
+
+＊＊＊＊＊
+
+■How to Install the System UI Skin Plugin
+
+① Place the "theme_kopanda_bth_09" folder inside data > others > plugin.
+② In first.ks, add the line [plugin name="theme_kopanda_bth_09"].
+③ To show the system button, use [add_theme_button].
+④ To hide the system button, use [clearfix name="role_button"].
+⑤ If you set the "color" parameter of [glink] to "bth09", it will match the button design.
+
+More details are available in the link below (there's also a video!):
+https://kopacurve.blog.fc2.com/blog-entry-437.html
