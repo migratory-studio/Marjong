@@ -8,3 +8,8 @@ Thumbs.db
 background/
 # 立ち絵グリッド等の作業用一時ファイル
 tmp/
+
+# 購入UIセット(こぱんだ屋)の生パック（原本・編集用PSD含む）は再配布防止のため追跡しない。
+# ゲームで実際に使う分だけ graphic/ui/sc/ に厳選配置して追跡する。
+graphic/ui/gameUIset_19_v100/
+graphic/ui/gameUIset_19_append_v104/
