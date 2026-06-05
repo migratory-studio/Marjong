@@ -68,7 +68,8 @@ body {
 .sc-standing.sc-dim { filter: drop-shadow(0 6px 18px rgba(0,0,0,.5)) brightness(.55) saturate(.85); opacity: .8; z-index: 1; }
 .sc-fx-screen { position: absolute; inset: 0; pointer-events: none; }
 .sc-textbox {
-  position: absolute; left: 50%; bottom: calc(var(--stage-h) * 0.04); transform: translateX(-50%);
+  /* 立ち絵(.sc-slot は transform で stacking context を作る)より前面に。メッセージ最優先で表示。 */
+  position: absolute; z-index: 5; left: 50%; bottom: calc(var(--stage-h) * 0.04); transform: translateX(-50%);
   width: min(92%, 980px); background: rgba(8,12,10,.82); border: 1px solid rgba(246,179,82,.35);
   border-radius: 14px; padding: 18px 24px 30px; box-shadow: 0 10px 30px rgba(0,0,0,.5); backdrop-filter: blur(3px);
 }
