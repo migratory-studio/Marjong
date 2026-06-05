@@ -39,21 +39,15 @@ export class CanvasRenderer {
     this.W = canvas.width;
     this.H = canvas.height;
 
-    // 購入UIセットのヘルスゲージ素材で点棒(=HP)バーを描く。枠＋塗り3段階(低=赤/中=橙/高=緑)。
-    // 読込前/失敗時は従来の手描きバーにフォールバックする（後方互換）。読み込み完了で再描画。
+    // 画像の読み込み完了で再描画する小ヘルパー。
     const loadImg = (src) => {
       const im = new Image();
       im.onload = () => this.render();
       im.src = src;
       return im;
     };
-    this.gaugeBase = loadImg("graphic/ui/sc/gauge_base.png");
-    this.gaugeFills = [
-      loadImg("graphic/ui/sc/gauge_fill_low.png"),  // 低 (赤)
-      loadImg("graphic/ui/sc/gauge_fill_mid.png"),  // 中 (橙)
-      loadImg("graphic/ui/sc/gauge_fill_high.png"), // 高 (緑)
-    ];
     // リーチ宣言で場に出す点棒(1000点)の立ち絵素材。縦長(10×124)なので描画時に横倒しにする。
+    // （点棒=HPのゲージ表示は右サイドの相棒ボードへ集約済み。卓上にはHPバーを描かない。）
     this.riichiStick = loadImg("graphic/b_1_1.gif");
   }
 
@@ -192,9 +186,10 @@ export class CanvasRenderer {
     [x, y] = positions[seat];
     ctx.textAlign = "center";
     const isTurn = this.game.turn === p.index && this.game.phase === Phase.AWAIT_DISCARD;
-    // plate
+    // plate — HP(点棒)は右サイドの相棒ボードに集約したので、ここは名前＋状態のみ。
+    // 高さを詰めたプレートに名前を縦中央で置き、リーチ/北だけ下に出す。
     ctx.fillStyle = isTurn ? "#244b39" : "#1a2c23";
-    roundRect(ctx, x - 90, y - 26, 180, 52, 8);
+    roundRect(ctx, x - 90, y - 18, 180, 36, 8);
     ctx.fill();
     if (isTurn) { ctx.strokeStyle = p.character.color; ctx.lineWidth = 2; ctx.stroke(); }
 
@@ -204,41 +199,7 @@ export class CanvasRenderer {
     const windName = { 27: "東", 28: "南", 29: "西", 30: "北" }[p.seatWind];
     ctx.fillStyle = p.character.color;
     ctx.font = "bold 15px sans-serif";
-    ctx.fillText(`${windName} ${p.character.name}${p.isDealer ? "(親)" : ""}`, x, y - 8);
-
-    // HP bar (points) — 購入UIセットのヘルスゲージ素材。読込前/失敗時は手描きにフォールバック。
-    const maxHP = p.character.stats.startingPoints;
-    const ratio = Math.max(0, Math.min(1, p.points / Math.max(maxHP, 1)));
-    const barW = 150, barH = 14;
-    const bx = x - barW / 2, by = y + 2;
-    const base = this.gaugeBase;
-    // 体力に応じて塗り色を切替（高=緑 / 中=橙 / 低・マイナス=赤）。従来 hpColor と同じ段階感。
-    const fillImg = (p.points < 0 || ratio < 0.3) ? this.gaugeFills[0]
-      : ratio < 0.6 ? this.gaugeFills[1]
-      : this.gaugeFills[2];
-    const ready = base?.complete && base.naturalWidth > 0 && fillImg?.complete && fillImg.naturalWidth > 0;
-    if (ready) {
-      ctx.drawImage(base, bx, by, barW, barH);          // 金枠
-      // 塗りは枠素材の余白に合わせてインセット（横 4/240・縦 4/20）。幅を ratio でクリップ。
-      const insetX = barW * 4 / 240, insetY = barH * 4 / 20;
-      const fillFullW = barW * 232 / 240, fillH = barH * 12 / 20;
-      const w = fillFullW * ratio;
-      if (w > 0) {
-        const sw = Math.max(1, fillImg.naturalWidth * ratio);
-        ctx.drawImage(fillImg, 0, 0, sw, fillImg.naturalHeight, bx + insetX, by + insetY, w, fillH);
-      }
-    } else {
-      ctx.fillStyle = "#0c150f";
-      roundRect(ctx, bx, by + 2, barW, 12, 6); ctx.fill();
-      ctx.fillStyle = p.points < 0 ? "#7a2030" : hpColor(ratio);
-      roundRect(ctx, bx, by + 2, barW * ratio, 12, 6); ctx.fill();
-    }
-    ctx.save();
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 12px sans-serif";
-    ctx.shadowColor = "rgba(0,0,0,.85)"; ctx.shadowBlur = 3;
-    ctx.fillText(`${p.points}`, x, y + 13);
-    ctx.restore();
+    ctx.fillText(`${windName} ${p.character.name}${p.isDealer ? "(親)" : ""}`, x, y + 5);
 
     if (p.riichi) {
       ctx.fillStyle = "#f0d264";
@@ -604,12 +565,6 @@ export class CanvasRenderer {
     ctx.fillStyle = "#3c8a63";
     roundRect(ctx, x + w * 0.2, y + h * 0.2, w * 0.6, h * 0.6, 3); ctx.fill();
   }
-}
-
-function hpColor(ratio) {
-  if (ratio > 0.6) return "#5fbf6f";
-  if (ratio > 0.3) return "#e0c14a";
-  return "#e85d75";
 }
 
 function roundRect(ctx, x, y, w, h, r) {

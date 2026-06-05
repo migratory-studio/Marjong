@@ -24,11 +24,14 @@ import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
+import { shanten } from "./core/rules/shanten.js";
+import { pickVoiceLine } from "./data/voiceLines.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
 
 const el = (id) => document.getElementById(id);
 let game, renderer, humanIndex = 0;
+let hpCells = null; // 相棒ボード（右側HP表示）の playerIndex -> セル参照マップ
 const tileImages = new TileImages();
 const charImages = new CharacterImages();
 const audio = new AudioManager();
@@ -37,6 +40,11 @@ charImages.load(CHARACTERS); // icons/portraits; null fallback until present
 let selectedCharId = null;
 let selectedRounds = 1; // 1 = 東風戦, 2 = 半荘戦
 let selectedPlayers = 4; // 4 = 四人麻雀, 3 = 三人麻雀(三麻)
+// CPU相手の指名。席オフセット(0=CPU①…2=CPU③)ごとのキャラID。null は「おまかせ
+// (ランダム)」で従来挙動。最大3席ぶん保持し、人数に応じて先頭から使う。
+let cpuPicks = [null, null, null];
+// ロスターのカードをクリックしたとき埋める席。0=あなた, 1..=CPU席。
+let activeSeat = 0;
 let pendingCpuCallDecisions = null; // cached while waiting on human call
 let riichiMode = false;
 let recallMode = false; // リコール・ディール: 自分の河の牌を選択中
@@ -156,10 +164,122 @@ function renderCharDetail(c) {
   detail.querySelector(".detail-portrait-wrap").appendChild(makeCharPortrait(c));
 }
 
+// CPU席ラベル（CPU①②③）。席オフセット 0..2 を丸数字に。
+const SEAT_MARKS = ["①", "②", "③"];
+
 function buildSelectScreen() {
   const list = el("char-list");
   list.innerHTML = "";
   const selectedChar = () => CHARACTERS.find((c) => c.id === selectedCharId) || null;
+  // ロスターのカードをキャラID で引けるようにして、席割りの選択ハイライトを更新できる。
+  const cardById = new Map();
+
+  // どのキャラがどの席に着いているかのラベル（"あなた"/①②③）。未着席は null。
+  // 現在の人数を超える席に残った指名は無視する（人数を減らしたときの保険）。
+  const seatLabelOf = (id) => {
+    if (selectedCharId === id) return "あなた";
+    const off = cpuPicks.indexOf(id);
+    return off >= 0 && off < selectedPlayers - 1 ? `CPU${SEAT_MARKS[off]}` : null;
+  };
+
+  // カードのハイライト＋席バッジを現在の席割りに合わせて更新。
+  function refreshCards() {
+    for (const [id, card] of cardById) {
+      const label = seatLabelOf(id);
+      card.classList.toggle("selected", label !== null);
+      const badge = card.querySelector(".card-seat-badge");
+      badge.textContent = label || "";
+      badge.classList.toggle("hidden", label === null);
+    }
+  }
+
+  const refreshAll = () => { renderSeats(); refreshCards(); updateWizNav(); };
+
+  // アクティブ席（クリックでキャラを入れる席）を切り替える。
+  function setActiveSeat(s) { activeSeat = s; refreshAll(); }
+
+  // 次の空席へ進む（現在の人数の範囲で巡回）。全席埋まっていれば現状維持。
+  function nextEmptySeat() {
+    for (let step = 1; step <= selectedPlayers; step++) {
+      const s = (activeSeat + step) % selectedPlayers;
+      const filled = s === 0 ? !!selectedCharId : !!cpuPicks[s - 1];
+      if (!filled) return s;
+    }
+    return activeSeat;
+  }
+
+  // アクティブ席にキャラを着席させる。同キャラが他席にいれば自動で外す（重複防止）。
+  function assignToActiveSeat(c) {
+    if (activeSeat !== 0 && selectedCharId === c.id) selectedCharId = null;
+    for (let i = 0; i < cpuPicks.length; i++) {
+      if (cpuPicks[i] === c.id && i !== activeSeat - 1) cpuPicks[i] = null;
+    }
+    if (activeSeat === 0) selectedCharId = c.id;
+    else cpuPicks[activeSeat - 1] = c.id;
+    activeSeat = nextEmptySeat();
+    refreshAll(); // updateWizNav() inside re-gates 次へ on the human seat
+    renderCharDetail(c);
+  }
+
+  // 1席ぶんのチップを作る。先頭=あなた、以降=CPU席。CPU席は未指名なら「おまかせ
+  // (ランダム)」。interactive=true なら席切替/🎲リセットを配線、false は表示専用。
+  function makeSeatChip(s, interactive) {
+    const isHuman = s === 0;
+    const charId = isHuman ? selectedCharId : cpuPicks[s - 1];
+    const ch = charId ? CHARACTERS.find((c) => c.id === charId) : null;
+    const chip = document.createElement(interactive ? "button" : "div");
+    if (interactive) chip.type = "button";
+    chip.className = "seat-chip" + (interactive && s === activeSeat ? " active" : "") + (interactive ? "" : " static");
+    const role = document.createElement("span");
+    role.className = "seat-role";
+    role.textContent = isHuman ? "あなた" : `CPU${SEAT_MARKS[s - 1]}`;
+    chip.appendChild(role);
+    const pick = document.createElement("span");
+    pick.className = "seat-pick";
+    if (ch) {
+      const ic = makeCharIcon(ch); ic.classList.add("seat-icon");
+      pick.appendChild(ic);
+      const nm = document.createElement("span"); nm.className = "seat-name"; nm.textContent = ch.name;
+      pick.appendChild(nm);
+    } else if (isHuman) {
+      pick.classList.add("empty"); pick.textContent = "未選択";
+    } else {
+      pick.classList.add("random"); pick.textContent = "🎲 おまかせ";
+    }
+    chip.appendChild(pick);
+    if (interactive) {
+      chip.onclick = () => { audio.playClick?.(); setActiveSeat(s); };
+      if (!isHuman && ch) {
+        const rs = document.createElement("span");
+        rs.className = "seat-reset"; rs.textContent = "🎲"; rs.title = "おまかせに戻す";
+        rs.onclick = (e) => { e.stopPropagation(); audio.playClick?.(); cpuPicks[s - 1] = null; setActiveSeat(s); };
+        chip.appendChild(rs);
+      }
+    }
+    return chip;
+  }
+
+  // ②キャラの操作可能な席バー（席切替＋全員おまかせ）と、①卓の表示専用プレビューを
+  // 両方とも現在の席割りで描き直す。存在する側だけ更新する。
+  function renderSeats() {
+    const bar = el("seat-bar");
+    if (bar) {
+      bar.innerHTML = "";
+      for (let s = 0; s < selectedPlayers; s++) bar.appendChild(makeSeatChip(s, true));
+      const all = document.createElement("button");
+      all.type = "button";
+      all.className = "seat-allrandom";
+      all.textContent = "全員おまかせ";
+      all.title = "CPU相手をすべてランダムに戻す";
+      all.onclick = () => { audio.playClick?.(); cpuPicks = [null, null, null]; refreshAll(); };
+      bar.appendChild(all);
+    }
+    const prev = el("seat-preview");
+    if (prev) {
+      prev.innerHTML = "";
+      for (let s = 0; s < selectedPlayers; s++) prev.appendChild(makeSeatChip(s, false));
+    }
+  }
 
   // Build one roster tile (icon + HP) whose frame is tinted by its role color.
   const makeCard = (c) => {
@@ -173,14 +293,13 @@ function buildSelectScreen() {
     name.className = "card-name";
     name.textContent = c.name;
     card.appendChild(name);
+    // 席割りバッジ（"あなた"/①②③）。未着席時は hidden。
+    const badge = document.createElement("span");
+    badge.className = "card-seat-badge hidden";
+    card.appendChild(badge);
     card.onmouseenter = () => { audio.playClick(); renderCharDetail(c); };
-    card.onclick = () => {
-      selectedCharId = c.id;
-      list.querySelectorAll(".char-card").forEach((ch) => ch.classList.remove("selected"));
-      card.classList.add("selected");
-      el("start-btn").disabled = false;
-      renderCharDetail(c);
-    };
+    card.onclick = () => assignToActiveSeat(c);
+    cardById.set(c.id, card);
     return card;
   };
 
@@ -205,14 +324,19 @@ function buildSelectScreen() {
   // Leaving the roster restores the selected character's detail (or the prompt).
   list.onmouseleave = () => renderCharDetail(selectedChar());
   renderCharDetail(null);
+  renderSeats();
 
   // 人数 (4人 / 3人) toggle
   const playersToggle = el("players-toggle");
   for (const btn of playersToggle.querySelectorAll(".mode-btn")) {
     btn.onclick = () => {
       selectedPlayers = Number(btn.dataset.players);
+      // 人数を減らしたら消える席の指名は破棄。アクティブ席が範囲外なら自分へ戻す。
+      for (let i = selectedPlayers - 1; i < cpuPicks.length; i++) cpuPicks[i] = null;
+      if (activeSeat >= selectedPlayers) activeSeat = 0;
       playersToggle.querySelectorAll(".mode-btn").forEach((b) => b.classList.remove("selected"));
       btn.classList.add("selected");
+      refreshAll();
     };
   }
 
@@ -226,7 +350,77 @@ function buildSelectScreen() {
     };
   }
 
+  // --------------------------------------------------------------- wizard nav
+  // ①卓 → ②キャラ → ③ルール＆開始 の3ステップ。進行はパネルの出し分け＋下部ナビで
+  // 制御する。②から③へ進むには自分（あなた席）の選択が必須。
+  let wizStep = 1;
+  const canReach = (step) => (step <= 2 ? true : !!selectedCharId);
+
+  // 下部ナビ（戻る/次へ/開始）の表示と活性をステップに合わせる。
+  function updateWizNav() {
+    const back = el("wiz-back"), next = el("wiz-next"), start = el("start-btn");
+    if (!back || !next || !start) return;
+    back.classList.toggle("hidden", wizStep === 1);
+    next.classList.toggle("hidden", wizStep === 3);
+    start.classList.toggle("hidden", wizStep !== 3);
+    next.disabled = wizStep === 2 && !selectedCharId; // 自分未選択なら次へ不可
+  }
+
+  // ③の確認リスト（人数＋各席の指名/おまかせ）。
+  function renderSummary() {
+    const box = el("wiz-summary");
+    if (!box) return;
+    box.innerHTML = "";
+    const line = (k, ch, fallback) => {
+      const row = document.createElement("div");
+      row.className = "sum-line";
+      const key = document.createElement("span"); key.className = "sum-k"; key.textContent = k;
+      const val = document.createElement("span"); val.className = "sum-v";
+      if (ch) { const ic = makeCharIcon(ch); ic.classList.add("sum-icon"); val.appendChild(ic); val.append(ch.name); }
+      else { val.classList.add("sum-random"); val.textContent = fallback; }
+      row.append(key, val);
+      box.appendChild(row);
+    };
+    const modeRow = document.createElement("div");
+    modeRow.className = "sum-line";
+    modeRow.innerHTML = `<span class="sum-k">人数</span><span class="sum-v">${selectedPlayers}人</span>`;
+    box.appendChild(modeRow);
+    line("あなた", selectedChar(), "未選択");
+    for (let i = 0; i < selectedPlayers - 1; i++) {
+      const id = cpuPicks[i];
+      line(`CPU${SEAT_MARKS[i]}`, id ? CHARACTERS.find((c) => c.id === id) : null, "おまかせ（ランダム）");
+    }
+  }
+
+  function gotoStep(step) {
+    if (!canReach(step)) return;
+    wizStep = step;
+    // ②キャラに入る時、自分が未選択ならアクティブ席を「あなた」に。最初のクリックが
+    // 必ず自分の選択になり、CPU席へ誤爆して自分の指名を外す事故を防ぐ。
+    if (step === 2 && !selectedCharId) activeSeat = 0;
+    for (const pane of document.querySelectorAll("#select-screen .wiz-pane")) {
+      pane.classList.toggle("hidden", Number(pane.dataset.pane) !== step);
+    }
+    for (const li of document.querySelectorAll("#wiz-steps .wiz-step")) {
+      const n = Number(li.dataset.step);
+      li.classList.toggle("active", n === step);
+      li.classList.toggle("done", n < step);
+    }
+    if (step === 1) renderSeats();   // プレビューを最新の席割りで
+    if (step === 3) renderSummary();
+    updateWizNav();
+  }
+
+  el("wiz-back").onclick = () => { audio.playClick?.(); gotoStep(wizStep - 1); };
+  el("wiz-next").onclick = () => { audio.playClick?.(); gotoStep(wizStep + 1); };
   el("start-btn").onclick = startGame;
+  // ステップ見出しをクリックして到達済みステップへジャンプ（前進は条件を満たす時のみ）。
+  for (const li of document.querySelectorAll("#wiz-steps .wiz-step")) {
+    li.onclick = () => { audio.playClick?.(); gotoStep(Number(li.dataset.step)); };
+  }
+  // select-screen を開くたびに①へ戻し、アクティブ席を「あなた」へ戻す（goScreen から呼ぶ）。
+  resetSelectWizard = () => { activeSeat = 0; gotoStep(1); };
+  gotoStep(1);
 
   // シナリオ（紙芝居）サンプル再生。マスタを読み込んで再生 → 終了で選択画面へ戻る。
   const scBtn = el("scenario-demo-btn");
@@ -238,6 +432,8 @@ function buildSelectScreen() {
     });
   };
 }
+// select-screen の再表示時にウィザードを①へリセットするフック（buildSelectScreen が設定）。
+let resetSelectWizard = () => {};
 
 // ----------------------------------------------------------------- navigation
 // Wire every [data-nav] control to a screen. Home is the boot screen; the
@@ -260,6 +456,7 @@ const SCREEN_BGM = {
 function goScreen(id) {
   showScreen(id);
   SCREEN_BGM[id]?.();
+  if (id === "select-screen") resetSelectWizard(); // 開くたびにウィザードを①卓へ
 }
 // 師弟モード: マイキャラがいれば師弟ホーム、いなければ作成画面へ（Phase 2A/2B）。
 const profileRepo = new LocalProfileRepository();
@@ -347,12 +544,18 @@ function bootHome() {
 // ----------------------------------------------------------------- start
 function startGame() {
   humanIndex = 0;
-  // human picks their character; the remaining CPUs are drawn at random (no
-  // duplicates) from the rest of the roster. Seat count depends on the chosen
-  // mode: 4 players (四人) or 3 players (三麻).
+  // human picks their character. Each CPU seat is either an explicit pick
+  // (cpuPicks) or left as "おまかせ" — empty seats are filled at random with no
+  // duplicates against the human or any explicit pick. Seat count depends on the
+  // chosen mode: 4 players (四人) or 3 players (三麻).
   const human = CHARACTERS.find((c) => c.id === selectedCharId);
-  const pool = shuffled(CHARACTERS.filter((c) => c.id !== selectedCharId));
-  const order = [human, ...pool.slice(0, selectedPlayers - 1)];
+  const picks = cpuPicks.slice(0, selectedPlayers - 1);
+  const usedIds = new Set([human.id, ...picks.filter(Boolean)]);
+  const randomPool = shuffled(CHARACTERS.filter((c) => !usedIds.has(c.id)));
+  const cpus = picks.map((id) =>
+    id ? CHARACTERS.find((c) => c.id === id) : randomPool.shift()
+  );
+  const order = [human, ...cpus];
   const seated = order.map((c) => ({
     character: c,
     abilities: instantiateAbilities(c),
@@ -381,7 +584,6 @@ function beginGame(seated, dealerIndex) {
   renderer = new CanvasRenderer(el("table"), game, humanIndex, tileImages, charImages);
   if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; } // debug handle
 
-  game.bus.on(Events.LOG, (msg) => addLog(msg));
   game.bus.on(Events.STATE_CHANGED, () => render());
   // SE: random dahai sound whenever anyone discards (incl. the human)
   game.bus.on(Events.TILE_DISCARDED, () => audio.playDahai());
@@ -403,8 +605,11 @@ function beginGame(seated, dealerIndex) {
     audio.playVoice(player.character.id, "ability"); // no clip -> shared naki SE
     showAbilityCutIn(player, name);
   });
+  // 局中マイクロ反応（自分の状況に応じた一言をバストアップのセリフ枠へ）。
+  setupMatchTalk(game);
 
   showScreen("game-screen");
+  buildHpBoard(); // 右側に卓配置どおりのキャラHP（相棒ボード）を構築
   el("table").addEventListener("click", onCanvasClick);
   el("table").addEventListener("mousemove", onCanvasHover);
   el("table").addEventListener("mouseleave", () => { renderer.setHover(null); render(); });
@@ -415,6 +620,10 @@ function beginGame(seated, dealerIndex) {
   // start-button click (a user gesture), satisfying browser autoplay policy.
   game.startHand();
   loop();
+
+  // 対局開始: 自キャラが一言（マスタ駆動・一定時間で自動で消える）。
+  // （一旦オフ。再開するときはこの行のコメントを外す）
+  // showTransientSpeaker(game.players[humanIndex].character, "matchStart", {}, { side: "left", duration: 3600 });
 }
 
 // ----------------------------------------------------------------- main loop
@@ -817,6 +1026,7 @@ function render() {
     recallMode,
   });
   renderer.render();
+  updateHpBoard(); // 右側の相棒ボードのHP/手番ハイライトを最新状態に同期
 }
 
 // ----------------------------------------------------------------- results
@@ -886,11 +1096,41 @@ function renderWinHand(r) {
     </div>`;
 }
 
-// Centered win screen: reveals yaku one at a time; a skip button reveals all.
+// 局名を漢数字つきで（東1局 -> 東一局）。
+function roundLabelKanji() {
+  const k = ["", "一", "二", "三", "四", "五", "六", "七", "八"][game.kyoku] || game.kyoku;
+  const wind = { 27: "東", 28: "南", 29: "西", 30: "北" }[game.roundWind] || "東";
+  return `${wind}${k}局`;
+}
+
+// ドラ表示牌（リーチ和了なら裏ドラも）を小さな牌列で。
+function renderDora(winner) {
+  let ind = null;
+  try { ind = game.wall.doraIndicators(); } catch { ind = null; }
+  if (!ind || !ind.length) return "";
+  const tiles = (arr) => arr.map((t) => `<img class="win-dora-tile" src="${tilePath(t.kind)}" alt="">`).join("");
+  let uraRow = "";
+  if (winner && winner.riichi) {
+    let ura = null;
+    try { ura = game.wall.uraIndicators(); } catch { ura = null; }
+    if (ura && ura.length) {
+      uraRow = `<div class="win-dora-row"><span class="win-dora-label">裏ドラ</span><span class="win-dora-tiles">${tiles(ura)}</span></div>`;
+    }
+  }
+  return `
+    <div class="win-dora">
+      <div class="win-dora-row"><span class="win-dora-label">ドラ表示</span><span class="win-dora-tiles">${tiles(ind)}</span></div>
+      ${uraRow}
+    </div>`;
+}
+
+// Full-bleed cinematic win screen (雀龍門/雀魂風): 上に手牌、左に立ち絵、右に役/
+// ランク/点数、ドラ表示と煌めき。役は1つずつ捲り、最後にランクと点数がドンと出る。
 function showWinResult(overlay, r) {
   const res = r.result;
   const winner = game.players[r.winner];
-  const how = r.tsumo ? "ツモ" : `ロン（${game.players[r.loser].character.name}から）`;
+  const howWord = r.tsumo ? "ツモ和了" : "ロン和了";
+  const fromName = !r.tsumo && game.players[r.loser] ? game.players[r.loser].character.name : "";
 
   const items = [];
   if (res.isYakuman) {
@@ -900,23 +1140,53 @@ function showWinResult(overlay, r) {
     if (res.dora) items.push({ name: "ドラ", val: `${res.dora}飜` });
   }
 
-  const fu = res.fu ? `${res.fu}符 ` : "";
-  const scoreText = `${res.rank ? res.rank + " " : ""}${fu}${res.totalHan ? res.totalHan + "飜 " : ""}${res.total}点`;
+  // 中央のドンと出る大ランク（役満／満貫／跳満…）。安手は飜数を出す。
+  const rankTier = (res.isYakuman || /役満/.test(res.rank || "")) ? "yakuman"
+    : res.rank ? "mangan" : "normal";
+  const bigRank = res.isYakuman ? (res.rank || "役満")
+    : res.rank ? res.rank : `${res.totalHan || 0}飜`;
+
+  const detailText = `${res.fu ? res.fu + "符 " : ""}${res.totalHan ? res.totalHan + "飜" : ""}`.trim();
+  // 本体点（res.total）と、供託・本場込みの実収支（deltas）。違えば括弧で併記。
+  const winnerGain = (r.deltas && r.deltas[r.winner]) || res.total;
+  const subText = winnerGain && winnerGain !== res.total ? `(${winnerGain})` : "";
 
   const portraitUrl = charImages.url(winner.character, "portrait");
   const portraitHtml = portraitUrl
     ? `<img class="win-portrait" src="${portraitUrl}" alt="${winner.character.name}">`
     : `<div class="win-portrait win-portrait-fallback" style="--char-color:${winner.character.color}">${[...winner.character.name][0] || "?"}</div>`;
+
+  let sparkles = "";
+  for (let i = 0; i < 16; i++) {
+    const x = (Math.random() * 100).toFixed(1), y = (Math.random() * 88).toFixed(1);
+    const d = (Math.random() * 2.4).toFixed(2), s = (0.5 + Math.random()).toFixed(2);
+    sparkles += `<span class="wspark" style="left:${x}%;top:${y}%;animation-delay:${d}s;--s:${s}"></span>`;
+  }
+
   overlay.innerHTML = `
-    <div class="win-card">
-      <div class="win-how">${how}</div>
-      <h2 class="win-title" style="color:${winner.character.color}">${winner.character.name} の和了</h2>
+    <div class="win-rich" data-tier="${rankTier}" style="--char-color:${winner.character.color}">
+      <div class="win-sparkles">${sparkles}</div>
+      <div class="win-banner">${roundLabelKanji()}　<span class="win-banner-how">${howWord}</span></div>
       ${renderWinHand(r)}
-      <ul class="yaku-list" id="yaku-list"></ul>
-      <div class="win-score hidden" id="win-score">${scoreText}</div>
+      ${portraitHtml}
+      <div class="win-nameplate">
+        <span class="win-name" style="color:${winner.character.color}">${winner.character.name}</span>
+        ${fromName ? `<span class="win-from">${fromName} から</span>` : ""}
+      </div>
+      ${renderDora(winner)}
+      <div class="win-body">
+        <ul class="yaku-list" id="yaku-list"></ul>
+        <div class="win-finale">
+          <div class="win-rank hidden" id="win-rank">${bigRank}</div>
+          <div class="win-scorebox">
+            ${detailText ? `<div class="win-detail">${detailText}</div>` : ""}
+            <div class="win-score hidden" id="win-score">${res.total}<span class="win-pt">点</span></div>
+            ${subText ? `<div class="win-score-sub hidden" id="win-score-sub">${subText}</div>` : ""}
+          </div>
+        </div>
+      </div>
       <div class="win-buttons" id="win-buttons"></div>
-    </div>
-    ${portraitHtml}`;
+    </div>`;
 
   const listEl = el("yaku-list");
   const btnBox = el("win-buttons");
@@ -930,7 +1200,7 @@ function showWinResult(overlay, r) {
     li.innerHTML = `<span class="yaku-name">${it.name}</span><span class="yaku-han">${it.val}</span>`;
     listEl.appendChild(li);
     requestAnimationFrame(() => li.classList.add("show"));
-    winRevealTimer = setTimeout(revealed < items.length ? revealOne : finishReveal, 650);
+    winRevealTimer = setTimeout(revealed < items.length ? revealOne : finishReveal, 520);
   };
 
   const finishReveal = () => {
@@ -942,13 +1212,14 @@ function showWinResult(overlay, r) {
       li.innerHTML = `<span class="yaku-name">${it.name}</span><span class="yaku-han">${it.val}</span>`;
       listEl.appendChild(li);
     }
-    const score = el("win-score");
-    score.classList.remove("hidden");
-    score.classList.add("pop");
+    for (const id of ["win-rank", "win-score", "win-score-sub"]) {
+      const node = el(id);
+      if (node) { node.classList.remove("hidden"); node.classList.add("pop"); }
+    }
     // Winner's tsumo/ron voice (falls back to the 金額表示 SE when no clip).
     audio.playVoice(winner.character.id, r.tsumo ? "tsumo" : "ron");
     btnBox.innerHTML = "";
-    appendNextButton(btnBox);
+    appendNextButton(btnBox, r);
   };
 
   const skipBtn = mkBtn("スキップ", "btn-skip", finishReveal);
@@ -958,14 +1229,20 @@ function showWinResult(overlay, r) {
   winRevealTimer = setTimeout(revealOne, 400);
 }
 
-function appendNextButton(box) {
+function appendNextButton(box, r) {
   const deltas = game.lastResult && game.lastResult.deltas; // capture before next hand
-  const btn = mkBtn(game.isGameOver() ? "結果へ" : "次の局へ", "btn-tsumo", () => {
-    el("win-overlay").classList.add("hidden");
+  const proceed = () => {
     if (game.isGameOver()) { showGameOver(); return; }
     showPointFx(deltas); // animate +N / -N over the table
     game.startHand();
     loop();
+  };
+  const btn = mkBtn(game.isGameOver() ? "結果へ" : "次の局へ", "btn-tsumo", () => {
+    el("win-overlay").classList.add("hidden");
+    // On a 和了, play the RPG-style HP/damage sequence first (points = HP), then
+    // advance. Draws (no winner index) skip straight through.
+    if (r && r.winner != null && deltas && deltas.some((d) => d)) showDamageFx(r, proceed);
+    else proceed();
   });
   box.appendChild(btn);
 }
@@ -1022,6 +1299,183 @@ function showPointFx(deltas) {
   });
 }
 
+// Encode a one-shot SE under sound/se/ (filenames contain Japanese characters).
+const sePath = (name) => "sound/se/" + encodeURIComponent(name);
+
+// Count a number element from `from` -> `to` over `dur` ms (ease-out cubic).
+function tweenNum(node, from, to, dur) {
+  const t0 = performance.now();
+  const step = (t) => {
+    const k = Math.min(1, (t - t0) / dur);
+    const e = 1 - Math.pow(1 - k, 3);
+    node.textContent = Math.round(from + (to - from) * e);
+    if (k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// 立ち絵＋小さなメッセージウィンドウの「スピーカー」要素を作る（マスタ駆動のセリフ表示）。
+// side: "left" | "right"（画面のどちら端に置くか）。DOM を返すだけ（host への追加は呼び出し側）。
+function buildSpeakerEl(character, text, side = "left") {
+  const c = character;
+  const portraitUrl = charImages.url(c, "portrait");
+  const art = portraitUrl
+    ? `<img class="speaker-portrait" src="${portraitUrl}" alt="${c.name}">`
+    : `<div class="speaker-portrait speaker-portrait-fb" style="--c:${c.color}">${[...c.name][0] || "?"}</div>`;
+  const wrap = document.createElement("div");
+  wrap.className = `speaker speaker-${side}`;
+  wrap.innerHTML = `
+    ${art}
+    <div class="speaker-box">
+      <div class="speaker-name" style="color:${c.color}">${c.name}</div>
+      <div class="speaker-text">${text}</div>
+    </div>`;
+  return wrap;
+}
+
+// マスタからセリフを引き、対象 host にスピーカーを差し込む（無ければ何もしない）。
+// 返り値はスピーカー要素 or null。表示の出し入れは呼び出し側で制御する。
+function mountSpeaker(host, character, event, ctx, side = "left") {
+  if (!host || !character) return null;
+  const text = pickVoiceLine(character.id, event, ctx || {});
+  if (!text) return null;
+  const sp = buildSpeakerEl(character, text, side);
+  host.appendChild(sp);
+  requestAnimationFrame(() => sp.classList.add("show"));
+  return sp;
+}
+
+// 単発スピーカー: #speaker-fx に出して duration 後に自動で消す（対局開始などの一瞬の演出）。
+let speakerFxTimer = null;
+function showTransientSpeaker(character, event, ctx, { side = "left", duration = 3400 } = {}) {
+  const host = el("speaker-fx");
+  if (!host) return;
+  clearTimeout(speakerFxTimer);
+  host.innerHTML = "";
+  const sp = mountSpeaker(host, character, event, ctx, side);
+  if (!sp) return;
+  speakerFxTimer = setTimeout(() => {
+    sp.classList.remove("show");
+    setTimeout(() => { if (sp.parentNode === host) host.removeChild(sp); }, 360);
+  }, duration);
+}
+
+// RPG-style HP/damage sequence shown after the 和了 card (points = HP). Lists the
+// winner + every player whose points changed, drains the losers' HP gauges with a
+// shake/flash and a floating -N, heals the winner (+N). セリフを読み切れるよう、
+// クリック or 10秒で次へ進む。`onDone` runs once when the sequence finishes.
+let damageFxTimer = null;
+function showDamageFx(r, onDone) {
+  const host = el("damage-overlay");
+  const deltas = r.deltas || [];
+  const full = (i) => game.players[i].character.stats.startingPoints || MAX_HP;
+  const pct = (v, i) => Math.max(0, Math.min(100, (v / full(i)) * 100));
+
+  // Winner first, then anyone whose points moved (losers / tsumo payers).
+  const order = [r.winner];
+  game.players.forEach((p, i) => { if (i !== r.winner && deltas[i]) order.push(i); });
+
+  const rowHtml = (i) => {
+    const c = game.players[i].character;
+    const after = game.players[i].points;
+    const delta = deltas[i] || 0;
+    const before = after - delta;
+    const isWin = i === r.winner;
+    const busted = !isWin && after < 0; // 持ち点マイナス＝トビ（撃沈）
+    const fillClass = after <= full(i) * 0.25 ? "low" : after <= full(i) * 0.5 ? "mid" : "high";
+    const iconUrl = charImages.url(c, "icon") || charImages.url(c, "portrait");
+    const face = iconUrl
+      ? `<img class="dmg-face" src="${iconUrl}" alt="">`
+      : `<div class="dmg-face dmg-face-fb" style="--c:${c.color}">${[...c.name][0] || "?"}</div>`;
+    return `
+      <div class="dmg-row ${isWin ? "is-win" : "is-loser"}${busted ? " is-down" : ""}" data-i="${i}" data-before="${before}" data-after="${after}">
+        ${face}
+        <div class="dmg-info">
+          <div class="dmg-name" style="color:${c.color}">${c.name}</div>
+          <div class="hpbar">
+            <div class="hpfill-ghost" style="width:${pct(before, i)}%"></div>
+            <div class="hpfill ${fillClass}" style="width:${pct(before, i)}%"></div>
+          </div>
+        </div>
+        <div class="dmg-hp"><span class="dmg-hp-num">${before}</span></div>
+        <div class="dmg-pop ${isWin ? "heal" : "hit"}">${delta > 0 ? "+" : ""}${delta}</div>
+        ${busted ? `<div class="dmg-down-stamp">撃沈</div>` : ""}
+      </div>`;
+  };
+
+  host.innerHTML = `
+    <div class="dmg-card">
+      <div class="dmg-head">${r.tsumo ? "ツモ和了" : "ロン和了"} — ダメージ</div>
+      ${order.map(rowHtml).join("")}
+      <div class="dmg-hint">クリックで次へ（10秒で自動）</div>
+    </div>`;
+  host.classList.remove("hidden");
+  requestAnimationFrame(() => host.classList.add("show"));
+
+  // 自キャラ(人間)の立ち絵＋メッセージ。和了したか／被弾したかで台詞を出し分ける。
+  // 局に絡んでいない（増減なし）ときは何も言わない。
+  const human = game.players[humanIndex];
+  const hd = deltas[humanIndex] || 0;
+  let spEvent = null, spCtx = null;
+  if (r.winner === humanIndex) {
+    spEvent = "agari";
+    spCtx = { isYakuman: !!r.result.isYakuman, score: r.result.total };
+  } else if (hd < 0) {
+    spEvent = "damage";
+    spCtx = { dmgAmount: Math.abs(hd), hpFrac: human.points / full(humanIndex) };
+  }
+  if (spEvent) {
+    const sp = mountSpeaker(host, human.character, spEvent, spCtx, "left");
+    if (sp) host.classList.add("has-speaker");
+  }
+
+  let finished = false;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    clearTimeout(damageFxTimer); damageFxTimer = null;
+    host.onclick = null;
+    host.classList.remove("show", "ko", "has-speaker");
+    host.classList.add("hidden");
+    host.innerHTML = "";
+    onDone();
+  };
+
+  // Beat, then drain everyone's gauge at once.
+  setTimeout(() => {
+    audio.playSe(sePath("ボウリングのピンを倒す1.mp3"), 0.9);
+    host.querySelectorAll(".dmg-row").forEach((row) => {
+      const i = +row.dataset.i;
+      const before = +row.dataset.before, after = +row.dataset.after;
+      const w = pct(after, i) + "%";
+      row.querySelector(".hpfill").style.width = w;          // bar snaps toward new HP
+      const ghost = row.querySelector(".hpfill-ghost");
+      setTimeout(() => { ghost.style.width = w; }, 430);     // chip-damage trail catches up
+      row.classList.add("flash");
+      const busted = i !== r.winner && after < 0;
+      if (i !== r.winner && !busted) row.classList.add("shake");
+      row.querySelector(".dmg-pop").classList.add("show");
+      tweenNum(row.querySelector(".dmg-hp-num"), before, after, 850);
+      // トビ（撃沈）: ゲージが空いた頃を狙ってダウン演出を炸裂させる。
+      if (busted) {
+        setTimeout(() => {
+          row.classList.add("downed");
+          const stamp = row.querySelector(".dmg-down-stamp");
+          if (stamp) stamp.classList.add("show");
+          host.classList.add("ko");
+          audio.playSe(sePath("布団に倒れ込む.mp3"), 1.0);
+        }, 620);
+      }
+    });
+  }, 300);
+
+  // セリフを読み切れるよう、クリック or 10秒で次へ進む。
+  // 直前の「次の局へ」クリックが流れ込んで即スキップするのを防ぐため、
+  // クリック受付は少し待ってから有効化する。
+  setTimeout(() => { host.onclick = finish; }, 600);
+  damageFxTimer = setTimeout(finish, 10000);
+}
+
 // Ability cut-in: a diagonal band sweeps across with the character's bust-up and
 // the skill name in big text, holds briefly (ウェイト), then sweeps off. The band's
 // CSS animation runs for ABILITY_CUTIN_WAIT; we just clean up afterward.
@@ -1058,21 +1512,97 @@ const SEAT_FX_POS = {
   3: { left: "22%", top: "50%" },
 };
 
+// 散りばめる煌めき span 群を作る（和了画面・対局終了で共用）。
+function sparkleSpans(n = 16) {
+  let s = "";
+  for (let i = 0; i < n; i++) {
+    const x = (Math.random() * 100).toFixed(1), y = (Math.random() * 92).toFixed(1);
+    const d = (Math.random() * 2.6).toFixed(2), sc = (0.5 + Math.random()).toFixed(2);
+    s += `<span class="wspark" style="left:${x}%;top:${y}%;animation-delay:${d}s;--s:${sc}"></span>`;
+  }
+  return s;
+}
+
+// 対局終了: 全画面の最終結果画面。左に優勝者の立ち絵＋王冠、右に順位リスト
+// （最終持ち点を HP ゲージで表示）。最下位→1位の順に下から捲り、点数はカウント
+// アップ、1位が出る瞬間に優勝者がフラリッシュ。
 function showGameOver() {
   clearActions();
   const overlay = el("win-overlay");
   overlay.classList.remove("hidden");
   const ranks = game.rankings();
-  const rows = ranks
-    .map((p, i) => `<div class="rank-row"><span>${i + 1}位　<b style="color:${p.character.color}">${p.character.name}</b></span><span>${p.points}点</span></div>`)
-    .join("");
+  const N = ranks.length;
+  const champ = ranks[0];
+  const top = Math.max(...ranks.map((p) => p.points), 1); // ゲージは首位を満タン基準に
+  const reveal = (i) => (N - 1 - i) * 0.45; // 下位ほど先に出る（秒）
+
+  const portraitUrl = charImages.url(champ.character, "portrait");
+  const champArt = portraitUrl
+    ? `<img class="go-champ-portrait" src="${portraitUrl}" alt="${champ.character.name}">`
+    : `<div class="go-champ-portrait go-champ-fb" style="--char-color:${champ.character.color}">${[...champ.character.name][0] || "?"}</div>`;
+
+  const rows = ranks.map((p, i) => {
+    const c = p.character;
+    const iconUrl = charImages.url(c, "icon") || charImages.url(c, "portrait");
+    const face = iconUrl
+      ? `<img class="go-face" src="${iconUrl}" alt="">`
+      : `<div class="go-face go-face-fb" style="--c:${c.color}">${[...c.name][0] || "?"}</div>`;
+    const w = Math.max(2, Math.min(100, (p.points / top) * 100)); // 長さ＝首位比（順位バー）
+    const tier = p.points <= MAX_HP * 0.25 ? "low" : p.points <= MAX_HP * 0.5 ? "mid" : "high"; // 色＝体力
+    return `
+      <div class="go-rank-row r${i + 1}" style="animation-delay:${reveal(i)}s">
+        <div class="go-medal m${i + 1}">${i + 1}</div>
+        ${face}
+        <div class="go-rank-info">
+          <div class="go-rank-name" style="color:${c.color}">${c.name}</div>
+          <div class="hpbar go-bar"><div class="hpfill ${tier}" style="width:${w}%"></div></div>
+        </div>
+        <div class="go-rank-pts" data-pts="${p.points}">0</div>
+      </div>`;
+  }).join("");
+
   overlay.innerHTML = `
-    <div class="win-card">
-      <h2 class="win-title">対局終了</h2>
-      <div class="rank-list">${rows}</div>
-      <div class="win-buttons"></div>
+    <div class="go-screen">
+      <div class="win-sparkles">${sparkleSpans(22)}</div>
+      <div class="go-banner">対局終了</div>
+      <div class="go-champion" style="animation-delay:${reveal(0)}s">
+        <div class="go-crown">👑</div>
+        ${champArt}
+        <div class="go-champ-tag">
+          <span class="go-champ-badge">優勝</span>
+          <span class="go-champ-name" style="color:${champ.character.color}">${champ.character.name}</span>
+        </div>
+      </div>
+      <div class="go-ranks">${rows}</div>
+      <div class="win-buttons go-buttons"></div>
     </div>`;
-  overlay.querySelector(".win-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+
+  // 各行の点数を、行が出るタイミングに合わせて 0 → 最終値へカウントアップ。
+  overlay.querySelectorAll(".go-rank-pts").forEach((node, idx) => {
+    const pts = +node.dataset.pts;
+    setTimeout(() => tweenNum(node, 0, pts, 650), reveal(idx) * 1000 + 240);
+  });
+  // 1位（最後の捲り）に合わせて祝祭SE。
+  setTimeout(() => audio.playSe(sePath("シャキーン1.mp3"), 0.9), reveal(0) * 1000 + 120);
+
+  // 対局終了: 右側の実況ログ欄を片付け、そこへ自キャラの立ち絵＋セリフを出す
+  // （順位帯に応じた台詞。順位の捲りが終わってから登場）。
+  const human = game.players[humanIndex];
+  const hRank = ranks.findIndex((p) => p === human);
+  const endLine = pickVoiceLine(human.character.id, "matchEnd", { rankIndex: hRank, numPlayers: N });
+  const sideEl = document.querySelector("#game-screen .side");
+  if (endLine && sideEl) {
+    setTimeout(() => {
+      sideEl.classList.add("side-result"); // CSS が ログ/見出し/能力欄を隠す
+      const old = sideEl.querySelector(".speaker"); // 連戦などで残っていれば除去
+      if (old) old.remove();
+      const sp = buildSpeakerEl(human.character, endLine, "side");
+      sideEl.appendChild(sp);
+      requestAnimationFrame(() => sp.classList.add("show"));
+    }, reveal(0) * 1000 + 650);
+  }
+
+  overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
 }
 
 // ----------------------------------------------------------------- helpers
@@ -1122,13 +1652,225 @@ function initNoNakiToggle() {
   sync();
 }
 
-function addLog(msg) {
-  const log = el("log");
-  const div = document.createElement("div");
-  if (msg.startsWith("【")) div.className = "ability";
-  div.textContent = msg;
-  log.appendChild(div);
-  log.scrollTop = log.scrollHeight;
+// 自分から見た相対席ラベル（4人: 自分/下家/対面/上家、3人: 対面なし）。
+function relSeatLabel(i) {
+  const N = game.numPlayers;
+  const off = (i - humanIndex + N) % N;
+  if (off === 0) return "自分";
+  if (N === 3) return off === 1 ? "下家" : "上家";
+  return off === 1 ? "下家" : off === 2 ? "対面" : "上家";
+}
+
+// 相棒ボード: 実況ログの代わりに、右サイド上部へ4人ぶんのHPバーを縦に詰めて並べる。
+// 卓を回る順（自分→下家→対面→上家）に上から並べ、手番のキャラを灯して共在感を出す。
+// 各バーにカーソルを合わせると短文紹介がポップ（キャラ選択のホバーと同じ素性紹介）。
+function buildHpBoard() {
+  const board = el("hp-board");
+  if (!board || !game) return;
+  board.innerHTML = "";
+  const N = game.numPlayers;
+  board.classList.toggle("p3", N === 3);
+  hpCells = {};
+  // 自分起点で卓を回る順に並べ替え（自分→下家→対面→上家）。
+  const order = [...game.players.keys()].sort(
+    (a, b) => ((a - humanIndex + N) % N) - ((b - humanIndex + N) % N)
+  );
+  for (const i of order) {
+    const c = game.players[i].character;
+    const row = document.createElement("div");
+    row.className = "hp-row";
+    row.style.setProperty("--c", c.color);
+    if (i === humanIndex) row.classList.add("is-you");
+
+    // 順位メダル（結果画面の .go-medal と同じ金/銀/銅/灰の意匠）。番号と並び順は
+    // 持ち点に応じて updateHpBoard で更新する。
+    const rank = document.createElement("div");
+    rank.className = "hp-rank";
+    row.appendChild(rank);
+
+    const icon = document.createElement("div");
+    icon.className = "hp-icon";
+    icon.appendChild(makeCharIcon(c));
+    row.appendChild(icon);
+
+    const main = document.createElement("div");
+    main.className = "hp-main";
+    main.innerHTML = `
+      <div class="hp-head">
+        <span class="hp-rel">${relSeatLabel(i)}</span>
+        <span class="hp-name" style="color:${c.color}">${c.name}</span>
+        <span class="hp-val"></span>
+      </div>
+      <div class="hp-gauge"><div class="hp-fill"></div></div>`;
+    row.appendChild(main);
+
+    // 短文紹介ポップ（キャラ選択のホバーと同じ bio＋profile）。
+    if (c.bio || c.profile) {
+      const fl = document.createElement("div");
+      fl.className = "hp-flavor";
+      fl.innerHTML = `${c.bio ? `<div class="hp-flavor-bio">${c.bio}</div>` : ""}${c.profile ? `<div class="hp-flavor-profile">${c.profile}</div>` : ""}`;
+      row.appendChild(fl);
+    }
+
+    board.appendChild(row);
+    hpCells[i] = { cell: row, rank, fill: main.querySelector(".hp-fill"), val: main.querySelector(".hp-val") };
+  }
+  buildSelfBustup();
+  updateHpBoard();
+}
+
+// 右サイド下部の自キャラ・バストアップ（立ち絵）。セリフ枠(#self-talk)の背面に立つ。
+function buildSelfBustup() {
+  const host = el("self-bustup");
+  if (!host || !game) return;
+  host.innerHTML = "";
+  const c = game.players[humanIndex].character;
+  const url = charImages.url(c, "portrait") || c.assets?.portrait;
+  if (url) {
+    const img = document.createElement("img");
+    img.className = "self-portrait";
+    img.src = url;
+    img.alt = c.name;
+    if (c.portraitPos) img.style.objectPosition = c.portraitPos;
+    host.appendChild(img);
+  } else {
+    const fb = document.createElement("div");
+    fb.className = "self-portrait self-portrait-fb";
+    fb.style.background = c.color;
+    fb.textContent = [...c.name][0] || "?";
+    host.appendChild(fb);
+  }
+}
+
+// 相棒ボードのHP値・ゲージ・手番ハイライト・順位を現在のゲーム状態に同期。
+// 持ち点の多い順に並べ替え（flex order）、各行へ順位メダル（1位=上）を振る。
+function updateHpBoard() {
+  if (!hpCells || !game) return;
+  // 持ち点降順の順位（同点は players 配列の並びで安定。0=1位）。
+  const rankByIndex = {};
+  [...game.players.keys()]
+    .sort((a, b) => game.players[b].points - game.players[a].points)
+    .forEach((pi, rank) => { rankByIndex[pi] = rank; });
+
+  game.players.forEach((p, i) => {
+    const ref = hpCells[i];
+    if (!ref) return;
+    const full = p.character.stats.startingPoints || MAX_HP;
+    const pct = Math.max(0, Math.min(100, (p.points / full) * 100));
+    ref.fill.style.width = pct + "%";
+    ref.fill.className = "hp-fill " + (pct <= 25 ? "low" : pct <= 50 ? "mid" : "high");
+    ref.val.textContent = p.points;
+    ref.cell.classList.toggle("busted", p.points < 0);
+    ref.cell.classList.toggle("is-turn", game.turn === i && game.phase !== Phase.HAND_OVER);
+    // 順位＝並び順＋メダル（結果画面の m1..m4 と同じ金/銀/銅/灰）。
+    const rank = rankByIndex[i];
+    ref.cell.style.order = rank;
+    ref.rank.textContent = rank + 1;
+    ref.rank.className = "hp-rank m" + (rank + 1);
+  });
+}
+
+// ---- 局中マイクロ反応: 自分(人間)の状況に合わせた一言をバストアップのセリフ枠に出す ----
+// マスタ駆動（characterVoiceMaster の handStart/tenpai/tenpaiDrop/tsumogiriStreak/handStuck/
+// handSmooth/lastTiles を pickVoiceLine で解決）。検出は控えめ＝1局の節目だけ拾い、
+// グローバルなクールダウンで連発を防ぐ。トリガを足したいときは setupMatchTalk に1ブロック
+// 追加し、文言は characterVoiceMaster に並べるだけで増やせる。
+let selfTalkTimer = null;
+let matchTalk = null; // 1局ぶんの検出ステート（resetMatchTalk で作る）
+
+// セリフ枠にテキストを出して一定時間で引っ込める。空文字/未定義なら何もしない。
+function showSelfTalk(text, ms = 4200) {
+  const box = el("self-talk");
+  if (!box || !text) return false;
+  box.textContent = text;
+  box.classList.add("show");
+  clearTimeout(selfTalkTimer);
+  selfTalkTimer = setTimeout(() => box.classList.remove("show"), ms);
+  if (matchTalk) matchTalk.lastAt = performance.now();
+  return true;
+}
+
+// event のセリフを引いて出す（候補なし/対局終了演出中/クールダウン中はスキップ）。
+// force=true は節目（聴牌の出入り・局のはじまり）用にクールダウンを無視する。
+function fireSelfTalk(event, { force = false } = {}) {
+  if (!game || !matchTalk || game.phase === Phase.HAND_OVER) return;
+  const COOLDOWN = 5200;
+  if (!force && performance.now() - matchTalk.lastAt < COOLDOWN) return;
+  const id = game.players[humanIndex].character.id;
+  showSelfTalk(pickVoiceLine(id, event, {}));
+}
+
+// 人間プレイヤーのシャンテン数（打牌後の13枚で評価する想定）。0=聴牌。
+function humanShanten() {
+  const p = game.players[humanIndex];
+  return shanten(p.counts(), p.numMeldSets());
+}
+
+// 1局ぶんの検出ステートを初期化。
+function resetMatchTalk() {
+  matchTalk = {
+    lastAt: -1e9,     // 直近にセリフを出した時刻（クールダウン用）
+    prevShanten: 6,   // 直近の自分シャンテン
+    discards: 0,      // この局の自分の打牌数
+    lastImprove: 0,   // 最後にシャンテンが進んだ打牌番号
+    improveRun: 0,    // 連続でシャンテンが進んだ回数
+    tsumogiri: 0,     // 連続ツモ切り数
+    wasTenpai: false, // 直前まで聴牌していたか
+    saidStuck: false, // 手詰まりセリフを今局すでに出したか
+    saidLast: false,  // 流局間際セリフを今局すでに出したか
+  };
+}
+
+// 対局のイベントに検出を配線（beginGame から一度だけ）。
+function setupMatchTalk(g) {
+  resetMatchTalk();
+
+  // 局のはじまり：配牌直後に一言（シャッフルSEと被らないよう少し遅らせる）。
+  g.bus.on(Events.HAND_STARTED, () => {
+    resetMatchTalk();
+    matchTalk.prevShanten = humanShanten(); // 配牌時のシャンテンを基準に
+    setTimeout(() => fireSelfTalk("handStart", { force: true }), 1200);
+  });
+
+  // 自分の打牌ごとに、ツモ切り連続・聴牌の出入り・進行の速さ/詰まりを見る。
+  g.bus.on(Events.TILE_DISCARDED, ({ player, tile }) => {
+    if (!player.isHuman || !matchTalk) return;
+    matchTalk.discards++;
+
+    // ツモ切り連続（3連続でぼやく。閾値未満に戻るまで再発火しない）。
+    if (tile?.tsumogiri) {
+      matchTalk.tsumogiri++;
+      if (matchTalk.tsumogiri === 3) fireSelfTalk("tsumogiriStreak");
+    } else {
+      matchTalk.tsumogiri = 0;
+    }
+
+    // 打牌後（13枚）のシャンテンで聴牌の出入りと進行を判定。
+    const sh = humanShanten();
+    if (!matchTalk.wasTenpai && sh === 0) { matchTalk.wasTenpai = true; fireSelfTalk("tenpai", { force: true }); }
+    else if (matchTalk.wasTenpai && sh > 0) { matchTalk.wasTenpai = false; fireSelfTalk("tenpaiDrop", { force: true }); }
+
+    if (sh < matchTalk.prevShanten) {
+      matchTalk.improveRun++;
+      matchTalk.lastImprove = matchTalk.discards;
+      // 連続で手が進んだ＝さくさく（聴牌セリフと被らないよう sh>=1 のときだけ）。
+      if (matchTalk.improveRun >= 2 && sh >= 1) fireSelfTalk("handSmooth");
+    } else {
+      matchTalk.improveRun = 0;
+      // しばらく進まず、まだ遠い → 手詰まり（1局1回）。
+      if (!matchTalk.saidStuck && matchTalk.discards - matchTalk.lastImprove >= 4 && sh >= 2) {
+        matchTalk.saidStuck = true;
+        fireSelfTalk("handStuck");
+      }
+    }
+    matchTalk.prevShanten = sh;
+  });
+
+  // 流局間際：山が残りわずかになったら一度だけ。
+  g.bus.on(Events.TILE_DRAWN, () => {
+    if (!matchTalk || matchTalk.saidLast) return;
+    if (g.wall.liveRemaining <= 6) { matchTalk.saidLast = true; fireSelfTalk("lastTiles"); }
+  });
 }
 
 initStage(); // fixed 1280x720 stage, scaled to fit the window (letterboxed)
