@@ -84,34 +84,73 @@
       <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
     </section>
 
-    <!-- Character select -->
+    <!-- Character select (3-step wizard: ①卓 → ②キャラ → ③ルール＆開始) -->
     <section id="select-screen" class="screen hidden">
       <header class="select-head">
         <button type="button" class="ghost-back select-back" data-nav="free-battle">← 戻る</button>
-        <h1>麻雀RPG <small>プロトタイプ</small></h1>
-        <p class="lead">アイコンを選んでください。<b>持ち点 = HP</b>、各キャラに固有能力。</p>
+        <h1>フリー対戦</h1>
+        <ol class="wiz-steps" id="wiz-steps">
+          <li class="wiz-step active" data-step="1"><span class="wiz-step-no">①</span>卓</li>
+          <li class="wiz-step" data-step="2"><span class="wiz-step-no">②</span>キャラ</li>
+          <li class="wiz-step" data-step="3"><span class="wiz-step-no">③</span>ルール＆開始</li>
+        </ol>
+        <button type="button" id="scenario-demo-btn" class="select-scenario">シナリオ（サンプル）</button>
       </header>
-      <div class="select-layout">
-        <div id="char-list" class="char-list"></div>
-        <aside id="char-detail" class="char-detail"></aside>
+
+      <div class="wiz-body">
+        <!-- ① 卓: 人数を選ぶ。自分以外の席はデフォおまかせ。 -->
+        <div class="wiz-pane" data-pane="1">
+          <h2 class="wiz-title">何人で打つ？</h2>
+          <div class="mode-toggle wiz-players" id="players-toggle">
+            <button type="button" class="mode-btn selected" data-players="4">
+              <span class="choice-main">4人</span>
+              <span class="choice-sub">四人麻雀・東南西北</span>
+            </button>
+            <button type="button" class="mode-btn" data-players="3">
+              <span class="choice-main">3人</span>
+              <span class="choice-sub">三人麻雀（三麻）</span>
+            </button>
+          </div>
+          <div class="seat-preview-block">
+            <div class="seat-preview-label">この顔ぶれで卓を囲みます</div>
+            <div class="seat-preview" id="seat-preview"></div>
+          </div>
+          <p class="wiz-note">※ 自分以外の席は<b>おまかせ（ランダム）</b>。次の「キャラ」で相手を指名することもできます。</p>
+        </div>
+
+        <!-- ② キャラ: ロスターから自分を選択。席を押せばCPUも指名できる。 -->
+        <div class="wiz-pane hidden" data-pane="2">
+          <div class="seat-bar" id="seat-bar"></div>
+          <div class="select-layout">
+            <div id="char-list" class="char-list"></div>
+            <aside id="char-detail" class="char-detail"></aside>
+          </div>
+        </div>
+
+        <!-- ③ ルール＆開始: 対局方式を選び、確認して開始。 -->
+        <div class="wiz-pane hidden" data-pane="3">
+          <h2 class="wiz-title">対局方式</h2>
+          <div class="mode-toggle wiz-rounds" id="mode-toggle">
+            <button type="button" class="mode-btn selected" data-rounds="1">
+              <span class="choice-main">東風戦</span>
+              <span class="choice-sub">東場のみ・短期決戦</span>
+            </button>
+            <button type="button" class="mode-btn" data-rounds="2">
+              <span class="choice-main">半荘戦</span>
+              <span class="choice-sub">東南戦・じっくり</span>
+            </button>
+          </div>
+          <div class="wiz-summary-block">
+            <div class="wiz-summary-label">この内容で対局します</div>
+            <div class="wiz-summary" id="wiz-summary"></div>
+          </div>
+        </div>
       </div>
-      <div class="select-footer">
-        <div class="mode-select">
-          <span class="mode-label">人数:</span>
-          <div class="mode-toggle" id="players-toggle">
-            <button type="button" class="mode-btn selected" data-players="4">4人</button>
-            <button type="button" class="mode-btn" data-players="3">3人</button>
-          </div>
-        </div>
-        <div class="mode-select">
-          <span class="mode-label">対局方式:</span>
-          <div class="mode-toggle" id="mode-toggle">
-            <button type="button" class="mode-btn selected" data-rounds="1">東風戦</button>
-            <button type="button" class="mode-btn" data-rounds="2">半荘戦</button>
-          </div>
-        </div>
-        <button id="start-btn" class="primary" disabled>対局開始</button>
-        <button id="scenario-demo-btn" class="secondary" type="button">シナリオ（サンプル）</button>
+
+      <div class="wiz-nav">
+        <button type="button" id="wiz-back" class="secondary">← 戻る</button>
+        <button type="button" id="wiz-next" class="primary">次へ →</button>
+        <button type="button" id="start-btn" class="primary">対局開始</button>
       </div>
     </section>
 
@@ -143,6 +182,8 @@
         <div id="point-fx" class="point-fx"></div>
         <div id="ability-cutin" class="ability-cutin hidden"></div>
         <div id="win-overlay" class="win-overlay hidden"></div>
+        <div id="damage-overlay" class="damage-overlay hidden"></div>
+        <div id="speaker-fx" class="speaker-fx"></div>
         <button id="nonaki-btn" class="nonaki-btn" type="button" aria-pressed="false">鳴きなし: OFF</button>
         <button id="settings-btn" class="settings-btn" title="設定" aria-label="設定">⚙</button>
         <div id="settings-panel" class="settings-panel hidden">
@@ -165,8 +206,15 @@
         </div>
       </div>
       <aside class="side">
-        <h3>実況ログ</h3>
-        <div id="log" class="log"></div>
+        <!-- 実況ログの代わりの「相棒ボード」。上に4人ぶんのHPバーを詰め、下に
+             自キャラのバストアップ風立ち絵を置く。バストアップにはセリフ枠を重ね、
+             局中の状況（聴牌・ツモ切り続き・流局間際…）に応じた一言を出す余地を持つ。
+             各HPバーにカーソルを合わせると短文紹介がポップする。 -->
+        <div id="hp-board" class="hp-board"></div>
+        <div id="self-stage" class="self-stage">
+          <div id="self-talk" class="self-talk"></div>
+          <div id="self-bustup" class="self-bustup"></div>
+        </div>
         <!-- ability controls live at the bottom of the side space (not over the
              table) so they never cover the hand tiles. The remaining-count chip
              renders above the activation button. Hidden via CSS when empty. -->
