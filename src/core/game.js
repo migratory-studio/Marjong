@@ -86,6 +86,12 @@ export class Game {
     this.seed = seed;
     this.handNumber = 0; // monotonic counter (used only for wall seeding)
     this.phase = Phase.HAND_OVER;
+    // 終了（トビ）判定。通常は誰かが points<0 で即終了。団体戦は個人が飛んでも交代で
+    // 続行するため、main.js から「生存チーム<=1」等の別ルールを注入できる。
+    this.bustCheck =
+      typeof options.bustCheck === "function"
+        ? options.bustCheck
+        : (players) => players.some((p) => p.points < 0);
     // Terminal flag, tracked separately from `phase` so the HAND_OVER
     // presentation (ron/tsumo banner + win screen) still plays on the hand
     // that ends the game (トビ終了 or final round). The UI routes to the
@@ -948,7 +954,7 @@ export class Game {
     // End conditions:
     //  * someone busts (points < 0) -> immediate end (トビ終了)
     //  * the configured final round/hand is completed without 連荘
-    const bust = this.players.some((p) => p.points < 0);
+    const bust = this.bustCheck(this.players);
     // roundsPlayed: how many full rounds (東=1, 南=2, ...) we've moved past.
     const finishedAllRounds = (this.roundWind - 27) >= this.maxRounds;
     if (bust || finishedAllRounds) {

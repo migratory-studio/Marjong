@@ -98,24 +98,55 @@
       </header>
 
       <div class="wiz-body">
-        <!-- ① 卓: 人数を選ぶ。自分以外の席はデフォおまかせ。 -->
+        <!-- ① 卓: 対戦形式（通常 / 団体戦）と卓人数を選ぶ。 -->
         <div class="wiz-pane" data-pane="1">
-          <h2 class="wiz-title">何人で打つ？</h2>
-          <div class="mode-toggle wiz-players" id="players-toggle">
-            <button type="button" class="mode-btn selected" data-players="4">
-              <span class="choice-main">4人</span>
-              <span class="choice-sub">四人麻雀・東南西北</span>
+          <h2 class="wiz-title">対戦形式</h2>
+          <div class="mode-toggle" id="battle-mode-toggle">
+            <button type="button" class="mode-btn selected" data-battle="normal">
+              <span class="choice-main">通常対戦</span>
+              <span class="choice-sub">個人で対局</span>
             </button>
-            <button type="button" class="mode-btn" data-players="3">
-              <span class="choice-main">3人</span>
-              <span class="choice-sub">三人麻雀（三麻）</span>
+            <button type="button" class="mode-btn" data-battle="team">
+              <span class="choice-main">団体戦</span>
+              <span class="choice-sub">3人チームで挑む</span>
             </button>
           </div>
-          <div class="seat-preview-block">
-            <div class="seat-preview-label">この顔ぶれで卓を囲みます</div>
-            <div class="seat-preview" id="seat-preview"></div>
+
+          <!-- 通常: 人数 + 席プレビュー -->
+          <div id="normal-table-opts">
+            <h2 class="wiz-title wiz-sub-title">何人で打つ？</h2>
+            <div class="mode-toggle wiz-players" id="players-toggle">
+              <button type="button" class="mode-btn selected" data-players="4">
+                <span class="choice-main">4人</span>
+                <span class="choice-sub">四人麻雀・東南西北</span>
+              </button>
+              <button type="button" class="mode-btn" data-players="3">
+                <span class="choice-main">3人</span>
+                <span class="choice-sub">三人麻雀（三麻）</span>
+              </button>
+            </div>
+            <div class="seat-preview-block">
+              <div class="seat-preview-label">この顔ぶれで卓を囲みます</div>
+              <div class="seat-preview" id="seat-preview"></div>
+            </div>
+            <p class="wiz-note">※ 自分以外の席は<b>おまかせ（ランダム）</b>。次の「キャラ」で相手を指名することもできます。</p>
           </div>
-          <p class="wiz-note">※ 自分以外の席は<b>おまかせ（ランダム）</b>。次の「キャラ」で相手を指名することもできます。</p>
+
+          <!-- 団体戦: チーム数 -->
+          <div id="team-table-opts" class="hidden">
+            <h2 class="wiz-title wiz-sub-title">チーム数</h2>
+            <div class="mode-toggle" id="team-count-toggle">
+              <button type="button" class="mode-btn selected" data-teams="4">
+                <span class="choice-main">4チーム</span>
+                <span class="choice-sub">四人麻雀形式</span>
+              </button>
+              <button type="button" class="mode-btn" data-teams="3">
+                <span class="choice-main">3チーム</span>
+                <span class="choice-sub">三麻形式</span>
+              </button>
+            </div>
+            <p class="wiz-note">※ 次のステップで自チームのメンバー3人を選んでください。相手チームはランダムで決まります。</p>
+          </div>
         </div>
 
         <!-- ② キャラ: ロスターから自分を選択。席を押せばCPUも指名できる。 -->

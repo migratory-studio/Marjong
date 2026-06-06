@@ -1314,6 +1314,66 @@ button.secondary { color: var(--ink); }
   border-radius: 6px; padding: 2px 8px; box-shadow: 0 2px 6px rgba(0,0,0,.4);
 }
 
+/* ---- Phase A（団体戦）: チーム枠に3人カードを並べる。自チームを左上に強調、
+       先鋒に「一番手」マーク、控えはトーンダウン。2×2 グリッド。 ---- */
+.mi-teams {
+  display: grid; grid-template-columns: repeat(2, auto);
+  gap: 24px 44px; align-items: start; justify-content: center; z-index: 2;
+}
+.mi-team-block {
+  border: 2px solid rgba(120,150,170,.4); border-radius: 16px;
+  padding: 12px 16px 16px;
+  background: linear-gradient(180deg, rgba(20,28,36,.5), rgba(8,12,16,.82));
+  box-shadow: 0 8px 22px rgba(0,0,0,.4);
+  opacity: 0; transform: translateY(30px) scale(.96);
+  transition: opacity .45s ease, transform .45s cubic-bezier(.2,.9,.3,1);
+}
+.mi-team-block.in { opacity: 1; transform: none; }
+.mi-team-block.is-human {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(246,210,100,.35), 0 12px 28px rgba(0,0,0,.5);
+}
+.mi-team-head {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  font-size: 16px; font-weight: 800; color: #dce8f0; margin-bottom: 10px;
+  letter-spacing: .05em; text-shadow: 0 1px 2px rgba(0,0,0,.5);
+}
+.mi-team-you {
+  background: var(--accent); color: #1a1a1a; font-weight: 900; font-size: 11px;
+  border-radius: 5px; padding: 1px 7px;
+}
+.mi-team-cards { display: flex; gap: 10px; align-items: flex-end; }
+.mi-tm-card {
+  position: relative; width: 138px; border-radius: 10px; overflow: hidden;
+  background: linear-gradient(180deg, rgba(20,28,24,.4), rgba(8,12,10,.85));
+  border: 2px solid color-mix(in srgb, var(--char) 45%, #2a3f34);
+}
+.mi-tm-card.bench { opacity: .55; filter: saturate(.7); }
+.mi-tm-card.first {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--char) 65%, transparent), 0 8px 18px rgba(0,0,0,.5);
+}
+.mi-tm-art { position: relative; height: 164px; background: #0a0e0c; }
+.mi-tm-portrait { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+.mi-tm-card .mi-art-fallback { font-size: 50px; }
+.mi-tm-name {
+  padding: 6px 4px; text-align: center; font-size: 15px; font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0,0,0,.5);
+}
+.mi-tm-badge {
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  background: var(--accent); color: #1a1a1a; font-weight: 900; font-size: 11px;
+  border-radius: 5px; padding: 2px 9px; white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0,0,0,.5);
+}
+.mi-tm-bench-tag {
+  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+  background: rgba(10,14,18,.7); color: #9fb0bd; font-weight: 700; font-size: 10px;
+  border: 1px solid rgba(160,180,195,.3); border-radius: 5px;
+  padding: 1px 7px; white-space: nowrap;
+}
+/* 団体戦時の VS はカード群に重なりすぎないよう小さめに。 */
+.mi-versus-team .mi-vs { font-size: 132px; top: 50%; }
+
 /* ---- Phase B: 座席・親決め ---- */
 .mi-table { position: relative; width: 520px; height: 520px; }
 .mi-table-felt {
@@ -1830,3 +1890,251 @@ button.secondary { color: var(--ink); }
 }
 .speaker-side .speaker-portrait { height: clamp(300px, 56vh, 480px); }
 .speaker-side .speaker-box { min-height: 122px; }
+
+/* ============================================================================
+   団体戦 — 右サイドパネルのチームブロック
+   ============================================================================ */
+.hp-board.team-battle { gap: 5px; }
+
+.tb-block {
+  border-radius: 10px; border: 1px solid #ffffff18;
+  overflow: hidden; background: #0e1813;
+}
+.tb-block.my-team { border-color: #f6b35260; box-shadow: 0 0 0 1px #f6b35225; }
+
+.tb-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 4px 10px; background: #ffffff0a;
+  font-size: 11px; font-weight: 800; color: var(--muted);
+}
+.my-team .tb-header { color: var(--accent); }
+.tb-total { font-size: 12px; font-weight: 900; color: #eef3ef; font-variant-numeric: tabular-nums; }
+
+/* 出場中メンバー */
+.tb-active {
+  display: flex; align-items: center; gap: 7px; padding: 6px 10px;
+  background: #141f19; border-bottom: 1px solid #ffffff0e;
+}
+.tb-active.is-turn .tb-dot { animation: hpTurnPulse 1.6s ease-in-out infinite; }
+.tb-dot {
+  width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+  background: var(--c, var(--accent)); box-shadow: 0 0 6px var(--c, var(--accent));
+}
+.tb-icon { width: 22px; height: 22px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+.tb-icon img, .tb-icon .char-icon { width: 100%; height: 100%; border-radius: 50%; }
+.tb-info { flex: 1; min-width: 0; }
+.tb-name { font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
+.tb-info .hp-gauge { height: 5px; margin-top: 3px; }
+.tb-hp { font-size: 12px; font-weight: 800; color: #eef3ef; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+/* セリフ吹き出し */
+.tb-talk {
+  margin: 0 10px 5px; padding: 4px 9px; font-size: 11px; color: #f6efe1;
+  background: #1a2c23; border: 1px solid #f6b35255; border-radius: 7px;
+  position: relative;
+}
+.tb-talk::before {
+  content: ''; position: absolute; top: -6px; left: 18px;
+  border: 5px solid transparent; border-bottom-color: #f6b35255; border-top: 0;
+}
+.tb-talk.hidden { display: none; }
+
+/* 待機メンバー */
+.tb-bench-row { display: flex; gap: 4px; padding: 4px 10px; }
+.tb-bench {
+  flex: 1; display: flex; align-items: center; gap: 5px; min-width: 0;
+}
+.tb-bench.out { opacity: 0.3; filter: grayscale(.8); }
+.tb-bench-icon { width: 15px; height: 15px; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+.tb-bench-icon img, .tb-bench-icon .char-icon { width: 100%; height: 100%; border-radius: 50%; }
+.tb-bench-info { flex: 1; min-width: 0; }
+.tb-bench-bar { width: 100%; height: 3px; border-radius: 999px; background: #ffffff14; overflow: hidden; margin-bottom: 2px; }
+.tb-bench-val { font-size: 9px; font-weight: 800; color: var(--muted); font-variant-numeric: tabular-nums; }
+.out .tb-bench-val { text-decoration: line-through; }
+
+/* ①卓: 通常/団体戦サブタイトル */
+.wiz-sub-title { font-size: 13px; font-weight: 700; color: var(--muted); margin: 14px 0 6px; }
+
+/* ============================================================================
+   団体戦 — ダメージ演出オーバーレイ
+   ============================================================================ */
+.tb-dmg-card { min-width: 520px; max-width: 74%; }
+
+.tb-dmg-rows { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+.tb-dmg-row {
+  display: flex; align-items: center; gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.tb-dmg-tag { font-size: 10px; font-weight: 800; width: 54px; text-align: right; flex-shrink: 0; }
+.tb-dmg-name { font-size: 12px; font-weight: 800; width: 62px; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb-dmg-barwrap { flex: 1; height: 8px; background: #ffffff14; border-radius: 999px; overflow: hidden; }
+.tb-dmg-val { font-size: 12px; font-weight: 800; width: 52px; text-align: right; flex-shrink: 0; }
+.tb-dmg-delta { font-size: 11px; font-weight: 800; width: 54px; flex-shrink: 0; }
+.tb-dmg-delta.gain { color: #66e6a8; }
+.tb-dmg-delta.loss { color: var(--danger); }
+
+/* チーム合計スコア */
+.tb-totals {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 9px 0; border-top: 1px solid #ffffff12; border-bottom: 1px solid #ffffff12;
+  margin-bottom: 12px;
+}
+.tb-tot-item { text-align: center; }
+.tb-tot-item.mine .tb-tot-label { color: var(--accent); }
+.tb-tot-label { font-size: 10px; color: var(--muted); }
+.tb-tot-val { font-size: 15px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.tb-tot-sep { width: 1px; height: 30px; background: #ffffff18; }
+
+/* 飛びバナー（親満ペナルティ発生時のみ） */
+.tb-fly-banner {
+  margin-bottom: 12px; padding: 9px 12px; border-radius: 10px;
+  background: linear-gradient(180deg, rgba(120,30,30,.45), rgba(60,12,12,.6));
+  border: 1px solid rgba(220,80,80,.5);
+  box-shadow: 0 0 16px rgba(220,60,60,.25) inset;
+  animation: tb-fly-in .35s ease;
+}
+@keyframes tb-fly-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.tb-fly-line {
+  display: flex; align-items: center; gap: 6px; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #ffd9d9; line-height: 1.5;
+}
+.tb-fly-x { color: #ff6b6b; font-weight: 900; }
+.tb-fly-team { color: #ffb0b0; }
+.tb-fly-pen { color: #ff7676; font-size: 14px; font-weight: 900; font-variant-numeric: tabular-nums; }
+
+/* 交代ブロック */
+.tb-swap-block {
+  background: #131e18; border: 1px solid #ffffff18; border-radius: 10px;
+  padding: 10px 12px; margin-bottom: 10px;
+}
+.tb-swap-label { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 8px; }
+.tb-swap-opts { display: flex; gap: 6px; }
+.tb-swap-opt {
+  flex: 1; display: flex; align-items: center; gap: 7px;
+  padding: 7px 8px; border-radius: 8px; cursor: pointer;
+  border: 1px solid #ffffff18; background: #1a2c23;
+  transition: border-color .15s, background .15s;
+}
+.tb-swap-opt:hover:not(.out) { border-color: #ffffff30; background: #1f3328; }
+.tb-swap-opt.selected:not(.out) { border-color: var(--accent); background: #23402e; }
+.tb-swap-opt.current { border-color: #ffffff22; }
+.tb-swap-opt.out { opacity: 0.3; cursor: not-allowed; }
+.tb-swap-icon {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  background: #1e3028; border: 1.5px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800;
+}
+.tb-swap-info { flex: 1; min-width: 0; }
+.tb-swap-name { font-size: 11px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tb-swap-gauge { height: 3px; margin-top: 3px; }
+.tb-swap-hp { font-size: 10px; font-weight: 800; color: var(--muted); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.tb-swap-cur { font-size: 9px; font-weight: 800; color: var(--accent); flex-shrink: 0; }
+
+.tb-note { font-size: 10px; color: #3e5e4e; text-align: center; margin-bottom: 10px; }
+.tb-next-btn {
+  width: 100%; padding: 10px; background: var(--accent); border: none;
+  border-radius: 10px; color: #20140a; font-size: 14px; font-weight: 900; cursor: pointer;
+}
+.tb-next-btn:hover { background: #ffc46a; }
+
+/* ============================================================================
+   団体戦 — 追補（HPボード順位メダル / ダメージ演出のシェイク・ゴースト /
+   交代UIレイアウト修正 / メンバー交代演出）
+   ============================================================================ */
+
+/* HPボード: チーム得点による順位メダル（ヘッダー左） */
+.tb-head-left { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.tb-rank {
+  flex: 0 0 auto; width: 15px; height: 15px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 900; color: #2a1d0a;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.35), 0 1px 2px #0007;
+}
+.tb-rank.m1 { background: linear-gradient(150deg, #ffe9a6, #f3b13f); }
+.tb-rank.m2 { background: linear-gradient(150deg, #f1f4f7, #b6c0c9); }
+.tb-rank.m3 { background: linear-gradient(150deg, #f0c08a, #c47e3e); color: #2a1407; }
+.tb-rank.m4 { background: linear-gradient(150deg, #b9c0bd, #7c8783); }
+
+/* ダメージ演出: ゲージのドレイン＋ゴースト残像、被弾シェイク/フラッシュ、撃沈 */
+.tb-dmg-row { position: relative; }
+.tb-dmg-barwrap { position: relative; }
+.tb-dmg-barwrap .hp-fill,
+.tb-dmg-barwrap .hpfill-ghost { position: absolute; left: 0; top: 0; height: 100%; }
+.tb-dmg-barwrap .hp-fill { transition: width .55s cubic-bezier(.3,.7,.2,1); z-index: 1; }
+.tb-dmg-barwrap .hpfill-ghost { background: #ffffff70; transition: width .6s ease .1s; }
+.tb-dmg-delta.show { animation: tbDeltaPop .5s ease; }
+@keyframes tbDeltaPop {
+  0% { transform: scale(.4); opacity: 0; }
+  55% { transform: scale(1.25); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.tb-dmg-row.flash::after {
+  content: ""; position: absolute; inset: -3px; pointer-events: none; border-radius: 8px;
+  background: radial-gradient(ellipse at center, rgba(255,60,60,.5), transparent 70%);
+  opacity: 0; animation: dmgFlash .5s ease;
+}
+.tb-dmg-row.is-win.flash::after { background: radial-gradient(ellipse at center, rgba(120,255,160,.45), transparent 70%); }
+.tb-dmg-row.shake { animation: dmgShake .42s cubic-bezier(.36,.07,.19,.97); }
+.tb-dmg-row.downed { animation: downJolt .5s cubic-bezier(.36,.07,.19,.97); }
+.tb-dmg-row.downed .tb-dmg-name { color: #8c918e !important; }
+.tb-dmg-row.downed .tb-dmg-num { color: #ff5c5c; }
+.tb-dmg-stamp {
+  position: absolute; right: 56px; top: 50%; transform: translateY(-50%) scale(.6) rotate(-12deg);
+  font-size: 16px; font-weight: 900; color: #ff5c5c; opacity: 0;
+  -webkit-text-stroke: 1px #4a0d0d; text-shadow: 0 2px 6px #000a; pointer-events: none;
+}
+.tb-dmg-stamp.show { animation: downStamp .5s cubic-bezier(.2,1.5,.3,1) forwards; }
+
+/* 交代UI: 右側を「HP/出場中」の縦積みにして名前の潰れを解消 */
+.tb-swap-right { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex-shrink: 0; }
+
+/* メンバー交代演出 */
+.swapfx-card { min-width: 420px; max-width: 70%; text-align: center; }
+.swapfx-rows { display: flex; flex-direction: column; gap: 10px; margin: 14px 0 4px; }
+.swapfx-row {
+  display: flex; align-items: center; gap: 12px;
+  background: #131e18; border: 1px solid #ffffff18; border-radius: 10px; padding: 8px 14px;
+}
+.swapfx-row.mine { border-color: var(--accent); }
+.swapfx-team { font-size: 12px; font-weight: 800; color: var(--muted); width: 92px; text-align: left; flex-shrink: 0; }
+.swapfx-row.mine .swapfx-team { color: var(--accent); }
+.swapfx-pair { display: flex; align-items: center; gap: 12px; flex: 1; justify-content: center; }
+.swapfx-mem { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 800; }
+.swapfx-mem.leaving { opacity: .5; }
+.swapfx-mem.leaving .swapfx-nm { text-decoration: line-through; }
+.swapfx-mem.entering { animation: swapfxIn .42s ease; }
+@keyframes swapfxIn { from { opacity: 0; transform: translateX(-10px) scale(.9); } to { opacity: 1; transform: none; } }
+.swapfx-face { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.swapfx-face-fb { display: flex; align-items: center; justify-content: center; background: color-mix(in srgb, var(--c) 35%, #1a2a22); color: #fff; }
+.swapfx-arrow { font-size: 18px; color: var(--accent); }
+
+/* HPボードの順位スライド（FLIP）のため、ブロックを重なり順で前に出せるように */
+.tb-block { position: relative; }
+
+/* 飛びカットイン（撃沈＋親満払い） */
+.fly-cut {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  padding: 26px 44px; border-radius: 16px; position: relative; z-index: 2;
+  background: linear-gradient(180deg, rgba(72,12,12,.94), rgba(28,6,6,.97));
+  border: 2px solid rgba(220,70,70,.6);
+  box-shadow: 0 0 50px rgba(220,40,40,.4), 0 20px 60px rgba(0,0,0,.6);
+  animation: flyCutIn .4s cubic-bezier(.2,1.2,.3,1);
+}
+@keyframes flyCutIn { from { opacity: 0; transform: scale(.82); } to { opacity: 1; transform: none; } }
+.fly-cut-title { font-size: 15px; font-weight: 900; letter-spacing: .14em; color: #ff9a9a; }
+.fly-cut-item { text-align: center; }
+.fly-cut-team { font-size: 12px; font-weight: 800; color: #ffb0b0; margin-bottom: 3px; }
+.fly-cut-headline { font-size: 30px; font-weight: 900; color: #fff; text-shadow: 0 2px 10px #000; }
+.fly-cut-x { color: #ff5c5c; margin-right: 6px; }
+.fly-cut-pen { margin-top: 6px; font-size: 17px; font-weight: 800; color: #ffd9d9; }
+.fly-cut-pen-num {
+  display: inline-block; margin-left: 4px; font-size: 30px; color: #ff6b6b;
+  -webkit-text-stroke: 1px #4a0d0d; font-variant-numeric: tabular-nums;
+  animation: flyCutSlam .5s cubic-bezier(.2,1.6,.3,1) .5s both;
+}
+@keyframes flyCutSlam {
+  0% { transform: scale(2.4); opacity: 0; }
+  60% { transform: scale(.9); opacity: 1; }
+  100% { transform: scale(1); }
+}

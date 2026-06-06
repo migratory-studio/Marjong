@@ -63,11 +63,16 @@ function hpGauge(points, maxHp, accent) {
  * @param {object} [opts.audio]     AudioManager（任意。SE 用）
  * @param {Function} opts.onComplete 演出完了で呼ばれる
  */
-export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, onComplete }) {
+export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, teams = null, onComplete }) {
   const N = seated.length;
   const rounds = mode.rounds === 2 ? 2 : 1;
   const players = N;
   const maxHp = Math.max(...seated.map((s) => s.character.stats?.startingPoints || 1));
+  // 団体戦: 各チーム3人を枠で囲んで並べる専用 Phase A を出す。Phase B（着席・親決め）は
+  // 各チームの先鋒（seated）でそのまま流用する。
+  const isTeam = Array.isArray(teams) && teams.length > 0;
+  // 相手チームの表示ラベル（自チーム以外を出現順に ②③④…）。
+  const TEAM_NUM = ["①", "②", "③", "④"];
 
   // 後始末（タイマー / 多重起動ガード）。
   const timers = [];
@@ -88,12 +93,12 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
       <button type="button" class="mi-skip">スキップ ▶</button>
 
       <!-- Phase A: VS 対戦カード -->
-      <div class="mi-phase mi-versus" data-phase="versus">
+      <div class="mi-phase mi-versus${isTeam ? " mi-versus-team" : ""}" data-phase="versus">
         <div class="mi-modebar">
-          <span class="mi-badge">${players === 3 ? "三人打ち" : "四人打ち"}</span>
+          <span class="mi-badge">${isTeam ? `${players}チーム対抗` : players === 3 ? "三人打ち" : "四人打ち"}</span>
           <span class="mi-badge">${rounds === 2 ? "半荘戦" : "東風戦"}</span>
         </div>
-        <div class="mi-cards"></div>
+        ${isTeam ? '<div class="mi-teams"></div>' : '<div class="mi-cards"></div>'}
         <div class="mi-vs">VS</div>
       </div>
 
@@ -109,30 +114,66 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
 
   const root = host.querySelector(".match-intro");
   const cardsBox = root.querySelector(".mi-cards");
+  const teamsBox = root.querySelector(".mi-teams");
   const tableBox = root.querySelector(".mi-table");
   const versusEl = root.querySelector('[data-phase="versus"]');
   const seatingEl = root.querySelector('[data-phase="seating"]');
 
-  // ---- Phase A の中身（VS カード）を構築 ----
-  for (const s of seated) {
-    const c = s.character;
-    const role = roleDef(c.role);
-    const isHuman = seated.indexOf(s) === humanIndex;
-    const card = document.createElement("div");
-    card.className = `mi-card${isHuman ? " is-human" : ""}`;
-    card.style.setProperty("--role", role.color);
-    card.style.setProperty("--char", c.color);
-    card.innerHTML = `
-      <div class="mi-card-art"></div>
-      <div class="mi-card-info">
-        <div class="mi-card-reading">${c.reading || ""}</div>
-        <div class="mi-card-name" style="color:${c.color}">${c.name}</div>
-        <div class="mi-card-role" style="--role:${role.color}">${role.label}</div>
-        ${hpGauge(c.stats?.startingPoints || 0, maxHp, c.color)}
-        ${isHuman ? `<div class="mi-card-you">YOU</div>` : ""}
-      </div>`;
-    card.querySelector(".mi-card-art").appendChild(makeArt(c, "portrait", "mi-card-portrait"));
-    cardsBox.appendChild(card);
+  // ---- Phase A の中身を構築 ----
+  if (isTeam) {
+    buildTeamCards();
+  } else {
+    for (const s of seated) {
+      const c = s.character;
+      const role = roleDef(c.role);
+      const isHuman = seated.indexOf(s) === humanIndex;
+      const card = document.createElement("div");
+      card.className = `mi-card${isHuman ? " is-human" : ""}`;
+      card.style.setProperty("--role", role.color);
+      card.style.setProperty("--char", c.color);
+      card.innerHTML = `
+        <div class="mi-card-art"></div>
+        <div class="mi-card-info">
+          <div class="mi-card-reading">${c.reading || ""}</div>
+          <div class="mi-card-name" style="color:${c.color}">${c.name}</div>
+          <div class="mi-card-role" style="--role:${role.color}">${role.label}</div>
+          ${hpGauge(c.stats?.startingPoints || 0, maxHp, c.color)}
+          ${isHuman ? `<div class="mi-card-you">YOU</div>` : ""}
+        </div>`;
+      card.querySelector(".mi-card-art").appendChild(makeArt(c, "portrait", "mi-card-portrait"));
+      cardsBox.appendChild(card);
+    }
+  }
+
+  // 団体戦 Phase A: チーム枠（自チームを左上）に3人カードを横並び。先鋒（activeIdx）に
+  // 「一番手」マーク＋強調、控えはトーンダウン。HP等の数値は出さない（ダメージ演出で見せる）。
+  function buildTeamCards() {
+    const order = [humanIndex, ...teams.map((_, i) => i).filter((i) => i !== humanIndex)];
+    order.forEach((ti) => {
+      const t = teams[ti];
+      const isHuman = ti === humanIndex;
+      const block = document.createElement("div");
+      block.className = `mi-team-block${isHuman ? " is-human" : ""}`;
+      const label = isHuman ? "自チーム" : `チーム ${TEAM_NUM[ti] || ti + 1}`;
+      block.innerHTML = `
+        <div class="mi-team-head">${label}${isHuman ? '<span class="mi-team-you">YOU</span>' : ""}</div>
+        <div class="mi-team-cards"></div>`;
+      const wrap = block.querySelector(".mi-team-cards");
+      t.chars.forEach((c, mi) => {
+        if (!c) return;
+        const isFirst = mi === t.activeIdx;
+        const card = document.createElement("div");
+        card.className = `mi-tm-card${isFirst ? " first" : " bench"}`;
+        card.style.setProperty("--char", c.color);
+        card.innerHTML = `
+          <div class="mi-tm-art"></div>
+          <div class="mi-tm-name" style="color:${c.color}">${c.name}</div>
+          ${isFirst ? '<div class="mi-tm-badge">一番手</div>' : '<div class="mi-tm-bench-tag">控え</div>'}`;
+        card.querySelector(".mi-tm-art").appendChild(makeArt(c, "portrait", "mi-tm-portrait"));
+        wrap.appendChild(card);
+      });
+      teamsBox.appendChild(block);
+    });
   }
 
   // ---- Phase B の中身（俯瞰卓の着席）を構築 ----
@@ -236,13 +277,14 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
     }
   });
 
-  // 起動: カードをスライドインさせ、数秒後に自動で Phase B へ。
+  // 起動: カード（団体戦はチーム枠）をスライドインさせ、数秒後に自動で Phase B へ。
+  const animTargets = isTeam ? [...teamsBox.children] : [...cardsBox.children];
   requestAnimationFrame(() => {
     root.classList.add("ready");
-    [...cardsBox.children].forEach((card, k) => after(140 * k, () => card.classList.add("in")));
+    animTargets.forEach((card, k) => after(140 * k, () => card.classList.add("in")));
     after(180, () => root.querySelector(".mi-vs").classList.add("in"));
   });
-  const autoToSeating = 700 + 200 * N + 1400;
+  const autoToSeating = 700 + 200 * animTargets.length + 1400;
   after(autoToSeating, () => {
     if (finished || phase !== "versus") return;
     phase = "seating";

@@ -321,7 +321,7 @@ export class AudioManager {
     const t0 = performance.now();
     const step = (t) => {
       const k = Math.min(1, (t - t0) / ms);
-      audio.volume = start + (target - start) * k;
+      audio.volume = Math.max(0, Math.min(1, start + (target - start) * k));
       if (k < 1) requestAnimationFrame(step);
       else if (done) done();
     };
