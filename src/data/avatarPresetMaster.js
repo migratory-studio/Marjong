@@ -43,6 +43,50 @@ const backgroundPresets = [
   { presetId: "bg-street",     name: "街角",     css: "linear-gradient(160deg,#33384a 0%,#4a5168 60%,#20242f 100%)", isDefault: true },
 ].map((p) => ({ presetType: "background", rarity: "normal", unlockConditions: [], isPaid: false, ...p }));
 
+// ── 弟子（マイキャラ）専用グラフィック ───────────────────────────────────────
+// アイコン（graphic/chars/deshi_set/icon/）と立ち絵（同 standing/）は同じ番号で1対1に対応し、
+// プリセット選択時は必ずペアで設定する（DESHI_PRESET_SETS が選択単位）。
+// アイコン/立ち絵を個別に差し替えるのは画像アップロード機能の実装後に解禁する想定で、
+// それまでマイキャラ作成画面では個別UIをグレーアウトする。
+const DESHI_IDS = Array.from({ length: 11 }, (_, i) => i + 1);
+
+const deshiIconPresets = DESHI_IDS.map((n) => ({
+  presetId: `deshi-${n}-icon`,
+  presetType: "icon",
+  name: `弟子 ${n}`,
+  assetPath: `graphic/chars/deshi_set/icon/deshi_${n}.png`,
+  rarity: "normal",
+  unlockConditions: [],
+  isPaid: false,
+  isDefault: true,
+}));
+
+const deshiStandingPresets = DESHI_IDS.map((n) => ({
+  presetId: `deshi-${n}-standing`,
+  presetType: "standing",
+  name: `弟子 ${n}`,
+  assetPath: `graphic/chars/deshi_set/standing/deshi_${n}.png`,
+  objectPosition: "top center",
+  rarity: "normal",
+  unlockConditions: [],
+  isPaid: false,
+  isDefault: true,
+}));
+
+// アイコン＋立ち絵をセットにした「弟子グラフィック」プリセット。作成画面はこの単位で選ぶ。
+export const DESHI_PRESET_SETS = DESHI_IDS.map((n) => ({
+  setId: `deshi-${n}`,
+  name: `弟子 ${n}`,
+  iconPresetId: `deshi-${n}-icon`,
+  standingPresetId: `deshi-${n}-standing`,
+  thumbPath: `graphic/chars/deshi_set/icon/deshi_${n}.png`,
+}));
+
+// アイコン presetId から対応する弟子セットを引く（作成画面の選択状態判定に使う）。
+export function deshiSetByIconPresetId(iconPresetId) {
+  return DESHI_PRESET_SETS.find((s) => s.iconPresetId === iconPresetId) || null;
+}
+
 const framePresets = [
   { presetId: "frame-gold",   name: "金",   css: "#f6b352", isDefault: true },
   { presetId: "frame-jade",   name: "翠",   css: "#7bb274", isDefault: true },
@@ -52,6 +96,9 @@ const framePresets = [
 ].map((p) => ({ presetType: "frame", rarity: "normal", unlockConditions: [], isPaid: false, ...p }));
 
 export const AVATAR_PRESET_MASTER = [
+  // 弟子専用グラフィックを先頭に置き、icon/standing の既定（defaultPresetIdForType）が弟子1になるようにする。
+  ...deshiIconPresets,
+  ...deshiStandingPresets,
   ...charIconPresets,
   ...charStandingPresets,
   ...backgroundPresets,

@@ -247,6 +247,19 @@ body {
 .av-look-item { display: flex; flex-direction: column; gap: 4px; }
 .av-look-label { font-size: 12px; color: var(--muted); }
 
+/* 弟子グラフィック（アイコン＋立ち絵をセットで選ぶ）サムネ一覧 */
+.av-deshi-wrap { display: flex; flex-direction: column; gap: 5px; }
+.av-deshi-grid { display: grid; grid-template-columns: repeat(auto-fill, 50px); gap: 6px; }
+.av-deshi-card {
+  width: 50px; height: 50px; padding: 0; border-radius: 10px; overflow: hidden;
+  background: #16241d; border: 2px solid #2a3f34; cursor: pointer; transition: .14s ease;
+}
+.av-deshi-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+.av-deshi-card.selected { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
+.av-deshi-img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+/* 個別設定（アップロード）未実装のグレーアウト注記 */
+.av-look-note { font-size: 11px; color: var(--muted); opacity: .55; margin: 2px 0; line-height: 1.4; }
+
 .av-footer { display: flex; align-items: center; gap: 14px; margin-top: 4px; }
 .av-error { color: var(--danger); font-size: 14px; margin: 0; flex: 1; }
 .av-footer .ghost-back { margin-left: auto; }
@@ -310,6 +323,13 @@ body {
 .mh-summary { font-size: 13px; color: var(--muted); }
 .mh-menu { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; }
 .mh-menu-btn { align-items: flex-start; padding: 12px 16px; }
+/* DEBUG: 1からやりなおす（?debug=1 のときだけ表示） */
+.mh-debug-reset {
+  align-self: center; margin-top: 12px; padding: 7px 16px; border-radius: 8px;
+  font-size: 12px; font-weight: 800; letter-spacing: .03em; cursor: pointer;
+  color: #ffd9a0; background: #3a2410; border: 1px dashed #e0a44b;
+}
+.mh-debug-reset:hover { background: #4a2e14; }
 
 /* shared card (rest) */
 .mentor-card {

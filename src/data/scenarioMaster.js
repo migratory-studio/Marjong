@@ -2,6 +2,23 @@
 // 編集しないこと。元データは scenario-forge/output/*.json。
 export const SCENARIO_MASTER = [
   {
+    "scenarioId": "mentor-bibi-bond-01",
+    "mentorCharacterId": "bibi",
+    "title": "沈まない子",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "always"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 100
+    },
+    "sortOrder": 10,
+    "isEnabled": true,
+    "scenarioVersion": 3
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-01",
     "mentorCharacterId": "shiyue",
     "title": "ツモれば勝ち",
@@ -17,6 +34,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 10,
     "isEnabled": true,
     "scenarioVersion": 3
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "mentorCharacterId": "bibi",
+    "title": "ころばせたくない",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-01"
+      },
+      {
+        "type": "bond_level",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 120
+    },
+    "sortOrder": 20,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-02",
@@ -58,6 +97,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 1
   },
   {
+    "scenarioId": "mentor-bibi-bond-03",
+    "mentorCharacterId": "bibi",
+    "title": "ちいさな初勝利",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-02"
+      },
+      {
+        "type": "avatar_level",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 140
+    },
+    "sortOrder": 30,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-03",
     "mentorCharacterId": "shiyue",
     "title": "速さの理由",
@@ -78,6 +139,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 30,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "mentorCharacterId": "bibi",
+    "title": "炎の打ち手",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-03"
+      },
+      {
+        "type": "bond_level",
+        "value": 4
+      }
+    ],
+    "firstReadReward": {
+      "soul": 160
+    },
+    "sortOrder": 40,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-04",
@@ -102,6 +185,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-bibi-bond-05",
+    "mentorCharacterId": "bibi",
+    "title": "攻めの代償",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-04"
+      },
+      {
+        "type": "avatar_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 180
+    },
+    "sortOrder": 50,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-05",
     "mentorCharacterId": "shiyue",
     "title": "降りない約束",
@@ -122,6 +227,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 50,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "mentorCharacterId": "bibi",
+    "title": "ごめんね、のかわりに",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-05"
+      },
+      {
+        "type": "skill_level",
+        "value": 6
+      }
+    ],
+    "firstReadReward": {
+      "soul": 200
+    },
+    "sortOrder": 60,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
@@ -146,6 +273,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-bibi-bond-07",
+    "mentorCharacterId": "bibi",
+    "title": "なぜ、まもるの",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-06"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 220
+    },
+    "sortOrder": 70,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-07",
     "mentorCharacterId": "shiyue",
     "title": "正しい降り",
@@ -168,6 +317,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-bibi-bond-08",
+    "mentorCharacterId": "bibi",
+    "title": "とどかない一歩",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-07"
+      },
+      {
+        "type": "avatar_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 240
+    },
+    "sortOrder": 80,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-08",
     "mentorCharacterId": "shiyue",
     "title": "見られなかったツモ",
@@ -184,6 +355,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 80,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "mentorCharacterId": "bibi",
+    "title": "燃やせない火",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-08"
+      },
+      {
+        "type": "skill_level",
+        "value": 9
+      }
+    ],
+    "firstReadReward": {
+      "soul": 260
+    },
+    "sortOrder": 90,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
@@ -206,6 +399,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 90,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "mentorCharacterId": "bibi",
+    "title": "わたしの麻雀",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-09"
+      },
+      {
+        "type": "bond_level",
+        "value": 10
+      }
+    ],
+    "firstReadReward": {
+      "soul": 280
+    },
+    "sortOrder": 100,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-10",

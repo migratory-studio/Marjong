@@ -12,6 +12,10 @@
 //
 // アセットのパス規約（ファイルを置けば自動で反映、無ければ現状の見た目・音にフォールバック）：
 //   - アイコン/立ち絵 … graphic/chars/<id>/icon.png, graphic/chars/<id>/portrait.png
+//   - 表情差分(任意)  … assets.portraits = { smile, serious, surprised, … } を足すと、紙芝居の
+//                       行 standingId で立ち絵が切り替わる（scenarioPlayer の portraitFor）。未設定/未登録の
+//                       表情は portrait にフォールバック。※実在するファイルのパスだけ登録すること
+//                       （存在しないパスを入れると onerror で立ち絵が消える）。
 //   - ボイス          … sound/voice/<id>/{pon,chi,kan,riichi,tsumo,ron}.mp3
 const voicesFor = (id) => ({
   pon: `sound/voice/${id}/pon.mp3`,
@@ -204,7 +208,7 @@ export const CHARACTER_MASTER = [
   {
     id: "bibi",
     name: "ビビ",
-    reading: "",
+    reading: "ビビ",
     color: "#5aa9e6",
     role: "blocker",
     bio: "鉄壁の守りを誇る防御型。発動後6打牌のあいだロン・ツモで失点しない。",

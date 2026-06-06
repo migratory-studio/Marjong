@@ -13,6 +13,7 @@ import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { INITIAL_MENTOR_IDS, templatesForMentor } from "../data/skillTemplateMaster.js";
 import {
   presetsOfType, presetById, defaultPresetIds, defaultPresetIdForType,
+  DESHI_PRESET_SETS,
 } from "../data/avatarPresetMaster.js";
 import { buildNewAvatar, addAvatarToProfile } from "../progression/avatarFactory.js";
 
@@ -71,13 +72,45 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
 
   const lookField = elt("div", "av-field");
   lookField.appendChild(elt("div", "av-label", { textContent: "見た目" }));
+
+  // 弟子グラフィック: アイコン＋立ち絵をセットで選ぶ（プリセット選択は常にペアで設定）。
+  const deshiWrap = elt("div", "av-deshi-wrap");
+  deshiWrap.appendChild(elt("span", "av-look-label", { textContent: "弟子グラフィック（アイコン＋立ち絵）" }));
+  const deshiGrid = elt("div", "av-deshi-grid");
+  deshiWrap.appendChild(deshiGrid);
+  lookField.appendChild(deshiWrap);
+  // 個別設定（アイコン/立ち絵を別々に差し替え）は画像アップロード対応で解禁予定。開発中はグレーアウト。
+  lookField.appendChild(elt("p", "av-look-note", {
+    textContent: "アイコン・立ち絵の個別設定は画像アップロード対応で解禁予定（開発中）",
+  }));
+
   const lookGrid = elt("div", "av-look-grid");
   lookField.appendChild(lookGrid);
   identity.appendChild(lookField);
 
-  const PRESET_LABELS = { icon: "アイコン", standing: "立ち絵", background: "背景", frame: "枠" };
+  // 弟子グラフィックのサムネ選択。クリックで icon/standing を一括設定する。
+  function renderDeshi() {
+    deshiGrid.innerHTML = "";
+    for (const s of DESHI_PRESET_SETS) {
+      if (!unlocked.has(s.iconPresetId)) continue;
+      const selected = state.presetIds.icon === s.iconPresetId;
+      const btn = elt("button", "av-deshi-card" + (selected ? " selected" : ""), { type: "button", title: s.name });
+      const img = elt("img", "av-deshi-img", { src: s.thumbPath, alt: s.name });
+      img.onerror = () => { img.style.visibility = "hidden"; };
+      btn.appendChild(img);
+      btn.onclick = () => {
+        state.presetIds.icon = s.iconPresetId;
+        state.presetIds.standing = s.standingPresetId;
+        renderDeshi();
+        renderPreview();
+      };
+      deshiGrid.appendChild(btn);
+    }
+  }
+
+  const PRESET_LABELS = { background: "背景", frame: "枠" };
   const selects = {};
-  for (const type of ["icon", "standing", "background", "frame"]) {
+  for (const type of ["background", "frame"]) {
     const wrap = elt("label", "av-look-item");
     wrap.appendChild(elt("span", "av-look-label", { textContent: PRESET_LABELS[type] }));
     const sel = elt("select", "av-input");
@@ -211,6 +244,7 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
     }
   };
 
+  renderDeshi();
   renderMentors();
   renderSkills();
   renderPreview();

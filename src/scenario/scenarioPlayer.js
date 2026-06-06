@@ -56,6 +56,13 @@ function standingsOf(line) {
   return [];
 }
 
+// standingId（default/smile/serious/surprised）に対応する立ち絵URL。
+// 表情別素材 `assets.portraits[standingId]` があればそれ、無ければ既定の `assets.portrait`。
+// → 素材未登録でも崩れず（default にフォールバック）、登録すれば自動で表情が切り替わる（前方互換）。
+function portraitFor(ch, standingId) {
+  return ch.assets?.portraits?.[standingId] || ch.assets?.portrait;
+}
+
 export function listScenarios() {
   return SCENARIO_MASTER.filter((s) => s.isEnabled)
     .slice()
@@ -288,18 +295,25 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
         const img = document.createElement("img");
         img.className = "sc-standing";
         img.alt = ch.name || "";
-        img.src = ch.assets.portrait;
+        img.src = portraitFor(ch, st.standingId);
         img.style.objectPosition = ch.portraitPos || "top center";
         img.onerror = () => { slot.style.display = "none"; };
         slot.appendChild(img);
         elStage.appendChild(slot);
-        rec = { slot, img, position: st.position };
+        rec = { slot, img, position: st.position, standingId: st.standingId };
         slots.set(st.characterId, rec);
         requestAnimationFrame(() => slot.classList.remove("sc-enter"));
-      } else if (rec.position !== st.position) {
+      } else {
         // 継続表示で立ち位置が変わった → left の変化を transition がスライドにする。
-        rec.slot.style.left = `${targetLeft}%`;
-        rec.position = st.position;
+        if (rec.position !== st.position) {
+          rec.slot.style.left = `${targetLeft}%`;
+          rec.position = st.position;
+        }
+        // 表情(standingId)が変わった → 立ち絵を差し替え（表情別素材があるときだけ実際に変化）。
+        if (rec.standingId !== st.standingId) {
+          rec.img.src = portraitFor(ch, st.standingId);
+          rec.standingId = st.standingId;
+        }
       }
 
       // 話者は強調、それ以外は減光。話者なし（地の文）は全員ニュートラル。

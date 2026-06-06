@@ -34,4 +34,9 @@ export class LocalProfileRepository extends ProfileRepository {
     this.storage.setItem(STORAGE_KEY, JSON.stringify(toSave));
     return toSave;
   }
+
+  // 保存データを丸ごと削除して初期状態へ（デバッグの「1からやりなおす」用）。
+  async clearProfile() {
+    this.storage.removeItem(STORAGE_KEY);
+  }
 }

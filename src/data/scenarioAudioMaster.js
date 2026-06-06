@@ -37,7 +37,7 @@ export const BGM_MASTER = {
 export const SE_MASTER = {
   // 既存・追加の同梱素材を再利用（即・鳴る）
   "se-shuffle": { label: "牌をかき混ぜる",     file: enc("sound/se/麻雀牌をまぜる.mp3") },
-  "se-tile":    { label: "牌を置く",           file: enc("sound/se/dahai/牌を置く・その1.mp3") },
+  "se-tile":    { label: "牌を置く",           file: enc("sound/se/dahai/牌を置く・その１.mp3") },
   "se-score":   { label: "点数表示（金額）",   file: enc("sound/se/金額表示.mp3") },
   "se-door":    { label: "戸・障子を開ける",   file: enc("sound/se/ふすまを開ける1.mp3") },
   "se-tsumo":   { label: "ツモる快音",         file: enc("sound/se/シャキーン2.mp3") },

@@ -2,6 +2,3592 @@
 // 編集しないこと。元データは scenario-forge/output/*.json。
 export const SCENARIO_LINE_MASTER = [
   {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対局場の広間に足を踏み入れると、表のざわめきが、すっと遠のいた。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 600,
+    "seId": "se-door",
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "高い天井の下、ずらりと並んだ雀卓は、そのほとんどが空いている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その一番奥。広すぎる座に、ぽつんと小さな影が座っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "膝を抱えて丸まった、あどけない子。広間の大きさのなかで、いっそう小さく見える。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "…いらっしゃい。ここまで来たってことは、九蓮宝士、目指してるんだよね？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声は澄んで、落ち着いている。あどけない見た目とは裏腹に、その目はまっすぐで、揺れない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "sparkle",
+    "text": "ふふ。ねえ、ためしに一局だけ、打ってみる？ ビビがどんなか、見せてあげる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "断る理由もない。差し出された席に、向かいに腰を下ろす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビが牌をかき混ぜる。じゃらり、と硬い音が、すぐ近くで弾けた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "正直、たかをくくっていた。これだけ幼い相手だ。一局くらい、軽いだろうと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "――その油断は、開始から数巡で、音もなく崩れた。",
+    "characterEffect": "none",
+    "screenEffect": "shake",
+    "effectDurationMs": 300,
+    "seId": "se-flash",
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "押しても、押しても、通らない。鋭い一打が、すべてビビの河の手前で行き場をなくす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "そっちは通さないよ。…そこも、だめ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "攻めれば攻めるほど、こちらの手だけが痩せていく。盤面が、じわりと締めあげられていくのが分かった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "joy",
+    "text": "ふふっ。どこまで持つか試してみる？って、言ったでしょ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気づけば、点棒は底をつきかけていた。牌を握る指先が、わずかに冷たくなる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だいじょうぶ。ビビは、沈まないから。一度しずめないって決めた牌は、ぜったいに割らせないの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "幼い、と侮った背中が、いつの間にか、ずっと大きく見えている。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 19,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "――結局、一度も沈ませてもらえないまま、その一局は終わった。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 500,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 20,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "縁側に出ると、夕の風がふわりと通り抜けた。隣に立つ背中は、やっぱり小さい。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 21,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの「守り」は、どこから来るのか。気づけば、もう頭を下げていた。弟子にしてほしい、守りを教えてほしい、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 22,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "surprise",
+    "text": "……ビビに？ ほんとに?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 23,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "意外そうに、ぱちりと瞬きをする。それから、ふっと口元がほどけた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 24,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "flower",
+    "text": "いいよ。じゃあ、今日からよろしくね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 25,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも、覚悟しててね？ ビビ、おしえるとなると…けっこう、イジワルだよ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 26,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ことり、と小首をかしげる仕草は、やっぱり年相応に幼い。それなのに、目の奥だけは笑っていない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 27,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……まもりたいもの、できちゃったな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 28,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひとりごとのような声。聞き返すより早く、ビビは夕日のほうへ目を向けていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 29,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "こうして、守りの申し子に弟子入りした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 30,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その「守り」が何を抱えているのか、このときはまだ、何ひとつ知らずにいた。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 700
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 1,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古の刻。卓を挟んで、ビビと向かい合う。",
+    "characterEffect": "fade_in",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 500,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 2,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "じゃあ、はじめよっか。…さっき教えた『受け』、おぼえてる？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 3,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "うなずいて、配られた牌を整える。動かす指先を、ビビの目がじっと追っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "やがて、勝負どころが来た。相手の河に、欲しい牌が透けて見える。手が、そこへ伸びかける。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "notice",
+    "text": "——あ、まって。それは、ださないで。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ちょん、と袖を指先で掴まれた。伸ばしかけた手が、宙で止まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "そこ、危ないの。…守って。ビビの言うとおりに、ね？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言われるまま、安全な牌を切る。たしかに、放銃は遠ざかった。盤面は、静かに均衡を保っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "joy",
+    "text": "ふふ、いいよ。…えらい、えらい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ほめられて、わるい気はしない。…はずなのに、胸の奥が、少しだけ重い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのあとも、攻めようとするたびに、ビビの小さな手が、やんわりと止めにくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だめだめ。…そっちは、ビビが許可してませーん。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守って、守って、また守る。沈まない。でも——前にも、進まない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気づけば、自分の手で何かを決めた瞬間が、一度もなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「あの、ビビ」と、つい口がひらく。「もう少し、自分で……攻めても、いい？」",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "fluster",
+    "text": "……え。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "きょとんと、瞬きをひとつ。それから、ぎゅっと眉が寄った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "…だめ。攻めたら、危ないもん。沈んだら、どうするの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声は、いつもの凛とした響きとは、少しちがう。固くて、どこか、必死だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それ以上は、何も言えなかった。ビビの「だめ」には、理屈じゃない何かが、つかえている気がして。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 21,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ころばせたく、ないだけ、なのにな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 22,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひとりごとは、卓のへりで小さく溶けて、こちらまでは届かなかった。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "はじめての、公式の卓。広間のざわめきが、やけに遠く聞こえる。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 600,
+    "seId": "se-door",
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "隣に立つビビは、いつもどおり静かだった。小さな手が、そっとこちらの袖に触れる。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だいじょうぶ。…いつもの『受け』を、やるだけ。沈まなければ、勝ちなの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その一言で、ふしぎと、指先のこわばりがほどけた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓に着く。教わったとおり、危ない牌は、ぜんぶ受けて流す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "派手な手は、ひとつもない。それでも、点棒は、一度も大きく削られなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして——最後の一打を置く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "結果が読み上げられる。沈まなかったのは、この卓で、ただひとり。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "joy",
+    "text": "……勝った。ね？ 言ったとおり、でしょ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "sparkle",
+    "text": "ふふっ、すごいすごい。…ビビの弟子、つよいんだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-success"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "得意げに胸を張る仕草が、やっぱり年相応で——つられて、口元がゆるむ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 12,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "帰り道。夕陽が、長い影をふたつ、地面に伸ばしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step",
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 13,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「勝てた」という実感より先に、ふと、別の思いが胸をよぎる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 14,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守って、守って、勝った。一度も、自分から攻めないまま。…これでいいのか、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 15,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "question",
+    "text": "どうしたの？ ……あれ、あんまり、うれしくない？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 16,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "図星をつかれて、言葉につまる。ごまかすように、首を横にふった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 17,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、しばらくこちらを見て——それから、ふっと前に向きなおった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 18,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……守ってれば、沈まない。沈まなければ、勝てる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 19,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ほんとに、それだけで……いいのかな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 20,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "つぶやきは、夕風にまぎれて、すぐに聞こえなくなった。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 700
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その日の広間は、いつもより熱気がこもっていた。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 600,
+    "seId": "se-door",
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一番奥の卓に、人だかり。その中心で、誰かが派手に打っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "燃えるような赤い髪。牌を叩きつけるたび、場の空気がびりびりと震える。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "emoteId": "flare",
+    "text": "ツモ！ ……満貫だ。けっ、こんなんじゃ、まだ燃え足りねぇな。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 300,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りなんて、どこにもない。ただ前へ、前へと牌を切り込んでいく打ち筋。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "目が、はなせなかった。あんなふうに自分の手で場を動かせたら——つい、そう思ってしまう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "bibi",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "袖を、つよく引かれた。振り向くと、ビビが、めずらしく硬い顔をしている。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 400
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "bibi",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……行こ。あの人の麻雀は、ビビたちのとは、ちがうから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "bibi",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつもの、おっとりした声じゃない。どこか、追い立てるような響きだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "bibi",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "あ？ なんだチビ、見学か？ ……っと、その目。お前さん、打ちたくてうずうずしてんだろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "bibi",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "temper",
+    "text": "——その子は、ビビの弟子なの。攻めは、おしえてない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "bibi",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "はっ、守り専門のとこの子か。…もったいねぇ。そんな目しといて、燃やさねぇのか？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "homura",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "bibi",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "もう、行くよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、ぐいぐいと手を引いて、その場を離れた。小さな歩幅が、やけに速い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 15,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "廊下に出ても、つないだ手は、ほどけなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 16,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「ビビ？」と呼ぶと、ようやく足が止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 17,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……あの人みたいな打ち方、ビビは、すきじゃない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 18,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "うつむいたまま、ぽつりと。つないだ手に、少しだけ力がこもる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 19,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……だって、攻める子は。…すぐ、いなくなっちゃうんだもん。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 20,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後のひとことは、小さすぎて。たしかめる勇気は、まだ、なかった。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 700
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 1,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "つぎの稽古。あの打ち手の残像が、頭から離れなかった。",
+    "characterEffect": "fade_in",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 500,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 2,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守ってばかりじゃ、つまらない。今日は——自分から、攻めてみよう。そう決めていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 3,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビの「受け」の合図を、はじめて、見ないふりをする。鋭い牌を、勝負どころで切り込んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "notice",
+    "text": "——っ、まって、それは……！",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "止める声より、一瞬、早かった。相手の手が、ひらく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——ロン。痛烈な一撃が、こちらの点棒を、根こそぎ持っていった。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "seId": "se-flash",
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……どうして、止めなかったの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "anger",
+    "text": "言ったよね。そこは、危ないって。…なんで、聞いてくれないの！",
+    "characterEffect": "shake",
+    "screenEffect": "none",
+    "effectDurationMs": 300,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "はじめて聞く、つよい声。凛とした芯が、いまは、刃みたいにとがっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ちがう、と言いたかった。ただ、あんなふうに打ってみたかっただけで。でも、言葉が出てこない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "うつむく。卓の上の、空っぽになった点棒入れが、やけにまぶしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "fluster",
+    "text": "……あ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いすぎた、という顔。ビビの手が、いちど宙をさまよって、行き場をなくす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ごめん。ビビ、いまの、ちょっと……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そこで、言葉はとぎれた。気まずい沈黙だけが、ふたりの間に積もっていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "silence",
+    "text": "…………。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守らせたいビビと、攻めてみたいこちら。はじめての、すれ違い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どちらも、相手を思っているはずなのに。その思いは、うまく、かみ合わなかった。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 700
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 1,
+    "backgroundId": "bg-corridor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "翌朝。縁側に呼び出されて、行ってみると。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 500,
+    "seId": "se-step",
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 2,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビが、なにやらもじもじと、後ろ手に何かを隠している。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 3,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あ、あのね。…きのうは、その。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 4,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「ごめん」の続きが、なかなか出てこない。ことばを探して、視線が泳ぐ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 5,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "sparkle",
+    "text": "——えいっ。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 300
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 6,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ぴと、と頬に、つめたいものが押し当てられた。…ラムネのびん。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 7,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "joy",
+    "text": "ふふっ。びっくりした？ …はい、これ。なかなおりの、わけまえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 8,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "差し出されたびんは、ふたつ。…つまり、はじめから、そのつもりで来たらしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 9,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「ごめん」とは、ついに言わなかった。けれど、いたずらっぽく笑うその顔に、ぜんぶ、書いてある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 10,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……きのうは、つよく言いすぎた。ビビね、こわかったの。…あなたが、沈んじゃうのが。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 11,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひざを抱えて、となりに腰かける。いつもの凛は、どこかへ置いてきたみたいだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 12,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも、約束する。…攻めたいって気持ち、もう、頭ごなしにはしない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 13,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "flower",
+    "text": "そのかわり、ね？ ——危なくなったら、ビビが、ぜんぶ受けとめてあげるから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 14,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その言葉が、ラムネよりずっと、甘く胸にしみた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 15,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守るだけのビビが、はじめて「攻めていい」と言ってくれた、ちいさな一歩。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 16,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ひとりじゃ、こわいことも。ふたりなら、平気かな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 17,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ラムネの泡が、しゅわりと鳴った。その音が、なんだか、返事のかわりみたいだった。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 700,
+    "seId": "se-success"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 1,
+    "backgroundId": "bg-rain",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その日は、朝から雨だった。稽古は休み。軒先で、雨音をふたりで聞いていた。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 600,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 2,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、ぼんやりと庭の雨を見ている。その横顔が、いつもより少しだけ、おとなびて見えた。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 3,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふと、ずっと気になっていたことを、口にしてみる。「ねえ、ビビ。…どうして、そんなに守るの？」",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 4,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "雨音が、ひとつ、ふたつ。ビビは、すぐには答えなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 5,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "…どうして、って。守るのが、いちばん、つよいからだよ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 6,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "答えになっていない答え。いつもの凛とした声なのに、目だけが、雨のほうを向いたままだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 7,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「ほんとは？」とは、聞けなかった。踏みこめない何かが、その横顔には、あった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 8,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……むかし、ね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 9,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いかけて、ビビは、ふっと口をつぐんだ。膝の上で、小さな手が、きゅっと握られる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 10,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "——なんてね。わすれて。ほら、雨、つよくなってきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 11,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "むりやり、話を流された。けれど、いまの「むかし」は、たしかに、聞こえた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 12,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守ることしか、しない人。その「守り」の根っこに、なにかが——埋まっている気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 13,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……まもれなかったら、いみ、ないもん。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 14,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "雨の音にまぎれた、ちいさなひとりごと。その意味を知るのは、もう少し、あとのこと。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 700
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "はじめての、チーム戦。卓を囲むのは、二人ひと組の戦い。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 600,
+    "seId": "se-door",
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相棒は、もちろんビビ。「だいじょうぶ」と、小さな手が、こちらの背を、ぽんと押した。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 3,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビが受ける。あなたは、無理しないで。…二人で、沈まなければ、勝てる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "教わったとおり、堅く、堅く打つ。たしかに、放銃はしない。点棒は、ほとんど減らない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど——増えも、しない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手チームは、果敢に攻めてくる。一発、また一発と、確実に点を積み上げていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りは、崩されない。守りは、減らない。なのに、点差だけが、じりじりと開いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "sweat",
+    "text": "……っ。だいじょうぶ。まだ、沈んでない。沈んでないから……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "はじめて見る、ビビの焦り。鉄壁の声が、わずかに、揺れている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、最後の局。守りきった。一度も、沈まなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——それでも、足りなかった。点棒は、相手チームのほうが、ずっと多い。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「敗退」。その三文字が、やけに静かに、卓の上に落ちた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰も、責めはしなかった。沈まなかったのだから。でも——勝て、なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……守った。ちゃんと、守ったのに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "うつむくビビの拳が、膝の上で、ふるえている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "守るだけじゃ……勝てないこと、ある、んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "はじめて、その口からこぼれた言葉。守りの申し子の足元で、なにかが、小さく音を立てて崩れた。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 700
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 1,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "敗退の帰り道。ビビは、ずっと黙っていた。",
+    "characterEffect": "fade_in",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 500,
+    "seId": "se-step",
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 2,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "曲がり角で、ばったりと——あの、赤い髪。焔が、壁にもたれて立っていた。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 400
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 3,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "よう、守りのチビ。…団体戦、見てたぜ。惜しかったなあ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 4,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……なに。わらいに来たの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 5,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "まさか。…ただ、ひとつだけ言わせろ。あんた、その子のこと、守りすぎだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 6,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "surprised"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "shock",
+    "text": "——っ。",
+    "characterEffect": "shake",
+    "screenEffect": "none",
+    "effectDurationMs": 300
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 7,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "守って守って、転ばせねぇ。…そりゃ、やさしさかもしれん。けどな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 8,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "emoteId": "flare",
+    "text": "転ばねぇ子は、立ち上がり方を、おぼえねぇ。守ってるだけじゃ——その子は、つよくなれねぇぞ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 9,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ことばが、ビビに突き刺さる。反論しようと、口がひらいて——けれど、声が、出てこない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 10,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "ま、おせっかいだったな。…でも、あんたの守り、強ぇよ。だから、もったいねぇんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 11,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけ言って、焔は、ひらりと背を向けた。炎みたいな髪が、角の向こうに消えていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 12,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "残されたビビは、しばらく、その場を動かなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 13,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……まもってるだけじゃ、つよく、なれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 14,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "かみしめるように、もう一度。図星を突かれた人の、ちいさな声だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 15,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビ、ずっと……あの子を、弱いままに、してたの……？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 16,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……まもることしか、できないと、思ってたのに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 17,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの申し子が、はじめて、自分の「守り」を、うたがった夜。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 700
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 1,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "つぎの稽古。卓を挟む前に、こちらから、切り出した。",
+    "characterEffect": "fade_in",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 500,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 2,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ずっと、考えていた。守られてばかりの自分のことを。…そして、決めていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 3,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「ビビ。…自分の麻雀を、打ちたい」。声が、ふるえないように、まっすぐ言った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、おどろいた顔のまま、こちらをじっと見ている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「守られるだけじゃ、つよくなれない。…ビビに、ずっと守ってもらうわけにも、いかないから」。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言い切ってから、こわくなる。…突き放した、と、思われないだろうか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "…そっか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ぽつり、と。さびしさと、それから——どこか、ほこらしさの、まじった声だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "…焔の言うとおり、だったな。ビビ、あなたを、弱いままにするとこだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひざに置かれた小さな手が、いちど、ぎゅっと握られて——それから、ゆっくり、ほどけた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "いいよ。…攻めて、いい。ころんでも、いい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "flower",
+    "text": "そのかわり——ね？ ころんだら、ビビが、ぜんぶ受けとめる。それが、ビビの役目だから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守るために抱きしめていた手を、ビビは、はじめて、そっと開いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「攻めていい」じゃない。「攻めてほしい」。…そう聞こえたのは、きっと、気のせいじゃない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "emoteId": "sparkle",
+    "text": "ねえ。…つよく、なろ？ ふたりで。…ううん、いつか、もっと大勢で。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ビビの守りが、だれかの背中を押せる日が、くるのかな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その問いの答えは、まだ、ここにはない。けれど、はじまりの音だけは、たしかに、鳴っていた。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 700,
+    "seId": "se-shuffle"
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-01",
     "lineNo": 1,
     "backgroundId": "bg-dojo",
