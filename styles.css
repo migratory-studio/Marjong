@@ -218,17 +218,64 @@ body {
 .av-input:focus { outline: none; border-color: var(--accent); }
 .av-textarea { resize: none; line-height: 1.45; }
 
-.av-mentor-row { display: flex; gap: 10px; }
-.av-mentor-card {
+/* 師匠ヒーロー表示（立ち絵大きめ＋変更ボタン） */
+.av-mentor-hero {
   --role: var(--accent);
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px;
-  background: #1c2c24; border: 2px solid #2a3f34; border-radius: 12px;
-  padding: 10px 6px; cursor: pointer; transition: .14s ease;
+  display: flex; gap: 14px; align-items: stretch;
+  background: #1c2c24; border: 2px solid var(--role); border-radius: 14px; padding: 12px;
 }
-.av-mentor-card:hover { transform: translateY(-2px); }
-.av-mentor-card.selected { border-color: var(--role); box-shadow: 0 0 0 2px var(--role) inset; }
-.av-mentor-img { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--role); }
-.av-mentor-name { font-size: 13px; font-weight: 700; }
+.av-mentor-hero-portrait {
+  width: 132px; height: 168px; flex: none; border-radius: 12px; overflow: hidden;
+  border: 2px solid var(--role); background: rgba(0,0,0,.25);
+}
+.av-mentor-hero-img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+.av-mentor-hero-info { display: flex; flex-direction: column; gap: 6px; justify-content: center; }
+.av-mentor-hero-name { font-size: 24px; font-weight: 800; }
+.av-mentor-hero-sub { font-size: 13px; color: var(--role); font-weight: 700; letter-spacing: .04em; }
+.av-mentor-change {
+  margin-top: 8px; align-self: flex-start; cursor: pointer; transition: .14s ease;
+  background: transparent; color: var(--ink); border: 2px solid var(--role); border-radius: 10px;
+  padding: 8px 18px; font-size: 14px; font-weight: 700; font-family: inherit;
+}
+.av-mentor-change:hover { background: var(--role); color: #12100c; }
+
+/* 師匠選びオーバーレイ（#app が transform 済みなので fixed はステージ基準で全面を覆う） */
+.av-mentor-picker {
+  position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center;
+  background: rgba(8,10,9,.78); backdrop-filter: blur(2px);
+}
+.av-mentor-picker-panel {
+  background: #16241d; border: 2px solid #2a3f34; border-radius: 18px;
+  padding: 22px 26px; width: min(880px, 86%); max-height: calc(var(--stage-h) - 80px);
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
+}
+.av-mentor-picker-title { font-size: 24px; font-weight: 800; margin: 0; }
+/* フリー対戦のキャラ選択に寄せたロール別グループ（3ロール横並び） */
+.av-mentor-picker-roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; width: 100%; }
+.av-mentor-role-group { --role: var(--accent); display: flex; flex-direction: column; gap: 8px; }
+.av-mentor-role-head { display: flex; align-items: center; gap: 8px; border-bottom: 2px solid var(--role); padding-bottom: 4px; }
+.av-mentor-role-name { font-size: 14px; font-weight: 800; color: var(--role); letter-spacing: .04em; }
+.av-mentor-role-cards { display: flex; flex-direction: column; gap: 8px; }
+.av-mentor-pick-card {
+  display: flex; align-items: center; gap: 10px; position: relative; text-align: left;
+  background: #1c2c24; border: 2px solid #2a3f34; border-radius: 12px; padding: 8px 12px;
+  cursor: pointer; transition: .14s ease;
+}
+.av-mentor-pick-card:hover:not(.is-locked) { transform: translateY(-2px); border-color: var(--role); }
+.av-mentor-pick-card.selected { border-color: var(--role); box-shadow: 0 0 0 2px var(--role) inset; }
+.av-mentor-pick-icon {
+  width: 44px; height: 44px; flex: none; border-radius: 50%; overflow: hidden;
+  border: 2px solid var(--role); background: rgba(0,0,0,.25);
+}
+.av-mentor-pick-img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+.av-mentor-pick-name { font-size: 15px; font-weight: 700; }
+/* シナリオ／能力が未実装の師匠はグレーアウト＆選択不可 */
+.av-mentor-pick-card.is-locked { cursor: default; opacity: .42; filter: grayscale(.85); }
+.av-mentor-pick-lock {
+  margin-left: auto; font-size: 10px; font-weight: 800;
+  color: #ffd9a0; background: rgba(58,36,16,.9); border: 1px solid #e0a44b;
+  border-radius: 7px; padding: 2px 7px; letter-spacing: .03em; white-space: nowrap;
+}
 
 .av-skill-row { display: flex; flex-direction: column; gap: 10px; }
 .av-skill-card {
@@ -277,6 +324,20 @@ body {
 }
 .av-preview-img { width: 100%; height: 100%; object-fit: cover; }
 .av-preview-name { font-size: 19px; font-weight: 800; }
+
+/* 作成画面プレビュー: 立ち絵バストアップ＋丸アイコンを併置（詳細画面は従来の中央アイコンのまま）。
+   立ち絵PNGは透過なので背景プリセットの上に重なる。 */
+.avatar-create-layout .av-preview-bg { position: relative; }
+.av-preview-standing {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: top center; /* バストアップ＝頭〜胸を残し下を切る */
+}
+.avatar-create-layout .av-preview-icon {
+  position: absolute; left: 8px; bottom: 8px; z-index: 2;
+  width: 40%; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden;
+  border: 3px solid var(--accent); background: rgba(0,0,0,.4);
+  box-shadow: 0 2px 8px rgba(0,0,0,.55);
+}
 .av-preview-meta { font-size: 12px; color: var(--muted); }
 .av-detail-bio { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 4px 0 0; text-align: center; }
 
@@ -2178,3 +2239,60 @@ button.secondary { color: var(--ink); }
   60% { transform: scale(.9); opacity: 1; }
   100% { transform: scale(1); }
 }
+
+/* ============================================================================
+   購入UIセット 第3弾 — マイキャラ作成/確認画面に和風UIを当て込む
+   既存スイープ同様、末尾追記の後勝ちで素のCSSへ金縁パネル/木目枠を被せる。
+   ・窓（立ち絵プレビュー / 師匠ヒーロー / 師匠選びモーダル）＝ panel.png の金縁
+   ・「師匠を変更」ボタン＝ btn.png の木目枠
+   ・入力欄/セレクト＝ plate.png のプレート地
+   ・密に並ぶカード（能力/弟子/師匠ピック）は枠を太らせず金リングで高さ据え置き
+   ・師匠選びのロール見出し＝ tab.png（キャラ選択と統一）
+   ============================================================================ */
+
+/* --- 窓を金縁パネルに（中央は暗色背景を温存して可読性優先＝fill なし）--- */
+.av-preview-bg,
+.av-mentor-hero,
+.av-mentor-picker-panel {
+  border: 13px solid transparent;
+  border-image: url("graphic/ui/sc/panel.png") 18 / 13px / 0 stretch;
+  border-radius: 0;
+}
+.av-preview-bg { background: rgba(20,32,26,.86); }
+.av-mentor-hero { background: rgba(20,32,26,.92); }            /* 内側の立ち絵枠は role 色を温存 */
+.av-mentor-picker-panel { background: rgba(20,32,26,.97); }
+
+/* 師匠選びモーダルの見出しもプレート化（他画面の h1 と同じ意匠）。 */
+.av-mentor-picker-title {
+  display: inline-block; padding: 2px 22px;
+  border: 11px solid transparent;
+  border-image: url("graphic/ui/sc/plate.png") 14 18 fill / 10px 15px / 0 stretch;
+  border-radius: 0; color: #f4e3b4; text-shadow: 0 2px 4px rgba(0,0,0,.7);
+}
+/* ロール見出しはキャラ選択と同じタブ素材を背景敷き（高さを変えない）。 */
+.av-mentor-role-name {
+  background: url("graphic/ui/sc/tab.png") no-repeat left center / 100% 100%;
+  color: #f4e3b4; padding: 4px 16px; text-shadow: 0 1px 2px rgba(0,0,0,.7);
+}
+.av-mentor-role-head { border-bottom: 0; }
+
+/* --- 「師匠を変更」ボタンを木目枠に（色は金で据え置き）--- */
+.av-mentor-change {
+  border: 12px solid transparent;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 11px 15px / 0 stretch;
+  border-radius: 0; background: none; color: var(--accent); font-weight: 800;
+}
+.av-mentor-change:hover { border-image-source: url("graphic/ui/sc/btn_hover.png"); background: none; }
+
+/* --- 入力欄/セレクトをプレート地に --- */
+.av-input {
+  border: 9px solid transparent;
+  border-image: url("graphic/ui/sc/plate.png") 14 18 fill / 8px 13px / 0 stretch;
+  border-radius: 0; background: rgba(10,16,13,.55);
+}
+.av-input:focus { filter: brightness(1.12); }
+
+/* --- 密に並ぶカードは枠を太らせず金リング＋選択/ホバーでアクセント色 --- */
+.av-skill-card, .av-deshi-card, .av-mentor-pick-card { border-color: rgba(246,179,82,.5); }
+.av-skill-card:hover, .av-mentor-pick-card:hover:not(.is-locked) { border-color: var(--accent); }
+.av-deshi-card:hover { border-color: var(--accent); }

@@ -9,13 +9,22 @@
 //
 //   import { showAvatarCreate } from "./screens/avatarCreateScreen.js";
 //   showAvatarCreate(container, { repository, onCreated, onBack });
-import { CHARACTER_MASTER } from "../data/characterMaster.js";
+import { CHARACTER_MASTER, ROLE_MASTER } from "../data/characterMaster.js";
 import { INITIAL_MENTOR_IDS, templatesForMentor } from "../data/skillTemplateMaster.js";
 import {
   presetsOfType, presetById, defaultPresetIds, defaultPresetIdForType,
   DESHI_PRESET_SETS,
 } from "../data/avatarPresetMaster.js";
 import { buildNewAvatar, addAvatarToProfile } from "../progression/avatarFactory.js";
+import { scenariosForMentor } from "./scenarioListScreen.js";
+
+// 師匠として選べるのは「シナリオ＋能力テンプレが実装済み」の師匠だけ（未実装はグレーアウト）。
+// 判定はマスタから導出する（専用フラグは持たず、シナリオ／テンプレを足せば自動で解放される）。
+const mentorReady = (id) => scenariosForMentor(id).length > 0 && templatesForMentor(id).length > 0;
+// 師匠の専門分野ラベル（ヒーロー表示のサブテキスト）。
+const ROLE_LABEL = { attacker: "攻撃の師", blocker: "守備の師", gambler: "博打の師" };
+// 師匠選びに出すロール（アビス＝extra は除いた3ロール）。
+const MENTOR_ROLES = ROLE_MASTER.filter((r) => r.id !== "extra");
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
 
@@ -34,7 +43,8 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
 
   // 現在の選択状態
   const state = {
-    mentorCharacterId: INITIAL_MENTOR_IDS[0],
+    // 既定はシナリオ実装済みの先頭師匠（未実装師匠が先頭でも選択不可状態で始めない）。
+    mentorCharacterId: INITIAL_MENTOR_IDS.find(mentorReady) || INITIAL_MENTOR_IDS[0],
     skillTemplateId: null,
     presetIds: {
       icon: defaultPresetIdForType("icon"),
@@ -130,8 +140,8 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
 
   const mentorField = elt("div", "av-field");
   mentorField.appendChild(elt("div", "av-label", { textContent: "師匠" }));
-  const mentorRow = elt("div", "av-mentor-row");
-  mentorField.appendChild(mentorRow);
+  const mentorHero = elt("div", "av-mentor-hero");
+  mentorField.appendChild(mentorHero);
   center.appendChild(mentorField);
 
   const skillField = elt("div", "av-field av-field-grow");
@@ -144,6 +154,11 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
   const preview = elt("aside", "av-col avatar-preview");
   layout.appendChild(preview);
   const previewBg = elt("div", "av-preview-bg");
+  // 立ち絵をバストアップで大きく（透過PNGなので背景プリセットの上に重なる）、
+  // そのそばに丸アイコンを添える。
+  const previewStanding = elt("img", "av-preview-standing", { alt: "" });
+  previewStanding.onerror = () => { previewStanding.style.visibility = "hidden"; };
+  previewBg.appendChild(previewStanding);
   const previewIconWrap = elt("div", "av-preview-icon");
   const previewIcon = elt("img", "av-preview-img", { alt: "" });
   previewIconWrap.appendChild(previewIcon);
@@ -168,26 +183,83 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
   footer.appendChild(createBtn);
 
   // ===== レンダリング =====
-  function renderMentors() {
-    mentorRow.innerHTML = "";
-    for (const id of INITIAL_MENTOR_IDS) {
-      const c = charById(id);
-      if (!c) continue;
-      const card = elt("button", "av-mentor-card" + (state.mentorCharacterId === id ? " selected" : ""), { type: "button" });
-      card.style.setProperty("--role", c.color);
-      const img = elt("img", "av-mentor-img", { src: c.assets?.icon || "", alt: c.name });
-      img.onerror = () => { img.style.visibility = "hidden"; };
-      card.appendChild(img);
-      card.appendChild(elt("span", "av-mentor-name", { textContent: c.name }));
-      card.onclick = () => {
-        state.mentorCharacterId = id;
-        state.skillTemplateId = null;
-        renderMentors();
-        renderSkills();
-        renderPreview();
-      };
-      mentorRow.appendChild(card);
+  // 師匠は立ち絵を大きめに出し、「変更」で師匠選びオーバーレイを開く。
+  function renderMentorHero() {
+    mentorHero.innerHTML = "";
+    const c = charById(state.mentorCharacterId);
+    if (!c) return;
+    mentorHero.style.setProperty("--role", c.color || "var(--accent)");
+    const pwrap = elt("div", "av-mentor-hero-portrait");
+    const img = elt("img", "av-mentor-hero-img", { src: c.assets?.portrait || "", alt: c.name });
+    if (c.portraitPos) img.style.objectPosition = c.portraitPos;
+    img.onerror = () => { img.style.visibility = "hidden"; };
+    pwrap.appendChild(img);
+    mentorHero.appendChild(pwrap);
+    const info = elt("div", "av-mentor-hero-info");
+    info.appendChild(elt("div", "av-mentor-hero-name", { textContent: c.name }));
+    if (ROLE_LABEL[c.role]) info.appendChild(elt("div", "av-mentor-hero-sub", { textContent: ROLE_LABEL[c.role] }));
+    const changeBtn = elt("button", "av-mentor-change", { type: "button", textContent: "師匠を変更" });
+    changeBtn.onclick = openMentorPicker;
+    info.appendChild(changeBtn);
+    mentorHero.appendChild(info);
+  }
+
+  // 師匠選びオーバーレイ（フリー対戦のキャラ選択に寄せたロール別構成。BGM は変えない＝画面遷移しない）。
+  // アビス以外の3ロールの全キャラを並べ、シナリオ／能力が未実装の師匠はグレーアウトして選べない。
+  function openMentorPicker() {
+    const overlay = elt("div", "av-mentor-picker");
+    const close = () => overlay.remove();
+    const panel = elt("div", "av-mentor-picker-panel");
+    panel.appendChild(elt("h2", "av-mentor-picker-title", { textContent: "師匠を選ぶ" }));
+
+    const roles = elt("div", "av-mentor-picker-roles");
+    for (const role of MENTOR_ROLES) {
+      const members = CHARACTER_MASTER.filter((c) => c.role === role.id);
+      if (members.length === 0) continue;
+      const group = elt("div", "av-mentor-role-group");
+      group.style.setProperty("--role", role.color);
+      const head = elt("div", "av-mentor-role-head");
+      head.appendChild(elt("span", "av-mentor-role-name", { textContent: role.label }));
+      group.appendChild(head);
+      const cards = elt("div", "av-mentor-role-cards");
+      for (const c of members) {
+        const ready = mentorReady(c.id);
+        const selected = state.mentorCharacterId === c.id;
+        const card = elt(
+          "button",
+          "av-mentor-pick-card" + (selected ? " selected" : "") + (ready ? "" : " is-locked"),
+          { type: "button", disabled: !ready },
+        );
+        const icon = elt("div", "av-mentor-pick-icon");
+        const img = elt("img", "av-mentor-pick-img", { src: c.assets?.icon || "", alt: c.name });
+        img.onerror = () => { img.style.visibility = "hidden"; };
+        icon.appendChild(img);
+        card.appendChild(icon);
+        card.appendChild(elt("span", "av-mentor-pick-name", { textContent: c.name }));
+        if (!ready) card.appendChild(elt("span", "av-mentor-pick-lock", { textContent: "準備中" }));
+        if (ready) {
+          card.onclick = () => {
+            state.mentorCharacterId = c.id;
+            state.skillTemplateId = null;
+            renderMentorHero();
+            renderSkills();
+            renderPreview();
+            close();
+          };
+        }
+        cards.appendChild(card);
+      }
+      group.appendChild(cards);
+      roles.appendChild(group);
     }
+    panel.appendChild(roles);
+
+    const cancel = elt("button", "ghost-back av-mentor-picker-close", { type: "button", textContent: "閉じる" });
+    cancel.onclick = close;
+    panel.appendChild(cancel);
+    overlay.appendChild(panel);
+    overlay.onclick = (e) => { if (e.target === overlay) close(); };
+    container.appendChild(overlay);
   }
 
   function renderSkills() {
@@ -208,8 +280,14 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
 
   function renderPreview() {
     const iconP = presetById(state.presetIds.icon);
+    const standingP = presetById(state.presetIds.standing);
     const frameP = presetById(state.presetIds.frame);
     const bgP = presetById(state.presetIds.background);
+    if (standingP?.assetPath) {
+      previewStanding.src = standingP.assetPath;
+      previewStanding.style.objectPosition = standingP.objectPosition || "top center"; // バストアップ＝上寄せ
+      previewStanding.style.visibility = "visible";
+    } else previewStanding.style.visibility = "hidden";
     if (iconP?.assetPath) { previewIcon.src = iconP.assetPath; previewIcon.style.visibility = "visible"; }
     else previewIcon.style.visibility = "hidden";
     previewIconWrap.style.borderColor = frameP?.css || "var(--accent)";
@@ -245,7 +323,7 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
   };
 
   renderDeshi();
-  renderMentors();
+  renderMentorHero();
   renderSkills();
   renderPreview();
 }
