@@ -690,14 +690,18 @@ function startTeamBattleGame() {
     for (const c of team) if (c) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
   }
 
-  // teamBattleData を初期化。個人HP は各キャラの startingPoints が初期値。
-  // abilitiesByMember はメンバーごとの能力インスタンス（交代で持ち越す本体）。
+  // teamBattleData を初期化。
+  //   hps   … 個人HP（被弾でのみ減る／回復はアイテムのみ）。撃沈・親満ペナルティ判定用。
+  //   score … チーム点数（和了で増・放銃で減＝通常の点棒増減）。HPとは別管理で順位の基準。
+  //           初期値は3人の初期持ち点合計（HP初期合計と同じスタート。以後は乖離していく）。
+  //   abilitiesByMember … メンバーごとの能力インスタンス（交代で持ち越す本体）。
   teamBattleData = {
     numTeams: selectedTeamCount,
     teams: allTeams.map((team, ti) => ({
       chars: team,
       activeIdx: 0,
       hps: team.map((c) => c.stats.startingPoints),
+      score: team.reduce((a, c) => a + (c.stats.startingPoints || 0), 0),
       abilitiesByMember: abilitiesByTeam[ti],
     })),
   };
@@ -728,7 +732,7 @@ function beginGame(seated, dealerIndex) {
     bustCheck: teamBustCheck,
   });
   renderer = new CanvasRenderer(el("table"), game, humanIndex, tileImages, charImages);
-  if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__tbFx = showTeamBattleDamageFx; } // debug handle
+  if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__tbFx = showTeamBattleDamageFx; window.__showGameOver = showGameOver; } // debug handle
 
   game.bus.on(Events.STATE_CHANGED, () => render());
   // SE: random dahai sound whenever anyone discards (incl. the human)
@@ -1635,13 +1639,18 @@ function showTeamBattleDamageFx(r, onDone) {
   // ここでは交代しない（交代はダメージ演出を見せ切ったあと「次の局へ」で行う）。
   // → 演出中は実際に対局したキャラとそのHP変動が表示され、「満タンの控えが被弾」
   //   のような違和感が出ない。
+  // HPとチーム点数は別管理:
+  //   HP（hps）        … 反映するのはマイナス分（被弾）だけ。和了のプラス点では回復しない。
+  //   チーム点数（score）… 和了/放銃の増減をそのまま積む（通常の点棒移動）。HPは減るが点数は上がる。
+  // 反映後、出場中HPを game.players[i].points に同期（卓のHP表示用）。
   const beforeOf = {};
   for (let i = 0; i < game.numPlayers; i++) {
     const team = teamBattleData.teams[i];
     beforeOf[i] = team.hps[team.activeIdx];
-    if (deltas[i]) {
-      team.hps[team.activeIdx] = Math.max(0, team.hps[team.activeIdx] + deltas[i]);
-    }
+    const d = deltas[i] || 0;
+    if (d < 0) team.hps[team.activeIdx] = Math.max(0, team.hps[team.activeIdx] + d); // 被弾のみHPへ
+    if (d) team.score += d; // 点数は増減そのまま
+    game.players[i].points = team.hps[team.activeIdx];
   }
 
   // 飛び検出＋親満ペナルティ。出場中メンバーのHPが尽きたら退場扱いにし、チームへ親満
@@ -1655,7 +1664,7 @@ function showTeamBattleDamageFx(r, onDone) {
     if (team.hps[ai] <= 0 && !team.flown[ai]) {
       team.flown[ai] = true;
       team.hps[ai] = 0;
-      const taken = applyFlyingPenalty(team, ai);
+      const taken = applyFlyingPenalty(team);
       const c = team.chars[ai];
       flyEvents.push({ teamIdx: i, name: c.name, color: c.color, penalty: taken });
     }
@@ -1675,18 +1684,24 @@ function showTeamBattleDamageFx(r, onDone) {
     const down = !isWin && after <= 0; // 飛び（撃沈）
     const fc = after <= full * 0.25 ? "low" : after <= full * 0.5 ? "mid" : "high";
     const tag = isMe ? "自チーム" : `チーム ${relSeatLabel(i)}`;
+    // 和了者: HPは回復しない（バー据え置き）が、チーム点数は得点ぶん上がる。
+    // → delta欄は「点数 +N」を出してHPバー不変との違いを明示。被弾側はHPダメージ量。
+    const deltaHtml = isWin
+      ? `<div class="tb-dmg-delta gain" title="チーム点数が増えます（HPは回復しません）">点数 +${delta.toLocaleString()}</div>`
+      : `<div class="tb-dmg-delta loss">${delta.toLocaleString()}</div>`;
     return `<div class="tb-dmg-row ${isWin ? "is-win" : "is-loser"}${down ? " is-down" : ""}" data-i="${i}" data-before="${before}" data-after="${after}" data-full="${full}">
       <div class="tb-dmg-tag" style="color:${isMe ? "var(--accent)" : "var(--muted)"}">${tag}</div>
       <div class="tb-dmg-name" style="color:${c.color}">${c.name}</div>
       <div class="tb-dmg-barwrap"><div class="hpfill-ghost" style="width:${p(before)}%"></div><div class="hp-fill ${fc}" style="width:${p(before)}%"></div></div>
       <div class="tb-dmg-val"><span class="tb-dmg-num">${fmtNum(before)}</span></div>
-      <div class="tb-dmg-delta ${isWin ? "gain" : "loss"}">${delta > 0 ? "+" : ""}${delta.toLocaleString()}</div>
+      ${deltaHtml}
       ${down ? `<div class="tb-dmg-stamp">撃沈</div>` : ""}
     </div>`;
   };
 
+  // チーム点数（score）でランキング表示。和了で上がり放銃で下がる＝順位の基準。
   const totalHtml = teamBattleData.teams.map((team, i) => {
-    const tot = team.hps.reduce((a, b) => a + b, 0);
+    const tot = team.score;
     const isMe = i === humanIndex;
     const lbl = isMe ? "自チーム" : `チーム ${relSeatLabel(i)}`;
     return `<div class="tb-tot-item${isMe ? " mine" : ""}">
@@ -1772,8 +1787,9 @@ function showTeamBattleDamageFx(r, onDone) {
       if (fill) fill.style.width = w;
       const ghost = row.querySelector(".hpfill-ghost");
       if (ghost) setTimeout(() => { ghost.style.width = w; }, 430);
-      row.classList.add("flash");
+      // 和了者はHP不変＝被弾演出なし。被弾（マイナス）の行だけフラッシュ＋シェイク。
       const down = i !== r.winner && after <= 0;
+      if (i !== r.winner) row.classList.add("flash");
       if (i !== r.winner && !down) row.classList.add("shake");
       row.querySelector(".tb-dmg-delta")?.classList.add("show");
       const numEl = row.querySelector(".tb-dmg-num");
@@ -1929,6 +1945,7 @@ function sparkleSpans(n = 16) {
 // （最終持ち点を HP ゲージで表示）。最下位→1位の順に下から捲り、点数はカウント
 // アップ、1位が出る瞬間に優勝者がフラリッシュ。
 function showGameOver() {
+  if (teamBattleData) { showTeamBattleGameOver(); return; }
   clearActions();
   const overlay = el("win-overlay");
   overlay.classList.remove("hidden");
@@ -1999,6 +2016,112 @@ function showGameOver() {
       const old = sideEl.querySelector(".speaker"); // 連戦などで残っていれば除去
       if (old) old.remove();
       const sp = buildSpeakerEl(human.character, endLine, "side");
+      sideEl.appendChild(sp);
+      requestAnimationFrame(() => sp.classList.add("show"));
+    }, reveal(0) * 1000 + 650);
+  }
+
+  overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+}
+
+// 団体戦の対局終了: 順位は「チーム得点（3人の合計HP）」で集計。優勝チームのエースを
+// 立ち絵で大きく見せ、3人トリオ（撃沈メンバーは灰色）と合計点をチームごとに並べる。
+function showTeamBattleGameOver() {
+  clearActions();
+  const overlay = el("win-overlay");
+  overlay.classList.remove("hidden");
+  const teams = teamBattleData.teams;
+  // 順位はチーム点数（score）で集計。HP合計ではない。
+  const totalOf = (t) => t.score;
+  const fullOf = (t) => t.chars.reduce((a, c) => a + (c?.stats.startingPoints || MAX_HP), 0);
+  // チーム index をチーム点数の降順に
+  const order = teams.map((_, i) => i).sort((a, b) => totalOf(teams[b]) - totalOf(teams[a]));
+  const N = order.length;
+  const top = Math.max(...order.map((i) => totalOf(teams[i])), 1);
+  const reveal = (i) => (N - 1 - i) * 0.45;
+  const teamLabelOf = (i) => (i === humanIndex ? "自チーム" : `チーム ${relSeatLabel(i)}`);
+  // チーム内の代表（生存最高HP、全滅なら先頭）。エース立ち絵＆セリフ主に使う。
+  const repIdxOf = (t) => {
+    let best = 0;
+    for (let m = 1; m < t.chars.length; m++) if (t.hps[m] > t.hps[best]) best = m;
+    return best;
+  };
+  // 3人トリオの小顔（撃沈は灰色）。
+  const trio = (t) =>
+    t.chars
+      .map((c, m) => {
+        if (!c) return "";
+        const u = charImages.url(c, "icon") || charImages.url(c, "portrait");
+        const fallen = t.hps[m] <= 0 ? " fallen" : "";
+        return u
+          ? `<img class="go-team-face${fallen}" src="${u}" alt="" title="${c.name}">`
+          : `<div class="go-team-face go-team-face-fb${fallen}" style="--c:${c.color}" title="${c.name}">${[...c.name][0] || "?"}</div>`;
+      })
+      .join("");
+
+  const champIdx = order[0];
+  const champTeam = teams[champIdx];
+  const ace = champTeam.chars[repIdxOf(champTeam)];
+  const portraitUrl = charImages.url(ace, "portrait");
+  const champArt = portraitUrl
+    ? `<img class="go-champ-portrait" src="${portraitUrl}" alt="${ace.name}">`
+    : `<div class="go-champ-portrait go-champ-fb" style="--char-color:${ace.color}">${[...ace.name][0] || "?"}</div>`;
+
+  const rows = order
+    .map((ti, i) => {
+      const t = teams[ti];
+      const tot = totalOf(t);
+      const w = Math.max(2, Math.min(100, (tot / top) * 100)); // 長さ＝首位チーム比
+      const frac = tot / (fullOf(t) || 1);
+      const tier = frac <= 0.25 ? "low" : frac <= 0.5 ? "mid" : "high"; // 色＝チーム体力
+      return `
+        <div class="go-rank-row r${i + 1}" style="animation-delay:${reveal(i)}s">
+          <div class="go-medal m${i + 1}">${i + 1}</div>
+          <div class="go-team-faces">${trio(t)}</div>
+          <div class="go-rank-info">
+            <div class="go-rank-name${ti === humanIndex ? " mine" : ""}">${teamLabelOf(ti)}</div>
+            <div class="hpbar go-bar"><div class="hpfill ${tier}" style="width:${w}%"></div></div>
+          </div>
+          <div class="go-rank-pts" data-pts="${tot}">0</div>
+        </div>`;
+    })
+    .join("");
+
+  overlay.innerHTML = `
+    <div class="go-screen">
+      <div class="win-sparkles">${sparkleSpans(22)}</div>
+      <div class="go-banner">対局終了</div>
+      <div class="go-champion" style="animation-delay:${reveal(0)}s">
+        <div class="go-crown">👑</div>
+        ${champArt}
+        <div class="go-champ-tag">
+          <span class="go-champ-badge">優勝</span>
+          <span class="go-champ-name" style="color:${ace.color}">${teamLabelOf(champIdx)}</span>
+        </div>
+        <div class="go-champ-trio">${trio(champTeam)}</div>
+      </div>
+      <div class="go-ranks">${rows}</div>
+      <div class="win-buttons go-buttons"></div>
+    </div>`;
+
+  // チーム得点を 0 → 最終値へカウントアップ（行の出るタイミングに合わせて）。
+  overlay.querySelectorAll(".go-rank-pts").forEach((node, idx) => {
+    const pts = +node.dataset.pts;
+    setTimeout(() => tweenNum(node, 0, pts, 650, (v) => v.toLocaleString()), reveal(idx) * 1000 + 240);
+  });
+  setTimeout(() => audio.playSe(sePath("シャキーン1.mp3"), 0.9), reveal(0) * 1000 + 120);
+
+  // 自チームの順位帯に応じた台詞（代表キャラが話す）。
+  const humanRank = order.indexOf(humanIndex);
+  const rep = teams[humanIndex].chars[repIdxOf(teams[humanIndex])];
+  const endLine = pickVoiceLine(rep.id, "matchEnd", { rankIndex: humanRank, numPlayers: N });
+  const sideEl = document.querySelector("#game-screen .side");
+  if (endLine && sideEl) {
+    setTimeout(() => {
+      sideEl.classList.add("side-result");
+      const old = sideEl.querySelector(".speaker");
+      if (old) old.remove();
+      const sp = buildSpeakerEl(rep, endLine, "side");
       sideEl.appendChild(sp);
       requestAnimationFrame(() => sp.classList.add("show"));
     }, reveal(0) * 1000 + 650);
@@ -2221,9 +2344,9 @@ function buildTeamBattleHpBoard(board) {
 
 function updateTeamBattleHpBoard(skipAnim = false) {
   if (!teamHpCells || !teamBattleData || !game) return;
-  // チーム得点（3人合計HP）の降順で順位を決め、flex order とメダルに反映する。
+  // チーム点数（score）の降順で順位を決め、flex order とメダルに反映する。
   // 同点は安定（teams 配列の並び）。0=1位。
-  const teamTotal = (pi) => teamBattleData.teams[pi].hps.reduce((a, b) => a + b, 0);
+  const teamTotal = (pi) => teamBattleData.teams[pi].score;
   const entries = Object.keys(teamHpCells).map(Number);
   const rankByTeam = {};
   [...entries]
@@ -2240,10 +2363,11 @@ function updateTeamBattleHpBoard(skipAnim = false) {
     const activeChar = team.chars[team.activeIdx];
     const full = activeChar.stats.startingPoints || MAX_HP;
     const activeHp = team.hps[team.activeIdx];
-    // チーム合計
-    const totalHp = team.hps.reduce((a, b) => a + b, 0);
-    refs.totalEl.textContent = totalHp.toLocaleString();
-    refs.totalEl.style.color = totalHp < full * 0.4 ? "var(--danger)" : totalHp < full ? "var(--accent)" : "";
+    // チーム点数（score）を表示。HP合計ではなく、和了で増える成績スコア。
+    const teamScore = team.score;
+    const fullTeam = team.chars.reduce((a, c) => a + (c?.stats.startingPoints || 0), 0) || 1;
+    refs.totalEl.textContent = teamScore.toLocaleString();
+    refs.totalEl.style.color = teamScore < fullTeam * 0.4 ? "var(--danger)" : teamScore < fullTeam ? "var(--accent)" : "";
     // チーム得点による順位＝並び順＋メダル
     const rank = rankByTeam[pi];
     refs.block.style.order = rank;
@@ -2290,23 +2414,11 @@ const FLYING_PENALTY = 12000;
 // CPUが温存交代を選ぶHP差のしきい値。出場中HPが控え最高HPよりこれ以上低いと交代。
 const CPU_SWAP_MARGIN = 9000;
 
-// 飛んだメンバー(flownIdx)以外の生存メンバーから、HP高い順に合計 FLYING_PENALTY を減算。
-// 引ききった額（チーム残量が足りなければそのぶん）を返す。
-function applyFlyingPenalty(team, flownIdx) {
-  let penalty = FLYING_PENALTY;
-  let taken = 0;
-  const alive = team.chars
-    .map((c, i) => i)
-    .filter((i) => i !== flownIdx && team.chars[i] && team.hps[i] > 0)
-    .sort((a, b) => team.hps[b] - team.hps[a]);
-  for (const i of alive) {
-    const t = Math.min(team.hps[i], penalty);
-    team.hps[i] -= t;
-    penalty -= t;
-    taken += t;
-    if (penalty <= 0) break;
-  }
-  return taken;
+// 飛び（撃沈）の親満ペナルティ。親満払いは「点棒」なのでチーム点数(score)から減算する。
+// HPは撃沈＝0で表現済みなのでHPからは引かない。減算額を返す。
+function applyFlyingPenalty(team) {
+  team.score -= FLYING_PENALTY;
+  return FLYING_PENALTY;
 }
 
 // CPUチームの自動交代。出場中が飛んでいれば生存最高HPへ強制交代。飛んでいなくても

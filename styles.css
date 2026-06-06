@@ -1780,6 +1780,25 @@ button.secondary { color: var(--ink); }
 }
 .go-rank-row.r1 .go-rank-pts { color: var(--accent); text-shadow: 0 0 14px rgba(246,210,100,.5); }
 
+/* 団体戦の対局終了: チーム3人トリオ（撃沈は灰）＋自チーム強調 */
+.go-team-faces { flex: 0 0 auto; display: flex; }
+.go-team-faces .go-team-face:not(:first-child) { margin-left: -9px; }
+.go-team-face {
+  width: clamp(30px, 3.4vw, 40px); height: clamp(30px, 3.4vw, 40px);
+  border-radius: 50%; object-fit: cover; background: #0c150f;
+  box-shadow: 0 0 0 2px #0c150f, 0 0 0 3px rgba(255,255,255,.16);
+}
+.go-team-face-fb {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 800; color: #0c150f;
+  background: linear-gradient(160deg, var(--c), #0c150f);
+}
+.go-team-face.fallen { filter: grayscale(1) brightness(.55); }
+.go-rank-name.mine { color: var(--accent); }
+.go-champ-trio { position: relative; z-index: 3; display: flex; gap: 6px; margin-top: 8px; }
+.go-champ-trio .go-team-face { width: clamp(34px, 4vw, 46px); height: clamp(34px, 4vw, 46px); }
+.go-champ-trio .go-team-face:not(:first-child) { margin-left: 0; }
+
 .go-buttons {
   position: absolute; bottom: clamp(10px, 3%, 26px); left: 50%; transform: translateX(-50%);
   z-index: 5; margin: 0;
@@ -1972,6 +1991,7 @@ button.secondary { color: var(--ink); }
 .tb-dmg-delta { font-size: 11px; font-weight: 800; width: 54px; flex-shrink: 0; }
 .tb-dmg-delta.gain { color: #66e6a8; }
 .tb-dmg-delta.loss { color: var(--danger); }
+.tb-dmg-delta.noheal { color: var(--muted); font-size: 10px; font-weight: 700; }
 
 /* チーム合計スコア */
 .tb-totals {
