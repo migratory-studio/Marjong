@@ -32,6 +32,9 @@
 //   未記入セリフは grep キーワード "［テンプレ］" で一括検索できる。
 //
 import { CHARACTER_MASTER } from "./characterMaster.js";
+// scenario-forge で量産した局中・対局セリフ（dist/voiceLineMaster.js をコピーしたもの）。
+// キャラ別 { event, cond, text } 配列。EXPLICIT にマージして使う（下記）。
+import { VOICE_LINE_MASTER } from "./voiceLineMaster.js";
 
 // セリフ1件を作る小ヘルパー。
 const L = (event, cond, text) => ({ event, cond, text });
@@ -146,7 +149,10 @@ const SHIYUE = [
 ];
 
 // 明示的に書いたキャラだけここに登録。未登録キャラは name からテンプレ自動生成。
+// scenario-forge 由来の VOICE_LINE_MASTER（bibi 等）をまず展開し、本体で手書きしている
+// 詩玥(SHIYUE)を上書きで優先（詩玥は本体が正典・他はパイプライン生成を採用）。
 const EXPLICIT = {
+  ...VOICE_LINE_MASTER,
   shiyue: SHIYUE,
 };
 
