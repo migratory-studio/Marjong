@@ -16,7 +16,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 10,
     "isEnabled": true,
-    "scenarioVersion": 3
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-01",
@@ -55,7 +55,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 20,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-02",
@@ -116,7 +116,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 30,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-03",
@@ -152,7 +152,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "bond_level",
-        "value": 4
+        "value": 3
       }
     ],
     "firstReadReward": {
@@ -160,7 +160,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 40,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-04",
@@ -204,7 +204,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 50,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
@@ -239,8 +239,8 @@ export const SCENARIO_MASTER = [
         "value": "mentor-bibi-bond-05"
       },
       {
-        "type": "skill_level",
-        "value": 6
+        "type": "bond_level",
+        "value": 4
       }
     ],
     "firstReadReward": {
@@ -248,7 +248,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 60,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
@@ -284,7 +284,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "bond_level",
-        "value": 7
+        "value": 5
       }
     ],
     "firstReadReward": {
@@ -292,7 +292,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 70,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-07",
@@ -336,7 +336,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 80,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
@@ -367,8 +367,8 @@ export const SCENARIO_MASTER = [
         "value": "mentor-bibi-bond-08"
       },
       {
-        "type": "skill_level",
-        "value": 9
+        "type": "bond_level",
+        "value": 6
       }
     ],
     "firstReadReward": {
@@ -376,7 +376,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 90,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
@@ -411,8 +411,8 @@ export const SCENARIO_MASTER = [
         "value": "mentor-bibi-bond-09"
       },
       {
-        "type": "bond_level",
-        "value": 10
+        "type": "avatar_level",
+        "value": 8
       }
     ],
     "firstReadReward": {
@@ -420,7 +420,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 100,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-10",
@@ -441,6 +441,28 @@ export const SCENARIO_MASTER = [
       "soul": 280
     },
     "sortOrder": 100,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "mentorCharacterId": "bibi",
+    "title": "ラビちゃんのこと",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-10"
+      },
+      {
+        "type": "bond_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 320
+    },
+    "sortOrder": 110,
     "isEnabled": true,
     "scenarioVersion": 2
   },
@@ -467,6 +489,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-bibi-bond-12",
+    "mentorCharacterId": "bibi",
+    "title": "みんなで、勝つ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-11"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 400
+    },
+    "sortOrder": 120,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-12",
     "mentorCharacterId": "shiyue",
     "title": "ツモれば、ふたりの勝ち",
@@ -485,6 +529,28 @@ export const SCENARIO_MASTER = [
       "soul": 400
     },
     "sortOrder": 120,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "mentorCharacterId": "bibi",
+    "title": "とどかない声",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-12"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 350
+    },
+    "sortOrder": 130,
     "isEnabled": true,
     "scenarioVersion": 2
   },
@@ -511,6 +577,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-bibi-bond-14",
+    "mentorCharacterId": "bibi",
+    "title": "客席のうさぎ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-13"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 360
+    },
+    "sortOrder": 140,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-14",
     "mentorCharacterId": "shiyue",
     "title": "読めない、という事実",
@@ -529,6 +617,28 @@ export const SCENARIO_MASTER = [
       "soul": 360
     },
     "sortOrder": 140,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "mentorCharacterId": "bibi",
+    "title": "焔の火",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-14"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 360
+    },
+    "sortOrder": 150,
     "isEnabled": true,
     "scenarioVersion": 2
   },
@@ -555,6 +665,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-bibi-bond-16",
+    "mentorCharacterId": "bibi",
+    "title": "ひとりだった子",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-15"
+      },
+      {
+        "type": "bond_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 420
+    },
+    "sortOrder": 160,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-16",
     "mentorCharacterId": "shiyue",
     "title": "恩師の翼",
@@ -573,6 +705,28 @@ export const SCENARIO_MASTER = [
       "soul": 420
     },
     "sortOrder": 160,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "mentorCharacterId": "bibi",
+    "title": "ころんで、立つ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-16"
+      },
+      {
+        "type": "tournament_won",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 450
+    },
+    "sortOrder": 170,
     "isEnabled": true,
     "scenarioVersion": 2
   },
@@ -599,6 +753,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-bibi-bond-18",
+    "mentorCharacterId": "bibi",
+    "title": "あなたなら",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-17"
+      },
+      {
+        "type": "bond_level",
+        "value": 9
+      }
+    ],
+    "firstReadReward": {
+      "soul": 480
+    },
+    "sortOrder": 180,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-18",
     "mentorCharacterId": "shiyue",
     "title": "アビスの壁",
@@ -621,6 +797,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-bibi-bond-19",
+    "mentorCharacterId": "bibi",
+    "title": "お守りのラビちゃん",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-18"
+      },
+      {
+        "type": "tournament_won",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 500
+    },
+    "sortOrder": 190,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-19",
     "mentorCharacterId": "shiyue",
     "title": "三人の九蓮",
@@ -639,6 +837,28 @@ export const SCENARIO_MASTER = [
       "soul": 480
     },
     "sortOrder": 190,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "mentorCharacterId": "bibi",
+    "title": "いってきます",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-bibi-bond-19"
+      },
+      {
+        "type": "tournament_won",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 600
+    },
+    "sortOrder": 200,
     "isEnabled": true,
     "scenarioVersion": 2
   },
