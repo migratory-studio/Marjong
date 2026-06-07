@@ -22,9 +22,20 @@ const roleDef = (id) =>
 // 立ち絵 <img>（色ブロックフォールバック付き）。which は "portrait" | "icon"。
 function makeArt(c, which, cls) {
   const path = c.assets?.[which];
+  // モブの丸アイコン（席アイコン等）は全身シルエットを頭部にズームクロップ（.is-mob-face）。
+  // 立ち絵(portrait)はVSカードで全身を見せるのでクロップしない。
+  if (which === "icon" && c.isMob && path) {
+    const div = document.createElement("div");
+    div.className = `${cls} is-mob-face`;
+    div.style.setProperty("--mob-sil", `url("${path}")`);
+    return div;
+  }
   if (path) {
     const img = document.createElement("img");
     img.className = cls;
+    // モブの立ち絵は黒シルエット。対局時の表示（VSカード等）に限り灰背景を敷いて見やすくする。
+    // ※シナリオ登場時は別経路（scenarioPlayer）で描くので、シーン背景の上にそのまま出る。
+    if (which === "portrait" && c.isMob) img.classList.add("mi-mob-bg");
     img.src = path;
     img.alt = c.name;
     if (which === "portrait" && c.portraitPos) img.style.objectPosition = c.portraitPos;

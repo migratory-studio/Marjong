@@ -229,6 +229,9 @@ export class CanvasRenderer {
     ctx.closePath();
     if (img) {
       ctx.clip();
+      // モブは黒シルエット。対局中の卓上アイコンに灰背景を敷いて felt に溶けないようにする
+      // （透過PNGの透明部に色が出る）。シナリオ描画は別経路なので影響しない。
+      if (p.character.isMob) { ctx.fillStyle = "#b8bcc4"; ctx.fill(); }
       ctx.drawImage(img, cx - r, cy - r, r * 2, r * 2);
     } else {
       ctx.fillStyle = p.character.color;
