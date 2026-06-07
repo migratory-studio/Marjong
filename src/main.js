@@ -49,6 +49,9 @@ let selectedTeamBattle = false; // 団体戦モードが選択されているか
 let selectedTeamCount = 4;      // 団体戦のチーム数（= 卓人数）
 let teamBattleData = null;       // 団体戦中のチーム/メンバー状態。null = 通常対戦
 let teamHpCells = null;          // 団体戦HPボードのDOM参照マップ
+let selectedPairBattle = false;  // ペア戦モードが選択されているか
+let pairBattleData = null;       // ペア戦中の状態（独立新モード）。null = 非ペア戦
+let pairHpCells = null;          // ペア戦HPボードのDOM参照マップ
 let pendingCpuCallDecisions = null; // cached while waiting on human call
 let riichiMode = false;
 let recallMode = false; // リコール・ディール: 自分の河の牌を選択中
@@ -190,6 +193,11 @@ function buildSelectScreen() {
       if (cpuPicks[1] === id) return `メンバー${TEAM_MARKS[2]}`;
       return null;
     }
+    if (selectedPairBattle) {
+      if (selectedCharId === id) return "あなた";
+      if (cpuPicks[0] === id) return "相方";
+      return null;
+    }
     if (selectedCharId === id) return "あなた";
     const off = cpuPicks.indexOf(id);
     return off >= 0 && off < selectedPlayers - 1 ? `CPU${SEAT_MARKS[off]}` : null;
@@ -213,7 +221,7 @@ function buildSelectScreen() {
 
   // 次の空席へ進む（現在の人数の範囲で巡回）。全席埋まっていれば現状維持。
   function nextEmptySeat() {
-    const numSlots = selectedTeamBattle ? 3 : selectedPlayers;
+    const numSlots = selectedTeamBattle ? 3 : selectedPairBattle ? 2 : selectedPlayers;
     for (let step = 1; step <= numSlots; step++) {
       const s = (activeSeat + step) % numSlots;
       const filled = s === 0 ? !!selectedCharId : !!cpuPicks[s - 1];
@@ -247,7 +255,9 @@ function buildSelectScreen() {
     chip.className = "seat-chip" + (interactive && s === activeSeat ? " active" : "") + (interactive ? "" : " static");
     const role = document.createElement("span");
     role.className = "seat-role";
-    role.textContent = isTeamMode ? `メンバー${TEAM_MARKS[s]}` : (s === 0 ? "あなた" : `CPU${SEAT_MARKS[s - 1]}`);
+    role.textContent = isTeamMode ? `メンバー${TEAM_MARKS[s]}`
+      : selectedPairBattle ? (s === 0 ? "あなた" : "相方")
+      : (s === 0 ? "あなた" : `CPU${SEAT_MARKS[s - 1]}`);
     chip.appendChild(role);
     const pick = document.createElement("span");
     pick.className = "seat-pick";
@@ -281,9 +291,9 @@ function buildSelectScreen() {
     const bar = el("seat-bar");
     if (bar) {
       bar.innerHTML = "";
-      const numSlots = selectedTeamBattle ? 3 : selectedPlayers;
+      const numSlots = selectedTeamBattle ? 3 : selectedPairBattle ? 2 : selectedPlayers;
       for (let s = 0; s < numSlots; s++) bar.appendChild(makeSeatChip(s, true));
-      if (!selectedTeamBattle) {
+      if (!selectedTeamBattle && !selectedPairBattle) {
         const all = document.createElement("button");
         all.type = "button";
         all.className = "seat-allrandom";
@@ -296,7 +306,7 @@ function buildSelectScreen() {
     const prev = el("seat-preview");
     if (prev) {
       prev.innerHTML = "";
-      if (!selectedTeamBattle) {
+      if (!selectedTeamBattle && !selectedPairBattle) {
         for (let s = 0; s < selectedPlayers; s++) prev.appendChild(makeSeatChip(s, false));
       }
     }
@@ -417,6 +427,16 @@ function buildSelectScreen() {
       box.appendChild(cpuRow);
       return;
     }
+    if (selectedPairBattle) {
+      box.innerHTML = `<div class="sum-line"><span class="sum-k">対戦形式</span><span class="sum-v">ペア戦（2対2）</span></div>`;
+      line("あなた", selectedChar(), "未選択");
+      line("相方", cpuPicks[0] ? CHARACTERS.find((c) => c.id === cpuPicks[0]) : null, "おまかせ（ランダム）");
+      const cpuRow = document.createElement("div");
+      cpuRow.className = "sum-line";
+      cpuRow.innerHTML = `<span class="sum-k">相手ペア</span><span class="sum-v sum-random">2人（ランダム）</span>`;
+      box.appendChild(cpuRow);
+      return;
+    }
     const modeRow = document.createElement("div");
     modeRow.className = "sum-line";
     modeRow.innerHTML = `<span class="sum-k">人数</span><span class="sum-v">${selectedPlayers}人</span>`;
@@ -454,18 +474,26 @@ function buildSelectScreen() {
   for (const li of document.querySelectorAll("#wiz-steps .wiz-step")) {
     li.onclick = () => { audio.playClick?.(); gotoStep(Number(li.dataset.step)); };
   }
-  // 対戦形式（通常 / 団体戦）トグル。
+  // 対戦形式（通常 / ペア戦 / 団体戦）トグル。
   const battleModeToggle = el("battle-mode-toggle");
   for (const btn of battleModeToggle.querySelectorAll(".mode-btn")) {
     btn.onclick = () => {
-      selectedTeamBattle = btn.dataset.battle === "team";
+      const mode = btn.dataset.battle; // "normal" | "pair" | "team"
+      selectedTeamBattle = mode === "team";
+      selectedPairBattle = mode === "pair";
       battleModeToggle.querySelectorAll(".mode-btn").forEach((b) => b.classList.remove("selected"));
       btn.classList.add("selected");
-      el("normal-table-opts").classList.toggle("hidden", selectedTeamBattle);
+      el("normal-table-opts").classList.toggle("hidden", selectedTeamBattle || selectedPairBattle);
+      el("pair-table-opts").classList.toggle("hidden", !selectedPairBattle);
       el("team-table-opts").classList.toggle("hidden", !selectedTeamBattle);
       if (selectedTeamBattle) {
         selectedPlayers = selectedTeamCount;
         // 団体戦では cpuPicks[0,1] を自チームメンバー枠として使う。既存CPU指名はクリア。
+        cpuPicks = [null, null, null];
+        activeSeat = 0;
+      } else if (selectedPairBattle) {
+        selectedPlayers = 4; // 卓は4席（2ペア×2）
+        // ペア戦では cpuPicks[0] を相方枠として使う。既存CPU指名はクリア。
         cpuPicks = [null, null, null];
         activeSeat = 0;
       }
@@ -490,11 +518,13 @@ function buildSelectScreen() {
     activeSeat = 0;
     // 対戦形式を通常に戻す
     selectedTeamBattle = false;
+    selectedPairBattle = false;
     selectedTeamCount = 4;
     selectedPlayers = 4;
     battleModeToggle.querySelectorAll(".mode-btn").forEach((b) =>
       b.classList.toggle("selected", b.dataset.battle === "normal"));
     el("normal-table-opts").classList.remove("hidden");
+    el("pair-table-opts").classList.add("hidden");
     el("team-table-opts").classList.add("hidden");
     gotoStep(1);
   };
@@ -622,8 +652,10 @@ function bootHome() {
 // ----------------------------------------------------------------- start
 function startGame() {
   if (selectedTeamBattle) { startTeamBattleGame(); return; }
+  if (selectedPairBattle) { startPairBattleGame(cpuPicks[0]); return; }
   humanIndex = 0;
   teamBattleData = null;
+  pairBattleData = null;
   // human picks their character. Each CPU seat is either an explicit pick
   // (cpuPicks) or left as "おまかせ" — empty seats are filled at random with no
   // duplicates against the human or any explicit pick. Seat count depends on the
@@ -661,6 +693,7 @@ function startGame() {
 // 団体戦の開始。自チーム3人を選択済み、CPU チームはランダム割り当て。
 function startTeamBattleGame() {
   humanIndex = 0;
+  pairBattleData = null; // 直前がペア戦でも残骸を持ち越さない（firePartnerTalk 誤発火防止）
   const myMembers = [selectedCharId, cpuPicks[0], cpuPicks[1]]
     .map((id) => CHARACTERS.find((c) => c.id === id));
 
@@ -721,6 +754,57 @@ function startTeamBattleGame() {
   });
 }
 
+// ペア戦（2対2の共闘）の開始。独立した新モード＝団体戦の交代機構は使わない。
+// 4席=2ペア×2人。座席は「対面ペア」: 席0=自分 / 席2=相方 / 席1・3=敵ペア。
+// 各席は自分の個人HP（被弾でのみ減・着席ダウンで0床）を持ち、ペア点数=2人の合算
+// （和了で増・放銃で減＝順位の基準）。team側コードには一切触れない。
+function startPairBattleGame(partnerId) {
+  humanIndex = 0;
+  teamBattleData = null;
+  const me = CHARACTERS.find((c) => c.id === selectedCharId);
+  // 相方が未指名（おまかせ）なら残りからランダムに1人。
+  let partner = partnerId ? CHARACTERS.find((c) => c.id === partnerId) : null;
+
+  // 敵ペア2人＋（必要なら相方）を、自分と被らないようランダム割り当て。
+  const usedIds = new Set([me.id, ...(partner ? [partner.id] : [])]);
+  const pool = shuffled(CHARACTERS.filter((c) => !usedIds.has(c.id)));
+  if (!partner) partner = pool.shift();
+  const enemyA = pool.shift();
+  const enemyB = pool.shift();
+
+  // 着席順（卓の席）: 席0=自分, 席1=敵A, 席2=相方(対面), 席3=敵B。
+  const order = [me, enemyA, partner, enemyB];
+  const abilities = order.map((c) => instantiateAbilities(c));
+  const seated = order.map((c, i) => ({ character: c, abilities: abilities[i] }));
+  for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
+
+  // pairBattleData: 席→ペアID対応と、ペア単位の点数を保持。
+  //   pairOf … 席index → pairId（0=自ペア{0,2} / 1=敵ペア{1,3}）。
+  //   hp     … 席ごとの個人HP（被弾でのみ減る。着席ダウンで0床。回復はアイテムのみ）。
+  //   pairScore … ペア2人の合算点（和了で増・放銃で減）。順位＝勝敗の基準。
+  pairBattleData = {
+    pairOf: [0, 1, 0, 1],
+    pairs: [{ seats: [0, 2] }, { seats: [1, 3] }],
+    chars: order,
+    hp: order.map((c) => c.stats.startingPoints),
+    pairScore: [
+      order[0].stats.startingPoints + order[2].stats.startingPoints,
+      order[1].stats.startingPoints + order[3].stats.startingPoints,
+    ],
+  };
+
+  const dealerIndex = Math.floor(Math.random() * seated.length);
+  showScreen("match-intro-screen");
+  showMatchIntro(el("match-intro-screen"), {
+    seated,
+    humanIndex,
+    mode: { rounds: selectedRounds, players: 4 },
+    dealerIndex,
+    audio,
+    onComplete: () => beginGame(seated, dealerIndex),
+  });
+}
+
 // 実対局の生成と開始。対局開始演出（showMatchIntro）の onComplete から呼ばれる。
 function beginGame(seated, dealerIndex) {
   // 団体戦は個人が飛んでも交代で続行する。終了（団体トビ）は「いずれかのチームが
@@ -728,13 +812,18 @@ function beginGame(seated, dealerIndex) {
   const teamBustCheck = teamBattleData
     ? () => teamBattleData.teams.some((t) => t.hps.reduce((a, b) => a + b, 0) <= 0)
     : undefined;
+  // ペア戦の終了: いずれかのペアが全滅（2人ともHP≤0＝着席ダウン）したとき。個人が
+  // 1人ダウンしても卓には残り続けるので、ペア単位の全滅でのみ対局終了。
+  const pairBustCheck = pairBattleData
+    ? () => pairBattleData.pairs.some((p) => p.seats.every((s) => pairBattleData.hp[s] <= 0))
+    : undefined;
   game = new Game(seated, humanIndex, undefined, {
     maxRounds: selectedRounds,
     dealerIndex,
-    bustCheck: teamBustCheck,
+    bustCheck: teamBustCheck || pairBustCheck,
   });
   renderer = new CanvasRenderer(el("table"), game, humanIndex, tileImages, charImages);
-  if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__tbFx = showTeamBattleDamageFx; window.__showGameOver = showGameOver; } // debug handle
+  if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__pairBattleData = pairBattleData; window.__tbFx = showTeamBattleDamageFx; window.__showGameOver = showGameOver; } // debug handle
 
   game.bus.on(Events.STATE_CHANGED, () => render());
   // SE: random dahai sound whenever anyone discards (incl. the human)
@@ -1403,8 +1492,14 @@ function appendNextButton(box, r) {
     // advance. Draws (no winner index) skip straight through.
     if (r && r.winner != null && deltas && deltas.some((d) => d)) {
       if (teamBattleData) showTeamBattleDamageFx(r, proceed);
+      else if (pairBattleData) showPairBattleDamageFx(r, proceed);
       else showDamageFx(r, proceed);
-    } else proceed();
+    } else {
+      // 流局（ノーテン罰符など）は和了ダメージ演出を通らない。ペア戦は罰符の点移動を
+      // ペア点数へ反映してから進む（HPは被弾のみなので変えない）。
+      if (pairBattleData && deltas && deltas.some((d) => d)) applyPairDrawSettlement(deltas);
+      proceed();
+    }
   });
   box.appendChild(btn);
 }
@@ -1866,6 +1961,143 @@ function showTeamBattleDamageFx(r, onDone) {
   else showCard();
 }
 
+// 流局時のペア精算。和了ダメージ演出を通らない流局（ノーテン罰符・流し満貫の罰符側）で、
+// 罰符の点移動を「ペア点数」にだけ反映する。HPは被弾でのみ減る設計なので変えない（卓の
+// HP表示も hp に復元する＝罰符をHPに乗せない）。winner のいる和了は showPairBattleDamageFx 側。
+function applyPairDrawSettlement(deltas) {
+  if (!pairBattleData) return;
+  for (let i = 0; i < game.numPlayers; i++) {
+    const d = deltas[i] || 0;
+    if (d) pairBattleData.pairScore[pairBattleData.pairOf[i]] += d;
+    game.players[i].points = pairBattleData.hp[i]; // HPは流局で変えない（表示も据え置き）
+  }
+}
+
+// ペア戦用ダメージ演出。団体戦版から「交代UI」「飛びカットイン／親満ペナルティ」を
+// 取り除いた簡易版。HPは被弾(マイナス)のみ反映＝着席ダウンで0床。ペア点数は増減そのまま。
+// 飛びペナルティは仕様D（当面なし）に従いゼロ。Phase2 でUIを磨く前提の機能版。
+function showPairBattleDamageFx(r, onDone) {
+  const host = el("damage-overlay");
+  const deltas = r.deltas || [];
+
+  // 個人HPとペア点数を別管理で反映。HP=被弾のみ(0床)、pairScore=増減そのまま。
+  const beforeOf = {};
+  for (let i = 0; i < game.numPlayers; i++) {
+    beforeOf[i] = pairBattleData.hp[i];
+    const d = deltas[i] || 0;
+    if (d < 0) pairBattleData.hp[i] = Math.max(0, pairBattleData.hp[i] + d); // 着席ダウンで0床
+    if (d) pairBattleData.pairScore[pairBattleData.pairOf[i]] += d;
+    game.players[i].points = pairBattleData.hp[i]; // 卓のHP表示用に同期
+  }
+
+  // ペア全滅（2人ともHP0＝着席ダウン）をこの局で確定させる。エンジンの bustCheck は
+  // _endHand 時点（hp更新前）に評価されるため、ここで game.gameOver を立てて同じ局で
+  // 対局終了に倒す（off-by-one 回避）。onDone(=proceed) が isGameOver を見て結果画面へ。
+  if (pairBattleData.pairs.some((p) => p.seats.every((s) => pairBattleData.hp[s] <= 0))) {
+    game.gameOver = true;
+  }
+
+  const fmtNum = (v) => v.toLocaleString();
+  const myPair = pairBattleData.pairOf[humanIndex];
+  const rowHtml = (i) => {
+    const c = pairBattleData.chars[i];
+    const after = pairBattleData.hp[i];
+    const before = beforeOf[i];
+    const delta = deltas[i] || 0;
+    const full = c.stats.startingPoints || MAX_HP;
+    const p = (v) => Math.max(0, Math.min(100, (v / full) * 100));
+    const isWin = i === r.winner;
+    const down = !isWin && after <= 0; // 着席ダウン（脱落ではない）
+    const fc = after <= full * 0.25 ? "low" : after <= full * 0.5 ? "mid" : "high";
+    const tag = pairBattleData.pairOf[i] === myPair ? "自ペア" : "相手ペア";
+    const deltaHtml = isWin
+      ? `<div class="tb-dmg-delta gain" title="ペア点数が増えます（HPは回復しません）">点数 +${delta.toLocaleString()}</div>`
+      : `<div class="tb-dmg-delta loss">${delta.toLocaleString()}</div>`;
+    return `<div class="tb-dmg-row ${isWin ? "is-win" : "is-loser"}${down ? " is-down" : ""}" data-i="${i}" data-before="${before}" data-after="${after}" data-full="${full}">
+      <div class="tb-dmg-tag" style="color:${pairBattleData.pairOf[i] === myPair ? "var(--accent)" : "var(--muted)"}">${tag}</div>
+      <div class="tb-dmg-name" style="color:${c.color}">${c.name}</div>
+      <div class="tb-dmg-barwrap"><div class="hpfill-ghost" style="width:${p(before)}%"></div><div class="hp-fill ${fc}" style="width:${p(before)}%"></div></div>
+      <div class="tb-dmg-val"><span class="tb-dmg-num">${fmtNum(before)}</span></div>
+      ${deltaHtml}
+      ${down ? `<div class="tb-dmg-stamp">ダウン</div>` : ""}
+    </div>`;
+  };
+
+  // ペア点数（合算）でランキング表示。
+  const totalHtml = pairBattleData.pairScore.map((tot, pid) => {
+    const isMe = pid === myPair;
+    const lbl = isMe ? "自ペア" : "相手ペア";
+    return `<div class="tb-tot-item${isMe ? " mine" : ""}">
+      <div class="tb-tot-label">${lbl}</div>
+      <div class="tb-tot-val" style="${isMe ? "color:var(--accent)" : tot < 10000 ? "color:var(--danger)" : ""}">${tot.toLocaleString()}</div>
+    </div>`;
+  }).join('<div class="tb-tot-sep"></div>');
+
+  const rows = [r.winner, ...game.players.map((_, i) => i).filter((i) => i !== r.winner && deltas[i])];
+
+  host.innerHTML = `
+    <div class="dmg-card tb-dmg-card">
+      <div class="dmg-head">${r.tsumo ? "ツモ和了" : "ロン和了"} — ダメージ</div>
+      <div class="tb-dmg-rows">${rows.map(rowHtml).join("")}</div>
+      <div class="tb-totals">${totalHtml}</div>
+      <p class="tb-note">※ ペア戦なので、HPはアイテムでのみ回復できます</p>
+      <button class="btn tb-next-btn" id="pb-next-btn">次の局へ</button>
+    </div>`;
+  host.classList.remove("hidden");
+  requestAnimationFrame(() => host.classList.add("show"));
+
+  // ドレイン演出（団体戦版と同じ。被弾はシェイク＋SE、ダウンはスタンプ＋ダウンSE）。
+  setTimeout(() => {
+    audio.playSe(sePath("ボウリングのピンを倒す1.mp3"), 0.9);
+    host.querySelectorAll(".tb-dmg-row").forEach((row) => {
+      const i = +row.dataset.i;
+      const before = +row.dataset.before, after = +row.dataset.after, full = +row.dataset.full;
+      const w = Math.max(0, Math.min(100, (after / full) * 100)) + "%";
+      const fill = row.querySelector(".hp-fill");
+      if (fill) fill.style.width = w;
+      const ghost = row.querySelector(".hpfill-ghost");
+      if (ghost) setTimeout(() => { ghost.style.width = w; }, 430);
+      const down = i !== r.winner && after <= 0;
+      if (i !== r.winner) row.classList.add("flash");
+      if (i !== r.winner && !down) row.classList.add("shake");
+      row.querySelector(".tb-dmg-delta")?.classList.add("show");
+      const numEl = row.querySelector(".tb-dmg-num");
+      if (numEl) tweenNum(numEl, before, after, 850, fmtNum);
+      if (down) {
+        setTimeout(() => {
+          row.classList.add("downed");
+          row.querySelector(".tb-dmg-stamp")?.classList.add("show");
+          host.classList.add("ko");
+          audio.playSe(sePath("布団に倒れ込む.mp3"), 1.0);
+        }, 620);
+      }
+    });
+  }, 300);
+
+  // 自キャラのセリフ演出（和了/被弾）。
+  const human = game.players[humanIndex];
+  const hd = deltas[humanIndex] || 0;
+  let spEvent = null, spCtx = null;
+  if (r.winner === humanIndex) {
+    spEvent = "agari";
+    spCtx = { isYakuman: !!r.result.isYakuman, score: r.result.total };
+  } else if (hd < 0) {
+    spEvent = "damage";
+    spCtx = { dmgAmount: Math.abs(hd), hpFrac: human.points / (human.character.stats.startingPoints || MAX_HP) };
+  }
+  if (spEvent) {
+    const sp = mountSpeaker(host, human.character, spEvent, spCtx, "left");
+    if (sp) host.classList.add("has-speaker");
+  }
+
+  el("pb-next-btn").onclick = () => {
+    host.classList.remove("show", "has-speaker", "ko");
+    host.classList.add("hidden");
+    host.innerHTML = "";
+    onDone();
+  };
+}
+
 // 団体戦・飛びカットイン。撃沈したメンバーを大きく見せ、続けて親満（FLYING_PENALTY）
 // 払いの数字を叩きつける。SE は 布団に倒れ込む（撃沈）→ 金額表示（親満払い）。
 // クリック or 一定時間で onDone（＝ダメージカード表示）へ。
@@ -1956,6 +2188,7 @@ function sparkleSpans(n = 16) {
 // アップ、1位が出る瞬間に優勝者がフラリッシュ。
 function showGameOver() {
   if (teamBattleData) { showTeamBattleGameOver(); return; }
+  if (pairBattleData) { showPairBattleGameOver(); return; }
   clearActions();
   const overlay = el("win-overlay");
   overlay.classList.remove("hidden");
@@ -2140,6 +2373,117 @@ function showTeamBattleGameOver() {
   overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
 }
 
+// ペア戦の結果画面。団体戦版と同じ「ペア点数の降順ランキング＋優勝ペア」。
+// 各ペアの顔は2人（ダウンは灰）。代表＝ペア内のHP高い方。
+function showPairBattleGameOver() {
+  clearActions();
+  const overlay = el("win-overlay");
+  overlay.classList.remove("hidden");
+  const pairs = pairBattleData.pairs;
+  const myPair = pairBattleData.pairOf[humanIndex];
+  const totalOf = (pid) => pairBattleData.pairScore[pid];
+  const fullOf = (pid) => pairs[pid].seats.reduce((a, s) => a + (pairBattleData.chars[s].stats.startingPoints || MAX_HP), 0);
+  // 順位はペア点数の降順。同点なら合計HP（着席ダウンは0扱い）が高い方が上＝決着（仕様E）。
+  const hpTotalOf = (pid) => pairs[pid].seats.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
+  const order = pairs.map((_, pid) => pid).sort((a, b) => totalOf(b) - totalOf(a) || hpTotalOf(b) - hpTotalOf(a));
+  const N = order.length;
+  const top = Math.max(...order.map((pid) => totalOf(pid)), 1);
+  const reveal = (i) => (N - 1 - i) * 0.45;
+  const pairLabelOf = (pid) => (pid === myPair ? "自ペア" : "相手ペア");
+  // ペア内代表（HP高い方）。立ち絵＆セリフ主に使う。
+  const repSeatOf = (pid) => pairs[pid].seats.reduce((b, s) => (pairBattleData.hp[s] > pairBattleData.hp[b] ? s : b), pairs[pid].seats[0]);
+  // ペアの2人の小顔（HP0は灰色）。HP高い方を先に。
+  const duo = (pid) =>
+    [...pairs[pid].seats]
+      .sort((a, b) => pairBattleData.hp[b] - pairBattleData.hp[a])
+      .map((s) => {
+        const c = pairBattleData.chars[s];
+        const u = charImages.url(c, "icon") || charImages.url(c, "portrait");
+        const fallen = pairBattleData.hp[s] <= 0 ? " fallen" : "";
+        return u
+          ? `<img class="go-team-face${fallen}" src="${u}" alt="" title="${c.name}">`
+          : `<div class="go-team-face go-team-face-fb${fallen}" style="--c:${c.color}" title="${c.name}">${[...c.name][0] || "?"}</div>`;
+      })
+      .join("");
+
+  const champPid = order[0];
+  const ace = pairBattleData.chars[repSeatOf(champPid)];
+  // 優勝ペアの2人を立ち絵で並べて見せる（共闘優勝）。HP高い方＝エースを前(1番目)に。
+  const champSeats = [...pairs[champPid].seats].sort((a, b) => pairBattleData.hp[b] - pairBattleData.hp[a]);
+  const champPortrait = (seat) => {
+    const c = pairBattleData.chars[seat];
+    const u = charImages.url(c, "portrait");
+    const fallen = pairBattleData.hp[seat] <= 0 ? " fallen" : "";
+    return u
+      ? `<img class="go-champ-portrait${fallen}" src="${u}" alt="${c.name}">`
+      : `<div class="go-champ-portrait go-champ-fb${fallen}" style="--char-color:${c.color}">${[...c.name][0] || "?"}</div>`;
+  };
+  const champDuoArt = `<div class="go-champ-duo">${champSeats.map(champPortrait).join("")}</div>`;
+  const champNamesHtml = champSeats
+    .map((s) => `<span style="color:${pairBattleData.chars[s].color}">${pairBattleData.chars[s].name}</span>`)
+    .join('<span class="go-champ-amp">＆</span>');
+
+  const rows = order
+    .map((pid, i) => {
+      const tot = totalOf(pid);
+      const w = Math.max(2, Math.min(100, (tot / top) * 100));
+      const frac = tot / (fullOf(pid) || 1);
+      const tier = frac <= 0.25 ? "low" : frac <= 0.5 ? "mid" : "high";
+      return `
+        <div class="go-rank-row r${i + 1}" style="animation-delay:${reveal(i)}s">
+          <div class="go-medal m${i + 1}">${i + 1}</div>
+          <div class="go-team-faces">${duo(pid)}</div>
+          <div class="go-rank-info">
+            <div class="go-rank-name${pid === myPair ? " mine" : ""}">${pairLabelOf(pid)}</div>
+            <div class="hpbar go-bar"><div class="hpfill ${tier}" style="width:${w}%"></div></div>
+          </div>
+          <div class="go-rank-pts" data-pts="${tot}">0</div>
+        </div>`;
+    })
+    .join("");
+
+  overlay.innerHTML = `
+    <div class="go-screen">
+      <div class="win-sparkles">${sparkleSpans(22)}</div>
+      <div class="go-banner">対局終了</div>
+      <div class="go-champion go-champion-pair" style="animation-delay:${reveal(0)}s">
+        <div class="go-crown">👑</div>
+        ${champDuoArt}
+        <div class="go-champ-tag">
+          <span class="go-champ-badge">優勝ペア</span>
+          <span class="go-champ-name go-champ-pairname">${champNamesHtml}</span>
+        </div>
+        <div class="go-champ-sub">${pairLabelOf(champPid)}・共闘優勝</div>
+      </div>
+      <div class="go-ranks">${rows}</div>
+      <div class="win-buttons go-buttons"></div>
+    </div>`;
+
+  overlay.querySelectorAll(".go-rank-pts").forEach((node, idx) => {
+    const pts = +node.dataset.pts;
+    setTimeout(() => tweenNum(node, 0, pts, 650, (v) => v.toLocaleString()), reveal(idx) * 1000 + 240);
+  });
+  setTimeout(() => audio.playSe(sePath("シャキーン1.mp3"), 0.9), reveal(0) * 1000 + 120);
+
+  // 自ペアの順位に応じた代表キャラの台詞。
+  const humanPairRank = order.indexOf(myPair);
+  const rep = pairBattleData.chars[repSeatOf(myPair)];
+  const endLine = pickVoiceLine(rep.id, "matchEnd", { rankIndex: humanPairRank, numPlayers: N });
+  const sideEl = document.querySelector("#game-screen .side");
+  if (endLine && sideEl) {
+    setTimeout(() => {
+      sideEl.classList.add("side-result");
+      const old = sideEl.querySelector(".speaker");
+      if (old) old.remove();
+      const sp = buildSpeakerEl(rep, endLine, "side");
+      sideEl.appendChild(sp);
+      requestAnimationFrame(() => sp.classList.add("show"));
+    }, reveal(0) * 1000 + 650);
+  }
+
+  overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+}
+
 // ----------------------------------------------------------------- helpers
 function mkBtn(label, cls, onClick) {
   const b = document.createElement("button");
@@ -2233,6 +2577,7 @@ function buildHpBoard() {
   board.innerHTML = "";
   board.className = "hp-board";
   if (teamBattleData) { buildTeamBattleHpBoard(board); return; }
+  if (pairBattleData) { buildPairBattleHpBoard(board); return; }
   el("self-stage")?.classList.remove("hidden");
   const N = game.numPlayers;
   board.classList.toggle("p3", N === 3);
@@ -2447,6 +2792,128 @@ function updateTeamBattleHpBoard(skipAnim = false) {
   }
 }
 
+// ---- ペア戦 HP ボード ----
+// 団体戦ボードと同じ「順位ソート＋メダル」方式。2ペアをペア点数の降順で 1位/2位 に並べ、
+// 各ブロック内の2人は HP の高い方を上に並べる（flex order）。着席ダウン(HP0)は .out 表示。
+function buildPairBattleHpBoard(board) {
+  board.classList.add("team-battle", "pair-battle");
+  pairHpCells = {};
+  el("self-stage")?.classList.add("hidden");
+  const myPair = pairBattleData.pairOf[humanIndex];
+  for (let pid = 0; pid < pairBattleData.pairs.length; pid++) {
+    const isMine = pid === myPair;
+    const block = document.createElement("div");
+    block.className = "tb-block" + (isMine ? " my-team" : "");
+    // ヘッダー（順位メダル＋ラベル｜ペア合計点）
+    const header = document.createElement("div");
+    header.className = "tb-header";
+    const headLeft = document.createElement("div");
+    headLeft.className = "tb-head-left";
+    const rankEl = document.createElement("div");
+    rankEl.className = "tb-rank";
+    const labelSpan = document.createElement("span");
+    labelSpan.className = "tb-label";
+    labelSpan.textContent = isMine ? "▶ 自ペア" : "相手ペア";
+    headLeft.appendChild(rankEl);
+    headLeft.appendChild(labelSpan);
+    const totalEl = document.createElement("span");
+    totalEl.className = "tb-total";
+    header.appendChild(headLeft);
+    header.appendChild(totalEl);
+    block.appendChild(header);
+    // メンバー2人（HP順は update でflex orderにより並べ替え）
+    const membersWrap = document.createElement("div");
+    membersWrap.className = "pb-members";
+    const memberRefs = [];
+    for (const seat of pairBattleData.pairs[pid].seats) {
+      const c = pairBattleData.chars[seat];
+      const row = document.createElement("div");
+      row.className = "tb-active pb-member";
+      row.innerHTML = `<div class="tb-dot" style="--c:${c.color}"></div>`;
+      const iconWrap = document.createElement("div");
+      iconWrap.className = "tb-icon";
+      iconWrap.appendChild(makeCharIcon(c));
+      row.appendChild(iconWrap);
+      const info = document.createElement("div");
+      info.className = "tb-info";
+      info.innerHTML = `<div class="tb-name" style="color:${c.color}">${c.name}</div><div class="hp-gauge"><div class="hp-fill"></div></div>`;
+      row.appendChild(info);
+      const val = document.createElement("div");
+      val.className = "tb-hp";
+      row.appendChild(val);
+      membersWrap.appendChild(row);
+      memberRefs.push({ seat, row, fill: info.querySelector(".hp-fill"), val });
+    }
+    block.appendChild(membersWrap);
+    // セリフ吹き出し（自ペアのみ・Phase3で発火）
+    let talkBubble = null;
+    if (isMine) {
+      talkBubble = document.createElement("div");
+      talkBubble.className = "tb-talk hidden";
+      block.appendChild(talkBubble);
+    }
+    board.appendChild(block);
+    pairHpCells[pid] = { block, rankEl, totalEl, memberRefs, talkBubble };
+  }
+  updatePairBattleHpBoard(true); // 初期はFLIPなしで配置のみ
+}
+
+function updatePairBattleHpBoard(skipAnim = false) {
+  if (!pairHpCells || !pairBattleData || !game) return;
+  const pairTotal = (pid) => pairBattleData.pairScore[pid];
+  // 同点時は合計HP（着席ダウンは0扱い）で決する＝結果画面と同じ基準（仕様E）。
+  const hpTotalOf = (pid) => pairBattleData.pairs[pid].seats.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
+  const pids = Object.keys(pairHpCells).map(Number);
+  const rankByPair = {};
+  [...pids].sort((a, b) => pairTotal(b) - pairTotal(a) || hpTotalOf(b) - hpTotalOf(a)).forEach((pid, rank) => { rankByPair[pid] = rank; });
+
+  // FLIP: 並べ替え前のブロック位置を記録。
+  const firstTop = {};
+  if (!skipAnim) for (const pid of pids) firstTop[pid] = pairHpCells[pid].block.getBoundingClientRect().top;
+
+  for (const [key, refs] of Object.entries(pairHpCells)) {
+    const pid = Number(key);
+    const score = pairBattleData.pairScore[pid];
+    const fullPair = pairBattleData.pairs[pid].seats.reduce((a, s) => a + (pairBattleData.chars[s].stats.startingPoints || 0), 0) || 1;
+    refs.totalEl.textContent = score.toLocaleString();
+    refs.totalEl.style.color = score < fullPair * 0.4 ? "var(--danger)" : score < fullPair ? "var(--accent)" : "";
+    // ペア点数の順位＝並び順＋メダル
+    const rank = rankByPair[pid];
+    refs.block.style.order = rank;
+    refs.rankEl.textContent = rank + 1;
+    refs.rankEl.className = "tb-rank m" + (rank + 1);
+    // ブロック内の2人は HP 降順（高い方を上）。flex order で並べ替え。
+    [...refs.memberRefs]
+      .sort((a, b) => pairBattleData.hp[b.seat] - pairBattleData.hp[a.seat])
+      .forEach((m, idx) => { m.row.style.order = idx; });
+    for (const m of refs.memberRefs) {
+      const hp = pairBattleData.hp[m.seat];
+      const full = pairBattleData.chars[m.seat].stats.startingPoints || MAX_HP;
+      const pct = Math.max(0, Math.min(100, (hp / full) * 100));
+      m.fill.style.width = pct + "%";
+      m.fill.className = "hp-fill " + (pct <= 25 ? "low" : pct <= 50 ? "mid" : "high");
+      m.val.textContent = hp.toLocaleString();
+      m.row.classList.toggle("is-turn", game.turn === m.seat && game.phase !== Phase.HAND_OVER);
+      m.row.classList.toggle("out", hp <= 0); // 着席ダウン
+    }
+  }
+
+  // FLIP: ズレを打ち消して0へトランジション＝スライド。
+  if (!skipAnim) {
+    for (const pid of pids) {
+      const blk = pairHpCells[pid].block;
+      const dy = firstTop[pid] - blk.getBoundingClientRect().top;
+      if (Math.abs(dy) < 1) continue;
+      blk.style.transition = "none";
+      blk.style.transform = `translateY(${dy}px)`;
+      requestAnimationFrame(() => {
+        blk.style.transition = "transform .45s cubic-bezier(.2,.8,.2,1)";
+        blk.style.transform = "";
+      });
+    }
+  }
+}
+
 // 団体戦の親満ペナルティ（飛ばした相手への支払い相当）。1人飛ぶとチームへ課す額。
 const FLYING_PENALTY = 12000;
 // CPUが温存交代を選ぶHP差のしきい値。出場中HPが控え最高HPよりこれ以上低いと交代。
@@ -2588,6 +3055,7 @@ function buildSelfBustup() {
 // 持ち点の多い順に並べ替え（flex order）、各行へ順位メダル（1位=上）を振る。
 function updateHpBoard() {
   if (teamBattleData) { updateTeamBattleHpBoard(); return; }
+  if (pairBattleData) { updatePairBattleHpBoard(); return; }
   if (!hpCells || !game) return;
   // 持ち点降順の順位（同点は players 配列の並びで安定。0=1位）。
   const rankByIndex = {};
@@ -2643,6 +3111,36 @@ function fireSelfTalk(event, { force = false } = {}) {
   showSelfTalk(pickVoiceLine(id, event, {}));
 }
 
+// ── ペア戦・相方の局中相槌 ──
+// 隣で一緒に打つ相方（自ペアの非人間席）が、味方＝人間プレイヤーの節目に声をかける。
+// 文言は characterVoiceMaster の ally* イベント。表示は相棒ボード（自ペアブロック）の吹き出し。
+let partnerTalkTimer = null;
+function pairPartnerId() {
+  if (!pairBattleData) return null;
+  const myPair = pairBattleData.pairOf[humanIndex];
+  const seat = pairBattleData.pairs[myPair].seats.find((s) => s !== humanIndex);
+  return seat != null ? pairBattleData.chars[seat].id : null;
+}
+function showPartnerTalk(text, ms = 4200) {
+  if (!text || !pairHpCells || !pairBattleData) return;
+  const myPair = pairBattleData.pairOf[humanIndex];
+  const bubble = pairHpCells[myPair]?.talkBubble;
+  if (!bubble) return;
+  bubble.textContent = text;
+  bubble.classList.remove("hidden");
+  clearTimeout(partnerTalkTimer);
+  partnerTalkTimer = setTimeout(() => bubble.classList.add("hidden"), ms);
+}
+// 相方の ally* セリフを引いて吹き出しに出す。未記入テンプレ（［テンプレ］）は黙る。
+function firePartnerTalk(event, ctx = {}) {
+  if (!pairBattleData || !game || game.phase === Phase.HAND_OVER) return;
+  const pid = pairPartnerId();
+  if (!pid) return;
+  const line = pickVoiceLine(pid, event, ctx);
+  if (!line || line.startsWith("［テンプレ］")) return; // 未記入は出さない（grepワードはマスタに残る）
+  showPartnerTalk(line);
+}
+
 // 人間プレイヤーのシャンテン数（打牌後の13枚で評価する想定）。0=聴牌。
 function humanShanten() {
   const p = game.players[humanIndex];
@@ -2675,6 +3173,8 @@ function setupMatchTalk(g) {
     resetMatchTalk();
     matchTalk.prevShanten = humanShanten(); // 配牌時のシャンテンを基準に
     setTimeout(() => fireSelfTalk("handStart", { force: true }), 1200);
+    // ペア戦: 相方が局頭に声をかける（自分のひと言と被らないよう少しずらす）。
+    setTimeout(() => firePartnerTalk("allyHandStart"), 2200);
   });
 
   // 自分の打牌ごとに、ツモ切り連続・聴牌の出入り・進行の速さ/詰まりを見る。
@@ -2692,7 +3192,7 @@ function setupMatchTalk(g) {
 
     // 打牌後（13枚）のシャンテンで聴牌の出入りと進行を判定。
     const sh = humanShanten();
-    if (!matchTalk.wasTenpai && sh === 0) { matchTalk.wasTenpai = true; fireSelfTalk("tenpai", { force: true }); }
+    if (!matchTalk.wasTenpai && sh === 0) { matchTalk.wasTenpai = true; fireSelfTalk("tenpai", { force: true }); setTimeout(() => firePartnerTalk("allyTenpai"), 900); }
     else if (matchTalk.wasTenpai && sh > 0) { matchTalk.wasTenpai = false; fireSelfTalk("tenpaiDrop", { force: true }); }
 
     if (sh < matchTalk.prevShanten) {
@@ -2706,6 +3206,7 @@ function setupMatchTalk(g) {
       if (!matchTalk.saidStuck && matchTalk.discards - matchTalk.lastImprove >= 4 && sh >= 2) {
         matchTalk.saidStuck = true;
         fireSelfTalk("handStuck");
+        setTimeout(() => firePartnerTalk("allyStuck"), 900);
       }
     }
 
@@ -2725,7 +3226,7 @@ function setupMatchTalk(g) {
   // 流局間際：山が残りわずかになったら一度だけ。
   g.bus.on(Events.TILE_DRAWN, () => {
     if (!matchTalk || matchTalk.saidLast) return;
-    if (g.wall.liveRemaining <= 6) { matchTalk.saidLast = true; fireSelfTalk("lastTiles"); }
+    if (g.wall.liveRemaining <= 6) { matchTalk.saidLast = true; fireSelfTalk("lastTiles"); setTimeout(() => firePartnerTalk("allyLast"), 900); }
   });
 }
 

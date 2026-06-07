@@ -1815,6 +1815,24 @@ button.secondary { color: var(--ink); }
 }
 .go-champ-name { font-size: clamp(18px, 2.4vw, 28px); font-weight: 800; text-shadow: 0 1px 3px #000b; }
 
+/* ペア戦リザルト: 優勝ペアの2人を並べて見せる「共闘優勝」スポット。 */
+.go-champion-pair { width: min(46%, 420px); }
+.go-champ-duo {
+  position: relative; width: 100%; height: 82%;
+  display: flex; align-items: flex-end; justify-content: center;
+}
+.go-champ-duo .go-champ-portrait { height: 80%; max-width: 60%; }
+/* HP高い方（エース）を前に大きく、相方を少し後ろ・控えめに重ねる。 */
+.go-champ-duo .go-champ-portrait:nth-child(1) { transform: translateX(16%); z-index: 2; }
+.go-champ-duo .go-champ-portrait:nth-child(2) { transform: translateX(-16%); z-index: 1; height: 72%; filter: drop-shadow(0 10px 26px #000d) brightness(.9); }
+.go-champ-duo .go-champ-portrait.fallen { filter: grayscale(1) brightness(.55) drop-shadow(0 10px 26px #000d); }
+.go-champ-pairname { display: flex; align-items: baseline; gap: .15em; flex-wrap: wrap; justify-content: center; }
+.go-champ-amp { color: var(--accent); font-size: .72em; font-weight: 700; margin: 0 .12em; }
+.go-champ-sub {
+  position: relative; z-index: 3; margin-top: 5px; font-size: clamp(11px, 1.4vw, 14px);
+  font-weight: 700; color: var(--accent); letter-spacing: .04em; text-shadow: 0 1px 3px #000b;
+}
+
 /* 順位リスト: 右 */
 .go-ranks {
   position: absolute; right: clamp(12px, 3%, 44px); top: 50%; transform: translateY(-50%);
@@ -2028,6 +2046,13 @@ button.secondary { color: var(--ink); }
 .tb-name { font-size: 12px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.2; }
 .tb-info .hp-gauge { height: 5px; margin-top: 3px; }
 .tb-hp { font-size: 12px; font-weight: 800; color: #eef3ef; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+/* ペア戦: ブロック内の2人をHP順に縦並び（order で並べ替えるため flex 化）。 */
+.pb-members { display: flex; flex-direction: column; }
+.pb-member:last-child { border-bottom: none; }
+.pb-member.out { opacity: .5; }
+.pb-member.out .tb-hp { color: var(--danger); }
+.pb-member.out .tb-name::after { content: "　ダウン"; color: var(--danger); font-size: 10px; font-weight: 700; }
 
 /* セリフ吹き出し */
 .tb-talk {
