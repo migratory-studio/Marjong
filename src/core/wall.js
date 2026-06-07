@@ -1,23 +1,31 @@
 // The wall: live wall (draws), dead wall (dora indicators, ura-dora, rinshan).
-import { TILES, KINDS, doraFromIndicator } from "./tiles.js";
+import { TILES, KINDS, doraFromIndicator, isReducedSuit, suitOf, rankOf } from "./tiles.js";
 
 // Red-five tiles: one red 5 per number suit (kinds 4=5m, 13=5p, 22=5s),
 // using the first physical copy of each. Red fives count as extra dora.
+// Note: in reduced tile sets the removed 5s drop out automatically, e.g. 二人麻雀
+// keeps only the 5s red (5m/5p are gone with manzu/pinzu 2..8).
 const RED_KINDS = new Set([4, 13, 22]);
 
-// In 三麻 (sanma), manzu 2..8 (kinds 1..7) are removed, leaving 27 kinds × 4 =
-// 108 tiles. The kind numbering itself is unchanged; we just omit those kinds.
-function buildAllTiles(sanma = false) {
+// Build the live tile pool for a tile set. Reduced suits keep only their
+// terminals (1 & 9); ranks 2..8 are dropped. Kind numbering is unchanged.
+//   full   → 34 kinds × 4 = 136
+//   sanma  → manzu 2..8 removed → 27 × 4 = 108
+//   futari → manzu + pinzu 2..8 removed → 20 × 4 = 80 (二人麻雀 少牌)
+function buildAllTiles(tileset = "full") {
   const tiles = [];
   let id = 0;
   for (let kind = 0; kind < KINDS; kind++) {
-    if (sanma && kind >= 1 && kind <= 7) continue; // drop 2m..8m
+    if (isReducedSuit(suitOf(kind), tileset)) {
+      const r = rankOf(kind);
+      if (r >= 2 && r <= 8) continue; // keep only 1 & 9 of a reduced suit
+    }
     for (let copy = 0; copy < 4; copy++) {
       const red = RED_KINDS.has(kind) && copy === 0;
       tiles.push({ id: id++, kind, red });
     }
   }
-  return tiles; // length === 136 (4p) or 108 (sanma)
+  return tiles; // 136 (full) / 108 (sanma) / 80 (futari)
 }
 
 // Mulberry32 seeded PRNG so games are reproducible when a seed is given.
@@ -42,9 +50,11 @@ function shuffle(arr, rng) {
 export class Wall {
   constructor(seed = (Math.random() * 2 ** 32) >>> 0, options = {}) {
     this.seed = seed >>> 0;
-    this.sanma = !!options.sanma;
+    // tileset: "full" | "sanma" | "futari". Legacy callers pass { sanma:true }.
+    this.tileset = options.tileset || (options.sanma ? "sanma" : "full");
+    this.sanma = this.tileset === "sanma";
     const rng = makeRng(this.seed);
-    this.tiles = buildAllTiles(this.sanma);
+    this.tiles = buildAllTiles(this.tileset);
     shuffle(this.tiles, rng);
 
     // Dead wall = last 14 tiles. Live wall = the rest.
@@ -116,9 +126,9 @@ export class Wall {
   }
 
   doraKinds() {
-    return this.doraIndicators().map((t) => doraFromIndicator(t.kind, this.sanma));
+    return this.doraIndicators().map((t) => doraFromIndicator(t.kind, this.tileset));
   }
   uraKinds() {
-    return this.uraIndicators().map((t) => doraFromIndicator(t.kind, this.sanma));
+    return this.uraIndicators().map((t) => doraFromIndicator(t.kind, this.tileset));
   }
 }

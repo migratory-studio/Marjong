@@ -84,10 +84,11 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
   const after = (ms, fn) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
   const clearTimers = () => { for (const t of timers) clearTimeout(t); timers.length = 0; };
 
-  // 俯瞰卓の視覚スロット（0=自分bottom,1=right,2=top,3=left）。三麻は北席なし。
+  // 俯瞰卓の視覚スロット（0=自分bottom,1=right,2=top,3=left）。三麻は北席なし、
+  // 二人麻雀は相手を対面(top)に。
   const slotOf = (i) => {
     const off = (i - humanIndex + N) % N;
-    return (N === 3 ? [0, 1, 3] : [0, 1, 2, 3])[off];
+    return (N === 2 ? [0, 2] : N === 3 ? [0, 1, 3] : [0, 1, 2, 3])[off];
   };
   // 起家からの自風（東南西北）。
   const windOf = (i) => WIND_LABEL[(i - dealerIndex + N) % N];
@@ -99,7 +100,7 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
       <!-- Phase A: VS 対戦カード -->
       <div class="mi-phase mi-versus${isTeam ? " mi-versus-team" : ""}${isPair ? " mi-versus-team mi-versus-pair" : ""}" data-phase="versus">
         <div class="mi-modebar">
-          <span class="mi-badge">${isTeam ? `${players}チーム対抗` : isPair ? "ペア戦 2対2" : players === 3 ? "三人打ち" : "四人打ち"}</span>
+          <span class="mi-badge">${isTeam ? `${players}チーム対抗` : isPair ? "ペア戦 2対2" : players === 2 ? "二人打ち" : players === 3 ? "三人打ち" : "四人打ち"}</span>
           <span class="mi-badge">${rounds === 2 ? "半荘戦" : "東風戦"}</span>
         </div>
         ${isGrouped ? '<div class="mi-teams"></div>' : '<div class="mi-cards"></div>'}

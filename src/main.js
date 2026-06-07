@@ -29,6 +29,22 @@ import { pickVoiceLine } from "./data/voiceLines.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
 
+// 対局ごとのセリフセット。シナリオ戦が指定すると、その対局中の全セリフ解決で
+// ctx.voiceSet として参照され、一致する専用セリフを解放する（未指定なら通常のみ）。
+// pendingVoiceSet を beginGame 直前にセットすると次の対局に適用される。
+let activeVoiceSet = null;
+let pendingVoiceSet = null;
+// セリフ解決の共通入口。activeVoiceSet を ctx に注入してから pickVoiceLine を呼ぶ。
+// 呼び出し側 ctx が voiceSet を明示していればそちらを優先。
+function vline(charId, event, ctx = {}) {
+  return pickVoiceLine(charId, event, { voiceSet: activeVoiceSet, ...ctx });
+}
+// シナリオ戦などが「次の対局のセリフセット」を仕込む入口。beginGame がこれを
+// activeVoiceSet に確定する。例: setPendingVoiceSet("shugyo") → 二人麻雀を開始。
+// 将来のシナリオ・バトルノードはここを呼んでから対局を起動すればよい。
+function setPendingVoiceSet(v) { pendingVoiceSet = v || null; }
+if (typeof window !== "undefined") window.__setVoiceSet = setPendingVoiceSet;
+
 const el = (id) => document.getElementById(id);
 let game, renderer, humanIndex = 0;
 let hpCells = null; // 相棒ボード（右側HP表示）の playerIndex -> セル参照マップ
@@ -121,6 +137,34 @@ const roleDef = (id) =>
 // highest HP, so the bar scales automatically if values are retuned.
 const MAX_HP = Math.max(...CHARACTERS.map((c) => c.stats.startingPoints));
 const hpPips = (sp) => Math.max(1, Math.min(5, Math.round((sp / MAX_HP) * 5)));
+
+// ---- 周回ゲージ（点数がHP満タン=初期持ち点を超えたとき、2週目以降を重ねて見せる）----
+// 1週目は通常色(low/mid/high)。2週目=ゴールド固定。3週目以降は色を変えて周回継続。
+const LAP1_FULL = "linear-gradient(90deg,#3ddc97,#66e6a8)"; // 1週目を満タン表示するときの緑(high相当)
+const LAP_COLORS = [
+  "linear-gradient(90deg,#ffcb3d,#ffe487)", // 2週目: ゴールド
+  "linear-gradient(90deg,#4dd0e1,#8af0fb)", // 3週目: シアン
+  "linear-gradient(90deg,#c77dff,#e7c2ff)", // 4週目: パープル
+  "linear-gradient(90deg,#ff7d9d,#ffc0cd)", // 5週目: ローズ
+];
+// n週目(2..)の固定色。5週目以降はパレットを巡回。
+const lapColor = (n) => LAP_COLORS[(n - 2 + LAP_COLORS.length * 99) % LAP_COLORS.length];
+// 完了済み周回(prev)を満タン表示するときの色。1週目完了=緑、以降は各周回色。
+const lapBaseColor = (prev) => (prev <= 1 ? LAP1_FULL : lapColor(prev));
+
+// points を「周回ゲージ」状態へ分解する。
+//   lap     … 現在伸びている周回 (1=1週目)。
+//   fillPct … 現在の周回の伸び (0..100)。
+//   basePct … 完了済み周回ぶんのベース幅 (lap>=2 で 100)。
+function lapState(points, full) {
+  if (!(full > 0) || points <= 0) {
+    return { lap: 1, fillPct: Math.max(0, (points / (full || 1)) * 100), basePct: 0 };
+  }
+  const completed = Math.floor(points / full);
+  const frac = points / full - completed;
+  const lap = frac === 0 ? completed : completed + 1; // 丁度の倍数はその周回が満タン
+  return { lap, fillPct: frac === 0 ? 100 : frac * 100, basePct: lap >= 2 ? 100 : 0 };
+}
 
 // One ▮▮▮▯▯ gauge row. `value` filled of `max` segments. `overlay` (optional)
 // draws a value on top of the pips (used for the HP number).
@@ -819,13 +863,17 @@ function beginGame(seated, dealerIndex) {
   const pairBustCheck = pairBattleData
     ? () => pairBattleData.pairs.some((p) => p.seats.every((s) => pairBattleData.hp[s] <= 0))
     : undefined;
+  // この対局のセリフセットを確定（シナリオ戦が pendingVoiceSet をセットしていれば適用、
+  // フリー対戦など未指定なら null＝通常セリフのみ）。
+  activeVoiceSet = pendingVoiceSet;
+  pendingVoiceSet = null;
   game = new Game(seated, humanIndex, undefined, {
     maxRounds: selectedRounds,
     dealerIndex,
     bustCheck: teamBustCheck || pairBustCheck,
   });
   renderer = new CanvasRenderer(el("table"), game, humanIndex, tileImages, charImages);
-  if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__pairBattleData = pairBattleData; window.__tbFx = showTeamBattleDamageFx; window.__showGameOver = showGameOver; } // debug handle
+  if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__pairBattleData = pairBattleData; window.__tbFx = showTeamBattleDamageFx; window.__showGameOver = showGameOver; window.__activeVoiceSet = activeVoiceSet; } // debug handle
 
   game.bus.on(Events.STATE_CHANGED, () => render());
   // SE: random dahai sound whenever anyone discards (incl. the human)
@@ -1597,7 +1645,7 @@ function buildSpeakerEl(character, text, side = "left") {
 // 返り値はスピーカー要素 or null。表示の出し入れは呼び出し側で制御する。
 function mountSpeaker(host, character, event, ctx, side = "left") {
   if (!host || !character) return null;
-  const text = pickVoiceLine(character.id, event, ctx || {});
+  const text = vline(character.id, event, ctx || {});
   if (!text) return null;
   const sp = buildSpeakerEl(character, text, side);
   host.appendChild(sp);
@@ -1629,7 +1677,16 @@ function showDamageFx(r, onDone) {
   const host = el("damage-overlay");
   const deltas = r.deltas || [];
   const full = (i) => game.players[i].character.stats.startingPoints || MAX_HP;
-  const pct = (v, i) => Math.max(0, Math.min(100, (v / full(i)) * 100));
+  // 点数 v をゲージの見た目（周回対応）に変換する。
+  const vis = (v, i) => {
+    const { lap, fillPct, basePct } = lapState(v, full(i));
+    return {
+      lap, basePct, fillPct: Math.max(0, fillPct),
+      fillBg: lap >= 2 ? lapColor(lap) : null,
+      fillCls: lap >= 2 ? "lap" : (fillPct <= 25 ? "low" : fillPct <= 50 ? "mid" : "high"),
+      baseBg: lap >= 2 ? lapBaseColor(lap - 1) : null,
+    };
+  };
 
   // Winner first, then anyone whose points moved (losers / tsumo payers).
   const order = [r.winner];
@@ -1642,7 +1699,7 @@ function showDamageFx(r, onDone) {
     const before = after - delta;
     const isWin = i === r.winner;
     const busted = !isWin && after < 0; // 持ち点マイナス＝トビ（撃沈）
-    const fillClass = after <= full(i) * 0.25 ? "low" : after <= full(i) * 0.5 ? "mid" : "high";
+    const b = vis(before, i); // 開始時の見た目（周回対応）。ドレインで after の見た目へ動かす。
     const iconUrl = charImages.url(c, "icon") || charImages.url(c, "portrait");
     const face = iconUrl
       ? `<img class="dmg-face" src="${iconUrl}" alt="">`
@@ -1653,8 +1710,9 @@ function showDamageFx(r, onDone) {
         <div class="dmg-info">
           <div class="dmg-name" style="color:${c.color}">${c.name}</div>
           <div class="hpbar">
-            <div class="hpfill-ghost" style="width:${pct(before, i)}%"></div>
-            <div class="hpfill ${fillClass}" style="width:${pct(before, i)}%"></div>
+            <div class="hpfill-base" style="width:${b.basePct}%${b.baseBg ? `;background:${b.baseBg}` : ""}"></div>
+            <div class="hpfill-ghost" style="width:${b.fillPct}%"></div>
+            <div class="hpfill ${b.fillCls}" style="width:${b.fillPct}%${b.fillBg ? `;background:${b.fillBg}` : ""}"></div>
           </div>
         </div>
         <div class="dmg-hp"><span class="dmg-hp-num">${before}</span></div>
@@ -1707,8 +1765,14 @@ function showDamageFx(r, onDone) {
     host.querySelectorAll(".dmg-row").forEach((row) => {
       const i = +row.dataset.i;
       const before = +row.dataset.before, after = +row.dataset.after;
-      const w = pct(after, i) + "%";
-      row.querySelector(".hpfill").style.width = w;          // bar snaps toward new HP
+      const a = vis(after, i);
+      const w = a.fillPct + "%";
+      const fillEl = row.querySelector(".hpfill");
+      fillEl.style.width = w;                                // bar snaps toward new HP
+      fillEl.className = "hpfill " + a.fillCls;              // 周回をまたぐと色も切り替わる
+      fillEl.style.background = a.fillBg || "";
+      const baseEl = row.querySelector(".hpfill-base");
+      if (baseEl) { baseEl.style.width = a.basePct + "%"; baseEl.style.background = a.baseBg || ""; }
       const ghost = row.querySelector(".hpfill-ghost");
       setTimeout(() => { ghost.style.width = w; }, 430);     // chip-damage trail catches up
       row.classList.add("flash");
@@ -2253,7 +2317,7 @@ function showGameOver() {
   // （順位帯に応じた台詞。順位の捲りが終わってから登場）。
   const human = game.players[humanIndex];
   const hRank = ranks.findIndex((p) => p === human);
-  const endLine = pickVoiceLine(human.character.id, "matchEnd", { rankIndex: hRank, numPlayers: N });
+  const endLine = vline(human.character.id, "matchEnd", { rankIndex: hRank, numPlayers: N });
   const sideEl = document.querySelector("#game-screen .side");
   if (endLine && sideEl) {
     setTimeout(() => {
@@ -2359,7 +2423,7 @@ function showTeamBattleGameOver() {
   // 自チームの順位帯に応じた台詞（代表キャラが話す）。
   const humanRank = order.indexOf(humanIndex);
   const rep = teams[humanIndex].chars[repIdxOf(teams[humanIndex])];
-  const endLine = pickVoiceLine(rep.id, "matchEnd", { rankIndex: humanRank, numPlayers: N });
+  const endLine = vline(rep.id, "matchEnd", { rankIndex: humanRank, numPlayers: N });
   const sideEl = document.querySelector("#game-screen .side");
   if (endLine && sideEl) {
     setTimeout(() => {
@@ -2470,7 +2534,7 @@ function showPairBattleGameOver() {
   // 自ペアの順位に応じた代表キャラの台詞。
   const humanPairRank = order.indexOf(myPair);
   const rep = pairBattleData.chars[repSeatOf(myPair)];
-  const endLine = pickVoiceLine(rep.id, "matchEnd", { rankIndex: humanPairRank, numPlayers: N });
+  const endLine = vline(rep.id, "matchEnd", { rankIndex: humanPairRank, numPlayers: N });
   const sideEl = document.querySelector("#game-screen .side");
   if (endLine && sideEl) {
     setTimeout(() => {
@@ -2580,6 +2644,7 @@ function buildHpBoard() {
   board.className = "hp-board";
   if (teamBattleData) { buildTeamBattleHpBoard(board); return; }
   if (pairBattleData) { buildPairBattleHpBoard(board); return; }
+  if (game.futari) { buildFutariHpBoard(board); return; }
   el("self-stage")?.classList.remove("hidden");
   const N = game.numPlayers;
   board.classList.toggle("p3", N === 3);
@@ -2588,47 +2653,74 @@ function buildHpBoard() {
   const order = [...game.players.keys()].sort(
     (a, b) => ((a - humanIndex + N) % N) - ((b - humanIndex + N) % N)
   );
-  for (const i of order) {
-    const c = game.players[i].character;
-    const row = document.createElement("div");
-    row.className = "hp-row";
-    row.style.setProperty("--c", c.color);
-    if (i === humanIndex) row.classList.add("is-you");
-
-    // 順位メダル（結果画面の .go-medal と同じ金/銀/銅/灰の意匠）。番号と並び順は
-    // 持ち点に応じて updateHpBoard で更新する。
-    const rank = document.createElement("div");
-    rank.className = "hp-rank";
-    row.appendChild(rank);
-
-    const icon = document.createElement("div");
-    icon.className = "hp-icon";
-    icon.appendChild(makeCharIcon(c));
-    row.appendChild(icon);
-
-    const main = document.createElement("div");
-    main.className = "hp-main";
-    main.innerHTML = `
-      <div class="hp-head">
-        <span class="hp-rel">${relSeatLabel(i)}</span>
-        <span class="hp-name" style="color:${c.color}">${c.name}</span>
-        <span class="hp-val"></span>
-      </div>
-      <div class="hp-gauge"><div class="hp-fill"></div></div>`;
-    row.appendChild(main);
-
-    // 短文紹介ポップ（キャラ選択のホバーと同じ bio＋profile）。
-    if (c.bio || c.profile) {
-      const fl = document.createElement("div");
-      fl.className = "hp-flavor";
-      fl.innerHTML = `${c.bio ? `<div class="hp-flavor-bio">${c.bio}</div>` : ""}${c.profile ? `<div class="hp-flavor-profile">${c.profile}</div>` : ""}`;
-      row.appendChild(fl);
-    }
-
-    board.appendChild(row);
-    hpCells[i] = { cell: row, rank, fill: main.querySelector(".hp-fill"), val: main.querySelector(".hp-val") };
-  }
+  for (const i of order) board.appendChild(makeHpRow(i));
   buildSelfBustup();
+  updateHpBoard();
+}
+
+// 1人ぶんのHPバー行を生成し、hpCells に参照を登録して返す。buildHpBoard と
+// 二人麻雀ボードで共用。
+function makeHpRow(i) {
+  const c = game.players[i].character;
+  const row = document.createElement("div");
+  row.className = "hp-row";
+  row.style.setProperty("--c", c.color);
+  if (i === humanIndex) row.classList.add("is-you");
+
+  // 順位メダル（結果画面の .go-medal と同じ金/銀/銅/灰の意匠）。番号と並び順は
+  // 持ち点に応じて updateHpBoard で更新する。
+  const rank = document.createElement("div");
+  rank.className = "hp-rank";
+  row.appendChild(rank);
+
+  const icon = document.createElement("div");
+  icon.className = "hp-icon";
+  icon.appendChild(makeCharIcon(c));
+  row.appendChild(icon);
+
+  const main = document.createElement("div");
+  main.className = "hp-main";
+  main.innerHTML = `
+    <div class="hp-head">
+      <span class="hp-rel">${relSeatLabel(i)}</span>
+      <span class="hp-name" style="color:${c.color}">${c.name}</span>
+      <span class="hp-val"></span>
+    </div>
+    <div class="hp-gauge"><div class="hp-base"></div><div class="hp-fill"></div></div>`;
+  row.appendChild(main);
+
+  // 短文紹介ポップ（キャラ選択のホバーと同じ bio＋profile）。
+  if (c.bio || c.profile) {
+    const fl = document.createElement("div");
+    fl.className = "hp-flavor";
+    fl.innerHTML = `${c.bio ? `<div class="hp-flavor-bio">${c.bio}</div>` : ""}${c.profile ? `<div class="hp-flavor-profile">${c.profile}</div>` : ""}`;
+    row.appendChild(fl);
+  }
+
+  hpCells[i] = { cell: row, rank, base: main.querySelector(".hp-base"), fill: main.querySelector(".hp-fill"), val: main.querySelector(".hp-val") };
+  return row;
+}
+
+// ---- 二人麻雀 HP ボード ----
+// 「師匠との修行」を意識し、相手(師匠)を上に大きく置く固定レイアウト:
+//   ① 相手HP ② 相手立ち絵 ③ 自分HP ④ 自分立ち絵(self-stage)
+// updateHpBoard は futari では並べ替えしない（DOM順固定）。
+function buildFutariHpBoard(board) {
+  board.classList.add("futari");
+  el("self-stage")?.classList.remove("hidden");
+  hpCells = {};
+  const oppIndex = game.players.findIndex((_, i) => i !== humanIndex);
+
+  board.appendChild(makeHpRow(oppIndex));            // ① 相手HP
+
+  const oppStage = document.createElement("div");    // ② 相手立ち絵
+  oppStage.className = "opp-bustup";
+  fillPortrait(oppStage, game.players[oppIndex].character);
+  board.appendChild(oppStage);
+
+  board.appendChild(makeHpRow(humanIndex));          // ③ 自分HP
+
+  buildSelfBustup();                                 // ④ 自分立ち絵(self-stage)
   updateHpBoard();
 }
 
@@ -3031,11 +3123,9 @@ function showSwapFx(swaps, onDone) {
 }
 
 // 右サイド下部の自キャラ・バストアップ（立ち絵）。セリフ枠(#self-talk)の背面に立つ。
-function buildSelfBustup() {
-  const host = el("self-bustup");
-  if (!host || !game) return;
+// 立ち絵(バストアップ)を host に流し込む。自キャラ・相手キャラ共用。
+function fillPortrait(host, c) {
   host.innerHTML = "";
-  const c = game.players[humanIndex].character;
   const url = charImages.url(c, "portrait") || c.assets?.portrait;
   if (url) {
     const img = document.createElement("img");
@@ -3051,6 +3141,12 @@ function buildSelfBustup() {
     fb.textContent = [...c.name][0] || "?";
     host.appendChild(fb);
   }
+}
+
+function buildSelfBustup() {
+  const host = el("self-bustup");
+  if (!host || !game) return;
+  fillPortrait(host, game.players[humanIndex].character);
 }
 
 // 相棒ボードのHP値・ゲージ・手番ハイライト・順位を現在のゲーム状態に同期。
@@ -3069,15 +3165,29 @@ function updateHpBoard() {
     const ref = hpCells[i];
     if (!ref) return;
     const full = p.character.stats.startingPoints || MAX_HP;
-    const pct = Math.max(0, Math.min(100, (p.points / full) * 100));
-    ref.fill.style.width = pct + "%";
-    ref.fill.className = "hp-fill " + (pct <= 25 ? "low" : pct <= 50 ? "mid" : "high");
+    const { lap, fillPct, basePct } = lapState(p.points, full);
+    // 現在の周回ぶん（最前面）。1週目は通常色クラス、2週目以降は固定色を直に当てる。
+    ref.fill.style.width = Math.max(0, fillPct) + "%";
+    if (lap >= 2) {
+      ref.fill.className = "hp-fill lap";
+      ref.fill.style.background = lapColor(lap);
+    } else {
+      ref.fill.style.background = "";
+      ref.fill.className = "hp-fill " + (fillPct <= 25 ? "low" : fillPct <= 50 ? "mid" : "high");
+    }
+    // 完了済み周回ぶん（背面の満タンベース）。lap>=2 のときだけ直前周回色で敷く。
+    if (ref.base) {
+      ref.base.style.width = basePct + "%";
+      ref.base.style.background = lap >= 2 ? lapBaseColor(lap - 1) : "";
+    }
     ref.val.textContent = p.points;
+    ref.cell.classList.toggle("lap2", lap >= 2); // 周回中フック（演出用）
     ref.cell.classList.toggle("busted", p.points < 0);
     ref.cell.classList.toggle("is-turn", game.turn === i && game.phase !== Phase.HAND_OVER);
     // 順位＝並び順＋メダル（結果画面の m1..m4 と同じ金/銀/銅/灰）。
+    // 二人麻雀は固定レイアウト（相手→自分の縦並び）なので並べ替えはしない。
     const rank = rankByIndex[i];
-    ref.cell.style.order = rank;
+    if (!game.futari) ref.cell.style.order = rank;
     ref.rank.textContent = rank + 1;
     ref.rank.className = "hp-rank m" + (rank + 1);
   });
@@ -3110,7 +3220,7 @@ function fireSelfTalk(event, { force = false } = {}) {
   const COOLDOWN = 5200;
   if (!force && performance.now() - matchTalk.lastAt < COOLDOWN) return;
   const id = game.players[humanIndex].character.id;
-  showSelfTalk(pickVoiceLine(id, event, {}));
+  showSelfTalk(vline(id, event, {}));
 }
 
 // ── ペア戦・相方の局中相槌 ──
@@ -3138,7 +3248,7 @@ function firePartnerTalk(event, ctx = {}) {
   if (!pairBattleData || !game || game.phase === Phase.HAND_OVER) return;
   const pid = pairPartnerId();
   if (!pid) return;
-  const line = pickVoiceLine(pid, event, ctx);
+  const line = vline(pid, event, ctx);
   if (!line || line.startsWith("［テンプレ］")) return; // 未記入は出さない（grepワードはマスタに残る）
   showPartnerTalk(line);
 }

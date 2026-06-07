@@ -116,7 +116,10 @@ export class CanvasRenderer {
   setHover(hover) { this.hover = hover; }
 
   // Turn-order offset -> visual seat slot. Shared by the controller's FX helpers.
+  //   2p (二人麻雀): self bottom, opponent facing across the top
+  //   3p (sanma):    no top seat
   _seatSlots(n) {
+    if (n === 2) return [0, 2];
     return n === 3 ? [0, 1, 3] : [0, 1, 2, 3];
   }
 

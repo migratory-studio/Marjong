@@ -67,9 +67,13 @@ export class Game {
       (c, i) => new Player(i, c.character, c.abilities, i === humanIndex)
     );
     this.humanIndex = humanIndex;
-    // Player count is derived from the seated roster: 3 = 三人麻雀 (sanma), 4 = 四人麻雀.
+    // Player count is derived from the seated roster: 2 = 二人麻雀 (futari),
+    // 3 = 三人麻雀 (sanma), 4 = 四人麻雀.
     this.numPlayers = this.players.length;
     this.sanma = this.numPlayers === 3;
+    this.futari = this.numPlayers === 2;
+    // 牌セット: futari は萬子+筒子2-8抜きの少牌80枚。鳴きは暗槓のみ(下記 _collectCallers)。
+    this.tileset = this.sanma ? "sanma" : this.futari ? "futari" : "full";
     this.maxRounds = options.maxRounds === 2 ? 2 : 1; // default 東風
     this.roundWind = 27; // 27=東, 28=南
     this.kyoku = 1; // hand number WITHIN the current round (1..4)
@@ -111,7 +115,7 @@ export class Game {
     this.handNumber++;
     this.wall = new Wall(
       this.seed != null ? this.seed + this.handNumber : undefined,
-      { sanma: this.sanma }
+      { tileset: this.tileset }
     );
     this.lastDiscard = null;
     this.lastDiscardFrom = null;
@@ -371,19 +375,20 @@ export class Game {
       const counts = p.counts();
       // ron
       if (this._canRon(p, tile.kind)) elig.ron.add(i);
-      // pon (any player, needs 2)
-      if (counts[tile.kind] >= 2 && !p.riichi) elig.pon.add(i);
-      // kan (open, needs 3)
-      if (counts[tile.kind] >= 3 && !p.riichi) elig.kan.add(i);
-      // chi (only from left/kamicha by default; needs sequence). 三麻ではチー禁止。
-      if (!this.sanma && i === next && !p.riichi && this._chiSequences(p, tile.kind).length > 0) {
+      // pon (any player, needs 2). 二人麻雀は鳴き禁止（暗槓のみ）。
+      if (counts[tile.kind] >= 2 && !p.riichi && !this.futari) elig.pon.add(i);
+      // kan (open, needs 3). 二人麻雀は明槓も不可。
+      if (counts[tile.kind] >= 3 && !p.riichi && !this.futari) elig.kan.add(i);
+      // chi (only from left/kamicha by default; needs sequence). 三麻/二人麻雀ではチー禁止。
+      if (!this.sanma && !this.futari && i === next && !p.riichi && this._chiSequences(p, tile.kind).length > 0) {
         elig.chi.add(i);
       }
     }
     // let abilities expand eligibility (e.g. omni-chi)
     elig = this.abilities.resolveEligibility(tile, fromPlayer, elig);
-    // 三麻ではチー禁止。能力（全方位チー等）が広げた分もここで打ち消す。
-    if (this.sanma) elig.chi.clear();
+    // 三麻ではチー禁止。二人麻雀は鳴き全面禁止（ロンと暗槓のみ）。能力が広げた分も打ち消す。
+    if (this.sanma || this.futari) elig.chi.clear();
+    if (this.futari) { elig.pon.clear(); elig.kan.clear(); }
 
     const callers = [];
     for (let i = 0; i < N; i++) {
@@ -781,7 +786,12 @@ export class Game {
     } else {
       for (const o of this.players) {
         if (o === p) continue;
-        raw[o.index] -= o.isDealer ? res.tsumoEach.dealer : res.tsumoEach.nonDealer;
+        // 二人麻雀: ツモは「勝者の立場で1人分」だけ取る方針。子の自摸は相手が親でも
+        // 子の素点1人分(tsumoEach.nonDealer=base×1)に固定し、親の2倍払いを適用しない。
+        // （親の自摸は上の分岐で base×2 のまま＝勝者の立場で1人分。）
+        raw[o.index] -= this.futari
+          ? res.tsumoEach.nonDealer
+          : (o.isDealer ? res.tsumoEach.dealer : res.tsumoEach.nonDealer);
       }
     }
     // Credit the winner with what was ACTUALLY collected from the seated players
@@ -907,7 +917,10 @@ export class Game {
       } else {
         for (const o of this.players) {
           if (o === p) continue;
-          const pay = o.isDealer ? res.tsumoEach.dealer : res.tsumoEach.nonDealer;
+          // 二人麻雀: 流し満貫も同方針＝勝者の立場で1人分（子は base×1 固定）。
+          const pay = this.futari
+            ? res.tsumoEach.nonDealer
+            : (o.isDealer ? res.tsumoEach.dealer : res.tsumoEach.nonDealer);
           raw[o.index] -= pay; raw[p.index] += pay;
         }
       }
