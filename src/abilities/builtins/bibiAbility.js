@@ -1,4 +1,4 @@
-// ビビ(Bibi) の能力「無敵の守り」 (hooks: MODIFY_POINT_DELTA, ON_DISCARD)。
+// ビビ(Bibi) の能力「身代わり人形」 (hooks: MODIFY_POINT_DELTA, ON_DISCARD)。
 //
 // 1局1回・1ゲーム2局まで。発動後、自分が6回打牌するまでのあいだ、ロン・ツモを
 // されても自分からは点棒を取られない（失点が0になる）。発動した局でしか効かず、

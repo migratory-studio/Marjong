@@ -4,10742 +4,18423 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-01",
     "lineNo": 1,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-dojo",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "対局場の広間に足を踏み入れると、表のざわめきが、すっと遠のいた。",
+    "text": "九蓮宝士。九つの宝をすべて制した者だけが名乗れる、頂点の称号。",
     "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600,
-    "seId": "se-door",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
     "bgmId": "bgm-daily"
   },
   {
     "scenarioId": "mentor-bibi-bond-01",
     "lineNo": 2,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-dojo",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "高い天井の下、ずらりと並んだ雀卓は、そのほとんどが空いている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 3,
-    "backgroundId": "bg-hall",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その一番奥。広すぎる座に、ぽつんと小さな影が座っていた。",
+    "text": "観客が押し寄せ、勝者には富も名声も降る競技。その入口を探して、いくつもの流派の戸を叩いてきた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "seId": "se-step"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 4,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "膝を抱えて丸まった、あどけない子。広間の大きさのなかで、いっそう小さく見える。",
-    "characterEffect": "fade_in",
-    "screenEffect": "none",
-    "effectDurationMs": 500
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 5,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "…いらっしゃい。ここまで来たってことは、九蓮宝士、目指してるんだよね？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 6,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "声は澄んで、落ち着いている。あどけない見た目とは裏腹に、その目はまっすぐで、揺れない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 7,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "ふふ。ねえ、ためしに一局だけ、打ってみる？ ビビがどんなか、見せてあげる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-playful"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 8,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "断る理由もない。差し出された席に、向かいに腰を下ろす。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 9,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ビビが牌をかき混ぜる。じゃらり、と硬い音が、すぐ近くで弾けた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-shuffle"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 10,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "正直、たかをくくっていた。これだけ幼い相手だ。一局くらい、軽いだろうと。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 11,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "――その油断は、開始から数巡で、音もなく崩れた。",
-    "characterEffect": "none",
-    "screenEffect": "shake",
-    "effectDurationMs": 300,
-    "seId": "se-flash",
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 12,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "押しても、押しても、通らない。鋭い一打が、すべてビビの河の手前で行き場をなくす。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 13,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "そっちは通さないよ。…そこも、だめ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 14,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "攻めれば攻めるほど、こちらの手だけが痩せていく。盤面が、じわりと締めあげられていくのが分かった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 15,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "ふふっ。どこまで持つか試してみる？って、言ったでしょ？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 16,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "気づけば、点棒は底をつきかけていた。牌を握る指先が、わずかに冷たくなる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 17,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "だいじょうぶ。ビビは、沈まないから。一度しずめないって決めた牌は、ぜったいに割らせないの。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 18,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "幼い、と侮った背中が、いつの間にか、ずっと大きく見えている。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 19,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "――結局、一度も沈ませてもらえないまま、その一局は終わった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 20,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "縁側に出ると、夕の風がふわりと通り抜けた。隣に立つ背中は、やっぱり小さい。",
-    "characterEffect": "fade_in",
-    "screenEffect": "none",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-night"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 21,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "あの「守り」は、どこから来るのか。気づけば、もう頭を下げていた。弟子にしてほしい、守りを教えてほしい、と。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 22,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "surprise",
-    "text": "……ビビに？ ほんとに?",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 23,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "意外そうに、ぱちりと瞬きをする。それから、ふっと口元がほどけた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 24,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "flower",
-    "text": "いいよ。じゃあ、今日からよろしくね。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 25,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "でも、覚悟しててね？ ビビ、おしえるとなると…けっこう、イジワルだよ?",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 26,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ことり、と小首をかしげる仕草は、やっぱり年相応に幼い。それなのに、目の奥だけは笑っていない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 27,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……まもりたいもの、できちゃったな。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 28,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ひとりごとのような声。聞き返すより早く、ビビは夕日のほうへ目を向けていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 29,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "こうして、守りの申し子に弟子入りした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-night"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 30,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その「守り」が何を抱えているのか、このときはまだ、何ひとつ知らずにいた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 1,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "稽古の刻。卓を挟んで、ビビと向かい合う。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-daily"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 2,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "じゃあ、はじめよっか。…さっき教えた『受け』、おぼえてる？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 3,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "うなずいて、配られた牌を整える。動かす指先を、ビビの目がじっと追っている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-shuffle"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 4,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "やがて、勝負どころが来た。相手の河に、欲しい牌が透けて見える。手が、そこへ伸びかける。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 5,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "notice",
-    "text": "——あ、まって。それは、ださないで。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 6,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ちょん、と袖を指先で掴まれた。伸ばしかけた手が、宙で止まる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 7,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "そこ、危ないの。…守って。ビビの言うとおりに、ね？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 8,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "言われるまま、安全な牌を切る。たしかに、放銃は遠ざかった。盤面は、静かに均衡を保っている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tile"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 9,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "ふふ、いいよ。…えらい、えらい。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 10,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ほめられて、わるい気はしない。…はずなのに、胸の奥が、少しだけ重い。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 11,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "そのあとも、攻めようとするたびに、ビビの小さな手が、やんわりと止めにくる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 12,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "だめだめ。…そっちは、ビビが許可してませーん。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 13,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守って、守って、また守る。沈まない。でも——前にも、進まない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 14,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "気づけば、自分の手で何かを決めた瞬間が、一度もなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 15,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「あの、ビビ」と、つい口がひらく。「もう少し、自分で……攻めても、いい？」",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 16,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "fluster",
-    "text": "……え。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 17,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "きょとんと、瞬きをひとつ。それから、ぎゅっと眉が寄った。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 18,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "…だめ。攻めたら、危ないもん。沈んだら、どうするの。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 19,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "声は、いつもの凛とした響きとは、少しちがう。固くて、どこか、必死だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 20,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "それ以上は、何も言えなかった。ビビの「だめ」には、理屈じゃない何かが、つかえている気がして。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 21,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……ころばせたく、ないだけ、なのにな。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-02",
-    "lineNo": 22,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ひとりごとは、卓のへりで小さく溶けて、こちらまでは届かなかった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 1,
-    "backgroundId": "bg-hall",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "はじめての、公式の卓。広間のざわめきが、やけに遠く聞こえる。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600,
-    "seId": "se-door",
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 2,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "隣に立つビビは、いつもどおり静かだった。小さな手が、そっとこちらの袖に触れる。",
-    "characterEffect": "fade_in",
-    "screenEffect": "none",
-    "effectDurationMs": 500,
-    "seId": "se-step"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 3,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "だいじょうぶ。…いつもの『受け』を、やるだけ。沈まなければ、勝ちなの。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 4,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その一言で、ふしぎと、指先のこわばりがほどけた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 5,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "卓に着く。教わったとおり、危ない牌は、ぜんぶ受けて流す。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-shuffle"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 6,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "派手な手は、ひとつもない。それでも、点棒は、一度も大きく削られなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 7,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "そして——最後の一打を置く。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tile"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 8,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "結果が読み上げられる。沈まなかったのは、この卓で、ただひとり。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-score"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 9,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "……勝った。ね？ 言ったとおり、でしょ？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 10,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "ふふっ、すごいすごい。…ビビの弟子、つよいんだから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-success"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 11,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "得意げに胸を張る仕草が、やっぱり年相応で——つられて、口元がゆるむ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 12,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "帰り道。夕陽が、長い影をふたつ、地面に伸ばしていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-step",
-    "bgmId": "bgm-night"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 13,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「勝てた」という実感より先に、ふと、別の思いが胸をよぎる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 14,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守って、守って、勝った。一度も、自分から攻めないまま。…これでいいのか、と。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 15,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "question",
-    "text": "どうしたの？ ……あれ、あんまり、うれしくない？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 16,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "図星をつかれて、言葉につまる。ごまかすように、首を横にふった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 17,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ビビは、しばらくこちらを見て——それから、ふっと前に向きなおった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 18,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……守ってれば、沈まない。沈まなければ、勝てる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 19,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "ほんとに、それだけで……いいのかな。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 20,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "つぶやきは、夕風にまぎれて、すぐに聞こえなくなった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 1,
-    "backgroundId": "bg-hall",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その日の広間は、いつもより熱気がこもっていた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600,
-    "seId": "se-door",
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 2,
-    "backgroundId": "bg-hall",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "一番奥の卓に、人だかり。その中心で、誰かが派手に打っている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-step"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 3,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "燃えるような赤い髪。牌を叩きつけるたび、場の空気がびりびりと震える。",
-    "characterEffect": "fade_in",
-    "screenEffect": "none",
-    "effectDurationMs": 500
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 4,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "homura",
-    "speakerNameOverride": null,
-    "emoteId": "flare",
-    "text": "ツモ！ ……満貫だ。けっ、こんなんじゃ、まだ燃え足りねぇな。",
-    "characterEffect": "jump",
-    "screenEffect": "none",
-    "effectDurationMs": 300,
-    "seId": "se-tsumo"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 5,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守りなんて、どこにもない。ただ前へ、前へと牌を切り込んでいく打ち筋。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 6,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "目が、はなせなかった。あんなふうに自分の手で場を動かせたら——つい、そう思ってしまう。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 7,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "bibi",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "袖を、つよく引かれた。振り向くと、ビビが、めずらしく硬い顔をしている。",
-    "characterEffect": "fade_in",
-    "screenEffect": "none",
-    "effectDurationMs": 400
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 8,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "bibi",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……行こ。あの人の麻雀は、ビビたちのとは、ちがうから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 9,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "bibi",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "いつもの、おっとりした声じゃない。どこか、追い立てるような響きだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 10,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "bibi",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "homura",
-    "speakerNameOverride": null,
-    "text": "あ？ なんだチビ、見学か？ ……っと、その目。お前さん、打ちたくてうずうずしてんだろ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 11,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "bibi",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "temper",
-    "text": "——その子は、ビビの弟子なの。攻めは、おしえてない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 12,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "bibi",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "homura",
-    "speakerNameOverride": null,
-    "text": "はっ、守り専門のとこの子か。…もったいねぇ。そんな目しといて、燃やさねぇのか？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 13,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "homura",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "bibi",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "もう、行くよ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 14,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ビビは、ぐいぐいと手を引いて、その場を離れた。小さな歩幅が、やけに速い。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 15,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "廊下に出ても、つないだ手は、ほどけなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-step"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 16,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「ビビ？」と呼ぶと、ようやく足が止まった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 17,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……あの人みたいな打ち方、ビビは、すきじゃない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 18,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "うつむいたまま、ぽつりと。つないだ手に、少しだけ力がこもる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 19,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……だって、攻める子は。…すぐ、いなくなっちゃうんだもん。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 20,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "最後のひとことは、小さすぎて。たしかめる勇気は、まだ、なかった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 1,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "つぎの稽古。あの打ち手の残像が、頭から離れなかった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-daily"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 2,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守ってばかりじゃ、つまらない。今日は——自分から、攻めてみよう。そう決めていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 3,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ビビの「受け」の合図を、はじめて、見ないふりをする。鋭い牌を、勝負どころで切り込んだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tile"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 4,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "notice",
-    "text": "——っ、まって、それは……！",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 5,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "止める声より、一瞬、早かった。相手の手が、ひらく。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 6,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "——ロン。痛烈な一撃が、こちらの点棒を、根こそぎ持っていった。",
-    "characterEffect": "none",
-    "screenEffect": "flash",
-    "effectDurationMs": 400,
-    "seId": "se-flash",
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 7,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……どうして、止めなかったの。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 8,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "anger",
-    "text": "言ったよね。そこは、危ないって。…なんで、聞いてくれないの！",
-    "characterEffect": "shake",
-    "screenEffect": "none",
-    "effectDurationMs": 300,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 9,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "はじめて聞く、つよい声。凛とした芯が、いまは、刃みたいにとがっている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 10,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ちがう、と言いたかった。ただ、あんなふうに打ってみたかっただけで。でも、言葉が出てこない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 11,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "うつむく。卓の上の、空っぽになった点棒入れが、やけにまぶしい。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 12,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "fluster",
-    "text": "……あ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 13,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "言いすぎた、という顔。ビビの手が、いちど宙をさまよって、行き場をなくす。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 14,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……ごめん。ビビ、いまの、ちょっと……。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 15,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "そこで、言葉はとぎれた。気まずい沈黙だけが、ふたりの間に積もっていく。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 16,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "silence",
-    "text": "…………。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 17,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守らせたいビビと、攻めてみたいこちら。はじめての、すれ違い。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 18,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "どちらも、相手を思っているはずなのに。その思いは、うまく、かみ合わなかった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 1,
-    "backgroundId": "bg-corridor",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "翌朝。縁側に呼び出されて、行ってみると。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "seId": "se-step",
-    "bgmId": "bgm-daily"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 2,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ビビが、なにやらもじもじと、後ろ手に何かを隠している。",
-    "characterEffect": "fade_in",
-    "screenEffect": "none",
-    "effectDurationMs": 500
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 3,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "あ、あのね。…きのうは、その。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 4,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「ごめん」の続きが、なかなか出てこない。ことばを探して、視線が泳ぐ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 5,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "——えいっ。",
-    "characterEffect": "jump",
-    "screenEffect": "none",
-    "effectDurationMs": 300
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 6,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ぴと、と頬に、つめたいものが押し当てられた。…ラムネのびん。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 7,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "ふふっ。びっくりした？ …はい、これ。なかなおりの、わけまえ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-playful"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 8,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "差し出されたびんは、ふたつ。…つまり、はじめから、そのつもりで来たらしい。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 9,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「ごめん」とは、ついに言わなかった。けれど、いたずらっぽく笑うその顔に、ぜんぶ、書いてある。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 10,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……きのうは、つよく言いすぎた。ビビね、こわかったの。…あなたが、沈んじゃうのが。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-night"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 11,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ひざを抱えて、となりに腰かける。いつもの凛は、どこかへ置いてきたみたいだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 12,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "でも、約束する。…攻めたいって気持ち、もう、頭ごなしにはしない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 13,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "flower",
-    "text": "そのかわり、ね？ ——危なくなったら、ビビが、ぜんぶ受けとめてあげるから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 14,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その言葉が、ラムネよりずっと、甘く胸にしみた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 15,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守るだけのビビが、はじめて「攻めていい」と言ってくれた、ちいさな一歩。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 16,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……ひとりじゃ、こわいことも。ふたりなら、平気かな。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-06",
-    "lineNo": 17,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ラムネの泡が、しゅわりと鳴った。その音が、なんだか、返事のかわりみたいだった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700,
-    "seId": "se-success"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 1,
-    "backgroundId": "bg-rain",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その日は、朝から雨だった。稽古は休み。軒先で、雨音をふたりで聞いていた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 2,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ビビは、ぼんやりと庭の雨を見ている。その横顔が、いつもより少しだけ、おとなびて見えた。",
-    "characterEffect": "fade_in",
-    "screenEffect": "none",
-    "effectDurationMs": 500
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 3,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ふと、ずっと気になっていたことを、口にしてみる。「ねえ、ビビ。…どうして、そんなに守るの？」",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 4,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "雨音が、ひとつ、ふたつ。ビビは、すぐには答えなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 5,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "…どうして、って。守るのが、いちばん、つよいからだよ？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 6,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "答えになっていない答え。いつもの凛とした声なのに、目だけが、雨のほうを向いたままだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 7,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「ほんとは？」とは、聞けなかった。踏みこめない何かが、その横顔には、あった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 8,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……むかし、ね。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 9,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "言いかけて、ビビは、ふっと口をつぐんだ。膝の上で、小さな手が、きゅっと握られる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 10,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "——なんてね。わすれて。ほら、雨、つよくなってきた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 11,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "むりやり、話を流された。けれど、いまの「むかし」は、たしかに、聞こえた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 12,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守ることしか、しない人。その「守り」の根っこに、なにかが——埋まっている気がした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 13,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……まもれなかったら、いみ、ないもん。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-07",
-    "lineNo": 14,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "雨の音にまぎれた、ちいさなひとりごと。その意味を知るのは、もう少し、あとのこと。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 1,
-    "backgroundId": "bg-hall",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "はじめての、チーム戦。卓を囲むのは、二人ひと組の戦い。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600,
-    "seId": "se-door",
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 2,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "相棒は、もちろんビビ。「だいじょうぶ」と、小さな手が、こちらの背を、ぽんと押した。",
-    "characterEffect": "fade_in",
-    "screenEffect": "none",
-    "effectDurationMs": 500,
-    "seId": "se-step"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 3,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "ビビが受ける。あなたは、無理しないで。…二人で、沈まなければ、勝てる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-shuffle"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 4,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "教わったとおり、堅く、堅く打つ。たしかに、放銃はしない。点棒は、ほとんど減らない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tile"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 5,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "けれど——増えも、しない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 6,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "相手チームは、果敢に攻めてくる。一発、また一発と、確実に点を積み上げていく。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 7,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守りは、崩されない。守りは、減らない。なのに、点差だけが、じりじりと開いていく。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 8,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "sweat",
-    "text": "……っ。だいじょうぶ。まだ、沈んでない。沈んでないから……。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 9,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "はじめて見る、ビビの焦り。鉄壁の声が、わずかに、揺れている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 10,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "そして、最後の局。守りきった。一度も、沈まなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tile"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 11,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "——それでも、足りなかった。点棒は、相手チームのほうが、ずっと多い。",
-    "characterEffect": "none",
-    "screenEffect": "flash",
-    "effectDurationMs": 400,
-    "seId": "se-score"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 12,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「敗退」。その三文字が、やけに静かに、卓の上に落ちた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 13,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "誰も、責めはしなかった。沈まなかったのだから。でも——勝て、なかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 14,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……守った。ちゃんと、守ったのに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 15,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "うつむくビビの拳が、膝の上で、ふるえている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 16,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "守るだけじゃ……勝てないこと、ある、んだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 17,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "はじめて、その口からこぼれた言葉。守りの申し子の足元で、なにかが、小さく音を立てて崩れた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 1,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "敗退の帰り道。ビビは、ずっと黙っていた。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "seId": "se-step",
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 2,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "homura",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "曲がり角で、ばったりと——あの、赤い髪。焔が、壁にもたれて立っていた。",
-    "characterEffect": "fade_in",
-    "screenEffect": "none",
-    "effectDurationMs": 400
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 3,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "homura",
-        "position": "right",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "homura",
-    "speakerNameOverride": null,
-    "text": "よう、守りのチビ。…団体戦、見てたぜ。惜しかったなあ？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 4,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "homura",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……なに。わらいに来たの。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 5,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "homura",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "homura",
-    "speakerNameOverride": null,
-    "text": "まさか。…ただ、ひとつだけ言わせろ。あんた、その子のこと、守りすぎだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 6,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "surprised"
-      },
-      {
-        "characterId": "homura",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "shock",
-    "text": "——っ。",
-    "characterEffect": "shake",
-    "screenEffect": "none",
-    "effectDurationMs": 300
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 7,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "homura",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "homura",
-    "speakerNameOverride": null,
-    "text": "守って守って、転ばせねぇ。…そりゃ、やさしさかもしれん。けどな。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 8,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "homura",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "homura",
-    "speakerNameOverride": null,
-    "emoteId": "flare",
-    "text": "転ばねぇ子は、立ち上がり方を、おぼえねぇ。守ってるだけじゃ——その子は、つよくなれねぇぞ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 9,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "homura",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ことばが、ビビに突き刺さる。反論しようと、口がひらいて——けれど、声が、出てこない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 10,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "homura",
-        "position": "right",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "homura",
-    "speakerNameOverride": null,
-    "text": "ま、おせっかいだったな。…でも、あんたの守り、強ぇよ。だから、もったいねぇんだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 11,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "それだけ言って、焔は、ひらりと背を向けた。炎みたいな髪が、角の向こうに消えていく。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 12,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "残されたビビは、しばらく、その場を動かなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 13,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……まもってるだけじゃ、つよく、なれない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 14,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "かみしめるように、もう一度。図星を突かれた人の、ちいさな声だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 15,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "ビビ、ずっと……あの子を、弱いままに、してたの……？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 16,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……まもることしか、できないと、思ってたのに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-09",
-    "lineNo": 17,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守りの申し子が、はじめて、自分の「守り」を、うたがった夜。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 1,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "つぎの稽古。卓を挟む前に、こちらから、切り出した。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-daily"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 2,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ずっと、考えていた。守られてばかりの自分のことを。…そして、決めていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 3,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「ビビ。…自分の麻雀を、打ちたい」。声が、ふるえないように、まっすぐ言った。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 4,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 5,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ビビは、おどろいた顔のまま、こちらをじっと見ている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 6,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「守られるだけじゃ、つよくなれない。…ビビに、ずっと守ってもらうわけにも、いかないから」。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 7,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "言い切ってから、こわくなる。…突き放した、と、思われないだろうか。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 8,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "…そっか。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 9,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ぽつり、と。さびしさと、それから——どこか、ほこらしさの、まじった声だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 10,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "…焔の言うとおり、だったな。ビビ、あなたを、弱いままにするとこだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 11,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ひざに置かれた小さな手が、いちど、ぎゅっと握られて——それから、ゆっくり、ほどけた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 12,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "いいよ。…攻めて、いい。ころんでも、いい。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 13,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "flower",
-    "text": "そのかわり——ね？ ころんだら、ビビが、ぜんぶ受けとめる。それが、ビビの役目だから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 14,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守るために抱きしめていた手を、ビビは、はじめて、そっと開いた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 15,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「攻めていい」じゃない。「攻めてほしい」。…そう聞こえたのは、きっと、気のせいじゃない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 16,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "ねえ。…つよく、なろ？ ふたりで。…ううん、いつか、もっと大勢で。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 17,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "bibi",
-    "speakerNameOverride": null,
-    "text": "……ビビの守りが、だれかの背中を押せる日が、くるのかな。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 18,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その問いの答えは、まだ、ここにはない。けれど、はじまりの音だけは、たしかに、鳴っていた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700,
-    "seId": "se-shuffle"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 1,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "道場の戸を開けると、線香と古い畳のにおいが鼻をくすぐった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600,
-    "seId": "se-door",
-    "bgmId": "bgm-daily"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "夕暮れの光が、卓の上にやわらかい橙の影を落としている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 3,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その卓の前で、詩玥が頬杖をついたまま、こちらをのんびりと見ていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "お、来た来た。今日も一局、打ってくネ？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 5,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "九蓮宝士に憧れてこの戸を叩いた日から、まだ数えるほどしか経っていない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 6,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "異能雀士の最高位。九つの大会をすべて制した者だけが名乗れる、遥かな称号。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 7,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "名のある師匠は、誰も弟子入りを引き受けてくれなかった。「その夢は重すぎる」と、皆が首を横に振った。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "首を縦に振ったのは、この人——詩玥だけだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 9,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "そんなかしこまらないでヨ。先に言っとくケド、我（ウォ）の教えは、たった一個だけ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "むずかしい話はナシ。理屈も、講釈も、ぜーんぶナシ、ダヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 11,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "身構えていたぶん、拍子抜けして、こちらの言葉が宙に浮いてしまう。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "impact",
-    "text": "ツモれば、勝ち。",
-    "characterEffect": "jump",
-    "screenEffect": "flash",
-    "effectDurationMs": 400,
-    "seId": "se-flash"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "あまりに身も蓋もない言い切りに、思わず黙ってしまう。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……なに、その顔。物足りないって顔してるヨ？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "守って守って沈むより、引いて押し切るほうが性に合ってるダロ、我は。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "楽しげな声。けれど「我は」と言ったときだけ、ほんの一瞬、語尾が固くなった気がした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "気のせいだろうか。聞き返す前に、彼女はもう牌へ手を伸ばしている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ま、口で言ってもピンとこないヨネ。ほら、座って座って。一局、打てば分かるヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "言われるまま、卓を挟んで向かいに座る。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 20,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "牌を配る手が、速い。迷いがない。まるで指先が、場そのものを覚えているみたいに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 21,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sweat",
-    "text": "……あー、でも一個だけ。点棒の数え方だけは、いまだに苦手ネ。そこは見ないことにしといて。",
-    "characterEffect": "shake",
-    "screenEffect": "none",
-    "effectDurationMs": 300
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 22,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "苦手と言うわりに、牌をさばく手つきは妙に正確で——どう返せばいいのか分からなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "数えるのは苦手でも、引くのは得意ダヨ。これでも、引きだけは誰にも負けたことないんだから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "誰にも負けたことない、と言ったとき、その目はほんの少しだけ、遠くを見ていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "九蓮宝士、だっけ。九つの大会、ぜんぶ勝つんダロ？……いいネ、その目。嫌いじゃないヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "だったら一緒に行こ。あんたが我のツモを抜く日まで、みっちり付き合ってもらうヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "抜く日まで、という言葉が、なぜだか胸の奥に残った。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "とにかく手を動かそヨ。勘ってのは、握った数だけ鋭くなるんだから。さ、はじめよっか。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が牌をかき混ぜる。じゃらり、と軽やかな音が、道場いっぱいに満ちていく。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-shuffle"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-01",
-    "lineNo": 30,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その軽さの理由を、このときはまだ、何ひとつ知らずにいた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 1,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "半荘が終わり、卓の上に点棒が散らばっていた。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-daily"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "勝ったのは、やっぱり詩玥だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 3,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "終盤、誰も警戒していなかった筋から、ふっとツモり上げて。まるで、最初からそこにあると知っていたみたいに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tsumo"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "はい、お疲れー。どう、勘、ちょっとは鋭くなったネ？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 5,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "点数を申告しようと、散らばった点棒へ手を伸ばす。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 6,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "——すると詩玥は、いつものように、ひらりと手を振った。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 7,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sweat",
-    "text": "あー、計算はいいヨいいヨ。誰が一番気持ちよく打てたか——それでだいたい勝ちは分かるダロ？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "いつもこうだ。詩玥は決して、自分の手では点棒を数えない。数えるのは、いつだって弟子の役目だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 9,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "最初は、ただのずぼらだと思っていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "でも、何度も卓を囲むうちに、ちいさな違和感が少しずつ育っていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 11,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "彼女は「数えられない」んじゃない。数えることから、目をそらしているように見える。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "九蓮宝士——九つの大会を制した者だけが名乗れる、異能雀士の最高位。その称号に憧れて、この道場の戸を叩いた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "叶えた者に約束されるのは、名誉国民にも届く富と名声。そして——九つの宝が揃えば、願いが一つ叶う、という言い伝え。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "つい、訊いてしまった。あなたこそ、九蓮宝士を狙わないんですか——と。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "我？　……ふふ。狙ってるヨ、ちゃんと。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "九蓮宝士、ネ。いい目標ダヨ。……我も、まだ諦めたわけじゃ、ないし。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「まだ」。その一語が、やけに引っかかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "終わったことにしないその言い方が、逆に、終わってしまった何かを匂わせる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "silence",
-    "text": "数えるのは、あんたに任せるヨ。我はどうも……点棒とにらめっこすると、調子が狂うんダ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 20,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "口元は苦笑いの形をしていた。けれど目だけは、ちっとも笑っていなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 21,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "触れてはいけない場所に、指を伸ばしかけた——そんな気がして、口をつぐむ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 22,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "ま、深く考えないノ！次いこ次。ツモれば勝ち、ダヨ？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ぱっと、いつもの軽さが戻ってくる。少しだけ、早すぎるくらいに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ほら、牌混ぜるの手伝ってヨ。じゃらじゃらってやると、いやなこと全部、流れてくんだから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-shuffle",
-    "bgmId": "bgm-playful"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "いやなこと、と彼女は言った。流したいものが、確かにあるみたいに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "言われるまま、牌に手を添える。冷たい竹の感触が、手のひらに伝わってきた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "music",
-    "text": "そうそう、上手ダヨ。考えるより、まず音。音に身を任せるノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "散らばった点棒を、一本ずつ数えていく。その一本一本の重さが、やけに手に残った。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-02",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "この人は本当に「苦手」なのだろうか。それとも——数えたく、ないのだろうか。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 1,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "道場の朝。障子越しの光が、卓に淡い格子の影を落としている。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-playful"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "卓に着くなり、詩玥が「そろそろダネ」と切り出した。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 3,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "九蓮宝士の一個目、取りにいくヨ。まずは個人戦。あんたの初舞台、ダネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "個人戦。九つの大会のうち、最も多くの打ち手がひしめく、最初の関門だと聞いている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 5,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "そこを勝ち抜けば、ようやく一つ目の宝に手が届く。気づけば、手のひらが少し汗ばんでいた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 6,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sweat",
-    "text": "緊張してる？　ま、しなくていいヨ。考えることなんて、一個もないんだから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 7,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "稽古が始まる。詩玥の打ち方は、とにかく速い。考えるより先に、指が牌を選んでいる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tile"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ほら、止まらないノ。迷ったら、速いほう。ツモは待っててくれないヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 9,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "真似て、手を動かす。それでも、一巡だけ、どうしても立ち止まりたくなった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "河を見渡し、相手の捨て牌から、危険牌を一枚、読もうとした——その時だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 11,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "tension",
-    "text": "……止まらないで。",
-    "characterEffect": "shake",
-    "screenEffect": "none",
-    "effectDurationMs": 300
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "考えすぎると、ね。手が、冷たくなるヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "手が、冷たくなる。妙な言い回しだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "速さの教えにしては、それはどこか、祈りのように聞こえた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "顔を上げると、詩玥は一瞬だけ、笑っていなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "けれど目が合うと、すぐにいつもの笑みが戻ってくる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "idea",
-    "text": "我のはね、勘ダヨ、勘。握った数だけ鋭くなるって、言ったダロ？　理屈なんて、後から付いてくるヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "楽しそうに笑う。でも、その笑顔は少しだけ、何かを振り払うのが、速すぎた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "間を嫌うその速さは、攻めの形をしていながら——何かから逃げる速さにも、見えた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 20,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "いい？　守りに入った瞬間、人は迷うノ。迷いは、手を鈍らせる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 21,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "だから我は、振り返らない。前だけ。ツモだけ。それでずっと、やってきたんだから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 22,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ずっと、と言ったその声に、ほんのわずか、力がこもりすぎていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "まるで、自分自身に言い聞かせるみたいに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "music",
-    "text": "ま、むずかしい顔しないノ！　迷う時間があったら、もう一局ダヨ。ほら、いこいこ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "言われるまま、また牌をかき混ぜる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-shuffle"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "不思議と、速く打っていると、雑念は消えていく。彼女の言うことは、確かに正しいのだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ただ——正しさの裏に、誰にも見せない理由が隠れている気がして。牌を引く詩玥の横顔は、心から楽しげで。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-03",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その楽しさが、立ち止まらないための翼なのだと——このときは、まだ、気づかなかった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 1,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その日の稽古は、いつもより静かだった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-daily"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ほら、手が止まってるヨ。今日は調子いいんだから、もう一局——",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 3,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥の声が、ふいに途切れた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "道場の戸口に、見知らぬ人影が立っている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 5,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "小柄な体に、隙のない佇まい。冷たく澄んだ目が、まっすぐ詩玥を見ていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-step"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 6,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "お邪魔します。……稽古中でしたか。続けてください、気にせず。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 7,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "落ち着いた、平らな声。一音ごとに、無駄というものがない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "surprise",
-    "text": "……マモリ。なんで、ここに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 9,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "いつもの軽さが、詩玥の声から消えていた。それだけで、ただの来客でないと分かる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "次の団体戦の話を。あなたと組む段取りを、詰めに来ただけです。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 11,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "……相変わらずですね。一打ごとに、確率を捨てて打っている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "マモリの視線が、詩玥の河を端から端までなぞる。値踏みするように、正確に。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "七対子の気配を、二度、見送った。昔のあなたなら、あり得なかった選択です。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "tension",
-    "text": "……昔の話は、いいヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "昔の話をしているのではありません。事実の話です。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "あなたほど場が“読めた”人を、私は他に知らない。——“深謀遠慮（シェンモウ・ユエンリュ）”。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "深謀遠慮。深く謀り、遠くを慮る——先の先まで読み切る打ち手にだけ贈られた、古い異名だと聞いたことがある。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その四文字が、耳の奥で妙に響いた。勘だけで打つ今のこの人とは、いちばん遠いはずの言葉。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "surprised"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "shock",
-    "text": "——その名前で、呼ばないで。",
-    "characterEffect": "shake",
-    "screenEffect": "none",
-    "effectDurationMs": 300
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 20,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "初めて聞く、刺のある声だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 21,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "いつも何でも笑って流す人が、たった一つの呼び名に、はっきりと身を固くしている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 22,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "……失礼。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "短く詫びて、マモリはそれ以上踏み込まなかった。踏み込まないことに、慣れているみたいに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "団体戦は、二人では足りない。最大三人。——もう一人、信頼できる打ち手が要ります。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "マモリの目が、ほんの一瞬、こちらへ向いた。値踏みするでもなく、ただ静かに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "その子ですか。あなたが選んだ、弟子は。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "……まだ、ひよっこダヨ。でも、目はいい。我が見込んだんだから、間違いないネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "刺のある声が、少しだけほどけた。庇うような響きに、なぜか胸の奥が熱くなる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "emoteId": "tension",
-    "text": "そう。……では、また。詩玥、次は——逃げないように。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-04",
-    "lineNo": 30,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "戸が閉まる。残された道場で、詩玥はしばらく、自分の手のひらを、じっと見つめていた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600,
     "seId": "se-door"
   },
   {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 1,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "団体戦が、すぐそこまで来ていた。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その日の稽古は、いつになく実戦に近かった。詩玥が「本気でいくヨ」と言ったからだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
+    "scenarioId": "mentor-bibi-bond-01",
     "lineNo": 3,
     "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "団体戦はね、一人の沈みが、三人ぶんの傷になるノ。だから——一局も、気は抜けないヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
+    "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "卓が立つ。配牌は悪くない。けれど中盤、向かいの河が、急に剣呑な色を帯び始めた。",
+    "text": "この道場は、噂を頼りにたどり着いた小さな一門だった。表の喧騒が嘘のように、中は静まり返っている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-05",
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "板の間の中ほどに、ひとり座っている。ふわふわとした大きめの衣に半分埋もれて、その背は思いのほか小さい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
     "lineNo": 5,
     "backgroundId": "bg-dojo",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "リーチ。捨て牌の並びから、危ない筋が透けて見える。教わったとおりに、読む。",
-    "characterEffect": "none",
+    "text": "……いらっしゃい。あなたが、噂の新入りさん？",
+    "characterEffect": "fade_in",
     "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 6,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥の指先に握られた牌——あれは、ほぼ間違いなく、相手の当たり牌だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 7,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "降りれば、被害はない。誰の目にも、そうするべき場面だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "けれど詩玥は、ほんの一瞬の迷いもなく、その牌を河に置いた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tile"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 9,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「ロン」。乾いた声が落ちる。詩玥の点棒が、ごっそりと削られていく。",
-    "characterEffect": "none",
-    "screenEffect": "flash",
-    "effectDurationMs": 300,
-    "seId": "se-score"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sweat",
-    "text": "あー、やられた。きれいに振り込んだネ、我。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 11,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "けらけらと笑う。まるで、なんでもないことみたいに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "でも——分からなかった。なぜ、降りなかったんだろう。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "読めていたはずだ。この人は、誰よりも場が読める。マモリが、そう言っていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "つい、訊いてしまった。どうして、降りなかったんですか——と。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……降りない。我は、降りないって決めてるノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "flare",
-    "text": "何があっても、最後まで前を向く。それだけは、ぜったいに曲げないヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "声は静かだった。けれど、その静けさが、かえって重かった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「決めている」。それは強がりでも、意地でもなく——もっと固い、誓いのようなものに聞こえた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "マモリはね、たぶん同じ場面で、きれいに降りるヨ。あの子は、放銃だけは絶対しない打ち手だから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 20,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "正しいヨ、あの打ち方は。……すごく、正しい。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 21,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "正しい、と言うその横顔は、少しも嬉しそうではなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 22,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "gloom",
-    "text": "でも我は、もう——“正しく降りる”のだけは、できないノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "もう、できない。まるで、かつては出来たことのような言い方だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "出来たのに、手放した。あるいは、出来てしまうことを、許せなくなった——そんなふうに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "……なんて、暗い話はナシ！次、取り返すヨ。ツモれば、ぜんぶチャラなんだから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ぱっと笑顔が戻る。でも、その切り替えの速さが、今は少しだけ、苦しかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "降りない約束。前だけを向く誓い。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その約束を、この人はいったい、誰と——あるいは、何と引き換えに、結んだのだろう。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "牌を握り直す詩玥の背を見ながら、まだ触れられない過去の輪郭を、そっと指でなぞるしかなかった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
     "effectDurationMs": 600
   },
   {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 1,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "稽古を終えても、その夜、詩玥はなかなか牌から手を離さなかった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-night"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "窓の外はもう暗い。道場の灯りが、卓の上だけを橙に照らしている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 3,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……ね。我にも、師匠がいたんダヨ。むかし。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ふいに、そんな話を始めた。問いかけたわけでもないのに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 5,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "flower",
-    "text": "すごい人でネ。守りの鬼。一度も、無駄な放銃をしない人だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 6,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "降り際が、ほんとうに綺麗でネ。危ないと思ったら、すうっと身を引く。誰よりも正しく、誰よりも静かに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 7,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その横顔は、懐かしむように、けれどどこか痛そうに緩んでいた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "我はね、その人に、ぜんぶ叩き込まれたノ。読み。期待値。降りどころ。……“正しい麻雀”ってやつを、まるごと。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 9,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "期待値。降りどころ。——勘だけで打つ、今のこの人からは、いちばん遠い言葉ばかりだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "意外？　これでも昔は、“深謀遠慮（シェンモウ・ユエンリュ）”なんて、ご大層な異名で呼ばれててネ。一度も、降り間違えたことが、なかったノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 11,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "マモリが口にした、あの古い名前。それが、ようやく像を結び始める。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "師匠とね、約束してたんだ。二人で、九蓮宝士を獲ろうって。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "九蓮宝士。九つの宝。——この人もまた、同じ夢の前に立っていた。かつて、誰かと並んで。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "gloom",
-    "text": "でもね。あの人、最後のほうは……身体を、悪くしてて。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "声のトーンが、すこし落ちる。卓の影が、いっそう濃くなった気がした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "それでも、卓には座り続けてた。我の隣で、ずっと。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "口癖でね。『お前の計算は完璧だ。だけど——いつか、理屈じゃなく、お前の引きで上がるところが、見たい』って。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "理屈じゃなく、引きで。完璧な計算の鬼が弟子に望んだのは、たった一度の——ただのツモだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "『お前のツモが見たい』。……何度も、何度も、そう言ってたヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 20,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥は笑っていた。けれど、その目のふちが、灯りの中でわずかに光っていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 21,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ま、それで我も、ちょっとは引きを磨こうかなって。……そういう、きっかけ、だったのかもネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 22,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "きっかけ。その一言で、彼女は話を、そっと閉じようとした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "続きがあるのは、分かっていた。けれど、訊いてはいけない気がした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "fluster",
-    "text": "……今日は、ここまで。なんか、しゃべりすぎたネ、我。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "照れたように牌を片付ける手が、いつもより少しだけ、ゆっくりだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tile"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "守りの鬼に育てられた、“深謀遠慮”。それが今は、勘だけを頼りに、前へ前へと突き進む。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その間に、いったい何があったのか。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「お前のツモが見たい」——その言葉だけが、なぜか胸の奥に、ずっと残って消えなかった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 1,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "次にその話を聞いたのは、雨の夜だった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-night"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 2,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "屋根を打つ雨の音が、道場の静けさを、かえって深くしていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 3,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "この前の、続き。……聞きたい顔、してるネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 4,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "否定はできなかった。詩玥は小さく笑って、牌を一つ、指先で転がした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 5,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "師匠と最後に出た大会。九つのうちの、一つ。その決勝だったノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 6,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥の声だけが、雨の中に残る。まぶたの裏に、見たこともないその卓が、浮かんでくるようだった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 7,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "最終局。我が二着で、トップとは僅差。あと一回、誰かが大きく上がれば、順番がひっくり返る場面。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 8,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "我の手は、もう一歩で、満貫。ツモれば、逆転トップ。優勝が、すぐそこに見えてた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 9,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "tension",
-    "text": "でもね。下家がリーチ。河を読むと——我の当たり牌の一つが、ドンピシャで、危険牌だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 10,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "押すか、降りるか。攻めれば、優勝に手が届く。けれど、振り込めば、二着すら危うい。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 11,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "師匠は、隣で、何も言わなかった。ただ、我の手元を、じっと見てた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 12,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "我はね……完璧だったノ。その時も。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 13,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "impact",
-    "text": "数えて、数えて、数えきって——いちばん“正しい”手を、選んだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 14,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "押せば、優勝の目もあった。けれど確率は、わずかに、降りるほうへ傾いていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 15,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "我は、降りたヨ。きれいに、一枚も放銃せずに。……教わったとおりに。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 16,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "結果はね、二着。優勝は、逃した。でも大会には、ぎりぎり残れた。順位的には、“正しい”降りだったノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 17,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "正しい降り。誰に責められることもない、模範のような判断。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 18,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "我、誇らしかったんダヨ。あの時は。ほら、師匠の教えを、完璧に守れたって。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 19,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "雨の音が、ふいに大きくなった。詩玥は、転がしていた牌を、ことりと置いた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "seId": "se-tile"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 20,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "silence",
-    "text": "……でも、隣を見たらね。師匠は、笑ってなかったノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 21,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "怒ってたわけでもない。がっかりしてたわけでもない。ただ——すこし、寂しそうな顔を、してた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 22,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "寂しそう。完璧な降りを、誰よりも正しく決めた弟子の、隣で。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 23,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "その時は、分からなかったノ。なんで、そんな顔するんだろうって。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 24,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "けれど今の詩玥の横顔を見れば、分かってしまう。あのとき師匠が、何を見たかったのか。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 25,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "『お前のツモが見たい』。……あの人が欲しかったのは、優勝より、たぶん。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 26,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "理屈で守り抜いた二着ではなく。たとえ振り込んでも、前を向いて掴みにいく、たった一度のツモ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 27,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "gloom",
-    "text": "我は、それを——その大会では、とうとう、見せられなかったノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 28,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "雨の音だけが、続いていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-07",
-    "lineNo": 29,
-    "backgroundId": "bg-rain",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「正しい降り」。その言葉が、こんなにも痛いものだと、初めて知った。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 1,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その話の、続き。詩玥は、自分から口を開いた。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "もう、止められないと思ったのかもしれない。あるいは——誰かに、聞いていてほしかったのか。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 3,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "あの大会のあと。師匠の身体は、坂を転がるみたいに、悪くなってってネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "卓に座るのも、だんだん、しんどそうになって。それでも、我とは打ちたがった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 5,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "『次の大会こそ、お前のツモを見せてくれ』って。会うたび、そればっかり。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 6,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "次の大会。けれど——その「次」は、来なかった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 700
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 7,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "heartbreak",
-    "text": "間に合わなかったノ。次の大会の、ずっと前に。……あの人は、逝っちゃった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 8,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥のツモを、一度も見ないまま。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 9,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "最後に会った日も、笑っててネ。『焦るな』って。『お前の引きは、本物だから』って。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 10,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "我、その時もまだ——“次がある”って、思ってたノ。計算してたんダヨ。あと何回打てる、まだ大丈夫、って。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 11,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "silence",
-    "text": "いちばん数えちゃいけないものを、数えてた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 12,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "いちばん数えちゃいけないもの。——残された、時間を。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……お葬式の日にね。我、ようやく分かったノ。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "あの決勝で、我が降りなかったら。振り込んでもいいから、押してたら。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "あの人は、たった一度でも、我のツモを——見られたかも、しれない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "完璧な計算が、奪ったものがある。正しさが、間に合わせてくれなかったものが。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "我の計算はね、一度も間違わなかったノ。ぜんぶ、正しかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "gloom",
-    "text": "正しくて、正しくて——それで、いちばん見せたかった人に、いちばん見せたかったものを、見せ損ねた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "声は、震えていなかった。震えていないことが、いっそう、痛かった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 20,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "だから我、決めたノ。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 21,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "もう二度と、降りない。正しさのために、ツモを諦めたり、しない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 22,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "flare",
-    "text": "ツモれば、勝ち。——それだけで、いい。",
-    "characterEffect": "jump",
-    "screenEffect": "flash",
-    "effectDurationMs": 400,
-    "seId": "se-flash"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 23,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ツモれば、勝ち。能天気な口癖だと思っていた、その言葉。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 24,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その正体は、墓前で結ばれた、たった一人の——誓いだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……ごめんネ。こんな話。重たいヨネ。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "首を、横に振る。言葉は、出てこなかった。ただ、ちゃんと聞いていた、と伝えたかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "flower",
-    "text": "聞いてくれて、ありがと。なんか……ちょっとだけ、軽くなったヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その「軽い」が、いつもの逃げの軽さと違うことくらい、もう分かるようになっていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "見られなかったツモ。その重さを抱えて、この人は今日も、前だけを向いて牌を握る。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 1,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "数日が過ぎても、あの夜の話は、胸の奥でずっと、燻っていた。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "気になっていたことが、一つあった。点棒を、頑なに数えない、その理由。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 3,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "稽古のあと、思いきって訊いてみた。どうして、点棒だけは、数えないんですか——と。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "あー……気づいてたか。やっぱり、鋭いネ、あんた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 5,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "べつに、できないわけじゃ、ないノ。ほんとはね、目をつぶってたって、数えられる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
+    "scenarioId": "mentor-bibi-bond-01",
     "lineNo": 6,
     "backgroundId": "bg-dojo",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "やはり、そうだった。「苦手」は、嘘だったのだ。",
+    "text": "声は幼い。けれど、背筋がぴんと伸びている。その落ち着きが見た目の幼さと噛み合わなくて、思わず居住まいを正した。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-09",
+    "scenarioId": "mentor-bibi-bond-01",
     "lineNo": 7,
     "backgroundId": "bg-dojo",
     "standings": [
       {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "でもね。点棒を数え始めると——聞こえてくるノ。あの“声”が。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "声。詩玥は、自分の手のひらを、そっと見つめた。",
+    "text": "弟子入りを願い出る声が、自分でも分かるくらい硬くなる。よろしくお願いします、と頭を下げた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 9,
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 8,
     "backgroundId": "bg-dojo",
     "standings": [
       {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "tension",
-    "text": "『ここは降りろ』『ここは無理をするな』『確率は、こっちだ』。……ぜんぶ、正しい声。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-flash"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "師匠に教わった、計算の声。冷たくて、静かで……いつだって、間違えない声ダヨ。",
+    "text": "そんなに固くならなくて、だいじょうぶ。ビビは、こわくないよ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-09",
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "膝の上に、白い人形が抱かれている。長い耳の、くたびれて使い込まれた一体。その頭を、小さな手がそっと撫でた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "板間の隅で、稽古を待つ何人かがこちらを見ていた。そのうちのひとりが、声をひそめて隣にささやくのが聞こえる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
     "lineNo": 11,
     "backgroundId": "bg-dojo",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "間違えない声。けれど、その声に従ったから——彼女は、いちばん見せたい人を、見送ってしまった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "その声が聞こえると、我、また“正しく降りたく”なっちゃうノ。身体が、覚えてるから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "silence",
-    "text": "だから、耳を塞いでるノ。数えない。考えない。立ち止まらない。……そうやって、声を、振り切ってる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "点棒を数えない。それは、ずぼらでも、苦手でもなかった。冷たい声を、自分に聞かせないための——耳塞ぎ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "この世界では、能力は魂の形だと言われる。打ち手の生き方が、そのまま力になる、と。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "だとしたら、詩玥が封じているあの“声”もまた、彼女自身の一部。切り離せない、もう一人の彼女なのだろう。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "——ふと、聞いたことのある噂が、頭をよぎる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "自分の力に呑まれ、人ならぬ何かに変わってしまった打ち手がいる、と。漆黒の星雲をまとう者。深淵に堕ちた者。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥のこの“耳塞ぎ”も、ひとつ間違えば、そんな淵の縁だったのかもしれない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 20,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……そんな、心配そうな顔しないノ。だいじょぶ、だいじょぶ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 21,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "我はね、ちゃんと、こっち側にいるヨ。前を向いてれば、声には、負けないんだから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 22,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "笑ってみせるその強がりが、これまでとは違って見えた。逃げではなく、踏みとどまるための強がりだと、今は分かる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "だから、言った。ひとりで振り切らなくていい。その声が聞こえたら、隣で、一緒に数えますから、と。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、目を丸くした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "question",
-    "text": "……一緒に、数える？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "はい、と頷く。あなたが怖いものを、半分こにするくらいは、弟子にだって、できるはずだから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "fluster",
-    "text": "……ふふ。なにそれ。生意気ダヨ、ほんと。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "悪態の声は、けれど、これまでで一番やわらかかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "flower",
-    "text": "……ありがと。うん。……ありがと、ネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 30,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "冷たい声と、ずっと一人で戦ってきた人の隣に。今、確かに、もう一つの椅子が、置かれた気がした。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 1,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "大会が近づいたある日。道場の帰り道で、その人と、ばったり会った。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-daily"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 2,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "マモリ。詩玥の、古い相棒。冷たく澄んだ目は、雑踏の中でも、すぐに分かった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 3,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "……奇遇ですね。少し、いいですか。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 4,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "断る理由もなく、並んで歩く。彼女の歩幅は、一定で、無駄がなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 5,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "詩玥から、聞きましたか。昔の話を。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 6,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "頷くと、マモリは「そう」と、短く息をついた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 7,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "あの人は、昔——誰よりも、正しく打てる人でした。私は、その背中を見て、打ち方を覚えたんです。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 8,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "意外だった。この人もまた、かつての“深謀遠慮”に憧れた、一人だったのだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 9,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "放銃しない。無駄に賭けない。正しく、降りる。……全部、あの人の打ち方を、なぞったものです。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 10,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "emoteId": "gloom",
-    "text": "私はね。一度、間違えたことがあるんです。大事な、一局で。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 11,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "降りるべき場面で、手を、信じてしまった。押して——そして、仲間の全部を、巻き込んで沈めた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 12,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥とは、逆。彼女は“押して”、失った人だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 13,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "だから私は、二度と賭けないと決めた。いつも正しく、いつも降りる。……後悔を、繰り返さないために。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 14,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "押して悔いたマモリは、降り続ける。降りて悔いた詩玥は、押し続ける。二人は、正反対の傷を抱えていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 15,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "皮肉でしょう。私はあの人みたいに打ちたくて、あの人は、あの打ち方から逃げた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 16,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "すれ違う、二つの背中。けれど、同じ夢の、同じ卓の上で。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 17,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "emoteId": "idea",
-    "text": "でも——気づいたんです。私が降り、あの人が押す。二人で、なら。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 18,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "どちらの後悔も、繰り返さずに済む。私の慎重が、あの人の無茶を支える。あの人の引きが、私の臆病を、前に進める。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 19,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "それが、デジタル派のマモリが弾き出した、たった一つの“正しい”答えだった。だから、彼女は詩玥と組む。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 20,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "あの人を、もう一度、あの舞台に立たせたい。九蓮宝士の、決勝に。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 21,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "逃げたままで、終わらせたくないんです。……あの人の引きは、本物だから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 22,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "あの人の引きは、本物だから。——いつか、誰かが言ったのと、同じ言葉だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 23,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "師匠が遺した言葉が、巡り巡って、この人の口から零れている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 24,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "emoteId": "tension",
-    "text": "だから、あなたに会いに来た。三人目は——あなたが、いい。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 25,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "まっすぐに、目を見て言われた。値踏みではなく、信頼に近い、静かな光で。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 26,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "emoteId": "flower",
-    "text": "あの人が選んだ弟子なら、間違いない。……それに、あの人は、あなたの前でだけ、すこし素直になる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 27,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "気づいていたのか。この人は、降りるために、誰よりも場を——人を、よく見ている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 28,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "団体戦。三人で、勝ちましょう。あの人を、てっぺんまで、連れていくために。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 29,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "差し出された言葉に、迷わず頷いた。胸の奥が、熱かった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-10",
-    "lineNo": 30,
-    "backgroundId": "bg-street",
-    "standings": [
-      {
-        "characterId": "mamori",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "押す人と、降りる人と、その間に立つ自分と。三つの椅子が、ようやく一つの卓に、揃おうとしていた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 1,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "初めての個人戦を、勝ち抜いた。九つの宝の、最初の一つ。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "seId": "se-success",
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "やったネ！　初舞台で、いきなり一個。……我の見込んだ目に、狂いはなかったヨ。",
-    "characterEffect": "jump",
-    "screenEffect": "none",
-    "effectDurationMs": 300
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 3,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥は自分のことみたいに、ぴょんと跳ねて喜んだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "けれど、本当の関門は、ここからだ。次は——団体戦。一人では、立てない舞台。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 5,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "約束どおり、その人は来た。マモリ。詩玥の、古い相棒。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-step"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 6,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "おめでとう。……個人戦の勝ち方、見ていました。詩玥に、よく似てきましたね。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 7,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥の笑顔が、ほんの少しだけ、ぎこちなくなる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……マモリ。本気で、組むつもりなノ。我と。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 9,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "ええ。三人で、団体戦の宝を獲る。あなたと、その子と、私で。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "tension",
-    "text": "言っとくケド。我は、降りないヨ。あんたみたいには、打てない。隣で見てて、苛々するかもネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 11,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "知っています。昔から、ずっと、そうでした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "だからこそ、私が降ります。あなたが、思いきり押せるように。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "surprised"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その言葉に、詩玥が、はっと顔を上げた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "あなたの背中は、私が守る。あなたは——前だけ、見ていればいい。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "かつて恩師が、隣で守り続けたように。今度は、マモリが、その席に座ろうとしていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥は、しばらく、何も言えずにいた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "fluster",
-    "text": "……ずるいヨ、それ。そんなの、断れないじゃない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "声が、湿っていた。けれど、それは、悲しい湿りではなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……でもね。二人じゃ、足りないノ。団体戦は、三人。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 20,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥の視線が、こちらを向く。いつもの、いたずらっぽい光と——少しの、真剣さで。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 21,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "だからさ。三人目。あんた、我たちと、一緒に来てくれる？",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 22,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "問い返すまでも、なかった。そのために、ずっと、ここまで来たんだから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "深く、頷く。詩玥が、ぱあっと、花みたいに笑った。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "flower",
-    "text": "決まりネ！　押す我と、守るマモリと、その真ん中に、あんた。……うん、いいチームだヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "……ええ。悪くない、布陣です。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "押す人と、降りる人。正反対の二人が、初めて、同じ方向を向いた。その真ん中に、自分がいる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "flare",
-    "text": "目指すのは、てっぺん。九蓮宝士。……今度こそ、最後まで、誰も見送らない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "今度こそ。その一言に込められた重さを、もう、ちゃんと知っている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "三つの椅子が、一つの卓に揃った。九つの宝への、本当の旅が——いま、始まる。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 700
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 1,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "団体戦、最終戦。三人で挑む、二つ目の宝。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 2,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "卓上の空気は、これまでのどの一局より、張りつめていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 3,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "私は、徹底して受けます。一点も、こぼさない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 4,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "詩玥。あなたは——好きなだけ、前へ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 5,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ん。任せたヨ、マモリ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 6,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "いつもの軽さ。けれど目の奥に、これまで見たことのない、静かな炎があった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 7,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "終盤。点棒は、僅差。あと一つ大きな手が決まれば、宝に届く——そんな局面が、来た。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 8,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥の手が伸びる。テンパイ。あと一枚、引ければ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 9,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "けれど相手の河は、剣呑だった。押せば、振り込みの目もある。かつての決勝と、同じ匂いの場面。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 10,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "“冷たい声”が、聞こえたのかもしれない。詩玥の指先が、ほんの一瞬、止まった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 11,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "——その時。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 12,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "emoteId": "tension",
-    "text": "詩玥。後ろは、視ています。あなたは、ツモることだけ、考えて。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 13,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "背中を、預けられる。だから、彼女はもう、迷わなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 14,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "flare",
-    "text": "——いくヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 15,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "牌山へ手が伸びる。引き寄せる。指が、覚えている。握った数だけ鋭くなった、その勘で。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 16,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "impact",
-    "text": "ツモ。",
-    "characterEffect": "jump",
-    "screenEffect": "flash",
-    "effectDurationMs": 450,
-    "seId": "se-tsumo"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 17,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "場が、沸いた。逆転の、満貫ツモ。二つ目の宝が、三人の手に転がり込む。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-score"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 18,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "降りずに、押し切って、掴んだツモ。理屈ではなく、引きで。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 19,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "——ふと、思う。きっと今、どこかで、あの人も見ている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 20,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「お前のツモが見たい」と言い続けた、あの恩師が。ようやく、その一つを。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 21,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "……見てた？　師匠。これが、我のツモ、ダヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 22,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "天井の、ずっと向こうへ。詩玥は、小さく、そう呟いた。その目尻が、きらりと光った。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 23,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "勝鬨が落ち着いた頃。詩玥が、こちらとマモリを、順番に見た。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 24,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ねえ、知ってる？　九つの宝が揃うと、願いが一つ、叶うんだって。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 25,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "……俗説です。確率的な根拠は、ありません。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 26,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "もー、夢がないノ！　……でもね。我、願うこと、ちょっと変わったかも。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 27,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "昔は、たった一つの後悔を、やり直したかった。叶うなら、あの決勝に、戻りたかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 28,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "でも今は——あんたと出会えた、これからのほうが、ずっと楽しみなノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 29,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "だからさ。ツモれば、勝ち。……ううん。あんたとなら、“ふたりの勝ち”、ダヨ。",
-    "characterEffect": "jump",
-    "screenEffect": "flash",
-    "effectDurationMs": 400,
-    "seId": "se-flash"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 30,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "押す人と、守る人と、その真ん中の自分と。三人の卓は、まだ見ぬ七つの宝へ——続いていく。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 800
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 1,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "二つ目の宝を団体戦で掴んでから、旅は止まらなかった。残りは、七つ。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 2,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "今日の大会は、二人ひと組で挑む形。詩玥の隣の席に、並んで座る。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 3,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "二人用の大会ね。なら、私は出られない。……でも。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 4,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "ここから、見ているわ。二人の躍進を、しっかりとね。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 5,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "music",
-    "text": "ん！　任せといてヨ、マモリ。ちゃーんと、いいとこ見せるからネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 6,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、ぐいっと手を引いてくる。引っ張られるように、会場の奥へ進む。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 7,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ほら、相棒。いくヨ！",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 8,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その手の温かさに、少しどぎまぎしながら、頷く。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 9,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "全国の上位だけが集う、大きな舞台。天井は、これまでのどの卓より、高かった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 10,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ふと、隅の席に目が留まる。見ているだけで肌が粟立つ、黒い気配をまとった打ち手たち。",
+    "speakerNameOverride": "ギャラリー",
+    "text": "知らないのか。あの子だぞ。宝を五つも獲った、史上最年少の五蓮闘士。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
     "bgmId": "bgm-mystery"
   },
   {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 11,
-    "backgroundId": "bg-hall",
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……アビス、だっけ。ずいぶん物騒なのも、交じってるネ。",
+    "speakerCharacterId": null,
+    "speakerNameOverride": "ギャラリー",
+    "text": "九つのうち五つだ。あと四つで、てっぺんに手が届く。……まあ、もう何年も五つで止まったきりらしいがな。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 12,
-    "backgroundId": "bg-hall",
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詳しいことは、まだ何も知らない。ただ、近づいてはいけないと、本能だけが囁いた。",
+    "text": "五蓮闘士。頂点の一歩手前。その称号の重さに声を失って、目の前の小さな人をまじまじと見た。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "surprise"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの、五蓮闘士の方、なんですか。上ずった問いが、つい口をついて出る。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-13",
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……その呼びかた、ビビ、あんまり好きじゃないの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふい、と視線が逸れた。人形を抱く手に、ほんの少しだけ力がこもる。語尾が、すうっと小さくなって消えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "称号なんて……ビビには、いらないものだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "周りが羨むものから、当人が静かに身を引いていく。喜びでも、謙遜でもない。ただ、そこから離れたがっているように見えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "踏み込んでいいのか分からなくて、口をつぐむ。その沈黙を、向こうが先にほどいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ねえ。あなたは、なんのために牌を握るの？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九蓮宝士になりたいんです。九つの宝を、全部。憧れだけで膨らんだ夢を、そのまま差し出した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言ってしまってから、急に気恥ずかしくなる。さっきまで頂点を厭がっていた相手に、頂点が欲しいと告げたのだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど向こうは、笑い飛ばさなかった。こちらをまっすぐ見上げる目の奥が、ふっと和らいでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ふふ。まっすぐで、いいね。そういうの、ビビ、きらいじゃないよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower",
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声の温度が、ひと息で変わった。さっきまで遠かった目が、急に近くなる。妹を見つけた姉のような、そんな目だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも、頂点までの道はね、こわいところもいっぱいなの。ころんだら、痛いよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "そっか。じゃあ……ビビが、あなたを、ころばせないようにしてあげる。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ころばせない。守ってくれる、ということだろう。心強い、と素直に受け取りかけて、ふと引っかかる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その言いかたは、まるで——自分が転ぶ側ではないと決めているような。守る、という言葉の比重が、少しだけ妙だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だいじょうぶ。ビビは、沈まないから。……さ、はじめよっか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 31,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "口癖のように軽やかに告げられた言葉。その軽さの裏に何があるのか、まだ何も知らないまま、初めての稽古が始まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古の半荘。卓を挟んで向かい合うのは、いつもの小さな師匠。窓から差す光が、板の間に長く伸びている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 2,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "配牌が並ぶ。手のなかに筋が見えてきて、攻めの形が組めそうだった。前へ出る、と決める。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 3,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、危ない牌が場に近づくたび、向かいの手が先に動いた。こちらが踏み込む寸前で、すっと前を塞いでしまう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "そこ、危ないよ。……いいの。その牌は、ビビが受けるから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言うが早いか、危険な一打をその身で引き受けていく。当たり牌も、放銃も、すべて自分のほうへ手繰り寄せて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "おかしなことに、その被弾は失点にならない。受けても、向こうの点棒だけが静かに削れていくだけだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "question"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "こちらは一度も痛い目を見ていない。それなのに、向かいの持ち点だけが、半荘のあいだ少しずつ目減りしていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守られている。確かに、心強い。けれど胸の奥が、説明のつかないかたちできゅっと縮こまる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どうしてそこまで庇うんですか。半荘が終わったあと、思いきって尋ねた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ころばせたくないの。それだけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "痛いのはね、ビビが代わりに持つの。あなたは、痛くなくていいんだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの話になった途端、声がまっすぐに張った。いつもの茶目っ気が消えて、目の奥に一歩も引かない芯が灯る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 13,
     "backgroundId": "bg-table",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そして、対局。詩玥と二人、肩を並べて、牌を握る。",
+    "text": "でも、と言いかけて、言葉を探す。あなたが痛いのは、いいんですか。その問いが、喉の手前で止まった。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-battle",
-    "seId": "se-shuffle"
+    "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-13",
+    "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 14,
     "backgroundId": "bg-table",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "詩玥はいつも通り、引きに任せて前へ出る。速く、鋭く、手を仕上げにかかる。",
+    "text": "ビビは、いいの。だって——痛くならない、ようにできてるから。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-13",
+    "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 15,
     "backgroundId": "bg-table",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——けれど。相手は、詩玥の打点が伸びる一歩手前で、必ず先回りして蓋をしてきた。",
+    "text": "痛くならないようにできている。物のことを言うみたいな、その言いかた。背筋を、すっと冷たいものが撫でた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "notice"
   },
   {
-    "scenarioId": "mentor-shiyue-bond-13",
+    "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 16,
     "backgroundId": "bg-table",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "emoteId": "sweat",
-    "text": "っと……また止められた？　なんか、ぜんぶ読まれてる気が、するノ。",
+    "text": "自分を、痛む者の側に数えていない。まるで、自分だけ最初から勘定の外に置いているような。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-13",
+    "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 17,
     "backgroundId": "bg-table",
     "standings": [
       {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "二人で、なんとか食らいつく。こちらが場を整え、詩玥が前へ。呼吸を合わせて、しのいでいく。",
+    "text": "そのことを言葉にしようとして、できなかった。まだ、それを名づける言葉を持っていなかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-shiyue-bond-13",
+    "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 18,
     "backgroundId": "bg-table",
     "standings": [
       {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "終盤。僅かに残った細い目を、詩玥がたぐり寄せる。指が、覚えている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 19,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "impact",
-    "text": "——ツモ。",
-    "characterEffect": "jump",
-    "screenEffect": "flash",
-    "effectDurationMs": 450,
-    "seId": "se-tsumo"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 20,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
+        "characterId": "bibi",
         "position": "center",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "辛くも、競り勝ち。三つ目の宝が、二人の手に転がり込んだ。",
+    "text": "もう一半荘。今度は、無理に攻めず、向こうの守りに身を預けてみる。すると、勝ちは静かに転がり込んできた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど点棒を並べ直すと、こちらの山は増え、向かいの山だけが目に見えて低くなっていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ほら。あなた、ひとつも沈んでないでしょ。……えらい、えらい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 21,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "目を細めて、こちらの勝ちを我がことのように見ている。なのに、その手元の点棒だけが、いちばん少ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 22,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守られて軽くなった胸の、すぐ隣に、置いていかれるような重みが残る。どちらも同じだけの確かさで、そこにあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓を離れ、板の間の隅へ。膝の上に、いつもの白い人形を抱き直す姿が見えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ね、ラビちゃん。……ちゃんと、守れたよね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "人形の長い耳に頬を寄せて、小声でそう確かめている。聞かせるつもりのない、ひとりごとのような声だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守れた、と確かめるそのひと言が、なぜか胸に刺さって抜けない。守れた自分が、どこにも勘定されていないから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "こちらの視線に気づいて、はっと顔を上げる。すぐにいつもの落ち着きが戻ってきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ふふ、見てたの？ ……だいじょうぶ。ビビは、沈まないから。心配しないで。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "沈まない、と笑う。その口癖が、守られているこちらを安心させるためのものなのか、それとも——別の何かなのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-02",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉にできないまま、礼を言って頭を下げた。守ってくれてありがとう、と。ほんとうは、もうひとつ言いたいことがあった気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最初の宝が近い。九つの宝のうち、ひとつの色だけで手を満たす、ひとりで挑む器——清一器。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その稽古のあいだ、いつもの師匠の教えは、たったひとつだけだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "まわりの音を、ぜんぶ消すの。歓声も、雑音も、ぜんぶ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "そうしたらね、手のなかに、ひとつの色だけが残るの。それを、しずかに研ぐんだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "攻めかたではなく、静けさを教わる。賑やかな競技の中心で、その教えはひどく不思議に響いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、本番の卓。会場には観客の熱気が満ちて、ざわめきが波のように寄せては返す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひとりで座る卓。ここから先は、誰も庇ってくれない。守ってくれる小さな手は、ここにはない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "教わったとおり、まず音を消す。歓声が、遠ざかる。隣の卓の物音も、自分の鼓動さえも、すうっと引いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "残ったのは、手のなかのひとつの色。それだけ。ほかの牌が、霧のように意識から溶けて消えていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一枚、また一枚。色を研ぐように、いらないものを払っていく。危なげに見えても、芯だけは揺れなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聴牌。あと一枚で、一色が満ちる。静けさのなかで、最後の牌を待つ。指先が、自然と落ち着いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、引いた。指の腹に伝わる、求めていた一枚の手触り。一色の器が、音もなく満ちる。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "emoteId": "sparkle",
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "和了。誰にも庇われず、自分の手で掴んだ勝ち。最初の宝が、確かに手のなかにあった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
     "seId": "se-score",
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "消していた音が、いっせいに戻ってくる。割れるような歓声。その渦の中で、ひとつだけ、聞き慣れた小さな足音が近づいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場の控えへ戻ると、いつもの師匠が待っていた。膝の前に、白い人形を抱えて。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "飛び跳ねて出迎える、なんてことはしない。ただ、いつもより少しだけ、座り方がそわそわしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……音、ちゃんと消せた？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "消せました。全部、教わったとおりに。そう答えると、伏せていた目が、ゆっくり持ち上がった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その目が、きらりと弾けた。抱いた人形を、ぎゅう、と一度だけ強く抱きしめる。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ね。ビビの言ったとおり、でしょ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "得意げに、けれどどこかこっそりと。大きな声で誇るでもなく、たったひとりの相手にだけ、そっと胸を張ってみせる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あなたの勝ちだよ。だれにも庇われないで、自分でつかんだの。……すごいねえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "自分の勝ちなのに、まるで自分のことのように見ている。つられて、こちらまで、つい声が弾んでしまった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ありがとう、ございます。あなたの、おかげです。いつもの硬い敬語が、ほんの少しだけほどけた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ううん。ビビは、なんにもしてないよ。研いだのは、あなたの手でしょ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そう言って、ふっといたずらっぽく目を細める。なんにもしていない、と言いながら、その喜びようは誰よりも大きい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも……ちょっとだけ、ビビも嬉しいかな。ちいさな宝、ひとつ目。ね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ちょっとだけ、と言いながら、人形を抱く腕がもう一度きゅっと締まる。声の最後が、こらえきれずに小さく揺れていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つのうちの、たったひとつ。けれど、初めて自分の手で掴んだ宝だった。先は、まだ遠い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでも、こっそり喜ぶこの人と並んで歩けるなら、その遠さも、悪くないと思えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つの宝のなかには、ひとりでは挑めないものがある。三人で卓を囲む、団体戦の宝。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "いつかね、三人で挑む宝もあるの。だから、背中を任せられる相棒が、いるんだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "団体戦の話を、めずらしく自分から切り出している。守りの人が、背中を任せる相手の話をするのは、少し意外だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのとき、道場の戸が勢いよく開いた。差し込む光を背に、大柄な人影が踏み込んでくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "おう、ビビ。相棒の話なら、おれを呼ばねえと話が始まらねえだろ。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "熱を帯びた声。歩くたびに、その身からは火のような勢いが立ちのぼる。静かな道場の空気が、一気に焦げつきそうだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "おまえが新入りか。へえ、いい目してんじゃねえか。燃やしがいがありそうだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……焔。あんまり、大きな声を出さないで。この子、まだ慣れてないんだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "焔だ。覚えとけ。おれの打ち方はひとつ——でかい手を狙って、火を熾す。それだけだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りに徹する小さな師匠と、攻めだけを生き様にする男。卓に並べば、これほど正反対の二人もいないだろう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "なあ新入り。ビビの守りは大したもんだ。だがな、守ってるだけじゃ、火は熾らねえぞ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "安手でちまちま守って、それで頂点に届くか？ 届かねえ。最後にものを言うのは、一発でかいのを叩き込む度胸だ。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "flare"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……それは、ちがう。守りで沈まないかぎり、負けはこないの。ビビは、そこは譲らないよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの話になると、声がまっすぐ通る。挑発を受けても、その芯はびくともしない。一歩も引かない、いつもの凛とした顔。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "負けがこねえのと、勝ちにいくのは別もんだろ。なあ、おまえ自身は——攻めねえのか？ 攻めたくねえのか？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "攻め。その一言が向けられた瞬間、それまで一歩も引かなかった人が、ぴたりと黙った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りを問われても揺るがなかった芯が、攻めを問われた途端に、わずかに強張る。膝の上の手が、人形を抱き寄せた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ビビは、いいの。攻めるのは……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "語尾が、消えた。続くはずの言葉が出てこない。鉄壁のはずの人が、初めて言葉に詰まっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの話なら一歩も引かない人が、攻めの一語の前でだけ、こんなに小さくなる。その落差に、息をのんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "……っと。悪い、踏み込みすぎたな。おれの悪いクセだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "黙り込んだ姿を見て、燃えるような勢いが、ふっと和らいだ。乱暴に見えて、引き際を心得た男なのだと知る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "ま、おまえの盾は本物だ。それは認める。いつか三人で卓を囲む日、おれの火と、おまえの盾。悪くねえ組み合わせだろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "新入り。でかい手の味、いつか教えてやる。火ってのは、熾せば癖になるぞ。じゃあな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言うだけ言って、来たときと同じ勢いで背を向ける。戸が閉まり、熱気が引いて、道場にまた静けさが戻った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "残された人は、しばらく動かなかった。やがて、膝の上の白い人形を、両腕でそっと抱きしめる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ね、ラビちゃん。ビビは、守れてれば、それでいいんだよね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問いかけるような、確かめるような小声。人形は、何も答えない。答えてほしいのは、たぶん別のことだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……あ。ごめんね、暗い顔しちゃった。だいじょうぶ。ビビは、沈まないから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "こちらを見て、いつもの笑みを取り戻す。けれど、その笑みが少しだけ無理をしているのが、もう分かるようになっていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 31,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "鉄壁のはずのこの人が、攻めという一語の前でだけ見せた、小さな怯え。その正体を、まだ知らない。知りたい、と思った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古卓を挟んで、いつもの二人。牌を切る音だけが、ゆっくりと続いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily",
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの手筋を、また一つ教わる。崩れない、沈まない。そのたびに思うことが、ひとつあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビの読みは、誰よりも深い。だから思い切って、口にしてみた。守るだけじゃ、もったいない気がして。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビの守りなら、攻めも混ぜたら、もっと強いと思います。一度だけ、前に出てみませんか。そう言ってみた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……攻め、かあ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "牌を持つ指が、一拍だけ止まった。視線が、卓の真ん中あたりをさまよう。すぐには、いつもの返事が出てこない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……いいよ。あなたが言うなら、一度だけ。ほんとに、一度だけだからね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "めずらしいことだった。守りを離れて、前に出る一手を選ぶ。いつもなら降りる場面で、ビビが牌を握り込む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聴牌が見えてくる。攻めに転じたビビの手は、やはり筋がいい。このまま押し切れる——そう思った、その時だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "前へ出るため、危ない一枚を切らねばならない。いつもなら絶対に通さない牌。それを、ビビの指が卓に置く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その牌が、待たれていた。読み筋の外から、大きな手が立ち上がる。点棒が、ごっそりと持っていかれた。",
+    "characterEffect": "none",
+    "screenEffect": "shake",
+    "effectDurationMs": 600,
+    "emoteId": "impact",
+    "seId": "se-impact"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓の上から、ビビの点棒が消えていく。その様子を見つめたまま、ビビは動かない。広げた手のひらが、宙で固まっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "顔から、すうっと色が引いた。さっきまで前を向いていた目が、見開かれたまま、卓のひと所に釘づけになっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……あ。とられ、ちゃった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声が、小さい。語尾が、空気に溶けて消える。たかが一局の失点に、これほど芯から揺れる人だとは、思っていなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……やっぱり、だめ。前に出ると、こうなる。手から、ぜんぶ、こぼれていっちゃう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "失点した、と言うより——手放した、と言っているように聞こえた。点棒の話だけを、しているのではない気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "膝の上に置いていた手が、白い人形のほうへ伸びる。指先が、ラビちゃんの腕をそっと探り当てた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ただ握る、それだけのことに、しがみつくような力がこもっている。攻めの一語が、ここまでこの人を縮ませるのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "すみません、無理をさせて。そう言いかけて、続きが出てこない。謝るのは、たぶん筋が違う。けれど、放っておけなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ううん。あなたは、悪くないよ。試したのは、ビビだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひとつ、ふうと息を吐く。背筋がまっすぐに戻っていく。引いた色が頬に戻り、さっきの強張りが、ゆっくり溶けていった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビは、守るほうが、いいの。それでね、ちゃんと沈まないでいられるんだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの話に戻った途端、声が芯を取り戻す。一歩も引かない、いつもの凛とした調子。さっきまでの小ささが、嘘のようだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ただ、人形を抱く指先だけが、まだ硬い。声が戻っても、その固さは、最後までほどけずに残っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "そんな顔しないの。だいじょうぶ。ビビは、沈まないから。守りなら、いくらでも見せてあげる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "こちらを気遣って、いつもの笑みを向けてくる。からかうような目つきまで添えて。けれど、その茶目っ気が、わずかに早すぎた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "笑って蓋をするのが、ほんの一拍、急いでいた。蓋の下に押し込んだものが、まだ静まっていないのが分かる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "攻めることが、この人にとっては、ただ負けることとは違う。何かを手放すことと、固く結びついている。そう感じた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その奥に何があるのかは、まだ触れさせてもらえない。けれど、攻めへの怯えの底に、確かに別の影がある。そう、思い知った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勝てると思った一局を、落とした。あと一歩のところで、欲しい牌は最後まで来なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow",
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古の卓を片づける手が、止まったままになる。負けの一手を、何度も頭のなかで巻き戻していた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "うつむいたままの肩を、ビビがじっと見ている。何か言おうとして、口を開いて——そのまま、また閉じた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……えっと。あの、ね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの話になれば、いくらでも言葉が出てくる人だ。なのに今は、続きが見つからない。視線が、行き場をなくして泳いでいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "つよく、生きて、とか。次があるよ、とか。……うん。なんか、ちがう気がする。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "用意した慰めを、自分でひとつずつ却下していく。気の利いた言葉を選ぶのが、この人はとことん不器用らしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "やがて、言葉を探すのをやめた。代わりに、すっと立ち上がって、隣まで歩いてくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "何も言わずに、すぐ横へ腰を下ろした。肩と肩が触れそうな、ぎりぎりの近さ。それから、また卓に牌を並べはじめる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "もう一局、付き合って。今度はね、ビビが横にいるから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次の局が始まる。危ない場面が来るたび、ビビの手が先に動いた。こちらに向く牌を、ことごとく自分の側で受け止めていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "降りなくていい場所まで、全部引き受けてくれる。痛い目に遭うはずだった一打を、ビビが代わりに被っていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ごめんねとか、だいじょうぶとか。……ビビ、そういうの、うまく言えないの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だからね。代わりに、守るね。それしか、できないけど。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いながら、ちょっと困ったように眉が下がる。それでいて、牌を受ける手だけは、迷いなくまっすぐだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ようやく、分かった。この人の守りは、ただの手筋ではない。言葉にできない気持ちを、まるごと形にしたものなのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ごめんね、の代わりに守る。だいじょうぶ、の代わりに、隣に座る。不器用に渡される、その全部が、胸の奥にゆっくり届いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "落としていた肩が、いつのまにか軽くなっている。負けの一手を巻き戻していた頭が、隣の温度で、すっとほどけた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気づけば、口から自然に言葉がこぼれていた。いつもの硬い敬語ではなく、もっと素のままの一言が。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ありがとう。そう、言っていた。ありがとう、ございます、ではなく。ただ、ありがとう、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "牌を受けていた手が、ぴたりと止まる。ビビが、こちらを見た。目が、まるくなっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "surprise"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……あ。いま、敬語じゃ、なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "つい出てしまった一言を、しっかり拾われた。ばつが悪くて目をそらすと、横で、くすっと小さな笑い声がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ふふ。いいね、それ。そっちのほうが、ビビは好きだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "music"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "目を細めて、いたずらっぽく笑う。けれどその頬が、ほんのり色を帯びていることまでは、隠しきれていなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "もう、落ち込んでない? ……うん。よかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "膝の上の白い人形を、片手でそっと引き寄せる。よかった、と漏らした声の最後が、こらえきれずに少し揺れた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "鉄壁、と呼ぶには、あまりにやわらかい。盾のいちばん奥に、こんなにあたたかいものをしまっていたのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉が下手なぶん、この人は守ることで気持ちを渡す。そう知ってから、その守りが、前よりずっと近いものに思えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-06",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次に守られるとき、きっと素直に受け取れる。ありがとう、とまた言える。そんな気が、自然としていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古を終えた道場に、夕暮れの橙が差し込んでいる。卓の上の牌が、一枚ずつ赤く光っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "今日も、何度も守ってもらった。危ない場面はぜんぶ、ビビが先に引き受ける。そのたびに、胸の奥が小さくつかえる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守られてばかりだ。ビビは、自分が痛い思いをしてまで、こちらを庇う。それが、ずっと気がかりだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "牌を片づける小さな背中に向かって、思い切って、声をかけた。前から、訊いてみたかったことがあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どうしてビビは、自分が傷ついてまで、守ってくれるんですか。そう、訊いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りのことなら、いつも迷わず即答する人だ。だから、すぐに『沈まないため』とでも返ってくる、と思っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、返事は来なかった。片づける手が、止まる。橙の光のなか、ビビは、こちらに背を向けたまま黙っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数拍。やがて、ゆっくりと、こちらへ向き直る。けれど目は、こちらを見ていない。卓の一点に、視線が落ちていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……どうして、かあ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問いをそのまま、口のなかで転がしている。答えを探しているのではなく、自分でも初めてその問いに出会った、という顔だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "膝の上の白い人形へ、片手が伸びる。指先が、その腕のあたりを、確かめるみたいに、ゆっくりとなぞった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あのね。身代わり人形は……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声が、急にちいさくなる。語尾が、夕方の空気にとけて、半分も聞こえない。続きを待つ。卓の上で、牌の影が伸びていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……痛くないことに、なってるの。だから、だいじょうぶ、なんだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "痛くないことに、なっている。だから、いくらでも被弾を引き受けられる。——そういう理屈なのだと、すぐには飲み込めなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守る理由を訊いたはずだった。返ってきたのは、自分を痛みの勘定から、はじめから外している、その置き方だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "じゃあ、ビビ自身は、どこにいるのだろう。守る側にも、守られる側にも、その姿がない。背すじが、ひやりとした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "でも、ビビは痛くないんですか。そう訊き返そうとした。けれど、声にする前に、向こうが先に動いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "落ちていた視線が、はっと持ち上がる。今、自分が何を漏らしたのか、遅れて気づいた——そういう顔だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……あ。ごめん、ごめん。なんでもないの。へんなこと言っちゃった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ぱっと表情を切り替えて、いつもの茶目っ気で蓋をする。手のひらをひらひらと振って、たった今こぼれた言葉を、なかったことにしようとする。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ね、もう暗くなるよ。今日はおしまい。ほら、片づけ、片づけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "話を、軽やかに逸らされた。けれど、その『なんでもない』が、いちばん重い。なかったことにされたぶんだけ、深く胸に残った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問い返す言葉は、結局、飲み込んだ。今ここで踏み込んだら、この人はもっと深く、自分を隠してしまう気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "牌を片づける横顔は、もう、いつもの静かな凛とした顔に戻っている。さっきの揺らぎは、跡形もない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ただ、ひとつだけ。膝に乗せた白い人形を抱く腕が、片づけのあいだ、ずっとほどけずにいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "痛くないことに、なっている。その言い方が、耳から離れない。痛くないのではなく、痛くないことに、している。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの奥に、まだ見せてもらえない痛みがある。きっと、本人すら、まだうまく言葉にできていない痛みが。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-07",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつか、その『なんでもない』の中身を、ちゃんと聞かせてほしい。そのときまで、隣にいよう。橙が、ゆっくり藍に変わっていった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三人で挑む宝、天暗刻。その大会の会場は、観客の熱気で膨れ上がっていた。三つの席に、三人で座る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "右手には、火のような男。左手には、白い人形を膝に乗せた小さな師匠。攻めと守り、正反対の二人に挟まれて、卓に着いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "おう、揃ったな。おれが火を熾す。ビビが背中を守る。おまえは、好きに打て。これで獲れねえわけがねえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "うん。ビビが、二人の背中を守るから。誰にも、沈ませない。だいじょうぶ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対面には、格上の三人組。卓が立ち上がった瞬間から、向こうの打点は容赦なく牙をむいてきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手の大物手が、何度も立ち上がる。けれど、そのたびにビビの守りが間に割って入った。和了は、ことごとく宙へ消えていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰も沈まない。こちらの点棒は、一点も削られない。鉄壁、という言葉が、これほど似合う守りはなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ほら、ね。何も、こわくないでしょ。ビビがいれば、誰にも奪わせないんだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの声は、いつものように凛と通る。けれど、局が進むほどに、卓の上の点棒は、ぴくりとも動かなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気づいて、ぞっとした。向こうの手は消せている。でも、こちらの点は、一点も増えていない。盤面が、前へ進んでいないのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "無効化は、奪わせない。けれど、何も生まない。守り抜いた局の数だけ、ただ卓の時間が削れていく。勝ちに要る点が、積み上がらない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "……まずいぞ。守るだけじゃ、点は入らねえ。おれが獲る。火を熾す。残り時間で、ぜんぶひっくり返してやる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔が、牙をむいた。満貫、跳満。大物手を、立て続けに狙いにいく。卓の上に、確かに火柱が立ちのぼった。",
+    "characterEffect": "none",
+    "screenEffect": "shake",
+    "effectDurationMs": 600,
+    "emoteId": "flare",
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、たった一人で点差を覆すには、向こうの三人は強すぎた。火は懸命に燃えても、開いた差を埋めるには、あと一歩、届かない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後の局。あと一回、ツモが来れば。あと一回——。そう祈ったところで、卓は、静かに閉じた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "僅差の敗北。誰一人沈ませなかったのに、こちらの点は、勝ちにほんの少し届かなかった。観客のどよめきが、遠く頭の上を流れていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三人で挑んだ宝は、手のなかをすり抜けていった。守り抜いた局が、ひとつも勝ちに変わらないまま、終わった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、動かない。卓の上の、増えなかった点棒を、ただじっと見つめている。守りは、一度も破られなかった。それなのに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "……ビビ。おまえの盾は、本物だ。誰にも沈められなかった。それは、間違いねえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "だがな。守って、守って、それで負けねえだけじゃ、てっぺんは獲れねえんだよ。獲りにいかなきゃ、火は、勝ちには変わらねえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "責める声では、なかった。火のような男なりの、まっすぐな悔しさが、その言葉にこもっている。けれど、それはビビの芯を、確かに突いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "……悪い。八つ当たりだ。おれの火が、足りなかった。それだけの話だ。先に行ってる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言うだけ言って、焔は背を向けて去っていく。残されたのは、卓の前で動けずにいる、小さな師匠だけだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そばに寄っても、ビビは顔を上げない。膝の上の白い人形を、両腕でそっと抱き寄せ、その肩口に、こつんと額を預ける。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……誰にも、沈ませなかったのに。ちゃんと、守れたのに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声が、いつもの凛とした調子を、保てていない。守りの話をしているのに、芯が通らない。それは、初めてのことだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……守るだけじゃ、だめなの……? ねえ、ラビちゃん。ビビの守りじゃ、とどかないの……?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問いかけても、白い人形は、何も答えない。沈まないことだけを信じてきた人が、初めて、その信じ方そのものを、揺らしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "かける言葉が、見つからなかった。だいじょうぶです、とは言えない。今日のこれは、守りでは越えられない壁だったのだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "鉄壁だったはずの殻に、細い線が走ったのが見えた気がした。沈まない、では届かない一歩。その先を、まだ、誰も知らない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの団体戦の敗北から、何日が過ぎただろう。道場に通うたび、卓の前にはいつもビビがいた。膝の上に、白い人形を乗せて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、その手つきが、いつもと違う。守りを固める打ち方ではない。前へ、前へと牌を押し出そうとして——途中で、指が止まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……押すの。ここで、攻めるの。獲りにいかなきゃ、勝ちには、変わらないんだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "自分に言い聞かせるように、ビビは一打を放つ。けれど、攻めの手は途中で萎んで、結局いつもの守りへと収まっていく。何度試しても、同じだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……どうして。あと一歩、踏み込むだけ、なのに。ビビの手は、勝手に、引いちゃう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "temper"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "膝の上の人形を見下ろして、ビビは小さく息を吐く。声から、いつもの凛とした芯が、少しずつ抜けていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そこへ、戸が開いた。荒い足音とともに入ってきたのは、あの団体戦で背中を並べた、火のような男だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "よう。まだ気にしてんのか、この前のこと。……ちょうどいい、一局付き合え。おれの火、近くで見てみろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "返事を待たず、焔は卓に着く。牌が立ち上がった瞬間から、その打ち筋は、ためらいを知らなかった。安手には目もくれず、まっすぐに大物手だけを狙いにいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "見てろ。満貫が見えてんのに、小さくまとめる手はねえ。狙うなら、てっぺんだ。火ってのはな、燃やしきってナンボなんだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔の手が、跳ね上がる。跳満。卓の上に、ごうと音を立てて火柱が立った。なるほど、これが、あの土壇場で点差を覆そうとした炎なのだ。",
+    "characterEffect": "none",
+    "screenEffect": "shake",
+    "effectDurationMs": 600,
+    "emoteId": "flare",
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、その火を、まばたきもせずに見つめていた。膝の上の人形を抱く腕に、ほんの少しだけ力がこもる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "な。火は、こうやって熾すんだ。おまえも、やってみろよ。守るだけのおまえに、足りねえのはこれだろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "悪気のない、まっすぐな言葉だった。だからこそ、それはビビの内側に、深く刺さったらしい。ビビは牌に手を伸ばし、攻めの形を組もうとする。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、攻めの一打を放とうとしたその指が、また、止まった。三度。四度。火を熾そうとするたびに、内側の何かが、それを押し戻してしまう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……だめ。できない。ビビには……燃やせない火が、あるの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りの話をするときの、あの凛とした声は、もうどこにもなかった。ビビは伏し目がちに、卓の縁を指先でなぞる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "……無理にとは言わねえよ。火ってのは、無いところからは熾せねえ。すまん、おれの言い方が雑だった。先に行ってる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔が去ったあとの道場は、しんと静まり返った。残されたビビは、卓に着いたまま、しばらく動かなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ねえ。ビビ、おかしいのかな。みんなが当たり前にできることが、ビビには、どうしても、できないの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そばに寄っても、ビビは顔を上げない。膝の上の人形に、視線を落としたままだ。声が、震えるほど小さくしぼんでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "守るだけじゃ、勝てない。でも、攻めることは、できない。……じゃあ、ビビの麻雀って、なんなの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "黙って首を横に振った。おかしくなんかない、と。けれど、それだけでは足りないことも、わかっていた。慰めは、答えにはならない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ビビが、焔みたいに、なれたら。そしたら、この前だって、勝てたのかな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔のようになる必要はない、と思った。そのまま、口に出していた。ビビがビビのままで、できることが、きっとあるはずだと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ビビが、ビビのままで。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉をなぞるように、ビビは小さく繰り返す。けれど、その目はまだ伏せられたままで、何かに届いた手応えはなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……うん。ありがとう。でも、まだ、わからないの。火を持てないビビに、ほんとうに、いる場所があるのかどうか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "かける言葉を探したけれど、どれも軽すぎて、口にできなかった。今のビビには、にぎやかな励ましより、答えを見つけるための時間が要るのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-09",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "燃やせない火を抱えたまま、ビビは人形と、卓の前に取り残されていた。問いだけが残り、答えはまだ、どこにも見当たらない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夕暮れの道場に、橙の光が差し込んでいた。一日の稽古が終わっても、ビビは卓を離れない。膝には、あの白い人形を乗せたままだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの日から、ビビはずっと、攻めの真似をくり返していた。火を熾そうと牌を押し出し、途中で手が引っ込む。その繰り返しを、もう何度見ただろう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……また、引いちゃった。だめだなあ、ビビは。火、ぜんぜん、熾せない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "横顔に、橙の影が落ちる。自分を責める言葉ばかりが、ぽつり、ぽつりとこぼれていく。見ていられなくて、そばへ寄った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔の火は、すごかった。けれど、あの火を消されないように守っていたのは、ビビの盾だった。ふと、そう口にしていた。深い意味は、なかったのに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……火を、消されないように、守る……?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "伏せていた目が、ふいに上がった。何かを追いかけるように、ビビの視線が宙をさまよう。膝の人形を抱く手が、止まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……そっか。ビビは、火を熾せない。それは、ずっと、そう。それは、変わらないの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……でも。その火を、消されないように、守ることは、できる。ビビにしか、できないやり方で。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声が、少しずつ形を取り戻していく。けれど、いつもの守りの凛とした調子とは、どこか違っていた。もっと静かで、確かめるような響きだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビが、攻める必要、なかったの。攻めるのは、焔。攻めるのは、あなた。ビビは、その火が消えないように、背中で守ればいい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いながら、ビビは自分の手のひらを、じっと見つめている。何も生まないと思っていた守りが、別の意味を持ちはじめる——その手応えを、確かめるみたいに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ずっと、思ってたの。奪わせないだけの守りは、何も生まないって。盤面を、前に進めないって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも、違ったのかも。ビビが守った先で、誰かの火が、勝ちに変わる。なら、ビビの守りは……誰かの攻めを、生かす盾になれる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "idea"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "鉄壁の殻に走っていた細い線。そのひびの奥から、ひとすじの光が差したように見えた。ビビの目に、いつもの茶目っ気とは違う、まっすぐな色が戻っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "焔みたいに、ならなくていいんだ。ビビは、ビビのままで。火を信じて、託して、その背中を、守り抜く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "託す、という言葉を口にしたとき、ビビは少しだけ言いよどんだ。誰かを信じて、自分の手の外に勝ちを預ける——それは、ビビには、まだ慣れないことなのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……でも。口で言うのと、卓の上で本当にやるのは、きっと、違うんだろうな。ビビ、ちゃんと、誰かに託せるのかな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "つぶやきには、まだ不安が残っていた。気づきは、芽が出たばかりの小さなものだ。それを実戦で出せるかどうかは、これから確かめるしかない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでも、燃やせない火を抱えて俯いていた数日前とは、確かに何かが違う。ビビは膝の人形を、両手でそっと持ち上げた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ねえ、ラビちゃん。ビビね、見つけたかも。ビビにしか、できないこと。火を持たなくても、いい場所。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "人形に語りかける声は、いつもより少しだけ弾んでいた。橙の光のなかで、ビビの肩から、強ばっていたものがほどけていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ふふ。聞いてくれて、ありがとう。あなたが、いてくれて、よかった。……あなたにも、ちょっとだけ、似てるかも。ビビのやりたいこと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "似てる、という一言が、何を指すのか。ビビはそれ以上は言わず、ただ人形を見つめている。その横顔に、まだこちらの知らない来し方の影が、ちらりと差した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ねえ。今度、また団体戦があったら。今度こそ、ビビ、ちゃんと、託してみる。焔の火を信じて、背中を、守ってみせる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その目に、迷いがないわけではなかった。けれど、もう自分を否定する色は、消えている。前を向こうとする者の顔が、そこにあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……これが、ビビの麻雀、かも。守って、信じて、託す。沈ませないだけじゃなくて、誰かを、勝たせる守り。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "自分自身に確かめるような、小さなつぶやき。けれど、その言葉は、橙の道場に、はっきりと残った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "まだ、答えのすべてが見えたわけではない。けれど、ビビは、自分の足で立つための、最初の一歩を見つけたのだ。その隣にいられて、ふと、頬がゆるんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夕日が、卓の上を金色に染めていく。ビビと、その膝の人形は、長いあいだ、そこに静かに座っていた。試すべき舞台は、きっと、もうすぐやってくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo-night",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夜の道場は、しんと静まっていた。灯りはひとつきり。窓の外で、遠くの虫の音が、かすかに鳴いている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、膝に人形を乗せて、灯りのそばに座っていた。帰り支度をしていた手を、なんとなく止めて、そのとなりに腰を下ろす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……この子、ラビちゃんっていうの。前に、名前だけは、教えたよね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問うたわけではなかった。ビビのほうから、ぽつりと、その話は始まった。膝の上の白い人形を、指先で、そっと撫でながら。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビね。ちいさい頃から、ずっと、ひとりだったの。気がついたら、そばに、誰もいなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声は、淡々としていた。けれど、いつもの凛とした芯とも、いたずらっぽい弾みとも違う。とても、静かな声だった。どこまで聞いていいのか、わからなくなる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "夜が、こわかった。広いところが、こわかった。そういうとき、いつも、そばにいてくれたのが、ラビちゃん。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビが寝るときも、泣いてるときも、ずっと、となりにいてくれた。ラビちゃんがいれば、だいじょうぶって、思えたの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、灯りに照らされた人形を、まぶしいものでも見るように見つめている。その横顔に、長い来し方が、影のように落ちていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ほんとはね。ぬいぐるみが、ひとりでに守ってくれるわけ、ないって、わかってるの。ビビだって、もう、子どもじゃないもん。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……でも。あのとき、ラビちゃんがいてくれたから、ビビは、沈まずにすんだ。だから、それでいいの。守ってもらった。それが、ぜんぶ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守ってもらった、と言ったとき、ビビの指先が、人形の上で、ほんの少しためらった。守られる側だった自分への、言いきれない何かが、そこに滲んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ねえ。ビビが、どうして、守ってばっかりなのか。前に、聞いたよね。ほんとうの理由、まだ、話してなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ラビちゃんが、ビビのそばで、守ってくれたみたいに。今度は、ビビが、誰かのそばで、守る。そうやって生きるのが……ラビちゃんへの、恩返しなの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そっと、ビビは人形を抱き寄せた。その肩口に、こつんと額を預ける。守ってもらった分を、誰かに返そうとしている——その仕草が、すべてを語っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "誰にも、奪わせない。誰も、沈ませない。それが、ビビにできる、たったひとつの恩返しだったの。ずっと、そう思ってきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りに徹するときだけ、ビビが一歩も引かなかった理由が、ようやく、つながった気がした。あれは、強がりではなかったのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……でもね。ずっと、守る相手が、いなかったの。ラビちゃんへの恩返しのやり方を、見つけたつもりで。ほんとは、ひとりで、守るふりをしてただけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉が、夜の道場に、ぽつんと落ちた。守る相手のいない守りは、宙に消える無効化に、どこか似ている。ビビ自身も、たぶん、それをわかっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……でも、いまは、違う。守りたい人が、できたの。ちゃんと、目の前に。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "顔を上げたビビが、まっすぐにこちらを見た。灯りのなかで、その目に、伏せられていた色とは違う、やわらかな光が宿っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あなたのこと、つい、守りすぎちゃうの。手を出しすぎだって、自分でも思う。ふふ、ちょっと、過保護でしょ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふっと、いたずらっぽい弾みが、声に戻った。けれど、その目尻には、まだ夜の話の名残が、わずかに残っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だってね。ようやく、できたんだもん。ラビちゃんがビビにしてくれたことを、ビビが、してあげたい人が。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "love"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "今度は、ビビが、守る番なの。守ってもらうだけじゃ、なくて。あなたの背中を、ビビが、守る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守る番、と言ったときのビビの声には、守りの話をするときの、あの凛とした芯が、戻っていた。けれど今度は、誰かのために、という温度が、そこに加わっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……変かな。ぬいぐるみに、こんなに大事にされてた、なんて。笑っても、いいよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "笑えるはずが、なかった。変じゃない、と短く返す。ラビちゃんが大切なものなら、それでいい。ビビが、それで沈まずにこられたなら。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ありがとう。今日、聞いてくれて。なんだか、ずっと言えなかったこと、言えた気がする。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夜が更けても、ビビは人形を、膝に乗せたままだった。語られたのは、来し方のほんの入口だけ。その奥に、まだ言葉にされない何かが眠っていることに、このときは、まだ気づかなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "大会会場は、観客の熱気で膨れ上がっていた。三人で挑む宝、天暗刻。あの日、手のなかをすり抜けていった宝に、もう一度、挑む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "右手に、火のような男。左手に、人形を膝に乗せた小さな師匠。攻めと守り、正反対の二人に挟まれて、三つの席に着いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "おう。今日こそ、獲るぞ。前は、おれの火が足りなかった。けど、今日は燃やしきる。ビビ、おまえも、来たんだな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "うん。今日のビビは、守るだけじゃないの。焔の火を、信じる。あなたの打ちを、信じる。その背中を、ビビが、守り抜く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "信じる、という言葉を、ビビは、二度くり返した。守りの凛とした芯に、新しい何かが加わっている。膝の人形を、ぎゅっと抱きしめてから、卓へ向き直る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "……いい目だ。よし。おれが火を熾す。おまえは好きに打て。背中は、ビビが守る。これで、獲れねえわけがねえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対面には、あの日と同じ、格上の三人組。卓が立ち上がった瞬間から、向こうの打点は、容赦なく牙をむいてきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手の大物手が、立ち上がる。けれど、そのたびにビビの守りが間に割って入る。和了は、ことごとく宙へ消えていく。誰も、沈まない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ここまでは、あの日と同じだ。けれど、違うのは、ここから。ビビは、宙へ消えていく相手の手の、その先を見ていた。守った先で、味方の火を、立たせるために。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "焔。あなたの番。向こうの手は、ぜんぶ、ビビが消す。だから、安心して、燃やしきって。背中は、見なくていいの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "……っ、はは。背中を、見なくていい、か。おまえに、そう言われちゃ、退けねえな。おう、任せた。ぜんぶ、消してくれよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "託す、という言葉を、ビビは初めて、卓の上で、本当にやってみせた。背中を守るから、思いきり攻めろ、と。それは、ひとりで全部を引き受けてきた人の、大きな一歩だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "背中を預けられた焔の火が、変わった。あの日、ひとりで点差を覆そうと焦っていた炎ではない。守られている、という安心が、火を、まっすぐに、太く燃え上がらせる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flare",
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔の手が、育っていく。満貫、跳満。向こうの反撃は、すべてビビが宙へ消す。一点も、削られない。火だけが、燃え続ける。",
+    "characterEffect": "none",
+    "screenEffect": "shake",
+    "effectDurationMs": 600,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "見えたぞ……! 大物手だ。これで、ひっくり返る。ビビ、おまえの盾が、おれの火を、ここまで運んでくれた!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後の局。焔の手は、あと一枚で、満ちる。そして、その一枚を引いてくる役目は、卓を預かる打ち手の手のなかにあった。三人の手が、ひとつの宝へ、伸びていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だいじょうぶ。誰にも、奪わせない。あなたの引きを、ビビが、信じてる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビの声に、背を押されて、最後の一打を、卓へ置いた。その牌が、三人の宝を、満たす。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "impact",
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "獲った——! 天暗刻、揃ったぞ! ぜんぶ、繋がった! やったんだ、おれたちは!",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "joy",
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場が、どっと沸いた。あの日は宙に消えるだけだった守りが、今日は、確かに勝ちへと繋がった。三人で挑んだ宝が、ようやく、手のなかに収まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、しばらく、声を出さなかった。膝の人形を、両手で、そっと持ち上げる。その肩へ、こつんと額を寄せてから、ようやく、顔を上げた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……みんなで、勝てた。ビビが、攻めたわけじゃ、ないのに。守って、信じて、託して……それで、勝てたの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声が、わずかに揺れている。何も生まないと思っていた守りが、初めて、誰かの勝ちに変わった。その手応えを、ビビは、噛みしめるように受け止めていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "ビビ。おまえの盾は、ただ沈ませねえだけじゃなかった。おれの火を、勝ちまで運びやがった。……やるじゃねえか。見直したぞ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ふふ。焔の火が、すごかったから。あなたが、信じさせてくれたんだよ。ビビの守りにも、ちゃんと、意味があるって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔は、満足げに片手を上げて、人混みのほうへ消えていった。残されたビビが、人形を抱えたまま、こちらへ向き直る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あなたのおかげなの。ひとりじゃ、ここまで来られなかった。ビビ、ずっと、守るだけが自分だって、思い込んでた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビの目に、いたずらっぽい光と、まっすぐな光が、両方ともともっていた。膝の人形が、灯りの下で、白く笑っているように見えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場の壁に、次に挑む宝の一覧が、掲げられていた。三人で囲める卓は、もうそこにはない。次の道は、ひとりで卓に立つ宝ばかりが、並んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その並びを、ビビは、まだ見ていない。背中を守る場所のない卓——身代わりになれない場所が、すぐ先で待っていることを、このときは、まだ誰も知らなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 31,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ね。これからも、ずっと、一緒にいてくれる? ビビ、まだまだ、あなたを守りたいの。だいじょうぶ。ビビは、もう、沈まないから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三人で囲んだ宝の、次に並んでいたのは、ひとりで立つ卓ばかりだった。残る宝は、ことごとく個人戦。背中を預け合える席は、もうどこにもない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "大会会場。観客のざわめきが、天井の高いところで渦を巻いている。ビビは人形を抱えて、卓へ向かう背中を、入口で見送っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ここから先は、ビビ、入れないんだって。個人戦だから。卓に立つのは、あなた、ひとり。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だいじょうぶ。いってらっしゃい。ビビは……ここで、見てるから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いってらっしゃい、の語尾が、いつもより小さく落ちた。手を振る代わりに、ビビは人形の前足を、ちょこんと持ち上げて、こちらへ向けた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓が立ち上がる。配牌が配られ、対面の三人が、それぞれの色を帯びはじめる。ここから先は、誰の手も借りられない。一打、一打、すべて自分で決める。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "序盤から、向こうの一人が、容赦のない速さで手を伸ばしてくる。打点の気配が、卓の上で、じわりと膨らんでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "客席の柵に手をかけて、ビビは身を乗り出していた。あの大物手が育つのが、ここからでも見える。いつもなら、間に割って入る局面だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あ……。だめ、それ、危ない牌……。受けて、お願い、そこは、受けて——",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "fluster"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声は、観客のざわめきに飲まれて、卓まで届かない。柵を握る指先が、白くなっている。守りの凛とした芯が、行き場をなくして、宙で空回りする。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "向こうの手が、満ちた。点棒が動く。庇う盾は、どこにもない。被弾は、まっすぐ、こちらの持ち点を削っていった。",
+    "characterEffect": "none",
+    "screenEffect": "shake",
+    "effectDurationMs": 600,
+    "emoteId": "impact",
+    "bgmId": "bgm-tension",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビが、息を呑んだ。今、間に入れていれば、あの和了は宙に消えていた。誰にも奪わせない——その力が、卓の外では、ただの一度も使えない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……届かない。声も、盾も。ビビ、すぐそこに、いるのに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いるのに、の一言が、語尾を残さず消えた。手のなかの人形を、ビビは、無意識に強く握りこんでいる。守りたい相手が、削られていくのを、ただ見ている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓の上では、削られた持ち点を立て直そうと、手が動いていた。誰も間に入ってはくれない。なら、自分で凌ぐしかない。一枚ずつ、危険を避けながら、手を組み直す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "向こうの追撃を、紙一重でかわす。沈むぎりぎりのところで、踏みとどまった。盾はなくとも、ここまで習った打ちが、足元を支えてくれている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……凌いだ。ちゃんと、自分で。すごい。ビビが、何も、してあげられなくても。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誇らしげな言葉のはずだった。けれど、してあげられなくても、のあたりで、ビビの視線は、また足元へ落ちていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "終局。今日の卓は、勝ちには届かなかった。けれど、沈まずに、最後まで立っていた。次へ繋がる、確かな一歩。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 20,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場の外。人の流れから少し外れた縁に、ビビは立っていた。歩み寄ると、いつものように、人形の前足を、ちょこんと持ち上げて出迎える。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 21,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "おかえり。よく、踏みとどまったね。あなた、ひとりでも、ちゃんと立てるんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 22,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉は、まっすぐ褒めている。けれど、その目尻に、卓の外で空回りしていた何かが、まだ残っていた。問わずに、ただ、待つ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 23,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ね。ビビ、ずっと、思ってたの。背中を守るのが、ビビの役目だって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 24,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも、その背中が、手の届かないところに行っちゃったら。ビビは……何になればいいのか、わからなくなるの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 25,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "わからなくなるの、と言ったとき、ビビの声は震えなかった。震えないぶん、その問いの重さが、夜の縁に、静かに沈んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 26,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "団体戦のときは、よかった。すぐ隣で、ぜんぶ消してあげられた。焔の火も、あなたの打ちも、ビビが、守れた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 27,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "なのに、ここから先は、ぜんぶ、ひとりで立つ卓。ビビの身代わりが、いらない場所。ビビが……いてもいなくても、同じ場所。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 28,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そんなことはない、と返そうとした。けれど、ビビは小さく首を振って、それより先に、人形の頭へ、こつんと額を寄せた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 29,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ううん、いいの。今日のは、ただの、ビビのわがまま。だいじょうぶ。ビビは、沈まないから。……あなたのことは、ちゃんと、見てるよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 30,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "見てるよ、と言ったきり、ビビは口をつぐんだ。守れない卓が、これからずっと続いていく。その先で、見ているだけの自分に、何ができるのか。問いだけが、夜の縁に、置き去りにされていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "また、ひとりで立つ卓だった。客席の段を上がっていくビビの足音が、観客の喧騒のなかに、小さく溶けていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓を見下ろせる席に、ビビは腰を下ろした。膝の上には、いつもの人形。前足を、卓のほうへ、ちょこんと向けている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ここから先は、ラビちゃんと、ふたりで応援なの。ね、ちゃんと、見ててあげて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓が立ち上がる。配牌、第一打。今日も、間に入ってくれる盾はない。一手ずつ、自分の判断だけで、進めていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "向こうの一人が、早い。手の伸びが、卓の空気を尖らせていく。けれど、慌てない。危ない筋を読んで、安全な一枚を、そっと切る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "客席のビビは、身じろぎひとつせず、卓を見つめていた。手は出せない。声も届かない。それでも、その視線だけは、まっすぐ、こちらの背に注がれている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……そう。その牌で、いいの。あぶないところ、ちゃんと、避けられてる。えらい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰にも聞こえない声で、ビビは、一手ずつに相槌を打っていた。膝の人形を、両手で、軽く支え直す。その横顔が、いつのまにか、ふっと遠くなる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ねえ。ラビちゃんも、こうやって、ビビのこと、見てたのかな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ぽつり、と落ちた言葉は、卓へ向けたものではなかった。膝の上の、白い人形へ。問いというより、ずっと胸にあった何かを、確かめるような声だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ラビちゃんは、動けないでしょ。手も、足も。抱きしめ返すことも、できなかった。…でも、ずっと、そばにいてくれたの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ただ、そばにいて、見てるだけ。ずっと、それだけ、だったの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけ、と言ったとき、ビビの指が、人形の手のあたりで、止まった。動けない、見てるだけ——その言葉が、今、客席で手を出せない自分に、そっと重なっていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓では、向こうの大物手が、また気配を膨らませはじめていた。盾はない。背筋に、客席の視線を感じる。誰かが、見ている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その視線が、不思議と、足を地につけてくれた。見ていてくれる、と思うだけで、危ない一枚を、踏みとどまって伏せられる。ひとりの卓のはずなのに、ひとりではない手応えがあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……あ。今の、いい受けだった。だいじょうぶ。あなたなら、避けられる。ビビ、知ってるもん。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声は、やっぱり卓まで届かない。けれど、ビビは、もうそれを嘆いていなかった。届かなくても、と何かを言いかけて、口の中で、そっと飲み込む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ねえ、ラビちゃん。動けなくても、見てるだけでも……そばにいることは、できてたんだね。ずっと、ビビのそばに、いてくれた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いながら、ビビは人形を、そっと胸へ抱き寄せた。動けない人形が、それでも、自分の支えだった。その意味が、今、別のかたちで、つながりはじめている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "守るって……卓で、庇うことだけじゃ、ないのかな。見てること、信じてること。それも……守りに、なるのかな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "なるのかな、で、ビビは言葉を止めた。答えが出たわけではない。ただ、足元しか見えなかった視線が、ほんの少しだけ、卓のほうへ、上を向いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 22,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "終局。今日も、勝ちまでは届かなかった。けれど、被弾は最小限で、最後まで沈まなかった。客席の視線に、背を押されていたのかもしれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 23,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場の外で、ビビが待っていた。人形を抱えたまま、いつもより、少しだけ、背筋が伸びている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 24,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "おかえり。今日のあなた、危ないところ、ぜんぶ自分で避けてた。ビビ、ずっと、見てたよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 25,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "見てたよ、と言うときのビビの声に、昨日まではなかった、確かな張りがあった。見ていることに、意味があるのかもしれない——その気配を、自分でも、まだ手探りしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 26,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ね、変なこと、聞いてもいい? 卓の上で、ふと、見られてるなって、感じた瞬間……なかった?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "question"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 27,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あった、と答える。あの危ない局面で、背中に注がれていた視線。それが、踏みとどまる足を、確かに支えていた。そう伝えると、ビビの目が、ふっと、丸くなった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "surprise"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 28,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ほんとに? ビビの、見てるだけが……あなたの、ところまで。届いて、たの?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 29,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "うなずくと、ビビは何も言わず、膝の人形の前足を、そっと両手で包んだ。届かないと思っていた声が、思いがけず、届いていた。けれど、それを喜びきるには、まだ何かが、足りないらしかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night",
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 1,
+    "backgroundId": "bg-corridor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場の裏手の廊下は、本番の熱気から一歩、退いた静けさに沈んでいた。次の卓を待つあいだ、ビビは壁ぎわで、人形を抱えて立っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 2,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "視線を落としたまま、ビビは、客席で考えていたことの続きを、まだ手のなかで転がしているようだった。そこへ、重い足音が、廊下の奥から近づいてくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 3,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "よう。こんなとこに居たか。おまえも、この大会に来てたんだな。……お、その弟子も一緒か。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 4,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔だった。あの団体戦で、ともに宝を獲った男。額に、まだ卓の熱が残っている。ここも個人戦の会場だ。火を持つこの男もまた、ひとりで卓に立っているらしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 5,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……焔。久しぶり。あなたも、ひとりで、戦ってるんだね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 6,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "おう。個人戦は、背中を預ける相手がいねえ。火を熾すのも、消すのも、ぜんぶ自分一人だ。……どうした、その顔。元気がねえな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 7,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ビビね。卓に、出られないの。ここの宝は、ぜんぶ個人戦だから。背中を、守ってあげられない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 8,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "客席で、見てることしか、できないの。ビビの盾は……ここでは、なんの役にも、立たない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 9,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "役にも立たない、と言って、ビビは視線を伏せた。焔は、腕を組んだまま、しばらく黙ってその横顔を見ていた。やがて、鼻を鳴らすように、ふっと息を吐く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 10,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "おい、ビビ。寝言は、火が消えてから言え。役に立たねえ、だと? おまえ、あの天暗刻の卓を、忘れたのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 11,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "おれの火は、いつも独りで燃えて、独りで燃え尽きてた。点差に焦って、空回りして、すぐ萎んだ。……あの日までは、な。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 12,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "火を熾せねえおまえが、あの日、おれの火を、てっぺんまで運んだんだ。背中を守られてる、ってだけで、おれの炎は、まっすぐ太く燃えた。生まれて初めて、な。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flare"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 13,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "炎のメタファーで語るのが、この男の癖だった。けれど今は、誇張ではない。ビビの伏せた目が、わずかに、焔のほうへ動く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 14,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……でも、それは、隣にいたから。あの日は、ビビが、卓にいたから。今は、出られないの。守れないの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 15,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "ばか言え。火ってのはな、薪のそばにいなくたって、遠くから煽れるんだよ。風みてえにな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 16,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "卓の上のあいつに、訊いてみろ。客席のおまえの目が、背中を支えてなかったか、ってな。おれは賭けてもいい。あいつの足は、おまえが見てるから、踏みとどまってんだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 17,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "横で、ビビの肩が、小さく跳ねた。それは、客席で確かめたばかりの感触と、寸分たがわなかったからだ。届かないはずの視線が、確かに、卓まで届いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 18,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "卓の外でも、おまえの盾は、ちゃんとあいつを支えてる。庇うだけが守りだと思うな。信じて見送るのも、立派な守りだ。おれが、保証してやる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 19,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "攻めだけを信じてきた男が、守りの価値を、正面から言いきった。ビビは、その言葉を受け止めるように、しばらく、息をしていなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 20,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……信じて、見送るのも。守り。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 21,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "くり返した声が、客席のひとり言と、ぴたりと重なった。自分の中にあった芽に、外から、火が灯された瞬間だった。ビビが、ゆっくりと、顔を上げる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 22,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ありがとう、焔。あなたに、そう言ってもらえると……ビビ、信じてみても、いい気がしてくるの。守ってるって。卓の、外からでも。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 23,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "はは、そうだ、その顔だ。火が戻ってきやがった。……だが、まだ煮えきらねえな。何か、まだ、火を押さえつけてる薪があるだろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 24,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ずばり、と射抜かれて、ビビの指先が、人形の背を、きゅっと握った。顔は上がった。けれど、その奥には、まだ言葉にしていない何かが、深く沈んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 25,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……うん。守ってる、って、信じられた。でも、手を放して、信じて送り出すのは……まだ、こわいの。なんでだろう。自分でも、わからない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 26,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "そいつは、おれの炎じゃ照らせねえ場所だ。自分の胸の、いちばん奥の薪さ。火種が、どこにあるか。……それは、おまえ自身が、覗きに行くしかねえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 27,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "ま、おれは先に、卓に戻る。次の火を、熾しに行かなきゃならねえからな。……ビビ。おまえの守りは、本物だ。胸張ってけ。じゃあな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 28,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "片手を上げて、焔は廊下の奥へ、火のように去っていった。残されたビビは、人形を抱えたまま、しばらく、その足音の余韻を聞いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 29,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……いちばん奥の薪。火種が、どこにあるか。……ビビ、知ってる。ずっと、見ないようにしてた、だけ。今夜、ちゃんと、覗きに行かなきゃ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo-night",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夜の道場に、灯りがひとつ。あの夜、ラビちゃんの名前を聞いた、同じ場所だった。ビビは膝に人形を乗せて、灯りのそばに座っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔の言葉が、まだ胸に残っているらしかった。となりに腰を下ろすと、ビビは、人形の耳を、指先で、ゆっくりと撫でていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……前にね。ラビちゃんのこと、話したでしょ。ひとりだった頃、そばにいてくれた、って。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あのとき、入口のところだけ、話したの。今夜は……その、もっと奥のこと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "奥のこと、と言って、ビビは灯りから、ふっと目を逸らした。膝の人形を、両手で、そっと持ち上げる。その白い顔を、じっと見つめてから、静かに語りはじめた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 6,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ちいさい頃のビビは、ほんとうに、ひとりだったの。広いところで、夜になると、誰も、来なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 7,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "こわいことが、あってもね。泣いても、呼んでも。誰も、助けに来てくれなかった。来ないって、わかってからは……泣くのも、やめたの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 8,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "暗がりのなかに、声だけが、ぽつぽつと落ちていく。泣くのをやめた、というところで、ビビの声色は、少しも変わらなかった。変わらないことが、かえって、聞いている胸を、ひやりとさせる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 9,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "そういうとき、手のなかにあったのが、ラビちゃん。動かない。喋らない。抱きしめても、抱きしめ返してくれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 10,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ほんとうは……ラビちゃんは、ビビを、守ってなんか、くれなかったの。動けないんだもん。守れるわけ、ないでしょ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 11,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守ってくれなかった、という言葉が、暗がりに、ぽつんと残った。あの夜、守ってもらった、と言いかけて、ためらった指先の理由が、いま、ほどけていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 12,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "守ってほしかった。誰かに、来てほしかった。ぎゅって、抱きしめ返して、ほしかったの。……でも、誰も、来なかった。ラビちゃんも、動かなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 13,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だからね。ある日、ビビ、決めたの。守ってもらうのを、待つのは、もう、やめようって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 14,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "守られる子じゃ、なくて。ビビが、ラビちゃんになる。動かなくても、そばにいる、人形に。二度と、誰にも、奪わせない。そういう、人形に。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "暗がりが、灯りの道場へ、ゆっくりと戻ってくる。語り終えたビビの横顔は、静かだった。ただ、膝の人形を見る目だけが、遠い夜に置いてきた、小さな子の目をしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "身代わり人形って、そういうことなの。被弾は、ぜんぶ、ビビが引き受ける。ビビに当たったぶんは、宙に消える。誰も、沈まない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……でもね。ひとつだけ、ずっと、言わないでいたことが、あるの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言わないでいたこと、で、ビビは口を閉じた。灯りの芯が、かすかに、音を立てて揺れる。膝の上の指が、人形の手を、そっと探す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none",
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビに当たった痛みは、宙に消えるって、言ったでしょ。ほんとはね。消えてるわけじゃ、ないの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ただ、ビビが……痛いって、数えないことに、してるだけ。ビビのぶんは、最初から、勘定に入れない。そう決めて、生きてきたの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勘定に入れない、と言うビビの声は、平らだった。痛みを語っているのに、痛がっていない。その平らさこそが、いちばん深いところを、見せている気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だってね。人形は……傷ついちゃ、だめ、なの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence",
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声は、震えなかった。震えるほうが、まだ、ましだったのかもしれない。傷ついてはいけない、と決めた子が、痛みを置き去りにしたまま、ここまで来てしまった。その平らな声が、灯りの下に、静かに沈んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "守る人形に、痛みがあったら……守れないでしょ。だから、ないことに、したの。ずっと、それで、よかったの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "返す言葉が、見つからなかった。代わりに、そっと、その肩に、手を置く。守られる側になることを、ずっと自分に禁じてきた人へ。今は、そばにいることしか、できなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビの肩が、手のひらの下で、ほんの少し、強ばった。誰かに、そばにいてもらうこと。それを、この人は、どう受け取っていいのか、わからないのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……変な、感じ。誰かが、ビビのそばに、いてくれるの。守ってもらう側に、なるの。ビビ……こういうの、もう、忘れてたみたい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "強ばっていた肩から、少しずつ、力が抜けていく。やがてビビは、膝の人形を、両手で胸へ抱き寄せた。その肩口へ、こつんと、額を預ける。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ラビちゃん。ビビ、ずっと、傷ついちゃだめだって、思ってた。でも、ほんとは……痛かったんだね。あのとき、ちゃんと、痛かったんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "heartbreak"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "灯りの下で、ビビは、人形を抱いたまま、長いこと動かなかった。勘定の外に置いてきた痛みに、初めて、名前がついた夜。手を放して、誰かを信じて送り出せるか——その覚悟の、前夜だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "個人戦の会場は、三人で囲んだあの卓とは、空気が違っていた。観客の視線は、卓の真ん中の、たった一人へ集まる。背中を守る席は、どこにもない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、観客席のいちばん前で、膝に人形を乗せて座っていた。卓には入れない。身代わりになれない場所で、ただ、見ているしかない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 3,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓が立ち上がる。相手は、容赦のない打点を積み上げてくる打ち手だった。序盤から、点棒が削られていく。守ってくれる盾は、もう、ここにはない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、痛烈な一撃が来た。倍満。読み違えた一打が、相手の手へ刺さる。盤面が、大きく傾いた。点棒は、見る間に半分を切る。",
+    "characterEffect": "none",
+    "screenEffect": "shake",
+    "effectDurationMs": 700,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観客席で、ビビの肩が、びくりと跳ねた。膝の人形を握る指に、力がこもる。卓へ駆け寄りたい——そんなふうに、半分、腰が浮きかけて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……っ、だめ、こわされちゃう。ビビが、ビビが、守ってあげなきゃ……",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "fluster",
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、浮きかけた腰は、また席へ戻った。戻るしかなかった。ここは個人戦だ。卓の真ん中へは、誰も、入っていけない。ビビの手は、宙で、行き場をなくしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓の上では、傾いた盤面を前に、手元が止まっていた。俯いたまま、しばらく、動かない。崩れた、というには、まだ早い。けれど、立て直す糸口は、どこにも見えなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……顔を、上げて。ねえ。ビビは、もう、そこへは行けないけど。あなたなら……",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声は、卓の上までは、届かない。届くわけがない。それでも、ビビは、人形を胸の前で抱え直して、まっすぐに、卓の一点を見つめていた。祈るように。けれど、目だけは、逸らさずに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふと、俯いていた頭が、上がった。傾いた盤面を、もう一度、端から端まで、ゆっくりと見渡す。慌てない。あの夜、道場でビビが教えてくれた、静けさのままに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りに、入る。沈まない打ち方。誰にも、奪わせない。ビビに、何度も見せてもらった守りだ。それが、いま、自分の手のなかに、確かにあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手の大物手が、もう一度、牙をむく。けれど、今度は刺さらない。危ない一枚を、止める。回す。耐える。ビビが、いなくても。ビビが、教えてくれた手で。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観客席のビビの目が、見開かれた。あの守りは、自分の守りだ。けれど、打っているのは、自分じゃない。手放したはずの盾が、卓の上で、誰かの手のなかで、立ち上がっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あれ……ビビの、守りだ。ビビが、そばにいなくても……ちゃんと、立ってる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一度耐えれば、盤面は止まる。止まれば、待てる。待てば、巡ってくる。崩れた手が、少しずつ、形を取り戻していく。倍満ぶんの差が、一局ごとに、確かに縮んでいった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、最後の局。耐え抜いた手が、ここで、立つ。守りで貯めた力を、一打に込める。あの一撃で、ころんだ。けれど、もう、立っていた。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "impact",
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場が、沸いた。点棒の差が、ひっくり返る。倍満で崩されたところから、自分の足だけで立て直した一勝だった。ビビの手を、一度も、借りずに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観客席のビビは、立ち上がりも、声を上げもしなかった。ただ、膝に乗せた人形を、両手で、ゆっくりと持ち上げる。その白い顔を、じっと見つめたまま、しばらく、動かなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ねえ、ラビちゃん。見てた? いま、ビビ、いなかったんだよ。卓の真ん中に、ビビ、いなかったの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "倍満、刺さって。点棒、半分になって。ビビ、こわくて、行きたくて。でも、行けなくて。それなのに……ころんでも、立ったの。あの子、自分で、立ったの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声が、わずかに揺れていた。ずっと、転ばせないことが守りだと思っていた。被弾を全部、引き受けることが、愛だと思っていた。その思い込みが、いま、音を立てて、大きく割れていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビ、ずっと、思ってた。ころばせないのが、守ることだって。ころんだら、おしまいだって。だから、ぜんぶ、ビビが代わりに、受けてきたの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも……ちがった、のかも。ころんでも、立てるなら。立てるって、信じてあげられるなら。ビビが、ずっとそばで受け止めてあげなくても……いいのかも、しれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "muddle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓の喧騒のなかへ、その声は、誰にも届かずに溶けていった。人形を胸に抱いたまま、ビビは、晴れていく盤面を、まっすぐに見つめている。その目に、いつもの怯えは、もう、なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 26,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対局を終えて会場の外へ出ると、縁側の手すりに寄りかかって、ビビが待っていた。顔を見るなり、人形をちょこんと持ち上げて、いたずらっぽく、こちらへ振ってみせる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 27,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ふふ。あのね、ビビ、ひやひやしたんだから。倍満なんて、刺さって。心臓、止まるかと思ったの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 28,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……でも、立ったね。ちゃんと、立った。ビビが、何もしなくても。あなた、強くなったんだね。ビビの、知らないところで。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 29,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いながら、ビビは、ふっと目を伏せた。誇らしさと、ほんの少しの寂しさ。その両方が、伏せた睫毛の下で、混ざって揺れているように見えた。人形の前足を、指先で、そっと包む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 30,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……守らないことが、いちばん、こわい。でも、いちばん、信じることなのかも。ビビ、まだ、できないけど。でも……すこしずつ、わかってきた、かも。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夕暮れの道場に、橙の光が差していた。会場の壁に掲げられた宝の一覧は、残り、あとひとつ。最後の宝が、すぐ手の届くところまで、来ている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、いつもの場所に座っていた。けれど、どこか、いつもと違う。膝の人形を撫でる手が、止まっている。何かを、決めてきた、というふうに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ゆうべ、ねむれなくてね。ラビちゃんと、ずっと、考えてたの。次の宝のこと。あなたのこと。ビビの、これからのこと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いながら、ビビは、膝の上で、人形の手をきゅっと握った。一晩を越えてきた人の、静かな顔だった。やがて、ゆっくりと、こちらへ向き直る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ねえ。これから言うこと、ちゃんと、聞いてくれる? ビビね、はじめて、こわいことを、言うの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ここから先は——ビビは、もう、庇わない。あなたを、信じて。見てるね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence",
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声は、小さかった。けれど、その芯だけは、守りを語るときと、同じだった。一歩も引かない、あの凛とした芯が、いつもとは逆の方向を向いている。守るためでなく、守らないために。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "わかってる。ビビ、ずっと、庇うことしか、できなかった。被弾を、ぜんぶ引き受けて。代わりに、痛がって。それが、ビビの、愛しかただったの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "身代わりになることでしか、ビビ、誰かを、大切にできなかったの。そばで、盾になって、はじめて……いていい気が、してた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "橙の光が、ビビの横顔を、ゆっくりと撫でていく。盾になることでしか、そばにいる理由を、持てなかった子。その告白は、責めるふうでも、嘆くふうでもなく、ただ、静かに置かれた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でもね。この前、見たの。あなたが、ころんで、自分で、立つところ。ビビが、いなくても。ビビの守りを、もう、自分のものにして、立つところ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あのとき、わかったの。庇うことより、ずっと、むずかしいことが、あるって。信じて、手を、放すこと。送り出すこと。それが……いちばん、難しい守りなんだって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "膝の人形を、ビビは、両手で、そっと胸の前に置いた。抱きしめるのではなく、ただ、前へ向けるように。その白い顔と、並んで、まっすぐにこちらを見る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あなたなら。ビビが、守らなくても。だいじょうぶ。ビビ、そう、思えるようになったの。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 500,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夕日が、ひと筋、ビビの肩に落ちた。だいじょうぶ、という言葉が、いつもと違う使われ方をしている。ずっと、自分に言い聞かせてきた言葉が、いま、こちらへ、まっすぐ手渡された。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビの口ぐせ、おぼえてる? だいじょうぶ、ビビは、沈まないから。ずっと、そう言ってきたの。自分に、言い聞かせるみたいに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも……今は、ちょっと、ちがうの。沈まないのは……ビビじゃ、なくて。あなた、なの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice",
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "口ぐせの主語が、ひとつ、ずれた。長いあいだ、自分だけを指していた言葉が、初めて、別の誰かを指す。その小さなずれが、ビビにとって、どれほど大きな一歩なのか——伏せられた睫毛が、かすかに震えていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "最後の宝、行ってきて。ビビは、卓には入れない。背中も、守れない。でも……信じて、待ってる。それが、いまの、ビビにできる、いちばんの守りなの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "返す言葉に、迷った。守ってくれなくて、寂しい——とは、思わなかった。むしろ、その手放しの重さを、こちらも、まっすぐに受け取らなければと思った。だから、ただ、深くうなずいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ふふ。いい顔。……ね、ちゃんと、勝っておいで。ビビ、こわがりだから。あんまり、待たせちゃ、だめだよ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いたずらっぽく弾んだ声の下に、まだ、隠しきれない震えがある。それでも、ビビは、笑った。守らないと決めた手を、膝の上で、固く握ったまま。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "やがて、ビビは、人形を膝に戻して、じっと、その白い顔を見つめた。誰にも聞こえないくらいの、小さな声で、ぽつりと、こぼす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ねえ、ラビちゃん。ビビ、手、放せたよ。庇わないって、言えたの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "守ってあげなきゃ、いていい場所が、なくなっちゃう。ずっと、そう思ってた。でも……庇わなくても、ビビ、ここに、いていいのかも。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "人形の白い顔は、いつものように、何も答えない。動かない。喋らない。それでも、ビビは、その沈黙に、長いこと、耳を澄ましていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビね。守られる人形でいるのも。誰かを守る人形でいるのも。……どっちも、もう、卒業できる気が、するの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ビビ、もう、だいじょうぶ、かも。ほんとに。ちょっとだけ、だけど。だいじょうぶ、かも。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夕日が、道場の床を、ゆっくりと這っていく。手放すと決めた手のひらは、もう、固く握られてはいなかった。膝の上で、そっと、ひらかれている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "殻が、ひとつ、外れた音がした気がした。最後の宝へ向かう前に、ビビは、いちばん難しい守りを、自分に許した。あとは——あの卓で、それが、ほんとうになるのを、待つだけだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後の宝の、前の日。夕暮れの道場に、橙の光が、長く伸びていた。明日には、たった一人で、最後の卓に立つ。その前の、静かなひととき。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、膝の人形を、両手で持ち上げて、しばらく、その顔を見つめていた。何かを、迷っている。やがて、意を決したように、その人形を、すっと、こちらへ差し出してくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あのね。明日、これ、持っていって。ラビちゃん。ビビの、いちばん大事な、お守りなの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビは、卓に入れないでしょ。だから、代わりに、ラビちゃんを。そばに、いてもらうの。ビビの代わりに、あなたを、守って——",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "差し出しかけた手が、途中で、止まった。守って、と言いかけた言葉が、宙で途切れる。ビビは、自分の手のひらの上の、白い顔を、まじまじと見つめ直した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……あれ。ちがう。ラビちゃんは……守って、くれないんだった。動けないんだもん。前に、話したでしょ。守れるわけ、ないって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "差し出しかけた手が、ゆっくりと、引き戻されていく。あの夜、暗がりで打ち明けた言葉が、いま、自分自身に、跳ね返ってきた。ラビちゃんは、お守りなんかじゃなかった。守る道具でも、なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビ、ずっと、勘ちがいしてた、のかも。ラビちゃんは、ビビを守ってくれた人形だって。そう、思いこんでた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも、ほんとは。守って、くれたんじゃ、ないの。ただ……いてくれた、だけ。ひとりの夜に。動かないまま、喋らないまま。ずっと、そばに、いてくれた、だけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、引き戻した人形を、胸の前で、両手で、そっと包んだ。抱きしめるのではなく、こわれものを確かめるみたいに、ゆっくりと。橙の光が、その指のあいだから、こぼれ落ちる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "そばにいてくれること。それだけで、ビビ、ひとりじゃ、なかったの。守ってもらうこと、よりも。ずっと、ずっと、大事なことだったんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だから……ごめんね。やっぱり、渡せない。ラビちゃんは、お守りじゃ、ないの。あなたを守る、道具でも、ないの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "渡せない、という言葉に、引け目のいろは、なかった。むしろ、ようやく、本当のことに辿りついた、というふうだった。胸に包んだ人形を、ビビは、ほんの少し、持ち上げる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ラビちゃんは、ね。ビビと一緒に、ここで、見てるの。卓の、外で。あなたのこと。ビビと、二人で、ちゃんと、見てるから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守ってもらう人形だった、ラビちゃん。守りの手本だった、ラビちゃん。それが、いま、また別のものに変わっていく。卓の外から、並んで見守る——その意味が、静かに、反転していった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビね、気づいたの。ラビちゃんは、ビビの、相棒なんだって。守られる側でも、守る側でも、なくて。ただ、ずっと一緒に、いてくれる。それが、相棒、なんだって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、人形を、胸の前に、まっすぐ向けて置いた。自分と、白い顔と、ふたつの視線が、同じほうを向く。卓のほうを。明日、誰かが、一人で立つ場所のほうを。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "だからね。あなたには、お守りは、いらないの。ビビが、ずっと、見てるから。それで、じゅうぶん、でしょ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "差し出しかけて、引っこめた手のなかに、人形は、もう、しっかりと収まっていた。手放さなかった。それでいい、と思った。ラビちゃんは、ビビのものだ。ビビの、相棒なのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ふふ。お守りを、あげようとして。けっきょく、ビビが、いちばん大事なものを、思い出しちゃった。へんなの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いたずらっぽく弾んだ声に、いつもの、伏し目がちな小ささは、もう、混じっていなかった。ビビは、胸の人形を、ぽんと、軽く叩いて、顔を上げる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ねえ、ラビちゃん。ビビたち、ずっと、卓の外にいたね。守られて、守って。ばっかり、だったね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "でも、これからは。ふたりで、自分の足で。歩いて、みようか。相棒、なんだもん。ずっと、一緒だもん。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "自分の足で、という言葉を、ビビは、人形に向かって言ったのに、どこか、自分自身に言い聞かせているようにも聞こえた。胸の白い顔が、橙の光の下で、白く笑っているように見えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "明日は、見ててね。あなたが、一人で、立つところ。ビビは、卓の外で、ラビちゃんと、ちゃんと、見てるから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、人形を胸に置いたまま、まっすぐ、前を見た。卓の外。身代わりになれない場所。けれど、その目に、あの日の、行き場をなくした無力さは、もう、どこにもなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……だいじょうぶ。ビビ、もう、見てるだけで、こわくないの。だって、信じてるんだもん。あなたのこと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夕日が、道場の床に、最後の光を落として、沈んでいく。送り出す準備は、もう、静かに整っていた。あとは、明日。あの一人きりの卓で、それが、ほんとうになるのを待つだけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、胸に相棒を抱えたまま、しばらく、暮れていく空を見ていた。守られる人形と、それを抱いていた子が、いつのまにか、並んで前を見る、二人になっていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後の宝、無双国書。九つ目の至宝を懸けた会場は、これまでのどの大会よりも、人で埋まっていた。この一勝で、九蓮宝士。万人の羨望の、その頂点へ届く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビが、胸に人形を抱えて、隣に立っていた。少し離れて、火のような男——焔も、腕を組んで、卓のほうを睨んでいる。無双国書は、会場で初めて、参加人数が告げられる大会だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "surprised"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場に、人数が、告げられる。無双国書——この卓に座るのは、ただ一人。たった独りで、最後の真理を、打ち抜くのだ。誰も、隣には、座れない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "surprise",
+    "seId": "se-bell"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "……一人、か。最後の最後で、いちばん、孤独な卓ってわけだ。おれの火も、ビビの盾も、そこへは届かねえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "うん。ビビは、行けない。身代わりにも、なれない。……でもね、焔。ビビ、もう、こわくないの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、胸の人形を、一度だけ、ぎゅっと抱きしめた。それから、すっと、こちらへ向き直る。何かを手渡すように、その小さな手を、まっすぐ、差し出してきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "行っておいで。ここまで、よくきたね。ビビは、ラビちゃんと、ここで見てる。あなたなら、だいじょうぶ。ビビ、信じてるから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "差し出された手に、こちらの手を、重ねた。ほんの一瞬。ビビの手のひらは、思っていたより、ずっと小さくて、あたたかかった。やがて、その手が、ゆっくりと、離れていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "たった独りで、最後の卓へ着く。隣に、火はない。背中に、盾もない。けれど、二人が培ってくれた力は、この手のなかに、確かにあった。配牌が、配られる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手の打点が、牙をむく。けれど、慌てない。ビビに教わった静けさで、まず、沈まない。耐える。回す。盤面を、止める。焦りは、火に焼べる。焔が見せてくれた、攻めへの勇気で。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りで、貯める。攻めで、立つ。沈まない盾と、燃えあがる火。二人から受け継いだものが、一つの手のなかで、はじめて、溶け合っていく。盤面が、こちらへ、傾きはじめた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve",
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観客席で、ビビは、人形を胸に、まっすぐ卓を見つめていた。隣の焔も、息を詰めている。二人とも、もう、手を出せない。出さない。ただ、信じて、見ている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後の局。手が、満ちていく。あと、一枚。九つ目の宝へ、真理へ、たった独りで、手が伸びる。卓には、自分しか、いない。それでも、独りだとは、思わなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後の一打を、卓へ置く。その牌が、最後の宝を、満たした。無双国書——九つ目の至宝が、たった独りの手のなかに、確かに、収まる。",
+    "characterEffect": "jump",
+    "screenEffect": "flash",
+    "effectDurationMs": 800,
+    "emoteId": "impact",
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場が、地鳴りのように沸いた。九つの宝が、ひとつに繋がる。九蓮宝燈の紋章が、頂点に立つ者を、照らし出す。九蓮宝士——ちゅーれんほうし。たった独りの力で、辿りついた頂だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "っ……獲りやがった! 一人で、最後まで、燃やしきった! はは、見たか、あの打ち! おれの火を、ちゃんと、自分のものにしてやがる!",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "おめでとう! よくやった! おまえは、もう、立派な九蓮宝士だ! ……くそ、おれも、負けてられねえな。次は、おれが追いつく番だ!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焔は、荒々しく笑って、人混みのほうへ手を振りながら消えていった。残されたビビは、胸に人形を抱えたまま、しばらく、声を出さずに、頂に立つ姿を、じっと見つめていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、胸に当てていた手を、そっと、おろした。ずっと、誰かを抱きしめるために握っていた手。庇うために、伸ばし続けてきた手。その手を、いま、ゆっくりと、ひらいて、放す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……行けたね。ビビが、いなくても。庇わなくても。あなた、たった一人で、いちばん高いところまで、立ったの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビね、ずっと言ってたでしょ。だいじょうぶ、ビビは、沈まないから、って。自分に、言い聞かせるみたいに。……でも、今は、ちゃんと、言える。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "沈まないのは——あなただったね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "love",
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "口ぐせの主語が、とうとう、すっかり入れ替わっていた。長いあいだ、自分だけを縛っていた言葉が、いま、まっすぐ、別の誰かへ。それを言いきったビビの声は、もう、震えていなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "見送って、終わり。そう思っていた。けれど、ビビは、頂を見上げたまま、動かなかった。胸の人形を、もう一度、両手で、まっすぐ前へ向ける。その目に、見たことのない光が、灯っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ねえ。ビビね、見送るだけじゃ、いやなの。あんなにまぶしい背中、見せられたら……ビビも、追いかけたく、なっちゃうよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ビビ、五つの宝で、止まってたの。守るだけじゃ、その先に、届かなかったから。でも……今度は、ちがう。守るためじゃ、なくて。ビビ自身の、ために。残りの宝、ビビも、獲りにいくの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守られる人形でいることを、やめた子が。誰かを守る人形でいることも、やめた子が。いま、はじめて、自分の足で立つ打ち手として、卓の、その先を見すえている。殻が、すっかり、外れていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あなたは、もう、ビビが守る子じゃ、ないの。ビビの、目標。ずっと前を行く、好敵手。……追いつくの、たいへんそう。ふふ。でも、それが、いいの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ビビは、胸の相棒に、こつんと、額を寄せた。それから、ぱっと顔を上げて、人形と、ふたりで、まっすぐ前を向く。守る対象だった背中は、いま、追いかける背中に変わっていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ねえ、ラビちゃん。ビビたち、いよいよ、卓の外から、出るよ。自分の足で。二人で。だいじょうぶ。ビビは、もう、待ってるだけの子じゃ、ないんだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 31,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "あなたの、隣に並べるくらい、強くなって、また会いにいくね。だから、それまで——いってきます。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle",
+    "seId": "se-success"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 32,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "笑って、手を振って、ビビは、人混みのほうへ、軽やかに駆けていった。相棒を胸に、自分の道へ。物語は、ここで終わらない。残りの宝が、その先で待っている。追いかける番が、今度は、ビビにやってきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night",
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九蓮宝士。九つの宝をすべて制した者だけが立てる、頂点の名。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観戦の人出は武道を越え、頂点に立った者は名誉国民にも届くという。そこへ憧れて、戸を叩いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "名のある師は、皆おなじ顔で首を横に振った。「その夢は重すぎる」と。縦に振ったのは、ひとりだけだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "おっ、来た来た。ほんとに来たヨ、あんた。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "九蓮宝士になりたいんだロ？ いいネ、そういうの。我、嫌いじゃないヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "距離が、近い。挨拶もそこそこに肩へ腕を回されて、半歩よろける。つられて頬がゆるみかけて、それでも背筋だけは伸ばしたままだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "そんな硬くならないでヨ。ここ、流派のひとつってだけ。我のことは詩玥でいいネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "music"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "んじゃ、さっそく教えるネ。我の教え、たった一個ダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "片手をひらりと立てて、指を一本。芝居がかった間を、ひとつ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ツモれば勝ち。これだけネ。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "守りなんか覚えなくていいヨ。先に引いちゃえば、相手は何もできないダロ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あまりに軽い。拍子抜けして、つい笑ってしまいそうになる。それくらい、迷いがない言いかただった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ただ――ひとつ、引っかかる。「我は」と言うときだけ、その語尾が妙に硬い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉の最後だけ、軽口の波からふっと外れて沈む。気のせいか、と思い直す前に、次の声がかぶさる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ほら、ぼーっとしてないで。卓、座るヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "腕を引かれて、卓のまえへ。牌の山が、もう積んである。じゃらり、と山が崩されて、また組み直されていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我ネ、点棒だけは苦手ダヨ。数えるの、好きじゃないネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そう言いながら、点棒へ伸びた指は、よどみなく動いた。一本も見ずに数を揃え、種類ごとに寸分ずれず並べていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "苦手な手つきではない。むしろ、嫌というほど慣れた手つきだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "question"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あー、見ないでって言ったのにネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 21,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふいに、視線がこちらを射た。笑みは残したまま、目の奥だけが、何かを測るように鋭くなる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 22,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "手のなかの何かを――いや、こちらの奥に芽吹いた何かを、見透かそうとするような目。瞬きひとつ分。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 23,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……うん。あんた、いい芽してるヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 24,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次の瞬間にはもう、鋭さは溶けて消えていた。くしゃっと頭を撫でられて、視界が一瞬かしぐ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 25,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "九つの宝、全部ほしいんだロ？ なら、最初の一個はもう決まってるネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 26,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ひとりで、ツモであがる宝――門前開鍵。我たちのやり方に、いちばん近いヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 27,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いながら、卓の端をとんと指で叩く。山が、こちらへ押し出された。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 28,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あんたが我のツモを抜く日まで、付き合ってもらうヨ。長くなるネ、たぶん。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "joy",
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 29,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "覚えること、ほんとに一個でいいからネ。ツモれば、勝ち。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 30,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "差し出された牌は、軽い。声も、笑みも、撫でる手のひらも、ぜんぶ軽い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 31,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "なのに、たった一度だけ硬かった語尾と、点棒を払うあの正確な指先が、なかなか頭から消えてくれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-01",
+    "lineNo": 32,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その軽さが、どこから来ているのか。まだ、何も知らない。知らないまま、差し出された牌へ手を伸ばした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "半荘が一つ、終わった。卓に散った点棒を集めようと、手を伸ばす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あー、それはいいヨ、いいヨ。置いといて、ネ。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひらり、と手首が伸びてきて、こちらの手を点棒からそらす。卓のうえに散らばった棒は、そのまま。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数えるのは、いつもこちらの役目だった。今日も、その前もそうだ。詩玥が自分で点棒に触れるところを、まだ一度も見ていない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "数えるのはあんたに任せたヨ。我、そういうの向いてないからネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いながら、もう卓に背を向けて伸びをしている。話を切り上げるときの、あの軽い足どり。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "それより、あんた。なんで九蓮宝士なんか目指そうと思ったヨ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問いの向きが、するりと変わった。点棒の山から、夢の話へ。背筋を伸ばしたまま、見上げた頂の高さを、言葉を選んで返す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観戦の人出が武道を越えるという、あの頂。届くはずもない名に、それでも憧れた。そう、たどたどしく伝える。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ふぅん。届くはずもない、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我もネ、まだ諦めてないヨ。あの頂。九つの宝、ぜんぶ獲るまでは、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle",
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "まだ、と言った。長く打ってきた人の、まだ。その一語に、こちらの知らない年月が畳まれている気がする。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "最初の一個は、もう教えたネ。門前開鍵。ひとりで、ツモであがる宝。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我たちのやり方に、いちばん近いヨ。引いて、引いて、勝つ。点棒なんか後回しでいいネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その流れで、つい訊いてしまう。点棒、そんなに苦手なんですか、と。まだ硬い敬語のまま。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……うん。苦手ダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ほんの一拍。笑みは口もとに残っていた。残っていたのに、目だけが、それに付いてこない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓に散ったままの点棒へ、視線がほんの少しだけ落ちて、すぐにそらされる。触れたくないものを、見ないようにするみたいに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "数えると、いろいろ見えすぎるからネ。見えると、止まる。止まると、よくないヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "苦手な人の言いぶんではなかった。見えすぎる、と言った。見えてしまうから、見ないでいる人の言いぶんだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数拍。卓のうえで、棒が一本、こちらの指の下で小さく転がる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あー、やめやめ。なに難しい顔させてるヨ、我。らしくないネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ぱっと顔を上げて、もう元の調子に戻っている。切り替えの速さが、いっそ鮮やかすぎた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "深く考えないノ。我たちは、ツモれば勝ち。それだけ覚えてればいいヨ。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "music"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "くしゃっと頭を撫でられて、視界が一瞬かしぐ。手のひらは、いつもどおり軽い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "片づけは任せたヨ。我、お茶いれてくるネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひらりと手を振って、奥へ消えていく。残されたのは、こちらと、まだ数え終わっていない点棒の山。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言われたとおり、点棒をひとつずつ数えて並べる。種類ごとに揃えながら、ふと指が止まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "苦手、と本人は言う。でも、苦手な人はこんなふうに、点棒から目をそらしたりしない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-02",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "苦手なのではなく、数えたくないのではないか。まだ言葉にできない疑いを抱えたまま、揃えた点棒をそっと卓の端へ寄せた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "いい知らせネ。最初の宝、もう手が届くとこまで来てるヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "門前開鍵。ひとりで、ツモであがる宝。あんたの最初の一個ダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つの頂の、ほんの一段目。それでも、はじめて足がかりが見えた気がした。背筋を伸ばして、よろしくお願いします、と頭を下げる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "かたいネ、相変わらず。まあいいヨ。卓、座って。仕上げの稽古ダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "山が崩されて、また組み直されていく。配牌が配られると、詩玥の手はもう動いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "速い。引いて、いらない牌を切る。その間に、ほとんど考える素振りがない。指が触れた牌が、そのまま正解みたいに場へ落ちていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ほら、あんたも。迷ったら速いほう、ネ。手が先、頭は後ろからついてくればいいヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言われて、つもった牌に指をかける。けれど場には、危ない捨て牌が並んでいた。ここで切れば、振り込むかもしれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どの牌なら安全か。相手は何を待っているのか。指を止めて、場をじっと読みにかかる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "長考が伸びていく。卓の向かいで、軽口がふっと途切れた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……止まらないで。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "顔を上げる。いつもの軽さが、声から抜け落ちていた。叱るのでも、急かすのでもない。もっと低くて、祈りに似た声。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "考えすぎると、手が冷たくなるヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "手が冷たくなる。比喩なのか、本当に冷えるのか。詩玥自身の指先が、卓のうえで一度きゅっと握られて、また開かれた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "読もうとすると、止まる。止まると、いろんな声が聞こえてくるネ。聞かないほうがいいヨ、ああいうのは。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "速さを教えているはずだった。なのに、いま聞こえたのは技術の話ではなかった。何かから離れていたい人の、逃げる足音みたいに響いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……っと、湿っぽくなったネ。よし、もう一回いくヨ。今度は手を止めない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ぱちん、と頬を叩いて気持ちを切り替えている。けれど、いま聞いた声の温度は、もう耳の奥に残ってしまった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言われたとおり、考えるのをやめて、指の触れた牌を切る。場へ落ちる音が、思ったより軽い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次のツモで、欲しかった牌が手に入った。読みを捨てて、速さに身を預けたら、するりと前へ進んでしまった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 21,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ほらネ。ツモれば勝ち。考えてる暇があったら、引いちゃえばいいんダヨ。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "joy",
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 22,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "笑っている。引きが報いてくれるたび、この人の頬はこうしてくしゃっと崩れる。声まで弾んで、卓のうえに転がっていきそうなくらい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 23,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、いまならわかる。その笑顔は、止まらないでいるための笑顔でもあるのだと。立ち止まれば届いてしまう何かから、速さで逃げ続けているのだと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 24,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "なに、じーっと見て。我の顔に、なんか付いてるヨ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "question"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 25,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いえ、なんでも、と首を振る。本当はまだ、訊きたいことが山ほどあった。けれど、敬語の硬さがそれを押しとどめる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古が終わるころには、道場の窓が橙に染まっていた。詩玥はまた点棒には触れず、こちらに数えるよう目で促す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "今日はよく動いたヨ、あんたの手。その調子ネ。考える前に、もう引いてる。それでいいんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでいい、と繰り返す声が、自分に言い聞かせているようにも聞こえた。橙の光が、その横顔の輪郭をやわらかく溶かしていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "速さは翼だと、この人は言う。前へ進むための、軽い翼。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-03",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "でも翼は、追いつかれたくないときにも広げるものだ。その横顔が何から飛び立ち続けているのか、まだ、見当もつかない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "静かな稽古の途中だった。卓に向かう手が、いつものように軽く動いている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "戸が、音もなく開いた。風の入り方が変わって、初めて気づく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "戸口に、人が立っていた。冷たく澄んだ佇まい。無駄な動きが、ひとつもない。視線だけが、まっすぐ卓の上を測っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥の手が、止まった。いつも軽い肩から、ふっと力が抜けたように見える。あの軽さが、戸が開いた瞬間に消えていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "稽古中だったか。手は止めなくていい。用件だけ置いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "団体戦の話だ。三人で打つ宝――大三剣。組む相手の選定を、そろそろ詰める必要がある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……あんた、相変わらず前置きってものがないネ。せめてお茶くらい飲んでけヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "軽口を返しながらも、声に普段の張りがない。ふたりの間に流れる空気は、初対面のものではなかった。長く知る者どうしの、張りつめた静けさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "卓を見せてもらった。さっきの放銃回避率――低いな。降りるべき場面で、降りていない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "引きだけで押し切るやり方は、いつか確率に裏切られる。読めるはずの危険を、わざと読まない。昔と、同じだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数字で、人を測る声だった。感情の起伏がない。ただ盤面の事実を、寸分の無駄もなく並べていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "本来なら、その危険はあなたがいちばん早く見抜けたはずだ。かつての『深謀遠慮』なら。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "――その名前で呼ばないで。",
+    "characterEffect": "shake",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "emoteId": "tension",
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "初めて聞く声だった。軽口の欠片もない、刺のある低さ。詩玥の手のひらが、卓の上できつく握られている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "深謀遠慮。深く謀り、遠くを慮る。勘だけのこの人と、いちばん遠いはずの呼び名だった。なのに、当てられた本人だけが、その名に固まっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……呼び方は変えよう。だが、捨てたつもりでも、打ち筋には残る。私には見えている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふたりの間に、見えない一局が流れているようだった。こちらの知らない過去が、その短いやり取りの底に沈んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "本題に戻る。三人で打つ以上、背中を預けられる三人目が要る。引きでも、守りでもない。信頼できる打ち手が。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "視線が、こちらへ向いた。値踏みではない。ただ静かに、卓の事実を確かめるみたいに、まっすぐ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "その子か。まだ芽の段階だが――伸びしろは数えられる。悪くない候補だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "急に話の矢が向いて、背筋が伸びる。まだ何も答えられないまま、視線を受け止めるのがやっとだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……この子は、まだ我の弟子ダヨ。値踏みするのは、まだ早いネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "刺のあった声が、こちらを庇うときだけ、すこしほどけた。半歩、こちらの前へ出るように立ち位置を変えている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……そうか。なら、急がない。育つのを待つ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "ひとつだけ。団体戦は、ひとりの引きでは越えられない。次は――逃げないように。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言うだけ言って、来たときと同じ無駄のない足どりで、戸口の向こうへ消えていく。最後の一言だけが、やけに長く室内に残った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "戸が閉まり、風がもとに戻る。詩玥は、しばらく何も言わなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "視線が、自分の手のひらへ落ちている。さっき強く握っていた、その手を。何かを思い出すように、ゆっくりと開いて、また閉じた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……あー、びっくりさせたネ。あの人、昔からあんな感じヨ。気にしないで、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつもの軽さが戻ってくる。でも、戻りかたが少しだけ遅かった。あの呼び名と、自分の手のひらを見つめる目が、頭から離れない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-04",
+    "lineNo": 31,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "深謀遠慮。勘だけのこの人に、いちばん遠いはずの名前。それを聞いて固まった横顔の意味を、まだ、訊いてはいけない気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "団体戦が近いと聞いてから、稽古の手触りが少し変わった。詩玥が、卓の前で袖をまくっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "今日は本気でいくヨ。手加減なし。あんたも、本番のつもりでついてきて、ネ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "music"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 3,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "山が崩されて、配牌が配られる。向かいの席で、指がもう動きはじめていた。はい、と短く返して、卓に向き直る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "中盤に差しかかる。卓の一人が、牌を横に倒した。リーチ。場の空気が、ぴんと張った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "捨て牌を目で追う。並びから、待ちの形がぼんやり浮かんでくる。詩玥の手にある一枚――あれは、たぶん通らない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "危ない。当たり牌かもしれない。安全な牌だって、まだ手の中にあるはずだ。降りれば、何も失わずに済む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰が見ても、降りる場面だった。けれど、向かいの手は止まらなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "迷いのない手つきで、その一枚が場へ落ちる。間を置かず、向かいから声が上がった。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 500,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ロン。当たり牌だった。詩玥の点棒が、向かいへ流れていく。読めていたはずの危険へ、まっすぐ突っ込んでいった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score",
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "読めていないわけがない。あの手に、それくらいの危険が見えていないはずがない。なのに、迷う素振りすらなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気づけば、訊いていた。なぜ降りなかったんですか、と。敬語の硬さが、いつもより掠れていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "顔が上がる。怒ってはいない。ただ、いつもの軽さが、声から一枚ぶん剥がれていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……我は、降りないって決めてるんダヨ。何があっても、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "前を向くって、決めてる。後ろに下がるくらいなら、振り込んだほうがましヨ。そういう約束なんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "約束。その言葉が、軽口の調子をしていなかった。誰かと交わしたもののように、声の底が静かに重い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "でも、と言いかけて、口をつぐむ。マモリさんなら、ああいう場面では迷わず降りる。放銃しない守りで、点棒を一つも零さない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その名前を出すと、ふっと笑った。否定でも、対抗でもない。むしろ、認めるような笑いだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あの人のは、正しいヨ。ぜんぶ数えて、ぜんぶ守って、一点も無駄にしない。あれが、正しい麻雀ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "正しい、と言うとき、その目が一瞬だけ遠くを見た。手元の卓ではなく、もっと先――ずっと昔の、どこかを。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我もね、昔は出来たヨ。あの人みたいに、ちゃんと数えて、ちゃんと降りて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 21,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……でも、もう出来ないんダヨ。正しく降りるの、自分で手放しちゃったからネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 22,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "手放した。落とした、でも、忘れた、でもない。自分の意志で、どこかへ置いてきたという言い方だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 23,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "出来なくなった、ではなく、出来たのに手放した。その違いの重さが、胸の奥にゆっくり沈んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 24,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "っと、また湿っぽいネ。ごめんごめん、稽古の途中ダロ。続きいくヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 25,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "頬を軽く叩いて、軽さを呼び戻している。けれど、点棒には今日も触れない。減ったぶんを数えるのは、こちらに目で促すだけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 26,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "減った点棒を数えながら、ふと思う。この人は、数える行為そのものを避けている。守ることも、降りることも、根は同じ何かに繋がっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古が終わるころ、窓の外が橙に傾いていた。降りない約束。誰と、何と引き換えに結んだのか、まだ訊けないままだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "団体戦ではね、我が前に出るヨ。あんたは、安心して引いてくればいいネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "前に出る、と言う横顔に、橙の光が触れている。降りないと決めた人の背中は、まっすぐで、いつもより小さく見えた。何から前を向き続けているのか――その先を、まだ知らない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古を終えた夜の道場は、昼とまるで違う顔をしている。灯りをひとつ残して、詩玥は卓の前に座ったまま動かない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "片付けの手を止めて、隣に腰を下ろす。沈黙が、いつもより長かった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……我にもね、師匠がいたんダヨ。あんたにとっての我みたいに、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問うてもいなかった。それなのに、向こうから話が始まった。今夜だけは聞いてほしい――そういう間の置き方だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "守りの鬼みたいな人ヨ。ぜんぶ数えて、ぜんぶ読んで、危ないと見たら一歩も前に出ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聞いていて、戸口に立っていたあの人の佇まいが重なる。冷たく澄んだ無駄のなさ。きっと、似た背中をしていたのだろう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "その人に、正しい麻雀を叩き込まれたんダヨ。期待値、待ち、押し引き。無駄な一打を、一度も許してもらえなかったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "おかげで、我もそこそこ読めるようになってネ。いつのまにか、名前まで付いちゃったヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……深謀遠慮。深く謀って、遠くを慮る。あれね、昔の我のことダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence",
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの呼び名が、ようやく繋がった。マモリさんが口にして、固まっていた横顔。勘だけのこの人に、いちばん遠いはずの名前。その名は、昔のこの人そのものだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "読みの達人。今の、引きだけに賭ける人とは、まるで逆の顔。その二つが、同じひとりの中にあった。声が出せないまま、隣の横顔を見つめる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "そんな顔しないでヨ。昔の話ネ。……でも、その人とは、ただの師弟じゃなかったんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "二人で、九蓮宝士を目指してたヨ。あの人の守りと、我の読みで。二人なら、てっぺんまで行けるって、本気で信じてたネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二人で。その言葉に、ほんの少しだけ温もりが灯った。けれど、灯ったぶんだけ、すぐ後ろに翳りが見えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "でもね、あの人、体を悪くしてネ。卓に座る時間が、だんだん短くなっていったヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "病、という言葉は使わなかった。ただ、卓に座る時間という言い方が、かえって重く響いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "守りの鬼のくせにね、最後のほう、いつも同じことばっかり言うようになったヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "『理屈じゃなくて、お前の引きで上がるのが見たい』――って。読みを叩き込んだ本人が、ネ。おかしいダロ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "おかしい、と言いながら、その口元はほどけていた。叱るときの厳しさと、まるで噛み合わない願い。きっと、そのちぐはぐさを、いまも大事に抱えている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "『お前のツモが見たい』。何度も、何度も。口癖になるくらい、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモが見たい。たった一度の、その人の引き。守りを極めた人が、最後に欲しがったのは、計算の外にあるものだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……うん。今夜は、ここまでにしておくヨ。あんまり一気に話すと、我も忘れ方が下手になっちゃうからネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "話を、そっと閉じる手つきだった。続きがあるのは分かる。けれど、今夜はここまで、という線を、自分で静かに引いている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "聞いてくれて、ありがとネ。さ、もう遅いヨ。今日はちゃんと休むんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "立ち上がりざま、いつものように頭をくしゃっと撫でていく。手のひらの温度は、いつもと変わらない。それが、なぜか胸に残った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "灯りを落とした道場に、はい、と返した声だけが残る。聞きたいことは増えたのに、口にできた言葉は、それきりだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "深謀遠慮。読みの達人だった人が、なぜ引きだけに賭けるようになったのか。その答えに、まだ半分しか触れていない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでも、たった一言だけが、夜のなかで耳に灯ったまま消えない。お前のツモが見たい――その願いだけが、ずっと胸に残った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 1,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "雨の夜だった。軒を打つ音が、道場の静けさに細く線を引いている。詩玥は、窓の外を見たまま座っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 2,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……こういう雨の日は、思い出しちゃうネ。続き、聞いてくれるヨ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 3,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "はい、と短く返す。先を促すには、それで十分だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 4,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あの人が、もう長く卓に座れなくなる前。最後の大会の、決勝のことヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 5,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声が、少しだけ低くなった。雨音に紛れそうな細さで、それでも一音ずつ、確かめるように。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 6,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "――暗転した記憶の中へ、声だけが連れていく。大勢の視線。手元の灯り。隣には、まだ卓に座れていたあの人がいた。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 800,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 7,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あと一局。我の手は、逆転トップの形になってたヨ。あがれば、優勝。二人の、最初の宝ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 8,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "でも、向かいがリーチをかけてネ。我の手の中に、危ない一枚があったんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 9,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "読んだヨ。捨て牌、河の並び、相手の手の進み方。ぜんぶ数えた。当たり牌の確率、振り込んだときの順位、押した場合の期待値――ぜんぶ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 10,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数えきった、という言い方に、淀みがなかった。当時の指の冷たさまで、いまの声が覚えている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 11,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "押せば、優勝。でも、振り込めば最下位まで落ちる。数字は、はっきり言ってたヨ。ここは、降りるのが正しいって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 12,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "だから、降りたヨ。あの人に教わったとおり、完璧に。危ない牌を抱えて、安全な牌だけ切って、きれいに二着で収めたネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 13,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二着。優勝は、すぐ隣をすり抜けていった。それでも――。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 14,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "誇らしかったヨ、あの時は。一打も無駄にしなかった。教わった麻雀を、ぜんぶ正しく打てた。あの人の隣で、胸を張れると思ったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 15,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誇らしかった、という言葉が、なぜか痛そうに響いた。これから、その誇りが裏返るのを、声が先に知っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 16,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……でもね。優勝を逃したあと、隣のあの人を見たら。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 17,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "笑ってなかったんダヨ。怒ってもいない。ただ……寂しそうな顔、してたネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 18,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "寂しそうな顔。正しく勝ったはずの卓で、教えた本人だけが、欲しかったものを取り逃したような目をしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 19,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "――雨音が、戻ってくる。回想の暗がりから、また道場の灯りの下へ。詩玥は、自分の手のひらをじっと見ていた。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 800,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 20,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あの時は、わからなかったヨ。なんで、勝ったのに寂しそうなのって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 21,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "でも、今ならわかるネ。あの人が見たかったのは、順位じゃなかった。優勝でもなかったんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 22,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我が危ない牌を押して、自分の力で引き当てる。たった一度の、その引き。それが見たかったんダヨ。二着の正しさより、ずっと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 23,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "お前のツモが見たい。あの願いと、寂しそうな横顔が、いま一本の線で繋がる。正しく降りた一打が、その人の願いを、静かに踏み越えていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 24,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "正しかったヨ、我の降りは。数字も、教えも、ぜんぶ正しかった。……正しすぎたんダヨ、たぶんネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 25,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "正しすぎた。その一語に、長く抱えてきた棘が見えた。間違えたなら、悔やめばいい。けれど、正しかったぶんだけ、行き場のない後悔だけが残る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 26,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……っと。湿っぽいついでに、雨のせいにしておくヨ。聞かせちゃってごめんネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 27,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "軽さを呼び戻そうとして、けれど今夜は、すぐには戻りきらない。指先が、まださっきの手のひらを、そっと握ったままだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 28,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "首を横に振って、いいえ、と返す。本当はもっと、何か言葉をかけたかった。けれど、敬語の硬さが、それ以上を押しとどめてしまう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-07",
+    "lineNo": 29,
+    "backgroundId": "bg-rain",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "雨は、まだ降っている。正しく勝った決勝の、寂しそうな横顔。その先に何があったのかを、まだ訊けないまま、夜が更けていった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次の稽古の夜、詩玥のほうから卓の前に座った。続きを話す、と顔に書いてあった。雨はやんで、道場は静まり返っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "最後まで、話しておきたいんダヨ。中途半端なのは、我が落ち着かないからネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あの決勝のあと、あの人はもう、ほとんど卓に座れなくなってネ。それでも、口癖だけは変わらなかったヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "『次の大会こそ、お前のツモを見せてくれ』。会うたびにネ。次こそ、次こそ、って。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次こそ。その言葉が、約束のように積み上がっていく。聞いていて、積み上がるほど、足元が崩れていくような心地がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我もね、そのつもりだったヨ。次の大会で、今度こそ押して、引いて、見せるんだって。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……でも。その『次』はね、来なかったんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 8,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "――灯りが、ふっと遠ざかる。声だけが、もう一度、過去の暗がりへ連れていく。",
+    "characterEffect": "none",
+    "screenEffect": "fade_out",
+    "effectDurationMs": 800
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 9,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "次の大会の、ずっと前ヨ。あの人は、卓のない場所で、静かに逝ったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 10,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我のツモを、一度も見せられないまま、ネ。あれだけ見たがってたのに。たった一度の引きも、見せてあげられなかったヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 11,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声は、震えなかった。淡々と、事実だけを並べていく。その平らかさが、どんな涙よりも痛い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 12,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "いちばん、許せなかったのはネ。あの人がいなくなる、そのときまで。我は、頭の中で数えてたんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 13,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あと、どれくらい時間が残ってるか。次の大会まで、間に合う確率はどれくらいか。……癖が抜けなくてネ。最後まで、数えてたんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 14,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "残り時間を、計算していた。いちばん数えてはいけないものを、いちばん得意な癖で数えてしまった。深謀遠慮の、最後の代償だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 15,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "数えてるあいだに、見せるべきものを、見せ損ねたヨ。正しさで、ぜんぶ、間に合わなかったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 16,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "完璧な正しさが、奪っていったもの。一度のツモ。それを見せる、たった一度の機会。降りるたびに守ったはずの何かが、いちばん大事なものを取りこぼしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 17,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "それで、墓の前でね。我、決めたんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 18,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "もう二度と、降りない。何があっても、前を向く。次なんて待たない。引いて、引いて、引き続ける。",
+    "characterEffect": "jump",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "tension",
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 19,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ツモれば、勝ち。――それが、あの人と我の、ふたりだけの誓いヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "――灯りが、戻ってくる。あの軽い口癖の正体が、いま手のひらに置かれた。ツモれば勝ち。それは軽口ではなく、誓いで、そして、自分を罰する言葉でもあった。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 800,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "読みを捨てたのも、点棒を数えないのも、守りを嫌うのも。ぜんぶ、あの最後の計算から、逃げ続けるためだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "重い話、聞かせちゃったネ。……でも、不思議ヨ。話したら、ちょっとだけ、軽くなった気がするんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "軽くなった、と言う声は、まだ静かだった。けれど、肩のあたりから、長く張りつめていた何かが、ほんの少しだけほどけて見える。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あんたがいてくれて、よかったヨ。ひとりじゃ、たぶん最後まで話せなかったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ありがとう、と言って、いつものように頭をくしゃっと撫でていく。けれど今夜は、その手が、少しだけ長くそこに置かれていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "何か言わなければと思った。けれど、出てきたのは、いいえ、こちらこそ、という短い言葉だけ。敬語は、こんな夜にも、まだ硬いままだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモれば勝ち。これまで何百回と聞いた口癖が、もう、ただの軽口には聞こえない。その奥に、見られなかった一度のツモが、ずっと沈んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつか、この人の引きを、隣で見たいと思った。恩師が見られなかった、そのツモを。今度は、誰にも取りこぼされないように。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その夜の誓いを、まだ口には出せない。けれど、軽くなったと言ったその肩の隣に、これからは自分がいる。それだけは、静かに、確かに決まっていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古のあとだった。半荘がひとつ終わって、卓には散らばった牌と、まだ伏せたままの点棒が残っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥は、その点棒を片づけようともしない。いつものことだった。けれど、あの夜の話を聞いてからは、その手つきが前とは違って見える。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ん？ なに、そんなにこっち見てヨ。点棒の片づけなら、あんたに任せちゃうネ。我、そういうの苦手ダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "苦手。何度も聞いてきた言葉だった。けれど、あれだけ正確に確率を数えきった人が、点棒だけは数えられないというのは、どうしても噛み合わない。思いきって訊いてみた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "本当は、数えられるんじゃないですか。そう口にした瞬間、片づけかけた手が、ぴたりと止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……ふふ。あんた、ほんとに鋭くなったネ。昔の我が見たら、目を丸くするヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "そうダヨ。数えられるヨ、本当はネ。指が勝手に、点棒の山を見ただけで足し算しちゃうんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "でもね。数え始めると、聞こえてくるんダヨ。我の頭の中で、もうひとり、冷たい声が喋り出すネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "冷たい声。その一語に、声の温度が落ちた。卓の灯りは変わらないのに、座っている場所だけ、ふっと薄暗くなったように感じる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "『その牌は危ない、降りろ』『確率はこっちだ、引くな』『正しい手はこっちだ』。……ぜんぶ、正しいことを言うヨ。一度も間違えない声ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "点棒を数えると、その声が起きるんダヨ。数字を追えば追うほど、はっきり喋り出すネ。そうして、また我を、降りろって引き止めるヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの決勝で、正しく降りろと囁いた声。あの最後の日に、残り時間を数えてしまった声。それが、いまも消えずに、この人の中に住んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "だからネ。我は、耳を塞ぐことにしたんダヨ。点棒を数えない。数字を見ない。そうすれば、あの声も、目を覚まさないヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "おかしいヨね。あの声は、もともと我のものなんダヨ。読みも、算も、ぜんぶ我から生まれたネ。なのに、自分の声を、自分で聞かないようにしてるんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "能力は、その人の魂の形だと教わった。だとすれば、あの冷たい声も、この人自身の一部なのだ。聞かないと決めることは、自分の半分に、ずっと背を向けて生きることだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……まあ、世の中にはもっと厄介なのもいるって噂ヨ。漆黒の星雲をまとう打ち手とか、底なしの深淵みたいな連中とか。勝ち方そのものが、ひっくり返るんだとかネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "それに比べたら、頭の中の声くらい、かわいいモンダヨ。……なんてネ。聞き流していいヨ、いまのは。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "軽口で包もうとして、けれど包みきれていない。遠くの大きな影を借りてでも、自分の中の声からは目をそらしていたいのだと、その横顔が言っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "だから、点棒はあんたに任せるネ。我が数えると、また降りたくなっちゃうから。……情けない師匠でごめんヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "情けない、という言葉が、卓の上に落ちて転がる。それを拾うように、伏せたままの点棒へ、そっと手を伸ばした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひとつ、ふたつ。点棒を、声に出して数えてみる。隣で、詩玥が小さく息を呑む気配がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……あんた、なにして……？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "surprise"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数えますよ、これからは。一緒に。そう言って、もうひとつ点棒を山に積む。声に出してしまえば、なんてことのない言葉だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あなたの中で冷たい声が起きたら、わたしが代わりに数えます。そう続ける。数字は、ひとりで抱えると刃になるけれど、二人で並べれば、ただの数字に戻る気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……ばかネ。そんなの、頼んでないヨ。我の声なんだから、我の問題ダヨ。あんたが背負うことじゃ……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉が、途中で途切れた。卓に置いた点棒の山に、詩玥の指が、ためらいながら重なる。久しぶりに数字へ触れる人のように、その指先は、ほんの少し震えていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……みっつ、よっつ。……ほんとだ。あんたが隣にいると、あの声、ぜんぜん怖くないネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ありがとうネ。……ちゃんと、ありがとうって言うヨ。茶化さないで、言うネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "礼を言われるのは、初めてだった。いつもなら頭をくしゃっと撫でて軽口で流す人が、今日はまっすぐ目を見て言う。どういたしまして、と返す声が、少しだけ砕けて出た。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 30,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓には、二人ぶんの点棒が、きちんと積み上がっていく。その隣に、もうひとつ空いた椅子がある。いつか誰かがそこに座る日のことを、まだ知らないまま、夜が静かに更けていった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 1,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古帰りの街路だった。日が傾いて、店先の灯りがぽつぽつと点きはじめている。角を曲がったところで、見覚えのある背格好に出くわした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 2,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……ああ、あなたか。詩玥の弟子。帰り道が同じらしい。少し、付き合ってもらえるか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 3,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "断る理由もなかった。並んで歩き出すと、マモリの歩幅は、計ったように一定だった。足音の間隔まで、揃いすぎている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 4,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "あの人のこと、どこまで聞いた。深謀遠慮と呼ばれていた頃の話を、もう知っているか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 5,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "はい、と短く答える。決勝のこと、恩師のこと、冷たい声のこと。マモリは前を向いたまま、小さくうなずいた。それで足りる、という顔だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 6,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "なら、私の話もしておく。あなたが、これから組む相手だ。知っておいたほうがいい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 7,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "私も昔、あの人に憧れた一人だ。一打も無駄にしない打ち筋。盤面のすべてを読み切る目。あれが、雀士の到達点だと思っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 8,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "私にも、組んでいた相手がいた。団体戦で、背中を預け合う相手が。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 9,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声の温度は、変わらなかった。けれど、歩幅が、わずかに乱れた。一定だったはずの足音が、半拍だけ、躓いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 10,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "ある大事な一局で、私は押した。読みでは降りるべき場面だった。だが、勝ちたかった。だから、危険を承知で、前に出た。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 11,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "その一打で、相手に大きく振り込んだ。私の点だけでは済まなかった。組んでいた相手まで、巻き込んで沈めた。あの卓で、二人とも、立ち上がれなくなった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 12,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "押して、仲間を沈めた人。降りて、相手を喪った人。同じ憧れから始まって、二人は正反対の場所に倒れていた。鏡の表と裏のように。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 13,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "それ以来、私は降り続けている。誰も巻き込まないために。放銃だけは、決してしない。攻めは、もうしない。それが、私の選んだ守り方だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 14,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "あの人は、降りて喪った。私は、押して沈めた。後悔の向きが、ちょうど逆なんだ。だから、わかる。あの人の打ち筋に、何が足りないのかも。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 15,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "逆向きの傷。それを、欠点としてではなく、噛み合う歯車として語っている。マモリは、ずっと前から、この組み合わせを計算していたのだと気づいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 16,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "あの人が押すと、計算が止まらなくなって降りたくなる。私が押すと、また誰かを沈める。だが、私が降りて背中を守れば、あの人は、心置きなく押せる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 17,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "私の降りが、あの人の引きを生かす。あの人の引きが、私の降りを意味のあるものにする。二人なら、私たちは、もう同じ後悔を繰り返さない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 18,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "歩幅が、また一定に戻っていた。語り終えた声には、迷いがない。守りに徹すると決めた人の足取りは、こんなにも静かなのだと思った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 19,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "それに。あの人の引きは、本物だ。これは、私の計算ではなく、あの恩師の言葉だがな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 20,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "あの引きを、もう一度、九蓮宝士の舞台で見たい。今度は、誰にも見送られずに済むように。それだけだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 21,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "刺々しい言葉でしか触れられなかった人が、こんな理由で隣に立とうとしている。冷たいと思っていた声の底に、ずっと温められてきた願いが沈んでいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 22,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "ただ、二人では足りない。団体戦は、最大三人で立てる。背中を守る私と、前に出るあの人。その真ん中に、もう一人いる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 23,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……あなただ。あの人が、点棒を任せられる相手。冷たい声が起きたとき、隣で数えてやれる相手。それは、私ではない。あなたしかいない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 24,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "足が、止まった。三人目。その言葉の重さに、すぐには返事ができない。あの夜、点棒を一緒に数えたことを、この人は、どこかで見ていたのだろうか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 25,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "即答はいらない。だが、覚えておいてくれ。私が背中を守れるのは、卓の上の危険だけだ。あの人の心の声まで、私の計算は届かない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 26,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "そこに届くのは、あなただ。だから、三人で組む。それが、最も放銃の少ない布陣だと、私は計算した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 27,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最も放銃の少ない布陣。守りの人らしい言い方だった。けれど、その数式の答えに、自分の名前が置かれている。それが、不思議と胸の奥を温めた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 28,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……礼を言うのは、私のほうかもしれないな。あの人を、笑わせ続けてくれて。私には、できなかったことだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 29,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "話は以上だ。私はここで折れる。……団体戦の卓で、また会おう。三人で。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 30,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "mamori",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そう言って、マモリは横道へ折れていった。一定の歩幅で、振り返らずに。残された街路で、三人目、という言葉だけが、まだ手のひらに温かく残っている。やります、と。次に会ったら、そう言おうと決めた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 1,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "初めての個人戦を、勝ち抜いた。門前開鍵——独力でツモにたどり着く、一人用の試練。その宝が、いま手のひらにある。九つのうちの、最初のひとつ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
     "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "やったネ！ 自力でツモり切ったヨ！ ……我、自分が勝ったみたいに嬉しいんダヨ、これ。",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 3,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "頭を、いつもより勢いよくくしゃくしゃと撫でられる。その手の力が、嬉しさをそのまま伝えてくる。つられて、こちらの口元もゆるんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 4,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……でもネ。次は、団体戦ダヨ。三人で立つ卓ヨ。一人用の宝みたいに、自分の引きだけじゃ、たどり着けない場所ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "嬉しさの裏に、ふっと影が差した。団体戦。誰かと背中を預け合う卓。この人が、いちばん近づきたくない場所のはずだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのとき、戸が音もなく開いた。風の入り方が変わる。振り向くまでもなく、誰が来たのか、わかってしまった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "個人戦の制覇、聞いた。最初の宝だな。……それで、本題だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……マモリ。あんた、何しに来たヨ。我に、また昔の名前で説教でもしに来たネ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "temper"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "違う。組みに来た。団体戦、私があなたの協力相手になる。正式に、だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "surprised"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……は？ あんたと、我が？ 正反対の打ち筋ヨ。組んだら、卓の上で喧嘩になるだけダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "confused"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "正反対だから組む。あなたが押せるように、私が降りる。あなたの背中は、私が守る。あなたは、前だけ見ていればいい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その言葉に、詩玥の表情が、ぴたりと止まった。あなたは前だけ見ていればいい。それは——かつて、あの恩師がこの人を守っていた、まさにその席の言葉だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……その席は。その降りる席は、あの人の席ダヨ。あんたが、座る場所じゃ……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "知っている。だから、座る。あの人が守った席が、空いたままなのが、いちばんあの人の願いに背くことだ。違うか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥が、言葉をなくした。口を開きかけて、閉じる。何度も。冷たい声で人を測るはずのこの人が、いちばん温かい場所に、まっすぐ手を置いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "私の降りは、もう、誰も沈めない。あなたの引きを、生かすためだけに降りる。あの席で、私はそれをやる。やらせてくれ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……ずるいヨ、あんた。そんな言い方されたら、断れないネ。……断りたくないヨ、もう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "受け入れる、と言ったその声は、湿っていた。軽口の調子は、どこにもない。長く刺々しくぶつけてきた相手に、いま、いちばん柔らかい場所を明け渡している。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "決まりだ。……だが、団体戦は最大三人。私とあなたで、二つ。残りの一つは、あなたが決めろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 20,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "残りの一つ。マモリの視線が、ちらりとこちらに流れる。あの帰り道で言われた言葉が、よみがえった。三人目は、あなたしかいない、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "そんなの、最初から決まってるヨ。……あんた、我と組んでくれるネ？ 真ん中の席、空けて待ってるヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "love"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "真ん中の席。押す人と、降りる人の、ちょうど間。点棒を一緒に数えると約束した、あの夜の椅子が、いま卓の上に現れた気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "はい。よろこんで。今度は、敬語も硬くならなかった。三人で頂点を目指す。その実感が、声を、まっすぐにしてくれた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……ふっ。決まりだな。押すあなたと、守る私と、間をつなぐこの子。悪くない布陣だ。私の計算でも、文句なしだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……ねえ、マモリ。今度の卓ではネ。我、誰も見送らないヨ。あんたも、この子も。最後まで、隣にいてもらうネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "ああ。私も、もう誰も沈めない。約束する。……あの人にも、聞こえているといいんだがな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "正反対の傷を抱えた二人と、その間に立つ一人。デュオでもソロでもなく、三人で組んだ卓が、いま静かに形になる。ひとつ目の宝は、もう手の中にある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つの宝への道は、まだ始まったばかりだった。けれど、もう一人ではない。前を向く背中と、それを守る背中の間で、この道のりを最後まで見届けたいと、静かに思った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 1,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "団体戦・大三剣。三人で挑む、戦場を支配する一振りの宝。その最終戦、最後の一局が、いま卓に座っている。手元の灯りだけが、やけに明るい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 2,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "場は、私が抑えている。危険牌はすべて私が引き受ける。あなたは、手を作ることだけに集中しろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 3,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "わかってるヨ。我の手、もうすぐ大きいのが見えてきたネ。あと一枚……あと一枚で、ツモれる形ダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓の真ん中で、点棒を数える。詩玥のぶんも、声に出して。あの夜から続けてきた役目が、いちばん大事な卓で、いま活きている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのとき、向かいの相手が、牌を倒した。リーチ。場の空気が、ぴんと張りつめる。詩玥の手の中に、危ない一枚があるのが、横からでもわかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "押せば、ツモへ届く。振り込めば、最終戦を落とす。——かつての決勝と、まったく同じ匂いの場面だった。あの日、この人が正しく降りた、その一局と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥の指が、危ない牌に伸びかけて——止まった。ぴたり、と。頭の中で、あの冷たい声が起きたのだと、すぐにわかった。降りろ、と囁く声が。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……聞こえる。また、聞こえるヨ。降りろって。確率はあっちだって。……指が、動かないネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの日と同じ場所で、同じ声に、また足を掴まれている。けれど、今日は違った。隣に、背中を守る人がいる。間に、一緒に数える人がいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "後ろは、私が視ている。どこから何が来ても、私が止める。だから——あなたは、ツモることだけ考えていろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモることだけ考えていろ。冷たい声をかき消すように、それは響いた。降りろと囁く半分に、もう半分が、まっすぐ答えを返している。あなたは、前を向け、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……ああ。そうだったネ。我は、引く側ダヨ。後ろは、もう、ひとりで抱えなくていいんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "止まっていた指に、力が戻る。冷たい声は、まだ囁いている。けれど、もうそれに足を掴ませない。背中を預けた人がいる卓で、迷いが、すっと晴れていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ツモれば、勝ち。――行くヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "tension"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "迷いなく、危ない牌を河へ置く。そして、山へ手を伸ばす。卓の上の時間が、その一瞬だけ、止まったように感じた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "――ツモッ！！",
+    "characterEffect": "jump",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "impact",
+    "bgmId": "bgm-victory",
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "引き当てた。満貫。最終戦の逆転。三人で掴んだ、二つ目の宝——大三剣。会場のどよめきが、遠くで波のように湧き上がる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、詩玥は、勝鬨を上げなかった。倒した手牌を見つめたまま、ふっと、天井のずっと向こうへ、目を上げる。誰もいないはずの、その場所へ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……見てた？ ねえ、見ててくれたヨね。これが、我のツモダヨ。あんたが、ずっと見たがってた、たった一度の引きヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "恩師が見たかった、一度のツモ。正しい降りに踏み越えられた、あの願い。それが、いま、ちゃんとこの卓の上にある。声は震えていたけれど、その目は、まっすぐだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 21,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……見ていたさ。あの人も、私も、この子も。あなたの引きを、もう、誰も見送らなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 22,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰も見送らなかった。その一言に、詩玥が、目元を片手で覆った。ほんの少しの間。やがて、手を下ろしたときには、もう、いつもの軽い顔に戻っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 23,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ねえ、知ってるヨ？ 九つの宝が揃うと、願いがひとつ叶うんだってネ。子どもの頃から、ずっと信じてたヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 24,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "俗説だ。九つ集めたところで、叶うのは公式認定だけ。願いが叶うという確証は、どこにもない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 25,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "もう、マモリは夢がないネ。……でもいいヨ。我の願い、昔と変わっちゃったから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 26,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "前はネ、あの日をやり直したかったヨ。でも、いまは違うんダヨ。やり直しなんて、もういらないネ。だって、やり直してたら、あんたに会えなかったヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 27,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "願う対象が、過去から、これからへ移っていた。失くしたものを取り戻すための誓いが、隣にいる人と歩いていくための約束に、いつのまにか変わっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 28,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "だからネ。我の口癖、今日から変えるヨ。ツモれば勝ち、じゃないんダヨ。あんたとなら――ツモれば、ふたりの勝ちネ。",
+    "characterEffect": "jump",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "love",
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 29,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモれば、ふたりの勝ち。長く自分を罰してきた言葉が、いま、誰かと分け合う約束に生まれ変わった。返す声が、つかえる。けれど今度は、敬語の硬さではなかった。胸がいっぱいで、言葉が追いつかなかっただけだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 30,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二つ目の宝が、手の中にある。残りは、まだ七つ。九蓮宝士への道は、ここから本当に始まる。けれど、もう怖くなかった。押す背中と、守る背中の間で、この人の引きを、最後まで隣で見届けるのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二つの宝を手にして、覇道編の会場に足を踏み入れる。天井が高い。これまでの道場とは、空気の密度がまるで違う。あちこちから、品定めするような視線が刺さってくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ふふ、見てヨこの会場。ここからが本番ダヨ。残りは七つ。さあ、ツモれば、ふたりの勝ちネ！",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "music"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "浮かれるな。ここに集まっているのは、格上ばかりだ。今までの卓と同じ気持ちで座れば、足をすくわれる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場の奥のほうで、ひときわ濃い影が、卓を囲んでいた。誰も近づこうとしない一角。星屑を散らしたような暗い色をまとった打ち手の噂が、人垣の隙間から細く流れてくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……ねえマモリ。あの奥の連中、なんか変ヨ。勝ち負けの、もっと向こうの匂いがするネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "あれには、関わるな。今は、目の前の宝に集中しろ。……あの連中の話は、いずれ嫌でも耳に入る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥が、奥の影から目を離して、肩をすくめた。それきり話題を切り上げる。けれど、その視線が一瞬だけ、後ろを振り返ったのを、横から見ていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三つ目の宝を懸けた一戦が始まる。配牌が配られ、牌の壁がそびえ立つ。向かいに座るのは、いくつもの大会を勝ち上がってきた、年季の入った打ち手だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "いつも通りでいくヨ。我が引いて、押す。マモリが後ろを守る。これで、ここまで来たんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥が、手を作りにかかる。速い。いつもの引きで、見る間に形が整っていく。聴牌まで、あと一歩——そこへ、向かいの相手が、すっと一枚を河に置いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥の欲しい牌が、止まった。相手の河に、先回りするように、その一帯が伏せられていく。引こうとした道が、一手ごとに細く塞がれていくのが、横からでもわかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……あれ。引けないヨ。我の欲しいとこ、全部先に止められてるネ。なんで、わかるヨ……？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "向こうは、あなたの手を読んでいる。読まれている以上、押すほど止められる。……ここは、私が抑える。失点だけは、させない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "マモリの守りが、際どい放銃をひとつ、またひとつと、ぎりぎりで受け止めていく。点棒は、削られはしても崩れない。けれど、卓の主導権は、ずっと向こうにあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "局が進む。詩玥の引きは止められ続け、マモリの守りで命脈をつなぐ。攻めるはずの席が、ずっと受けに回されている。卓の上の風向きが、いつもと逆だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでも、最後の最後。塞がれた道の、ほんのわずかな隙間から、詩玥の指が山へ伸びる。封じられてなお、こじ開ける一枚。天性の引きが、ぎりぎりで顔を出した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "――ツモッ！ ……ぎりぎり、間に合ったヨ。",
+    "characterEffect": "jump",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "impact",
+    "bgmId": "bgm-victory",
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "辛勝。三つ目の宝が、手のひらに転がり込む。会場のどよめきが、遠く湧く。けれど、勝った詩玥の顔には、いつものはしゃぎが、半分しか乗っていなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓を離れ、会場の隅へ戻る。三つ目を手にしたというのに、詩玥は、自分の手のひらをじっと見下ろしていた。何かを探すように、指を、ゆっくり開いたり閉じたりしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……勝ったヨ。勝ったんダヨ、ちゃんと。でも、なんか変ネ。引けたんじゃなくて、引かせてもらえた、みたいな感じヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-13",
@@ -10759,11 +18440,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "卓を離れると、見守っていたマモリが、静かに迎えてくれた。",
+    "text": "引かせてもらえた。その言い方に、何かが引っかかった。これまで、引けば勝つことを、この人は一度も疑っていなかった。その手のひらに、初めて、答えのない問いが乗っている。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-night"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-13",
@@ -10781,12 +18461,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "……勝ちは、勝ち。でも、ずいぶん競らされたわね。最後まで、押し切れなかった。",
+    "text": "あいつ、ずっと先に居たヨ。我が引く前に、もう、引いた後の景色を見てたみたいだったネ。……引きだけで、本当にいいのかなあ、我は。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "muddle"
   },
   {
     "scenarioId": "mentor-shiyue-bond-13",
@@ -10806,7 +18487,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "勝鬨。けれど詩玥の顔は、いつもの「やったー」とは、どこか違っていた。",
+    "text": "マモリが、口を開きかけた。引きだけでは、いずれ——。そこまで言って、言葉を呑む。続きがどこへ向かうのか、その横顔は、もうわかっているようだった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -10819,7 +18500,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "serious"
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -10827,10 +18508,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "emoteId": "muddle",
-    "text": "なァ。今の……引いて勝った、っていうより。ずーっと止められ続けてた、だけな気がするノ。",
+    "text": "……いや。今日は、勝った。それで十分だ。次の卓のことは、次の卓で考えればいい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -10843,7 +18523,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "serious"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
@@ -10851,9 +18531,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "詩玥が、自分の手のひらを、じっと見つめる。引きだけでは届かない高さが、確かにそこにあった。",
+    "text": "そうだネ。考えすぎは、我のがらじゃないヨ。……でも、次の山は、もっと高いネ。ここからは、今までみたいには、いかない気がするヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -10866,17 +18546,17 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
         "position": "right",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……引きだけでは、いずれ。",
+    "text": "言い終えると、詩玥は、いつもの軽い顔に戻して、こちらの頭をくしゃっと撫でた。手のひらの問いを、ひとまずしまい込むように。けれど、その指の温度が、いつもより少しだけ心もとない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -10884,6 +18564,30 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ま、なんとかなるヨ。三つ目、ちゃんと取れたんだからネ。さ、次いくヨ。残りは、まだ六つあるんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "music"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-13",
+    "lineNo": 28,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -10899,29 +18603,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "マモリは何か言いかけて、やめた。その先の言葉は、詩玥にはまだ、聞こえていないようだった。",
+    "text": "歩き出す背中を、追いかける。覇道の幕が、たしかに上がった。三つの宝が手の中にある。それなのに、この人の横顔に、これまで見たことのない迷いが、影みたいに差していた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 28,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "と思えば、詩玥が、こてんと肩にもたれかかってきた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-warm"
   },
   {
     "scenarioId": "mentor-shiyue-bond-13",
@@ -10930,71 +18615,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……ま、いっか。あんたが隣にいると、なんか、考えすぎなくて済むノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 30,
-    "backgroundId": "bg-hall",
-    "standings": [
+        "position": "left",
+        "standingId": "default"
+      },
       {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "肩にかかる軽い体重。どきりとして、けれど——その甘え方が、なんだか、嫌じゃなかった。",
+    "text": "引きだけで、本当にいいのか。——会場をあとにしても、その問いだけが、この人の背中に小さく灯ったまま、消えずに残る。次の山は、思っていたよりずっと、早く来た。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 31,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "次の山は、もっと高いってこと、ダネ。……ま、二人なら、へーきヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-13",
-    "lineNo": 32,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "もたれたまま、詩玥が笑う。その横顔に滲む小さな迷いには、まだ気づかないふりをして、頷いた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 800,
-    "bgmId": "bgm-resolve"
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
@@ -11003,16 +18639,21 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "四つ目の宝を懸けた、次の大会。向かいに座ったのは、ひどく地味な打ち手だった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
+    "text": "四つ目の宝を懸けた大会。会場の喧騒の中で、向かいの席に座ったのは、地味な打ち手だった。派手な仕掛けも、威圧もない。ただ、こちらの目を、底まで覗き込むような静けさがあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
     "bgmId": "bgm-tension"
   },
   {
@@ -11022,16 +18663,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "華やかな技も、強烈な打点もない。ただ、こちらの手の中を、底まで見透かすような目をしていた。",
+    "text": "なんか、おとなしそうな相手ヨ。これなら、いつもの引きでいけるネ。さくっと取って、五つ目いくヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "music"
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
@@ -11040,13 +18687,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "なんか、おとなしそうな相手ネ。さっさと押し切っちゃおっカ。",
+    "text": "……気を抜くな。あの目だ。あれは、派手さで勝つ打ち手じゃない。相手の手を、底まで読み切る型だ。前の卓より、ずっと厄介だぞ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11054,35 +18706,22 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 4,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、ちょいと袖を引いて、にっと笑う。つられて、肩の力が、ふっと抜けた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 5,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "対局が始まる。詩玥は、いつものように引きで前へ出ようとして——",
+    "text": "対局が始まる。配牌が伏せられ、卓の上に、静かな緊張が降りた。詩玥が、いつものように、手を作りにかかる。速い。けれど——。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -11091,21 +18730,50 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 6,
+    "lineNo": 5,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その一歩を、ことごとく読まれた。切ろうとした牌の先で、相手はもう、待っている。",
+    "text": "詩玥が伸ばそうとした道を、相手が、一手先で塞ぐ。次の道も、その次も。引こうとする前に、もうそこには相手の牌が置かれている。先回りという言葉では足りない。来る場所を、ぜんぶ見られている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-14",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……っ。また止められたヨ。じゃあこっち……だめ、ここも読まれてるネ。なんで全部、先に居るヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
@@ -11114,17 +18782,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "emoteId": "sweat",
-    "text": "……っ。なんで、ぜんぶ見えてるノ、この人。引く前に、塞がれてるヨ。",
+    "text": "だ、大丈夫ヨ。引きが噛み合えば、一発で抜けるんダヨ。我のツモ、止められるわけないネ。……ない、はずヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "fluster"
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
@@ -11133,13 +18806,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "押せば、危険。引けば、遅い。詩玥の速さと鋭さが、丸ごと、封じられていく。",
+    "text": "詩玥の軽口が、空回りしはじめる。言葉だけが先に走って、手がついてこない。引きに任せて押すほど、その押し先で、相手が静かに待っている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11151,13 +18829,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "場を整えようと動いても、二人ぶんの手を、まとめて先回りされる。手も足も、出ない。",
+    "text": "落ち着け。今は無理に押すな。後ろは、私が止める。あなたは、危ない牌だけ私に渡せ。それでいい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11169,13 +18852,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ごめんネ、こっちで止めるから……ううん、それも、読まれてる……っ。",
+    "text": "マモリが、いつものように後ろを固める。けれど、その守りすら、相手の読みの前で、少しずつ削られていく。どこを切れば安全か——その安全な道さえ、向こうは先に読んでいた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11187,13 +18875,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "焦った詩玥が、いつもより半歩、前に出る。——その半歩を、相手は、ずっと待っていた。",
+    "text": "……まずいな。私の受けの逃げ道まで、読まれている。これは、私一人の守りだけでは、支えきれない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11205,92 +18898,118 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "「——ロン」。相手の、ひどく静かな声。",
+    "text": "持ち点が、じりじり減っていく。詩玥の指が、止まりがちになる。どこへ伸ばしても、その先が読まれている。引く強さだけでは、もう、抜けられない場所に追い込まれていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-14",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "終盤。追い詰められた詩玥が、苦しまぎれに一枚を河へ置いた。引きで、こじ開けにいく。そこを、相手は——待っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-14",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "surprised"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "倒れる手牌。ロン。読み切られた一枚が、まっすぐ刺さる。会場の空気が、ぴたりと静まり返った。",
     "characterEffect": "shake",
     "screenEffect": "shake",
-    "effectDurationMs": 400,
+    "effectDurationMs": 600,
+    "emoteId": "shock",
     "seId": "se-impact"
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 13,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "shock",
-    "text": "……うそ、でしょ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 14,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥の手から、大きな失点。一度傾いた流れは、二度と、戻ってこなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 15,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "なすすべなく、四つ目の宝は、指の間からこぼれ落ちた。覇道に踏み出して、初めての黒星。",
+    "text": "敗北。覇道編に入って、初めての黒星だった。点棒が運ばれていく音が、やけに大きく聞こえる。詩玥は、倒れた相手の手牌を、ただ見つめていた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow",
+    "seId": "se-score"
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 16,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "会場の外。長い廊下の隅で、詩玥は壁にもたれたまま、ずっと黙り込んでいた。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-night"
+    "text": "……読まれてた。最初から、最後まで。我の手、ぜんぶ、向こうの手のひらの上だったヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
@@ -11299,13 +19018,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "いつもなら、すぐにじゃれついてくるのに。今は、触れさせない空気が、薄く張られている。",
+    "text": "会場の外、人気のない廊下。詩玥は、壁に背を預けて、ずるずると座り込んだ。膝を抱える。いつも軽く弾んでいた声が、どこにも見当たらない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11317,16 +19041,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "それでも、そっと、隣に腰を下ろす。何も言えないまま、ただ、傍にいた。",
+    "text": "……引けなかったヨ。引けば勝ちって、そう思ってきたのにネ。引くより先に、ぜんぶ読まれたら、我には、もう、なんにもないんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
@@ -11335,13 +19065,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……ねぇ。引きじゃ、どうにもならなかったヨネ。今の。",
+    "text": "なんにもない。その言葉が、廊下の冷たい床に落ちる。引きだけで来た道が、初めて、行き止まりにぶつかった。かける言葉が、見つからなかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11353,13 +19088,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "引きで勝ってきた人が、引きでは届かなかったと、自分で認める声。それが、どれだけ重いか。",
+    "text": "……あなたなら。本当は、あれが読めたはずだ。来る場所も、待たれている場所も、ぜんぶ。昔の、あなたなら——。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11371,16 +19111,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "ほんとはさ。ああいうの、読めば、防げたノ。捨て牌、ぜんぶ見えてたもん。",
+    "text": "――やめて。その話は、しないでヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "silence"
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
@@ -11389,13 +19135,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……でも、読まない、って決めてるから。我は。",
+    "text": "固い声だった。いつもの語尾の柔らかさが、すっかり抜け落ちている。マモリの触れかけた“昔の名前”を、詩玥は、まるで火傷した手を引っ込めるように、遮った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11407,13 +19158,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "読めば、防げた。なのに、読まない。——その奇妙な頑なさの理由を、まだ、知らなかった。",
+    "text": "……あの読みは、捨てたヨ。とっくに。もう、我のものじゃないんダヨ。だから、その名前で呼ばないでヨ。お願いネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11425,13 +19181,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "……ごめんネ。なんか、変なこと言った。忘れて。",
+    "text": "……ああ。すまない。もう、言わない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11443,13 +19204,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥が、ぎゅっと、自分の腕を抱く。触れられたくない何かを、隠すみたいに。",
+    "text": "マモリが、それきり口をつぐむ。短い沈黙が、廊下に降りる。詩玥は、膝に顔を半分うずめたまま、動かない。捨てた、と言ったその声が、少しだけ震えていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11461,13 +19227,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "その背中が、いつもより、ずっと小さく見えた。",
+    "text": "……今日は、もう休め。次は、ある。私は、先に宿へ戻る。あなたは、少し、一人になったほうがいいだろう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11479,13 +19250,13 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "かける言葉は、見つからない。ただ、立ち去らずに、その隣に、居続けた。",
+    "text": "マモリが、静かに去っていく。廊下に、詩玥が、一人で残った。いつも誰かにもたれかかり、頭を撫でてくる人が、今は、丸めた背中をこちらに向けて、じっとうずくまっている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11497,13 +19268,13 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……あんた、まだ、いてくれるんダ。",
+    "text": "声をかけるべきなのか、わからなかった。何かを抱え込んで小さくなった背中を、ただ、隣で見ているしかできない。負けたのは、卓だけではない気がした。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11515,70 +19286,17 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ぽつりと、詩玥が呟く。その声が、ほんの少しだけ、ほどけた気がした。",
+    "text": "捨てた、ともう一度、小さくつぶやくのが聞こえた。誰に言うでもなく、自分に言い聞かせるように。——それなら、なぜ、こんなに苦しそうなのだろう。問いだけが、廊下の底に残った。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 30,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……ん。ありがと。もうちょっとだけ、こうしてて、いい?",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 31,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "こくり、と頷くと、詩玥がそっと、肩に頭を預けてきた。さっきまでの硬さが、少しだけ、緩む。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 32,
-    "backgroundId": "bg-corridor",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その重さを受け止めながら、思う。この人の頑なさの奥には、きっと、まだ知らない何かがある——と。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 800
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
@@ -11593,10 +19311,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "あの大会から、数日。道場の夜は、いつもより、静かだった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
+    "text": "夜の道場。灯りはひとつきり。負けた日の重さを、誰も口にしないまま、時間だけが過ぎていく。詩玥は、卓の前に座って、さっきの一局を、牌で並べ直していた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
     "bgmId": "bgm-night"
   },
   {
@@ -11610,12 +19328,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "詩玥は、卓に牌を並べていた。あの負け局を、並べ直しているのだと、すぐにわかった。",
+    "text": "……ここで、こう来たヨね。で、我がこっち押して。そしたら、向こうが、ここに居たんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-tile"
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
@@ -11628,9 +19347,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……ここで、こう切られて。こっちを止められて。ほんと、嫌んなるくらい、上手だったヨ。",
+    "text": "並べた牌を、指でなぞる。負けをほどくように、一手ずつ。その手が、ふと、止まった。並べているうちに、頭の奥で、何かが勝手に動きはじめたらしい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11643,15 +19362,16 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "廊下で言いかけて飲み込んだ問いが、まだ胸に残っていた。——読めば防げたのに、なぜ、読まないのか。",
+    "text": "……あれ。ここで、向こうがこの牌を切ったってことは……次は、ここに待ちがある。そのまた次は——。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "notice"
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
@@ -11661,218 +19381,20 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "意を決して、訊いてみる。「どうして、読まないって、決めてるの?」と。",
+    "text": "言葉が、するすると出てくる。誰に教わるでもなく、相手の手の中が、伏せられた牌の向こうまで、見えてしまっている。長く耳を塞いできた、あの冷たい声が——勝手に、答えを弾き出していた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 6,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥の指が、ぴたりと、止まった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 7,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……お。なかなか、踏み込んでくるネ、あんた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "茶化すような声。でも、その目は、笑っていなかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 9,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "昔ね。我には、もう一人いたノ。冷たくて、ぜったい間違えない、計算するほうの我が。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "『深謀遠慮』なんて、ご大層な名前で呼ばれてた頃の、我。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 11,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "牌に目を落としたまま、詩玥が、ぽつぽつと続ける。隣に座り直して、静かに耳を傾けた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "その計算でね。我、いちばん大事な人の、いちばん見たかったものを、見せ損ねたノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "正しく降りて、正しく勝って。……それで、あの人は、我のツモを、一度も見ないまま、逝っちゃった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "いつか聞いた、あの痛み。けれど、こうして改めて本人の口から聞くと、また違う重さで、胸に届く。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "だから、決めたノ。もう、計算なんかしない。ツモれば、勝ち。それだけで、いいって。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "話しながら、詩玥の指は、無意識に牌を並べ続けていた。——その手が、ふいに、止まる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 17,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -11883,31 +19405,232 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "emoteId": "notice",
-    "text": "——っ。",
+    "text": "――っ。やめ……やめてヨ。なんで、いま、聞こえるネ。",
     "characterEffect": "shake",
     "screenEffect": "none",
-    "effectDurationMs": 300,
+    "effectDurationMs": 500,
+    "emoteId": "shock",
     "seId": "se-heartbeat"
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 7,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥が、並べた牌を、手の甲で乱した。じゃら、と崩れる音。両手で、耳をふさぐ。肩が、小さく上下している。負けた卓よりも、ずっと怯えた顔だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そっと、隣に座る。何を言うでもなく、ただ、傍にいる。詩玥は、耳をふさいだまま、しばらく動かなかった。やがて、ぽつりと、口を開いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……聞こえたヨ。あの声。読みの声ダヨ。ずっと、聞かないようにしてきたのにネ。負けた局を並べてたら、勝手に、戻ってきたヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "笑っちゃうヨね。封じてたものが、いちばん欲しいときに、勝手に出てくるんダヨ。……でも、我は、これが怖いんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 11,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "視線が、遠くへ落ちる。灯りの届かない、暗がりのほうへ。並べた牌も、夜の道場も、すっと遠ざかって——古い記憶の底から、ひとつの声が、浮かび上がってきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 12,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": "恩師",
+    "text": "……お前のツモが、見たいんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 13,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "恩師の声。ただ、それだけ。誰の姿も、そこにはない。声の断片だけが、暗がりに灯って、すぐに溶けていく。詩玥の手が、膝の上で、きゅっと握り込まれた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あの人はネ、我のツモが見たいって、言ってくれたヨ。だから我、決めたんダヨ。読みも、計算も、ぜんぶ捨てて、ツモることだけ信じるって。それが、誓いだったヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あの読みの声を握り直すってことは、その誓いを、破るってことヨ。あの人と交わした、たったひとつの約束を、自分でほどくってことなんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誓いを破る。その言葉に、詩玥の声が、細くなる。膝を抱える腕に、力がこもった。いつも近くまで来て、もたれかかってくる人が、今は、自分で自分を抱きしめていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "それにネ。あの冷たい声で、正しく計算して、正しく降りた決勝で……我、あの人を、見送ったヨ。一度も、我のツモを見せないままにネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 18,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "詩玥が、弾かれたように牌から手を離す。その横顔が、こわばっていた。",
+    "text": "だからネ。あの声を、また握ったら……また、誰かを見送る気がするんダヨ。今度は、あんたを。……それが、怖いヨ。怖いんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-mystery"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
@@ -11920,9 +19643,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……やだな。聞こえちゃった。ずーっと、耳ふさいでたのに。",
+    "text": "怖い、と。その一言を、この人がまっすぐ口にしたのを、初めて聞いた。いつもの軽口の仮面が、夜の底で、すっかり剥がれている。差し出された手を、両手で、そっと包んだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11938,12 +19661,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "「声?」と、小さく訊き返す。",
+    "text": "……あんたは、いてくれるんだネ。こんな、情けない我の隣に。……ありがとうヨ。ほんとに。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "flower"
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
@@ -11956,9 +19680,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "あの、冷たい声。計算する、我の声。久しぶりに、勝手に、答えを弾いちゃったノ。",
+    "text": "けれど、口にするうちに。声に出して、自分の怖さをほどいていくうちに。詩玥の言葉が、ふと、途中で止まった。何かが、引っかかったらしい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11976,10 +19700,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "あれで数えはじめたら……我、また、いちばん数えちゃいけないものを、数えちゃう気がして。",
+    "text": "……ねえ。いま気づいたんだけどヨ。あの人、ほんとに『降りるな』って言ったかな。『計算を捨てろ』って、はっきり言ったかなあ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "question"
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
@@ -11989,12 +19714,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "計算を取り戻すことは、誓いを破ること。それはまた、何かを見送ることのように、彼女には思えるのだ。",
+    "text": "あの人が言ったのは……『お前のツモが見たい』。それだけヨ。それを、我が勝手に、『じゃあ計算は捨てる』って、つなげただけ、かもしれないネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12012,7 +19737,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "怖い、と。あの人懐っこい詩玥が、初めて、はっきり弱さを口にした。",
+    "text": "あの人は、本当に、そう言ったのだったか。——その問いに、詩玥は、答えを持っていなかった。長く信じてきた誓いの、いちばん根っこに、初めて、小さな揺らぎが生まれている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12028,9 +19753,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "なんと言えばいいか、わからない。ただ、そっと、その手に、手を重ねた。",
+    "text": "……わかんないヨ。今日は、もう、わかんないネ。でも、なんか、ずっと閉じてた窓が、ちょっとだけ開いた気がするヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12043,15 +19768,16 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "surprised"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……あ。",
+    "text": "答えは、まだ出ない。けれど、問いだけが、夜の底に、小さく灯った。消えそうで、消えない。その小さな光を、詩玥は、こわごわと、けれど手放さずに、見つめていた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "notice"
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
@@ -12064,9 +19790,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "詩玥が、ちょっと驚いたように瞬きして、それから、ふにゃっと笑った。",
+    "text": "……もう少しだけ、ここにいてヨ。我、もうちょっと、この窓のこと、考えてみたいんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12079,94 +19805,21 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "smile"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "もー。慰めるの、下手っぴだネ。……でも、あったかいヨ。",
+    "text": "うなずいて、その傍に、ただ居る。灯りひとつの道場で、夜が、ゆっくり更けていく。怖さの底に灯った小さな問いが、明日、どこへ転がっていくのか。それを、隣で見届けたかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-warm"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "握り返してくる手は、少し冷たくて、ほんの少し、震えていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 30,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "今日は、答えなんて、出なくていい。ただ、この手を、離さないでいよう。そう思った。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 31,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……ねぇ。もし、あの人が、ほんとは違うこと言ってたんだとしたら。我、どうしたら、いいのかナ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 32,
-    "backgroundId": "bg-dojo-night",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その問いには、まだ答えられない。けれど灯った小さな問いは——消えずに、夜の底で、静かに揺れていた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 800,
     "bgmId": "bgm-night"
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo-night",
     "standings": [
       {
         "characterId": "shiyue",
@@ -12176,426 +19829,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "翌日。夕暮れの道場で、詩玥は、まだ昨夜の問いの中にいるみたいだった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-warm"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 2,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ねぇ。昨日の続き、なんだけどさ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 3,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "我の師匠ね。口癖が、あったノ。『お前のツモが、見たい』って。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 4,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "会うたびに、そう言われたのだと、詩玥は懐かしそうに目を細める。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 5,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "だからずっと、こう信じてた。『計算なんか捨てて、ツモを掴め』って意味だ、って。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 6,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "ふと、引っかかる。その師匠は、詩玥に、いったい何を教えた人だったのだろう。何気なく、訊いてみた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 7,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "なに教わったか? ぜんぶだヨ。引きも、速さも——",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 8,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……読みも、守りも。あの人、なんでも、叩き込んでくれたノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 9,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "なんでも、教えた。引きだけじゃなく、読みも。——だったら、と。素朴な疑問が、口をついて出た。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 10,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「その師匠は、あなたの“読み”も、好きだったんじゃないの?」と。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 11,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、きょとんと、こちらを見た。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 12,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "surprised"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……え。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 13,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "それから、ゆっくりと、その目が、見開かれていく。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-mystery"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 14,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……あ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 15,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "そっか。そうだ。あの人……『引きは本物だ』って。『本物だからこそ、ほかの翼も、磨いておけ』って——",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 16,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥の声が、震える。記憶の中の言葉が、いま、まるで違う形を、結びはじめていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "『読んで、数えて、守って。そのうえで、最後に、引け』。……ぜんぶ、使えって。そう、言ってたノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "notice",
-    "text": "翼。あの人、確かに、そう言ってた。我の読みも、計算も——ぜんぶ、前を向くための、翼だって。",
-    "characterEffect": "none",
-    "screenEffect": "flash",
-    "effectDurationMs": 400,
-    "seId": "se-flash"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "「お前のツモが見たい」。それは——教えを捨てろ、という意味じゃ、なかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 20,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "培ったもの、ぜんぶ広げて。読んで、数えて、守って。そのうえで、前を向いて、引いてみせろ——",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 21,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "そういう、意味だったノ……?",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 22,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "決勝のあの日。詩玥は『正しく降りて』勝った。完璧な計算が、正しく、ツモを諦めさせた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "あの人が見たかったのは、勝ちじゃない。ぜんぶの翼を広げて前を向く、詩玥そのものだったんだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "heartbreak",
-    "text": "我……逆だったノ。",
+    "text": "夜は、まだ明けない。灯りの下で、詩玥は、昨夜灯った問いを、ずっと手繰っていた。あの人は、本当に『計算を捨てろ』と言ったのか。その糸の先を、たどっていく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -12603,26 +19837,26 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo-dusk",
+    "lineNo": 2,
+    "backgroundId": "bg-dojo-night",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "計算が悪いって、耳ふさいで。翼を、自分の手で、もいでた。それじゃ、前なんか……向けるわけ、ないノに。",
+    "text": "……思い出すヨ。あの人と過ごした日のこと。ぜんぶ、ちゃんと、思い出すんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
+    "lineNo": 3,
+    "backgroundId": "bg-sky",
     "standings": [
       {
         "characterId": "shiyue",
@@ -12632,7 +19866,26 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ぽたり、と。膝の上に、雫が落ちた。詩玥は、それを、拭わなかった。",
+    "text": "灯りの輪郭が、遠ざかる。記憶が、明るいほうへ開いていく。よく晴れた日々。卓を挟んで、若い詩玥に、ひとつひとつ手ほどきする、恩師の姿があった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 4,
+    "backgroundId": "bg-sky",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": "恩師",
+    "text": "相手の河を、よく視ろ。読むんだ。次に何が来るか、どこで待っているか。お前には、それが視える素質がある。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -12640,7 +19893,284 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 27,
+    "lineNo": 5,
+    "backgroundId": "bg-sky",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "読みを教わった。守りを教わった。危ない牌の止め方も、安全な道の見つけ方も。あの人は、惜しまず、ぜんぶを、若い詩玥に叩き込んだ。深謀遠慮の名は、そうして育った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 6,
+    "backgroundId": "bg-sky",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": "恩師",
+    "text": "……でもな。お前は、視えすぎるあまり、降りてばかりだ。読みは、降りるためだけのものじゃない。……いつか、お前のツモが、見たいんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 7,
+    "backgroundId": "bg-sky",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "お前のツモが、見たい。その口癖の、本当の重さに、いま、初めて触れた気がした。あの人は、いつも、笑いながらそう言っていた。読みのすべてを、教えながら。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 8,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "記憶が、ほどけていく。灯りの道場に、意識が戻る。詩玥の目が、見開かれた。手繰ってきた糸の先で、ずっと探していたものに、指先が、触れた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 9,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……あの人は、一度も。一度も、『計算を捨てろ』なんて、言ってないヨ。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 600,
+    "emoteId": "notice",
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 10,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "surprised"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "読みを教えてくれたのも、あの人ヨ。守りを教えてくれたのも。そのうえで、『お前のツモが見たい』って、言ったんダヨ。捨てろ、じゃないヨ。ぜんぶ持ったまま——前を向け、って。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 11,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "捨てろ、ではなかった。培ったすべてを——読みも、算も、ぜんぶ抱えたまま、それを使って、前を向いて打て。あの人の願いは、ずっと、そういう形をしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 12,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我は……勘違いしてたヨ。読みを捨てて、耳を塞ぐことが、あの人への手向けだって、思ってたんダヨ。でも、違ったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あの人が育ててくれた読みを、捨てて、耳を塞いだこと。それこそが……いちばん、あの人の願いに、背いてたんダヨ。ずっと、ずっと、背いてきたんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "heartbreak"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 14,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥の目に、見る間に膜が張った。手の甲で、ぐいと拭う。けれど、追いつかない。ずっと自分を罰してきた誓いが、いま、根っこからほどけていく。涙が、止まらなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 15,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ごめんネ……ごめんヨ。あの人が、せっかく授けてくれたものを。我、ずっと、箱に押し込んで、鍵かけて。それが、忠義だって、信じ込んでたんダヨ……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 16,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "差し出した手を、強く握り返された。子どものように、声を上げて泣くこの人の背を、そっとさする。長い夜のあいだ閉じていた窓が、いま、内側から、大きく開いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 17,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": "恩師",
+    "text": "……お前のツモが、見たいんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 18,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "もう一度、あの声が、記憶の奥でやさしく響いた。今度は、もう、足を掴む囁きではない。背中を、そっと押す声だった。同じ言葉が、まるで、別の意味に聞こえる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 19,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……わかったヨ。やっと、わかったんダヨ。あの声は、我を縛る鎖じゃ、なかったネ。我に、翼を持たせてくれてた声だったんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 20,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -12651,7 +20181,137 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そっと、その背に、手を回す。震える肩を、ただ、支える。",
+    "text": "障子の向こうが、ほのかに白みはじめる。夜明け前の、橙の気配。詩玥は、涙を拭って、立ち上がった。乱れたままだった牌を、卓の上に、もう一度、静かに並べ直す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve",
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "並べながら、あの冷たい声が、また、答えを弾き出す。相手の手の中が、伏せ牌の向こうまで、見えてくる。けれど、詩玥は、もう耳を塞がなかった。逃げずに、その声を、聞いている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……戻っておいでヨ。我の、読みの声。もう、塞がないヨ。怖がらないヨ。あんたは、我の敵じゃなかったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "長く、自分の半分を切り離してきた人が、いま、その半分に、手を差し伸べている。恐れる相手としてではなく。自分の一部として、迎え入れるように。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あのネ。我、ずっと『捨てた』って言ってきたヨ。でも、違ったんダヨ。捨てたんじゃ、なかったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ただ、しまってただけヨ。怖くて、箱に入れて、鍵かけて、見ないようにしてただけネ。……今度はネ、ちゃんと出すヨ。翼として、使うんダヨ。",
+    "characterEffect": "jump",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "sparkle",
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "翼として、使う。その声に、もう、迷いの影はなかった。涙のあとの目元が、夜明けの光で、まっすぐ輝いている。いつもの軽さが、今度は、新しい強さを乗せて、戻ってきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我はネ、引けるヨ。それは、変わらないヨ。でも、これからは——読めるし、引ける。両方、ぜんぶ持って、前を向くんダヨ。それが、あの人の、願いだったからネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12664,15 +20324,16 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "default"
+        "standingId": "smile"
       }
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "……あんたが、訊いてくれなかったら。我、ずっと、気づかなかったヨ。",
+    "text": "さあ、次の卓ヨ。あの読みの達人にも、奥に居た連中にも、今度は、ちゃんと向き合えるネ。……見てててヨ、あの人。これが、我の、ほんとのツモダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "music"
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
@@ -12682,12 +20343,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "default"
+        "standingId": "smile"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ひとりじゃ、ぜったい、たどり着けなかった。……ほんと、ばかみたいだネ、我。",
+    "text": "差し出した手を、ぎゅっと握って、立ち上がる。もう、丸まった背中はどこにもない。前を向いたこの人の隣に並ぶと、夜明けの光が、二人の足元まで、まっすぐ届いていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12700,161 +20361,16 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "default"
+        "standingId": "smile"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "泣き笑いの声。けれど、その横顔は、憑きものが落ちたみたいに、晴れていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 31,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "やがて——詩玥が、ゆっくりと、顔を上げた。",
+    "text": "しまい込んだ読みを、今度は翼として握り直した人が、次の卓へ歩き出す。失った半分が、戻ってくる。引けて、読める打ち手へ。その変わっていく背中を、最後まで隣で見届けたいと、静かに思った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-none"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 32,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "障子の向こうの夕日が、並んで座る二人を、橙に染めていた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 33,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……決めたヨ。我、もう一度、読む。もう一度、数える。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 34,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "捨てたんじゃ、なかったノ。ただ、こわくて……しまい込んでただけ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 35,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "今度はね。もう、怖がらない。あの冷たい声を——翼として、使うノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 36,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、こちらの手を、両手で、ぎゅっと包み込む。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 37,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "見ててネ、相棒。我の『読んで、引く』。あんたに、いちばん最初に、見せたげるから。",
-    "characterEffect": "jump",
-    "screenEffect": "flash",
-    "effectDurationMs": 450
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 38,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "夕日の中で、詩玥が笑う。もう一枚の翼を取り戻した打ち手が、握った手を引いて、立ち上がった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 900
+    "bgmId": "bgm-warm"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -12863,17 +20379,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "次の大会。会場の空気は、相変わらず張りつめている。けれど、詩玥の目は、もう違っていた。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-resolve"
+    "text": "次の大会の会場。向かいに座ったのは、あの夜とよく似た静けさを持つ打ち手だった。派手な仕掛けはない。ただ、こちらの河を、底まで覗き込む目をしている。前に詩玥が呑まれた、あの型だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -12882,13 +20403,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "観客席の方に、マモリの姿があった。今日も、二人の躍進を、見届けに来てくれている。",
+    "text": "……読み合いの型だ。前の卓で、あなたを止めたのと同じ。覚悟は、いいか。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12900,13 +20426,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "さ、相棒。今日はね——昔の我も、連れてきたノ。",
+    "text": "ん、わかってるヨ。前は、ここで逃げたネ。耳を塞いで、引きだけで突っ込んだヨ。……でも今日は、違うんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12918,13 +20449,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥が、ぱちんと、自分の頬を両手で挟んで気合いを入れる。それから、こちらの背を、とん、と押した。",
+    "text": "詩玥の横顔から、いつもの軽さが、すっと引いていく。けれど、丸まってはいない。背筋はまっすぐ伸びたまま。前の卓で見た怯えとは、まるで別の静けさだった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12936,13 +20472,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "対局開始。そして——14話と同じ、底の知れない読み合いの局面が、再び訪れる。",
+    "text": "対局が始まる。配牌が伏せられ、卓に緊張が降りた。相手が、いつものように、来る道を先回りして塞ぎにくる。前なら、ここで言葉が空回りしはじめる場面だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -12956,13 +20497,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "相手は、またも、こちらの手を底まで覗き込もうとする。——だが。",
+    "text": "……戻っておいでヨ。我の、読みの声。あんたの番ダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12974,13 +20520,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "今日の詩玥は、ただ引きに任せて突っ込んだりは、しなかった。",
+    "text": "詩玥が、長く塞いできた声を、自分から迎え入れる。すると、伏せ牌の向こうが、見えはじめた。相手がどこで待っているか。どの牌が、罠なのか。冷たい声が、ひとつひとつ、答えを弾き出していく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -12992,13 +20543,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "……ふぅ。久しぶり、だネ。冷たい声。今日は、一緒に打とっカ。",
+    "text": "そこは、待ってるネ。だから切らないヨ。こっちの道も、塞がれてる。じゃあ……この一枚は、まだ生きてるネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13010,13 +20566,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥が、長く蓋をしていた『計算する自分』を、今度は、こわばらずに、迎え入れる。",
+    "text": "詩玥の指が、危ない牌を、ひとつずつ避けていく。無駄を削る。先回りされた道を踏まずに、別の道を、自分の手で選び直す。読みが、振り込みを未然に潰していった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13028,16 +20589,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "相手の河が、読める。捨て牌の意味が、待ちの形が、すうっと、像を結んでいく。",
+    "text": "……危ない牌を、私に渡してこない。自分で、避けている。それも、来る場所を読み切って。……これは。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "notice"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -13046,13 +20613,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そこが危ないノは、もう見えてるヨ。だから——切らない。",
+    "text": "いつも後ろを固めるマモリの守りに、出番が回ってこない。詩玥が、振り込む前に、自分で全部止めている。守りに頼って耐えていたあの卓とは、攻守がまるごと入れ替わっていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13064,13 +20636,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "振り込みの未来を、読みで避ける。無駄な一打を、削る。詩玥の手が、静かに、研ぎ澄まされていく。",
+    "text": "読めるヨ。前は、見えなかった底まで、ぜんぶ見えてるんダヨ。……でもネ、ここからが、我の本番ヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13082,13 +20659,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それは、すぐ隣で見ていても、ぞくりとするほど、美しい組み立てだった。",
+    "text": "守りに使うだけなら、引き分けにしかならない。けれど詩玥は、読みで安全な道を見極めたうえで、その道の先に、自分のツモを育てはじめた。読みが、攻めへ繋がっていく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13100,16 +20682,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "読んで、守って、数えて。そのうえで——詩玥の手が、最後の一枚へと、伸びる。",
+    "text": "あんたの待ちは、ぜんぶ避けたヨ。そのうえでネ……我は、ここを、引くんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-tile"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -13118,16 +20706,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ここまで、ぜんぶ読み切ったヨ。あとは——我の、得意なやつ、ダヨ。",
+    "text": "相手の待ちを外しきった、その安全な一点で、詩玥が最後の山に手を伸ばす。読んで、削って、磨いた一手。あとは、天性の引きが、それを掴むだけ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -13136,116 +20730,28 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "emoteId": "impact",
-    "text": "——ツモ。",
+    "text": "ツモ。……ほら、言ったダロ。読んで、引いた。これが、我の手ダヨ。",
     "characterEffect": "jump",
     "screenEffect": "flash",
-    "effectDurationMs": 450,
+    "effectDurationMs": 700,
+    "emoteId": "joy",
     "seId": "se-tsumo"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
     "lineNo": 17,
     "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "会心の一打。読み切った末に、引き寄せた満貫。四つ目の宝が、二人の手に、戻ってくる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-score",
-    "bgmId": "bgm-victory"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 18,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "読んで、引いた。理屈と勘が、初めて一つの翼になった、その瞬間だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 19,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "やった——！　見た!? 今の、見ててくれた!?",
-    "characterEffect": "jump",
-    "screenEffect": "none",
-    "effectDurationMs": 400
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 20,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、ぱっと抱きついてきた。勝利の熱と、弾むような鼓動が、まっすぐ伝わってくる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 21,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "つられて笑いながら、しっかりと、頷く。ちゃんと、見ていた。誰よりも、近くで。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 22,
-    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
@@ -13260,11 +20766,129 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "卓を離れると、見守っていたマモリが、ゆっくりと、歩み寄ってきた。",
+    "text": "倒れた手牌に、会場がどよめいた。読み切って振り込みを避け、そのうえで自分のツモを呼ぶ。理屈と勘が、初めて一つの翼になって、卓を駆け抜けていった。四つ目の宝が、決まる。",
     "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 400,
-    "bgmId": "bgm-warm"
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-17",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの夜、廊下で膝を抱えて『なんにもない』とつぶやいた人が、いまは、卓の真ん中で、まっすぐ前を見ている。負けた相手が、静かに頭を下げて、席を立った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-17",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ふぅ。久しぶりに、頭が疲れたヨ。引くだけのほうが、ずっと楽だったネ。……でも、こっちのほうが、ずっと、強いんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "music"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-17",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "マモリが、卓を回り込んで、詩玥のそばに立った。いつもの抑えた表情のまま、けれど、その目が、少しだけ和らいでいる。長く張り詰めていた糸が、ふと、ゆるんだような顔だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-17",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……お見事でした。来る場所も、待たれている場所も、ぜんぶ読み切った。そのうえで、引いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-17",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "やっぱり、あなたは——深謀遠慮ね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -13282,12 +20906,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……やっぱり、あなたは。",
+    "text": "深謀遠慮。あの廊下で、火傷した手を引っ込めるように遮った、昔の名前。あのとき詩玥は、その名で呼ばれて固まった。今度は、どうするのだろう。思わず、横顔を見てしまう。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -13305,9 +20930,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "「深謀遠慮」、ね。",
+    "text": "詩玥は、固まらなかった。肩も、強張らない。少しだけ目を伏せて、それから、口元を、ふっとほどく。あの名前を、ようやく、まっすぐ受け止められる顔になっていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13320,7 +20945,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
@@ -13328,12 +20953,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "かつて、詩玥が固く拒んだ名前。刺のある声で「呼ばないで」と言った、あの古い呼び名。",
+    "text": "ん。……その名前、久しぶりに聞いたネ。前は、呼ばれるたびに、火傷しそうだったヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "flower"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -13343,7 +20969,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
@@ -13351,9 +20977,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "けれど、今度の詩玥は——こわばらなかった。",
+    "text": "でも今は、ちゃんと受け取れるヨ。ありがとネ、マモリ。……でも、昔の我とは、少し違うかもネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13366,7 +20992,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -13374,9 +21000,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "……ふふ。ん、その名前。久しぶりに、ちゃんと受け取るヨ、マモリ。",
+    "text": "……ええ。昔のあなたは、読めて、降りた。今のあなたは、読めて——引く。同じ名前でも、中身は、別物だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13389,7 +21015,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -13397,9 +21023,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "でもネ。昔の我とは、ちょっとだけ、違うかもネ。",
+    "text": "二人の間に、長くあった刺が、いつの間にか、なくなっている。古い名前を遠ざける詩玥と、それを知っているマモリ。互いに気を張っていた距離が、今は、すっとほどけていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13412,18 +21038,17 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
         "position": "right",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "emoteId": "question",
-    "text": "……違う?",
+    "text": "さ、四つ目、取ったヨ。残りは、五つネ。次の卓も、その次も、読んで、引くヨ。……二人とも、ついてきてヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13444,105 +21069,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "うん。だって今の我は——読めるし、引けるんダから。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 31,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "二人の間にあった、古い刺が、すっと、ほどけていく。",
+    "text": "差し出された手を、いつものように、ぎゅっと引かれる。けれど今日のその手は、これまでよりも、ずっと確かだった。読めて、引ける人になった背中が、次の卓へ歩き出す。隣を、できるだけ長く、歩いていたいと思った。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 32,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "……ええ。今のあなたなら、安心して、見ていられる。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 33,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "見守る人の、静かな祝福。詩玥が、嬉しそうに、こちらの腕に、ぎゅっと絡みついた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 34,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "翼を取り戻した師匠の、その温かさを、くすぐったく受け止めながら——次の宝へ、目を向けた。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 800
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -13551,16 +21084,21 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
         "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "読みと引きを取り戻した詩玥は、もう、危なげがない。宝は、五つ目まで、危なげなく重なった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
+    "text": "それからの三人は、速かった。読んで、引いて、後ろは守る。四つ目を取った卓から、五つ目の宝が、すぐに続いた。会場を渡り歩くたびに、詩玥の名が、少しずつ大きくなっていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
     "bgmId": "bgm-resolve"
   },
   {
@@ -13570,16 +21108,22 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "そして、次は——三人ひと組で挑む、団体戦。",
+    "text": "ほら、五つ目ヨ。読みと引きが噛み合うと、もう止まらないネ。残りは、四つダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "music"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -13597,9 +21141,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "見守り役のマモリが、久しぶりに、隣の席に着く。「この大会だけは、私も出る」と、静かに。",
+    "text": "……次の会場は、格が違う。上位の大会だ。集まる打ち手の質も、これまでとは別物になる。気を引き締めていけ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -13611,45 +21155,41 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
+        "position": "center",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "二人の翼は、ずっと見てきた。今日は、その背中を、私が守る番ね。",
+    "text": "その上位の会場へ足を踏み入れた瞬間、空気が、ずしりと重くなった。歓声も、ざわめきも、どこか遠い。卓の一つだけ、まわりの光が吸い込まれるように、暗く沈んでいる。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
     "lineNo": 5,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "serious"
       },
       {
-        "characterId": "mamori",
+        "characterId": "nebula",
         "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "emoteId": "music",
-    "text": "心強いネ。三人なら、こわいもの、なし、ダヨ！",
+    "text": "向かいに座っていたのは、漆黒の星雲をまとう打ち手だった。表情はなく、視線は卓のもっと奥、底のないどこかを見ている。隣のマモリの肩が、ぴくりと強張った。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -13659,21 +21199,21 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
-        "characterId": "mamori",
+        "characterId": "nebula",
         "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "nebula",
     "speakerNameOverride": null,
-    "text": "——けれど。卓に着いた瞬間、その余裕は、すうっと、凍りついた。",
+    "text": "……ようこそ。淵の縁へ。ここでは、勝ち方そのものが、ひっくり返る。あなたの覚えた打ち筋は、ここでは、意味を失う。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-mystery"
+    "emoteId": "tension"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -13683,25 +21223,20 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
         "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
         "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "向かいの席。漆黒の星雲をまとったような、底の見えない打ち手が、静かに座っていた。",
-    "characterEffect": "fade_in",
+    "text": "アビス。世界の影と呼ばれる者たちの、呪われた力。受ける痛みは人の倍、掴む喜びは半分。それでも尽きない持ち点で、この打ち手は、淵のように卓へ居座り続ける。",
+    "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 500
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -13711,25 +21246,26 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
-        "characterId": "nebula",
+        "characterId": "mamori",
         "position": "center",
         "standingId": "default"
       },
       {
-        "characterId": "mamori",
+        "characterId": "nebula",
         "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "nebula",
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "……ようこそ。受ける痛みは人の倍、掴む喜びは半分。それでも、沈まない場所へ。",
+    "text": "……まずい。私の守りが、効かない。危険牌を止めても、あの持ち点は、まるで減らない。底が、ない。これは、私の知っている麻雀じゃない。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -13739,25 +21275,26 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
-        "characterId": "nebula",
+        "characterId": "mamori",
         "position": "center",
         "standingId": "default"
       },
       {
-        "characterId": "mamori",
+        "characterId": "nebula",
         "position": "right",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……ネビュラ。アビスの、打ち手よ。",
+    "text": "引いても、その喜びは半分に削られる。守っても、淵は底なしで埋まらない。詩玥の引きも、マモリの守りも、片端から飲み込まれていく。三人が、じりじりと縁へ追い詰められた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -13771,223 +21308,21 @@ export const SCENARIO_LINE_MASTER = [
       },
       {
         "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "アビス……さっきから、なんなのサ、それ。普通じゃ、ないネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 11,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "アビスの能力はね。——麻雀への、勝ち方そのものが、ひっくり返るほどの。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 12,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "“呪われた能力”、と呼ばれている。まともな道理が、通じない相手よ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 13,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "麻雀の、勝ち方そのものが、ひっくり返る。その意味が、対局が始まって、すぐにわかった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-battle"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 14,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が引けば、それを上回る打点で返される。マモリが守れば、その守りごと、削られていく。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 15,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "勝つための道理が、片端から、裏返されていく。積み上げてきたものが、足元から崩れる感覚。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 16,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "sweat",
-    "text": "……重いノ。勝ち方そのものが、わかんなくさせられる……っ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 17,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
         "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": "nebula",
     "speakerNameOverride": null,
-    "text": "見えているよ。君の過去も、その古い名も。——深く謀り、遠くを慮る者。",
+    "text": "……深く謀り、遠くを慮る。よい名だ。だが、その目は、もっと昔に、別のものを見ていたはずだ。あなたを育てた手も、いまは、この淵のほとりに立っている。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "silence"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 18,
+    "lineNo": 11,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -13997,25 +21332,21 @@ export const SCENARIO_LINE_MASTER = [
       },
       {
         "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
         "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ネビュラの言葉が、詩玥の奥の、触れられたくない場所を、そっと撫でる。アビスは、彼女の過去を、知っている。",
+    "text": "詩玥の指が、ほんの一瞬、止まった。育てた手。恩師。深謀遠慮。その言葉が、目の前の漆黒と、薄く、繋がろうとする。何かが、卓の奥で、影の輪郭をにじませた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 19,
+    "lineNo": 12,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -14025,21 +21356,196 @@ export const SCENARIO_LINE_MASTER = [
       },
       {
         "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
         "position": "right",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "……我のこと、ずいぶん知ってるみたいな、口ぶりダネ。",
+    "text": "……あんた、何を知ってるヨ。あの人のこと。我の昔のこと。……でも、いまは聞かないヨ。今は、この卓を、抜けるのが先ダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "nebula",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥が、息を一つ吐いて、揺れた指を戻す。怯んだ目が、もう一度、底なしの淵へ向き直った。読みの声を、迎え入れる。誘いに乗らず、淵そのものの流れを、底まで読みにいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "nebula",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "見えてきたヨ。底なしの淵にも、流れはあるネ。あんたが居座れるのは、痛みを倍で受けて、喜びを半分で呑むからダロ。……なら、半分しか喜べない一点を、突くヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      },
+      {
+        "characterId": "nebula",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "マモリ、ここを止めてヨ。我が読んだ通りの牌が、来るネ。弟子、あんたは我の押し先を空けて。三人で、一手ダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      },
+      {
+        "characterId": "nebula",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……ああ。あなたが読み、私が止める。それなら、私の守りにも、もう一度、意味が戻る。任せろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "mamori",
+        "position": "center",
+        "standingId": "default"
+      },
+      {
+        "characterId": "nebula",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥の読みが、淵の底の流れをなぞる。マモリの守りが、その読み通りに危険を断つ。空いた道を、こちらが繋ぐ。三人の力が、別々の糸から、一本の細い綱に編まれていった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "nebula",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "薄氷の一手。半分しか喜べない、淵のいちばん浅い縁。そこへ、読みで磨いた手を、引きで掴みにいく。誰か一人でも欠けたら、踏み抜いて落ちる、薄い薄い氷の上を。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "nebula",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ツモ。……届いたヨ。淵の、縁の、ぎりぎりに。三人で、手を伸ばしたんダヨ。",
+    "characterEffect": "jump",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "impact",
+    "seId": "se-tsumo"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -14053,21 +21559,17 @@ export const SCENARIO_LINE_MASTER = [
       },
       {
         "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
         "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "nebula",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "君が手放したものを、私たちは、拾い集めている。……いずれ、また会うよ。もっと、深いところで。",
+    "text": "勝った。六つ目の宝が、決まる。けれど、歓声は、すぐには湧かなかった。淵をまとう打ち手は、倒れた手牌を、ただ静かに見下ろしている。底知れなさだけが、卓に残った。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-score"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -14081,21 +21583,17 @@ export const SCENARIO_LINE_MASTER = [
       },
       {
         "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
         "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "nebula",
     "speakerNameOverride": null,
-    "text": "その言葉の底には、まだ何も見えない、大きな影の気配があった。けれど——今は。",
+    "text": "……読み、守り、引き。三つを、編んだか。よく、縁に手が届いた。だが、覚えておくといい。この淵は、まだ浅い。本当の底は、もっと深く、あなたの過去のすぐ隣で、待っている。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -14105,39 +21603,30 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
         "standingId": "default"
       },
       {
-        "characterId": "mamori",
+        "characterId": "nebula",
         "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——なに言ってるか、半分も分かんないけどネ。",
+    "text": "漆黒の星雲が、ゆっくりと立ち上がる。最後まで、何を見ていたのか、わからなかった。詩玥の過去のすぐ隣。その言葉だけを置いて、影は、会場の奥へ溶けていった。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-step"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
     "lineNo": 23,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
         "standingId": "default"
       },
       {
@@ -14146,9 +21635,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "勝ち方がひっくり返る、なら。こっちは——ぜんぶの翼で、立て直すだけダヨ。",
+    "text": "影が消えても、空気の重さは、なかなか抜けなかった。勝ったはずなのに、誰も、軽口を叩かない。詩玥が、淵の去ったほうを、じっと見つめている。いつもの笑みは、そこにない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -14156,7 +21645,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-18",
     "lineNo": 24,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14164,9 +21653,28 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "serious"
       },
       {
-        "characterId": "nebula",
-        "position": "center",
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……あれは、まだ序の口かもネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
       },
       {
         "characterId": "mamori",
@@ -14176,35 +21684,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥が、冷たい声を翼に変え、裏返された道理の、その裏を、読む。底の底、ネビュラの待ちの形まで。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 25,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "……最後の一発は、私が受け止める。二人は——前へ。",
+    "text": "珍しく、真顔だった。軽口で空気をまろやかにするこの人が、今は、それをしない。淵の奥に見えかけた影と、あの人の過去。繋ぎかけたまま、まだ訊いてはいけない気がして、口をつぐむ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -14212,16 +21692,11 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-18",
     "lineNo": 26,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
         "standingId": "default"
       },
       {
@@ -14230,9 +21705,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "ん。相棒、いくヨ。三人で、この淵、越えるノ。",
+    "text": "……あれは、世界の影の、ほんの端だ。あの淵の本当の底に、何が沈んでいるのか。今は、わからない。だが、いずれ、向き合うことになる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -14240,44 +21715,11 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-18",
     "lineNo": 27,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "読みと、守りと、引きと。三つの翼が、一つに編まれる。薄氷を渡るように、慎重に、大胆に。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 28,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
         "standingId": "default"
       },
       {
@@ -14288,17 +21730,39 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "emoteId": "impact",
-    "text": "——ツモ。",
-    "characterEffect": "jump",
-    "screenEffect": "flash",
-    "effectDurationMs": 450,
-    "seId": "se-tsumo"
+    "text": "……ん。でも、今日わかったこともあるヨ。あの淵、一人じゃ、絶対に抜けられなかったネ。読みも、守りも、引きも、ぜんぶ要ったヨ。三人だから、縁に手が届いたんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥が、こちらの背と、マモリの肩に、片手ずつ触れた。淵の重さに沈みかけた三人を、その手が、そっと寄せ集める。底知れぬものを見たあとの、温もりの確かめ方だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
     "lineNo": 29,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14306,91 +21770,27 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "smile"
       },
       {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
         "characterId": "mamori",
         "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "裏返された盤面を、さらに裏返す、会心の一手。六つ目の宝を、三人の手で、もぎ取った。",
+    "text": "さあ、行くヨ。六つ目、取ったネ。残るは、あと三つダヨ。淵のことは、その先で、ちゃんと向き合うヨ。今は、頂を目指すんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-score",
-    "bgmId": "bgm-victory"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
     "lineNo": 30,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "nebula",
-    "speakerNameOverride": null,
-    "emoteId": "notice",
-    "text": "……ほう。呪いの上で、立て直したか。——面白い。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 31,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "nebula",
-        "position": "center",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "nebula",
-    "speakerNameOverride": null,
-    "text": "だが次は、そう簡単には、いかないよ。淵は、まだ、底を見せていない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 32,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
@@ -14400,59 +21800,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ネビュラは、それだけ残して、星雲の影へ溶けるように、去っていった。",
+    "text": "重さを振り払うように、詩玥が、いつもの調子で歩き出す。けれど、その肩には、まだ淵の冷たさが薄く残っている気がした。背中を寄せ合った三人の道は、まだ三つ、宝を残していた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-mystery"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 33,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "勝った。なのに、勝った気が、まるでしない。底知れなさだけが、後に残る。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 400,
     "bgmId": "bgm-night"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 34,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、ぎゅっと、手を握ってくる。その指先は、まだ少し、震えていた。——残る宝は、あと三つ。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 800,
-    "bgmId": "bgm-resolve"
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
@@ -14472,11 +21824,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "宝は、あと二つ。八つ目を懸けた大会は、三人で挑む、団体戦だった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-battle"
+    "text": "八つ目の宝を懸けた大会。会場の喧騒の中で、詩玥は、もう迷いなく卓に着いた。読みも、引きも、自在。淵を越えてからの三人は、どの卓でも、危なげがなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
@@ -14486,7 +21838,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
@@ -14494,12 +21846,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "読みも引きも自在の詩玥、鉄壁のマモリ。そして真ん中の席に、二人に鍛えられた目で、しっかりと座る。",
+    "text": "今日で八つ目ヨ。あと一つで、九蓮宝士ネ。……なんだか、ここまで来ると、不思議な気分ダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "music"
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
@@ -14517,9 +21870,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "けれど今日は——勝敗を分ける、その一手が、真ん中の番に、回ってきた。",
+    "text": "……今日の卓は、三人とも、力が均されている。誰か一人が押し切る展開には、ならないかもしれない。終盤の一手が、勝敗を分けるだろう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -14527,7 +21880,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 4,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14540,114 +21893,24 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ここ、押すならこの牌、ダネ。我なら、そう打つヨ。",
+    "text": "対局が進む。詩玥が読みで道を均し、マモリが後ろを固める。けれど今日は、流れの綾が、こちらの番のところで、ぴたりと止まった。終盤の決め手が、回ってくる。詩玥でも、マモリでもなく。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle",
+    "seId": "se-shuffle"
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 5,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "私なら、受けて次局に賭ける。……どちらも、正解よ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 6,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "二人が、示す。押す筋と、受ける筋。けれど、最後に選ぶのは——",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 7,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "——あんたが、決めな。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 8,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、にっと笑って、その選択を委ねてくる。マモリも、静かに、頷いた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 9,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
         "characterId": "mamori",
@@ -14657,31 +21920,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "盤面を、読む。二人に培われた目で。河を、相手の気配を、そして自分の手を。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-tension"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 10,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "押すか、受けるか。心臓が、鳴る。——決めた。",
+    "text": "卓の真ん中。手の中の牌が、二つの道を示している。押せば、大きい。けれど危ない。引けば、堅い。けれど、届かないかもしれない。指先が、その二つの間で、止まった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -14689,6 +21928,121 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "ここはネ、押せば、一気に決まるヨ。我なら、こっちを切るネ。読みは、立ってるダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……待て。受けに回る道も、ある。そちらなら、確実だ。私なら、こちらを薦める。どちらも、間違いではない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "押す詩玥と、守るマモリ。二つの声が、左右から重なる。けれど、どちらも、最後の一打までは言わない。卓の真ん中で迷う指先を、二人とも、ただ静かに見ていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……でもネ。これは、我の手じゃないヨ。あんたの手ダヨ。我もマモリも、答えは言わないネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あんたが決めな。我の押しでも、マモリの守りでもなく。あんたが見て、あんたが選んだ一打ヨ。それが、いちばん強いんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 11,
     "backgroundId": "bg-table",
     "standings": [
@@ -14703,13 +22057,12 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "教わったすべてを指先に込めて、自分の一打を、選び取る。",
+    "text": "……ああ。私も、口は出さない。あなたの目は、もう、十分に鍛えられている。選べ。それを、信じる。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-tile"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
@@ -14719,7 +22072,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "serious"
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -14729,10 +22082,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——その一手が、見事に、決まった。",
+    "text": "委ねられた。卓の真ん中で、二つの道が、もう一度、目の前に開く。詩玥に教わった読みの声が、相手の河をなぞる。マモリに教わった守りの目が、危ない牌を選り分ける。",
     "characterEffect": "none",
-    "screenEffect": "flash",
-    "effectDurationMs": 400
+    "screenEffect": "none",
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
@@ -14742,7 +22095,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -14752,12 +22105,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "場が、沸く。八つ目の宝が、三人の手に、転がり込んだ。",
+    "text": "相手の捨て牌が、語りかけてくる。どこで待っているか。どの道なら、踏み抜かずに済むか。二人に培われた目が、伏せ牌の向こうまで、すっと届いた。迷いが、ほどけていく。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-score",
-    "bgmId": "bgm-victory"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
@@ -14767,7 +22118,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -14775,13 +22126,12 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "やったー！　見た、今の！　最っ高だったヨ！",
-    "characterEffect": "jump",
+    "text": "押しでも、守りでもない、その中間に、細い道が一本だけ見えた。読みで危険を避けて、そのうえで届く一手。詩玥の押しと、マモリの守りが、自分の中で、一つに溶けた瞬間だった。",
+    "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 400
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
@@ -14791,6 +22141,80 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "決めた。手の中の一枚を、迷いなく、河へ置く。カチッ、と乾いた音が、卓に落ちた。それは、教わった二つの道の、どちらでもない。教わった目で選んだ、自分だけの一打だった。",
+    "characterEffect": "jump",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "idea",
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "選んだ道の先で、必要な一枚が、ぴたりと噛み合った。読み通りに危険を避け、そのうえで届く。局面が、こちらへ、まるごと傾いていく。八つ目の宝が、自分の一打で、決まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "見たヨ、今の‼ 押しでも、守りでもない、あんただけの道ヨ！ ……すごいネ、ほんとに、すごいんダヨ！",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
         "standingId": "smile"
       },
       {
@@ -14801,14 +22225,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥が、ぎゅーっと首に抱きついてくる。マモリも、めずらしく、口元をほどいていた。",
+    "text": "詩玥が、我がことのように飛び跳ねて、両腕で抱きついてくる。勝ったのは、こちらの一打なのに、この人のほうが、ずっと嬉しそうだった。腕の中で、ぐしゃぐしゃと頭を撫でられる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 16,
+    "lineNo": 19,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -14824,77 +22248,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "……ええ。一分の迷いもない、いい選択だった。立派になったわね。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 17,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その日の夕暮れ。道場の縁側で、マモリが、ふと、切り出した。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600,
-    "bgmId": "bgm-warm"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 18,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "次が、最後の大会ね。——詩玥。あれは確か、二人用、だったわね。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 19,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "ん。九つ目は、二人用の大会。我と、相棒の——二人で、挑むやつ。",
+    "text": "……見事だった。あの局面で、押しと守りの、ちょうど間を選んだ。私には、薦められなかった道だ。あなたは、私たちの先を、行った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -14917,14 +22271,85 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "二人用。つまり、その卓に、マモリの席は——ない。",
+    "text": "その日の帰り、道場へ寄った。橙の光が、卓に長い影を落としている。八つ目の宝を手にした三人は、しばらく、誰も口を開かずに、しんとした夕暮れの中に座っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 21,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "あのネ。今日の一打、見てて思ったヨ。……あんた、もう“弟子”って柄じゃ、ないネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 21,
+    "lineNo": 22,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "我の押しも、マモリの守りも、ぜんぶ吸って、自分の道にしちゃったヨ。あれは、教わった子の打ちじゃ、ないんダヨ。もう、一人で立ってるネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "弟子って柄じゃない。その言葉が、夕暮れの空気に、そっと置かれた。突き放す響きではなかった。むしろ、隣に並ぶ誰かを、見つけたときの声に、近かった。胸の奥が、静かに熱くなる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 24,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -14940,15 +22365,179 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "ええ。だから、最後は。私は、卓の外から、見届ける。",
+    "text": "……同感だ。私も、もう、守ってやる相手とは思っていない。あなたは、自分の足で、決める打ち手になった。それは、誇っていい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 22,
+    "lineNo": 25,
     "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "寡黙なマモリが、静かに頷く。その小さな肯定が、夕暮れの中で、やけに重く響いた。押す人と、守る人。その真ん中で、いつの間にか、自分の足で立っていたらしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 26,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "残るは、最後の一つだけヨ。九つ目の宝が揃えば……九蓮宝士ダヨ。ここまで、長かったネ。ほんとに、長かったヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 27,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "最後の卓は、あんたと、頂を取るヨ。もう“師匠と弟子”じゃないネ。……ちゃんと、隣に並んで、行くんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "差し出された手を、いつものように、引かれる。けれど今日は、引かれるというより、並ぶための手だった。橙の光が、三人の影を、卓の上に、まっすぐ並べて伸ばしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 29,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "弟子って柄じゃない、と言われた言葉を、夕暮れの帰り道、何度も転がした。誇らしさよりも、少しだけ寂しさに似た何かが、胸に残る。残るは、最後の一つ。隣に並んで頂へ行ける日を、もう、すぐそこに感じていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後の大会、無双国書。九つ目の宝が懸かる、いちばん高い場所。会場は、これまでのどの卓よりも、静かに張り詰めていた。この一つを取れば、九蓮宝士。長い道の、いちばん端に、ようやく立った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "……無双国書は、会場に来るまで、参加人数が伏せられている大会だ。掲示が、出るぞ。今日の卓が、何人で打つのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14961,283 +22550,14 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……マモリ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 23,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "いいのよ。私はもう、ずっと前から——二人の躍進を、見守る役だもの。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 24,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "serious"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "あなたたちの背中は、もう、私が守らなくても、大丈夫。そうでしょう?",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 25,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それは、かつて恩師の守る席を継いだ人の、静かな、卒業の言葉だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……マモリ。ありがと。ほんとに、ありがと、ネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、マモリの手を、ぎゅっと握る。マモリは、ほんの少しだけ、握り返していた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "さ。最後の宝を、取っていらっしゃい。——二人で、九蓮宝士に。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "夕日が、三人の影を、長く長く、伸ばしていた。明日からは——この影が、二つになる。",
+    "text": "会場の正面に、人数が告げられる。掲示を見上げた三人の前に、数字が、はっきりと浮かんだ。——二人。最後の卓は、二人で打つ大会だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 30,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "聞いた、相棒? ……いよいよ、ダネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 31,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、こちらの手を取って、額を、こつんと合わせてきた。その距離の近さに、胸が高鳴る。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 32,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "頂は、もう、すぐそこ。二人で——最後の坂を、登りはじめる。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 800
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 1,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "最後の大会。九つ目の宝を懸けた、二人用の決勝。詩玥と並んで、その卓に着く。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 500,
-    "bgmId": "bgm-battle"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 2,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "観客席に、マモリの姿。卓の外から、二人を、まっすぐに、見守ってくれている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 3,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "さ、相棒。マモリにも、いっとう良いとこ、見せたげよっカ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
+    "bgmId": "bgm-mystery",
+    "seId": "se-bell"
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
@@ -15246,13 +22566,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "smile"
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥が、こちらの手を、ぎゅっと握る。その手は、もう——震えていなかった。",
+    "text": "二人。三人で来た道の、最後の一歩だけは、二人でしか踏めない。短い沈黙が、三人の間に落ちる。誰が卓に着き、誰が外に残るのか。それを、口にする前に——マモリが、静かに一歩、下がった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15264,51 +22589,65 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "読みと引き、ぜんぶ持っていくヨ。あんたと、二人で。",
+    "text": "……ここから先は、二人の卓だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "text": "背中は、もう、私が守らなくていい。あなたは、読めて、引ける。後ろは、この子が見る。……私の出る幕は、ここまでだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 6,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "対局開始。読みと引きを統べた詩玥の打ちは、もう、誰にも止められない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-battle",
-    "seId": "se-shuffle"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 7,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "読んで、数えて、守って——そして、引く。すぐ隣で、その翼の、ぜんぶを浴びる。",
+    "text": "……マモリ。あんた、いいのかヨ。ここまで、ずっと、後ろを守ってくれたのにネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15316,17 +22655,22 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 8,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "二人の呼吸が、重なる。こちらが場を均し、詩玥が、仕留めにいく。",
+    "text": "……いいんだ。あなたが、読みを取り戻した、あの日から。私の守りは、もう、いらなくなると、わかっていた。それが、私の役目の、終わり方だ。……行け。卓の外から、見ている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15334,17 +22678,22 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 9,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
-        "position": "center",
-        "standingId": "serious"
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ここで、決めるヨ。——師匠。見ててネ。",
+    "text": "古名を知る旧知が、卓を譲って、一歩退く。かつて詩玥に刺々しくぶつかった人が、いまは、二人を送り出す側に立っている。マモリの目元が、ほんの少しだけ、やわらいで見えた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15352,21 +22701,21 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 10,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "serious"
+        "standingId": "smile"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "相手の待ちを、底まで読み切る。危険を払い、無駄を削り、そして——最後の一枚へ、手を伸ばす。",
+    "text": "……ありがとネ、マモリ。あんたの守りがあったから、我は、ここまで来れたヨ。最後は、ちゃんと、二人で取ってくるんダヨ。卓の外で、見ててネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-tension"
+    "emoteId": "flower"
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
@@ -15376,17 +22725,17 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "smile"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "emoteId": "impact",
-    "text": "——ツモ。",
-    "characterEffect": "jump",
-    "screenEffect": "flash",
-    "effectDurationMs": 450,
-    "seId": "se-tsumo"
+    "text": "二人で、最後の卓に着く。隣には、もう、後ろを守る人はいない。けれど、不思議と心細くはなかった。詩玥の読み、自分の打ち。二人ぶんの力が、卓の上で、まっすぐ前を向いている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle",
+    "seId": "se-shuffle"
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
@@ -15396,17 +22745,15 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "smile"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "決まった。九つ目の宝が、二人の手に、舞い降りる。",
+    "text": "さあ、最後ヨ。我が読んで、道を開けるネ。あんたは、自分の目で、その先を掴みな。……二人で、頂を取るんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-score",
-    "bgmId": "bgm-victory"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
@@ -15416,15 +22763,15 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "smile"
+        "standingId": "serious"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "九種の大会、そのすべてを制覇。——詩玥と二人、ついに、九蓮宝士へと至った。",
+    "text": "詩玥の読みが、相手の河を底まで均していく。危険な道を消し、安全な道を、こちらへ手渡す。その均された道を、自分の打ちで、一手ずつ前へ進める。二人の手が、滑らかに噛み合った。",
     "characterEffect": "none",
-    "screenEffect": "flash",
-    "effectDurationMs": 500
+    "screenEffect": "none",
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
@@ -15434,16 +22781,16 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "smile"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "emoteId": "joy",
-    "text": "……やった。やったヨ、相棒……！",
-    "characterEffect": "jump",
+    "text": "終盤。九つ目の宝が、手の届く距離まで来た。詩玥が読み切った安全な一点で、こちらが最後の道を繋ぐ。あとは、その先を、掴むだけ。卓の上の空気が、ぴんと張り詰める。",
+    "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 400
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
@@ -15453,12 +22800,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
-        "standingId": "smile"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "詩玥が、勢いよく抱きついてくる。涙と、笑いと、ぜんぶ混ぜこぜの、くしゃくしゃの顔で。",
+    "text": "道は、ぜんぶ均したヨ。危ないところは、もう、ないネ。……あとは、あんたの番ダヨ。二人で、ここまで来たんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15476,20 +22823,118 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その温かさを、しっかりと、抱きとめた。二人で、辿り着いたのだ。この頂に。",
+    "text": "均された道の先へ、手を伸ばす。必要な一枚が、ぴたりと噛み合った。九つ目の宝——無双国書が、二人の卓に、確かに降りてくる。長い道の、いちばん端の、その先へ。",
+    "characterEffect": "jump",
+    "screenEffect": "flash",
+    "effectDurationMs": 800,
+    "emoteId": "joy",
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つの宝が、揃った。会場が、どっと沸き返る。揺れる歓声の真ん中で、二人だけが、しんと静かだった。これで、九蓮宝士。頂に、立った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……取ったヨ。九つ、ぜんぶ。我たち、九蓮宝士ダヨ。……二人で、ほんとに、頂まで来ちゃったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勝ち姿は、卓の外へ、会場の外へ、そして世のすみずみへと届いていった。読み切って、そのうえで引く。その打ち筋を見た人々が、彼女を、新しい名で呼びはじめる。ざわめきが、一つの言葉に変わっていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——神算鬼謀。神の算、鬼の謀。かつて捨てた『深謀遠慮』を、取り戻すどころか、超えてしまった名。読みと算の、極みに立つ者へ贈られる呼び名が、いま、この人に重なった。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 700,
+    "emoteId": "sparkle",
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥は、その名を、誇るふうでもなかった。胸を張るでも、はしゃぐでもなく、ただ、遠くを見るような目をしている。捨てた半分が、別の名前になって、自分のところへ帰ってきた。そんな顔だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 17,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -15499,21 +22944,44 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "卓の外で見守っていたマモリが、目を、ほんの少し潤ませて、歩み寄ってきた。",
+    "text": "卓の外に立っていたマモリが、その新しい名を聞いて、小さく頷いた。古名を呼び続けてきた人が、いまは、それを超えた名を、静かに認めている。送り出した側の目に、確かな満ち足りが滲んでいた。",
     "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 400,
-    "bgmId": "bgm-warm"
+    "screenEffect": "none",
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 18,
-    "backgroundId": "bg-hall",
+    "lineNo": 23,
+    "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "喧騒を抜けて、夕暮れの道場へ戻った。橙の光が、勝ったばかりの三人を、やわらかく包んでいる。九つの宝が揃えば、願いが一つ叶う。そんな逸話を、誰からともなく、思い出していた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 24,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -15523,93 +22991,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "……見事。文句なしの、九蓮宝士よ。二人とも。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 19,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "言葉少なに、けれど確かに。ずっと見守り続けた人の、万感の、祝福だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 20,
-    "backgroundId": "bg-sky",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "そして、その勝ち姿は。会場の外へ、街へ、やがて世界へと、伝わっていった。",
-    "characterEffect": "none",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 700,
-    "bgmId": "bgm-warm"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 21,
-    "backgroundId": "bg-sky",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "人々は、いつしか、詩玥を新しい名で呼びはじめていたという。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 22,
-    "backgroundId": "bg-sky",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "emoteId": "sparkle",
-    "text": "——「神算鬼謀（シェンスアン・グイモウ）」。",
-    "characterEffect": "none",
-    "screenEffect": "flash",
-    "effectDurationMs": 500,
-    "seId": "se-flash"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 23,
-    "backgroundId": "bg-sky",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "神算鬼謀。神の算、鬼の謀。読みと算の極致を、その手にした者だけが、許される名。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 24,
-    "backgroundId": "bg-sky",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "かつて捨てた「深謀遠慮」を、取り戻すどころか——遥かに、超えてしまった、その証だった。",
+    "text": "……九つ揃えば、願いが叶う。俗説のはずの、言い伝えだ。……でも。あなたには、何か、叶えたい願いが、あったんじゃないか。ずっと。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15632,11 +23014,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "後日。慣れ親しんだ道場の縁側で、ふと、その新しい異名の話になった。",
-    "characterEffect": "fade_in",
-    "screenEffect": "fade_in",
-    "effectDurationMs": 600,
-    "bgmId": "bgm-warm"
+    "text": "詩玥が、しばらく黙った。橙の光の中で、卓の木目を、指でそっとなぞる。それから、いつもの軽さとは違う、ずっと静かな声で、口を開いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
@@ -15654,9 +23035,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "……知ってる? 九つの宝が揃うと、願いが一つ叶う、という俗説。",
+    "text": "……我の願いはネ。たぶん、ずっと前から、一つだったヨ。師匠の教えに、我なりの答えを、出すこと。それだけ、だったんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15669,7 +23050,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -15679,7 +23060,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "あー、それネ。マモリ、前は「確率的根拠なし」って、ばっさりだったノに。",
+    "text": "あの人は、読みも守りも、ぜんぶ授けて、『お前のツモが見たい』って言ったヨ。我は、その教えに、やっと、答えを返せたんダヨ。読めるし、引ける。これが、我なりの、答えネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15700,9 +23081,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ええ。今でも、俗説だと思っているわ。……でも。",
+    "text": "その答えを出すまでの道のりを、ずっと隣で見ていた。耳を塞いだ夜も、廊下で膝を抱えた夜も、翼を握り直した夜明けも、ぜんぶ。願いが叶うのを待つまでもなく、答えは、もう、この手の中で形になっていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15715,20 +23096,21 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
         "position": "right",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "マモリが、めずらしく、言葉を選ぶように、続けた。",
+    "text": "答えを出せたなら……願いは、とっくに叶ってたのかもネ。九つ揃わなくても、ほんとは、もう。……あの逸話も、あながち、嘘じゃないのかもネ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "flower"
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
@@ -15738,17 +23120,17 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
         "position": "right",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "あなたを見ていると、少しだけ、信じたくなる。——あなたの願いは、もう、叶ったんじゃないの?",
+    "text": "でもネ、頂に立ったら、見えたヨ。まだ、知らない卓が、いっぱいあるネ。あの淵の、もっと底も……まだ、見てないヨ。……ねえ。次の卓も、隣で打ってくれるダロ？",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -15761,7 +23143,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "mamori",
@@ -15769,13 +23151,12 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "詩玥が、夕日に目を細める。そして、静かに、自分の本当の願いを、口にした。",
+    "text": "……世界の影は、まだ、底を見せていない。あなたの過去の、すぐ隣にあるという、あの淵も。……二人の道は、頂で終わりじゃない。私も、また、見守らせてもらう。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-night"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
@@ -15785,145 +23166,6 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "我の願いはね。……過去を、やり直すこと、じゃ、なかったノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 33,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "師匠の教えに、我なりの答えを、出すこと。……たぶん、それが、ずーっと、願いだったノ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 34,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "師の言葉に、自分の答えを返すこと。——それは、ずっと隣で、いちばん近くで、見てきたことだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 35,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "迷って、立ち止まって、翼を取り戻して。詩玥は、その答えを、確かに、二人の手で、形にした。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 36,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "そう考えるとさ。我の願いは、もう——とっくに、叶ってたのかもネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 37,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "emoteId": "flower",
-    "text": "……だからさ。あの逸話も。あながち、嘘じゃ、ないのかもネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 38,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
         "standingId": "smile"
       },
       {
@@ -15934,57 +23176,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "読めるし、引ける。前を向く翼を、ぜんぶ広げた最強の打ち手が——すぐ隣で、笑っている。",
+    "text": "差し出された手を、いつものように、ぎゅっと引かれる。読めて、引ける打ち手が、隣で笑っている。頂は、終わりではなかった。まだ見ぬ卓へ、まだ知らぬ影へ。神算鬼謀となった人と、その背を見守る人と、三人の道は、ここからまた、続いていく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-resolve"
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 39,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "詩玥が、こてんと、肩に頭を預けてきた。その重さは、もう、迷いのない、軽やかなものだった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 40,
-    "backgroundId": "bg-dojo-dusk",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "二人と、見守る一人の物語は——まだ見ぬ卓へ、まだ知らぬ影へ、これからも、続いていく。",
-    "characterEffect": "none",
-    "screenEffect": "fade_out",
-    "effectDurationMs": 1000,
     "bgmId": "bgm-warm"
   },
   {

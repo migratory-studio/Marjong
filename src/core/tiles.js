@@ -77,15 +77,25 @@ export function kindShort(kind) {
   return `${rankOf(kind)}${suitOf(kind)}`;
 }
 
+// Number suits reduced to terminals-only (1 & 9) by a tile set:
+//   sanma  → manzu 2..8 removed (二筒以外そのまま)
+//   futari → manzu AND pinzu 2..8 removed (二人麻雀 少牌80枚)
+// Accepts the legacy boolean `true` (== "sanma") for back-compat.
+export function isReducedSuit(suit, tileset) {
+  if (tileset === "futari") return suit === SUITS.MAN || suit === SUITS.PIN;
+  if (tileset === "sanma" || tileset === true) return suit === SUITS.MAN;
+  return false;
+}
+
 // The dora tile that an indicator of `kind` points to (next in sequence).
-// In 三麻 (sanma=true), manzu has only 1m and 9m, so they cycle 1m⇄9m.
-export function doraFromIndicator(kind, sanma = false) {
+// In a reduced suit, only 1 and 9 exist, so they cycle 1⇄9.
+export function doraFromIndicator(kind, tileset = "full") {
   if (kind < HONOR0) {
     const r = rankOf(kind);
     const base = kind - (r - 1); // first tile of this suit
-    if (sanma && suitOf(kind) === SUITS.MAN) {
-      // only 1m (rank 1) and 9m (rank 9) exist; 1m→9m, 9m→1m
-      return r === 1 ? base + 8 : base; // 9m's base is 1m
+    if (isReducedSuit(suitOf(kind), tileset)) {
+      // only rank 1 and 9 exist; 1→9, 9→1
+      return r === 1 ? base + 8 : base; // 9's base is the suit's "1"
     }
     return base + (r % 9); // 9 wraps to 1
   }

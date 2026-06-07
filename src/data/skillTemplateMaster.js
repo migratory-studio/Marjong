@@ -45,8 +45,8 @@ export const SKILL_TEMPLATE_MASTER = [
   {
     skillTemplateId: "tmpl-iron-guard",
     runtimeAbilityId: "bibi",
-    name: "鉄壁の守り",
-    description: "発動後しばらくロン・ツモで失点しない鉄壁の守備。粘り勝ちの軸。",
+    name: "身代わり人形",
+    description: "発動後しばらく、ロン・ツモを帳消しにする——自分は失点せず、勝者も得点を得られない。誰にも奪わせない無効化の軸。",
     familyId: "defense",
     rarity: "rare",
     mentorCharacterIds: ["bibi"],

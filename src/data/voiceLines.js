@@ -37,6 +37,10 @@ function condMatches(cond, ctx) {
   if (cond.rankTier && cond.rankTier !== rankTierOf(ctx)) return false;
   // 拡張: スキルLv下限（ctx.skillLevel 未供給なら満たさない扱い）。
   if (cond.skillLevelMin != null && !(Number(ctx.skillLevel) >= cond.skillLevelMin)) return false;
+  // 拡張: セリフセット（シナリオが ctx.voiceSet を指定したとき専用セリフを解放）。
+  // voiceSet 指定のある行は ctx.voiceSet が一致したときだけ候補。指定なしの行は
+  // 常に候補＝フォールバック。これにより「一致すれば専用／無ければ通常」が成立する。
+  if (cond.voiceSet && cond.voiceSet !== ctx.voiceSet) return false;
   return true;
 }
 

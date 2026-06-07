@@ -106,6 +106,10 @@
               <span class="choice-main">通常対戦</span>
               <span class="choice-sub">個人で対局</span>
             </button>
+            <button type="button" class="mode-btn" data-battle="pair">
+              <span class="choice-main">ペア戦</span>
+              <span class="choice-sub">2人ペアで共闘</span>
+            </button>
             <button type="button" class="mode-btn" data-battle="team">
               <span class="choice-main">団体戦</span>
               <span class="choice-sub">3人チームで挑む</span>
@@ -124,12 +128,23 @@
                 <span class="choice-main">3人</span>
                 <span class="choice-sub">三人麻雀（三麻）</span>
               </button>
+              <button type="button" class="mode-btn" data-players="2">
+                <span class="choice-main">2人</span>
+                <span class="choice-sub">二人麻雀（少牌・暗槓のみ）</span>
+              </button>
             </div>
             <div class="seat-preview-block">
               <div class="seat-preview-label">この顔ぶれで卓を囲みます</div>
               <div class="seat-preview" id="seat-preview"></div>
             </div>
             <p class="wiz-note">※ 自分以外の席は<b>おまかせ（ランダム）</b>。次の「キャラ」で相手を指名することもできます。</p>
+          </div>
+
+          <!-- ペア戦: 2対2の共闘。相方は次ステップで指名（おまかせ可） -->
+          <div id="pair-table-opts" class="hidden">
+            <h2 class="wiz-title wiz-sub-title">2対2の共闘</h2>
+            <p class="wiz-note">4席を2ペアで分け合います。席は<b>対面どうしが相方</b>。2人の<b>合計点</b>で勝負し、片方が飛んでも<b>相方が単騎で続行</b>します。</p>
+            <p class="wiz-note">※ 次のステップで<b>あなた</b>と<b>相方1人</b>を選んでください（相方はおまかせ可）。相手ペアはランダムで決まります。</p>
           </div>
 
           <!-- 団体戦: チーム数 -->
@@ -216,6 +231,7 @@
         <div id="damage-overlay" class="damage-overlay hidden"></div>
         <div id="speaker-fx" class="speaker-fx"></div>
         <button id="nonaki-btn" class="nonaki-btn" type="button" aria-pressed="false">鳴きなし: OFF</button>
+        <button id="auto-btn" class="nonaki-btn auto-btn hidden" type="button" aria-pressed="false">オート: OFF</button>
         <button id="settings-btn" class="settings-btn" title="設定" aria-label="設定">⚙</button>
         <div id="settings-panel" class="settings-panel hidden">
           <div class="settings-header">
