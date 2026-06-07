@@ -794,6 +794,8 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 }
 .nonaki-btn:hover { background: #244b39cc; }
 .nonaki-btn.on { background: var(--accent); color: #20140a; border-color: var(--accent); }
+/* オート観戦トグル: 鳴きなしボタンの真下に並べる（フリー対戦時のみ表示）。 */
+.auto-btn { top: 58px; }
 .banner {
   position: absolute; top: 40%; left: 50%; transform: translate(-50%,-50%);
   font-size: 40px; font-weight: 800; color: var(--accent); text-shadow: 0 3px 12px #000a;

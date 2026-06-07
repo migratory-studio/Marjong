@@ -55,6 +55,8 @@ let recallMode = false; // リコール・ディール: 自分の河の牌を選
 let janeDoeMode = false; // 強制ツモ切り: 対象の相手を選択中
 let kakehaMode = false; // 大博打: 賭け金（5000/10000）を選択中
 let noNaki = false; // 鳴きなし: when on, auto-skip pon/chi/kan for the human (ron still offered)
+let autoPlay = false; // オート観戦: when on, the human seat is driven by the CPU AI (free matches only)
+let cpuActionPending = false; // CPU/オートの打牌を setTimeout 済み。loop() の二重キック防止ガード
 let meldCalledFlag = false; // set by MELD_CALLED listener during a resolveCalls
 let abilityCutInFlag = false; // set by ABILITY_USED listener; CPU loop waits on it
 const NAKI_WAIT = 1100; // ms pause to show the naki call banner
@@ -765,6 +767,8 @@ function beginGame(seated, dealerIndex) {
   el("table").addEventListener("mouseleave", () => { renderer.setHover(null); render(); });
   initSettingsUI(audio); // gear icon + volume panel (idempotent against re-init)
   initNoNakiToggle();
+  autoPlay = false; // 毎対局オートは OFF から開始（前回 ON の持ち越しを防ぐ）
+  initAutoToggle();
 
   // game.startHand() emits HAND_STARTED -> BGM. This runs inside the
   // start-button click (a user gesture), satisfying browser autoplay policy.
@@ -790,7 +794,7 @@ function loop() {
 
   if (game.phase === Phase.AWAIT_DISCARD) {
     const actor = game.players[game.turn];
-    if (actor.isHuman) {
+    if (actor.isHuman && !autoPlay) {
       // After own riichi: auto-tsumogiri the drawn tile (unless tsumo is available).
       const opts = game.actionOptions(actor.index);
       if (actor.riichi && opts && !opts.tsumo) {
@@ -804,13 +808,18 @@ function loop() {
       }
       showHumanActions();
     } else {
+      // CPU 席、またはオート観戦 ON で AI に委ねた人間席。どちらも同じ判断ルート。
+      clearActions();
       // Activate any manual abilities first so the cut-in plays during the wait,
       // then discard. A fired ability extends the pause (ウェイト) so it reads.
       const index = game.turn;
       abilityCutInFlag = false;
       for (const a of decideAbilityActivations(game, index)) game.activateAbility(index, a.id, a.params);
       const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : CPU_DELAY;
-      setTimeout(() => { cpuDiscard(index); loop(); }, wait);
+      // cpuActionPending: この待ち時間中に loop() が再キックされても二重に
+      // setTimeout しないためのガード（オートのトグル連打対策。下の auto-btn 参照）。
+      cpuActionPending = true;
+      setTimeout(() => { cpuActionPending = false; cpuDiscard(index); loop(); }, wait);
     }
   }
 }
@@ -847,7 +856,8 @@ function cpuDiscard(index) {
 // ----------------------------------------------------------------- calls
 function handleCalls() {
   const callers = game.pendingCalls.callers;
-  let humanCaller = callers.find((c) => game.players[c.index].isHuman);
+  // オート観戦: 人間席も CPU と同じく decideCall に委ねる（下の CPU decisions に含める）。
+  let humanCaller = autoPlay ? null : callers.find((c) => game.players[c.index].isHuman);
 
   // 鳴きなし: drop pon/chi/kan from the human's options (ron is not a naki, so it
   // stays). If nothing's left to ask, the human is simply omitted => treated as
@@ -860,9 +870,9 @@ function handleCalls() {
     }
   }
 
-  // CPU decisions first
+  // CPU decisions first. オート観戦中は人間席も AI 判断に含める（humanCaller は null）。
   const cpuDecisions = callers
-    .filter((c) => !game.players[c.index].isHuman)
+    .filter((c) => autoPlay || !game.players[c.index].isHuman)
     .map((c) => ({ index: c.index, ...decideCall(game, c.index, c.options) }));
 
   if (!humanCaller) {
@@ -2173,6 +2183,34 @@ function initNoNakiToggle() {
   if (!noNakiWired) {
     btn.addEventListener("click", () => { noNaki = !noNaki; sync(); });
     noNakiWired = true;
+  }
+  sync();
+}
+
+// オート観戦トグル。フリー対戦時のみ表示し、ON で人間席を CPU AI に委ねる（loop /
+// handleCalls 側が autoPlay を見て分岐）。団体戦・シナリオでは体感の主役が消えるため
+// 非表示＋強制 OFF にする（CLAUDE.md の核: フリー限定が正しい）。
+let autoWired = false;
+function initAutoToggle() {
+  const btn = el("auto-btn");
+  if (!btn) return;
+  const freeMatch = !teamBattleData; // 団体戦は teamBattleData が立つ。フリーのみ許可。
+  if (!freeMatch) { autoPlay = false; btn.classList.add("hidden"); return; }
+  btn.classList.remove("hidden");
+  const sync = () => {
+    btn.classList.toggle("on", autoPlay);
+    btn.setAttribute("aria-pressed", String(autoPlay));
+    btn.textContent = `オート: ${autoPlay ? "ON" : "OFF"}`;
+  };
+  if (!autoWired) {
+    btn.addEventListener("click", () => {
+      autoPlay = !autoPlay;
+      sync();
+      // OFF→ON を自分の手番中に押したら、その場で AI に手を進めさせる。
+      // cpuActionPending 中（前回キックの待ち時間中）は再キックしない＝二重 setTimeout を防ぐ。
+      if (autoPlay && !cpuActionPending && game && game.phase === Phase.AWAIT_DISCARD && game.players[game.turn].isHuman) loop();
+    });
+    autoWired = true;
   }
   sync();
 }
