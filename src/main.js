@@ -631,6 +631,7 @@ const NAV_TARGETS = {
 const SCREEN_BGM = {
   "home-screen": () => audio.playHomeBgm(),
   "select-screen": () => audio.playSelectBgm(),
+  "mentor-home-screen": () => audio.playMentorBgm(),
 };
 function goScreen(id) {
   showScreen(id);
@@ -690,6 +691,9 @@ async function openMentorSub(target) {
       },
     });
     goScreen("scenario-list-screen");
+  } else if (target === "settings") {
+    // 師弟ホームの歯車 → 設定。戻ると現状はホームへ（設定画面の戻りは home 固定）。
+    navigate("settings");
   }
 }
 

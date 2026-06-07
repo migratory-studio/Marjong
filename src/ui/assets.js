@@ -115,6 +115,7 @@ const enc = (p) => p.split("/").map(encodeURIComponent).join("/");
 const BGM_TRACKS = ["mahjong-ingame1.mp3", "mahjong-ingame2.mp3"].map((n) => enc(`sound/bgm/${n}`));
 const BGM_HOME = enc("sound/bgm/Peritune_Hanadoki.mp3");              // title / home screen
 const BGM_SELECT = enc("sound/bgm/PerituneMaterial_Amenoshita3.mp3"); // character select
+const BGM_MENTOR = enc("sound/bgm/PerituneMaterial_Otogi4.mp3");      // 師弟ホーム（ほのぼの和風 / Peritune Otogi4）
 const SE_DAHAI = ["１", "２", "３", "４"].map((n) => enc(`sound/se/dahai/牌を置く・その${n}.mp3`));
 const SE_SHUFFLE = enc("sound/se/麻雀牌をまぜる.mp3"); // start of hand (deal)
 const SE_KINGAKU = enc("sound/se/shakiin2.mp3");     // on win (score reveal)
@@ -216,6 +217,8 @@ export class AudioManager {
   // Title / home and character-select screen BGM.
   playHomeBgm() { this.playBgm(BGM_HOME); }
   playSelectBgm() { this.playBgm(BGM_SELECT); }
+  // 師弟ホーム（ハブ）のBGM。サブ画面（休憩/育成/シナリオ一覧等）はこのまま継続させる。
+  playMentorBgm() { this.playBgm(BGM_MENTOR); }
 
   // Play a specific looping BGM, cross-fading from the current track. A no-op when
   // that same track is already playing, so re-entering a screen doesn't restart it

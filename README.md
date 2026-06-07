@@ -94,7 +94,11 @@ node test/sanma.mjs   # 3人戦: 牌構成108枚・チーなし・北抜き + 40
 - 背景画像: `graphic/bg/<id>.png`（あれば cover で表示・無ければ各IDのCSSグラデーション）。
   現状 `bg-dojo`（和室）・`bg-street`（住宅街）を同梱。
 
-> 音源クレジット: シナリオBGMは **PeriTune**（https://peritune.com）の楽曲を使用。
+> 音源クレジット: BGMは **PeriTune**（https://peritune.com）の楽曲を使用（CC BY 4.0）。
+> メニュー/タイトル＝`Hanadoki`、キャラ選択＝`Amenoshita3`、師弟ホーム＝`Otogi4`。
+> シナリオ・ムード別: `bgm-warm`＝`Otogi3`、`bgm-mystery`＝`Foreboding`、
+> `bgm-battle`＝`Wuxia3`、`bgm-victory`＝`Folk_Chinese`（他 `daily`/`night`/`playful`/
+> `resolve`/`sorrow`/`tension` も PeriTune）。
 > サードパーティ音源の帰属表示は本節にまとめて記載すること。
 
 ## アーキテクチャ（拡張性の肝）
