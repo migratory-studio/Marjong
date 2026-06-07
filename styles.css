@@ -875,6 +875,19 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 .hp-icon .char-icon { width: 100%; height: 100%; object-fit: cover; display: block; }
 .hp-icon .char-icon-fallback { width: 100%; height: 100%; }
 
+/* モブ顔アイコン: 全身シルエットを丸アイコンに収めるとき、頭部だけをズームクロップする。
+   object-fit:cover では拡大できないので background 方式。背景URLは各要素の --mob-sil で渡す
+   （makeCharIcon / makeArt / faceMarkup が設定）。画像は頭部が上端中央寄りなので、横は中央・
+   縦は上寄り(7%)に置き、約3倍に拡大して頭〜肩を見せる。値は実機で調整。 */
+.is-mob-face {
+  background-image: var(--mob-sil);
+  background-repeat: no-repeat;
+  background-position: 50% 7%;
+  background-size: 300% auto;
+  /* 黒シルエットが暗背景に溶けて見えないため、アイコン背景は灰色一色にして頭部を浮かせる。 */
+  background-color: #b8bcc4;
+}
+
 .hp-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
 .hp-head { display: flex; align-items: baseline; gap: 6px; }
 .hp-rel {
@@ -1372,6 +1385,9 @@ button.secondary { color: var(--ink); }
 .mi-card.is-human { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(246,210,100,.4), 0 12px 28px rgba(0,0,0,.5); }
 .mi-card-art { position: relative; height: 286px; background: #0a0e0c; }
 .mi-card-portrait { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+/* モブの立ち絵（黒シルエット）は対局時の表示に限り灰背景を敷く。透過部に色が出るので
+   felt/暗カードに溶けず輪郭が分かる。シナリオ登場時は別経路で描くため影響しない。 */
+.mi-mob-bg { background-color: #b8bcc4; }
 .mi-art-fallback {
   display: flex; align-items: center; justify-content: center;
   font-size: 80px; font-weight: 800; color: rgba(255,255,255,.85);

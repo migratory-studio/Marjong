@@ -26,6 +26,8 @@ import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
 import { shanten } from "./core/rules/shanten.js";
 import { pickVoiceLine } from "./data/voiceLines.js";
+import { makeMobRoster, mobSilhouettePaths } from "./data/mobMaster.js";
+import { isDebugMode } from "./app/debug.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
 
@@ -53,6 +55,8 @@ const charImages = new CharacterImages();
 const audio = new AudioManager();
 tileImages.load(); // preload in background; renderer falls back until ready
 charImages.load(CHARACTERS); // icons/portraits; null fallback until present
+// モブのシルエット10枚も先読み（CHARACTERS には入れないので別途プリロード）。
+charImages.load(mobSilhouettePaths().map((p) => ({ assets: { icon: p, portrait: p } })));
 let selectedCharId = null;
 let selectedRounds = 1; // 1 = 東風戦, 2 = 半荘戦
 let selectedPlayers = 4; // 4 = 四人麻雀, 3 = 三人麻雀(三麻)
@@ -86,6 +90,14 @@ const ABILITY_CUTIN_WAIT = 1700; // ms pause so the ability cut-in plays out
 // (independent of preload state) and degrades to a color block if it fails.
 function makeCharIcon(c) {
   const path = c.assets?.icon;
+  // モブは全身シルエットなので、丸アイコンには頭部だけをズームクロップして収める
+  // （object-fit:cover ではズームできないため background 方式。crop は .is-mob-face）。
+  if (path && c.isMob) {
+    const div = document.createElement("div");
+    div.className = "char-icon is-mob-face";
+    div.style.setProperty("--mob-sil", `url("${path}")`);
+    return div;
+  }
   if (path) {
     const img = document.createElement("img");
     img.className = "char-icon";
@@ -103,6 +115,15 @@ function makeCharIcon(c) {
   fb.className = "char-icon char-icon-fallback";
   fb.style.background = c.color;
   return fb;
+}
+
+// 丸顔アイコンの innerHTML 片を返す（被ダメ表示/結果画面などの文字列組み立て用）。
+// モブは全身シルエットなので頭部ズームクロップの div（.is-mob-face）を返す。url が無ければ
+// null を返し、呼び出し側のフォールバック表示に委ねる。
+function faceMarkup(c, cls, url) {
+  if (!url) return null;
+  if (c.isMob) return `<div class="${cls} is-mob-face" style="--mob-sil:url('${url}')"></div>`;
+  return `<img class="${cls}" src="${url}" alt="">`;
 }
 
 // Large portrait for the detail panel (declared path, color-block fallback).
@@ -443,6 +464,9 @@ function buildSelectScreen() {
     next.classList.toggle("hidden", wizStep === 3);
     start.classList.toggle("hidden", wizStep !== 3);
     next.disabled = wizStep === 2 && !canReach(3);
+    // デバッグボタンは step3 かつデバッグモードのときだけ（start と並べる）。
+    const dbg = el("debug-mob-btn");
+    if (dbg) dbg.classList.toggle("hidden", !(wizStep === 3 && isDebugMode()));
   }
 
   // ③の確認リスト（人数＋各席の指名/おまかせ）。
@@ -514,6 +538,9 @@ function buildSelectScreen() {
   el("wiz-back").onclick = () => { audio.playClick?.(); gotoStep(wizStep - 1); };
   el("wiz-next").onclick = () => { audio.playClick?.(); gotoStep(wizStep + 1); };
   el("start-btn").onclick = startGame;
+  // デバッグ専用: 選択キャラ vs モブ3体で即開戦。?debug=合言葉 のときだけ出す。
+  const debugMobBtn = el("debug-mob-btn"); // 表示制御は updateWizNav 側（step3×デバッグ時）
+  if (debugMobBtn) debugMobBtn.onclick = () => { audio.playClick?.(); startDebugMobMatch(); };
   // ステップ見出しをクリックして到達済みステップへジャンプ（前進は条件を満たす時のみ）。
   for (const li of document.querySelectorAll("#wiz-steps .wiz-step")) {
     li.onclick = () => { audio.playClick?.(); gotoStep(Number(li.dataset.step)); };
@@ -728,6 +755,32 @@ function startGame() {
     seated,
     humanIndex,
     mode: { rounds: selectedRounds, players: selectedPlayers },
+    dealerIndex,
+    audio,
+    onComplete: () => beginGame(seated, dealerIndex),
+  });
+}
+
+// デバッグ専用: 選択キャラ（未選択なら詩玥）vs モブ3体で通常対局を即開始する。
+// モブ3体のうち2体は能力なし、1体は能力あり（lucky-draw）にして「能力あり/なし両Ver」を
+// その場で確認できるようにしている。seed 固定なので毎回同じ顔ぶれ＝同定の確認もできる。
+function startDebugMobMatch() {
+  humanIndex = 0;
+  teamBattleData = null;
+  pairBattleData = null;
+  const human = CHARACTERS.find((c) => c.id === selectedCharId) || CHARACTERS[0];
+  // 1体だけ能力ありにする（残りは能力なし）。
+  const mobs = makeMobRoster(3, { seedPrefix: "debug", abilityIds: [null, null, "lucky-draw"] });
+  const order = [human, ...mobs];
+  const seated = order.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
+  for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
+
+  const dealerIndex = Math.floor(Math.random() * seated.length);
+  showScreen("match-intro-screen");
+  showMatchIntro(el("match-intro-screen"), {
+    seated,
+    humanIndex,
+    mode: { rounds: selectedRounds, players: 4 },
     dealerIndex,
     audio,
     onComplete: () => beginGame(seated, dealerIndex),
@@ -1702,9 +1755,8 @@ function showDamageFx(r, onDone) {
     const busted = !isWin && after < 0; // 持ち点マイナス＝トビ（撃沈）
     const b = vis(before, i); // 開始時の見た目（周回対応）。ドレインで after の見た目へ動かす。
     const iconUrl = charImages.url(c, "icon") || charImages.url(c, "portrait");
-    const face = iconUrl
-      ? `<img class="dmg-face" src="${iconUrl}" alt="">`
-      : `<div class="dmg-face dmg-face-fb" style="--c:${c.color}">${[...c.name][0] || "?"}</div>`;
+    const face = faceMarkup(c, "dmg-face", iconUrl)
+      || `<div class="dmg-face dmg-face-fb" style="--c:${c.color}">${[...c.name][0] || "?"}</div>`;
     return `
       <div class="dmg-row ${isWin ? "is-win" : "is-loser"}${busted ? " is-down" : ""}" data-i="${i}" data-before="${before}" data-after="${after}">
         ${face}
@@ -2273,9 +2325,8 @@ function showGameOver() {
   const rows = ranks.map((p, i) => {
     const c = p.character;
     const iconUrl = charImages.url(c, "icon") || charImages.url(c, "portrait");
-    const face = iconUrl
-      ? `<img class="go-face" src="${iconUrl}" alt="">`
-      : `<div class="go-face go-face-fb" style="--c:${c.color}">${[...c.name][0] || "?"}</div>`;
+    const face = faceMarkup(c, "go-face", iconUrl)
+      || `<div class="go-face go-face-fb" style="--c:${c.color}">${[...c.name][0] || "?"}</div>`;
     const w = Math.max(2, Math.min(100, (p.points / top) * 100)); // 長さ＝首位比（順位バー）
     const tier = p.points <= MAX_HP * 0.25 ? "low" : p.points <= MAX_HP * 0.5 ? "mid" : "high"; // 色＝体力
     return `
@@ -2363,6 +2414,8 @@ function showTeamBattleGameOver() {
         if (!c) return "";
         const u = charImages.url(c, "icon") || charImages.url(c, "portrait");
         const fallen = t.hps[m] <= 0 ? " fallen" : "";
+        if (u && c.isMob)
+          return `<div class="go-team-face${fallen} is-mob-face" style="--mob-sil:url('${u}')" title="${c.name}"></div>`;
         return u
           ? `<img class="go-team-face${fallen}" src="${u}" alt="" title="${c.name}">`
           : `<div class="go-team-face go-team-face-fb${fallen}" style="--c:${c.color}" title="${c.name}">${[...c.name][0] || "?"}</div>`;
@@ -2467,6 +2520,8 @@ function showPairBattleGameOver() {
         const c = pairBattleData.chars[s];
         const u = charImages.url(c, "icon") || charImages.url(c, "portrait");
         const fallen = pairBattleData.hp[s] <= 0 ? " fallen" : "";
+        if (u && c.isMob)
+          return `<div class="go-team-face${fallen} is-mob-face" style="--mob-sil:url('${u}')" title="${c.name}"></div>`;
         return u
           ? `<img class="go-team-face${fallen}" src="${u}" alt="" title="${c.name}">`
           : `<div class="go-team-face go-team-face-fb${fallen}" style="--c:${c.color}" title="${c.name}">${[...c.name][0] || "?"}</div>`;
