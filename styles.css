@@ -1457,6 +1457,10 @@ button.secondary { color: var(--ink); }
 /* 団体戦時の VS はカード群に重なりすぎないよう小さめに。 */
 .mi-versus-team .mi-vs { font-size: 132px; top: 50%; }
 
+/* ペア戦: 2ブロック（自ペア｜相手ペア）の間に VS が収まるよう列間を広げる。 */
+.mi-versus-pair .mi-teams { gap: 24px 150px; }
+.mi-versus-pair .mi-vs { font-size: 120px; top: 50%; }
+
 /* ---- Phase B: 座席・親決め ---- */
 .mi-table { position: relative; width: 520px; height: 520px; }
 .mi-table-felt {

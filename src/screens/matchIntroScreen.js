@@ -63,7 +63,7 @@ function hpGauge(points, maxHp, accent) {
  * @param {object} [opts.audio]     AudioManager（任意。SE 用）
  * @param {Function} opts.onComplete 演出完了で呼ばれる
  */
-export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, teams = null, onComplete }) {
+export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, teams = null, pairs = null, onComplete }) {
   const N = seated.length;
   const rounds = mode.rounds === 2 ? 2 : 1;
   const players = N;
@@ -71,6 +71,10 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
   // 団体戦: 各チーム3人を枠で囲んで並べる専用 Phase A を出す。Phase B（着席・親決め）は
   // 各チームの先鋒（seated）でそのまま流用する。
   const isTeam = Array.isArray(teams) && teams.length > 0;
+  // ペア戦: 2人ペア×2 を枠で囲んで「自ペア VS 相手ペア」を見せる専用 Phase A。
+  // チーム枠のレイアウト（mi-teams / mi-team-block / mi-tm-card）を流用する。
+  const isPair = !isTeam && Array.isArray(pairs) && pairs.length > 0;
+  const isGrouped = isTeam || isPair; // チーム枠レイアウトを使うか（個人カードではなく）
   // 相手チームの表示ラベル（自チーム以外を出現順に ②③④…）。
   const TEAM_NUM = ["①", "②", "③", "④"];
 
@@ -93,12 +97,12 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
       <button type="button" class="mi-skip">スキップ ▶</button>
 
       <!-- Phase A: VS 対戦カード -->
-      <div class="mi-phase mi-versus${isTeam ? " mi-versus-team" : ""}" data-phase="versus">
+      <div class="mi-phase mi-versus${isTeam ? " mi-versus-team" : ""}${isPair ? " mi-versus-team mi-versus-pair" : ""}" data-phase="versus">
         <div class="mi-modebar">
-          <span class="mi-badge">${isTeam ? `${players}チーム対抗` : players === 3 ? "三人打ち" : "四人打ち"}</span>
+          <span class="mi-badge">${isTeam ? `${players}チーム対抗` : isPair ? "ペア戦 2対2" : players === 3 ? "三人打ち" : "四人打ち"}</span>
           <span class="mi-badge">${rounds === 2 ? "半荘戦" : "東風戦"}</span>
         </div>
-        ${isTeam ? '<div class="mi-teams"></div>' : '<div class="mi-cards"></div>'}
+        ${isGrouped ? '<div class="mi-teams"></div>' : '<div class="mi-cards"></div>'}
         <div class="mi-vs">VS</div>
       </div>
 
@@ -122,6 +126,8 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
   // ---- Phase A の中身を構築 ----
   if (isTeam) {
     buildTeamCards();
+  } else if (isPair) {
+    buildPairCards();
   } else {
     for (const s of seated) {
       const c = s.character;
@@ -169,6 +175,38 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
           <div class="mi-tm-art"></div>
           <div class="mi-tm-name" style="color:${c.color}">${c.name}</div>
           ${isFirst ? '<div class="mi-tm-badge">一番手</div>' : '<div class="mi-tm-bench-tag">控え</div>'}`;
+        card.querySelector(".mi-tm-art").appendChild(makeArt(c, "portrait", "mi-tm-portrait"));
+        wrap.appendChild(card);
+      });
+      teamsBox.appendChild(block);
+    });
+  }
+
+  // ペア戦 Phase A: 2人ペア×2 を「自ペア VS 相手ペア」で並べる。チーム枠の見た目を流用し、
+  // 2人とも同格（一番手/控えの区別なし）として強調する。HP等の数値は出さない。
+  function buildPairCards() {
+    // 自ペア（humanIndex を含む）を左に。
+    const order = [...pairs.keys()].sort(
+      (a, b) => (pairs[a].seats.includes(humanIndex) ? 0 : 1) - (pairs[b].seats.includes(humanIndex) ? 0 : 1)
+    );
+    order.forEach((pid) => {
+      const p = pairs[pid];
+      const isMine = p.seats.includes(humanIndex);
+      const block = document.createElement("div");
+      block.className = `mi-team-block mi-pair-block${isMine ? " is-human" : ""}`;
+      const label = isMine ? "自ペア" : "相手ペア";
+      block.innerHTML = `
+        <div class="mi-team-head">${label}${isMine ? '<span class="mi-team-you">YOU</span>' : ""}</div>
+        <div class="mi-team-cards"></div>`;
+      const wrap = block.querySelector(".mi-team-cards");
+      p.chars.forEach((c) => {
+        if (!c) return;
+        const card = document.createElement("div");
+        card.className = "mi-tm-card first"; // 2人とも同格＝強調
+        card.style.setProperty("--char", c.color);
+        card.innerHTML = `
+          <div class="mi-tm-art"></div>
+          <div class="mi-tm-name" style="color:${c.color}">${c.name}</div>`;
         card.querySelector(".mi-tm-art").appendChild(makeArt(c, "portrait", "mi-tm-portrait"));
         wrap.appendChild(card);
       });
@@ -278,7 +316,7 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
   });
 
   // 起動: カード（団体戦はチーム枠）をスライドインさせ、数秒後に自動で Phase B へ。
-  const animTargets = isTeam ? [...teamsBox.children] : [...cardsBox.children];
+  const animTargets = isGrouped ? [...teamsBox.children] : [...cardsBox.children];
   requestAnimationFrame(() => {
     root.classList.add("ready");
     animTargets.forEach((card, k) => after(140 * k, () => card.classList.add("in")));

@@ -801,6 +801,8 @@ function startPairBattleGame(partnerId) {
     mode: { rounds: selectedRounds, players: 4 },
     dealerIndex,
     audio,
+    // ペア戦専用 Phase A（2人ペア×2）用。各ペアの席と立ち絵を渡す。
+    pairs: pairBattleData.pairs.map((p) => ({ seats: p.seats, chars: p.seats.map((s) => order[s]) })),
     onComplete: () => beginGame(seated, dealerIndex),
   });
 }
