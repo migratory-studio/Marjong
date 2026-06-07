@@ -9,7 +9,7 @@ import { CanvasRenderer } from "./ui/canvasRenderer.js";
 import { TileImages, CharacterImages, AudioManager, tilePath } from "./ui/assets.js";
 import { initSettingsUI, applyAudioSettings, wireSettingsControls } from "./ui/settings.js";
 import { showScreen } from "./app/router.js";
-import { initStage } from "./app/stage.js";
+import { initStage, clientToLocalFrac } from "./app/stage.js";
 import { playScenario } from "./scenario/scenarioPlayer.js";
 import { LocalProfileRepository } from "./progression/localProfileRepository.js";
 import { activeAvatar } from "./progression/avatarFactory.js";
@@ -1044,11 +1044,11 @@ function onCanvasClick(ev) {
   const actor = game.players[game.turn];
   if (!actor.isHuman) return;
 
-  const rect = el("table").getBoundingClientRect();
-  const scaleX = el("table").width / rect.width;
-  const scaleY = el("table").height / rect.height;
-  const x = (ev.clientX - rect.left) * scaleX;
-  const y = (ev.clientY - rect.top) * scaleY;
+  const c = el("table");
+  const rect = c.getBoundingClientRect();
+  const f = clientToLocalFrac(rect, ev.clientX, ev.clientY); // handles 90° rotation
+  const x = f.fx * c.width;
+  const y = f.fy * c.height;
 
   // リコール選択中: 自分の河の牌クリックで交換を実行（その後そのまま通常打牌へ）。
   if (recallMode) {
@@ -1091,8 +1091,9 @@ function onCanvasHover(ev) {
   }
   const c = el("table");
   const rect = c.getBoundingClientRect();
-  const x = (ev.clientX - rect.left) * (c.width / rect.width);
-  const y = (ev.clientY - rect.top) * (c.height / rect.height);
+  const f = clientToLocalFrac(rect, ev.clientX, ev.clientY); // handles 90° rotation
+  const x = f.fx * c.width;
+  const y = f.fy * c.height;
 
   let hit = null;
   for (const hb of renderer.handHitboxes) {

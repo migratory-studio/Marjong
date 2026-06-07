@@ -28,6 +28,7 @@ import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { emoteDef } from "../data/emoteMaster.js";
 import { bgDef } from "../data/backgroundMaster.js";
 import { bgmDef, seDef } from "../data/scenarioAudioMaster.js";
+import { clientToLocalFrac } from "../app/stage.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
@@ -215,11 +216,14 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
     const rootRect = root.getBoundingClientRect();
     const imgRect = speakerImg?.getBoundingClientRect?.();
     if (imgRect && rootRect.width > 0 && rootRect.height > 0) {
-      const scaleX = rootRect.width / root.clientWidth;
-      const scaleY = rootRect.height / root.clientHeight;
-      const imgLeft = (imgRect.left - rootRect.left) / scaleX;
-      const imgRight = (imgRect.right - rootRect.left) / scaleX;
-      const imgTop = (imgRect.top - rootRect.top) / scaleY;
+      // Map the image's viewport box into root-local coords via fractions, so it
+      // stays correct under the stage's optional 90° rotation (portrait phones).
+      // In landscape this is byte-identical to the old scale-divide math.
+      const f1 = clientToLocalFrac(rootRect, imgRect.left, imgRect.top);
+      const f2 = clientToLocalFrac(rootRect, imgRect.right, imgRect.bottom);
+      const imgLeft = Math.min(f1.fx, f2.fx) * root.clientWidth;
+      const imgRight = Math.max(f1.fx, f2.fx) * root.clientWidth;
+      const imgTop = Math.min(f1.fy, f2.fy) * root.clientHeight;
       const side = customPos?.side === "right" ? 1 : customPos?.side === "left" ? -1 : pos === "left" ? 1 : -1;
       const edgeOffset = customPos?.x ?? def.size * 0.42;
       const topOffset = customPos?.y ?? def.size * 0.02;
