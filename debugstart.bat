@@ -4,7 +4,7 @@ cd /d "%~dp0"
 title Mahjong RPG Launcher (DEBUG)
 
 set "PORT=5173"
-set "URL=http://localhost:%PORT%/?debug=1"
+set "URL=http://localhost:%PORT%/?debug=tsumoreba"
 
 rem --- Node.js check ---
 where node >nul 2>nul
@@ -24,7 +24,7 @@ if not errorlevel 1 (
 
 echo Starting Mahjong RPG in DEBUG mode...
 echo server: http://localhost:%PORT%
-echo DEBUG: all scenarios unlocked via ?debug=1
+echo DEBUG: all scenarios unlocked via ?debug=tsumoreba
 echo (close the server window to stop)
 echo.
 

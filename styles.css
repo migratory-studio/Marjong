@@ -384,7 +384,7 @@ body {
 .mh-summary { font-size: 13px; color: var(--muted); }
 .mh-menu { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 100%; }
 .mh-menu-btn { align-items: flex-start; padding: 12px 16px; }
-/* DEBUG: 1からやりなおす（?debug=1 のときだけ表示） */
+/* DEBUG: 1からやりなおす（?debug=tsumoreba のときだけ表示） */
 .mh-debug-reset {
   align-self: center; margin-top: 12px; padding: 7px 16px; border-radius: 8px;
   font-size: 12px; font-weight: 800; letter-spacing: .03em; cursor: pointer;

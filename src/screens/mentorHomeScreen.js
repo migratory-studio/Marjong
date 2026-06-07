@@ -105,7 +105,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   menu.appendChild(mkBtn("マイキャラ", "ステータス確認", "avatar"));
   container.appendChild(menu);
 
-  // ---- DEBUG: 1からやりなおす（debugstart.bat の ?debug=1 起動時のみ表示）----
+  // ---- DEBUG: 1からやりなおす（?debug=tsumoreba 起動時のみ表示）----
   // セーブデータを消してタイトルへ戻る。次に師弟モードへ入るとマイキャラ作成から再開。
   if (debug) {
     const reset = elt("button", "mh-debug-reset", {
