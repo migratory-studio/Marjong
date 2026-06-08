@@ -142,13 +142,16 @@ export function rest(profile) {
     bondExp,
   }));
   next = grantSoul(next, GROWTH_TUNING.rest.soul);
-  // 休憩も 1 行動を消費（調子は変えない）。必要なら日が進む。
-  const ended = endAction(next, 0);
+  // 休憩は 1 行動を消費し、調子を 1 段階戻す（上限＝絶好調）。必要なら日が進む。
+  const beforeCond = dayInfo(next).condition;
+  const ended = endAction(next, 1);
   next = ended.profile;
+  const conditionUp = dayInfo(next).condition > beforeCond;
 
   return {
     profile: next,
     dayAdvanced: ended.dayAdvanced,
+    conditionUp,
     healed: newHp - av.avatarHpCurrent,
     soul: GROWTH_TUNING.rest.soul,
     bondExp: GROWTH_TUNING.rest.bondExp,

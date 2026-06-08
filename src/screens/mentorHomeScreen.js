@@ -302,7 +302,10 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         card.querySelector(".mhx-md-hp-num").textContent =
           `${av2.avatarHpCurrent.toLocaleString()} / ${av2.avatarHpMax.toLocaleString()}`;
         // 絆は数値で見せない（CLAUDE.md ピラー1）。Lv 上昇は質的な一言で滲ませる。
-        const parts = [`HP +${res.healed.toLocaleString()} 回復`, `ソウル +${res.soul}`];
+        const parts = [];
+        if (res.healed > 0) parts.push(`HP +${res.healed.toLocaleString()} 回復`);
+        parts.push(`ソウル +${res.soul}`);
+        if (res.conditionUp) parts.push("調子が上向いた");
         if (res.bondUp) parts.push("…師匠との距離が、少し縮まった気がする。");
         const r = card.querySelector(".mhx-md-result");
         r.textContent = parts.join("　／　"); r.hidden = false;
