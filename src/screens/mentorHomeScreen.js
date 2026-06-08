@@ -490,15 +490,16 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     const gainRows = Object.entries(r.gains || {})
       .filter(([, v]) => v > 0)
       .map(([k, v]) => {
+        const before = r.before?.[k] ?? 0;
         const after = r.after?.[k] ?? 0;
         const toPct = Math.round((after / 99) * 100);
-        const fromPct = Math.round(((r.before?.[k] ?? 0) / 99) * 100);
+        const fromPct = Math.round((before / 99) * 100);
         return `
           <div class="mhx-pr-stat">
             <span class="mhx-pr-lab">${esc(PARAM_LABELS[k] || k)}</span>
             <div class="mhx-pr-bar"><div class="mhx-pr-fill" data-to="${toPct}" style="width:${fromPct}%"></div></div>
             <span class="mhx-pr-up">+${v}</span>
-            <span class="mhx-pr-now">${after}</span>
+            <span class="mhx-pr-now" data-from="${before}" data-to="${after}">${before}</span>
           </div>`;
       }).join("");
     const tone = r.candidate?.tone || "ok";
@@ -515,12 +516,26 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);
-    // 上昇演出：バーを伸ばし、+N をポップさせる。
-    requestAnimationFrame(() => {
-      card.querySelectorAll(".mhx-pr-fill").forEach((f, i) => {
-        setTimeout(() => { f.style.width = `${f.getAttribute("data-to")}%`; }, 120 + i * 140);
-      });
-      card.querySelectorAll(".mhx-pr-up").forEach((u, i) => setTimeout(() => u.classList.add("is-pop"), 160 + i * 140));
+    // 値のロールアップ（from→to を 1 ずつ加算カウント）。最後は必ず to にそろえる。
+    const tween = (el, from, to) => {
+      let cur = from; el.textContent = String(from);
+      if (to === from) return;
+      const dir = to > from ? 1 : -1;
+      const iv = setInterval(() => {
+        cur += dir; el.textContent = String(cur);
+        if (cur === to) clearInterval(iv);
+      }, 90);
+    };
+    // 上昇演出：バーを伸ばし、+N をポップ、値をロールアップ（行ごとに少しずらす）。
+    card.querySelectorAll(".mhx-pr-stat").forEach((row, i) => {
+      const fill = row.querySelector(".mhx-pr-fill");
+      const up = row.querySelector(".mhx-pr-up");
+      const now = row.querySelector(".mhx-pr-now");
+      setTimeout(() => {
+        if (fill) fill.style.width = `${fill.getAttribute("data-to")}%`;
+        up?.classList.add("is-pop");
+        if (now) tween(now, Number(now.getAttribute("data-from")), Number(now.getAttribute("data-to")));
+      }, 150 + i * 220);
     });
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
