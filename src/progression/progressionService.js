@@ -359,14 +359,36 @@ export function parlorState(profile) {
 }
 
 // 雀荘を 1 つ訪れた結果を記録する。wins＝オートの勝ち抜き数。
-// ソウルを付与し、その雀荘を挑戦済み（グレーアウト）にして、1 行動を消費する。
-export function visitParlor(profile, index, wins = 0) {
+// ソウル付与＋6 パラメータ成長（勝負勘＝主／ランダム＝副・§4.6.1）＋グレーアウト＋1 行動消費。
+export function visitParlor(profile, index, wins = 0, rng = Math.random) {
   const cand = rollDailyParlors(profile.dayCount ?? 1, scenarioProgressLevel(profile))[index];
   if (!cand) throw new Error("雀荘が見つかりません");
+  const av = activeAvatar(profile);
+  if (!av) throw new Error("マイキャラがいません");
+
+  // 能力値上昇：勝負勘（主）＋ランダム 1 種（副）。勝つほど伸びる（負けても主は最低 +1）。
+  const cur = avatarParams6(av);
+  const before = { ...cur };
+  const subKey = ALL_PARAMS[Math.floor(rng() * ALL_PARAMS.length)];
+  const gains = {};
+  const apply = (k, g) => {
+    const beforeV = cur[k] || 0;
+    const afterV = Math.min(PARAM_CAP, beforeV + g);
+    gains[k] = (gains[k] || 0) + (afterV - beforeV);
+    cur[k] = afterV;
+  };
+  apply("gamble", Math.max(1, (cand.paramMain || 1) + wins));
+  apply(subKey, (cand.paramSub || 1) + Math.floor(wins / 2));
+
   const soul = Math.max(0, Math.round(cand.soulPerWin * wins));
   let p = soul > 0 ? grantSoul(profile, soul) : profile;
+  p = withActiveAvatar(p, (a) => ({ ...a, params6: cur }));
   const done = Array.from(new Set([...(p.daily?.parlorsDone || []), index]));
   p = { ...p, daily: { ...(p.daily || {}), parlorsDone: done } };
   const ended = endAction(p, 0); // 雀荘巡り＝1 行動
-  return { profile: ended.profile, soul, wins, candidate: cand, dayAdvanced: ended.dayAdvanced };
+
+  return {
+    profile: ended.profile, soul, wins, candidate: cand,
+    gains, before, after: { ...cur }, dayAdvanced: ended.dayAdvanced,
+  };
 }

@@ -573,6 +573,26 @@ body {
   color:#fff; background:linear-gradient(135deg,#b5301a,#7a1c10); border:1px solid #ffd0b8; box-shadow:0 2px 6px rgba(0,0,0,.5);
 }
 
+/* 雀荘リザルト（能力値上昇演出） */
+#mentor-home-screen.mh2 .mhx-pr { text-align:center; padding:6px 4px 2px; }
+#mentor-home-screen.mh2 .mhx-pr-ttl { font-family:var(--font-min); font-size:24px; color:var(--kin-lit); letter-spacing:.1em; }
+#mentor-home-screen.mh2 .mhx-pr-head { display:flex; align-items:center; justify-content:center; gap:12px; margin:8px 0 6px; }
+#mentor-home-screen.mh2 .mhx-pr-sum { font-family:var(--font-go); font-size:13px; color:var(--ink-soft); }
+#mentor-home-screen.mh2 .mhx-pr-sum b { color:#f0e7d0; font-size:16px; }
+#mentor-home-screen.mh2 .mhx-pr-soul { font-family:var(--font-go); font-size:14px; color:var(--ink-soft); margin-bottom:12px; }
+#mentor-home-screen.mh2 .mhx-pr-soul b { color:#ffcf6b; font-size:18px; }
+#mentor-home-screen.mh2 .mhx-pr-sub { font-family:var(--font-min); font-size:14px; color:var(--kin-lit); letter-spacing:.08em; margin-bottom:10px; }
+#mentor-home-screen.mh2 .mhx-pr-stats { display:flex; flex-direction:column; gap:9px; margin-bottom:16px; }
+#mentor-home-screen.mh2 .mhx-pr-stat { display:flex; align-items:center; gap:10px; }
+#mentor-home-screen.mh2 .mhx-pr-lab { width:74px; flex:none; text-align:right; font-family:var(--font-min); font-size:15px; color:#f0e7d0; }
+#mentor-home-screen.mh2 .mhx-pr-bar { flex:1; height:12px; border-radius:7px; overflow:hidden; background:#0f1a15; border:1px solid #2a3f34; }
+#mentor-home-screen.mh2 .mhx-pr-fill { height:100%; background:linear-gradient(90deg,#7bb274,#c8a44d); transition:width .55s cubic-bezier(.22,.61,.36,1); }
+#mentor-home-screen.mh2 .mhx-pr-up { width:42px; flex:none; font-family:var(--font-go); font-size:15px; font-weight:800; color:#8fd06a; opacity:0; transform:scale(.5); }
+#mentor-home-screen.mh2 .mhx-pr-up.is-pop { animation:mhxPrPop .45s cubic-bezier(.2,1.5,.4,1) forwards; }
+#mentor-home-screen.mh2 .mhx-pr-now { width:30px; flex:none; font-family:var(--font-go); font-size:15px; font-weight:700; color:#d9c9a3; text-align:left; }
+#mentor-home-screen.mh2 .mhx-pr-none { font-family:var(--font-go); font-size:13px; color:var(--ink-soft); }
+@keyframes mhxPrPop { 0%{opacity:0; transform:scale(.5) translateY(4px);} 60%{opacity:1; transform:scale(1.25) translateY(0);} 100%{opacity:1; transform:scale(1);} }
+
 /* ランクアップ演出 */
 #mentor-home-screen.mh2 .mhx-ru { text-align:center; padding:6px 4px 2px; }
 #mentor-home-screen.mh2 .mhx-ru-ttl {

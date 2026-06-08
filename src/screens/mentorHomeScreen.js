@@ -89,7 +89,7 @@ function openModal(container, innerHTML, onClose) {
   return { card: ov.querySelector(".mhx-modal-card"), close };
 }
 
-export async function showMentorHome(container, { repository, onNavigate, onBack } = {}) {
+export async function showMentorHome(container, { repository, onNavigate, onBack, flash = null } = {}) {
   let profile = await repository.loadProfile();
   const avatar = activeAvatar(profile);
   container.innerHTML = "";
@@ -485,6 +485,53 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     card.querySelector(".mhx-ru-btn")?.addEventListener("click", close);
   }
 
+  // ---- 雀荘リザルト（能力値上昇演出つき・§4.6.8）----
+  function openParlorResultModal(r, onDone) {
+    const gainRows = Object.entries(r.gains || {})
+      .filter(([, v]) => v > 0)
+      .map(([k, v]) => {
+        const after = r.after?.[k] ?? 0;
+        const toPct = Math.round((after / 99) * 100);
+        const fromPct = Math.round(((r.before?.[k] ?? 0) / 99) * 100);
+        return `
+          <div class="mhx-pr-stat">
+            <span class="mhx-pr-lab">${esc(PARAM_LABELS[k] || k)}</span>
+            <div class="mhx-pr-bar"><div class="mhx-pr-fill" data-to="${toPct}" style="width:${fromPct}%"></div></div>
+            <span class="mhx-pr-up">+${v}</span>
+            <span class="mhx-pr-now">${after}</span>
+          </div>`;
+      }).join("");
+    const tone = r.candidate?.tone || "ok";
+    const html = `
+      <div class="mhx-pr">
+        <div class="mhx-pr-ttl">雀荘 結果</div>
+        <div class="mhx-pr-head">
+          <span class="mhx-cond tone-${tone}">${esc(r.candidate?.label || "雀荘")}</span>
+          <span class="mhx-pr-sum">${r.candidate?.matches ?? "—"} 戦 ／ 勝ち抜き <b>${r.wins ?? 0}</b></span>
+        </div>
+        <div class="mhx-pr-soul">獲得ソウル <b>+${r.soul ?? 0}</b></div>
+        <div class="mhx-pr-sub">能力値が上がった！</div>
+        <div class="mhx-pr-stats">${gainRows || '<div class="mhx-pr-none">変化なし</div>'}</div>
+        <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    // 上昇演出：バーを伸ばし、+N をポップさせる。
+    requestAnimationFrame(() => {
+      card.querySelectorAll(".mhx-pr-fill").forEach((f, i) => {
+        setTimeout(() => { f.style.width = `${f.getAttribute("data-to")}%`; }, 120 + i * 140);
+      });
+      card.querySelectorAll(".mhx-pr-up").forEach((u, i) => setTimeout(() => u.classList.add("is-pop"), 160 + i * 140));
+    });
+    card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
+  }
+
+  // 複数のモーダルを順番に出す（前のを閉じたら次へ）。
+  function runModals(list) {
+    const seq = list.filter(Boolean);
+    const step = () => { const fn = seq.shift(); if (fn) fn(step); };
+    step();
+  }
+
   // ---- イベント結線 ----
   const fire = (t) => { if (t) onNavigate?.(t); };
   container.querySelectorAll(".mhx-tag[data-nav]").forEach((node) => {
@@ -547,9 +594,10 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     container.appendChild(reset);
   }
 
-  // 新しい日が始まっていたら、まずランクアップ演出（あれば）→ 開始バナー。
-  if (showBanner) {
-    if (rankUps.length) openRankUpModal(rankUps, () => openDayBanner());
-    else openDayBanner();
-  }
+  // 戻り時の演出を順番に：雀荘リザルト →（日が変わったなら）ランクアップ → 開始バナー。
+  runModals([
+    flash?.parlor ? (next) => openParlorResultModal(flash.parlor, next) : null,
+    (showBanner && rankUps.length) ? (next) => openRankUpModal(rankUps, next) : null,
+    showBanner ? () => openDayBanner() : null,
+  ]);
 }

@@ -660,11 +660,12 @@ async function openMentorMode() {
 
 // 師弟ホーム（ハブ）。休憩 / 育成 / 能力変更 / マイキャラへ振り分ける（Phase 2B）。
 // 各サブ画面は自前で profile を読み込み、戻ると師弟ホームが再読込で最新値を反映する。
-function openMentorHome() {
+function openMentorHome(flash = null) {
   showMentorHome(el("mentor-home-screen"), {
     repository: profileRepo,
     onBack: () => navigate("home"),
     onNavigate: (target, payload) => openMentorSub(target, payload),
+    flash, // 戻り時に出すリザルト等（例: 雀荘巡りの結果）
   });
   goScreen("mentor-home-screen");
 }
@@ -743,7 +744,8 @@ async function openMentorSub(target, payload) {
         const cur = await profileRepo.loadProfile();
         const res = visitParlor(cur, cand.index, session?.wins ?? 0);
         await profileRepo.saveProfile(res.profile);
-        back();
+        // 戻った先（師弟ホーム）で雀荘リザルト＋能力値上昇演出を出す。
+        openMentorHome({ parlor: { candidate: res.candidate, wins: res.wins, soul: res.soul, gains: res.gains, before: res.before, after: res.after } });
       },
     });
   }
