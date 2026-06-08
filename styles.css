@@ -835,6 +835,7 @@ body {
 }
 #autobattle-screen .ab-fly-gain { color:#ffe39a; }
 #autobattle-screen .ab-fly-lose { color:#ff8e7a; }
+#autobattle-screen .ab-fly-neutral { color:#bfc7da; font-size:18px; opacity:.92; }
 @keyframes abFly {
   0%   { opacity:0; transform:translate(-50%,-50%) scale(.55); }
   18%  { opacity:1; transform:translate(-50%,-50%) scale(1.18); }
@@ -854,6 +855,48 @@ body {
 #autobattle-screen .ab-cmd-l { font-size:22px; letter-spacing:.06em; }
 #autobattle-screen .ab-cmd-s { font-family:"Yu Gothic","Noto Sans JP",sans-serif; font-size:11px; color:#7a5d2e; }
 #autobattle-screen .ab-quit { position:absolute; left:18px; bottom:14px; }
+
+/* 能力発動ボタン（4枠目・必殺）。残り回数を ×N で表示。 */
+#autobattle-screen .ab-cmd-ability {
+  color:#ffe7c0; background:linear-gradient(180deg,#7a2438,#591726); border-color:#d98a52;
+  box-shadow:0 4px 0 #3d0f1a, 0 6px 14px rgba(0,0,0,.5), inset 0 0 16px rgba(255,180,120,.25);
+}
+#autobattle-screen .ab-cmd-ability:hover { box-shadow:0 7px 0 #3d0f1a,0 12px 20px rgba(0,0,0,.55), inset 0 0 22px rgba(255,190,130,.35); }
+#autobattle-screen .ab-cmd-ability:active { box-shadow:0 2px 0 #3d0f1a, inset 0 0 16px rgba(255,180,120,.3); }
+#autobattle-screen .ab-cmd-ability .ab-cmd-s { color:#f0c79a; }
+#autobattle-screen .ab-cmd-uses { font-weight:800; color:#ffe39a; }
+#autobattle-screen .ab-cmd-ability.is-empty { filter:grayscale(.7) brightness(.7); }
+#autobattle-screen .ab-cmd:disabled { cursor:default; filter:saturate(.6) brightness(.82); transform:none; }
+#autobattle-screen .ab-cmd-ability.is-empty .ab-cmd-uses { color:#caa; }
+
+/* 影響を受けなかった局（他家への放銃など）の結果カード色 */
+#autobattle-screen .ab-result-safe { border-color:#bfc7da; }
+#autobattle-screen .ab-result-safe .ab-r-delta { color:#bfc7da; font-size:20px; }
+
+/* 能力発動カットイン */
+#autobattle-screen .ab-cutin { position:absolute; inset:0; z-index:70; overflow:hidden; pointer-events:none; opacity:0; transition:opacity .15s; }
+#autobattle-screen .ab-cutin.is-on { opacity:1; }
+#autobattle-screen .ab-cutin.is-off { opacity:0; transition:opacity .3s ease .0s; }
+#autobattle-screen .ab-cutin-band {
+  position:absolute; left:0; right:0; top:0; bottom:0;
+  background:linear-gradient(115deg, rgba(8,6,10,.0) 0%, rgba(20,8,14,.82) 35%, rgba(60,16,30,.9) 50%, rgba(20,8,14,.82) 65%, rgba(8,6,10,.0) 100%);
+  transform:translateX(-30%) skewX(-8deg); animation:abCutBand 1.3s cubic-bezier(.2,.7,.2,1) forwards;
+}
+#autobattle-screen .ab-cutin-img {
+  position:absolute; right:6%; bottom:0; height:104%; max-width:52%; object-fit:contain; object-position:bottom;
+  filter:drop-shadow(0 0 24px rgba(255,170,110,.55)); transform:translateX(60%) scale(1.02);
+  animation:abCutImg 1.3s cubic-bezier(.18,.8,.2,1) forwards;
+}
+#autobattle-screen .ab-cutin-txt {
+  position:absolute; left:7%; top:50%; transform:translateY(-50%);
+  display:flex; flex-direction:column; gap:6px; text-shadow:0 3px 10px rgba(0,0,0,.85);
+  animation:abCutTxt 1.3s cubic-bezier(.18,.8,.2,1) forwards;
+}
+#autobattle-screen .ab-cutin-who { font-size:18px; letter-spacing:.18em; color:#ffd9a0; }
+#autobattle-screen .ab-cutin-skill { font-size:46px; font-weight:800; letter-spacing:.06em; color:#fff1d6; }
+@keyframes abCutBand { 0%{transform:translateX(-60%) skewX(-8deg);} 60%{transform:translateX(0%) skewX(-8deg);} 100%{transform:translateX(40%) skewX(-8deg);} }
+@keyframes abCutImg { 0%{transform:translateX(60%) scale(1.02); opacity:0;} 30%{opacity:1;} 70%{transform:translateX(0%) scale(1);} 100%{transform:translateX(-6%) scale(1); opacity:1;} }
+@keyframes abCutTxt { 0%{transform:translateY(-50%) translateX(-40px); opacity:0;} 35%{opacity:1; transform:translateY(-50%) translateX(0);} 100%{opacity:1; transform:translateY(-50%) translateX(0);} }
 
 #autobattle-screen .ab-overlay { position:absolute; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; background:rgba(6,8,12,.7); opacity:0; transition:opacity .2s; }
 #autobattle-screen .ab-overlay.is-open { opacity:1; }

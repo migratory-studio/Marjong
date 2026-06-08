@@ -22,6 +22,8 @@ import { showAbilityChange } from "./screens/abilityChangeScreen.js";
 import { showScenarioList } from "./screens/scenarioListScreen.js";
 import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
+import { skillTemplateById } from "./data/skillTemplateMaster.js";
+import { presetById } from "./data/avatarPresetMaster.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -699,6 +701,8 @@ async function openMentorSub(target) {
     // §4.6 オートバトルのプロト起動（大会未実装のためデバッグ導線から）。
     const profile = await profileRepo.loadProfile();
     const av = activeAvatar(profile);
+    const abilityName = skillTemplateById(av?.skillTemplateId)?.name || "能力発動";
+    const standingSrc = presetById(av?.presetIds?.standing)?.assetPath || "";
     showAutoBattle(el("autobattle-screen"), {
       self: avatarParams6(av),
       avatar: av,
@@ -708,6 +712,8 @@ async function openMentorSub(target) {
       seed: Date.now(),
       onExit: () => back(),
       audio,
+      abilityName,
+      standingSrc,
     });
     goScreen("autobattle-screen");
   }

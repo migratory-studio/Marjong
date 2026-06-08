@@ -27,11 +27,12 @@ const STANCE_HINT = {
   push: "押してきそうだ", pull: "受けに回るか", watch: "様子を見ている", last: "勝負を懸けてくる",
 };
 
-export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, seed = Date.now(), onExit, audio } = {}) {
+export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, seed = Date.now(), onExit, audio, abilityName = "能力発動", standingSrc = "", abilityUses = 3 } = {}) {
   const selfP = self || { fire: 35, guard: 30, read: 32, gamble: 28, speed: 30, mental: 30 };
   const HPMAX = hpMax || 30000;
   const youIcon = presetById(avatar?.presetIds?.icon)?.assetPath || "";
-  const session = { matchNo: 1, hp: hp ?? HPMAX, hpMax: HPMAX, wins: 0, oppLv };
+  // 能力発動は出撃（セッション）通しで abilityUses 回まで（試合をまたいでも回復しない＝貴重な切り札）。
+  const session = { matchNo: 1, hp: hp ?? HPMAX, hpMax: HPMAX, wins: 0, oppLv, abilityLeft: abilityUses };
   container.classList.add("ab");
 
   let match = null;
@@ -65,9 +66,11 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
 
   function renderFrame() {
     const pct = Math.round((match.hp / session.hpMax) * 100);
-    const cmds = COMMANDS.map((c) =>
+    // 通常コマンドは押す/引く/様子を見る。4 枠目は「能力発動」（旧・次ラスで → 勝負勘の必殺）。
+    const cmds = COMMANDS.filter((c) => c.id !== "last").map((c) =>
       `<button type="button" class="ab-cmd" data-cmd="${c.id}"><span class="ab-cmd-l">${esc(c.label)}</span><span class="ab-cmd-s">${esc(c.sub)}</span></button>`
-    ).join("");
+    ).join("")
+    + `<button type="button" class="ab-cmd ab-cmd-ability" data-cmd="ability"><span class="ab-cmd-l">${esc(abilityName)}</span><span class="ab-cmd-s">能力発動 <span class="ab-cmd-uses">×${session.abilityLeft}</span></span></button>`;
 
     container.innerHTML = `
       <div class="ab-wrap">
@@ -101,6 +104,18 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
       b.addEventListener("click", () => onCommand(b.getAttribute("data-cmd"))));
     container.querySelector('[data-act="quit"]').addEventListener("click", () => onExit?.(session));
     updateHint();
+    syncAbilityBtn();
+  }
+
+  // 能力発動ボタンの残り回数表示と、残 0 のときの無効化を同期する。
+  function syncAbilityBtn() {
+    const b = container.querySelector(".ab-cmd-ability");
+    if (!b) return;
+    const left = session.abilityLeft;
+    const uses = b.querySelector(".ab-cmd-uses");
+    if (uses) uses.textContent = "×" + left;
+    b.classList.toggle("is-empty", left <= 0);
+    if (left <= 0) b.disabled = true;
   }
 
   function updateHint() {
@@ -113,6 +128,7 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
 
   function setCmdsDisabled(d) {
     container.querySelectorAll(".ab-cmd").forEach((b) => { b.disabled = d; });
+    if (!d) syncAbilityBtn(); // 再有効化時、能力が尽きていれば無効のまま
   }
 
   function seatLabel(seat) {
@@ -120,7 +136,8 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
   }
 
   // 払い手席 → 勝者席へ点棒の数字を飛ばす簡易演出。座標は卓エリア基準で算出。
-  function flyPoints(fromSeat, toSeat, amount, gain) {
+  // kind: "gain"(自分が受取) / "lose"(自分が払う) / "neutral"(他家同士)。
+  function flyPoints(fromSeat, toSeat, amount, kind, withSe) {
     const area = container.querySelector(".ab-table-area");
     const fromEl = container.querySelector("." + SEAT_CLASS[fromSeat]);
     const toEl = container.querySelector("." + SEAT_CLASS[toSeat]);
@@ -130,53 +147,103 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
     const t = toEl.getBoundingClientRect();
     const x0 = f.left + f.width / 2 - a.left, y0 = f.top + f.height / 2 - a.top;
     const x1 = t.left + t.width / 2 - a.left, y1 = t.top + t.height / 2 - a.top;
+    const sign = kind === "gain" ? "+" : kind === "lose" ? "−" : "";
     const chip = document.createElement("div");
-    chip.className = "ab-fly " + (gain ? "ab-fly-gain" : "ab-fly-lose");
-    chip.textContent = `${gain ? "+" : "−"}${amount.toLocaleString()}`;
+    chip.className = "ab-fly ab-fly-" + kind;
+    chip.textContent = `${sign}${amount.toLocaleString()}`;
     chip.style.left = `${x0}px`;
     chip.style.top = `${y0}px`;
     chip.style.setProperty("--dx", `${x1 - x0}px`);
     chip.style.setProperty("--dy", `${y1 - y0}px`);
     area.appendChild(chip);
-    audio?.playSe?.(sePath("金額表示.mp3"), 0.9);
+    if (withSe) audio?.playSe?.(sePath("金額表示.mp3"), 0.9);
     chip.addEventListener("animationend", () => chip.remove(), { once: true });
+  }
+
+  // 点棒移動の明細をまとめて飛ばす（少しずつずらして連続感を出す）。SE は先頭 1 回だけ。
+  function flyAllPayments(payments) {
+    payments.forEach((p, i) => {
+      const kind = p.to === 0 ? "gain" : (p.from === 0 ? "lose" : "neutral");
+      setTimeout(() => flyPoints(p.from, p.to, p.amount, kind, i === 0), i * 150);
+    });
+  }
+
+  // 能力発動カットイン（立ち絵＋能力名がスイープイン）。終わったら then() で局を解決。
+  function playCutin(name, then) {
+    const ov = document.createElement("div");
+    ov.className = "ab-cutin";
+    ov.innerHTML = `
+      <div class="ab-cutin-band"></div>
+      ${standingSrc ? `<img class="ab-cutin-img" src="${esc(standingSrc)}" alt="">` : ""}
+      <div class="ab-cutin-txt">
+        <span class="ab-cutin-who">${esc(avatar?.name || "")}</span>
+        <span class="ab-cutin-skill">${esc(name)}</span>
+      </div>`;
+    container.appendChild(ov);
+    audio?.playSe?.(sePath("シャキーン2.mp3"), 0.95);
+    requestAnimationFrame(() => ov.classList.add("is-on"));
+    setTimeout(() => ov.classList.add("is-off"), 1000);
+    setTimeout(() => { ov.remove(); then?.(); }, 1300);
   }
 
   function onCommand(cmd) {
     if (busy || match.finished) return;
+    if (cmd === "ability") {
+      if (session.abilityLeft <= 0) return;
+      busy = true;
+      setCmdsDisabled(true);
+      session.abilityLeft -= 1;
+      // カットイン → 勝負勘ベース(last)を能力で超強化して解決。
+      playCutin(abilityName, () => runRound("last", true));
+      return;
+    }
     busy = true;
     setCmdsDisabled(true);
-    const res = resolveRound(match, cmd);
+    runRound(cmd, false);
+  }
 
-    // 1) 中央に結果カード（役・翻・点数）を出す。
+  function runRound(cmd, ability) {
+    const res = resolveRound(match, cmd, { ability });
     const win = res.hand.winnerSeat === 0;
+
+    // 1) 中央に結果カード（種別・役・翻・点数・自分への影響）を出す。
     const card = container.querySelector("#ab-result");
-    card.className = "ab-result is-show " + (win ? "ab-result-win" : "ab-result-lose");
+    const tone = win ? "ab-result-win" : (res.delta < 0 ? "ab-result-lose" : "ab-result-safe");
+    card.className = "ab-result is-show " + tone;
     const hl = res.hand.han >= 6 ? "跳満" : res.hand.han === 5 ? "満貫" : `${res.hand.han} 翻`;
+    const wt = res.hand.winType === "tsumo" ? "ツモ" : "ロン";
+    let deltaHtml;
+    if (res.delta > 0) deltaHtml = `獲得 +${res.delta.toLocaleString()}`;
+    else if (res.delta < 0) deltaHtml = `${res.hand.winType === "tsumo" ? "被ツモ −" : "放銃 −"}${Math.abs(res.delta).toLocaleString()}`;
+    else deltaHtml = "難を逃れた";
+    const who = res.hand.ronTarget != null
+      ? `${esc(seatLabel(res.hand.winnerSeat))} → ${esc(seatLabel(res.hand.ronTarget))} へ${wt}`
+      : `${esc(seatLabel(res.hand.winnerSeat))} の${wt}`;
     card.innerHTML = `
-      <div class="ab-r-who">${esc(seatLabel(res.hand.winnerSeat))} の和了</div>
+      <div class="ab-r-who">${who}</div>
       <div class="ab-r-han-big">${hl}</div>
       <div class="ab-r-pts">${res.hand.points.toLocaleString()} 点</div>
-      <div class="ab-r-delta">${res.delta >= 0 ? "獲得 +" : "放銃 −"}${Math.abs(res.delta).toLocaleString()}</div>
+      <div class="ab-r-delta">${deltaHtml}</div>
     `;
     // 勝者の席をハイライト。
     container.querySelectorAll(".ab-seat").forEach((s) => s.classList.remove("is-winner"));
     container.querySelector("." + SEAT_CLASS[res.hand.winnerSeat])?.classList.add("is-winner");
-    // 結果カード出現に合わせて軽い和風 SE（勝ちは華やか・負けは鈍く）。
+    // 結果カード出現に合わせて軽い和風 SE（自分の和了は華やか）。
     if (win) audio?.playSe?.(sePath("シャキーン1.mp3"), 0.55);
 
-    // 2) 少し見せてから HP 増減演出。
+    // 2) 少し見せてから点棒移動＋HP 増減演出。
     setTimeout(() => {
-      // 払い手 → 勝者へ点棒（数字）が飛ぶ簡易演出＋金額 SE。
-      flyPoints(res.hand.payerSeat, res.hand.winnerSeat, res.hand.points, win);
+      flyAllPayments(res.payments);
       const fill = container.querySelector(".ab-fill-self");
       const num = container.querySelector(".ab-self-num");
       if (fill) fill.style.width = `${Math.round((match.hp / session.hpMax) * 100)}%`;
       if (num) num.innerHTML = `${match.hp.toLocaleString()} <small>/ ${session.hpMax.toLocaleString()}</small>`;
-      const hpBox = container.querySelector(".ab-self-hp");
-      hpBox?.classList.add(res.delta >= 0 ? "ab-flash-up" : "ab-flash-dn");
-      setTimeout(() => hpBox?.classList.remove("ab-flash-up", "ab-flash-dn"), 500);
-      // 各席のバーも更新（全員が減っていく見せ方）。
+      if (res.delta !== 0) {
+        const hpBox = container.querySelector(".ab-self-hp");
+        hpBox?.classList.add(res.delta > 0 ? "ab-flash-up" : "ab-flash-dn");
+        setTimeout(() => hpBox?.classList.remove("ab-flash-up", "ab-flash-dn"), 500);
+      }
+      // 各席のバーも更新。
       const setSeat = (k, pct) => { const f = container.querySelector(`.ab-seat-fill[data-seat="${k}"]`); if (f) f.style.width = `${pct}%`; };
       setSeat(0, youPct());
       setSeat(1, oppPct(0)); setSeat(2, oppPct(1)); setSeat(3, oppPct(2));
@@ -194,7 +261,7 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
       updateHint();
       busy = false;
       setCmdsDisabled(false);
-    }, 2100);
+    }, 2300);
   }
 
   function showResult() {

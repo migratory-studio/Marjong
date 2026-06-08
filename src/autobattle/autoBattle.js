@@ -41,6 +41,15 @@ const CFG = {
   revealMargin: 8,          // 読み − 相手読み がこの差以上で相手スタンス開示
   mentalVarReduce: 0.006,   // メンタル 1 につき乱数の振れ幅を縮める
   healAfterMatch: 0.15,     // 試合終了ごとの自動回復（最大 HP 比）
+  // 和了の種別抽選（点棒移動のバリエーション）。
+  selfTsumoRate: 0.40,      // 自分が和了 → ツモ（相手 3 人が払う）になる率（残りはロン）
+  oppTsumoRate: 0.30,       // 相手が和了 → ツモ（自分含む全員が払う）
+  oppRonYouRate: 0.40,      // 相手が和了 → 自分へロン（自分が払う）。残り＝他家へロン（自分は無傷）
+  // 能力発動（弟子の必殺）。勝率・和了質を大きく底上げする。
+  abilityWinBonus: 0.45,    // 局取り確率を超 UP
+  abilityWinFloor: 0.92,    // 弱くても発動時は最低この勝率（必殺がほぼ必ず映える）
+  abilityHanBoost: 0.55,    // 打点/和了質の引きを上げる（rollHand へ加算）
+  abilityTsumoRate: 0.70,   // 能力発動時はツモ（全員払い）に寄せる＝派手
   // コマンドごとの「自分の効くparam / 相手の抵抗param / 取り確率係数 / 負け時ダメージ基準」
   cmd: {
     push:  { self: "fire",   opp: "guard", k: 1.0, dmgLose: 7000,  win: 3 },
@@ -141,61 +150,114 @@ const HAN_TABLE = [
 const AGGR = { push: 0.7, pull: 0.1, watch: 0.2, last: 1.0 };
 
 // 和了の翻/点/役を引く。power（火力・勝負勘）と攻撃性が高いほど高打点へ寄る。
-function rollHand(p, aggression, rng) {
+// boost は能力発動ぶんの上振れ（和了質 UP）。
+function rollHand(p, aggression, rng, boost = 0) {
   const power = (p.fire + p.gamble) / 2 / 99;           // 0..1
-  const t = power * 0.5 + aggression * 0.4 + rng() * 0.5; // 0..~1.4
+  const t = power * 0.5 + aggression * 0.4 + rng() * 0.5 + boost; // 0..~1.4(+boost)
   const idx = clamp(Math.floor(t * HAN_TABLE.length), 0, HAN_TABLE.length - 1);
   const e = HAN_TABLE[idx];
   const yaku = e.yaku[Math.floor(rng() * e.yaku.length)];
   return { han: e.han, points: e.pts, yaku };
 }
 
-// 1 局を解決する。command はプレイヤーのコマンド id。
-// 戻り値: { tookRound, hand, delta, hp, finished, result }
-//   hand: { winnerSeat(0=自分,1..3=相手), han, yaku, points }
-//   delta: 自分の点棒（HP）増減（＋＝獲得 / −＝放銃・被ツモ）
-export function resolveRound(state, command) {
+// 点棒移動を 1 件適用する（from 席 → to 席、amount 点）。HP/相手バーを更新し、明細を積む。
+// seat 0 = 自分、1..3 = 相手。amount<=0 は無視。
+function applyPayment(state, from, to, amount, payments) {
+  if (amount <= 0) return;
+  if (from === 0) state.hp = clamp(state.hp - amount, 0, state.hpMax);
+  else state.oppHp[from - 1] = clamp(state.oppHp[from - 1] - amount, 0, state.oppHpMax);
+  if (to === 0) state.hp = clamp(state.hp + amount, 0, state.hpMax);
+  else state.oppHp[to - 1] = clamp(state.oppHp[to - 1] + amount, 0, state.oppHpMax);
+  payments.push({ from, to, amount });
+}
+
+// 自分が払うときの軽減（引く＝守備で受ける／メンタルで振れ幅圧縮）。
+function selfPayAmount(state, base, command) {
+  const guardMul = command === "pull" ? clamp(1 - state.self.guard / 160, 0.4, 1) : 1;
+  const spread = clamp(0.25 - state.self.mental * CFG.mentalVarReduce, 0.05, 0.25);
+  const noise = 1 + (state.rng() * 2 - 1) * spread;
+  return Math.round(base * guardMul * noise);
+}
+
+// 自分の取りポイント（着順用）の合計＝seat 0 への純増。表示用。
+function playerDelta(payments) {
+  let d = 0;
+  for (const p of payments) { if (p.to === 0) d += p.amount; if (p.from === 0) d -= p.amount; }
+  return d;
+}
+
+// ランダムに 1..3 の相手席を 1 つ返す（exclude を避ける）。
+function pickOpp(rng, exclude = 0) {
+  let s = 1 + Math.floor(rng() * 3);
+  if (s === exclude) s = (s % 3) + 1;
+  return s;
+}
+
+// 1 局を解決する。command はプレイヤーのコマンド id。opts.ability で能力発動（超強化）。
+// 戻り値: { tookRound, hand, delta, payments, hp, oppHp, finished, result }
+//   hand: { winnerSeat(0=自分,1..3=相手), winType('tsumo'|'ron'), han, points, ronTarget? }
+//   payments: [{ from, to, amount }] … 点棒移動の明細（演出はこれを順に飛ばす）
+//   delta: 自分の点棒（HP）増減（＋＝獲得 / −＝放銃・被ツモ / 0＝無関係＝難を逃れた）
+export function resolveRound(state, command, opts = {}) {
   if (state.finished) return null;
+  const ability = !!opts.ability;
   const c = CFG.cmd[command] || CFG.cmd.push;
 
-  // 局を取る確率：自分の効きparam − 相手の抵抗param、＋速度先制、＋様子見スタック。
+  // 局を取る確率：自分の効きparam − 相手の抵抗param、＋速度先制、＋様子見スタック、＋能力。
   let prob = CFG.baseWin
     + c.k * (state.self[c.self] - state.opp[c.opp]) / CFG.diffScale
     + state.self.speed * CFG.speedWinBonus
-    + state.watchStack * CFG.watchBonus;
-  prob = clamp(prob, 0.05, 0.95);
+    + state.watchStack * CFG.watchBonus
+    + (ability ? CFG.abilityWinBonus : 0);
+  prob = clamp(prob, 0.05, ability ? 0.99 : 0.95);
+  if (ability) prob = Math.max(prob, CFG.abilityWinFloor); // 必殺は弱くても映える
 
   const tookRound = state.rng() < prob;
   // 様子見スタックの更新（様子見で +1、他コマンドで消費）。
   state.watchStack = command === "watch" ? state.watchStack + 1 : 0;
 
-  let hand, delta, winnerSeat;
+  const payments = [];
+  let hand, winnerSeat, winType;
   if (tookRound) {
-    // 自分の和了：点を獲得（HP 増）。相手の誰か 1 人が払う。
-    const h = rollHand(state.self, AGGR[command] ?? 0.5, state.rng);
-    const amount = h.points;
+    // 自分の和了。ツモ（相手 3 人払い）かロン（1 人払い）かを抽選。能力でツモ＆高打点に寄る。
+    const h = rollHand(state.self, AGGR[command] ?? 0.5, state.rng, ability ? CFG.abilityHanBoost : 0);
     winnerSeat = 0;
-    const payer = 1 + Math.floor(state.rng() * 3);
-    delta = amount;
-    state.hp = clamp(state.hp + amount, 0, state.hpMax);
-    state.oppHp[payer - 1] = clamp(state.oppHp[payer - 1] - amount, 0, state.oppHpMax);
-    hand = { winnerSeat, payerSeat: payer, han: h.han, points: amount };
-    state.selfPlacementPts += c.win;
+    const tsumoRate = ability ? CFG.abilityTsumoRate : CFG.selfTsumoRate;
+    if (state.rng() < tsumoRate) {
+      winType = "tsumo";
+      const each = Math.round(h.points / 3);
+      for (let s = 1; s <= 3; s++) applyPayment(state, s, 0, each, payments);
+    } else {
+      winType = "ron";
+      applyPayment(state, pickOpp(state.rng), 0, h.points, payments);
+    }
+    hand = { winnerSeat, winType, han: h.han, points: h.points };
+    state.selfPlacementPts += c.win + (ability ? 2 : 0);
   } else {
-    // 相手の和了：自分が払う（HP 減）。引く＝守備で軽減、メンタルで振れ幅圧縮。
+    // 相手の和了。ツモ（全員払い）／自分へロン／他家へロン（自分は無傷）を抽選。
+    winnerSeat = pickOpp(state.rng);
     const h = rollHand(state.opp, 0.6, state.rng);
-    const guardMul = command === "pull" ? clamp(1 - state.self.guard / 160, 0.4, 1) : 1;
-    const spread = clamp(0.25 - state.self.mental * CFG.mentalVarReduce, 0.05, 0.25);
-    const noise = 1 + (state.rng() * 2 - 1) * spread;
-    const amount = Math.round(h.points * guardMul * noise);
-    winnerSeat = 1 + Math.floor(state.rng() * 3);
-    delta = -amount;
-    state.hp = clamp(state.hp - amount, 0, state.hpMax);
-    state.oppHp[winnerSeat - 1] = clamp(state.oppHp[winnerSeat - 1] + amount, 0, state.oppHpMax);
-    hand = { winnerSeat, payerSeat: 0, han: h.han, points: amount };
+    const roll = state.rng();
+    if (roll < CFG.oppTsumoRate) {
+      winType = "tsumo";
+      const each = Math.round(h.points / 3);
+      applyPayment(state, 0, winnerSeat, selfPayAmount(state, each, command), payments); // 自分の被ツモ
+      for (let s = 1; s <= 3; s++) if (s !== winnerSeat) applyPayment(state, s, winnerSeat, each, payments);
+    } else if (roll < CFG.oppTsumoRate + CFG.oppRonYouRate) {
+      winType = "ron";
+      applyPayment(state, 0, winnerSeat, selfPayAmount(state, h.points, command), payments); // 自分の放銃
+    } else {
+      // 他家へのロン：自分は無関係（点棒移動は相手同士）。
+      winType = "ron";
+      const target = pickOpp(state.rng, winnerSeat);
+      hand = { winnerSeat, winType, han: h.han, points: h.points, ronTarget: target };
+      applyPayment(state, target, winnerSeat, h.points, payments);
+    }
+    if (!hand) hand = { winnerSeat, winType, han: h.han, points: h.points };
     state.oppPlacementPts += 2;
   }
-  state.log.push({ round: state.round + 1, command, tookRound, delta, hand });
+  const delta = playerDelta(payments);
+  state.log.push({ round: state.round + 1, command, ability, tookRound, delta, hand });
   state.round += 1;
 
   if (state.hp <= 0) {
@@ -206,7 +268,7 @@ export function resolveRound(state, command) {
     startRound(state);
   }
 
-  return { tookRound, hand, delta, hp: state.hp, oppHp: state.oppHp.slice(), finished: state.finished, result: state.result };
+  return { tookRound, hand, delta, payments, hp: state.hp, oppHp: state.oppHp.slice(), finished: state.finished, result: state.result };
 }
 
 // 試合の最終着順（1〜4 の概算）。プレイヤーの取りポイントを相手平均と比べる簡易版。
