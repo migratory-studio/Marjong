@@ -195,6 +195,32 @@ export const TRAIN_TUNING = {
 const PARAM_CAP = 99;
 const ALL_PARAMS = ["fire", "guard", "read", "gamble", "speed", "mental"];
 
+// 訓練の「調子」による結果（伸び倍率）。大成功＞成功＞無難＞失敗。
+// mult が主/副の伸びに掛かる（失敗でも主は最低 +1＝失敗なし路線 §4.6.4）。
+// line は師匠が返す一言（双方向の愛着フック）。
+export const TRAIN_OUTCOMES = {
+  daiseikou: { label: "大成功", tone: "great", mult: 2.2, line: "筋がいい。我が見込んだ通りだ。" },
+  seikou:    { label: "成功",   tone: "good",  mult: 1.5, line: "うむ、よく伸びた。" },
+  bunan:     { label: "無難",   tone: "ok",    mult: 1.0, line: "悪くない。地道が一番だ。" },
+  shippai:   { label: "失敗",   tone: "bad",   mult: 0.34, line: "ま、こういう日もある。気にするな。" },
+};
+const clampN = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+
+// メンタル(集中)が高いほど「無難・失敗」が減り「成功・大成功」へ寄る。
+// メンタルは対局オートでも乱数の振れを圧縮する＝育成でも同じ性格（ブレを抑える）。
+export function rollTrainOutcome(mental = 0, rng = Math.random) {
+  const m = clampN(mental, 0, PARAM_CAP) / PARAM_CAP; // 0..1
+  const pFail = 0.18 * (1 - 0.9 * m);   // メンタル99で ~0.018
+  const pBunan = 0.42 * (1 - 0.5 * m);  // メンタル99で ~0.21
+  const rest = 1 - pFail - pBunan;
+  const pDai = rest * (0.20 + 0.30 * m); // 高メンタルほど大成功の取り分も増える
+  const r = rng();
+  if (r < pDai) return "daiseikou";
+  if (r < pDai + (rest - pDai)) return "seikou";
+  if (r < pDai + (rest - pDai) + pBunan) return "bunan";
+  return "shippai";
+}
+
 export function trainParam(profile, key, rng = Math.random) {
   const t = TRAIN_TUNING[key];
   if (!t) throw new Error("未知の育成コマンド: " + key);
@@ -202,6 +228,9 @@ export function trainParam(profile, key, rng = Math.random) {
   if (!av) throw new Error("マイキャラがいません");
 
   const cur = avatarParams6(av);
+  // 調子は「訓練前のメンタル」で判定（メンタルを上げる訓練でも当日の伸びには未反映）。
+  const outcomeKey = rollTrainOutcome(cur.mental, rng);
+  const outcome = TRAIN_OUTCOMES[outcomeKey];
   const sub = t.sub === "random" ? ALL_PARAMS[Math.floor(rng() * ALL_PARAMS.length)] : t.sub;
   const gains = {};
   const apply = (k, g) => {
@@ -210,8 +239,9 @@ export function trainParam(profile, key, rng = Math.random) {
     gains[k] = (gains[k] || 0) + (after - before);
     cur[k] = after;
   };
-  apply(t.main, t.mainGain);
-  apply(sub, t.subGain);
+  // 主は最低 +1 を保証（失敗でも何かは身につく）。副は 0 になりうる。
+  apply(t.main, Math.max(1, Math.round(t.mainGain * outcome.mult)));
+  apply(sub, Math.round(t.subGain * outcome.mult));
 
   const hpCost = t.hp || 0;
   let p = withActiveAvatar(profile, (a) => ({
@@ -220,5 +250,5 @@ export function trainParam(profile, key, rng = Math.random) {
     avatarHpCurrent: Math.max(0, (a.avatarHpCurrent ?? a.avatarHpMax) - hpCost),
   }));
   if (t.soul) p = grantSoul(p, t.soul);
-  return { profile: p, gains, hpCost, soul: t.soul || 0 };
+  return { profile: p, gains, hpCost, soul: t.soul || 0, outcome: outcomeKey, outcomeLabel: outcome.label, outcomeTone: outcome.tone, outcomeLine: outcome.line };
 }

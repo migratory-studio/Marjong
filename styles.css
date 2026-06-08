@@ -752,7 +752,13 @@ body {
 #mentor-home-screen.mh2 .mhx-md-hp { margin:8px 0 15px; }
 #mentor-home-screen.mh2 .mhx-md-hp-top { display:flex; justify-content:space-between; font-family:var(--font-go); font-size:12px; color:#5a4a2c; margin-bottom:6px; }
 #mentor-home-screen.mh2 .mhx-md-fill { transition:width .6s cubic-bezier(.22,.61,.36,1); }
-#mentor-home-screen.mh2 .mhx-md-result { font-family:var(--font-go); font-size:14px; color:#8f2418; font-weight:600; margin:0 0 13px; letter-spacing:.02em; }
+#mentor-home-screen.mh2 .mhx-md-result { font-family:var(--font-go); font-size:14px; color:#4a3c24; font-weight:600; margin:0 0 13px; letter-spacing:.02em; }
+/* 訓練の調子バッジ（大成功/成功/無難/失敗） */
+#mentor-home-screen.mh2 .mhx-md-badge { display:inline-block; padding:2px 10px; border-radius:999px; font-weight:800; font-size:13px; color:#fff; }
+#mentor-home-screen.mh2 .mhx-md-badge.tone-great { background:linear-gradient(135deg,#e0573a,#b5301a); box-shadow:0 0 10px rgba(224,87,58,.5); }
+#mentor-home-screen.mh2 .mhx-md-badge.tone-good { background:linear-gradient(135deg,#d6a23a,#a87a1e); }
+#mentor-home-screen.mh2 .mhx-md-badge.tone-ok { background:#7a8a6a; }
+#mentor-home-screen.mh2 .mhx-md-badge.tone-bad { background:#8a7560; }
 #mentor-home-screen.mh2 .mhx-md-btn {
   display:block; width:100%; padding:12px; border-radius:9px; cursor:pointer;
   font-family:var(--font-min); font-size:18px; letter-spacing:.1em; color:#fff;

@@ -320,7 +320,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-md-title"><span class="mhx-md-by">修行</span><span class="mhx-md-ttl">${esc(t.label)}</span></div>
       </div>
       <p class="mhx-md-line">${esc(TRAIN_LINE[key] || "")}</p>
-      <p class="mhx-md-prof">伸びる：<b>${esc(PARAM_LABELS[t.main])}</b>（主）／ ${esc(subLabel)}（副）　・　消費 HP ${t.hp.toLocaleString()}${t.soul ? `　・　ソウル +${t.soul}` : ""}</p>
+      <p class="mhx-md-prof">伸びる：<b>${esc(PARAM_LABELS[t.main])}</b>（主）／ ${esc(subLabel)}（副）　・　消費 HP ${t.hp.toLocaleString()}${t.soul ? `　・　ソウル +${t.soul}` : ""}<br><small>※伸びは当日の調子で変動（メンタルが高いほど安定し、大成功も出やすい）</small></p>
       <p class="mhx-md-result" hidden></p>
       <button type="button" class="mhx-md-btn">${esc(t.label)}する</button>
     `;
@@ -339,8 +339,12 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         const parts = [gainStr];
         if (res.soul) parts.push(`ソウル +${res.soul}`);
         parts.push(`HP −${res.hpCost.toLocaleString()}`);
+        // 調子（大成功/成功/無難/失敗）を見出しに、師匠の一言を反応として返す。
+        const badge = `<span class="mhx-md-badge tone-${res.outcomeTone}">${esc(res.outcomeLabel)}${res.outcomeTone === "great" ? "！" : ""}</span>`;
+        const line = card.querySelector(".mhx-md-line");
+        if (line && res.outcomeLine) line.textContent = res.outcomeLine;
         const r = card.querySelector(".mhx-md-result");
-        r.textContent = parts.join("　/　"); r.hidden = false;
+        r.innerHTML = `${badge}　${esc(parts.join("　/　"))}`; r.hidden = false;
         btn.disabled = true; btn.textContent = "完了";
       } catch (e) {
         const r = card.querySelector(".mhx-md-result");
