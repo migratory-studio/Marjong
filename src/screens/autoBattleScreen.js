@@ -14,6 +14,9 @@ import { makeMobRoster } from "../data/mobMaster.js";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const sePath = (name) => "sound/se/" + encodeURIComponent(name);
+// seat(0=自分,1..3=相手) → 席要素の CSS クラス。
+const SEAT_CLASS = ["ab-s-you", "ab-s-left", "ab-s-top", "ab-s-right"];
 
 const TIER_CLASS = {
   yusei: "ab-tier-up2", yaya_yusei: "ab-tier-up1", kakko: "ab-tier-even",
@@ -24,7 +27,7 @@ const STANCE_HINT = {
   push: "押してきそうだ", pull: "受けに回るか", watch: "様子を見ている", last: "勝負を懸けてくる",
 };
 
-export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, seed = Date.now(), onExit } = {}) {
+export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, seed = Date.now(), onExit, audio } = {}) {
   const selfP = self || { fire: 35, guard: 30, read: 32, gamble: 28, speed: 30, mental: 30 };
   const HPMAX = hpMax || 30000;
   const youIcon = presetById(avatar?.presetIds?.icon)?.assetPath || "";
@@ -116,6 +119,29 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
     return seat === 0 ? (avatar?.name || "あなた") : (mobs[seat - 1]?.name || `相手${seat}`);
   }
 
+  // 払い手席 → 勝者席へ点棒の数字を飛ばす簡易演出。座標は卓エリア基準で算出。
+  function flyPoints(fromSeat, toSeat, amount, gain) {
+    const area = container.querySelector(".ab-table-area");
+    const fromEl = container.querySelector("." + SEAT_CLASS[fromSeat]);
+    const toEl = container.querySelector("." + SEAT_CLASS[toSeat]);
+    if (!area || !fromEl || !toEl) return;
+    const a = area.getBoundingClientRect();
+    const f = fromEl.getBoundingClientRect();
+    const t = toEl.getBoundingClientRect();
+    const x0 = f.left + f.width / 2 - a.left, y0 = f.top + f.height / 2 - a.top;
+    const x1 = t.left + t.width / 2 - a.left, y1 = t.top + t.height / 2 - a.top;
+    const chip = document.createElement("div");
+    chip.className = "ab-fly " + (gain ? "ab-fly-gain" : "ab-fly-lose");
+    chip.textContent = `${gain ? "+" : "−"}${amount.toLocaleString()}`;
+    chip.style.left = `${x0}px`;
+    chip.style.top = `${y0}px`;
+    chip.style.setProperty("--dx", `${x1 - x0}px`);
+    chip.style.setProperty("--dy", `${y1 - y0}px`);
+    area.appendChild(chip);
+    audio?.playSe?.(sePath("金額表示.mp3"), 0.9);
+    chip.addEventListener("animationend", () => chip.remove(), { once: true });
+  }
+
   function onCommand(cmd) {
     if (busy || match.finished) return;
     busy = true;
@@ -135,11 +161,14 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
     `;
     // 勝者の席をハイライト。
     container.querySelectorAll(".ab-seat").forEach((s) => s.classList.remove("is-winner"));
-    const seatClass = ["ab-s-you", "ab-s-left", "ab-s-top", "ab-s-right"][res.hand.winnerSeat];
-    container.querySelector("." + seatClass)?.classList.add("is-winner");
+    container.querySelector("." + SEAT_CLASS[res.hand.winnerSeat])?.classList.add("is-winner");
+    // 結果カード出現に合わせて軽い和風 SE（勝ちは華やか・負けは鈍く）。
+    if (win) audio?.playSe?.(sePath("シャキーン1.mp3"), 0.55);
 
     // 2) 少し見せてから HP 増減演出。
     setTimeout(() => {
+      // 払い手 → 勝者へ点棒（数字）が飛ぶ簡易演出＋金額 SE。
+      flyPoints(res.hand.payerSeat, res.hand.winnerSeat, res.hand.points, win);
       const fill = container.querySelector(".ab-fill-self");
       const num = container.querySelector(".ab-self-num");
       if (fill) fill.style.width = `${Math.round((match.hp / session.hpMax) * 100)}%`;

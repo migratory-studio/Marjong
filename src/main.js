@@ -707,6 +707,7 @@ async function openMentorSub(target) {
       oppLv: 3,
       seed: Date.now(),
       onExit: () => back(),
+      audio,
     });
     goScreen("autobattle-screen");
   }
