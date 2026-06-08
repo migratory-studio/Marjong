@@ -24,6 +24,7 @@ import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
+import { dayInfo, CONDITIONS } from "./progression/progressionService.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -703,6 +704,8 @@ async function openMentorSub(target) {
     const av = activeAvatar(profile);
     const abilityName = skillTemplateById(av?.skillTemplateId)?.name || "能力発動";
     const standingSrc = presetById(av?.presetIds?.standing)?.assetPath || "";
+    const di = dayInfo(profile);
+    const condition = CONDITIONS[di.condition];
     showAutoBattle(el("autobattle-screen"), {
       self: avatarParams6(av),
       avatar: av,
@@ -714,6 +717,9 @@ async function openMentorSub(target) {
       audio,
       abilityName,
       standingSrc,
+      conditionBias: condition.bias,
+      conditionLabel: condition.label,
+      conditionTone: condition.tone,
     });
     goScreen("autobattle-screen");
   }

@@ -523,6 +523,33 @@ body {
 #mentor-home-screen.mh2 .mhx-divider { width:1px; height:22px; background:rgba(200,164,77,.3); }
 #mentor-home-screen.mh2 .mhx-day { font-family:var(--font-min); font-size:15px; color:var(--ink-soft); letter-spacing:.18em; opacity:.92; }
 #mentor-home-screen.mh2 .mhx-day b { color:#f0e7d0; font-weight:600; font-size:17px; }
+#mentor-home-screen.mh2 .mhx-acts { font-family:var(--font-min); font-size:13px; color:var(--ink-soft); letter-spacing:.1em; opacity:.92; }
+#mentor-home-screen.mh2 .mhx-acts b { color:#ffcf6b; font-weight:700; font-size:16px; }
+#mentor-home-screen.mh2 .mhx-acts small { opacity:.7; }
+
+/* 調子チップ（5段階・共通トーン） */
+.mhx-cond, .ab-cond { display:inline-block; padding:1px 8px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.04em; line-height:1.5; }
+.ab-cond { margin-right:12px; font-size:13px; vertical-align:middle; }
+.tone-vbad  { background:#5a3a3a; color:#ffc9c9; }
+.tone-bad   { background:#6a4a3a; color:#ffd8b8; }
+.tone-ok    { background:#3a4a4a; color:#cfe0dd; }
+.tone-good  { background:linear-gradient(135deg,#5a9a3a,#3a7a2a); color:#eaffd9; }
+.tone-vgood { background:linear-gradient(135deg,#ffe39a,#d6a23a); color:#3a2400; box-shadow:0 0 8px rgba(214,162,58,.6); }
+/* 師匠の「今日：」ムードはチップ色を踏襲しつつ小さく */
+#mentor-home-screen.mh2 .mhx-np-mood.mhx-cond { font-size:11px; }
+
+/* 日の始まりバナー */
+#mentor-home-screen.mh2 .mhx-db { text-align:center; padding:6px 4px 2px; }
+#mentor-home-screen.mh2 .mhx-db-day { font-family:var(--font-min); font-size:34px; color:#f0e7d0; letter-spacing:.12em; }
+#mentor-home-screen.mh2 .mhx-db-day b { color:#ffcf6b; font-size:46px; font-weight:700; }
+#mentor-home-screen.mh2 .mhx-db-sub { font-family:var(--font-go); font-size:13px; color:var(--ink-soft); margin:8px 0 10px; letter-spacing:.1em; }
+#mentor-home-screen.mh2 .mhx-db-conds { display:flex; justify-content:center; gap:28px; margin:6px 0 14px; }
+#mentor-home-screen.mh2 .mhx-db-c { display:flex; flex-direction:column; align-items:center; gap:6px; }
+#mentor-home-screen.mh2 .mhx-db-ic { width:56px; height:56px; border-radius:50%; overflow:hidden; border:2px solid var(--kin); background:#1c2c24; }
+#mentor-home-screen.mh2 .mhx-db-ic img { width:100%; height:100%; object-fit:cover; }
+#mentor-home-screen.mh2 .mhx-db-who { font-family:var(--font-go); font-size:12px; color:var(--ink-soft); }
+#mentor-home-screen.mh2 .mhx-db .mhx-cond { font-size:14px; padding:3px 12px; }
+#mentor-home-screen.mh2 .mhx-db-note { font-family:var(--font-go); font-size:11px; color:var(--ink-soft); margin:0 0 14px; opacity:.85; }
 #mentor-home-screen.mh2 .mhx-gear {
   width:30px; height:30px; border-radius:6px; cursor:pointer;
   border:1px solid rgba(200,164,77,.4); background:rgba(255,255,255,.03);

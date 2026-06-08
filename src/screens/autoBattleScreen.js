@@ -27,7 +27,7 @@ const STANCE_HINT = {
   push: "押してきそうだ", pull: "受けに回るか", watch: "様子を見ている", last: "勝負を懸けてくる",
 };
 
-export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, seed = Date.now(), onExit, audio, abilityName = "能力発動", standingSrc = "", abilityUses = 3 } = {}) {
+export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, seed = Date.now(), onExit, audio, abilityName = "能力発動", standingSrc = "", abilityUses = 3, conditionBias = 0, conditionLabel = "", conditionTone = "ok" } = {}) {
   const selfP = self || { fire: 35, guard: 30, read: 32, gamble: 28, speed: 30, mental: 30 };
   const HPMAX = hpMax || 30000;
   const youIcon = presetById(avatar?.presetIds?.icon)?.assetPath || "";
@@ -43,7 +43,7 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
     const sd = `${seed}-m${session.matchNo}`;
     mobs = makeMobRoster(3, { seedPrefix: sd });
     const opp = paramsFromLv(session.oppLv, sd);
-    match = newMatch({ self: selfP, opp, hp: session.hp, hpMax: session.hpMax, seed: sd });
+    match = newMatch({ self: selfP, opp, hp: session.hp, hpMax: session.hpMax, seed: sd, conditionBias });
     match._opp = opp;
     busy = false;
     renderFrame();
@@ -77,7 +77,7 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
       <div class="ab-wrap">
         <div class="ab-top">
           <div class="ab-top-l">第 ${session.matchNo} 試合　<span class="ab-round">${esc(ROUND_LABELS[match.round] || "—")}</span> <small class="ab-rc">(${match.round + 1}/${match.rounds})</small></div>
-          <div class="ab-top-r">相手評価 ${tierBadge()}</div>
+          <div class="ab-top-r">${conditionLabel ? `<span class="ab-cond tone-${conditionTone}" title="今日の調子（勝率に軽く影響）">${esc(conditionLabel)}</span>` : ""}相手評価 ${tierBadge()}</div>
         </div>
 
         <div class="ab-table-area">

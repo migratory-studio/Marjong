@@ -50,6 +50,7 @@ const CFG = {
   abilityWinFloor: 0.92,    // 弱くても発動時は最低この勝率（必殺がほぼ必ず映える）
   abilityHanBoost: 0.55,    // 打点/和了質の引きを上げる（rollHand へ加算）
   abilityTsumoRate: 0.70,   // 能力発動時はツモ（全員払い）に寄せる＝派手
+  conditionWinStep: 0.02,   // 当日の調子（bias ±2）→ 局取り確率に軽く反映（±0.04）
   // コマンドごとの「自分の効くparam / 相手の抵抗param / 取り確率係数 / 負け時ダメージ基準」
   cmd: {
     push:  { self: "fire",   opp: "guard", k: 1.0, dmgLose: 7000,  win: 3 },
@@ -94,10 +95,12 @@ export function paramsFromLv(lv, seed = "opp") {
 }
 
 // 新しい試合状態を作る。self/opp は 6 パラメータ。hp は試合開始時の現在 HP。
-export function newMatch({ self, opp, hp, hpMax, seed = Date.now() }) {
+// conditionBias は当日の調子（-2..+2）。局取り確率に軽く反映する。
+export function newMatch({ self, opp, hp, hpMax, seed = Date.now(), conditionBias = 0 }) {
   const rng = makeRng(seed);
   const state = {
     self, opp, hp, hpMax,
+    conditionBias,
     rng,
     round: 0,                 // 0..rounds
     rounds: CFG.rounds,
@@ -208,6 +211,7 @@ export function resolveRound(state, command, opts = {}) {
     + c.k * (state.self[c.self] - state.opp[c.opp]) / CFG.diffScale
     + state.self.speed * CFG.speedWinBonus
     + state.watchStack * CFG.watchBonus
+    + (state.conditionBias || 0) * CFG.conditionWinStep
     + (ability ? CFG.abilityWinBonus : 0);
   prob = clamp(prob, 0.05, ability ? 0.99 : 0.95);
   if (ability) prob = Math.max(prob, CFG.abilityWinFloor); // 必殺は弱くても映える

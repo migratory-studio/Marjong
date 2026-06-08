@@ -17,7 +17,7 @@ import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar } from "../progression/avatarFactory.js";
-import { canRestToday, rest, trainParam, TRAIN_TUNING } from "../progression/progressionService.js";
+import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY } from "../progression/progressionService.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead } from "../progression/scenarioService.js";
@@ -54,15 +54,11 @@ function elt(tag, cls, props = {}) {
   return e;
 }
 
-// 師匠の一言（一覧から状況に応じて1つ）。Phase 3 のシナリオが入るまでの軽い会話。
-function mentorLine(rested) {
-  if (!rested) return "今日はどうする？ まずは一息つくか、腕を磨くか。";
-  const lines = [
-    "今日はよく休んだな。次の一局が楽しみだ。",
-    "焦らず積み上げていこう。お前なら届く。",
-    "調子はどうだ？ 無理は禁物だぞ。",
-  ];
-  return lines[Math.floor(Math.random() * lines.length)];
+// 師匠の一言（その日の行動状況に応じて1つ）。Phase 3 のシナリオが入るまでの軽い会話。
+function mentorLine(actionsLeft) {
+  if (actionsLeft >= ACTIONS_PER_DAY) return "今日はどうする？ まずは一息つくか、腕を磨くか。";
+  if (actionsLeft <= 0) return "今日はよく動いた。あとはゆっくり休め。";
+  return "その調子だ。次はどうする？";
 }
 
 // ハブ上に重ねる再利用モーダル。スクリム/✕/Esc で閉じる。onClose は閉じる直前に呼ぶ。
@@ -91,7 +87,7 @@ function openModal(container, innerHTML, onClose) {
 }
 
 export async function showMentorHome(container, { repository, onNavigate, onBack } = {}) {
-  const profile = await repository.loadProfile();
+  let profile = await repository.loadProfile();
   const avatar = activeAvatar(profile);
   container.innerHTML = "";
   container.classList.add("mh2");
@@ -107,22 +103,30 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
 
   const mentor = charById(avatar.mentorCharacterId);
   const tmpl = skillTemplateById(avatar.skillTemplateId);
-  const rested = !canRestToday(profile);
   const debug = isDebugMode();
   const refresh = () => showMentorHome(container, { repository, onNavigate, onBack });
+
+  // ---- 日次（1日3行動・日替わり調子）----
+  const ds = ensureDay(profile);
+  let showBanner = false;
+  if (ds.started) { profile = ds.profile; await repository.saveProfile(profile); showBanner = true; }
+  const di = dayInfo(profile);
+  const cond = CONDITIONS[di.condition];          // 弟子（あなた）の調子
+  const mentorCond = CONDITIONS[di.mentorCondition]; // 師匠の調子
+  const actionsLeft = di.actionsLeft;
 
   // ---- 表示値の解決（未実装ぶんは仮値）----
   const soul = profile.wallet?.soul ?? 0;
   const meta = profile.wallet?.meta ?? 0;            // 継承（メタ通貨・未実装→0）
-  const day = profile.dayCount;                       // ○日目（未実装→「—」）
+  const day = di.day;                                 // ○日目
   const chapter = "修行の日々";                       // TODO §4.5 mentorCampaignMaster で章名を差す
   const hpMax = avatar.avatarHpMax || 1;
   const hpCur = Math.max(0, Math.min(avatar.avatarHpCurrent ?? hpMax, hpMax));
   const hpPct = Math.round((hpCur / hpMax) * 100);
 
-  // 師匠フレーバー
+  // 師匠フレーバー（「今日の様子」＝師匠の調子）
   const mentorTitle = MENTOR_TITLE[mentor?.role] || "師範";
-  const mood = MENTOR_MOODS[(day ?? new Date().getDate()) % MENTOR_MOODS.length];
+  const mood = mentorCond.label;
   const mAbility = mentor?.abilities?.[0]?.abilityId ? abilityDef(mentor.abilities[0].abilityId) : null;
   const mAbilityName = mAbility?.name || "";
   const mAbilityDesc = mAbility?.desc || mentor?.bio || "";
@@ -162,6 +166,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-cur mhx-kei"><div class="mhx-coin">継</div><div class="mhx-val">${esc(meta)}<small> 継承</small></div></div>
         <div class="mhx-divider"></div>
         <div class="mhx-day"><b>${day == null ? "—" : esc(day)}</b> 日目</div>
+        <div class="mhx-acts" title="1日3回まで行動できる">行動 <b>${actionsLeft}</b><small>/${ACTIONS_PER_DAY}</small></div>
         <div class="mhx-divider"></div>
         <button type="button" class="mhx-gear" title="設定">⚙</button>
       </div>
@@ -179,13 +184,13 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
           <div class="mhx-np-sub">
             <span class="mhx-np-title">${esc(mentorTitle)}</span>
             <span class="mhx-np-lv">技 Lv${MENTOR_SKILL_LEVEL}</span>
-            <span class="mhx-np-mood">今日：${esc(mood)}</span>
+            <span class="mhx-np-mood mhx-cond tone-${mentorCond.tone}">今日：${esc(mood)}</span>
           </div>
         </div>
         ${mAbilityName ? `<div class="mhx-np-tip"><div class="mhx-np-tip-h">能力</div><div class="mhx-np-tip-n">${esc(mAbilityName)}</div><div class="mhx-np-tip-d">${esc(mAbilityDesc)}</div></div>` : ""}
       </div>
       <div class="mhx-bubble">
-        <div class="mhx-q">${esc(mentorLine(rested))}</div>
+        <div class="mhx-q">${esc(mentorLine(actionsLeft))}</div>
       </div>
     </div>
 
@@ -195,7 +200,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       <div class="mhx-group">
         <div class="mhx-cat">日常</div>
         <div class="mhx-tags">
-          ${tag("休 憩", rested ? "今日は休憩済み" : "点棒を回復する", "rest", false)}
+          ${tag("休 憩", "点棒を回復する", "rest", false)}
           ${tagTrain("座 学", "読み・守備を磨く", "study")}
         </div>
       </div>
@@ -229,7 +234,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       <div class="mhx-port">${discipleIcon ? `<img class="mhx-port-img" alt="" src="${esc(discipleIcon)}">` : "弟子"}</div>
       <div class="mhx-who">
         <div class="mhx-dn">${esc(avatar.name)}${tmpl ? `<small>${esc(tmpl.name)}</small>` : ""}</div>
-        <div class="mhx-lv"><span class="mhx-lvtag">LV</span><b>${esc(avatar.avatarLevel)}</b></div>
+        <div class="mhx-lv"><span class="mhx-lvtag">LV</span><b>${esc(avatar.avatarLevel)}</b><span class="mhx-cond tone-${cond.tone}" title="今日の調子">${esc(cond.label)}</span></div>
       </div>
       <div class="mhx-hp">
         <div class="mhx-hp-top">
@@ -267,26 +272,26 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
 
   // ---- 休憩モーダル（ハブ上で完結）----
   function openRestModal() {
-    const available = canRestToday(profile);
+    const available = actionsLeft > 0;
     const curPct = Math.round((hpCur / hpMax) * 100);
     const html = `
       <div class="mhx-md-head">
         <div class="mhx-md-icon">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</div>
         <div class="mhx-md-title"><span class="mhx-md-by">休 憩</span><span class="mhx-md-ttl">${esc(mentor?.name || "師匠")}</span></div>
       </div>
-      <p class="mhx-md-line">${available ? "ゆっくり休め。明日に備えるのも実力のうちだ。" : "今日はもう十分休んだ。また明日な。"}</p>
+      <p class="mhx-md-line">${available ? "ゆっくり休め。明日に備えるのも実力のうちだ。" : "今日はもう動けない。また明日な。"}</p>
       <div class="mhx-md-hp">
         <div class="mhx-md-hp-top"><span>点棒 ＝ HP</span><span class="mhx-md-hp-num">${hpCur.toLocaleString()} / ${hpMax.toLocaleString()}</span></div>
         <div class="mhx-bar"><div class="mhx-fill mhx-md-fill" style="width:${curPct}%"></div></div>
       </div>
       <p class="mhx-md-result" hidden></p>
-      <button type="button" class="mhx-md-btn"${available ? "" : " disabled"}>${available ? "休憩する" : "今日は休憩済み"}</button>
+      <button type="button" class="mhx-md-btn"${available ? "" : " disabled"}>${available ? "休憩する（1行動）" : "今日はもう動けない"}</button>
     `;
     let didRest = false;
     const { card } = openModal(container, html, () => { if (didRest) refresh(); });
     const btn = card.querySelector(".mhx-md-btn");
     btn?.addEventListener("click", async () => {
-      if (didRest || !canRestToday(profile)) return;
+      if (didRest || actionsLeft <= 0) return;
       try {
         const res = rest(profile);
         await repository.saveProfile(res.profile);
@@ -375,6 +380,31 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     openModal(container, html);
   }
 
+  // ---- 日の始まりバナー（〇日目＋師匠・弟子の調子）----
+  function openDayBanner() {
+    const html = `
+      <div class="mhx-db">
+        <div class="mhx-db-day"><b>${esc(day)}</b> 日目</div>
+        <div class="mhx-db-sub">今日の調子</div>
+        <div class="mhx-db-conds">
+          <div class="mhx-db-c">
+            <span class="mhx-db-ic">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</span>
+            <span class="mhx-db-who">師匠</span>
+            <span class="mhx-cond tone-${mentorCond.tone}">${esc(mentorCond.label)}</span>
+          </div>
+          <div class="mhx-db-c">
+            <span class="mhx-db-ic">${discipleIcon ? `<img src="${esc(discipleIcon)}" alt="">` : ""}</span>
+            <span class="mhx-db-who">あなた</span>
+            <span class="mhx-cond tone-${cond.tone}">${esc(cond.label)}</span>
+          </div>
+        </div>
+        <p class="mhx-db-note">1日 ${ACTIONS_PER_DAY} 回まで行動できる。調子は育成の伸びに効く（失敗で下がる）。</p>
+        <button type="button" class="mhx-md-btn mhx-db-btn">今日も励む</button>
+      </div>`;
+    const { card, close } = openModal(container, html);
+    card.querySelector(".mhx-db-btn")?.addEventListener("click", close);
+  }
+
   // ---- イベント結線 ----
   const fire = (t) => { if (t) onNavigate?.(t); };
   container.querySelectorAll(".mhx-tag[data-nav]").forEach((node) => {
@@ -430,4 +460,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     };
     container.appendChild(reset);
   }
+
+  // 新しい日が始まっていたら開始バナーを出す（調子の確認＝共在の合図）。
+  if (showBanner) openDayBanner();
 }

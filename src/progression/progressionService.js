@@ -43,6 +43,74 @@ function withActiveAvatar(profile, updater) {
   };
 }
 
+const clampN = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
+
+// ---------------------------------------------------- 日次ループ／調子（§4.5.3）
+// 1 日 = ACTIONS_PER_DAY 回行動 → 日が進む。日替わりで弟子・師匠の「調子」を抽選。
+// 調子は 5 段階（index 0=絶不調 … 4=絶好調）。bias は育成の伸び・オート勝率に効く強さ。
+export const ACTIONS_PER_DAY = 3;
+export const CONDITIONS = [
+  { key: "zekkyou_bad", label: "絶不調", tone: "vbad",  bias: -2 },
+  { key: "fuchou",      label: "不調",   tone: "bad",   bias: -1 },
+  { key: "futsuu",      label: "普通",   tone: "ok",    bias: 0 },
+  { key: "kouchou",     label: "好調",   tone: "good",  bias: 1 },
+  { key: "zekkouchou",  label: "絶好調", tone: "vgood", bias: 2 },
+];
+// 抽選は「普通」へ寄せる（極端はまれ）。index と対応。
+const CONDITION_WEIGHTS = [1, 3, 5, 3, 1];
+export function rollCondition(rng = Math.random) {
+  const sum = CONDITION_WEIGHTS.reduce((a, b) => a + b, 0);
+  let r = rng() * sum;
+  for (let i = 0; i < CONDITION_WEIGHTS.length; i++) { if ((r -= CONDITION_WEIGHTS[i]) < 0) return i; }
+  return 2;
+}
+
+// 当日の状態を保証する。日が変わっていれば調子を抽選し行動数を 0 に戻す。
+// 戻り値 started=true は「新しい日が始まった」＝開始バナーを出す合図。
+export function ensureDay(profile, rng = Math.random) {
+  const day = profile.dayCount ?? 1;
+  const d = profile.daily || {};
+  if (d.initDay === day && d.condition != null && d.mentorCondition != null) {
+    return { profile: { ...profile, dayCount: day }, started: false };
+  }
+  const daily = {
+    ...d,
+    initDay: day,
+    actionsUsed: 0,
+    condition: rollCondition(rng),
+    mentorCondition: rollCondition(rng),
+  };
+  return { profile: { ...profile, dayCount: day, daily }, started: true };
+}
+
+// 当日の読み取り情報（行動残り・調子）。ensureDay 済みを前提。
+export function dayInfo(profile) {
+  const d = profile.daily || {};
+  const used = d.actionsUsed ?? 0;
+  return {
+    day: profile.dayCount ?? 1,
+    actionsUsed: used,
+    actionsLeft: Math.max(0, ACTIONS_PER_DAY - used),
+    condition: d.condition ?? 2,
+    mentorCondition: d.mentorCondition ?? 2,
+  };
+}
+
+// 1 行動を消費する。conditionDelta は調子の増減（失敗 -1 / 大成功 +1）。
+// 3 行動使い切ったら dayCount を進める（次回 ensureDay が新しい日を初期化する）。
+function endAction(profile, conditionDelta = 0) {
+  const d = profile.daily || {};
+  const condition = clampN((d.condition ?? 2) + conditionDelta, 0, CONDITIONS.length - 1);
+  const used = (d.actionsUsed ?? 0) + 1;
+  let dayCount = profile.dayCount ?? 1;
+  let dayAdvanced = false;
+  if (used >= ACTIONS_PER_DAY) { dayCount += 1; dayAdvanced = true; }
+  return {
+    profile: { ...profile, dayCount, daily: { ...d, condition, actionsUsed: used } },
+    dayAdvanced,
+  };
+}
+
 // ---------------------------------------------------------------- 休憩（§11）
 export function canRestToday(profile, today = localDate()) {
   return (profile.daily?.lastRestDate ?? null) !== today;
@@ -51,10 +119,10 @@ export function canRestToday(profile, today = localDate()) {
 // 日次休憩。今日まだなら HP 回復＋絆経験値＋少量ソウル。済みなら例外。
 // 大会進行中の runHp は休憩で回復しない（§11.2）が、Phase 2B 時点では runHp 自体が
 // 未導入なので avatarHpCurrent のみ扱う。
-export function rest(profile, today = localDate()) {
+export function rest(profile) {
   const av = activeAvatar(profile);
   if (!av) throw new Error("マイキャラがいません");
-  if (!canRestToday(profile, today)) throw new Error("今日はもう休憩しました");
+  if (dayInfo(profile).actionsLeft <= 0) throw new Error("今日の行動はもう残っていない");
 
   const heal = Math.round(av.avatarHpMax * GROWTH_TUNING.rest.healRatio);
   const newHp = Math.min(av.avatarHpMax, av.avatarHpCurrent + heal);
@@ -74,10 +142,13 @@ export function rest(profile, today = localDate()) {
     bondExp,
   }));
   next = grantSoul(next, GROWTH_TUNING.rest.soul);
-  next = { ...next, daily: { ...(next.daily || {}), lastRestDate: today } };
+  // 休憩も 1 行動を消費（調子は変えない）。必要なら日が進む。
+  const ended = endAction(next, 0);
+  next = ended.profile;
 
   return {
     profile: next,
+    dayAdvanced: ended.dayAdvanced,
     healed: newHp - av.avatarHpCurrent,
     soul: GROWTH_TUNING.rest.soul,
     bondExp: GROWTH_TUNING.rest.bondExp,
@@ -204,20 +275,22 @@ export const TRAIN_OUTCOMES = {
   bunan:     { label: "無難",   tone: "ok",    mult: 1.0, line: "悪くない。地道が一番だ。" },
   shippai:   { label: "失敗",   tone: "bad",   mult: 0.34, line: "ま、こういう日もある。気にするな。" },
 };
-const clampN = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
 
-// メンタル(集中)が高いほど「無難・失敗」が減り「成功・大成功」へ寄る。
+// 伸びの引きの良さは「メンタル（恒常）」と「当日の調子（変動）」の合算。
 // メンタルは対局オートでも乱数の振れを圧縮する＝育成でも同じ性格（ブレを抑える）。
-export function rollTrainOutcome(mental = 0, rng = Math.random) {
-  const m = clampN(mental, 0, PARAM_CAP) / PARAM_CAP; // 0..1
-  const pFail = 0.18 * (1 - 0.9 * m);   // メンタル99で ~0.018
-  const pBunan = 0.42 * (1 - 0.5 * m);  // メンタル99で ~0.21
-  const rest = 1 - pFail - pBunan;
-  const pDai = rest * (0.20 + 0.30 * m); // 高メンタルほど大成功の取り分も増える
+// condition は 0..4（普通=2）。
+export function rollTrainOutcome(mental = 0, condition = 2, rng = Math.random) {
+  const m = clampN(mental, 0, PARAM_CAP) / PARAM_CAP;  // 0..1（恒常の安定）
+  const c = clampN(condition, 0, 4) / 4;               // 0..1（当日の調子）
+  const f = clampN(0.5 * m + 0.5 * c, 0, 1);           // 総合の引きの良さ
+  const pFail = 0.20 * (1 - 0.9 * f);
+  const pBunan = 0.42 * (1 - 0.5 * f);
+  const rest = 1 - pFail - pBunan;     // 成功＋大成功
+  const pDai = rest * (0.18 + 0.34 * f);
   const r = rng();
   if (r < pDai) return "daiseikou";
-  if (r < pDai + (rest - pDai)) return "seikou";
-  if (r < pDai + (rest - pDai) + pBunan) return "bunan";
+  if (r < rest) return "seikou";
+  if (r < rest + pBunan) return "bunan";
   return "shippai";
 }
 
@@ -226,10 +299,11 @@ export function trainParam(profile, key, rng = Math.random) {
   if (!t) throw new Error("未知の育成コマンド: " + key);
   const av = activeAvatar(profile);
   if (!av) throw new Error("マイキャラがいません");
+  if (dayInfo(profile).actionsLeft <= 0) throw new Error("今日の行動はもう残っていない");
 
   const cur = avatarParams6(av);
-  // 調子は「訓練前のメンタル」で判定（メンタルを上げる訓練でも当日の伸びには未反映）。
-  const outcomeKey = rollTrainOutcome(cur.mental, rng);
+  const condition = dayInfo(profile).condition;
+  const outcomeKey = rollTrainOutcome(cur.mental, condition, rng);
   const outcome = TRAIN_OUTCOMES[outcomeKey];
   const sub = t.sub === "random" ? ALL_PARAMS[Math.floor(rng() * ALL_PARAMS.length)] : t.sub;
   const gains = {};
@@ -250,5 +324,12 @@ export function trainParam(profile, key, rng = Math.random) {
     avatarHpCurrent: Math.max(0, (a.avatarHpCurrent ?? a.avatarHpMax) - hpCost),
   }));
   if (t.soul) p = grantSoul(p, t.soul);
-  return { profile: p, gains, hpCost, soul: t.soul || 0, outcome: outcomeKey, outcomeLabel: outcome.label, outcomeTone: outcome.tone, outcomeLine: outcome.line };
+  // 失敗で調子↓ / 大成功で調子↑。行動を 1 消費（必要なら日が進む）。
+  const conditionDelta = outcomeKey === "shippai" ? -1 : outcomeKey === "daiseikou" ? 1 : 0;
+  const ended = endAction(p, conditionDelta);
+  return {
+    profile: ended.profile, gains, hpCost, soul: t.soul || 0,
+    outcome: outcomeKey, outcomeLabel: outcome.label, outcomeTone: outcome.tone, outcomeLine: outcome.line,
+    conditionDelta, dayAdvanced: ended.dayAdvanced,
+  };
 }
