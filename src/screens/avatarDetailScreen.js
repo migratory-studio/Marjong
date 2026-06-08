@@ -8,7 +8,8 @@
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
-import { activeAvatar } from "../progression/avatarFactory.js";
+import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
+import { statViews } from "../autobattle/statSystem.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
 
@@ -92,6 +93,39 @@ export function showAvatarDetail(container, { profile, onBack } = {}) {
   if (tmpl) stats.appendChild(elt("p", "av-detail-bio", { textContent: tmpl.description }));
 
   layout.appendChild(stats);
+
+  // ---- オートバトル能力値（6 パラメータ：レベル＋ランク＋上げ方＋効果）----
+  const panel = elt("section", "av-params");
+  const phead = elt("div", "av-params-head");
+  phead.appendChild(elt("span", "av-params-ttl", { textContent: "オートバトル能力値" }));
+  phead.appendChild(elt("span", "av-params-note", { textContent: "活動で伸ばす・対局オートに直結（本気対局には不干渉）" }));
+  panel.appendChild(phead);
+
+  const grid = elt("div", "av-params-grid");
+  for (const s of statViews(avatarParams6(avatar))) {
+    const card = elt("div", "av-pstat");
+    const top = elt("div", "av-pstat-top");
+    top.appendChild(elt("span", `av-pstat-rank rank-${s.rank}`, { textContent: s.rank }));
+    const lab = elt("span", "av-pstat-label");
+    lab.appendChild(document.createTextNode(s.label));
+    lab.appendChild(elt("small", null, { textContent: s.passive ? `${s.kana}・パッシブ` : s.kana }));
+    top.appendChild(lab);
+    top.appendChild(elt("span", "av-pstat-lv", { textContent: `Lv ${s.value}` }));
+    card.appendChild(top);
+
+    const bar = elt("div", "av-pstat-bar");
+    const fill = elt("div", "av-pstat-fill");
+    fill.style.width = `${s.pct}%`;
+    bar.appendChild(fill);
+    card.appendChild(bar);
+
+    const up = s.raisedBy.map((r) => `${r.label}(${r.role})`).join("・");
+    card.appendChild(elt("div", "av-pstat-up", { textContent: `↑ ${up}` }));
+    card.appendChild(elt("div", "av-pstat-aff", { textContent: s.affects, title: s.affects }));
+    grid.appendChild(card);
+  }
+  panel.appendChild(grid);
+  container.appendChild(panel);
 
   const back = elt("button", "ghost-back", { type: "button", textContent: "← 師弟ホームへ" });
   back.onclick = () => onBack?.();

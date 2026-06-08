@@ -49,12 +49,13 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
     renderFrame();
   }
 
-  function seatHtml(cls, label, iconSrc, isMob, seatKey, pct) {
+  function seatHtml(cls, label, iconSrc, isMob, seatKey, pct, pts) {
     const img = iconSrc
       ? `<img class="ab-seat-img${isMob ? " is-mob" : ""}" src="${esc(iconSrc)}" alt="">`
       : `<span class="ab-seat-ph">${esc(label[0] || "?")}</span>`;
     return `<div class="ab-seat ${cls}"><div class="ab-seat-ic">${img}</div><div class="ab-seat-nm">${esc(label)}</div>`
-      + `<div class="ab-seat-bar"><div class="ab-seat-fill" data-seat="${seatKey}" style="width:${pct}%"></div></div></div>`;
+      + `<div class="ab-seat-bar"><div class="ab-seat-fill" data-seat="${seatKey}" style="width:${pct}%"></div></div>`
+      + `<div class="ab-seat-num" data-seat="${seatKey}">${(pts ?? 0).toLocaleString()}</div></div>`;
   }
   const youPct = () => Math.round((match.hp / session.hpMax) * 100);
   const oppPct = (i) => Math.round((match.oppHp[i] / match.oppHpMax) * 100);
@@ -81,10 +82,10 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
 
         <div class="ab-table-area">
           <div class="ab-table"></div>
-          ${seatHtml("ab-s-top", mobs[1]?.name || "相手2", mobs[1]?.assets?.icon, true, 2, oppPct(1))}
-          ${seatHtml("ab-s-left", mobs[0]?.name || "相手1", mobs[0]?.assets?.icon, true, 1, oppPct(0))}
-          ${seatHtml("ab-s-right", mobs[2]?.name || "相手3", mobs[2]?.assets?.icon, true, 3, oppPct(2))}
-          ${seatHtml("ab-s-you", avatar?.name || "あなた", youIcon, false, 0, youPct())}
+          ${seatHtml("ab-s-top", mobs[1]?.name || "相手2", mobs[1]?.assets?.icon, true, 2, oppPct(1), match.oppHp[1])}
+          ${seatHtml("ab-s-left", mobs[0]?.name || "相手1", mobs[0]?.assets?.icon, true, 1, oppPct(0), match.oppHp[0])}
+          ${seatHtml("ab-s-right", mobs[2]?.name || "相手3", mobs[2]?.assets?.icon, true, 3, oppPct(2), match.oppHp[2])}
+          ${seatHtml("ab-s-you", avatar?.name || "あなた", youIcon, false, 0, youPct(), match.hp)}
           <div class="ab-result" id="ab-result"></div>
         </div>
 
@@ -243,10 +244,13 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
         hpBox?.classList.add(res.delta > 0 ? "ab-flash-up" : "ab-flash-dn");
         setTimeout(() => hpBox?.classList.remove("ab-flash-up", "ab-flash-dn"), 500);
       }
-      // 各席のバーも更新。
-      const setSeat = (k, pct) => { const f = container.querySelector(`.ab-seat-fill[data-seat="${k}"]`); if (f) f.style.width = `${pct}%`; };
-      setSeat(0, youPct());
-      setSeat(1, oppPct(0)); setSeat(2, oppPct(1)); setSeat(3, oppPct(2));
+      // 各席のバー＆点棒数値も更新（相手の HP も見える）。
+      const setSeat = (k, pct, val) => {
+        const f = container.querySelector(`.ab-seat-fill[data-seat="${k}"]`); if (f) f.style.width = `${pct}%`;
+        const n = container.querySelector(`.ab-seat-num[data-seat="${k}"]`); if (n) n.textContent = val.toLocaleString();
+      };
+      setSeat(0, youPct(), match.hp);
+      setSeat(1, oppPct(0), match.oppHp[0]); setSeat(2, oppPct(1), match.oppHp[1]); setSeat(3, oppPct(2), match.oppHp[2]);
     }, 1100);
 
     // 3) カードを引っ込めて次局 or 結果へ。
