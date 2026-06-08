@@ -10,7 +10,7 @@ import { skillTemplateById } from "../data/skillTemplateMaster.js";
 export const AVATAR_DEFAULTS = {
   creationSoulBonus: 500, // 初回作成ボーナス（§10.1）
   avatarLevel: 1,
-  avatarHpMax: 20000, // 育成 HP の初期値（既存キャラ持ち点と同オーダー）
+  avatarHpMax: 5500, // 育成 HP の初期値（小さい数字で点棒の奪い合いを体感／§4.6.6・avatarLevelMaster Lv1 と一致）
   bondLevel: 1,
   bondExp: 0,
   itemSlotCount: 0,

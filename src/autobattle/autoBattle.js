@@ -86,17 +86,20 @@ export function makeRng(seed = Date.now()) {
 
 // 相手の 6 パラメータを Lv から決定論生成（mobLvBand → 個体 Lv → 6 param）。
 // lv 1〜10 を素直に param 帯へ写像し、seed で各キーに小さなばらつきを足す。
+// 弟子の param は低スタート（合計 ~74）→ 育成で ~594 まで伸びる。相手はこのレンジに合わせる。
+// base=3+lv*8 ＝ lv0≈3(合計~18・激弱), lv1≈11, lv3≈27, lv5≈43, lv10≈83。
+// 楽勝雀荘＝低 lv（弟子より弱い）／進捗で lv を上げて難度を保つ（§4.6.8）。
 export function paramsFromLv(lv, seed = "opp") {
   const rng = makeRng(`${seed}:${lv}`);
-  const base = 12 + lv * 7; // lv1≈19, lv10≈82
+  const base = 3 + lv * 8;
   const p = {};
-  for (const k of PARAM_KEYS) p[k] = Math.round(clamp(base + (rng() * 2 - 1) * 10, 5, 99));
+  for (const k of PARAM_KEYS) p[k] = Math.round(clamp(base + (rng() * 2 - 1) * 6, 1, 99));
   return p;
 }
 
 // 新しい試合状態を作る。self/opp は 6 パラメータ。hp は試合開始時の現在 HP。
 // conditionBias は当日の調子（-2..+2）。局取り確率に軽く反映する。
-export function newMatch({ self, opp, hp, hpMax, seed = Date.now(), conditionBias = 0 }) {
+export function newMatch({ self, opp, hp, hpMax, seed = Date.now(), conditionBias = 0, oppHpMax = 25000 }) {
   const rng = makeRng(seed);
   const state = {
     self, opp, hp, hpMax,
@@ -106,8 +109,8 @@ export function newMatch({ self, opp, hp, hpMax, seed = Date.now(), conditionBia
     rounds: CFG.rounds,
     selfPlacementPts: 0,      // 着順用ポイント（局を取った重みの累積）
     oppPlacementPts: 0,
-    oppHp: [25000, 25000, 25000], // 相手 3 人の点棒（席バー演出用）
-    oppHpMax: 25000,
+    oppHp: [oppHpMax, oppHpMax, oppHpMax], // 相手 3 人の点棒（席バー演出用）
+    oppHpMax,
     watchStack: 0,
     finished: false,
     result: null,             // 'clear' | 'down'（HP0）
@@ -152,12 +155,14 @@ const HAN_TABLE = [
 // コマンドの攻撃性（高いほど高打点を狙う）。
 const AGGR = { push: 0.7, pull: 0.1, watch: 0.2, last: 1.0 };
 
-// 和了の翻/点/役を引く。power（火力・勝負勘）と攻撃性が高いほど高打点へ寄る。
-// boost は能力発動ぶんの上振れ（和了質 UP）。
+// 和了の翻/点/役を引く。
+// 火力が「狙える翻の上限（幅）」を決める＝低火力はほぼ 1〜2 翻、火力が伸びるほど満貫・跳満まで幅が出る。
+// 勝負勘・攻撃性・能力 boost が上振れ（同じ幅の中で高い方を引きやすく）。
 function rollHand(p, aggression, rng, boost = 0) {
-  const power = (p.fire + p.gamble) / 2 / 99;           // 0..1
-  const t = power * 0.5 + aggression * 0.4 + rng() * 0.5 + boost; // 0..~1.4(+boost)
-  const idx = clamp(Math.floor(t * HAN_TABLE.length), 0, HAN_TABLE.length - 1);
+  const power = clamp((p.fire || 0) / 99, 0, 1);                 // 火力 0..1
+  const maxIdx = clamp(Math.round(power * 5) + Math.round(boost * 2), 1, HAN_TABLE.length - 1); // 低火力=1(2翻まで)…高火力=5
+  const lift = clamp((p.gamble || 0) / 99 * 0.3 + aggression * 0.4 + boost * 0.5 + rng() * 0.6, 0, 1.2);
+  const idx = clamp(Math.floor(lift * (maxIdx + 1)), 0, maxIdx);
   const e = HAN_TABLE[idx];
   const yaku = e.yaku[Math.floor(rng() * e.yaku.length)];
   return { han: e.han, points: e.pts, yaku };
@@ -264,8 +269,11 @@ export function resolveRound(state, command, opts = {}) {
   state.log.push({ round: state.round + 1, command, ability, tookRound, delta, hand });
   state.round += 1;
 
+  const oppBust = state.oppHp.some((h) => h <= 0); // 相手が飛んだ＝トビ終了（こちらの勝ち）
   if (state.hp <= 0) {
     state.finished = true; state.result = "down";
+  } else if (oppBust) {
+    state.finished = true; state.result = "bust_win";
   } else if (state.round >= state.rounds) {
     state.finished = true; state.result = "clear";
   } else {
@@ -277,6 +285,7 @@ export function resolveRound(state, command, opts = {}) {
 
 // 試合の最終着順（1〜4 の概算）。プレイヤーの取りポイントを相手平均と比べる簡易版。
 export function finalPlacement(state) {
+  if (state.result === "bust_win") return 1; // 相手を飛ばした＝1着
   const self = state.selfPlacementPts;
   const opp = state.oppPlacementPts / 1.5; // 相手 3 人ぶんの目安
   if (self >= opp + 6) return 1;

@@ -5,11 +5,13 @@
 import { makeRng } from "../autobattle/autoBattle.js";
 
 // weight=出現重み（楽勝＞拮抗＞チャレンジ≒大会中）。tone は調子チップと同じ配色を流用。
+// oppLv＝相手 param の弱さ（§paramsFromLv 新スケール：0=激弱）。oppHpMax＝相手の点棒（小さいほど飛びやすい）。
+// 楽勝＝相手 HP 2,600＝リャンハン（2翻）で飛ぶ。難度が上がるほど相手 HP・Lv・ソウルが増える。
 export const PARLOR_TIERS = [
-  { key: "rakushou",  label: "楽勝寄り",     tone: "good",  weight: 5.0, oppLv: 1, matches: 2, soulPerWin: 60 },
-  { key: "kikkou",    label: "拮抗気味",     tone: "ok",    weight: 3.0, oppLv: 3, matches: 3, soulPerWin: 120 },
-  { key: "challenge", label: "チャレンジ",   tone: "bad",   weight: 1.2, oppLv: 5, matches: 4, soulPerWin: 240 },
-  { key: "taikai",    label: "大会中の雀荘", tone: "vbad",  weight: 1.0, oppLv: 6, matches: 4, soulPerWin: 360, tournament: true },
+  { key: "rakushou",  label: "楽勝寄り",     tone: "good",  weight: 5.0, oppLv: 0, oppHpMax: 2600,  matches: 2, soulPerWin: 60 },
+  { key: "kikkou",    label: "拮抗気味",     tone: "ok",    weight: 3.0, oppLv: 1, oppHpMax: 6000,  matches: 3, soulPerWin: 120 },
+  { key: "challenge", label: "チャレンジ",   tone: "bad",   weight: 1.2, oppLv: 2, oppHpMax: 10000, matches: 4, soulPerWin: 240 },
+  { key: "taikai",    label: "大会中の雀荘", tone: "vbad",  weight: 1.0, oppLv: 3, oppHpMax: 13000, matches: 4, soulPerWin: 360, tournament: true },
 ];
 
 const BY_KEY = Object.fromEntries(PARLOR_TIERS.map((t) => [t.key, t]));
@@ -37,6 +39,7 @@ export function rollDailyParlors(dayCount, progress = 0, count = 3) {
       tone: t.tone,
       matches: t.matches + Math.floor(progress / 2),
       oppLv: t.oppLv + progress,
+      oppHpMax: t.oppHpMax + progress * 1500,
       soulPerWin: Math.round(t.soulPerWin * (1 + progress * 0.15)),
       tournament: !!t.tournament,
     });

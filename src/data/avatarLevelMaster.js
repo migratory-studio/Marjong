@@ -7,17 +7,19 @@
 // soulCost はその Lv へ「到達する」ための費用（Lv1 は初期状態なので 0）。
 // avatarHpMax はその Lv 到達時点の最大 HP。Lv1 は avatarFactory の初期 HP に一致させる。
 // unlockIds は将来のアイテム枠・絆補正などの解放要素（Phase 5 以降）。今は空配列。
+// HP（点棒）は小さい数字で「奪い合い」を体感させる方針（§4.6.6 経済再調整）。
+// 初期は低く（Lv1=5,500）、育成（キャラ Lv）で徐々に上げる＝高打点に耐えられるようになる。
 export const AVATAR_LEVEL_MASTER = [
-  { avatarLevel: 1, soulCost: 0, avatarHpMax: 20000, unlockIds: [] },
-  { avatarLevel: 2, soulCost: 200, avatarHpMax: 22000, unlockIds: [] },
-  { avatarLevel: 3, soulCost: 300, avatarHpMax: 24000, unlockIds: [] },
-  { avatarLevel: 4, soulCost: 400, avatarHpMax: 26000, unlockIds: [] },
-  { avatarLevel: 5, soulCost: 600, avatarHpMax: 28000, unlockIds: [] },
-  { avatarLevel: 6, soulCost: 800, avatarHpMax: 30000, unlockIds: [] },
-  { avatarLevel: 7, soulCost: 1000, avatarHpMax: 32000, unlockIds: [] },
-  { avatarLevel: 8, soulCost: 1300, avatarHpMax: 34000, unlockIds: [] },
-  { avatarLevel: 9, soulCost: 1600, avatarHpMax: 36000, unlockIds: [] },
-  { avatarLevel: 10, soulCost: 2000, avatarHpMax: 40000, unlockIds: [] },
+  { avatarLevel: 1, soulCost: 0, avatarHpMax: 5500, unlockIds: [] },
+  { avatarLevel: 2, soulCost: 200, avatarHpMax: 7000, unlockIds: [] },
+  { avatarLevel: 3, soulCost: 300, avatarHpMax: 8500, unlockIds: [] },
+  { avatarLevel: 4, soulCost: 400, avatarHpMax: 10000, unlockIds: [] },
+  { avatarLevel: 5, soulCost: 600, avatarHpMax: 12000, unlockIds: [] },
+  { avatarLevel: 6, soulCost: 800, avatarHpMax: 14000, unlockIds: [] },
+  { avatarLevel: 7, soulCost: 1000, avatarHpMax: 16500, unlockIds: [] },
+  { avatarLevel: 8, soulCost: 1300, avatarHpMax: 19000, unlockIds: [] },
+  { avatarLevel: 9, soulCost: 1600, avatarHpMax: 22000, unlockIds: [] },
+  { avatarLevel: 10, soulCost: 2000, avatarHpMax: 26000, unlockIds: [] },
 ];
 
 export function avatarLevelEntry(level) {

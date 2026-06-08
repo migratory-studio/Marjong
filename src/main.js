@@ -670,7 +670,7 @@ function openMentorHome() {
 }
 
 // オートバトル起動の共通化（デバッグ起動・雀荘巡りで共用）。
-function launchAutoBattle(profile, { oppLv, maxMatches, seed = Date.now(), onExit }) {
+function launchAutoBattle(profile, { oppLv, oppHpMax, maxMatches, seed = Date.now(), onExit }) {
   const av = activeAvatar(profile);
   const abilityName = skillTemplateById(av?.skillTemplateId)?.name || "能力発動";
   const standingSrc = presetById(av?.presetIds?.standing)?.assetPath || "";
@@ -679,9 +679,10 @@ function launchAutoBattle(profile, { oppLv, maxMatches, seed = Date.now(), onExi
   showAutoBattle(el("autobattle-screen"), {
     self: avatarParams6(av),
     avatar: av,
-    hp: av?.avatarHpCurrent ?? 30000,
-    hpMax: av?.avatarHpMax ?? 30000,
+    hp: av?.avatarHpCurrent ?? 5500,
+    hpMax: av?.avatarHpMax ?? 5500,
     oppLv,
+    oppHpMax,
     maxMatches,
     seed,
     onExit,
@@ -727,7 +728,7 @@ async function openMentorSub(target, payload) {
   } else if (target === "autobattle-proto") {
     // §4.6 オートバトルのプロト起動（大会未実装のためデバッグ導線から）。
     const profile = await profileRepo.loadProfile();
-    launchAutoBattle(profile, { oppLv: 3, onExit: () => back() });
+    launchAutoBattle(profile, { oppLv: 1, oppHpMax: 6000, onExit: () => back() });
   } else if (target === "parlor") {
     // §4.6.8 雀荘巡り：選んだ雀荘でオートを連戦し、結果でソウル付与＋1行動消費。
     const profile = await profileRepo.loadProfile();
@@ -736,6 +737,7 @@ async function openMentorSub(target, payload) {
     if (!cand) { back(); return; }
     launchAutoBattle(profile, {
       oppLv: cand.oppLv,
+      oppHpMax: cand.oppHpMax,
       maxMatches: cand.matches,
       onExit: async (session) => {
         const cur = await profileRepo.loadProfile();
