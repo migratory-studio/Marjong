@@ -658,6 +658,78 @@ body {
 /* debug reset, repositioned for the dark hub */
 #mentor-home-screen.mh2 .mhx-debug { position:absolute; left:14px; top:54px; z-index:45; margin:0; }
 
+/* ---- 師匠名札を「コンパクト・ステータス」に拡張（弟子帯と同程度の情報量）---- */
+#mentor-home-screen.mh2 .mhx-nameplate { align-items:flex-start; cursor:pointer; max-width:340px; transition:border-color .15s, box-shadow .15s; }
+#mentor-home-screen.mh2 .mhx-nameplate:hover,
+#mentor-home-screen.mh2 .mhx-nameplate:focus-visible { border-left-color:var(--kin-lit); box-shadow:0 6px 20px rgba(0,0,0,.6); outline:none; }
+#mentor-home-screen.mh2 .mhx-np-main { display:flex; flex-direction:column; gap:3px; }
+#mentor-home-screen.mh2 .mhx-np-sub { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+#mentor-home-screen.mh2 .mhx-np-title { font-family:var(--font-go); font-size:10px; color:#1a130a; background:var(--kin); padding:1px 7px; border-radius:9px; letter-spacing:.06em; }
+#mentor-home-screen.mh2 .mhx-np-lv { font-family:var(--font-go); font-size:11px; color:var(--kin-lit); letter-spacing:.04em; }
+#mentor-home-screen.mh2 .mhx-np-mood { font-family:var(--font-min); font-size:11px; color:var(--ink-soft); letter-spacing:.04em; }
+/* 能力説明はホバー/フォーカス時だけ出すツールチップ（常設の情報量を増やしすぎない） */
+#mentor-home-screen.mh2 .mhx-np-tip {
+  position:absolute; left:0; bottom:calc(100% + 10px); width:300px; padding:11px 13px; z-index:16;
+  background:linear-gradient(180deg,#1b1510,#0d0a07); border:1px solid var(--kin); border-radius:9px;
+  box-shadow:0 10px 28px rgba(0,0,0,.65);
+  opacity:0; visibility:hidden; transform:translateY(5px); transition:opacity .16s, transform .16s, visibility .16s; pointer-events:none;
+}
+#mentor-home-screen.mh2 .mhx-nameplate:hover .mhx-np-tip,
+#mentor-home-screen.mh2 .mhx-nameplate:focus-within .mhx-np-tip { opacity:1; visibility:visible; transform:none; }
+#mentor-home-screen.mh2 .mhx-np-tip::after { content:""; position:absolute; left:24px; bottom:-7px; width:12px; height:12px; background:#0d0a07; border-right:1px solid var(--kin); border-bottom:1px solid var(--kin); transform:rotate(45deg); }
+#mentor-home-screen.mh2 .mhx-np-tip-h { font-family:var(--font-go); font-size:9px; letter-spacing:.2em; color:var(--shu-lit); }
+#mentor-home-screen.mh2 .mhx-np-tip-n { font-family:var(--font-min); font-size:15px; color:var(--kin-lit); margin-top:2px; letter-spacing:.04em; }
+#mentor-home-screen.mh2 .mhx-np-tip-d { font-family:var(--font-go); font-size:11px; line-height:1.65; color:var(--ink-soft); margin-top:4px; }
+
+/* ---- 再利用モーダル（休憩 / 師匠詳細）---- */
+#mentor-home-screen.mh2 .mhx-modal { position:absolute; inset:0; z-index:60; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .18s ease; }
+#mentor-home-screen.mh2 .mhx-modal.is-open { opacity:1; }
+#mentor-home-screen.mh2 .mhx-modal-scrim { position:absolute; inset:0; background:rgba(6,8,12,.66); }
+#mentor-home-screen.mh2 .mhx-modal-card {
+  position:relative; z-index:1; width:540px; max-width:86%; padding:24px 26px 26px;
+  transform:translateY(10px) scale(.98); transition:transform .18s ease;
+  background:linear-gradient(180deg,#f3ead0,#e1d2a9); color:#241c12;
+  border:2px solid var(--kin); border-radius:16px;
+  box-shadow:0 26px 64px rgba(0,0,0,.62), inset 0 0 0 1px rgba(255,255,255,.4);
+}
+#mentor-home-screen.mh2 .mhx-modal.is-open .mhx-modal-card { transform:none; }
+#mentor-home-screen.mh2 .mhx-modal-x {
+  position:absolute; top:9px; right:11px; width:30px; height:30px; border-radius:7px; cursor:pointer;
+  border:1px solid #b79a55; background:rgba(255,255,255,.45); color:#5a4520; font-size:14px; line-height:1; transition:.15s;
+}
+#mentor-home-screen.mh2 .mhx-modal-x:hover { background:rgba(184,57,43,.16); color:#8f2418; }
+#mentor-home-screen.mh2 .mhx-md-head { display:flex; align-items:center; gap:15px; margin-bottom:13px; }
+#mentor-home-screen.mh2 .mhx-md-icon { width:64px; height:64px; flex:none; border-radius:11px; overflow:hidden; border:2px solid var(--kin); background:#cdbb95; }
+#mentor-home-screen.mh2 .mhx-md-icon-lg { width:86px; height:86px; }
+#mentor-home-screen.mh2 .mhx-md-icon img { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; }
+#mentor-home-screen.mh2 .mhx-md-title { display:flex; flex-direction:column; gap:3px; }
+#mentor-home-screen.mh2 .mhx-md-by { font-family:var(--font-go); font-size:11px; color:var(--shu); letter-spacing:.2em; }
+#mentor-home-screen.mh2 .mhx-md-ttl { font-family:var(--font-min); font-size:25px; color:#2a2012; letter-spacing:.06em; }
+#mentor-home-screen.mh2 .mhx-md-ttl small { font-size:12px; color:#7a684a; margin-left:7px; letter-spacing:.1em; }
+#mentor-home-screen.mh2 .mhx-md-chips { display:flex; gap:6px; margin-top:4px; flex-wrap:wrap; }
+#mentor-home-screen.mh2 .mhx-chip { font-family:var(--font-go); font-size:11px; padding:2px 9px; border-radius:11px; background:#d8c79d; border:1px solid #b79a55; color:#4a3a18; }
+#mentor-home-screen.mh2 .mhx-chip-lv { background:var(--kin); color:#2a1f0a; border-color:#a98a3c; }
+#mentor-home-screen.mh2 .mhx-chip-mood { background:#e9d8b2; }
+#mentor-home-screen.mh2 .mhx-md-line { font-family:var(--font-min); font-size:18px; line-height:1.65; margin:6px 0 15px; color:#2a2012; }
+#mentor-home-screen.mh2 .mhx-md-prof { font-family:var(--font-go); font-size:13px; line-height:1.75; color:#4a3c24; margin:0 0 13px; }
+#mentor-home-screen.mh2 .mhx-md-abil { background:rgba(255,255,255,.42); border:1px solid #c7ad6e; border-radius:11px; padding:11px 13px; margin-bottom:13px; }
+#mentor-home-screen.mh2 .mhx-md-abil-h { font-family:var(--font-go); font-size:10px; letter-spacing:.2em; color:var(--shu); }
+#mentor-home-screen.mh2 .mhx-md-abil-n { font-family:var(--font-min); font-size:17px; color:#3a2c12; margin-top:3px; }
+#mentor-home-screen.mh2 .mhx-md-abil-d { font-family:var(--font-go); font-size:12px; line-height:1.65; color:#5a4a2c; margin-top:4px; }
+#mentor-home-screen.mh2 .mhx-md-haoh { font-family:var(--font-go); font-size:11px; color:#7a684a; border-top:1px dashed #b79a55; padding-top:9px; letter-spacing:.04em; }
+#mentor-home-screen.mh2 .mhx-md-hp { margin:8px 0 15px; }
+#mentor-home-screen.mh2 .mhx-md-hp-top { display:flex; justify-content:space-between; font-family:var(--font-go); font-size:12px; color:#5a4a2c; margin-bottom:6px; }
+#mentor-home-screen.mh2 .mhx-md-fill { transition:width .6s cubic-bezier(.22,.61,.36,1); }
+#mentor-home-screen.mh2 .mhx-md-result { font-family:var(--font-go); font-size:14px; color:#8f2418; font-weight:600; margin:0 0 13px; letter-spacing:.02em; }
+#mentor-home-screen.mh2 .mhx-md-btn {
+  display:block; width:100%; padding:12px; border-radius:9px; cursor:pointer;
+  font-family:var(--font-min); font-size:18px; letter-spacing:.1em; color:#fff;
+  border:1px solid #f0c074; background:linear-gradient(180deg,#d95a44,#8f2418); box-shadow:0 4px 0 #6e1c12; transition:filter .12s, box-shadow .12s, transform .08s;
+}
+#mentor-home-screen.mh2 .mhx-md-btn:hover:not(:disabled) { filter:brightness(1.06); }
+#mentor-home-screen.mh2 .mhx-md-btn:active:not(:disabled) { transform:translateY(2px); box-shadow:0 2px 0 #6e1c12; }
+#mentor-home-screen.mh2 .mhx-md-btn:disabled { filter:grayscale(.4) brightness(.92); cursor:default; box-shadow:0 2px 0 #6e1c12; }
+
 /* shared card (rest) */
 .mentor-card {
   width: 100%; display: flex; flex-direction: column; gap: 14px;
