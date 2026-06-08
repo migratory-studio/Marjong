@@ -17,7 +17,8 @@ import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar } from "../progression/avatarFactory.js";
-import { canRestToday, rest } from "../progression/progressionService.js";
+import { canRestToday, rest, trainParam, TRAIN_TUNING } from "../progression/progressionService.js";
+import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
@@ -34,6 +35,11 @@ const MENTOR_TITLE = {
 };
 // 「今日の様子」プール（非数値の質的表現）。日替わりで安定させる。
 const MENTOR_MOODS = ["上機嫌", "穏やか", "いつも通り", "少し眠そう", "鋭い目つき", "上々"];
+// 訓練コマンドの師匠の一言。
+const TRAIN_LINE = {
+  study: "机に向かう時間も実力のうちだ。", drill: "さあ、みっちり鍛えるぞ。",
+  duo: "一局、付き合え。…手は抜かんぞ。", parlor: "外の卓は刺激が多い。気をつけてな。",
+};
 
 // HTML へ差し込む動的値の最小エスケープ（マイキャラ名などユーザー入力対策）。
 function esc(s) {
@@ -190,16 +196,16 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-cat">日常</div>
         <div class="mhx-tags">
           ${tag("休 憩", rested ? "今日は休憩済み" : "点棒を回復する", "rest", false)}
-          ${tag("座 学", "準備中", null, true)}
+          ${tagTrain("座 学", "読み・守備を磨く", "study")}
         </div>
       </div>
 
       <div class="mhx-group mhx-jissen">
         <div class="mhx-cat">実戦</div>
         <div class="mhx-tags">
-          ${tag("鍛 錬", "準備中", null, true)}
-          ${tag("二人打ち", "準備中", null, true)}
-          ${tag("雀荘巡り", "準備中", null, true)}
+          ${tagTrain("鍛 錬", "火力・速度を鍛える", "drill")}
+          ${tagTrain("二人打ち", "メンタル・読み", "duo")}
+          ${tagTrain("雀荘巡り", "勝負勘＋運試し", "parlor")}
         </div>
       </div>
 
@@ -254,6 +260,10 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     const b = badge > 0 ? `<span class="mhx-badge2">${badge}</span>` : "";
     return `<div class="${cls}"${data} role="button" tabindex="${off ? -1 : 0}">${b}<span class="mhx-cmd">${cmd}</span><span class="mhx-desc">${esc(desc)}</span></div>`;
   }
+  // 訓練コマンド札（6パラメータを伸ばす活動）。data-train で識別。
+  function tagTrain(cmd, desc, key) {
+    return `<div class="mhx-tag" data-train="${key}" role="button" tabindex="0"><span class="mhx-cmd">${cmd}</span><span class="mhx-desc">${esc(desc)}</span></div>`;
+  }
 
   // ---- 休憩モーダル（ハブ上で完結）----
   function openRestModal() {
@@ -299,6 +309,46 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     });
   }
 
+  // ---- 訓練モーダル（6パラメータを伸ばす）----
+  function openTrainModal(key) {
+    const t = TRAIN_TUNING[key];
+    if (!t) return;
+    const subLabel = t.sub === "random" ? "ランダム" : PARAM_LABELS[t.sub];
+    const html = `
+      <div class="mhx-md-head">
+        <div class="mhx-md-icon">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</div>
+        <div class="mhx-md-title"><span class="mhx-md-by">修行</span><span class="mhx-md-ttl">${esc(t.label)}</span></div>
+      </div>
+      <p class="mhx-md-line">${esc(TRAIN_LINE[key] || "")}</p>
+      <p class="mhx-md-prof">伸びる：<b>${esc(PARAM_LABELS[t.main])}</b>（主）／ ${esc(subLabel)}（副）　・　消費 HP ${t.hp.toLocaleString()}${t.soul ? `　・　ソウル +${t.soul}` : ""}</p>
+      <p class="mhx-md-result" hidden></p>
+      <button type="button" class="mhx-md-btn">${esc(t.label)}する</button>
+    `;
+    let done = false;
+    const { card } = openModal(container, html, () => { if (done) refresh(); });
+    const btn = card.querySelector(".mhx-md-btn");
+    btn?.addEventListener("click", async () => {
+      if (done) return;
+      try {
+        const res = trainParam(profile, key);
+        await repository.saveProfile(res.profile);
+        done = true;
+        const gainStr = Object.entries(res.gains)
+          .filter(([, v]) => v > 0)
+          .map(([k, v]) => `${PARAM_LABELS[k]} +${v}`).join("　/　");
+        const parts = [gainStr];
+        if (res.soul) parts.push(`ソウル +${res.soul}`);
+        parts.push(`HP −${res.hpCost.toLocaleString()}`);
+        const r = card.querySelector(".mhx-md-result");
+        r.textContent = parts.join("　/　"); r.hidden = false;
+        btn.disabled = true; btn.textContent = "完了";
+      } catch (e) {
+        const r = card.querySelector(".mhx-md-result");
+        r.textContent = e?.message || "失敗しました。"; r.hidden = false;
+      }
+    });
+  }
+
   // ---- 師匠詳細モーダル ----
   function openMentorModal() {
     const html = `
@@ -328,6 +378,11 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     const handler = t === "rest" ? openRestModal : () => fire(t);
     node.addEventListener("click", handler);
     node.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handler(); } });
+  });
+  container.querySelectorAll(".mhx-tag[data-train]").forEach((node) => {
+    const key = node.getAttribute("data-train");
+    node.addEventListener("click", () => openTrainModal(key));
+    node.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openTrainModal(key); } });
   });
   const status = container.querySelector(".mhx-status");
   status?.addEventListener("click", () => onNavigate?.("avatar"));

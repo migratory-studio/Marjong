@@ -12,7 +12,7 @@ import { showScreen } from "./app/router.js";
 import { initStage, clientToLocalFrac } from "./app/stage.js";
 import { playScenario } from "./scenario/scenarioPlayer.js";
 import { LocalProfileRepository } from "./progression/localProfileRepository.js";
-import { activeAvatar } from "./progression/avatarFactory.js";
+import { activeAvatar, avatarParams6 } from "./progression/avatarFactory.js";
 import { showAvatarCreate } from "./screens/avatarCreateScreen.js";
 import { showAvatarDetail } from "./screens/avatarDetailScreen.js";
 import { showMentorHome } from "./screens/mentorHomeScreen.js";
@@ -699,13 +699,8 @@ async function openMentorSub(target) {
     // §4.6 オートバトルのプロト起動（大会未実装のためデバッグ導線から）。
     const profile = await profileRepo.loadProfile();
     const av = activeAvatar(profile);
-    const lv = av?.avatarLevel ?? 1, sk = av?.skillLevel ?? 1;
-    const self = {
-      fire: Math.round(28 + sk * 1.5 + lv), guard: 26 + lv, read: 28 + sk,
-      gamble: 26 + sk, speed: 28 + lv, mental: 26 + lv,
-    };
     showAutoBattle(el("autobattle-screen"), {
-      self,
+      self: avatarParams6(av),
       avatar: av,
       hp: av?.avatarHpCurrent ?? 30000,
       hpMax: av?.avatarHpMax ?? 30000,

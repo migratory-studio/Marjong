@@ -14,7 +14,14 @@ export const AVATAR_DEFAULTS = {
   bondLevel: 1,
   bondExp: 0,
   itemSlotCount: 0,
+  // オートバトル用 6 パラメータの初期値（§4.6.1）。低めスタートで育成の伸びしろを残す。
+  params6: { fire: 12, guard: 12, read: 12, gamble: 10, speed: 12, mental: 12 },
 };
+
+// アバターの 6 パラメータを安全に取り出す（旧データ・未設定は既定値で補完）。
+export function avatarParams6(avatar) {
+  return { ...AVATAR_DEFAULTS.params6, ...(avatar?.params6 || {}) };
+}
 
 // ざっくり一意な ID（crypto.randomUUID が無い環境でも動く簡易版）。
 function genId(prefix) {
@@ -47,6 +54,7 @@ export function buildNewAvatar({ name, profileText = "", mentorCharacterId, skil
     bondLevel: AVATAR_DEFAULTS.bondLevel,
     bondExp: AVATAR_DEFAULTS.bondExp,
     itemSlotCount: AVATAR_DEFAULTS.itemSlotCount,
+    params6: { ...AVATAR_DEFAULTS.params6 },
     equippedItemInstanceIds: [],
     presetIds: {
       icon: presetIds.icon ?? null,

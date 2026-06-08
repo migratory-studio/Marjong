@@ -7,7 +7,7 @@
 // 呼び出し側（screen）が repository.saveProfile() で行う。
 //
 // 対局エンジンには一切触れない（§3.1: エンジンに育成/報酬/保存の責務を持たせない）。
-import { activeAvatar } from "./avatarFactory.js";
+import { activeAvatar, avatarParams6 } from "./avatarFactory.js";
 import { spendSoul, grantSoul } from "./rewardService.js";
 import { skillTemplateById, templatesForMentor } from "../data/skillTemplateMaster.js";
 import { nextAvatarLevel } from "../data/avatarLevelMaster.js";
@@ -181,4 +181,44 @@ export function changeAbility(profile, targetSkillTemplateId) {
     abilityChangedCount: (a.abilityChangedCount ?? 0) + 1,
   }));
   return { profile: p, cost, skillTemplateId: tmpl.skillTemplateId };
+}
+
+// ------------------------------------------- 育成パラメータ訓練（§4.6.1）
+// 活動コマンドが 6 パラメータを直接伸ばす（主 1＋副 1）。HP を消費し、一部はソウルも得る。
+// 雀荘巡り(parlor)の副は「ランダム 1 種」。数値はチューニング前提。
+export const TRAIN_TUNING = {
+  study:  { label: "座学",     main: "read",   sub: "guard",  mainGain: 3, subGain: 1, hp: 600 },
+  drill:  { label: "鍛錬",     main: "fire",   sub: "speed",  mainGain: 3, subGain: 1, hp: 1500, soul: 120 },
+  duo:    { label: "二人打ち", main: "mental", sub: "read",   mainGain: 3, subGain: 1, hp: 1500 },
+  parlor: { label: "雀荘巡り", main: "gamble", sub: "random", mainGain: 3, subGain: 2, hp: 2500, soul: 200 },
+};
+const PARAM_CAP = 99;
+const ALL_PARAMS = ["fire", "guard", "read", "gamble", "speed", "mental"];
+
+export function trainParam(profile, key, rng = Math.random) {
+  const t = TRAIN_TUNING[key];
+  if (!t) throw new Error("未知の育成コマンド: " + key);
+  const av = activeAvatar(profile);
+  if (!av) throw new Error("マイキャラがいません");
+
+  const cur = avatarParams6(av);
+  const sub = t.sub === "random" ? ALL_PARAMS[Math.floor(rng() * ALL_PARAMS.length)] : t.sub;
+  const gains = {};
+  const apply = (k, g) => {
+    const before = cur[k] || 0;
+    const after = Math.min(PARAM_CAP, before + g);
+    gains[k] = (gains[k] || 0) + (after - before);
+    cur[k] = after;
+  };
+  apply(t.main, t.mainGain);
+  apply(sub, t.subGain);
+
+  const hpCost = t.hp || 0;
+  let p = withActiveAvatar(profile, (a) => ({
+    ...a,
+    params6: cur,
+    avatarHpCurrent: Math.max(0, (a.avatarHpCurrent ?? a.avatarHpMax) - hpCost),
+  }));
+  if (t.soul) p = grantSoul(p, t.soul);
+  return { profile: p, gains, hpCost, soul: t.soul || 0 };
 }
