@@ -16,9 +16,10 @@ import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
-import { activeAvatar } from "../progression/avatarFactory.js";
+import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
 import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY } from "../progression/progressionService.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
+import { statViews } from "../autobattle/statSystem.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
@@ -228,6 +229,18 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
           ${tag("シ ナ リ オ", hasScenario ? (unread > 0 ? `未読 ${unread} 件` : "物語を読む") : "まだありません", "scenario", !hasScenario, unread > 0 ? unread : 0)}
         </div>
       </div>
+
+      <div class="mhx-stats" role="button" tabindex="0" title="マイキャラの詳細を見る">
+        <div class="mhx-stats-head"><span class="mhx-line"></span><span class="mhx-st-t">能 力 値</span><span class="mhx-line mhx-r"></span></div>
+        <div class="mhx-stats-grid">
+          ${statViews(avatarParams6(avatar)).map((s) => `
+            <div class="mhx-stat" title="${esc(s.label)}（${s.passive ? "パッシブ" : esc(s.command)}）｜${esc(s.affects)}">
+              <span class="mhx-stat-rank rank-${s.rank}">${s.rank}</span>
+              <span class="mhx-stat-lab">${esc(s.label)}</span>
+              <span class="mhx-stat-val">${s.value}</span>
+            </div>`).join("")}
+        </div>
+      </div>
     </div>
 
     <div class="mhx-status" role="button" tabindex="0" title="マイキャラの詳細">
@@ -424,6 +437,9 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   const status = container.querySelector(".mhx-status");
   status?.addEventListener("click", () => onNavigate?.("avatar"));
   status?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onNavigate?.("avatar"); } });
+  const statsBlock = container.querySelector(".mhx-stats");
+  statsBlock?.addEventListener("click", () => onNavigate?.("avatar"));
+  statsBlock?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onNavigate?.("avatar"); } });
   const np = container.querySelector(".mhx-nameplate");
   np?.addEventListener("click", openMentorModal);
   np?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openMentorModal(); } });

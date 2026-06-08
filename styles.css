@@ -650,6 +650,24 @@ body {
   font-family:var(--font-go); font-size:12px; font-weight:700; border:1px solid #ffd0b8; box-shadow:0 2px 6px rgba(0,0,0,.5);
 }
 
+/* 能力値ストリップ（修行を選ぶの下・コンパクト表示／クリックでキャラ詳細へ） */
+#mentor-home-screen.mh2 .mhx-stats { margin-top:13px; cursor:pointer; }
+#mentor-home-screen.mh2 .mhx-stats-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; color:var(--kin-lit); }
+#mentor-home-screen.mh2 .mhx-st-t { font-size:13px; letter-spacing:.26em; text-shadow:0 1px 2px rgba(0,0,0,.6); white-space:nowrap; }
+#mentor-home-screen.mh2 .mhx-stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px 8px; }
+#mentor-home-screen.mh2 .mhx-stat {
+  display:flex; align-items:center; gap:6px; padding:4px 8px; border-radius:5px;
+  background:linear-gradient(180deg,rgba(245,233,210,.95),rgba(225,205,160,.92));
+  border:1px solid #8a6a32; box-shadow:0 2px 0 #7c5a28, inset 0 1px 1px rgba(255,255,255,.5);
+}
+#mentor-home-screen.mh2 .mhx-stats:hover .mhx-stat { filter:brightness(1.04); }
+#mentor-home-screen.mh2 .mhx-stat-rank {
+  width:20px; height:20px; flex:none; display:flex; align-items:center; justify-content:center;
+  border-radius:4px; font-size:13px; font-weight:900; color:#1a120a; background:#8a99a8;
+}
+#mentor-home-screen.mh2 .mhx-stat-lab { flex:1; font-family:var(--font-min); font-size:13px; color:#33260f; letter-spacing:.02em; }
+#mentor-home-screen.mh2 .mhx-stat-val { font-family:var(--font-go); font-size:14px; font-weight:700; color:#5a3410; }
+
 /* disciple status bar */
 #mentor-home-screen.mh2 .mhx-status {
   position:absolute; left:18px; bottom:14px; width:740px; height:76px; z-index:25; cursor:pointer;
