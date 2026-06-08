@@ -17,7 +17,7 @@ import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
-import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY } from "../progression/progressionService.js";
+import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState } from "../progression/progressionService.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps } from "../autobattle/statSystem.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
@@ -221,7 +221,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-tags">
           ${tagTrain("鍛 錬", "火力・速度を鍛える", "drill")}
           ${tagTrain("二人打ち", "メンタル・読み", "duo")}
-          ${tagTrain("雀荘巡り", "勝負勘＋運試し", "parlor")}
+          <div class="mhx-tag" data-parlor="1" role="button" tabindex="0"><span class="mhx-cmd">雀荘巡り</span><span class="mhx-desc">打ちに出かける</span></div>
         </div>
       </div>
 
@@ -384,6 +384,40 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     });
   }
 
+  // ---- 雀荘巡りモーダル（その日の候補から1つ選ぶ・§4.6.8）----
+  function openParlorModal() {
+    const st = parlorState(profile);
+    const canGo = actionsLeft > 0;
+    const cards = st.candidates.map((c) => {
+      const off = c.done || !canGo;
+      const badge = c.tournament ? `<span class="mhx-pl-badge">大会中</span>` : "";
+      return `
+        <button type="button" class="mhx-pl${off ? " is-off" : ""}" data-idx="${c.index}"${off ? " disabled" : ""}>
+          ${badge}
+          <span class="mhx-cond tone-${c.tone} mhx-pl-tier">${esc(c.label)}</span>
+          <span class="mhx-pl-info"><b>${c.matches}</b> 戦${c.done ? "　…挑戦済み" : ""}</span>
+          <span class="mhx-pl-rew">勝ち抜き毎 +${c.soulPerWin} ソウル</span>
+        </button>`;
+    }).join("");
+    const html = `
+      <div class="mhx-md-head">
+        <div class="mhx-md-icon">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</div>
+        <div class="mhx-md-title"><span class="mhx-md-by">雀荘巡り</span><span class="mhx-md-ttl">今日の卓</span></div>
+      </div>
+      <p class="mhx-md-line">${canGo ? "どこの卓で腕を試す？ 1 軒選べ。" : "今日はもう動けない。また明日だ。"}</p>
+      <div class="mhx-pl-list">${cards}</div>
+      <p class="mhx-md-prof"><small>※ 挑戦すると 1 行動を消費。卓は日替わりで変わる（同じ日は 1 軒のみ）。</small></p>
+    `;
+    const { card, close } = openModal(container, html);
+    card.querySelectorAll(".mhx-pl:not(.is-off)").forEach((b) => {
+      b.addEventListener("click", () => {
+        const idx = Number(b.getAttribute("data-idx"));
+        close();
+        onNavigate?.("parlor", { index: idx });
+      });
+    });
+  }
+
   // ---- 師匠詳細モーダル ----
   function openMentorModal() {
     const html = `
@@ -464,6 +498,9 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     node.addEventListener("click", () => openTrainModal(key));
     node.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openTrainModal(key); } });
   });
+  const parlorTile = container.querySelector(".mhx-tag[data-parlor]");
+  parlorTile?.addEventListener("click", openParlorModal);
+  parlorTile?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openParlorModal(); } });
   const status = container.querySelector(".mhx-status");
   status?.addEventListener("click", () => onNavigate?.("avatar"));
   status?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onNavigate?.("avatar"); } });

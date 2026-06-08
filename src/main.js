@@ -24,7 +24,7 @@ import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
-import { dayInfo, CONDITIONS } from "./progression/progressionService.js";
+import { dayInfo, CONDITIONS, parlorState, visitParlor } from "./progression/progressionService.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -664,12 +664,38 @@ function openMentorHome() {
   showMentorHome(el("mentor-home-screen"), {
     repository: profileRepo,
     onBack: () => navigate("home"),
-    onNavigate: (target) => openMentorSub(target),
+    onNavigate: (target, payload) => openMentorSub(target, payload),
   });
   goScreen("mentor-home-screen");
 }
 
-async function openMentorSub(target) {
+// オートバトル起動の共通化（デバッグ起動・雀荘巡りで共用）。
+function launchAutoBattle(profile, { oppLv, maxMatches, seed = Date.now(), onExit }) {
+  const av = activeAvatar(profile);
+  const abilityName = skillTemplateById(av?.skillTemplateId)?.name || "能力発動";
+  const standingSrc = presetById(av?.presetIds?.standing)?.assetPath || "";
+  const di = dayInfo(profile);
+  const condition = CONDITIONS[di.condition];
+  showAutoBattle(el("autobattle-screen"), {
+    self: avatarParams6(av),
+    avatar: av,
+    hp: av?.avatarHpCurrent ?? 30000,
+    hpMax: av?.avatarHpMax ?? 30000,
+    oppLv,
+    maxMatches,
+    seed,
+    onExit,
+    audio,
+    abilityName,
+    standingSrc,
+    conditionBias: condition.bias,
+    conditionLabel: condition.label,
+    conditionTone: condition.tone,
+  });
+  goScreen("autobattle-screen");
+}
+
+async function openMentorSub(target, payload) {
   const back = () => openMentorHome();
   if (target === "rest") {
     await showRest(el("rest-screen"), { repository: profileRepo, onBack: back });
@@ -701,27 +727,23 @@ async function openMentorSub(target) {
   } else if (target === "autobattle-proto") {
     // §4.6 オートバトルのプロト起動（大会未実装のためデバッグ導線から）。
     const profile = await profileRepo.loadProfile();
-    const av = activeAvatar(profile);
-    const abilityName = skillTemplateById(av?.skillTemplateId)?.name || "能力発動";
-    const standingSrc = presetById(av?.presetIds?.standing)?.assetPath || "";
-    const di = dayInfo(profile);
-    const condition = CONDITIONS[di.condition];
-    showAutoBattle(el("autobattle-screen"), {
-      self: avatarParams6(av),
-      avatar: av,
-      hp: av?.avatarHpCurrent ?? 30000,
-      hpMax: av?.avatarHpMax ?? 30000,
-      oppLv: 3,
-      seed: Date.now(),
-      onExit: () => back(),
-      audio,
-      abilityName,
-      standingSrc,
-      conditionBias: condition.bias,
-      conditionLabel: condition.label,
-      conditionTone: condition.tone,
+    launchAutoBattle(profile, { oppLv: 3, onExit: () => back() });
+  } else if (target === "parlor") {
+    // §4.6.8 雀荘巡り：選んだ雀荘でオートを連戦し、結果でソウル付与＋1行動消費。
+    const profile = await profileRepo.loadProfile();
+    const st = parlorState(profile);
+    const cand = st.candidates[payload?.index ?? 0];
+    if (!cand) { back(); return; }
+    launchAutoBattle(profile, {
+      oppLv: cand.oppLv,
+      maxMatches: cand.matches,
+      onExit: async (session) => {
+        const cur = await profileRepo.loadProfile();
+        const res = visitParlor(cur, cand.index, session?.wins ?? 0);
+        await profileRepo.saveProfile(res.profile);
+        back();
+      },
     });
-    goScreen("autobattle-screen");
   }
 }
 

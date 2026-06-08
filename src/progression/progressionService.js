@@ -13,6 +13,7 @@ import { skillTemplateById, templatesForMentor } from "../data/skillTemplateMast
 import { nextAvatarLevel } from "../data/avatarLevelMaster.js";
 import { nextSkillLevel } from "../data/skillLevelMaster.js";
 import { abilityChangeCost } from "../data/abilityChangeCostMaster.js";
+import { rollDailyParlors } from "../data/parlorMaster.js";
 
 // 育成の調整値（バランス調整で動かす単一の出どころ）。
 export const GROWTH_TUNING = {
@@ -84,6 +85,7 @@ export function ensureDay(profile, rng = Math.random) {
     condition: rollCondition(rng),
     mentorCondition: rollCondition(rng),
     startParams6: { ...cur },
+    parlorsDone: [],  // 雀荘巡りの挑戦済み（日替わりでリセット＝候補シャッフル）
   };
   return { profile: { ...profile, dayCount: day, daily }, started: true, prevStartParams6: d.startParams6 || null };
 }
@@ -340,4 +342,31 @@ export function trainParam(profile, key, rng = Math.random) {
     outcome: outcomeKey, outcomeLabel: outcome.label, outcomeTone: outcome.tone, outcomeLine: outcome.line,
     conditionDelta, dayAdvanced: ended.dayAdvanced,
   };
+}
+
+// ------------------------------------------------- 雀荘巡り（候補選択・§4.6.8）
+// シナリオ進捗（当面 0。経済再調整バッチで実進捗に差し替え）。
+function scenarioProgressLevel(_profile) { return 0; }
+
+// その日の雀荘候補と挑戦済みフラグ。候補は dayCount から決定論生成（同じ日は不変）。
+export function parlorState(profile) {
+  const candidates = rollDailyParlors(profile.dayCount ?? 1, scenarioProgressLevel(profile));
+  const done = profile.daily?.parlorsDone || [];
+  return {
+    candidates: candidates.map((c) => ({ ...c, done: done.includes(c.index) })),
+    actionsLeft: dayInfo(profile).actionsLeft,
+  };
+}
+
+// 雀荘を 1 つ訪れた結果を記録する。wins＝オートの勝ち抜き数。
+// ソウルを付与し、その雀荘を挑戦済み（グレーアウト）にして、1 行動を消費する。
+export function visitParlor(profile, index, wins = 0) {
+  const cand = rollDailyParlors(profile.dayCount ?? 1, scenarioProgressLevel(profile))[index];
+  if (!cand) throw new Error("雀荘が見つかりません");
+  const soul = Math.max(0, Math.round(cand.soulPerWin * wins));
+  let p = soul > 0 ? grantSoul(profile, soul) : profile;
+  const done = Array.from(new Set([...(p.daily?.parlorsDone || []), index]));
+  p = { ...p, daily: { ...(p.daily || {}), parlorsDone: done } };
+  const ended = endAction(p, 0); // 雀荘巡り＝1 行動
+  return { profile: ended.profile, soul, wins, candidate: cand, dayAdvanced: ended.dayAdvanced };
 }
