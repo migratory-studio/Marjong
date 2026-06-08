@@ -67,20 +67,25 @@ export function rollCondition(rng = Math.random) {
 
 // 当日の状態を保証する。日が変わっていれば調子を抽選し行動数を 0 に戻す。
 // 戻り値 started=true は「新しい日が始まった」＝開始バナーを出す合図。
+// prevStartParams6 ＝ 終わった日の「開始時ステ」スナップショット（ランクアップ判定用）。
+// startParams6 はその日の開始時の params6 を保存しておき、翌日にランクアップを集計する。
 export function ensureDay(profile, rng = Math.random) {
   const day = profile.dayCount ?? 1;
   const d = profile.daily || {};
   if (d.initDay === day && d.condition != null && d.mentorCondition != null) {
-    return { profile: { ...profile, dayCount: day }, started: false };
+    return { profile: { ...profile, dayCount: day }, started: false, prevStartParams6: null };
   }
+  const av = activeAvatar(profile);
+  const cur = av ? avatarParams6(av) : {};
   const daily = {
     ...d,
     initDay: day,
     actionsUsed: 0,
     condition: rollCondition(rng),
     mentorCondition: rollCondition(rng),
+    startParams6: { ...cur },
   };
-  return { profile: { ...profile, dayCount: day, daily }, started: true };
+  return { profile: { ...profile, dayCount: day, daily }, started: true, prevStartParams6: d.startParams6 || null };
 }
 
 // 当日の読み取り情報（行動残り・調子）。ensureDay 済みを前提。

@@ -19,7 +19,7 @@ import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
 import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY } from "../progression/progressionService.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
-import { statViews } from "../autobattle/statSystem.js";
+import { statViews, diffRankUps } from "../autobattle/statSystem.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
@@ -36,6 +36,8 @@ const MENTOR_TITLE = {
 };
 // 「今日の様子」プール（非数値の質的表現）。日替わりで安定させる。
 const MENTOR_MOODS = ["上機嫌", "穏やか", "いつも通り", "少し眠そう", "鋭い目つき", "上々"];
+// 1日3行動を朝→昼→夜に対応づけて時間表示する。
+const TIME_OF_DAY = ["朝", "昼", "夜"];
 // 訓練コマンドの師匠の一言。
 const TRAIN_LINE = {
   study: "机に向かう時間も実力のうちだ。", drill: "さあ、みっちり鍛えるぞ。",
@@ -110,11 +112,19 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // ---- 日次（1日3行動・日替わり調子）----
   const ds = ensureDay(profile);
   let showBanner = false;
-  if (ds.started) { profile = ds.profile; await repository.saveProfile(profile); showBanner = true; }
+  let rankUps = [];
+  if (ds.started) {
+    profile = ds.profile;
+    // 前日の伸びでランクが上がったステを集計（演出用）。avatar の params は ensureDay で不変。
+    rankUps = diffRankUps(ds.prevStartParams6, avatarParams6(avatar));
+    await repository.saveProfile(profile);
+    showBanner = true;
+  }
   const di = dayInfo(profile);
   const cond = CONDITIONS[di.condition];          // 弟子（あなた）の調子
   const mentorCond = CONDITIONS[di.mentorCondition]; // 師匠の調子
   const actionsLeft = di.actionsLeft;
+  const timeLabel = TIME_OF_DAY[Math.min(di.actionsUsed, TIME_OF_DAY.length - 1)];
 
   // ---- 表示値の解決（未実装ぶんは仮値）----
   const soul = profile.wallet?.soul ?? 0;
@@ -166,7 +176,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-cur mhx-soul"><div class="mhx-coin">魂</div><div class="mhx-val">${esc(soul.toLocaleString())}<small> ソウル</small></div></div>
         <div class="mhx-cur mhx-kei"><div class="mhx-coin">継</div><div class="mhx-val">${esc(meta)}<small> 継承</small></div></div>
         <div class="mhx-divider"></div>
-        <div class="mhx-day"><b>${day == null ? "—" : esc(day)}</b> 日目</div>
+        <div class="mhx-day"><b>${day == null ? "—" : esc(day)}</b> 日目<span class="mhx-time">${esc(timeLabel)}</span></div>
         <div class="mhx-acts" title="1日3回まで行動できる">行動 <b>${actionsLeft}</b><small>/${ACTIONS_PER_DAY}</small></div>
         <div class="mhx-divider"></div>
         <button type="button" class="mhx-gear" title="設定">⚙</button>
@@ -421,6 +431,26 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     card.querySelector(".mhx-db-btn")?.addEventListener("click", close);
   }
 
+  // ---- ランクアップ演出（1日の終わり→新しい日の頭に出す）----
+  function openRankUpModal(ups, onDone) {
+    const rows = ups.map((u) => `
+      <div class="mhx-ru-row">
+        <span class="mhx-ru-lab">${esc(u.label)}</span>
+        <span class="mhx-stat-rank rank-${u.from}">${u.from}</span>
+        <span class="mhx-ru-arrow">▶</span>
+        <span class="mhx-stat-rank rank-${u.to} mhx-ru-to">${u.to}</span>
+      </div>`).join("");
+    const html = `
+      <div class="mhx-ru">
+        <div class="mhx-ru-ttl">RANK UP!</div>
+        <div class="mhx-ru-sub">昨日の修行が実を結んだ。</div>
+        <div class="mhx-ru-list">${rows}</div>
+        <button type="button" class="mhx-md-btn mhx-ru-btn">よし</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    card.querySelector(".mhx-ru-btn")?.addEventListener("click", close);
+  }
+
   // ---- イベント結線 ----
   const fire = (t) => { if (t) onNavigate?.(t); };
   container.querySelectorAll(".mhx-tag[data-nav]").forEach((node) => {
@@ -480,6 +510,9 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     container.appendChild(reset);
   }
 
-  // 新しい日が始まっていたら開始バナーを出す（調子の確認＝共在の合図）。
-  if (showBanner) openDayBanner();
+  // 新しい日が始まっていたら、まずランクアップ演出（あれば）→ 開始バナー。
+  if (showBanner) {
+    if (rankUps.length) openRankUpModal(rankUps, () => openDayBanner());
+    else openDayBanner();
+  }
 }

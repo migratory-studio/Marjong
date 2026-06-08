@@ -71,3 +71,19 @@ export function statView(statKey, value) {
 export function statViews(params6 = {}) {
   return PARAM_KEYS.map((k) => statView(k, params6[k]));
 }
+
+// ランクの高低順インデックス（G=0 … S=最大）。
+const RANK_ORDER = RANK_BANDS.map((b) => b.rank).reverse();
+const rankIndex = (r) => RANK_ORDER.indexOf(r);
+
+// before→after でランクが上がったステの一覧（{key,label,from,to}）。
+export function diffRankUps(before, after = {}) {
+  if (!before) return [];
+  const ups = [];
+  for (const k of PARAM_KEYS) {
+    const from = rankOf(before[k] ?? 0);
+    const to = rankOf(after[k] ?? 0);
+    if (rankIndex(to) > rankIndex(from)) ups.push({ key: k, label: STAT_META[k].label, from, to });
+  }
+  return ups;
+}

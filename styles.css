@@ -523,6 +523,7 @@ body {
 #mentor-home-screen.mh2 .mhx-divider { width:1px; height:22px; background:rgba(200,164,77,.3); }
 #mentor-home-screen.mh2 .mhx-day { font-family:var(--font-min); font-size:15px; color:var(--ink-soft); letter-spacing:.18em; opacity:.92; }
 #mentor-home-screen.mh2 .mhx-day b { color:#f0e7d0; font-weight:600; font-size:17px; }
+#mentor-home-screen.mh2 .mhx-time { margin-left:8px; padding:1px 9px; border-radius:999px; font-family:var(--font-min); font-size:13px; color:#1a120a; background:linear-gradient(135deg,#ffe39a,#d6a23a); font-weight:700; letter-spacing:.08em; }
 #mentor-home-screen.mh2 .mhx-acts { font-family:var(--font-min); font-size:13px; color:var(--ink-soft); letter-spacing:.1em; opacity:.92; }
 #mentor-home-screen.mh2 .mhx-acts b { color:#ffcf6b; font-weight:700; font-size:16px; }
 #mentor-home-screen.mh2 .mhx-acts small { opacity:.7; }
@@ -550,6 +551,22 @@ body {
 #mentor-home-screen.mh2 .mhx-db-who { font-family:var(--font-go); font-size:12px; color:var(--ink-soft); }
 #mentor-home-screen.mh2 .mhx-db .mhx-cond { font-size:14px; padding:3px 12px; }
 #mentor-home-screen.mh2 .mhx-db-note { font-family:var(--font-go); font-size:11px; color:var(--ink-soft); margin:0 0 14px; opacity:.85; }
+
+/* ランクアップ演出 */
+#mentor-home-screen.mh2 .mhx-ru { text-align:center; padding:6px 4px 2px; }
+#mentor-home-screen.mh2 .mhx-ru-ttl {
+  font-family:var(--font-go); font-size:38px; font-weight:900; letter-spacing:.06em;
+  background:linear-gradient(135deg,#ffe39a,#ff9d3a,#d6a23a); -webkit-background-clip:text; background-clip:text; color:transparent;
+  filter:drop-shadow(0 2px 6px rgba(180,90,20,.5)); animation:mhxRuPop .5s cubic-bezier(.2,1.4,.4,1) both;
+}
+#mentor-home-screen.mh2 .mhx-ru-sub { font-family:var(--font-min); font-size:13px; color:var(--ink-soft); margin:4px 0 14px; }
+#mentor-home-screen.mh2 .mhx-ru-list { display:flex; flex-direction:column; gap:9px; margin-bottom:16px; }
+#mentor-home-screen.mh2 .mhx-ru-row { display:flex; align-items:center; justify-content:center; gap:12px; }
+#mentor-home-screen.mh2 .mhx-ru-lab { min-width:84px; text-align:right; font-family:var(--font-min); font-size:17px; color:#f0e7d0; }
+#mentor-home-screen.mh2 .mhx-ru-row .mhx-stat-rank { width:30px; height:30px; font-size:18px; }
+#mentor-home-screen.mh2 .mhx-ru-arrow { color:var(--kin-lit); font-size:14px; }
+#mentor-home-screen.mh2 .mhx-ru-to { animation:mhxRuPop .45s .15s cubic-bezier(.2,1.5,.4,1) both; }
+@keyframes mhxRuPop { 0%{transform:scale(.4); opacity:0;} 60%{transform:scale(1.18);} 100%{transform:scale(1); opacity:1;} }
 #mentor-home-screen.mh2 .mhx-gear {
   width:30px; height:30px; border-radius:6px; cursor:pointer;
   border:1px solid rgba(200,164,77,.4); background:rgba(255,255,255,.03);
