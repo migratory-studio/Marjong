@@ -346,8 +346,17 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     img.addEventListener("error", () => { img.style.display = "none"; });
   });
 
-  // ---- DEBUG: 1からやりなおす（?debug=tsumoreba 起動時のみ表示）----
+  // ---- DEBUG: 起動オプション（?debug=tsumoreba 時のみ表示）----
   if (debug) {
+    // §4.6 オートバトルのプロト起動（大会導線が入るまでの仮入口）。
+    const ab = elt("button", "mh-debug-reset mhx-debug", {
+      type: "button",
+      textContent: "⚔ オートバトル（proto）",
+    });
+    ab.style.cssText = "top:92px;";
+    ab.onclick = () => onNavigate?.("autobattle-proto");
+    container.appendChild(ab);
+
     const reset = elt("button", "mh-debug-reset mhx-debug", {
       type: "button",
       textContent: "🛠 1からやりなおす（DEBUG）",

@@ -21,6 +21,7 @@ import { showGrowth } from "./screens/growthScreen.js";
 import { showAbilityChange } from "./screens/abilityChangeScreen.js";
 import { showScenarioList } from "./screens/scenarioListScreen.js";
 import { showMatchIntro } from "./screens/matchIntroScreen.js";
+import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -694,6 +695,25 @@ async function openMentorSub(target) {
   } else if (target === "settings") {
     // 師弟ホームの歯車 → 設定。戻ると現状はホームへ（設定画面の戻りは home 固定）。
     navigate("settings");
+  } else if (target === "autobattle-proto") {
+    // §4.6 オートバトルのプロト起動（大会未実装のためデバッグ導線から）。
+    const profile = await profileRepo.loadProfile();
+    const av = activeAvatar(profile);
+    const lv = av?.avatarLevel ?? 1, sk = av?.skillLevel ?? 1;
+    const self = {
+      fire: Math.round(28 + sk * 1.5 + lv), guard: 26 + lv, read: 28 + sk,
+      gamble: 26 + sk, speed: 28 + lv, mental: 26 + lv,
+    };
+    showAutoBattle(el("autobattle-screen"), {
+      self,
+      avatar: av,
+      hp: av?.avatarHpCurrent ?? 30000,
+      hpMax: av?.avatarHpMax ?? 30000,
+      oppLv: 3,
+      seed: Date.now(),
+      onExit: () => back(),
+    });
+    goScreen("autobattle-screen");
   }
 }
 
