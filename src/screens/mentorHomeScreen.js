@@ -631,36 +631,37 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     openModal(container, html);
   }
 
-  // ---- 日の移り変わり（前日の手応え＋今日の調子を1枚に統合）----
-  // s（前日サマリ）が無ければ初日＝今日の調子だけを出す。モーダル連打を避けるため1枚にまとめる（QA #9）。
-  function openDayTransition(s, onDone) {
+  // ---- 「〇日目を終えて」＝前日の手応えサマリ（→次の日へ）----
+  function openDaySummaryModal(s, onDone) {
     const OUT = { daiseikou: "大成功", seikou: "成功", bunan: "無難", shippai: "成果イマイチ" };
     const OUTTONE = { daiseikou: "vgood", seikou: "good", bunan: "ok", shippai: "bad" };
-    let recapHtml = "";
-    if (s) {
-      const logHtml = (s.log || []).map((e) => {
-        if (e.type === "train") return `<li><span class="mhx-ds-act">${esc(e.label || "修行")}</span><span class="mhx-ds-tag tone-${OUTTONE[e.outcome] || "ok"}">${esc(OUT[e.outcome] || "")}</span></li>`;
-        if (e.type === "duo") return `<li><span class="mhx-ds-act">二人打ち（本気）</span><span class="mhx-ds-tag tone-${e.won ? "vgood" : "good"}">${e.won ? "勝利" : "惜敗"}</span></li>`;
-        if (e.type === "parlor") return `<li><span class="mhx-ds-act">雀荘巡り（${esc(e.label || "")}）</span><span class="mhx-ds-tag tone-ok">勝ち抜き ${e.wins ?? 0}</span></li>`;
-        return `<li><span class="mhx-ds-act">休憩</span><span class="mhx-ds-tag tone-good">回復</span></li>`;
-      }).join("");
-      const gainStr = Object.entries(s.gains || {}).map(([k, v]) => `${esc(PARAM_LABELS[k] || k)} +${v}`).join("　/　");
-      const rankStr = (s.rankUps || []).map((u) => `<span class="mhx-ds-rk"><b>${esc(u.label)}</b> <span class="mhx-stat-rank rank-${u.from}">${u.from}</span>▶<span class="mhx-stat-rank rank-${u.to}">${u.to}</span></span>`).join("　");
-      recapHtml = `
-        <div class="mhx-ds">
-          <div class="mhx-ds-ttl"><b>${esc(s.day)}</b> 日目 を終えて<span class="mhx-ds-sub">今日の手応え</span></div>
-          <ul class="mhx-ds-log">${logHtml || '<li><span class="mhx-ds-act">…静かな一日だった</span></li>'}</ul>
-          <div class="mhx-ds-grid">
-            <div class="mhx-ds-cell"><span class="mhx-ds-k">能力値</span><span class="mhx-ds-v">${gainStr ? esc(gainStr) : "変化なし"}${s.total ? `　<small>(計 +${s.total})</small>` : ""}</span></div>
-            ${s.rankUps?.length ? `<div class="mhx-ds-cell"><span class="mhx-ds-k">ランクアップ</span><span class="mhx-ds-v">${rankStr}</span></div>` : ""}
-            <div class="mhx-ds-cell"><span class="mhx-ds-k">ソウル</span><span class="mhx-ds-v">${s.soul >= 0 ? "+" : ""}${(s.soul || 0).toLocaleString()}</span></div>
-          </div>
-        </div>
-        <div class="mhx-dt-sep"><span>翌日</span></div>`;
-    }
+    const logHtml = (s.log || []).map((e) => {
+      if (e.type === "train") return `<li><span class="mhx-ds-act">${esc(e.label || "修行")}</span><span class="mhx-ds-tag tone-${OUTTONE[e.outcome] || "ok"}">${esc(OUT[e.outcome] || "")}</span></li>`;
+      if (e.type === "duo") return `<li><span class="mhx-ds-act">二人打ち（本気）</span><span class="mhx-ds-tag tone-${e.won ? "vgood" : "good"}">${e.won ? "勝利" : "惜敗"}</span></li>`;
+      if (e.type === "parlor") return `<li><span class="mhx-ds-act">雀荘巡り（${esc(e.label || "")}）</span><span class="mhx-ds-tag tone-ok">勝ち抜き ${e.wins ?? 0}</span></li>`;
+      return `<li><span class="mhx-ds-act">休憩</span><span class="mhx-ds-tag tone-good">回復</span></li>`;
+    }).join("");
+    const gainStr = Object.entries(s.gains || {}).map(([k, v]) => `${esc(PARAM_LABELS[k] || k)} +${v}`).join("　/　");
+    const rankStr = (s.rankUps || []).map((u) => `<span class="mhx-ds-rk"><b>${esc(u.label)}</b> <span class="mhx-stat-rank rank-${u.from}">${u.from}</span>▶<span class="mhx-stat-rank rank-${u.to}">${u.to}</span></span>`).join("　");
     const html = `
-      <div class="mhx-db mhx-dt">
-        ${recapHtml}
+      <div class="mhx-ds">
+        <div class="mhx-ds-ttl"><b>${esc(s.day)}</b> 日目 を終えて<span class="mhx-ds-sub">今日の手応え</span></div>
+        <ul class="mhx-ds-log">${logHtml || '<li><span class="mhx-ds-act">…静かな一日だった</span></li>'}</ul>
+        <div class="mhx-ds-grid">
+          <div class="mhx-ds-cell"><span class="mhx-ds-k">能力値</span><span class="mhx-ds-v">${gainStr ? esc(gainStr) : "変化なし"}${s.total ? `　<small>(計 +${s.total})</small>` : ""}</span></div>
+          ${s.rankUps?.length ? `<div class="mhx-ds-cell"><span class="mhx-ds-k">ランクアップ</span><span class="mhx-ds-v">${rankStr}</span></div>` : ""}
+          <div class="mhx-ds-cell"><span class="mhx-ds-k">ソウル</span><span class="mhx-ds-v">${s.soul >= 0 ? "+" : ""}${(s.soul || 0).toLocaleString()}</span></div>
+        </div>
+        <button type="button" class="mhx-md-btn mhx-ds-btn">次の日へ</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    card.querySelector(".mhx-ds-btn")?.addEventListener("click", close);
+  }
+
+  // ---- 「〇日目」＝当日の調子バナー（→今日も励む）----
+  function openDayBanner(onDone) {
+    const html = `
+      <div class="mhx-db">
         <div class="mhx-db-day"><b>${esc(day)}</b> 日目</div>
         <div class="mhx-db-sub">今日の調子</div>
         <div class="mhx-db-conds">
@@ -676,7 +677,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
           </div>
         </div>
         ${day === 1 ? `<p class="mhx-db-note">1日 ${ACTIONS_PER_DAY} 回まで行動できる。調子は育成の伸びに効く。</p>` : ""}
-        <button type="button" class="mhx-md-btn mhx-db-btn">${s ? "次の日へ" : "今日も励む"}</button>
+        <button type="button" class="mhx-md-btn mhx-db-btn">今日も励む</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);
     card.querySelector(".mhx-db-btn")?.addEventListener("click", close);
@@ -933,6 +934,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     flash?.league ? (next) => openLeagueResultModal(flash.league, next) : null,
     flash?.league?.rankUp ? (next) => openDaniRankModal(flash.league.rankUp, next) : null,
     flash?.tournamentGate ? (next) => openTournamentGateModal(flash.tournamentGate, next) : null,
-    showBanner ? (next) => openDayTransition(daySummary, next) : null,
+    // 「〇日目を終えて」→次の日へ → 「〇日目（今日の調子）」の順で2枚に分けて出す（ごちゃつき回避）。
+    (showBanner && daySummary) ? (next) => openDaySummaryModal(daySummary, next) : null,
+    showBanner ? (next) => openDayBanner(next) : null,
   ]);
 }
