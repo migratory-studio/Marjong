@@ -14,6 +14,7 @@ import { nextAvatarLevel } from "../data/avatarLevelMaster.js";
 import { nextSkillLevel } from "../data/skillLevelMaster.js";
 import { abilityChangeCost } from "../data/abilityChangeCostMaster.js";
 import { rollDailyParlors } from "../data/parlorMaster.js";
+import { evaluateTier, paramsFromLv } from "../autobattle/autoBattle.js";
 
 // 育成の調整値（バランス調整で動かす単一の出どころ）。
 export const GROWTH_TUNING = {
@@ -353,6 +354,38 @@ export function trainParam(profile, key, rng = Math.random) {
     conditionDelta, dayAdvanced: ended.dayAdvanced,
     before, after: { ...cur },
   };
+}
+
+// ------------------------------------------------- 大会（初級）（Phase 4B・§4.6.5 / §4.5.2）
+// 出場ゲート：相手評価が「大劣勢」だと門前払い（§4.6.2）。
+export function tournamentGate(profile, t) {
+  const av = activeAvatar(profile);
+  const self = avatarParams6(av);
+  const opp = paramsFromLv(t.oppLv, "tourney:" + t.id);
+  const { tier } = evaluateTier(self, opp);
+  return { ok: tier.id !== "dai_ressei", tier };
+}
+
+// 大会の結果反映。session＝autobattle の onExit（{ wins, matchNo, hp }）。
+// 完走（全 matches 終了かつ HP>0）でクリア＝評価ランク＋継承＋ tournament_won。HP は持ち越し。
+export function applyTournamentResult(profile, t, session = {}) {
+  const matches = t.matches;
+  const wins = session.wins ?? 0;
+  const finalHp = Math.max(0, session.hp ?? 0);
+  const cleared = finalHp > 0 && (session.matchNo ?? 1) >= matches;
+  // runHp 持ち越し（最終 HP → avatarHpCurrent）。
+  let p = withActiveAvatar(profile, (a) => ({ ...a, avatarHpCurrent: Math.min(a.avatarHpMax, finalHp) }));
+  let soul = 0, meta = 0, rank = null;
+  if (cleared) {
+    const wi = Math.max(0, Math.min(matches, wins));
+    rank = t.evalRanks[Math.min(wi, t.evalRanks.length - 1)];
+    meta = t.metaByWins[Math.min(wi, t.metaByWins.length - 1)] || 1;
+    soul = t.soulClear || 0;
+    p = grantSoul(p, soul);
+    p = { ...p, wallet: { ...(p.wallet || {}), meta: (p.wallet?.meta ?? 0) + meta } };
+    p = { ...p, records: { ...(p.records || {}), tournamentsWon: (p.records?.tournamentsWon ?? 0) + 1 } };
+  }
+  return { profile: p, cleared, defeated: finalHp <= 0, wins, matches, rank, meta, soul, finalHp };
 }
 
 // ------------------------------------------------- 本気対局の結果反映（Phase 4A・§4.6.9）

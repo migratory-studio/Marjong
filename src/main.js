@@ -25,7 +25,8 @@ import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
-import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult } from "./progression/progressionService.js";
+import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyTournamentResult } from "./progression/progressionService.js";
+import { TOURNAMENT_MASTER } from "./data/tournamentMaster.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -690,7 +691,7 @@ function openMentorHome(flash = null) {
 }
 
 // オートバトル起動の共通化（デバッグ起動・雀荘巡りで共用）。
-function launchAutoBattle(profile, { oppLv, oppHpMax, maxMatches, seed = Date.now(), onExit }) {
+function launchAutoBattle(profile, { oppLv, oppHpMax, maxMatches, seed = Date.now(), onExit, completeLabel }) {
   const av = activeAvatar(profile);
   const abilityName = skillTemplateById(av?.skillTemplateId)?.name || "能力発動";
   const standingSrc = presetById(av?.presetIds?.standing)?.assetPath || "";
@@ -704,6 +705,7 @@ function launchAutoBattle(profile, { oppLv, oppHpMax, maxMatches, seed = Date.no
     oppLv,
     oppHpMax,
     maxMatches,
+    completeLabel,
     seed,
     onExit,
     audio,
@@ -757,8 +759,26 @@ async function launchHonestMatch(config) {
   });
 }
 
+// 大会（初級）を起動（Phase 4B）。ゲート判定→autobattle 連戦(runHp 持ち越し)→結果反映。
+async function openTournament() {
+  const profile = await profileRepo.loadProfile();
+  const t = TOURNAMENT_MASTER[0];
+  const gate = tournamentGate(profile, t);
+  if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
+  launchAutoBattle(profile, {
+    oppLv: t.oppLv, oppHpMax: t.oppHpMax, maxMatches: t.matches, completeLabel: "大会を終える",
+    onExit: async (session) => {
+      const cur = await profileRepo.loadProfile();
+      const res = applyTournamentResult(cur, t, session);
+      await profileRepo.saveProfile(res.profile);
+      openMentorHome({ tournament: { name: t.name, cleared: res.cleared, defeated: res.defeated, wins: res.wins, matches: res.matches, rank: res.rank, meta: res.meta, soul: res.soul, finalHp: res.finalHp } });
+    },
+  });
+}
+
 async function openMentorSub(target, payload) {
   const back = () => openMentorHome();
+  if (target === "tournament") { openTournament(); return; }
   if (target === "rest") {
     await showRest(el("rest-screen"), { repository: profileRepo, onBack: back });
     goScreen("rest-screen");

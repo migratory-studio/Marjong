@@ -27,7 +27,7 @@ const STANCE_HINT = {
   push: "押してきそうだ", pull: "受けに回るか", watch: "様子を見ている", last: "勝負を懸けてくる",
 };
 
-export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, seed = Date.now(), onExit, audio, abilityName = "能力発動", standingSrc = "", abilityUses = 3, conditionBias = 0, conditionLabel = "", conditionTone = "ok", maxMatches = Infinity, oppHpMax = 25000 } = {}) {
+export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, seed = Date.now(), onExit, audio, abilityName = "能力発動", standingSrc = "", abilityUses = 3, conditionBias = 0, conditionLabel = "", conditionTone = "ok", maxMatches = Infinity, oppHpMax = 25000, completeLabel = "雀荘を後にする" } = {}) {
   const selfP = self || { fire: 35, guard: 30, read: 32, gamble: 28, speed: 30, mental: 30 };
   const HPMAX = hpMax || 30000;
   const youIcon = presetById(avatar?.presetIds?.icon)?.assetPath || "";
@@ -282,14 +282,14 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
     const bust = match.result === "bust_win"; // 相手を飛ばした
     const last = session.matchNo >= maxMatches; // 雀荘の連戦数を打ち切ったら完走
     const tail = last
-      ? `<button type="button" class="primary ab-res-btn" data-act="stop">雀荘を後にする</button>`
+      ? `<button type="button" class="primary ab-res-btn" data-act="stop">${esc(completeLabel)}</button>`
       : `<div class="ab-res-row">
            <button type="button" class="primary ab-res-btn" data-act="next">もう 1 試合</button>
            <button type="button" class="ghost-back ab-res-btn" data-act="stop">やめる（撤退）</button>
          </div>
          <p class="ab-res-note">※ 撤退すると「勝ち抜き」扱いになりません</p>`;
     overlay(`
-      <div class="ab-res-ttl">${bust ? "トビ終了！" : last ? `雀荘 完走（全 ${maxMatches} 戦）` : `第 ${session.matchNo} 試合 終了`}</div>
+      <div class="ab-res-ttl">${bust ? "トビ終了！" : last ? `完走（全 ${maxMatches} 戦）` : `第 ${session.matchNo} 試合 終了`}</div>
       ${bust ? `<p class="ab-res-sub">相手を飛ばした！</p>` : ""}
       <div class="ab-res-place ab-place-${place}">${place} 着</div>
       <p class="ab-res-sub">勝ち抜き ${session.wins}${Number.isFinite(maxMatches) ? ` / ${maxMatches}` : ""} ／ 残り HP ${match.hp.toLocaleString()}</p>

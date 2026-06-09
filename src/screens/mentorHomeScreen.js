@@ -294,10 +294,10 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       </div>
     </div>
 
-    <button type="button" class="mhx-next mhx-next-off" disabled title="準備中（Phase 4B）">
+    <button type="button" class="mhx-next" data-tournament="1" title="初級大会に挑戦">
       <div class="mhx-badge"><span class="mhx-b1">CUP</span><span class="mhx-b2">杯</span></div>
       <div class="mhx-txt"><div class="mhx-s">次 の 大 会 へ</div><div class="mhx-m">宝への道</div></div>
-      <div class="mhx-na">準備中</div>
+      <div class="mhx-na">挑戦する</div>
     </button>
 
     <div class="mhx-corner mhx-tl"></div>
@@ -733,6 +733,40 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
 
+  // ---- 大会リザルト（Phase 4B・クリア評価＋継承）----
+  function openTournamentResultModal(r, onDone) {
+    const cleared = r.cleared;
+    const html = `
+      <div class="mhx-pr mhx-tr">
+        <div class="mhx-pr-ttl">${cleared ? "大会 完走！" : r.defeated ? "敗退…" : "大会 終了"}</div>
+        <div class="mhx-pr-head"><span class="mhx-cond tone-${cleared ? "vgood" : "bad"}">${esc(r.name || "大会")}</span><span class="mhx-pr-sum">${r.wins ?? 0} / ${r.matches ?? 0} 勝ち抜き</span></div>
+        ${cleared ? `
+          <div class="mhx-tr-rank">評価 <b>${esc(r.rank || "満貫級")}</b></div>
+          <div class="mhx-pr-soul">継承 <b>+${r.meta ?? 0}</b>　／　ソウル <b>+${r.soul ?? 0}</b></div>
+          <p class="mhx-pr-sub">宝への道が、また一歩ひらけた。</p>
+        ` : `
+          <p class="mhx-pr-sub">${r.defeated ? "点棒が尽きた。育てて出直そう。" : "また挑もう。"}</p>
+          <p class="mhx-pr-none">残り HP ${(r.finalHp ?? 0).toLocaleString()}</p>
+        `}
+        <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    if (cleared) audio?.playPip?.(2600, 0.6);
+    card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
+  }
+  // 出場ゲート不合格（大劣勢＝門前払い）。
+  function openTournamentGateModal(g, onDone) {
+    const html = `
+      <div class="mhx-pr">
+        <div class="mhx-pr-ttl">門前払い</div>
+        <div class="mhx-pr-head"><span class="mhx-cond tone-vbad">相手評価：${esc(g.tierLabel || "大劣勢")}</span></div>
+        <p class="mhx-pr-sub">今のお前では、この卓には立てん。<br>もっと腕を磨いてから出直せ。</p>
+        <button type="button" class="mhx-md-btn mhx-pr-btn">わかった</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
+  }
+
   // 複数のモーダルを順番に出す（前のを閉じたら次へ）。
   function runModals(list) {
     const seq = list.filter(Boolean);
@@ -759,6 +793,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   const duoTile = container.querySelector(".mhx-tag[data-duo]");
   duoTile?.addEventListener("click", openDuoModal);
   duoTile?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDuoModal(); } });
+  container.querySelector(".mhx-next[data-tournament]")?.addEventListener("click", () => onNavigate?.("tournament"));
   const status = container.querySelector(".mhx-status");
   status?.addEventListener("click", () => onNavigate?.("avatar"));
   status?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onNavigate?.("avatar"); } });
@@ -819,6 +854,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     flash?.parlor ? (next) => openParlorResultModal(flash.parlor, next) : null,
     flash?.honest ? (next) => openHonestResultModal(flash.honest, next) : null,
     flash?.duo ? (next) => openDuoResultModal(flash.duo, next) : null,
+    flash?.tournament ? (next) => openTournamentResultModal(flash.tournament, next) : null,
+    flash?.tournamentGate ? (next) => openTournamentGateModal(flash.tournamentGate, next) : null,
     (showBanner && daySummary) ? (next) => openDaySummaryModal(daySummary, next) : null,
     showBanner ? () => openDayBanner() : null,
   ]);
