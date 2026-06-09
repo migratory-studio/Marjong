@@ -3373,6 +3373,7 @@ function makeHpRow(i) {
     <div class="hp-head">
       <span class="hp-rel">${relSeatLabel(i)}</span>
       <span class="hp-name" style="color:${c.color}">${c.name}</span>
+      <span class="hp-delta" hidden></span>
       <span class="hp-val"></span>
     </div>
     <div class="hp-gauge"><div class="hp-base"></div><div class="hp-fill"></div></div>`;
@@ -3386,7 +3387,7 @@ function makeHpRow(i) {
     row.appendChild(fl);
   }
 
-  hpCells[i] = { cell: row, rank, base: main.querySelector(".hp-base"), fill: main.querySelector(".hp-fill"), val: main.querySelector(".hp-val") };
+  hpCells[i] = { cell: row, rank, base: main.querySelector(".hp-base"), fill: main.querySelector(".hp-fill"), val: main.querySelector(".hp-val"), delta: main.querySelector(".hp-delta") };
   return row;
 }
 
@@ -3870,6 +3871,18 @@ function updateHpBoard() {
       ref.base.style.background = lap >= 2 ? lapBaseColor(lap - 1) : "";
     }
     ref.val.textContent = p.points;
+    // 大会中は「増減（現在−開始持ち点）」を色付きで表示（緑=プラス / 赤=マイナス）。
+    if (ref.delta) {
+      if (honestCtx?.tournamentInfo) {
+        const d = p.points - (p.character.stats.startingPoints || 0);
+        const sign = d > 0 ? "+" : d < 0 ? "" : "±";
+        ref.delta.textContent = `増減 ${sign}${d.toLocaleString()}`;
+        ref.delta.className = "hp-delta " + (d > 0 ? "up" : d < 0 ? "dn" : "");
+        ref.delta.hidden = false;
+      } else if (!ref.delta.hidden) {
+        ref.delta.hidden = true;
+      }
+    }
     ref.cell.classList.toggle("lap2", lap >= 2); // 周回中フック（演出用）
     ref.cell.classList.toggle("busted", p.points < 0);
     ref.cell.classList.toggle("is-turn", game.turn === i && game.phase !== Phase.HAND_OVER);

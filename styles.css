@@ -1812,6 +1812,10 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   flex: 0 0 auto; font-size: 13px; font-weight: 800; color: #eef3ef;
   font-variant-numeric: tabular-nums;
 }
+/* 大会中の増減値（現在−開始持ち点）。緑=プラス / 赤=マイナス。 */
+.hp-delta { flex: 0 0 auto; font-size: 10.5px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .02em; color: #9fb0a8; }
+.hp-delta.up { color: #8fd06a; }
+.hp-delta.dn { color: #ff8e7a; }
 
 .hp-gauge {
   position: relative;
