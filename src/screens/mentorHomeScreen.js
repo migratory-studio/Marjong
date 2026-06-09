@@ -582,7 +582,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     const cards = st.candidates.map((c) => {
       const off = c.done || !canGo;
       const badge = c.tournament ? `<span class="mhx-pl-badge">大会中</span>` : "";
-      const subLab = c.subParam ? (PARAM_LABELS[c.subParam] || c.subParam) : null;
+      const subList = (c.subParams && c.subParams.length ? c.subParams : (c.subParam ? [c.subParam] : []));
+      const subLab = subList.length ? subList.map((s) => PARAM_LABELS[s] || s).join(" ＆ ") : null;
       return `
         <button type="button" class="mhx-pl${off ? " is-off" : ""}" data-idx="${c.index}"${off ? " disabled" : ""}>
           ${badge}

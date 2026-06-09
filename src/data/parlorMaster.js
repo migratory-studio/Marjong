@@ -3,6 +3,7 @@
 // 雀荘巡りの「種類（難易度）」と、その日の候補生成（決定論）。中身は §4.6.3 のオートバトル。
 // ※連戦数・敵 Lv・ソウルは「種別 × シナリオ進捗」で本調整する想定。現状は仮値＋進捗で微増。
 import { makeRng } from "../autobattle/autoBattle.js";
+import { PARLOR_NAME_ENTRIES, PARLOR_SINGLE, PARLOR_MULTI } from "./parlorNameMaster.js";
 
 // weight=出現重み（楽勝＞拮抗＞チャレンジ≒大会中）。tone は調子チップと同じ配色を流用。
 // oppLv＝相手 param の弱さ（§paramsFromLv 新スケール：0=激弱）。oppHpMax＝相手の点棒（小さいほど飛びやすい）。
@@ -18,17 +19,9 @@ export const PARLOR_TIERS = [
 const BY_KEY = Object.fromEntries(PARLOR_TIERS.map((t) => [t.key, t]));
 export const parlorTierOf = (key) => BY_KEY[key] || PARLOR_TIERS[0];
 
-// 雀荘の「副パラメータ」候補（主＝勝負勘は固定なので、副は勝負勘以外の5種から）。
-// 各雀荘は副パラメを1つ持ち、店名でそれを“におわせる”（mob名のように決定論で選ぶ）。
-export const PARLOR_SUB_PARAMS = ["fire", "guard", "read", "speed", "mental"];
-// 副パラメ → 店名リスト（名前からどのパラメが伸びそうか匂う）。
-export const PARLOR_NAMES = {
-  fire:   ["豪打荘", "烈火クラブ", "一撃の卓", "剛腕亭", "火の手荘", "砲撃の間"],
-  guard:  ["鉄壁荘", "城壁クラブ", "不落の卓", "守静亭", "盾の間", "堅城荘"],
-  read:   ["心眼荘", "千里眼クラブ", "読牌の卓", "慧眼亭", "観の間", "看破荘"],
-  speed:  ["疾風荘", "電光クラブ", "韋駄天の卓", "速攻亭", "瞬足の間", "風林荘"],
-  mental: ["不動荘", "胆力クラブ", "平常心の卓", "鉄心亭", "静寂の間", "泰然荘"],
-};
+// 雀荘の「副パラメータ」は店ごとに固定（店名でにおわせる・parlorNameMaster）。主＝勝負勘は常に固定。
+// 副が2種以上の店は「チャレンジ／大会中」だけで使う（楽勝・拮抗は単一副に限定）。
+const TIER_ALLOWS_MULTI = { challenge: true, taikai: true };
 
 // 重み付きで 1 種類引く。
 function pickTier(rng) {
@@ -46,19 +39,20 @@ export function rollDailyParlors(dayCount, progress = 0, count = 3) {
   const usedNames = new Set(); // 同じ日に同名が並ばないように
   for (let i = 0; i < count; i++) {
     const t = pickTier(rng);
-    // 副パラメ＋店名を決定論で固定（名前で副パラメをにおわせる）。
-    const subParam = PARLOR_SUB_PARAMS[Math.floor(rng() * PARLOR_SUB_PARAMS.length)];
-    const pool = PARLOR_NAMES[subParam] || ["雀荘"];
-    let name = pool[Math.floor(rng() * pool.length)];
-    if (usedNames.has(name)) name = pool[(pool.indexOf(name) + 1) % pool.length]; // 被り回避
-    usedNames.add(name);
+    // 店（名前＋副パラメ）を選ぶ。楽勝/拮抗は単一副の店のみ、チャレンジ/大会は2種副も許容。
+    const allowMulti = !!TIER_ALLOWS_MULTI[t.key];
+    const pool = allowMulti ? PARLOR_NAME_ENTRIES : PARLOR_SINGLE;
+    let entry = pool[Math.floor(rng() * pool.length)] || PARLOR_NAME_ENTRIES[0];
+    for (let g = 0; g < 6 && usedNames.has(entry.name); g++) entry = pool[Math.floor(rng() * pool.length)]; // 被り回避
+    usedNames.add(entry.name);
     out.push({
       index: i,
       tier: t.key,
       label: t.label,
       tone: t.tone,
-      name,
-      subParam,
+      name: entry.name,
+      subParams: entry.subs.slice(),       // 副パラメ（1〜2種）
+      subParam: entry.subs[0],             // 後方互換（先頭1種）
       matches: t.matches + Math.floor(progress / 2),
       oppLv: t.oppLv + progress,
       oppHpMax: t.oppHpMax + progress * 1500,
