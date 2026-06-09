@@ -72,9 +72,22 @@ export function statViews(params6 = {}) {
   return PARAM_KEYS.map((k) => statView(k, params6[k]));
 }
 
-// ランクの高低順インデックス（G=0 … S=最大）。
-const RANK_ORDER = RANK_BANDS.map((b) => b.rank).reverse();
+// ランクの高低順（G=0 … S=最大）。
+export const RANKS = RANK_BANDS.map((b) => b.rank).reverse();
+const RANK_ORDER = RANKS;
 const rankIndex = (r) => RANK_ORDER.indexOf(r);
+
+// ランク段ゲージ用の色（G 暗灰 → S 金 の上り階段）。
+export const RANK_COLORS = {
+  G: "#444d57", F: "#5a6472", E: "#6f7da0", D: "#7ec0d6",
+  C: "#9fd07a", B: "#ffd06b", A: "#ff9d7a", S: "#ffe39a",
+};
+
+// 値 → ランクごとの段（1段=1ランク）。current ランクまで点灯し、各段はその段のランク色。
+export function rankCells(value) {
+  const idx = rankIndex(rankOf(value));
+  return RANKS.map((r, i) => ({ rank: r, on: i <= idx, color: RANK_COLORS[r] }));
+}
 
 // before→after でランクが上がったステの一覧（{key,label,from,to}）。
 export function diffRankUps(before, after = {}) {

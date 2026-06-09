@@ -89,7 +89,7 @@ function openModal(container, innerHTML, onClose) {
   return { card: ov.querySelector(".mhx-modal-card"), close };
 }
 
-export async function showMentorHome(container, { repository, onNavigate, onBack, flash = null } = {}) {
+export async function showMentorHome(container, { repository, onNavigate, onBack, flash = null, audio = null } = {}) {
   let profile = await repository.loadProfile();
   const avatar = activeAvatar(profile);
   container.innerHTML = "";
@@ -517,13 +517,16 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       </div>`;
     const { card, close } = openModal(container, html, onDone);
     // 値のロールアップ（from→to を 1 ずつ加算カウント）。最後は必ず to にそろえる。
+    // カウント中は「ピピピッ」と上昇音、到達で少し高い確定音。
     const tween = (el, from, to) => {
       let cur = from; el.textContent = String(from);
       if (to === from) return;
       const dir = to > from ? 1 : -1;
+      let step = 0;
       const iv = setInterval(() => {
-        cur += dir; el.textContent = String(cur);
-        if (cur === to) clearInterval(iv);
+        cur += dir; el.textContent = String(cur); step += 1;
+        if (cur === to) { clearInterval(iv); audio?.playPip?.(2300, 0.55); } // 確定音（高め）
+        else audio?.playPip?.(1500 + step * 120, 0.4);                       // 上昇ピッ
       }, 90);
     };
     // 上昇演出：バーを伸ばし、+N をポップ、値をロールアップ（行ごとに少しずらす）。

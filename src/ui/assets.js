@@ -286,6 +286,26 @@ export class AudioManager {
     } catch { /* ignore */ }
   }
 
+  // 短い「ピッ」（カウントアップ演出用）。freq を上げると「ピピピッ」の上昇感が出る。
+  // サンプル不要の WebAudio 合成。SE 音量に追従。
+  playPip(freq = 1760, vol = 0.5) {
+    if (!this.enabled) return;
+    try {
+      if (!this._actx) this._actx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = this._actx;
+      if (ctx.state === "suspended") ctx.resume();
+      const now = ctx.currentTime;
+      const peak = this.seVolume * vol;
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "triangle"; o.frequency.value = freq;
+      g.gain.setValueAtTime(0, now);
+      g.gain.linearRampToValueAtTime(peak, now + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.0006, now + 0.07);
+      o.connect(g).connect(ctx.destination);
+      o.start(now); o.stop(now + 0.09);
+    } catch { /* ignore */ }
+  }
+
   // Riichi declaration SE: short two-note chime synthesised via WebAudio
   // (the asset pack ships no riichi sample). Scales with the SE volume slider.
   playRiichi() {

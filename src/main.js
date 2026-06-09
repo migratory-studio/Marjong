@@ -684,6 +684,7 @@ function openMentorHome(flash = null) {
     onBack: () => navigate("home"),
     onNavigate: (target, payload) => openMentorSub(target, payload),
     flash, // 戻り時に出すリザルト等（例: 雀荘巡りの結果）
+    audio, // 能力値上昇カウントのSE等
   });
   goScreen("mentor-home-screen");
 }

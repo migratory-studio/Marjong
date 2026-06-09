@@ -17,7 +17,7 @@ import {
 } from "../data/avatarPresetMaster.js";
 import { buildNewAvatar, addAvatarToProfile, AVATAR_DEFAULTS } from "../progression/avatarFactory.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
-import { statViews } from "../autobattle/statSystem.js";
+import { statViews, rankCells } from "../autobattle/statSystem.js";
 
 // 師匠として選べるのは「シナリオ＋能力テンプレが実装済み」の師匠だけ（未実装はグレーアウト）。
 // 判定はマスタから導出する（専用フラグは持たず、シナリオ／テンプレを足せば自動で解放される）。
@@ -335,12 +335,17 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
     const iconP = presetById(state.presetIds.icon);
     const name = nameInput.value.trim();
     const bio = bioInput.value.trim();
-    const paramsHtml = statViews(AVATAR_DEFAULTS.params6).map((s) => `
-      <div class="ac-cf-stat">
-        <span class="ac-cf-rank rank-${s.rank}">${s.rank}</span>
-        <span class="ac-cf-slab">${s.label}</span>
-        <span class="ac-cf-sval">${s.value}</span>
-      </div>`).join("");
+    const paramsHtml = statViews(AVATAR_DEFAULTS.params6).map((s) => {
+      const segs = rankCells(s.value).map((c) =>
+        `<span class="statgauge-seg${c.on ? " on" : ""}"${c.on ? ` style="background:${c.color}"` : ""}></span>`).join("");
+      return `
+        <div class="ac-cf-stat">
+          <span class="ac-cf-rank rank-${s.rank}">${s.rank}</span>
+          <span class="ac-cf-slab">${s.label}</span>
+          <span class="statgauge ac-cf-gauge">${segs}</span>
+          <span class="ac-cf-sval">${s.value}</span>
+        </div>`;
+    }).join("");
     const ov = elt("div", "ac-confirm");
     ov.innerHTML = `
       <div class="ac-cf-scrim"></div>

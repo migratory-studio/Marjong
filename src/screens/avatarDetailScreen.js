@@ -9,7 +9,7 @@ import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
-import { statViews } from "../autobattle/statSystem.js";
+import { statViews, rankCells } from "../autobattle/statSystem.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
 
@@ -113,11 +113,14 @@ export function showAvatarDetail(container, { profile, onBack } = {}) {
     top.appendChild(elt("span", "av-pstat-lv", { textContent: `Lv ${s.value}` }));
     card.appendChild(top);
 
-    const bar = elt("div", "av-pstat-bar");
-    const fill = elt("div", "av-pstat-fill");
-    fill.style.width = `${s.pct}%`;
-    bar.appendChild(fill);
-    card.appendChild(bar);
+    // ランク段ゲージ（1段=1ランク、現ランクまで点灯）。
+    const gauge = elt("div", "statgauge");
+    for (const cell of rankCells(s.value)) {
+      const seg = elt("span", "statgauge-seg" + (cell.on ? " on" : ""));
+      if (cell.on) seg.style.background = cell.color;
+      gauge.appendChild(seg);
+    }
+    card.appendChild(gauge);
 
     const up = s.raisedBy.map((r) => `${r.label}(${r.role})`).join("・");
     card.appendChild(elt("div", "av-pstat-up", { textContent: `↑ ${up}` }));
