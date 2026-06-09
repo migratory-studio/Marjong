@@ -18,7 +18,7 @@ import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
 import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState, setMentorMemory } from "../progression/progressionService.js";
-import { pickMentorGreeting, pickRestTalk } from "../data/mentorVoiceMaster.js";
+import { pickMentorGreeting, pickRestTalk, pickMentorPraise } from "../data/mentorVoiceMaster.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
@@ -113,11 +113,24 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // ---- 日次（1日3行動・日替わり調子）----
   const ds = ensureDay(profile);
   let showBanner = false;
-  let rankUps = [];
+  let daySummary = null;
   if (ds.started) {
     profile = ds.profile;
-    // 前日の伸びでランクが上がったステを集計（演出用）。avatar の params は ensureDay で不変。
-    rankUps = diffRankUps(ds.prevStartParams6, avatarParams6(avatar));
+    // 前日の手応えサマリを組み立てる（行動ログ＋伸び＋ランクアップ＋ソウル差分）。
+    if (ds.prevStartParams6 && (ds.prevLog?.length || 0) > 0) {
+      const cur = avatarParams6(avatar); // ensureDay は params を変えない＝前日終了時の値
+      const prev = ds.prevStartParams6;
+      const gains = {};
+      let total = 0;
+      for (const k of Object.keys(cur)) { const d2 = (cur[k] || 0) - (prev[k] || 0); if (d2 > 0) { gains[k] = d2; total += d2; } }
+      daySummary = {
+        day: (profile.dayCount ?? 1) - 1,
+        log: ds.prevLog || [],
+        gains, total,
+        rankUps: diffRankUps(prev, cur),
+        soul: (profile.wallet?.soul ?? 0) - (ds.prevStartSoul ?? (profile.wallet?.soul ?? 0)),
+      };
+    }
     await repository.saveProfile(profile);
     showBanner = true;
   }
@@ -369,6 +382,16 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     for (const row of scope.querySelectorAll(".mhx-pg-row")) await animateGainRow(row);
   }
 
+  // 大成功の専用フラッシュ（金の閃光＋「大成功」ズーム）。card に重ねて1秒で消える。
+  function fireDaiseikouFlash(card) {
+    const fx = elt("div", "mhx-daiseikou-fx");
+    fx.innerHTML = `<div class="mhx-dk-burst"></div><div class="mhx-dk-rays"></div><div class="mhx-dk-word">大成功</div>`;
+    card.appendChild(fx);
+    audio?.playPip?.(2600, 0.6);
+    setTimeout(() => audio?.playPip?.(3200, 0.5), 90);
+    setTimeout(() => fx.remove(), 1200);
+  }
+
   // ---- 休憩モーダル（ハブ上で完結）----
   function openRestModal() {
     const available = actionsLeft > 0;
@@ -478,7 +501,14 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         // 調子（大成功/成功/無難/失敗）を見出しに、師匠の一言を反応として返す。
         const badge = `<span class="mhx-md-badge tone-${res.outcomeTone}">${esc(res.outcomeLabel)}${res.outcomeTone === "great" ? "！" : ""}</span>`;
         const line = card.querySelector(".mhx-md-line");
-        if (line && res.outcomeLine) line.textContent = res.outcomeLine;
+        // 大成功は専用フラッシュ＋師匠の“素出し”ボイス。それ以外は通常の調子コメント。
+        if (res.outcome === "daiseikou") {
+          const praise = pickMentorPraise(avatar.mentorCharacterId, { bondLevel: avatar.bondLevel ?? 1 });
+          if (line) line.textContent = praise || res.outcomeLine || "";
+          fireDaiseikouFlash(card);
+        } else if (line && res.outcomeLine) {
+          line.textContent = res.outcomeLine;
+        }
         card.querySelector(".mhx-md-prof")?.setAttribute("hidden", "");
         const r = card.querySelector(".mhx-md-result");
         r.innerHTML = `${badge}　${esc(parts.join("　/　"))}`; r.hidden = false;
@@ -573,6 +603,33 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       </div>`;
     const { card, close } = openModal(container, html);
     card.querySelector(".mhx-db-btn")?.addEventListener("click", close);
+  }
+
+  // ---- 今日の手応えサマリ（一日の終わり＝新しい日の頭に、前日を振り返る）----
+  function openDaySummaryModal(s, onDone) {
+    const ACT = { train: "修行", rest: "休憩", parlor: "雀荘巡り" };
+    const OUT = { daiseikou: "大成功", seikou: "成功", bunan: "無難", shippai: "失敗" };
+    const logHtml = (s.log || []).map((e) => {
+      if (e.type === "train") return `<li><span class="mhx-ds-act">${esc(e.label || "修行")}</span><span class="mhx-ds-tag">${esc(OUT[e.outcome] || "")}</span></li>`;
+      if (e.type === "parlor") return `<li><span class="mhx-ds-act">雀荘巡り（${esc(e.label || "")}）</span><span class="mhx-ds-tag">勝ち抜き ${e.wins ?? 0}</span></li>`;
+      return `<li><span class="mhx-ds-act">休憩</span></li>`;
+    }).join("");
+    const gainStr = Object.entries(s.gains || {}).map(([k, v]) => `${esc(PARAM_LABELS[k] || k)} +${v}`).join("　/　");
+    const rankStr = (s.rankUps || []).map((u) => `<span class="mhx-ds-rk"><b>${esc(u.label)}</b> <span class="mhx-stat-rank rank-${u.from}">${u.from}</span>▶<span class="mhx-stat-rank rank-${u.to}">${u.to}</span></span>`).join("　");
+    const html = `
+      <div class="mhx-ds">
+        <div class="mhx-ds-ttl"><b>${esc(s.day)}</b> 日目 を終えて</div>
+        <div class="mhx-ds-sub">今日の手応え</div>
+        <ul class="mhx-ds-log">${logHtml || '<li><span class="mhx-ds-act">…静かな一日だった</span></li>'}</ul>
+        <div class="mhx-ds-grid">
+          <div class="mhx-ds-cell"><span class="mhx-ds-k">能力値</span><span class="mhx-ds-v">${gainStr ? esc(gainStr) : "変化なし"}${s.total ? `　<small>(計 +${s.total})</small>` : ""}</span></div>
+          ${s.rankUps?.length ? `<div class="mhx-ds-cell"><span class="mhx-ds-k">ランクアップ</span><span class="mhx-ds-v">${rankStr}</span></div>` : ""}
+          <div class="mhx-ds-cell"><span class="mhx-ds-k">ソウル</span><span class="mhx-ds-v">${s.soul >= 0 ? "+" : ""}${(s.soul || 0).toLocaleString()}</span></div>
+        </div>
+        <button type="button" class="mhx-md-btn mhx-ds-btn">次の日へ</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    card.querySelector(".mhx-ds-btn")?.addEventListener("click", close);
   }
 
   // ---- ランクアップ演出（1日の終わり→新しい日の頭に出す）----
@@ -685,10 +742,11 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     container.appendChild(reset);
   }
 
-  // 戻り時の演出を順番に：雀荘リザルト →（日が変わったなら）ランクアップ → 開始バナー。
+  // 戻り時の演出を順番に：雀荘リザルト →（日が変わったなら）今日の手応え → 開始バナー。
+  // ※ランクアップは訓練/雀荘の瞬間に FE 風演出で出るので、日替わりではサマリ内にまとめる。
   runModals([
     flash?.parlor ? (next) => openParlorResultModal(flash.parlor, next) : null,
-    (showBanner && rankUps.length) ? (next) => openRankUpModal(rankUps, next) : null,
+    (showBanner && daySummary) ? (next) => openDaySummaryModal(daySummary, next) : null,
     showBanner ? () => openDayBanner() : null,
   ]);
 }

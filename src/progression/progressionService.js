@@ -85,9 +85,17 @@ export function ensureDay(profile, rng = Math.random) {
     condition: rollCondition(rng),
     mentorCondition: rollCondition(rng),
     startParams6: { ...cur },
+    startSoul: profile.wallet?.soul ?? 0,  // 当日の手応えサマリ用（稼ぎの差分）
+    log: [],                               // その日の行動ログ
     parlorsDone: [],  // 雀荘巡りの挑戦済み（日替わりでリセット＝候補シャッフル）
   };
-  return { profile: { ...profile, dayCount: day, daily }, started: true, prevStartParams6: d.startParams6 || null };
+  return {
+    profile: { ...profile, dayCount: day, daily },
+    started: true,
+    prevStartParams6: d.startParams6 || null,
+    prevStartSoul: d.startSoul ?? null,
+    prevLog: d.log || [],
+  };
 }
 
 // 当日の読み取り情報（行動残り・調子）。ensureDay 済みを前提。
@@ -104,16 +112,17 @@ export function dayInfo(profile) {
 }
 
 // 1 行動を消費する。conditionDelta は調子の増減（失敗 -1 / 大成功 +1）。
-// 3 行動使い切ったら dayCount を進める（次回 ensureDay が新しい日を初期化する）。
-function endAction(profile, conditionDelta = 0) {
+// logEntry はその日の行動ログ（手応えサマリ用）。3 行動使い切ったら dayCount を進める。
+function endAction(profile, conditionDelta = 0, logEntry = null) {
   const d = profile.daily || {};
   const condition = clampN((d.condition ?? 2) + conditionDelta, 0, CONDITIONS.length - 1);
   const used = (d.actionsUsed ?? 0) + 1;
+  const log = logEntry ? [...(d.log || []), logEntry] : (d.log || []);
   let dayCount = profile.dayCount ?? 1;
   let dayAdvanced = false;
   if (used >= ACTIONS_PER_DAY) { dayCount += 1; dayAdvanced = true; }
   return {
-    profile: { ...profile, dayCount, daily: { ...d, condition, actionsUsed: used } },
+    profile: { ...profile, dayCount, daily: { ...d, condition, actionsUsed: used, log } },
     dayAdvanced,
   };
 }
@@ -151,7 +160,7 @@ export function rest(profile) {
   next = grantSoul(next, GROWTH_TUNING.rest.soul);
   // 休憩は 1 行動を消費し、調子を 1 段階戻す（上限＝絶好調）。必要なら日が進む。
   const beforeCond = dayInfo(next).condition;
-  const ended = endAction(next, 1);
+  const ended = endAction(next, 1, { type: "rest" });
   next = ended.profile;
   const conditionUp = dayInfo(next).condition > beforeCond;
 
@@ -337,7 +346,7 @@ export function trainParam(profile, key, rng = Math.random) {
   if (t.soul) p = grantSoul(p, t.soul);
   // 失敗で調子↓ / 大成功で調子↑。行動を 1 消費（必要なら日が進む）。
   const conditionDelta = outcomeKey === "shippai" ? -1 : outcomeKey === "daiseikou" ? 1 : 0;
-  const ended = endAction(p, conditionDelta);
+  const ended = endAction(p, conditionDelta, { type: "train", key, label: t.label, outcome: outcomeKey });
   return {
     profile: ended.profile, gains, hpCost, soul: t.soul || 0,
     outcome: outcomeKey, outcomeLabel: outcome.label, outcomeTone: outcome.tone, outcomeLine: outcome.line,
@@ -400,7 +409,7 @@ export function visitParlor(profile, index, wins = 0, rng = Math.random) {
   p = withActiveAvatar(p, (a) => ({ ...a, params6: cur }));
   const done = Array.from(new Set([...(p.daily?.parlorsDone || []), index]));
   p = { ...p, daily: { ...(p.daily || {}), parlorsDone: done } };
-  const ended = endAction(p, 0); // 雀荘巡り＝1 行動
+  const ended = endAction(p, 0, { type: "parlor", label: cand.label, wins, soul }); // 雀荘巡り＝1 行動
 
   return {
     profile: ended.profile, soul, wins, candidate: cand,

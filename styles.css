@@ -907,6 +907,38 @@ body {
 #mentor-home-screen.mh2 .mhx-md-hp-top { display:flex; justify-content:space-between; font-family:var(--font-go); font-size:12px; color:#5a4a2c; margin-bottom:6px; }
 #mentor-home-screen.mh2 .mhx-md-fill { transition:width .6s cubic-bezier(.22,.61,.36,1); }
 #mentor-home-screen.mh2 .mhx-md-result { font-family:var(--font-go); font-size:14px; color:#4a3c24; font-weight:600; margin:0 0 13px; letter-spacing:.02em; }
+/* 大成功フラッシュ（訓練が大成功した瞬間の閃光＋文字） */
+#mentor-home-screen.mh2 .mhx-daiseikou-fx { position:absolute; inset:0; z-index:5; pointer-events:none; overflow:hidden; border-radius:16px; display:flex; align-items:center; justify-content:center; }
+#mentor-home-screen.mh2 .mhx-dk-burst { position:absolute; left:50%; top:46%; width:40px; height:40px; transform:translate(-50%,-50%); border-radius:50%;
+  background:radial-gradient(circle, rgba(255,243,200,.95) 0%, rgba(255,210,110,.7) 40%, rgba(255,180,80,0) 70%);
+  animation:mhxDkBurst .55s cubic-bezier(.2,.7,.3,1) forwards; }
+#mentor-home-screen.mh2 .mhx-dk-rays { position:absolute; left:50%; top:46%; width:520px; height:520px; transform:translate(-50%,-50%) scale(.3); opacity:0;
+  background:conic-gradient(from 0deg, rgba(255,220,130,.0) 0deg, rgba(255,220,130,.45) 8deg, rgba(255,220,130,0) 16deg, rgba(255,220,130,0) 30deg, rgba(255,220,130,.45) 38deg, rgba(255,220,130,0) 46deg, rgba(255,220,130,0) 60deg, rgba(255,220,130,.45) 68deg, rgba(255,220,130,0) 76deg, rgba(255,220,130,0) 90deg, rgba(255,220,130,.45) 98deg, rgba(255,220,130,0) 106deg);
+  animation:mhxDkRays 1s ease-out forwards; }
+#mentor-home-screen.mh2 .mhx-dk-word { position:relative; font-family:var(--font-min); font-size:60px; font-weight:900; letter-spacing:.1em; color:#fff3cf;
+  text-shadow:0 0 18px rgba(255,180,80,.9), 0 3px 8px rgba(120,50,10,.7); transform:scale(.4); opacity:0; animation:mhxDkWord 1.1s cubic-bezier(.2,1.4,.3,1) forwards; }
+@keyframes mhxDkBurst { 0%{transform:translate(-50%,-50%) scale(.2); opacity:1;} 100%{transform:translate(-50%,-50%) scale(9); opacity:0;} }
+@keyframes mhxDkRays { 0%{opacity:0; transform:translate(-50%,-50%) scale(.3) rotate(0deg);} 25%{opacity:.85;} 100%{opacity:0; transform:translate(-50%,-50%) scale(1) rotate(40deg);} }
+@keyframes mhxDkWord { 0%{transform:scale(.4); opacity:0;} 35%{transform:scale(1.15); opacity:1;} 70%{transform:scale(1); opacity:1;} 100%{transform:scale(1); opacity:0;} }
+
+/* 今日の手応えサマリ */
+#mentor-home-screen.mh2 .mhx-ds { text-align:center; padding:4px 2px 2px; }
+#mentor-home-screen.mh2 .mhx-ds-ttl { font-family:var(--font-min); font-size:22px; color:#3a2c14; letter-spacing:.08em; }
+#mentor-home-screen.mh2 .mhx-ds-ttl b { color:#8f2418; font-size:30px; font-weight:700; }
+#mentor-home-screen.mh2 .mhx-ds-sub { font-family:var(--font-go); font-size:12px; color:#6a5836; letter-spacing:.12em; margin:4px 0 12px; }
+#mentor-home-screen.mh2 .mhx-ds-log { list-style:none; margin:0 0 12px; padding:0; display:flex; flex-direction:column; gap:5px; }
+#mentor-home-screen.mh2 .mhx-ds-log li { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 12px; background:#16241d; border:1px solid #2a3f34; border-radius:8px; }
+#mentor-home-screen.mh2 .mhx-ds-act { font-family:var(--font-min); font-size:15px; color:#e8efe9; }
+#mentor-home-screen.mh2 .mhx-ds-tag { font-family:var(--font-go); font-size:12px; color:#d9c9a3; }
+#mentor-home-screen.mh2 .mhx-ds-grid { display:flex; flex-direction:column; gap:7px; margin:0 0 16px; }
+#mentor-home-screen.mh2 .mhx-ds-cell { display:flex; align-items:center; gap:10px; justify-content:center; }
+#mentor-home-screen.mh2 .mhx-ds-k { font-family:var(--font-go); font-size:12px; color:#6a5836; min-width:78px; text-align:right; }
+#mentor-home-screen.mh2 .mhx-ds-v { font-family:var(--font-go); font-size:15px; font-weight:700; color:#2a2012; }
+#mentor-home-screen.mh2 .mhx-ds-v small { color:#6a5836; font-weight:400; }
+#mentor-home-screen.mh2 .mhx-ds-rk { display:inline-flex; align-items:center; gap:4px; }
+#mentor-home-screen.mh2 .mhx-ds-rk b { color:#2a2012; }
+#mentor-home-screen.mh2 .mhx-ds-rk .mhx-stat-rank { width:20px; height:20px; font-size:12px; }
+
 /* 休憩の2択コミュ（双方向） */
 #mentor-home-screen.mh2 .mhx-rt { margin:4px 0 12px; }
 #mentor-home-screen.mh2 .mhx-rt-prompt { font-family:var(--font-min); font-size:16px; line-height:1.6; color:#2a2012; margin:0 0 10px; }

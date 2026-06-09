@@ -137,8 +137,26 @@ const RUINA_REST = [
   ]),
 ];
 
+// ── 大成功への「素出し」ボイス（訓練が大成功した瞬間。仮面が一瞬外れる特別反応）──
+const SHIYUE_PRAISE = [
+  G({}, "……っ、すごいヨ今の！　ほんとに、すごい……！　我、ちょっと鳥肌たったダヨ。"),
+  G({}, "見たヨ!? 今の、見た!? ……ふふっ、お前のそういうとこ、好きだヨ。"),
+  G({ bondMin: 3 }, "……ねえ。お前の伸び、見てると——昔の自分を、ちょっと思い出すんダ。"),
+];
+const BIBI_PRAISE = [
+  G({}, "……すごい。ほんとに、すごいよ。……ふふ、ちょっとだけ、自慢したくなった。"),
+  G({}, "……見てたよ、ぜんぶ。今の——誰にも、文句は言わせない。"),
+  G({ bondMin: 3 }, "……あなたの成長、まぶしいな。守ってる場合じゃ、ないかも。"),
+];
+const RUINA_PRAISE = [
+  G({}, "……っ、痺れたわ！　今のは本物。あたしが保証する。"),
+  G({}, "あはっ、やってくれるじゃない。……ゾクッときたわよ、ちょっとね。"),
+  G({ bondMin: 3 }, "最高じゃない。……あんた、いつかあたしを超えるかもね。"),
+];
+
 const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET };
 const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST };
+const EXPLICIT_PRAISE = { shiyue: SHIYUE_PRAISE, bibi: BIBI_PRAISE, kakeha_ruina: RUINA_PRAISE };
 const nameOf = (id) => CHARACTER_MASTER.find((c) => c.id === id)?.name || id;
 
 export const MENTOR_GREETINGS = Object.fromEntries(
@@ -146,6 +164,11 @@ export const MENTOR_GREETINGS = Object.fromEntries(
 );
 export const MENTOR_REST_TALKS = Object.fromEntries(
   CHARACTER_MASTER.map((c) => [c.id, EXPLICIT_REST[c.id] || templateRestTalks(c.name)])
+);
+// 大成功の素出しボイス。未実装キャラはテンプレ。
+function templatePraise(name) { return [G({}, `［テンプレ］${name}・大成功への素出し`)]; }
+export const MENTOR_PRAISE = Object.fromEntries(
+  CHARACTER_MASTER.map((c) => [c.id, EXPLICIT_PRAISE[c.id] || templatePraise(c.name)])
 );
 
 // 一致候補から「意味の強い条件」を重めにした重み付きランダムで 1 つ返す。
@@ -175,4 +198,12 @@ export function pickRestTalk(charId, ctx = {}) {
   const matches = all.filter((e) => gMatch(e.cond, ctx));
   if (!matches.length) return null;
   return matches[(Math.random() * matches.length) | 0];
+}
+
+// 大成功の素出しボイスを1つ返す（絆が高いほど深い素も候補）。無ければ null。
+export function pickMentorPraise(charId, ctx = {}) {
+  const all = MENTOR_PRAISE[charId] || templatePraise(nameOf(charId));
+  const matches = all.filter((e) => gMatch(e.cond, ctx));
+  if (!matches.length) return null;
+  return matches[(Math.random() * matches.length) | 0].text;
 }
