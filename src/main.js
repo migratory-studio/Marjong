@@ -27,6 +27,7 @@ import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, leaguePoints } from "./progression/progressionService.js";
 import { tournamentRunConfig } from "./data/tournamentMaster.js";
+import { nextTreasureStep } from "./data/mentorCampaignMaster.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -767,14 +768,16 @@ async function launchHonestMatch(config) {
 let tournamentRun = null; // { t, matchIndex, rivals, totals:{id:pt}, names:{id:name}, deshiId }
 async function openTournament() {
   const profile = await profileRepo.loadProfile();
-  // 当面は詩玥編の最初の宝＝門前開鍵（個人四麻）。将来はキャラ進捗で大会と相手 Lv を決める。
-  const t = tournamentRunConfig("menzen-kaiken");
-  if (t.format !== "solo4") { openMentorHome({ tournamentGate: { name: t.name, tierLabel: "この形式（" + t.format + "）は準備中" } }); return; }
+  const av = activeAvatar(profile);
+  // キャンペーン順で「次に挑む宝」を決める（記録済みの宝はスキップ）。
+  const step = nextTreasureStep(av?.mentorCharacterId, profile.records?.treasures || []);
+  if (!step) { openMentorHome({ tournamentGate: { name: "九蓮宝士", tierLabel: "九つの宝、すべて制覇！" } }); return; }
+  const t = tournamentRunConfig(step.id, { oppLv: step.oppLv, finalFormat: step.finalFormat });
+  if (!t.runnable) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: `この形式（${t.format}）は準備中` } }); return; }
   const gate = tournamentGate(profile, t);
   if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
-  const av = activeAvatar(profile);
-  // ライバルは大会通して固定（同じ顔ぶれと累積で競る＝リーグの手触り）。
-  const rivals = makeMobRoster(3, { seedPrefix: `league-${t.id}`, startingPoints: 25000 });
+  // ライバルは大会通して固定（同じ顔ぶれと累積で競る＝リーグの手触り）。卓人数−1 体。
+  const rivals = makeMobRoster(t.playerCount - 1, { seedPrefix: `league-${t.id}`, startingPoints: 25000 });
   const totals = { [av.avatarId]: 0 };
   const names = { [av.avatarId]: av.name };
   for (const r of rivals) { totals[r.id] = 0; names[r.id] = r.name; }
@@ -786,7 +789,7 @@ async function playTournamentMatch() {
   const profile = await profileRepo.loadProfile();
   const av = activeAvatar(profile);
   launchHonestMatch({
-    avatar: av, opponents: run.rivals, players: 4, rounds: run.t.rounds || 2, // 半荘
+    avatar: av, opponents: run.rivals, players: run.t.playerCount, rounds: run.t.rounds || 2, // 半荘
     startPoints: 25000, // M リーグ＝節ごと 25000 開始
     tournament: true,
     isLast: run.matchIndex >= run.t.matches - 1,

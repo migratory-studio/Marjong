@@ -21,6 +21,7 @@ import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS
 import { pickMentorGreeting, pickRestTalk, pickMentorPraise } from "../data/mentorVoiceMaster.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
+import { nextTreasureInfo } from "../data/mentorCampaignMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
@@ -294,11 +295,22 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       </div>
     </div>
 
-    <button type="button" class="mhx-next" data-tournament="1" title="初級大会に挑戦">
-      <div class="mhx-badge"><span class="mhx-b1">CUP</span><span class="mhx-b2">杯</span></div>
-      <div class="mhx-txt"><div class="mhx-s">次 の 大 会 へ</div><div class="mhx-m">宝への道</div></div>
-      <div class="mhx-na">挑戦する</div>
-    </button>
+    ${(() => {
+      const nx = nextTreasureInfo(avatar.mentorCharacterId, profile.records?.treasures || []);
+      const FMT = { solo4: "個人・四麻", solo3: "個人・三麻", pair: "ペア", team: "団体", final: "最終" };
+      if (!nx) return `
+        <button type="button" class="mhx-next mhx-next-off" disabled title="九蓮宝士">
+          <div class="mhx-badge"><span class="mhx-b1">宝</span><span class="mhx-b2">九</span></div>
+          <div class="mhx-txt"><div class="mhx-s">九 蓮 宝 士</div><div class="mhx-m">九つの宝、すべて制覇</div></div>
+          <div class="mhx-na">達成</div>
+        </button>`;
+      return `
+        <button type="button" class="mhx-next" data-tournament="1" title="${esc(nx.name)}に挑戦">
+          <div class="mhx-badge"><span class="mhx-b1">CUP</span><span class="mhx-b2">杯</span></div>
+          <div class="mhx-txt"><div class="mhx-s">次 の 大 会 へ　宝『${esc(nx.treasure.name)}』</div><div class="mhx-m">${esc(nx.name)}</div></div>
+          <div class="mhx-na">${esc(FMT[nx.format] || "")} T${nx.tier}</div>
+        </button>`;
+    })()}
 
     <div class="mhx-corner mhx-tl"></div>
     <div class="mhx-corner mhx-tr"></div>

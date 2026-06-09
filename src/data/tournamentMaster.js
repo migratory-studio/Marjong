@@ -36,15 +36,24 @@ export const PLACE_RANKS = ["役満級", "倍満級", "跳満級", "満貫級"];
 
 export const tournamentById = (id) => TREASURE_TOURNAMENTS.find((t) => t.id === id) || TREASURE_TOURNAMENTS[0];
 
+// 形式 → 卓人数（個人戦）。pair/team は専用対局（別系統）なので playerCount は実装側で扱う。
+const PLAYER_COUNT = { solo4: 4, solo3: 3 };
+// 個人戦の順位点（ウマ）。四麻＝M リーグ準拠、三麻＝3 人ウマ。
+const UMA_BY_COUNT = { 4: [50, 10, -10, -30], 3: [30, 0, -30] };
+
 // 大会の“素性”＋ティア既定値＋実行時の相手 Lv をマージした、ラン用コンフィグ。
-// opts.oppLv＝キャラ進捗で決まる相手の強さ（省略時はティア既定値）。
+// opts.oppLv＝キャラ進捗で決まる相手の強さ。opts.finalFormat＝無双国書の会場形式（キャラ別）。
 export function tournamentRunConfig(id, opts = {}) {
   const t = tournamentById(id);
   const tc = TOURNAMENT_TIER[t.tier] || TOURNAMENT_TIER[1];
   const oppLv = opts.oppLv ?? tc.defaultOppLv;
+  const format = (t.format === "final" && opts.finalFormat) ? opts.finalFormat : t.format;
+  const playerCount = PLAYER_COUNT[format] || 4;
+  const runnable = format === "solo4" || format === "solo3"; // pair/team は別系統（順次対応）
   return {
-    id: t.id, name: t.name, treasure: t.treasure, format: t.format, tier: t.tier, isFinal: !!t.isFinal,
-    matches: tc.matches, rounds: tc.rounds, uma: tc.uma,
+    id: t.id, name: t.name, treasure: t.treasure, format, tier: t.tier, isFinal: !!t.isFinal,
+    playerCount, runnable,
+    matches: tc.matches, rounds: tc.rounds, uma: UMA_BY_COUNT[playerCount] || tc.uma,
     soulClear: tc.soulClear, metaByPlace: tc.metaByPlace, rankByPlace: PLACE_RANKS,
     gateOppLv: oppLv, rivalLv: oppLv,
   };
