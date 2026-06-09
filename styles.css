@@ -784,9 +784,10 @@ body {
   border:1px solid #8a6a32; box-shadow:0 2px 0 #7c5a28, inset 0 1px 1px rgba(255,255,255,.5);
 }
 #mentor-home-screen.mh2 .mhx-stats:hover .mhx-stat { filter:brightness(1.04); }
+/* 背景はランク色（.rank-*）に任せる＝ゲージ演出(.mhx-pg-rank)と同じ見え方にする（灰固定をやめる） */
 #mentor-home-screen.mh2 .mhx-stat-rank {
   width:20px; height:20px; flex:none; display:flex; align-items:center; justify-content:center;
-  border-radius:4px; font-size:13px; font-weight:900; color:#1a120a; background:#8a99a8;
+  border-radius:4px; font-size:13px; font-weight:900; color:#1a120a;
 }
 #mentor-home-screen.mh2 .mhx-stat-lab { flex:1; font-family:var(--font-min); font-size:13px; color:#33260f; letter-spacing:.02em; }
 #mentor-home-screen.mh2 .mhx-stat-val { font-family:var(--font-go); font-size:14px; font-weight:700; color:#5a3410; }
