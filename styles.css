@@ -913,6 +913,27 @@ body {
 #mentor-home-screen.mh2 .mhx-duo-btns .mhx-md-btn small { font-size:11px; font-weight:400; opacity:.85; }
 #mentor-home-screen.mh2 .mhx-duo-auto { filter:saturate(.85); }
 
+/* 得点推移グラフ（1試合ごと・全員） */
+.score-graph { position:absolute; inset:0; z-index:95; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:"Yu Gothic","Noto Sans JP",sans-serif; }
+.score-graph.is-open { opacity:1; }
+.score-graph .sg-scrim { position:absolute; inset:0; background:rgba(4,6,10,.84); }
+.score-graph .sg-card { position:relative; z-index:1; width:1000px; max-width:94%; padding:22px 26px; background:linear-gradient(180deg,#10141e,#0a0d14); border:2px solid #c8a44d; border-radius:16px; box-shadow:0 26px 70px rgba(0,0,0,.7); }
+.score-graph .sg-head { text-align:center; font-size:22px; letter-spacing:.18em; color:#ecd592; margin-bottom:12px; }
+.score-graph .sg-body { display:flex; gap:18px; align-items:stretch; }
+.score-graph .sg-svg { flex:1; height:360px; background:rgba(255,255,255,.03); border:1px solid rgba(200,164,77,.18); border-radius:10px; }
+.score-graph .sg-base { stroke:rgba(255,255,255,.28); stroke-width:1; stroke-dasharray:5 5; }
+.score-graph .sg-base-lbl { fill:rgba(255,255,255,.5); font-size:12px; }
+.score-graph .sg-xl { fill:#9a8a66; font-size:12px; text-anchor:middle; }
+.score-graph .sg-legend { width:230px; flex:none; display:flex; flex-direction:column; gap:7px; justify-content:center; }
+.score-graph .sg-leg-row { display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:8px; background:rgba(255,255,255,.04); border:1px solid rgba(200,164,77,.16); }
+.score-graph .sg-leg-row.me { background:linear-gradient(90deg,rgba(214,162,58,.22),rgba(214,162,58,.05)); border-color:rgba(236,213,146,.5); }
+.score-graph .sg-leg-rank { width:20px; height:20px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:5px; font-weight:900; font-size:12px; color:#1a120a; background:#8a99a8; }
+.score-graph .sg-leg-row:nth-child(1) .sg-leg-rank { background:linear-gradient(135deg,#ffe39a,#d6a23a); }
+.score-graph .sg-leg-dot { width:12px; height:12px; flex:none; border-radius:50%; }
+.score-graph .sg-leg-name { flex:1; font-size:15px; color:#f0e7d0; }
+.score-graph .sg-leg-pt { font-weight:800; font-size:15px; color:#ffe39a; }
+.score-graph .sg-close { width:auto; min-width:160px; margin:14px auto 0; display:block; }
+
 /* 大会連戦の経過ノート（対局終了画面） */
 .go-tourney-note { text-align:center; font-family:"Yu Gothic","Noto Sans JP",sans-serif; font-size:15px; font-weight:700; color:#ffe39a; margin:6px 0 10px; text-shadow:0 2px 6px rgba(0,0,0,.6); }
 
@@ -932,7 +953,7 @@ body {
 .ts-p2 { background:linear-gradient(135deg,#dfe6ee,#9fb0c4)!important; }
 .ts-p3 { background:linear-gradient(135deg,#e0b083,#b07a44)!important; }
 .tourney-standings .ts-name { flex:1; font-size:17px; color:#f0e7d0; }
-.tourney-standings .ts-you { font-size:10px; font-weight:800; color:#1a120a; background:#ecd592; border-radius:4px; padding:1px 6px; margin-left:8px; letter-spacing:.08em; }
+.ts-you { font-size:10px; font-weight:800; color:#1a120a; background:#ecd592; border-radius:4px; padding:1px 6px; margin-left:8px; letter-spacing:.08em; }
 .tourney-standings .ts-delta { width:56px; text-align:right; font-weight:800; font-size:15px; }
 .tourney-standings .ts-delta.up { color:#8fd06a; }
 .tourney-standings .ts-delta.dn { color:#ff8e7a; }

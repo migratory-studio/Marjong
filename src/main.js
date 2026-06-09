@@ -56,6 +56,8 @@ if (typeof window !== "undefined") window.__setVoiceSet = setPendingVoiceSet;
 const el = (id) => document.getElementById(id);
 // HTML 差し込み用の最小エスケープ（モブ名・マイキャラ名など）。
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+// 得点推移（各局はじまりの全員の持ち点）。beginGame でリセット、対局終了で終局を足してグラフ表示。
+let scoreHistory = [];
 let game, renderer, humanIndex = 0;
 let hpCells = null; // 相棒ボード（右側HP表示）の playerIndex -> セル参照マップ
 const tileImages = new TileImages();
@@ -855,6 +857,64 @@ function showTournamentStandings(run, info, onDone) {
   }
 }
 
+// 得点推移グラフ（1試合ぶん・全員）。history=[{label, points:[..]}], players=[{name,color,isHuman}]。
+function showScoreGraph(history, players) {
+  if (!history || history.length < 1) return;
+  const host = el("app") || document.body;
+  const W = 760, H = 430, L = 52, R = 600, T = 36, B = 322; // プロット領域
+  const n = history.length;
+  const all = history.flatMap((h) => h.points);
+  const lo = Math.min(...all, 25000) - 1500;
+  const hi = Math.max(...all, 25000) + 1500;
+  const xFor = (i) => (n <= 1 ? (L + R) / 2 : L + (i / (n - 1)) * (R - L));
+  const yFor = (v) => B - ((v - lo) / (hi - lo)) * (B - T);
+  const y25 = yFor(25000);
+  // ラインとラベルを最終持ち点降順で（凡例の並びと色対応）。
+  const order = players.map((p, idx) => ({ ...p, idx, fin: history[n - 1].points[idx] }))
+    .sort((a, b) => b.fin - a.fin);
+  const lines = order.map((p) => {
+    const pts = history.map((h, i) => `${xFor(i).toFixed(1)},${yFor(h.points[p.idx]).toFixed(1)}`).join(" ");
+    const w = p.isHuman ? 4 : 2.5;
+    const dot = `<circle cx="${xFor(n - 1).toFixed(1)}" cy="${yFor(p.fin).toFixed(1)}" r="${p.isHuman ? 5 : 3.5}" fill="${p.color}"/>`;
+    return `<polyline points="${pts}" fill="none" stroke="${p.color}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round" opacity="${p.isHuman ? 1 : 0.85}"${p.isHuman ? ' filter="url(#glow)"' : ""}/>${dot}`;
+  }).join("");
+  // X ラベル（多いと潰れるので最大 7 点を均等に）。
+  const step = Math.max(1, Math.ceil(n / 7));
+  const xlabels = history.map((h, i) => (i % step === 0 || i === n - 1)
+    ? `<text x="${xFor(i).toFixed(1)}" y="${B + 18}" class="sg-xl">${esc(h.label)}</text>` : "").join("");
+  const legend = order.map((p, i) => `
+    <div class="sg-leg-row${p.isHuman ? " me" : ""}">
+      <span class="sg-leg-rank">${i + 1}</span>
+      <span class="sg-leg-dot" style="background:${p.color}"></span>
+      <span class="sg-leg-name">${esc(p.name)}${p.isHuman ? '<span class="ts-you">YOU</span>' : ""}</span>
+      <span class="sg-leg-pt">${p.fin.toLocaleString()}</span>
+    </div>`).join("");
+  const ov = document.createElement("div");
+  ov.className = "score-graph";
+  ov.innerHTML = `
+    <div class="sg-scrim"></div>
+    <div class="sg-card">
+      <div class="sg-head">得点推移</div>
+      <div class="sg-body">
+        <svg class="sg-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet">
+          <defs><filter id="glow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+          <line x1="${L}" y1="${y25.toFixed(1)}" x2="${R}" y2="${y25.toFixed(1)}" class="sg-base"/>
+          <text x="${R + 6}" y="${(y25 + 4).toFixed(1)}" class="sg-base-lbl">25000</text>
+          ${lines}
+          ${xlabels}
+        </svg>
+        <div class="sg-legend">${legend}</div>
+      </div>
+      <button type="button" class="mhx-md-btn sg-close">閉じる</button>
+    </div>`;
+  host.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  audio?.playPip?.(1800, 0.4);
+  const close = () => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); };
+  ov.querySelector(".sg-scrim").addEventListener("click", close);
+  ov.querySelector(".sg-close").addEventListener("click", close);
+}
+
 async function openMentorSub(target, payload) {
   const back = () => openMentorHome();
   if (target === "tournament") { openTournament(); return; }
@@ -1180,7 +1240,11 @@ function beginGame(seated, dealerIndex) {
   // SE: random dahai sound whenever anyone discards (incl. the human)
   game.bus.on(Events.TILE_DISCARDED, () => audio.playDahai());
   // BGM (random per hand) + deal-shuffle SE
-  game.bus.on(Events.HAND_STARTED, () => { audio.playRandomBgm(); audio.playShuffle(); });
+  game.bus.on(Events.HAND_STARTED, () => {
+    audio.playRandomBgm(); audio.playShuffle();
+    // 得点推移の記録：各局のはじまり＝直前までの持ち点スナップショット（全員ぶん）。
+    scoreHistory.push({ label: game.roundLabel(), points: game.players.map((p) => p.points) });
+  });
   // Riichi declaration chime
   game.bus.on(Events.RIICHI_DECLARED, ({ player }) => audio.playVoice(player.character.id, "riichi"));
   // Naki call: shared SE + big banner over the caller's seat (win SE / point
@@ -1213,6 +1277,7 @@ function beginGame(seated, dealerIndex) {
 
   // game.startHand() emits HAND_STARTED -> BGM. This runs inside the
   // start-button click (a user gesture), satisfying browser autoplay policy.
+  scoreHistory = []; // この対局の得点推移を録り直す（HAND_STARTED で各局を積む）
   game.startHand();
   loop();
 
@@ -2630,6 +2695,12 @@ function showGameOver() {
       requestAnimationFrame(() => sp.classList.add("show"));
     }, reveal(0) * 1000 + 650);
   }
+
+  // 得点推移：終局スナップショットを足し、どのモードでもグラフを開ける。
+  scoreHistory.push({ label: "終局", points: game.players.map((p) => p.points) });
+  const graphPlayers = game.players.map((p, i) => ({ name: p.character.name, color: p.character.color || "#9aa", isHuman: i === humanIndex }));
+  const graphSnapshot = scoreHistory.slice();
+  overlay.querySelector(".go-buttons").appendChild(mkBtn("📈 得点推移", "btn-tsumo go-graph-btn", () => showScoreGraph(graphSnapshot, graphPlayers)));
 
   // 本気対局（Phase 4A）は「もう一度(reload)」ではなく結果を育成へ返して戻る。
   if (honestCtx) {
