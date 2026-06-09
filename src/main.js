@@ -25,8 +25,8 @@ import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
-import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, leaguePoints } from "./progression/progressionService.js";
-import { tournamentRunConfig } from "./data/tournamentMaster.js";
+import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult } from "./progression/progressionService.js";
+import { tournamentRunConfig, oppHpForLv } from "./data/tournamentMaster.js";
 import { nextTreasureStep } from "./data/mentorCampaignMaster.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
@@ -789,16 +789,18 @@ function asMatchChar(char, points) {
   return { ...char, stats: { ...(char?.stats || {}), startingPoints: points } };
 }
 // 弟子ユニットを編成する（個人=弟子のみ / ペア=弟子＋師匠 / 団体=弟子＋師匠＋仲間）。
+// 持ち点＝HP：弟子ユニットは育成した HP（avatarHpMax）で打つ＝育成成果が大会の持ち点に直結。
 function buildDeshiUnit(av, mentorId, format, unitSize) {
-  const members = [avatarToCharacter(av, 25000)];
+  const hp = av.avatarHpMax || 25000;
+  const members = [avatarToCharacter(av, hp)];
   if (unitSize >= 2) {
     const mentor = CHARACTERS.find((c) => c.id === mentorId) || CHARACTERS[0];
-    members.push(asMatchChar(mentor, 25000));
+    members.push(asMatchChar(mentor, hp));
   }
   if (unitSize >= 3) {
     const allyId = ALLY_BY_MENTOR[mentorId] || CHARACTERS.find((c) => c.id !== mentorId)?.id;
     const ally = CHARACTERS.find((c) => c.id === allyId) || CHARACTERS[1];
-    members.push(asMatchChar(ally, 25000));
+    members.push(asMatchChar(ally, hp));
   }
   return { id: av.avatarId, name: av.name, isDeshi: true, isRival: false, members };
 }
@@ -830,15 +832,19 @@ async function openTournament() {
   const t = tournamentRunConfig(step.id, { oppLv: step.oppLv, finalFormat: step.finalFormat });
   const gate = tournamentGate(profile, t);
   if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
-  // 弟子ユニット＋ライバルユニット（計 unitCount＝8）。ティアでネームド比率が増える（§4.6.10 #1）。
+  // 弟子ユニット＝育成HP / ライバルユニット＝oppLv連動HP（難易度）。計 unitCount＝8。
   const deshiUnit = buildDeshiUnit(av, av.mentorCharacterId, t.format, t.unitSize);
-  const rUnits = rivalUnits(t.id, t.tier, t.unitCount, t.unitSize, { seedPrefix: "league", startingPoints: 25000 });
+  const oppHp = oppHpForLv(t.gateOppLv ?? t.rivalLv ?? 2);
+  const rUnits = rivalUnits(t.id, t.tier, t.unitCount, t.unitSize, { seedPrefix: "league", startingPoints: oppHp });
   const units = [deshiUnit, ...rUnits];
+  // 各ユニットの「開始持ち点」（メンバーHPの合計）。採点の素点＝(最終−開始) の基準。
+  const unitStart = {};
+  for (const u of units) unitStart[u.id] = u.members.reduce((a, m) => a + (m?.stats?.startingPoints || 0), 0);
   // 開幕前に大会要項（ルール・優勝条件・ライバル紹介）の専用画面をはさむ（じっくり演出・#2）。
   showTournamentBriefing(t, rUnits, () => {
     const totals = {}; const names = {};
     for (const u of units) { totals[u.id] = 0; names[u.id] = u.name; }
-    tournamentRun = { t, matchIndex: 0, units, totals, names, deshiUnitId: deshiUnit.id };
+    tournamentRun = { t, matchIndex: 0, units, totals, names, deshiUnitId: deshiUnit.id, unitStart };
     playTournamentMatch();
   }, () => openMentorHome());
 }
@@ -893,8 +899,8 @@ function showTournamentBriefing(t, rUnits, onStart, onCancel) {
       </div>
       <div class="tb-rules">
         <div class="tb-rule"><span class="tb-rk">出場</span><span class="tb-rv"><b>${t.entrants} 名</b>（${t.unitCount} ${word}／毎節 ${t.unitsAtTable} ${word}が対戦）</span></div>
-        <div class="tb-rule"><span class="tb-rk">ルール</span><span class="tb-rv">半荘 ${t.matches} 節（各 25,000 持ち・節ごとリセット）</span></div>
-        <div class="tb-rule"><span class="tb-rk">順位点</span><span class="tb-rv">ウマ ${umaStr}（Mリーグ準拠）</span></div>
+        <div class="tb-rule"><span class="tb-rk">持ち点</span><span class="tb-rv"><b>＝HP</b>（あなたは育成したHPで打つ・相手は格上ほど分厚い／節ごと回復・トビても脱落なし）</span></div>
+        <div class="tb-rule"><span class="tb-rk">順位点</span><span class="tb-rv">ウマ ${umaStr}（その節の<b>増減（稼ぎ）</b>で順位）</span></div>
         <div class="tb-rule"><span class="tb-rk">優勝条件</span><span class="tb-rv">全 ${t.matches} 節の<b>累積ポイント1位</b>で『${esc(t.treasure?.name || "宝")}』獲得</span></div>
       </div>
       <div class="tb-rivals-head">立ちはだかる者たち（${rUnits.length} ${word}）</div>
@@ -923,12 +929,12 @@ async function playTournamentMatch() {
   } else if (t.format === "team") {
     launchTeamTournamentMatch(deshiUnit, rivalSeated, ctx);
   } else {
-    // 個人戦：弟子（avatar）＋同卓ライバルの代表を launchHonestMatch へ。
+    // 個人戦：弟子（avatar）＝育成HP、ライバルは oppLv連動HP（その代表を launchHonestMatch へ）。
     const profile = await profileRepo.loadProfile();
     const av = activeAvatar(profile);
     launchHonestMatch({
       avatar: av, opponents: rivalSeated.map((u) => u.members[0]), players: t.playerCount, rounds: t.rounds || 2,
-      startPoints: 25000, tournament: true, isLast: run.matchIndex >= t.matches - 1, matchLabel: section,
+      startPoints: av.avatarHpMax || 25000, tournament: true, isLast: run.matchIndex >= t.matches - 1, matchLabel: section,
       tournamentInfo, onResult: (result) => onTournamentMatchDone(result),
     });
   }
@@ -987,10 +993,15 @@ async function launchTeamTournamentMatch(deshiUnit, rivalUnits, ctx) {
 
 async function onTournamentMatchDone(result) {
   const run = tournamentRun; const t = run.t;
-  // 同卓ユニットの節ポイント（素点は基準＝ユニット人数×25000、ウマは卓のユニット数で決定）。
-  const per = leaguePoints(result.standings || [], t.uma, t.base);
+  // 採点（点棒＝HP）：素点＝(最終−自分の開始HP)/1000。ウマは「その節の増減順位」で配る
+  //（＝育成は持ち点の厚み＝攻めの余裕/トビにくさとして効き、宝は打ち回しの累積で決まる）。
+  const seated = (result.standings || []).map((s) => ({
+    id: s.id, isHuman: !!s.isHuman,
+    net: Math.round(((s.points ?? 0) - (run.unitStart?.[s.id] ?? t.base)) / 1000),
+  }));
+  seated.sort((a, b) => b.net - a.net); // 増減の大きい順＝この節の順位
   const deltaById = {};
-  for (const x of per) { run.totals[x.id] = (run.totals[x.id] || 0) + x.pt; deltaById[x.id] = x.pt; }
+  seated.forEach((s, i) => { const pt = s.net + (t.uma[i] ?? 0); run.totals[s.id] = (run.totals[s.id] || 0) + pt; deltaById[s.id] = pt; });
   // 卓に居なかったユニットは別卓扱いで擬似ポイントを加算（全員の累積を動かす＝シーズンの手触り）。
   const seatedSet = new Set(run.seatedUnitIds || []);
   for (const u of run.units) {

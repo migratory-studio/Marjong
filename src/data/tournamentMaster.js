@@ -44,6 +44,12 @@ export const UNITS_AT_TABLE_BY_FORMAT = { solo4: 4, solo3: 3, pair: 2, team: 4, 
 // 卓に着くユニット数 → 順位点（ウマ）。4ユニット＝Mリーグ準拠、2ユニット＝ペアの一騎打ち。
 export const UMA_BY_UNITS = { 2: [15, -15], 3: [30, 0, -30], 4: [50, 10, -10, -30] };
 
+// 相手1人ぶんの持ち点（HP）を大会の oppLv（難易度）から決める。弟子の avatarHpMax 帯（5500〜26000）に
+// おおむね沿わせ、ティア/進捗が上がるほど相手も分厚くする（点棒＝HP・難易度の可視化）。チューニング前提。
+export function oppHpForLv(oppLv = 2) {
+  return 5000 + Math.max(0, oppLv) * 1900; // 例: Lv2≈8800 / Lv5≈14500 / Lv11≈25900
+}
+
 // 最終累積順位 → クリア評価ランク（§4.5.2・満貫級が下限）。
 export const PLACE_RANKS = ["役満級", "倍満級", "跳満級", "満貫級"];
 
