@@ -742,6 +742,17 @@ function avatarToCharacter(avatar, startPoints = 25000) {
     abilities: abilityId ? [{ abilityId, params: {} }] : [],
   };
 }
+// 師匠タイマン（二人打ち）の師匠 HP。師匠は格上：フリー対戦のHP（キャラ既定 startingPoints）を初期値に、
+// 師弟シナリオの進み具合（既読話数）で強化していく。弟子は自分の HP を賭けるので最初は大きな格差になる。
+// （覇道編以降の「一緒に育成＝共闘」はペア/団体大会＝詩玥＋弟子 で表現。）
+const MENTOR_DUO_HP_PER_SCENARIO = 1500; // 既読1話ごとに師匠HP+（チューニング）
+const MENTOR_DUO_HP_CAP_READS = 24;      // 強化の上限話数
+function mentorDuoHp(mentorChar, profile) {
+  const base = mentorChar?.stats?.startingPoints || 25000; // フリー対戦のHP＝初期状態（格上）
+  const read = Math.min(MENTOR_DUO_HP_CAP_READS, (profile?.scenarioProgress || []).length);
+  return base + read * MENTOR_DUO_HP_PER_SCENARIO;
+}
+
 // 本気対局を起動。config: { avatar, opponents:[character], rounds, players, voiceSet, startPoints, onResult(result, action) }
 async function launchHonestMatch(config) {
   honestCtx = config;
@@ -1184,17 +1195,19 @@ async function openMentorSub(target, payload) {
     // §4.6.9 B2 二人打ち＝師匠とのタイマン（二人麻雀）。payload.auto でオート/本気。
     const profile = await profileRepo.loadProfile();
     const av = activeAvatar(profile);
-    // 点棒＝HP：弟子は「今の HP」を賭けて打つ。師匠は同額（五分）で受ける。結果は HP に反映。
+    // 点棒＝HP：弟子は「今の HP」を賭けて打つ。結果は HP に反映。
     const stake = Math.max(0, Math.min(av?.avatarHpMax || 0, av?.avatarHpCurrent ?? 0));
     if (stake < 1000) { // HP が無い／僅少なら打てない（休んでから）
       openMentorHome({ duoBlocked: true });
       return;
     }
     const mentorBase = CHARACTERS.find((c) => c.id === av?.mentorCharacterId) || CHARACTERS[0];
-    const mentor = { ...mentorBase, stats: { ...mentorBase.stats, startingPoints: stake } }; // 弟子の HP と同額で受ける
+    // 師匠は格上：フリー対戦のHP（キャラ既定値）を初期値に、師弟シナリオの進捗（既読数）で強化。
+    const mentorHp = mentorDuoHp(mentorBase, profile);
+    const mentor = { ...mentorBase, stats: { ...mentorBase.stats, startingPoints: mentorHp } };
     launchHonestMatch({
       avatar: av, opponents: [mentor], players: 2, rounds: 2, // 二人麻雀・東南戦
-      startPoints: stake, // ★持ち点＝弟子の現 HP
+      startPoints: stake, // ★持ち点＝弟子の現 HP（師匠は格上HP）
       voiceSet: "shugyo", autoPlay: !!payload?.auto, returnTo: "mentor-home",
       onResult: async (result) => {
         const cur = await profileRepo.loadProfile();

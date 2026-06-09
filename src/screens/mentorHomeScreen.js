@@ -559,7 +559,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-md-title"><span class="mhx-md-by">二人打ち</span><span class="mhx-md-ttl">師匠とタイマン</span></div>
       </div>
       <p class="mhx-md-line">${canGo ? esc(mentor?.name || "師匠") + "「一局、付き合え。…手は抜かんぞ」" : "今日はもう動けない。また明日だ。"}</p>
-      <p class="mhx-md-prof"><small>二人麻雀（東南戦）。<b>持ち点＝今の HP（${hpCur.toLocaleString()}）を賭けて打つ＝結果が HP に反映</b>。メンタル・読みが伸び、負けても食らいついた分で伸びる。</small></p>
+      <p class="mhx-md-prof"><small>二人麻雀（東南戦）。<b>持ち点＝今の HP（${hpCur.toLocaleString()}）を賭けて打つ＝結果が HP に反映</b>。師匠は<b>格上</b>。点を奪えれば HP が増え、メンタル・読みも伸びる（食らいつくほど伸びる）。</small></p>
       ${canGo ? `<div class="mhx-duo-btns">
         <button type="button" class="mhx-md-btn mhx-duo-auto">オートで打つ<small>AI にまかせて見る</small></button>
         <button type="button" class="mhx-md-btn mhx-duo-honest">本気で打つ<small>自分の手で（手動）</small></button>
@@ -741,10 +741,12 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // ---- 二人打ちタイマン リザルト（点棒＝HP・惜敗で伸び・能力値上昇演出を流用）----
   function openDuoResultModal(r, onDone) {
     const rows = gainRowsFrom(r);
-    const head = r.won ? "勝利！" : (r.closeness >= 0.8 ? "惜敗——あと一歩" : "完敗…でも、まだ");
-    const tone = r.won ? "vgood" : (r.closeness >= 0.8 ? "good" : "bad");
+    // 師匠は格上。勝ち＝HPを増やせた（師匠から点を奪えた）こと。
+    const hd = r.hpDelta ?? 0;
+    const head = hd > 0 ? "師匠から点を奪った！" : (r.closeness >= 0.85 ? "互角に渡り合った" : "削られた…でも、まだ");
+    const tone = hd > 0 ? "vgood" : (r.closeness >= 0.85 ? "good" : "bad");
     // 点棒＝HP：賭けた HP（hpBefore）→ 残った HP（hpAfter）の増減を見せる。
-    const hb = r.hpBefore ?? null, ha = r.hpAfter ?? null, hd = r.hpDelta ?? 0;
+    const hb = r.hpBefore ?? null, ha = r.hpAfter ?? null;
     const hpHtml = (hb != null && ha != null)
       ? `<div class="mhx-pr-hp">HP <b>${hb.toLocaleString()}</b> → <b class="${hd >= 0 ? "up" : "dn"}">${ha.toLocaleString()}</b> <span class="mhx-pr-hpd ${hd >= 0 ? "up" : "dn"}">(${hd >= 0 ? "+" : ""}${hd.toLocaleString()})</span></div>`
       : `<span class="mhx-pr-sum">残点 ${(r.finalPoints || 0).toLocaleString()}</span>`;
@@ -754,7 +756,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-pr-head"><span class="mhx-cond tone-${tone}">${esc(head)}</span></div>
         ${hpHtml}
         ${r.soul ? `<div class="mhx-pr-soul">獲得ソウル <b>+${r.soul}</b></div>` : ""}
-        <div class="mhx-pr-sub">${r.won ? "師匠を越えた一局。" : "食らいついた分が、力になった。"}</div>
+        <div class="mhx-pr-sub">${hd > 0 ? "格上の師匠から、確かに点をもぎ取った。" : "食らいついた分が、力になった。"}</div>
         <div class="mhx-pr-stats mhx-pg-list">${rows.length ? gainGaugesHtml(rows) : '<div class="mhx-pr-none">変化なし</div>'}</div>
         <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
       </div>`;

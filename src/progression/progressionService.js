@@ -429,9 +429,10 @@ export function applyDuoResult(profile, result = {}) {
   // 持ち点＝HP（点棒＝HP）。対局前の HP を賭けて打ち、対局後の残点が新しい HP になる。
   const hpMax = av.avatarHpMax || 1;
   const hpBefore = Math.max(0, Math.min(hpMax, av.avatarHpCurrent ?? hpMax)); // ＝この対局の持ち点
-  const won = (result.placement ?? 1) === 0;
   const fp = Math.max(0, Math.round(result.finalPoints ?? hpBefore)); // 対局後の残点
   const hpAfter = Math.max(0, Math.min(hpMax, fp));                   // 新しい HP（上限＝最大HP）
+  // 師匠は格上＝総合で超えるのはほぼ不可能。二人打ちの「勝ち」＝HPを増やせた（師匠から点を奪えた）こと。
+  const won = (result.placement ?? 1) === 0 || hpAfter > hpBefore;
   const base = hpBefore > 0 ? hpBefore : hpMax;
   const closeness = Math.max(0, Math.min(1.5, fp / base)); // 0=完敗 / 1=五分 / 1.5=快勝（賭けたHP基準）
   const cur = avatarParams6(av);
