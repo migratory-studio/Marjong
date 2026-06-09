@@ -89,6 +89,19 @@ export function rankCells(value) {
   return RANKS.map((r, i) => ({ rank: r, on: i <= idx, color: RANK_COLORS[r] }));
 }
 
+const RANK_MIN = Object.fromEntries(RANK_BANDS.map((b) => [b.rank, b.min]));
+// 値の「現ランク内での進み具合」。FE 風の経験値バー（ランク内 0→100%）に使う。
+// lo＝現ランク下限、hi＝次ランク下限（S は PARAM_MAX+1）。
+export function rankFill(value) {
+  const v = Math.max(0, Math.min(PARAM_MAX, value || 0));
+  const r = rankOf(v);
+  const i = RANKS.indexOf(r);
+  const lo = RANK_MIN[r];
+  const hi = i < RANKS.length - 1 ? RANK_MIN[RANKS[i + 1]] : (PARAM_MAX + 1);
+  const pct = Math.max(0, Math.min(100, Math.round(((v - lo) / (hi - lo)) * 100)));
+  return { rank: r, color: RANK_COLORS[r], lo, hi, pct };
+}
+
 // before→after でランクが上がったステの一覧（{key,label,from,to}）。
 export function diffRankUps(before, after = {}) {
   if (!before) return [];

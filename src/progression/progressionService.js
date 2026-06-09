@@ -312,6 +312,7 @@ export function trainParam(profile, key, rng = Math.random) {
   if (dayInfo(profile).actionsLeft <= 0) throw new Error("今日の行動はもう残っていない");
 
   const cur = avatarParams6(av);
+  const before = { ...cur };
   const condition = dayInfo(profile).condition;
   const outcomeKey = rollTrainOutcome(cur.mental, condition, rng);
   const outcome = TRAIN_OUTCOMES[outcomeKey];
@@ -341,6 +342,7 @@ export function trainParam(profile, key, rng = Math.random) {
     profile: ended.profile, gains, hpCost, soul: t.soul || 0,
     outcome: outcomeKey, outcomeLabel: outcome.label, outcomeTone: outcome.tone, outcomeLine: outcome.line,
     conditionDelta, dayAdvanced: ended.dayAdvanced,
+    before, after: { ...cur },
   };
 }
 

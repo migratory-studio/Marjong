@@ -19,7 +19,7 @@ import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
 import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState } from "../progression/progressionService.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
-import { statViews, diffRankUps } from "../autobattle/statSystem.js";
+import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
@@ -293,6 +293,69 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     return `<div class="mhx-tag" data-train="${key}" role="button" tabindex="0"><span class="mhx-cmd">${cmd}</span><span class="mhx-desc">${esc(desc)}</span></div>`;
   }
 
+  // ---- 能力値上昇演出（FE 風：ランク内ゲージを満たし、満タンでランクアップ→次ランクのゲージへ）----
+  const sleepMs = (ms) => new Promise((r) => setTimeout(r, ms));
+  // res.gains/before/after から行データを作る。
+  function gainRowsFrom(res) {
+    return Object.entries(res.gains || {})
+      .filter(([, v]) => v > 0)
+      .map(([k, v]) => ({ key: k, label: PARAM_LABELS[k] || k, before: res.before?.[k] ?? 0, after: res.after?.[k] ?? 0, gain: v }));
+  }
+  // 行の初期 HTML（before 状態）。data-before/after を持たせアニメで読む。
+  function gainGaugesHtml(rows) {
+    return rows.map((r) => {
+      const f = rankFill(r.before);
+      return `<div class="mhx-pg-row" data-before="${r.before}" data-after="${r.after}">
+        <span class="mhx-pg-lab">${esc(r.label)}</span>
+        <span class="mhx-pg-rank rank-${f.rank}">${f.rank}</span>
+        <div class="mhx-pg-bar"><div class="mhx-pg-fill" style="width:${f.pct}%;background:${f.color}"></div></div>
+        <span class="mhx-pg-now">${r.before}</span>
+        <span class="mhx-pg-up">+${r.gain}</span>
+      </div>`;
+    }).join("");
+  }
+  async function animateGainRow(row) {
+    const fill = row.querySelector(".mhx-pg-fill");
+    const rankEl = row.querySelector(".mhx-pg-rank");
+    const nowEl = row.querySelector(".mhx-pg-now");
+    row.querySelector(".mhx-pg-up")?.classList.add("is-pop");
+    let v = Number(row.getAttribute("data-before"));
+    const to = Number(row.getAttribute("data-after"));
+    const setRank = (f) => { rankEl.textContent = f.rank; rankEl.className = "mhx-pg-rank rank-" + f.rank; };
+    let step = 0;
+    while (v < to) {
+      const fCur = rankFill(v);
+      const fNext = rankFill(v + 1);
+      if (fNext.rank !== fCur.rank) {
+        // 今のランクのゲージを MAX まで満たす → ランクアップ → 次ランクのゲージを 0 から。
+        fill.style.width = "100%";
+        audio?.playPip?.(2300, 0.55);
+        await sleepMs(220);
+        row.classList.add("is-rankup");
+        v += 1; nowEl.textContent = String(v);
+        fill.style.transition = "none"; fill.style.width = "0%"; fill.style.background = fNext.color;
+        setRank(fNext);
+        void fill.offsetWidth; // reflow
+        fill.style.transition = "";
+        await sleepMs(240);
+        row.classList.remove("is-rankup");
+        fill.style.width = `${fNext.pct}%`;
+        await sleepMs(140);
+      } else {
+        v += 1; step += 1;
+        fill.style.width = `${fNext.pct}%`;
+        nowEl.textContent = String(v);
+        audio?.playPip?.(1500 + step * 90, 0.4);
+        await sleepMs(110);
+      }
+    }
+    audio?.playPip?.(2300, 0.55);
+    await sleepMs(120);
+  }
+  async function animateGainGauges(scope) {
+    for (const row of scope.querySelectorAll(".mhx-pg-row")) await animateGainRow(row);
+  }
+
   // ---- 休憩モーダル（ハブ上で完結）----
   function openRestModal() {
     const available = actionsLeft > 0;
@@ -353,6 +416,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       <p class="mhx-md-line">${esc(TRAIN_LINE[key] || "")}</p>
       <p class="mhx-md-prof">伸びる：<b>${esc(PARAM_LABELS[t.main])}</b>（主）／ ${esc(subLabel)}（副）　・　消費 HP ${t.hp.toLocaleString()}${t.soul ? `　・　ソウル +${t.soul}` : ""}<br><small>※伸びは当日の調子で変動（メンタルが高いほど安定し、大成功も出やすい）</small></p>
       <p class="mhx-md-result" hidden></p>
+      <div class="mhx-pg-list mhx-train-gain" hidden></div>
       <button type="button" class="mhx-md-btn">${esc(t.label)}する</button>
     `;
     let done = false;
@@ -364,18 +428,22 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         const res = trainParam(profile, key);
         await repository.saveProfile(res.profile);
         done = true;
-        const gainStr = Object.entries(res.gains)
-          .filter(([, v]) => v > 0)
-          .map(([k, v]) => `${PARAM_LABELS[k]} +${v}`).join("　/　");
-        const parts = [gainStr];
+        const parts = [];
         if (res.soul) parts.push(`ソウル +${res.soul}`);
         parts.push(`HP −${res.hpCost.toLocaleString()}`);
+        if (res.conditionDelta < 0) parts.push("調子が下がった…");
+        else if (res.conditionDelta > 0) parts.push("調子が上がった！");
         // 調子（大成功/成功/無難/失敗）を見出しに、師匠の一言を反応として返す。
         const badge = `<span class="mhx-md-badge tone-${res.outcomeTone}">${esc(res.outcomeLabel)}${res.outcomeTone === "great" ? "！" : ""}</span>`;
         const line = card.querySelector(".mhx-md-line");
         if (line && res.outcomeLine) line.textContent = res.outcomeLine;
+        card.querySelector(".mhx-md-prof")?.setAttribute("hidden", "");
         const r = card.querySelector(".mhx-md-result");
         r.innerHTML = `${badge}　${esc(parts.join("　/　"))}`; r.hidden = false;
+        // 能力値上昇（FE 風ゲージ＋ピピピッ）。
+        const gw = card.querySelector(".mhx-train-gain");
+        gw.innerHTML = gainGaugesHtml(gainRowsFrom(res)); gw.hidden = false;
+        animateGainGauges(gw);
         btn.disabled = true; btn.textContent = "完了";
       } catch (e) {
         const r = card.querySelector(".mhx-md-result");
@@ -487,21 +555,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
 
   // ---- 雀荘リザルト（能力値上昇演出つき・§4.6.8）----
   function openParlorResultModal(r, onDone) {
-    const gainRows = Object.entries(r.gains || {})
-      .filter(([, v]) => v > 0)
-      .map(([k, v]) => {
-        const before = r.before?.[k] ?? 0;
-        const after = r.after?.[k] ?? 0;
-        const toPct = Math.round((after / 99) * 100);
-        const fromPct = Math.round((before / 99) * 100);
-        return `
-          <div class="mhx-pr-stat">
-            <span class="mhx-pr-lab">${esc(PARAM_LABELS[k] || k)}</span>
-            <div class="mhx-pr-bar"><div class="mhx-pr-fill" data-to="${toPct}" style="width:${fromPct}%"></div></div>
-            <span class="mhx-pr-up">+${v}</span>
-            <span class="mhx-pr-now" data-from="${before}" data-to="${after}">${before}</span>
-          </div>`;
-      }).join("");
+    const rows = gainRowsFrom(r);
     const tone = r.candidate?.tone || "ok";
     const html = `
       <div class="mhx-pr">
@@ -512,34 +566,11 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         </div>
         <div class="mhx-pr-soul">獲得ソウル <b>+${r.soul ?? 0}</b></div>
         <div class="mhx-pr-sub">能力値が上がった！</div>
-        <div class="mhx-pr-stats">${gainRows || '<div class="mhx-pr-none">変化なし</div>'}</div>
+        <div class="mhx-pr-stats mhx-pg-list">${rows.length ? gainGaugesHtml(rows) : '<div class="mhx-pr-none">変化なし</div>'}</div>
         <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);
-    // 値のロールアップ（from→to を 1 ずつ加算カウント）。最後は必ず to にそろえる。
-    // カウント中は「ピピピッ」と上昇音、到達で少し高い確定音。
-    const tween = (el, from, to) => {
-      let cur = from; el.textContent = String(from);
-      if (to === from) return;
-      const dir = to > from ? 1 : -1;
-      let step = 0;
-      const iv = setInterval(() => {
-        cur += dir; el.textContent = String(cur); step += 1;
-        if (cur === to) { clearInterval(iv); audio?.playPip?.(2300, 0.55); } // 確定音（高め）
-        else audio?.playPip?.(1500 + step * 120, 0.4);                       // 上昇ピッ
-      }, 90);
-    };
-    // 上昇演出：バーを伸ばし、+N をポップ、値をロールアップ（行ごとに少しずらす）。
-    card.querySelectorAll(".mhx-pr-stat").forEach((row, i) => {
-      const fill = row.querySelector(".mhx-pr-fill");
-      const up = row.querySelector(".mhx-pr-up");
-      const now = row.querySelector(".mhx-pr-now");
-      setTimeout(() => {
-        if (fill) fill.style.width = `${fill.getAttribute("data-to")}%`;
-        up?.classList.add("is-pop");
-        if (now) tween(now, Number(now.getAttribute("data-from")), Number(now.getAttribute("data-to")));
-      }, 150 + i * 220);
-    });
+    animateGainGauges(card);
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
 
