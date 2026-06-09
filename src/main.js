@@ -991,8 +991,8 @@ async function onTournamentMatchDone(result) {
   run.matchIndex += 1;
   const finished = run.matchIndex >= t.matches;
   const ranked = Object.keys(run.totals).sort((a, b) => run.totals[b] - run.totals[a]);
-  // 順位表演出（ヒリヒリ）→ 次節 or 最終結果。
-  showTournamentStandings(run, { ranked, deltaById, finished, entrants: t.entrants, sectionLabel: `第 ${run.matchIndex} / ${t.matches} 節` }, async (action) => {
+  // 節間：まず「この節の得点推移グラフ」を自動表示 → 閉じると累積順位表へ。
+  const showStandings = () => showTournamentStandings(run, { ranked, deltaById, finished, entrants: t.entrants, sectionLabel: `第 ${run.matchIndex} / ${t.matches} 節` }, async (action) => {
     if (finished || action === "retreat") {
       const finalRank = ranked.findIndex((id) => id === run.deshiUnitId);
       const cur = await profileRepo.loadProfile();
@@ -1005,6 +1005,12 @@ async function onTournamentMatchDone(result) {
       playTournamentMatch();
     }
   });
+  // この節の得点推移を自動表示してから順位表へ（履歴が無ければ順位表のみ）。
+  if (result.graph && (result.graph.history?.length || 0) > 1) {
+    showScoreGraph(result.graph.history, result.graph.players, showStandings);
+  } else {
+    showStandings();
+  }
 }
 
 // 対局中の大会バッジ（左上）。大会名・節・前節までの累積順位を常時表示してヒリヒリ感を出す（#2）。
@@ -1070,9 +1076,19 @@ function showTournamentStandings(run, info, onDone) {
   }
 }
 
+// 現在の対局から「得点推移グラフ用データ」を作る（終局スナップショットを足して返す）。
+// pair/team は points=席ごとのHP（推移）として描く。solo は点棒。
+function buildTournamentGraph() {
+  if (!game || !game.players) return null;
+  scoreHistory.push({ label: "終局", points: game.players.map((p) => p.points) });
+  const players = game.players.map((p, i) => ({ name: p.character.name, color: p.character.color || "#9aa", isHuman: i === humanIndex }));
+  return { history: scoreHistory.slice(), players };
+}
+
 // 得点推移グラフ（1試合ぶん・全員）。history=[{label, points:[..]}], players=[{name,color,isHuman}]。
-function showScoreGraph(history, players) {
-  if (!history || history.length < 1) return;
+// onDone を渡すと閉じたとき呼ぶ（大会の節間自動表示→順位表 へ繋ぐのに使う）。
+function showScoreGraph(history, players, onDone = null) {
+  if (!history || history.length < 1) { onDone?.(); return; }
   const host = el("app") || document.body;
   const W = 760, H = 430, L = 52, R = 600, T = 36, B = 322; // プロット領域
   const n = history.length;
@@ -1123,9 +1139,11 @@ function showScoreGraph(history, players) {
   host.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("is-open"));
   audio?.playPip?.(1800, 0.4);
-  const close = () => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); };
+  let closed = false;
+  const close = () => { if (closed) return; closed = true; ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); onDone?.(); };
   ov.querySelector(".sg-scrim").addEventListener("click", close);
   ov.querySelector(".sg-close").addEventListener("click", close);
+  if (onDone) ov.querySelector(".sg-close").textContent = "順位表へ";
 }
 
 async function openMentorSub(target, payload) {
@@ -2919,7 +2937,7 @@ function showGameOver() {
   // 本気対局（Phase 4A）は「もう一度(reload)」ではなく結果を育成へ返して戻る。
   if (honestCtx) {
     const standings = ranks.map((p, i) => ({ id: p.character.id, name: p.character.name, points: p.points, rank: i, isHuman: p === human }));
-    const result = { placement: hRank, numPlayers: N, finalPoints: human.points, won: hRank === 0, standings };
+    const result = { placement: hRank, numPlayers: N, finalPoints: human.points, won: hRank === 0, standings, graph: { history: graphSnapshot, players: graphPlayers } };
     const ctx = honestCtx; honestCtx = null;
     const go = (action) => { overlay.classList.add("hidden"); ctx.onResult?.(result, action); };
     const btns = overlay.querySelector(".go-buttons");
@@ -3047,7 +3065,8 @@ function showTeamBattleGameOver() {
   const btnsT = overlay.querySelector(".go-buttons");
   if (honestCtx?.tournament && teamBattleData.unitIds) {
     const standings = order.map((ti, i) => ({ id: teamBattleData.unitIds[ti], name: teamLabelOf(ti), points: totalOf(teams[ti]), rank: i, isHuman: ti === humanIndex }));
-    const result = { standings, placement: order.indexOf(humanIndex), won: order[0] === humanIndex };
+    const graph = buildTournamentGraph();
+    const result = { standings, placement: order.indexOf(humanIndex), won: order[0] === humanIndex, graph };
     const ctx = honestCtx; honestCtx = null;
     const note = document.createElement("div");
     note.className = "go-tourney-note";
@@ -3173,7 +3192,8 @@ function showPairBattleGameOver() {
   const btnsP = overlay.querySelector(".go-buttons");
   if (honestCtx?.tournament && pairBattleData.unitIds) {
     const standings = order.map((pid, i) => ({ id: pairBattleData.unitIds[pid], name: pairLabelOf(pid), points: totalOf(pid), rank: i, isHuman: pid === myPair }));
-    const result = { standings, placement: order.indexOf(myPair), won: order[0] === myPair };
+    const graph = buildTournamentGraph();
+    const result = { standings, placement: order.indexOf(myPair), won: order[0] === myPair, graph };
     const ctx = honestCtx; honestCtx = null;
     const note = document.createElement("div");
     note.className = "go-tourney-note";
