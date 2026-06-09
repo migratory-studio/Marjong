@@ -15,8 +15,9 @@ import {
   presetsOfType, presetById, defaultPresetIds, defaultPresetIdForType,
   DESHI_PRESET_SETS,
 } from "../data/avatarPresetMaster.js";
-import { buildNewAvatar, addAvatarToProfile } from "../progression/avatarFactory.js";
+import { buildNewAvatar, addAvatarToProfile, AVATAR_DEFAULTS } from "../progression/avatarFactory.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
+import { statViews } from "../autobattle/statSystem.js";
 
 // 師匠として選べるのは「シナリオ＋能力テンプレが実装済み」の師匠だけ（未実装はグレーアウト）。
 // 判定はマスタから導出する（専用フラグは持たず、シナリオ／テンプレを足せば自動で解放される）。
@@ -27,6 +28,10 @@ const ROLE_LABEL = { attacker: "攻撃の師", blocker: "守備の師", gambler:
 const MENTOR_ROLES = ROLE_MASTER.filter((r) => r.id !== "extra");
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
+
+// HTML 差し込み用の最小エスケープ（名前・プロフィールはユーザー入力）。
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
 function elt(tag, cls, props = {}) {
   const e = document.createElement(tag);
@@ -301,7 +306,8 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
 
   nameInput.oninput = renderPreview;
 
-  createBtn.onclick = async () => {
+  // 実際の作成処理（確認モーダルの「はい」で実行）。
+  async function doCreate() {
     errMsg.classList.add("hidden");
     try {
       const avatar = buildNewAvatar({
@@ -320,6 +326,59 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
       errMsg.textContent = e?.message || "作成に失敗しました。";
       errMsg.classList.remove("hidden");
     }
+  }
+
+  // 作成前の確認モーダル：キャラ情報・師匠・初期パラメータを見せて開始確認。
+  function openCreateConfirm() {
+    const mentor = charById(state.mentorCharacterId);
+    const tmpl = templatesForMentor(state.mentorCharacterId).find((t) => t.skillTemplateId === state.skillTemplateId);
+    const iconP = presetById(state.presetIds.icon);
+    const name = nameInput.value.trim();
+    const bio = bioInput.value.trim();
+    const paramsHtml = statViews(AVATAR_DEFAULTS.params6).map((s) => `
+      <div class="ac-cf-stat">
+        <span class="ac-cf-rank rank-${s.rank}">${s.rank}</span>
+        <span class="ac-cf-slab">${s.label}</span>
+        <span class="ac-cf-sval">${s.value}</span>
+      </div>`).join("");
+    const ov = elt("div", "ac-confirm");
+    ov.innerHTML = `
+      <div class="ac-cf-scrim"></div>
+      <div class="ac-cf-card" role="dialog" aria-modal="true">
+        <div class="ac-cf-ttl">この弟子で始める？</div>
+        <div class="ac-cf-id">
+          <div class="ac-cf-iconwrap">${iconP?.assetPath ? `<img src="${iconP.assetPath}" alt="">` : ""}</div>
+          <div class="ac-cf-idtxt">
+            <div class="ac-cf-name">${esc(name) || "（名前未入力）"}</div>
+            ${bio ? `<div class="ac-cf-bio">${esc(bio)}</div>` : ""}
+            <div class="ac-cf-mentor">師匠：<b>${esc(mentor?.name || "—")}</b>${mentor?.role ? `（${esc(ROLE_LABEL[mentor.role] || "師")}）` : ""}　／　能力：<b>${esc(tmpl?.name || "—")}</b></div>
+          </div>
+        </div>
+        <div class="ac-cf-shead">はじめの能力値</div>
+        <div class="ac-cf-stats">${paramsHtml}</div>
+        <p class="ac-cf-msg"><b>${esc(mentor?.name || "師匠")}</b>を師匠にして、師弟シナリオが始まります。よろしいですか？</p>
+        <div class="ac-cf-btns">
+          <button type="button" class="ghost-back ac-cf-no">いいえ</button>
+          <button type="button" class="primary ac-cf-yes">はい、始める</button>
+        </div>
+      </div>`;
+    container.appendChild(ov);
+    const close = () => ov.remove();
+    ov.querySelector(".ac-cf-scrim").onclick = close;
+    ov.querySelector(".ac-cf-no").onclick = close;
+    ov.querySelector(".ac-cf-yes").onclick = () => { close(); doCreate(); };
+    requestAnimationFrame(() => ov.classList.add("is-open"));
+  }
+
+  createBtn.onclick = () => {
+    errMsg.classList.add("hidden");
+    if (!nameInput.value.trim()) {
+      errMsg.textContent = "名前を入力してください。";
+      errMsg.classList.remove("hidden");
+      nameInput.focus();
+      return;
+    }
+    openCreateConfirm();
   };
 
   renderDeshi();
