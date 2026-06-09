@@ -598,11 +598,16 @@ body {
 /* 雀荘巡り 候補リスト */
 #mentor-home-screen.mh2 .mhx-pl-list { display:flex; flex-direction:column; gap:10px; margin:4px 0 12px; }
 #mentor-home-screen.mh2 .mhx-pl {
-  position:relative; display:flex; align-items:center; gap:12px; text-align:left; cursor:pointer;
-  padding:11px 14px; border-radius:9px; color:#2a2012;
+  position:relative; display:flex; flex-direction:column; align-items:stretch; gap:6px; text-align:left; cursor:pointer;
+  padding:10px 14px; border-radius:9px; color:#2a2012;
   background:linear-gradient(180deg,#f3ead0,#e1d2a9); border:1.5px solid #c8a44d;
   box-shadow:0 3px 0 #9c7a34, 0 5px 10px rgba(0,0,0,.4); transition:transform .1s, box-shadow .1s, filter .1s;
 }
+#mentor-home-screen.mh2 .mhx-pl-top { display:flex; align-items:center; gap:9px; }
+#mentor-home-screen.mh2 .mhx-pl-bot { display:flex; align-items:center; gap:12px; }
+#mentor-home-screen.mh2 .mhx-pl-name { flex:1; font-family:var(--font-min); font-size:17px; font-weight:700; letter-spacing:.03em; color:#33260f; }
+#mentor-home-screen.mh2 .mhx-pl-train { font-family:var(--font-go); font-size:11px; color:#5a4520; white-space:nowrap; }
+#mentor-home-screen.mh2 .mhx-pl-train b { color:#8f2418; }
 #mentor-home-screen.mh2 .mhx-pl:hover { transform:translateY(-2px); filter:brightness(1.04); box-shadow:0 5px 0 #9c7a34, 0 9px 16px rgba(0,0,0,.45); }
 #mentor-home-screen.mh2 .mhx-pl:active { transform:translateY(0); box-shadow:0 1px 0 #9c7a34; }
 #mentor-home-screen.mh2 .mhx-pl.is-off { cursor:default; filter:grayscale(.6) brightness(.82); opacity:.6; box-shadow:0 2px 0 #9c7a34; }

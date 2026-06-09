@@ -582,12 +582,19 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     const cards = st.candidates.map((c) => {
       const off = c.done || !canGo;
       const badge = c.tournament ? `<span class="mhx-pl-badge">大会中</span>` : "";
+      const subLab = c.subParam ? (PARAM_LABELS[c.subParam] || c.subParam) : null;
       return `
         <button type="button" class="mhx-pl${off ? " is-off" : ""}" data-idx="${c.index}"${off ? " disabled" : ""}>
           ${badge}
-          <span class="mhx-cond tone-${c.tone} mhx-pl-tier">${esc(c.label)}</span>
-          <span class="mhx-pl-info"><b>${c.matches}</b> 戦${c.done ? "　…挑戦済み" : ""}</span>
-          <span class="mhx-pl-rew">勝ち抜き毎 +${c.soulPerWin} ソウル</span>
+          <div class="mhx-pl-top">
+            <span class="mhx-pl-name">${esc(c.name || "雀荘")}</span>
+            <span class="mhx-cond tone-${c.tone} mhx-pl-tier">${esc(c.label)}</span>
+          </div>
+          <div class="mhx-pl-bot">
+            <span class="mhx-pl-info"><b>${c.matches}</b> 戦${c.done ? "　…挑戦済み" : ""}</span>
+            ${subLab ? `<span class="mhx-pl-train">鍛：勝負勘 ＆ <b>${esc(subLab)}</b></span>` : ""}
+            <span class="mhx-pl-rew">+${c.soulPerWin}／勝</span>
+          </div>
         </button>`;
     }).join("");
     const html = `
@@ -709,7 +716,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     const tone = r.candidate?.tone || "ok";
     const html = `
       <div class="mhx-pr">
-        <div class="mhx-pr-ttl">雀荘 結果</div>
+        <div class="mhx-pr-ttl">${esc(r.candidate?.name || "雀荘")} 結果</div>
         <div class="mhx-pr-head">
           <span class="mhx-cond tone-${tone}">${esc(r.candidate?.label || "雀荘")}</span>
           <span class="mhx-pr-sum">${r.candidate?.matches ?? "—"} 戦 ／ 勝ち抜き <b>${r.wins ?? 0}</b></span>

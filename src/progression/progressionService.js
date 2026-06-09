@@ -476,17 +476,17 @@ export function parlorState(profile) {
 }
 
 // 雀荘を 1 つ訪れた結果を記録する。wins＝オートの勝ち抜き数。
-// ソウル付与＋6 パラメータ成長（勝負勘＝主／ランダム＝副・§4.6.1）＋グレーアウト＋1 行動消費。
+// ソウル付与＋6 パラメータ成長（勝負勘＝主／雀荘ごとの固定副パラメ・§4.6.1）＋グレーアウト＋1 行動消費。
 export function visitParlor(profile, index, wins = 0, rng = Math.random) {
   const cand = rollDailyParlors(profile.dayCount ?? 1, scenarioProgressLevel(profile))[index];
   if (!cand) throw new Error("雀荘が見つかりません");
   const av = activeAvatar(profile);
   if (!av) throw new Error("マイキャラがいません");
 
-  // 能力値上昇：勝負勘（主）＋ランダム 1 種（副）。勝つほど伸びる（負けても主は最低 +1）。
+  // 能力値上昇：勝負勘（主）＋雀荘ごとに固定の副パラメ（店名でにおわせ）。勝つほど伸びる（負けても主は最低 +1）。
   const cur = avatarParams6(av);
   const before = { ...cur };
-  const subKey = ALL_PARAMS[Math.floor(rng() * ALL_PARAMS.length)];
+  const subKey = cand.subParam || ALL_PARAMS[Math.floor(rng() * ALL_PARAMS.length)];
   const gains = {};
   const apply = (k, g) => {
     const beforeV = cur[k] || 0;
