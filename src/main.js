@@ -25,7 +25,7 @@ import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
-import { dayInfo, CONDITIONS, parlorState, visitParlor } from "./progression/progressionService.js";
+import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult } from "./progression/progressionService.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -716,6 +716,45 @@ function launchAutoBattle(profile, { oppLv, oppHpMax, maxMatches, seed = Date.no
   goScreen("autobattle-screen");
 }
 
+// ── 本気対局（Phase 4A・§4.6.9）。既存 beginGame を流用する“橋”。──
+let honestCtx = null; // 本気対局中の文脈（{ onResult } 等）。null＝通常（フリー対戦）。
+// マイキャラを対局エンジン用の character へ変換（立ち絵/能力を載せる）。
+function avatarToCharacter(avatar) {
+  const icon = presetById(avatar?.presetIds?.icon)?.assetPath || "";
+  const portrait = presetById(avatar?.presetIds?.standing)?.assetPath || "";
+  const abilityId = skillTemplateById(avatar?.skillTemplateId)?.runtimeAbilityId;
+  return {
+    id: avatar?.avatarId || "deshi",
+    name: avatar?.name || "弟子",
+    reading: "", color: "#e0b85a", role: "attacker", bio: "",
+    profile: avatar?.profileText || "",
+    stats: { startingPoints: 25000 }, // 単発の本気対局＝固定25000（§4.6.9）
+    assets: { icon, portrait, voices: {} },
+    abilities: abilityId ? [{ abilityId, params: {} }] : [],
+  };
+}
+// 本気対局を起動。config: { avatar, opponents:[character], rounds, players, voiceSet, onResult(result) }
+async function launchHonestMatch(config) {
+  honestCtx = config;
+  teamBattleData = null; pairBattleData = null; humanIndex = 0;
+  selectedRounds = config.rounds || 1;
+  selectedPlayers = config.players || (1 + (config.opponents?.length || 3));
+  const deshi = avatarToCharacter(config.avatar);
+  const order = [deshi, ...(config.opponents || [])];
+  const seated = order.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
+  await charImages.load([deshi]); // 弟子の立ち絵/アイコンを描画キャッシュへ
+  for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
+  if (config.voiceSet) setPendingVoiceSet(config.voiceSet);
+  const dealerIndex = Math.floor(Math.random() * seated.length);
+  showScreen("match-intro-screen");
+  showMatchIntro(el("match-intro-screen"), {
+    seated, humanIndex,
+    mode: { rounds: selectedRounds, players: selectedPlayers },
+    dealerIndex, audio,
+    onComplete: () => beginGame(seated, dealerIndex),
+  });
+}
+
 async function openMentorSub(target, payload) {
   const back = () => openMentorHome();
   if (target === "rest") {
@@ -749,6 +788,21 @@ async function openMentorSub(target, payload) {
     // §4.6 オートバトルのプロト起動（大会未実装のためデバッグ導線から）。
     const profile = await profileRepo.loadProfile();
     launchAutoBattle(profile, { oppLv: 1, oppHpMax: 6000, onExit: () => back() });
+  } else if (target === "honest-proto") {
+    // §4.6.9 本気対局（4人・モブ）プロト。橋(launchHonestMatch)→結果反映→師弟ホーム。
+    const profile = await profileRepo.loadProfile();
+    const av = activeAvatar(profile);
+    const mobs = makeMobRoster(3, { seedPrefix: "honest-" + Date.now() });
+    launchHonestMatch({
+      avatar: av, opponents: mobs, rounds: 1, players: 4,
+      returnTo: "mentor-home",
+      onResult: async (result) => {
+        const cur = await profileRepo.loadProfile();
+        const res = applyHonestResult(cur, result);
+        await profileRepo.saveProfile(res.profile);
+        openMentorHome({ honest: { placement: res.placement, numPlayers: res.numPlayers, soul: res.soul, gains: res.gains, before: res.before, after: res.after, won: res.won } });
+      },
+    });
   } else if (target === "parlor") {
     // §4.6.8 雀荘巡り：選んだ雀荘でオートを連戦し、結果でソウル付与＋1行動消費。
     const profile = await profileRepo.loadProfile();
@@ -2459,7 +2513,17 @@ function showGameOver() {
     }, reveal(0) * 1000 + 650);
   }
 
-  overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+  // 本気対局（Phase 4A）は「もう一度(reload)」ではなく結果を育成へ返して戻る。
+  if (honestCtx) {
+    const result = { placement: hRank, numPlayers: N, finalPoints: human.points, won: hRank === 0 };
+    const ctx = honestCtx; honestCtx = null;
+    overlay.querySelector(".go-buttons").appendChild(mkBtn("師弟ホームへ", "btn-tsumo", () => {
+      overlay.classList.add("hidden");
+      ctx.onResult?.(result);
+    }));
+  } else {
+    overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+  }
 }
 
 // 団体戦の対局終了: 順位は「チーム得点（3人の合計HP）」で集計。優勝チームのエースを

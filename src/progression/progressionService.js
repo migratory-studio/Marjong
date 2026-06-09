@@ -355,6 +355,34 @@ export function trainParam(profile, key, rng = Math.random) {
   };
 }
 
+// ------------------------------------------------- 本気対局の結果反映（Phase 4A・§4.6.9）
+// MatchResult（着順・残点）を育成へ反映する。単発の本気対局はソウル＋param経験のみ
+// （HP=avatarHpCurrent は上書きしない。runHp 持ち越しは大会(C)で扱う）。数値は仮・チューニング前提。
+export const HONEST_REWARD = {
+  soulByPlacement: [320, 180, 100, 60], // 着順 0..3（1着が最大）
+  expByPlacement: [4, 3, 2, 1],         // 散らす param 経験の総量
+  expKeys: ["read", "mental", "gamble"], // 本気＝実力＝読み/メンタル/勝負勘を磨く
+};
+export function applyHonestResult(profile, result = {}) {
+  const av = activeAvatar(profile);
+  if (!av) throw new Error("マイキャラがいません");
+  const n = Math.max(1, result.numPlayers || 4);
+  const place = Math.max(0, Math.min(n - 1, result.placement ?? n - 1));
+  const idx = Math.min(HONEST_REWARD.soulByPlacement.length - 1, place);
+  const soul = HONEST_REWARD.soulByPlacement[idx] || 0;
+  const exp = HONEST_REWARD.expByPlacement[idx] || 1;
+
+  const cur = avatarParams6(av);
+  const before = { ...cur };
+  const gains = {};
+  const apply = (k, g) => { const b = cur[k] || 0; const a = Math.min(PARAM_CAP, b + g); gains[k] = (gains[k] || 0) + (a - b); cur[k] = a; };
+  for (let i = 0; i < exp; i++) apply(HONEST_REWARD.expKeys[i % HONEST_REWARD.expKeys.length], 1);
+
+  let p = grantSoul(profile, soul);
+  p = withActiveAvatar(p, (a) => ({ ...a, params6: cur }));
+  return { profile: p, soul, gains, before, after: { ...cur }, placement: place, numPlayers: n, won: place === 0 };
+}
+
 // ------------------------------------------------- 師匠の記憶（双方向・蓄積）
 // 休憩の2択や直近の訓練結果を覚えて、次の「師匠の一言」に反映する。
 // patch 例: { lastChoice:"honest" } / { lastOutcome:"daiseikou", lastOutcomeDay: 12 }

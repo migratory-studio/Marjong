@@ -673,6 +673,26 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
 
+  // ---- 本気対局リザルト（Phase 4A・能力値上昇演出を流用）----
+  function openHonestResultModal(r, onDone) {
+    const rows = gainRowsFrom(r);
+    const place = (r.placement ?? 0) + 1;
+    const html = `
+      <div class="mhx-pr">
+        <div class="mhx-pr-ttl">本気対局 結果</div>
+        <div class="mhx-pr-head">
+          <span class="mhx-cond tone-${r.won ? "vgood" : "ok"}">${place} 着${r.won ? "・優勝！" : ""}</span>
+        </div>
+        <div class="mhx-pr-soul">獲得ソウル <b>+${r.soul ?? 0}</b></div>
+        <div class="mhx-pr-sub">本気の一局が、力になった。</div>
+        <div class="mhx-pr-stats mhx-pg-list">${rows.length ? gainGaugesHtml(rows) : '<div class="mhx-pr-none">変化なし</div>'}</div>
+        <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    animateGainGauges(card);
+    card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
+  }
+
   // 複数のモーダルを順番に出す（前のを閉じたら次へ）。
   function runModals(list) {
     const seq = list.filter(Boolean);
@@ -727,6 +747,14 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     ab.onclick = () => onNavigate?.("autobattle-proto");
     container.appendChild(ab);
 
+    const honest = elt("button", "mh-debug-reset mhx-debug", {
+      type: "button",
+      textContent: "🀄 本気対局（proto）",
+    });
+    honest.style.cssText = "top:128px;";
+    honest.onclick = () => onNavigate?.("honest-proto");
+    container.appendChild(honest);
+
     const reset = elt("button", "mh-debug-reset mhx-debug", {
       type: "button",
       textContent: "🛠 1からやりなおす（DEBUG）",
@@ -746,6 +774,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // ※ランクアップは訓練/雀荘の瞬間に FE 風演出で出るので、日替わりではサマリ内にまとめる。
   runModals([
     flash?.parlor ? (next) => openParlorResultModal(flash.parlor, next) : null,
+    flash?.honest ? (next) => openHonestResultModal(flash.honest, next) : null,
     (showBanner && daySummary) ? (next) => openDaySummaryModal(daySummary, next) : null,
     showBanner ? () => openDayBanner() : null,
   ]);
