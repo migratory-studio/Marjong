@@ -10,7 +10,7 @@
 //
 // 立ち絵は新規アセットを作らず既存シルエット（graphic/chars/mobs/1〜10.png）を流用する
 // （real-resources-only 方針）。名前・肩書き・口上が付くだけで“量産モブ”とは別物の存在感になる。
-import { makeMobRoster } from "./mobMaster.js";
+import { makeMobRoster, makeMob } from "./mobMaster.js";
 
 // ティア → その大会に登場するネームド・ライバルの最大数（出場者−1 まで）。
 //   T1=1（少数の出場者） / T2=3（中間） / T3=全員（99＝出場者数ぶん全部ネームド）。
@@ -90,4 +90,19 @@ export function tournamentRoster(tournamentId, tier, count, { seedPrefix = "leag
 export function namedRivalsFor(tournamentId, tier) {
   const wantNamed = NAMED_BY_TIER[tier] || 0;
   return (ASSIGN[tournamentId] || []).slice(0, wantNamed).map((id) => ({ id, ...RIVAL_POOL[id] }));
+}
+
+// 大会のライバル“ユニット”を作る（ペア/団体のリーグ用）。unitCount-1 ユニット、各 unitSize 人。
+// 各ユニットは「先頭＝ネームド or モブの代表（lead）＋残りはモブ充足」。ユニット名＝代表名。
+//   unitSize=1（個人）なら従来どおり 1 人ユニットの集まり。
+export function rivalUnits(tournamentId, tier, unitCount, unitSize, { seedPrefix = "league", startingPoints = 25000 } = {}) {
+  const leadCount = Math.max(0, unitCount - 1); // 弟子ユニットを除く
+  const leads = tournamentRoster(tournamentId, tier, leadCount, { seedPrefix, startingPoints });
+  return leads.map((lead, ui) => {
+    const members = [lead];
+    for (let m = 1; m < unitSize; m++) {
+      members.push(makeMob({ seed: `${seedPrefix}-${tournamentId}-u${ui}-m${m}`, startingPoints }));
+    }
+    return { id: lead.id, name: lead.name, isRival: !!lead.isRival, rivalTitle: lead.rivalTitle || "", introLine: lead.introLine || "", color: lead.color, lead, members };
+  });
 }

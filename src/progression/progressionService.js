@@ -366,11 +366,12 @@ export function tournamentGate(profile, t) {
   return { ok: tier.id !== "dai_ressei", tier };
 }
 
-// その節（半荘）の各プレイヤーのポイント＝素点((最終−25000)/1000)＋ウマ。
-export function leaguePoints(standings = [], uma = [50, 10, -10, -30]) {
+// その節（半荘）の各ユニットのポイント＝素点((最終−基準)/1000)＋ウマ。
+// base＝ユニットの基準点（個人=25000 / ペア=50000 / 団体=75000）。
+export function leaguePoints(standings = [], uma = [50, 10, -10, -30], base = 25000) {
   return standings.map((s) => ({
     id: s.id, isHuman: !!s.isHuman, rank: s.rank,
-    pt: Math.round(((s.points ?? 25000) - 25000) / 1000) + (uma[s.rank] ?? 0),
+    pt: Math.round(((s.points ?? base) - base) / 1000) + (uma[s.rank] ?? 0),
   }));
 }
 

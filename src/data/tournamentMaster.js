@@ -35,7 +35,14 @@ export const TOURNAMENT_TIER = {
 
 // 出場者（エントリー）総数を形式で固定（Mリーグ＝8基準）。弟子を含む人数。
 // 個人=8 / ペア=16（＝8ペア×2人） / 団体=32。毎節は卓に4人ずつ着き、残りは別卓（擬似結果）で累積に反映。
-export const ENTRANTS_BY_FORMAT = { solo4: 8, solo3: 8, pair: 16, team: 32, final: 8 };
+// 出場者（人数）。リーグは常に8ユニットで競う：個人=8人(1人ユニット) / ペア=16人(2人×8) / 団体=24人(3人×8)。
+export const ENTRANTS_BY_FORMAT = { solo4: 8, solo3: 8, pair: 16, team: 24, final: 8 };
+// 1ユニットの人数（リーグの単位）。
+export const UNIT_SIZE_BY_FORMAT = { solo4: 1, solo3: 1, pair: 2, team: 3, final: 1 };
+// 毎節「卓に着くユニット数」。個人=4人、ペア=2ペア(4席)、団体=4チーム(代表1人ずつ)。
+export const UNITS_AT_TABLE_BY_FORMAT = { solo4: 4, solo3: 3, pair: 2, team: 4, final: 4 };
+// 卓に着くユニット数 → 順位点（ウマ）。4ユニット＝Mリーグ準拠、2ユニット＝ペアの一騎打ち。
+export const UMA_BY_UNITS = { 2: [15, -15], 3: [30, 0, -30], 4: [50, 10, -10, -30] };
 
 // 最終累積順位 → クリア評価ランク（§4.5.2・満貫級が下限）。
 export const PLACE_RANKS = ["役満級", "倍満級", "跳満級", "満貫級"];
@@ -43,9 +50,7 @@ export const PLACE_RANKS = ["役満級", "倍満級", "跳満級", "満貫級"];
 export const tournamentById = (id) => TREASURE_TOURNAMENTS.find((t) => t.id === id) || TREASURE_TOURNAMENTS[0];
 
 // 形式 → 卓人数（個人戦）。pair/team は専用対局（別系統）なので playerCount は実装側で扱う。
-const PLAYER_COUNT = { solo4: 4, solo3: 3 };
-// 個人戦の順位点（ウマ）。四麻＝M リーグ準拠、三麻＝3 人ウマ。
-const UMA_BY_COUNT = { 4: [50, 10, -10, -30], 3: [30, 0, -30] };
+const PLAYER_COUNT = { solo4: 4, solo3: 3, pair: 4, team: 4, final: 4 };
 
 // 大会の“素性”＋ティア既定値＋実行時の相手 Lv をマージした、ラン用コンフィグ。
 // opts.oppLv＝キャラ進捗で決まる相手の強さ。opts.finalFormat＝無双国書の会場形式（キャラ別）。
@@ -55,14 +60,19 @@ export function tournamentRunConfig(id, opts = {}) {
   const oppLv = opts.oppLv ?? tc.defaultOppLv;
   const format = (t.format === "final" && opts.finalFormat) ? opts.finalFormat : t.format;
   const playerCount = PLAYER_COUNT[format] || 4;
-  const runnable = format === "solo4" || format === "solo3"; // pair/team は別系統（順次対応）
-  // 出場者総数（弟子含む）は形式で固定（個人8 / ペア16 / 団体32）。卓は常に playerCount（基本4）。
-  // 超える分は別卓扱いで累積に反映する。
+  const runnable = true; // 個人/ペア/団体すべて対応（final は会場形式に解決済み）
+  // 出場者総数（弟子含む）は形式で固定（個人8 / ペア16 / 団体24）。リーグの単位＝ユニット。
   const entrants = ENTRANTS_BY_FORMAT[format] || Math.max(playerCount, 8);
+  const unitSize = UNIT_SIZE_BY_FORMAT[format] || 1;
+  const unitCount = Math.max(2, Math.round(entrants / unitSize)); // 常に8
+  const unitsAtTable = UNITS_AT_TABLE_BY_FORMAT[format] || 4;
+  const uma = UMA_BY_UNITS[unitsAtTable] || UMA_BY_UNITS[4];
+  const base = 25000 * unitSize; // ユニットの素点基準（ペア=50000 / 団体=75000）
   return {
     id: t.id, name: t.name, treasure: t.treasure, format, tier: t.tier, isFinal: !!t.isFinal,
     playerCount, entrants, runnable,
-    matches: tc.matches, rounds: tc.rounds, uma: UMA_BY_COUNT[playerCount] || tc.uma,
+    unitSize, unitCount, unitsAtTable, base,
+    matches: tc.matches, rounds: tc.rounds, uma,
     soulClear: tc.soulClear, metaByPlace: tc.metaByPlace, rankByPlace: PLACE_RANKS,
     gateOppLv: oppLv, rivalLv: oppLv,
   };

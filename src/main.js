@@ -34,7 +34,7 @@ import { waits } from "./core/rules/winCheck.js";
 import { shanten } from "./core/rules/shanten.js";
 import { pickVoiceLine } from "./data/voiceLines.js";
 import { makeMobRoster, mobSilhouettePaths } from "./data/mobMaster.js";
-import { tournamentRoster } from "./data/tournamentRivalMaster.js";
+import { rivalUnits } from "./data/tournamentRivalMaster.js";
 import { isDebugMode } from "./app/debug.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
@@ -766,9 +766,50 @@ async function launchHonestMatch(config) {
   });
 }
 
-// 大会（M リーグ制）。出場者は entrants 名（弟子含む・4〜8）。毎節は卓に4人ずつ着き（弟子＋3名）、
-// 残りの出場者は別卓扱い（擬似結果）で累積に反映。全 N 節の累積ポイント1位で優勝。
-let tournamentRun = null; // { t, matchIndex, field, totals, names, deshiId }
+// 大会（M リーグ制）。リーグは常に「8ユニット」で競う：個人=8人 / ペア=8ペア(16人) / 団体=8チーム(24人)。
+// 毎節は卓に unitsAtTable ユニットが着き（弟子は必ず参加）、残りは別卓扱い（擬似結果）で累積に反映。
+// 全 N 節の累積ポイント1位（ユニット単位）で優勝＝宝獲得。
+let tournamentRun = null; // { t, matchIndex, units, totals, names, deshiUnitId, seatedUnitIds }
+
+// 団体戦の弟子チームの“仲間”（師匠以外の3人目）。正典準拠（ビビ＝焔）＋他は妥当な補完。
+const ALLY_BY_MENTOR = { bibi: "homura", shiyue: "mamori", kakeha_ruina: "doranie" };
+// 対局用に持ち点（startingPoints）を上書きしたキャラの複製を返す。
+function asMatchChar(char, points) {
+  return { ...char, stats: { ...(char?.stats || {}), startingPoints: points } };
+}
+// 弟子ユニットを編成する（個人=弟子のみ / ペア=弟子＋師匠 / 団体=弟子＋師匠＋仲間）。
+function buildDeshiUnit(av, mentorId, format, unitSize) {
+  const members = [avatarToCharacter(av, 25000)];
+  if (unitSize >= 2) {
+    const mentor = CHARACTERS.find((c) => c.id === mentorId) || CHARACTERS[0];
+    members.push(asMatchChar(mentor, 25000));
+  }
+  if (unitSize >= 3) {
+    const allyId = ALLY_BY_MENTOR[mentorId] || CHARACTERS.find((c) => c.id !== mentorId)?.id;
+    const ally = CHARACTERS.find((c) => c.id === allyId) || CHARACTERS[1];
+    members.push(asMatchChar(ally, 25000));
+  }
+  return { id: av.avatarId, name: av.name, isDeshi: true, isRival: false, members };
+}
+// この節に着卓するユニットを選ぶ（弟子は必ず含み、他ユニットはローテーションで入れ替わる）。
+function seatUnitsFor(units, matchIndex, count) {
+  const deshi = units.find((u) => u.isDeshi);
+  const others = units.filter((u) => !u.isDeshi);
+  const need = Math.max(0, count - 1);
+  let pick;
+  if (others.length <= need) pick = others.slice(0, need);
+  else { pick = []; for (let k = 0; k < need; k++) pick.push(others[(matchIndex * need + k) % others.length]); }
+  return [deshi, ...pick];
+}
+// 卓に居ないユニットの「1節ぶん」擬似ポイント（別卓の結果）。実リーグの分布に寄せ、ネームドは少し強気。
+function simAbsentLeaguePt(uma, isNamed, rng = Math.random) {
+  const base = uma[Math.floor(rng() * uma.length)] ?? 0; // ランダム着順のウマ
+  const soten = Math.round((rng() * 2 - 1) * 16);        // 素点ゆらぎ ±16
+  return base + soten + (isNamed ? 4 : 0);
+}
+
+const UNIT_WORD = { solo4: "人", solo3: "人", pair: "ペア", team: "チーム", final: "人" };
+
 async function openTournament() {
   const profile = await profileRepo.loadProfile();
   const av = activeAvatar(profile);
@@ -776,60 +817,50 @@ async function openTournament() {
   const step = nextTreasureStep(av?.mentorCharacterId, profile.records?.treasures || []);
   if (!step) { openMentorHome({ tournamentGate: { name: "九蓮宝士", tierLabel: "九つの宝、すべて制覇！" } }); return; }
   const t = tournamentRunConfig(step.id, { oppLv: step.oppLv, finalFormat: step.finalFormat });
-  if (!t.runnable) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: `この形式（${t.format}）は準備中` } }); return; }
   const gate = tournamentGate(profile, t);
   if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
-  // 出場ライバルは大会通して固定（同じ顔ぶれと累積で競る＝リーグの手触り）。出場者−1 体。
-  // ティアが上がるほど“名のあるライバル”が増え、残りはシルエットのモブで埋める（§4.6.10 #1）。
-  const field = tournamentRoster(t.id, t.tier, t.entrants - 1, { seedPrefix: "league", startingPoints: 25000 });
+  // 弟子ユニット＋ライバルユニット（計 unitCount＝8）。ティアでネームド比率が増える（§4.6.10 #1）。
+  const deshiUnit = buildDeshiUnit(av, av.mentorCharacterId, t.format, t.unitSize);
+  const rUnits = rivalUnits(t.id, t.tier, t.unitCount, t.unitSize, { seedPrefix: "league", startingPoints: 25000 });
+  const units = [deshiUnit, ...rUnits];
   // 開幕前に大会要項（ルール・優勝条件・ライバル紹介）の専用画面をはさむ（じっくり演出・#2）。
-  showTournamentBriefing(t, field, () => {
-    const totals = { [av.avatarId]: 0 };
-    const names = { [av.avatarId]: av.name };
-    for (const r of field) { totals[r.id] = 0; names[r.id] = r.name; }
-    tournamentRun = { t, matchIndex: 0, field, totals, names, deshiId: av.avatarId };
+  showTournamentBriefing(t, rUnits, () => {
+    const totals = {}; const names = {};
+    for (const u of units) { totals[u.id] = 0; names[u.id] = u.name; }
+    tournamentRun = { t, matchIndex: 0, units, totals, names, deshiUnitId: deshiUnit.id };
     playTournamentMatch();
   }, () => openMentorHome());
 }
 
-// この節に弟子と同卓するライバルを選ぶ（出場者をローテーションで着卓させ、相手が節ごとに替わる）。
-function seatRivalsFor(field, matchIndex, seats) {
-  const R = field.length;
-  if (R <= seats) return field.slice(0, seats);
-  const out = [];
-  for (let k = 0; k < seats; k++) out.push(field[(matchIndex * seats + k) % R]);
-  return out;
-}
-// 卓に居ない出場者の「1節ぶん」擬似ポイント（別卓の結果）。実リーグの分布に寄せ、ネームドは少し強気。
-function simAbsentLeaguePt(uma, isNamed, rng = Math.random) {
-  const base = uma[Math.floor(rng() * uma.length)] ?? 0; // ランダム着順のウマ
-  const soten = Math.round((rng() * 2 - 1) * 16);        // 素点ゆらぎ ±16
-  return base + soten + (isNamed ? 4 : 0);
-}
-
 // 大会 要項画面（開幕前）。ルール・優勝条件・ライバル紹介を“じっくり”見せてから挑む（#2）。
-function showTournamentBriefing(t, rivals, onStart, onCancel) {
+function showTournamentBriefing(t, rUnits, onStart, onCancel) {
   const host = el("app") || document.body;
-  const FMT = { solo4: "個人戦・四人打ち", solo3: "個人戦・三人打ち", pair: "ペア戦", team: "団体戦", final: "最終決戦" };
+  const FMT = { solo4: "個人戦・四人打ち", solo3: "個人戦・三人打ち", pair: "ペア戦・2対2", team: "団体戦・チーム対抗", final: "最終決戦" };
+  const word = UNIT_WORD[t.format] || "人";
   const umaStr = (t.uma || []).map((u) => (u > 0 ? "+" : "") + u).join(" / ");
-  // ライバル紹介：名のある者は肩書き＋口上を1枚ずつ、無名のモブは1行に集約（縦に伸ばさない）。
-  const namedR = rivals.filter((r) => r.isRival);
-  const mobR = rivals.filter((r) => !r.isRival);
-  const namedCards = namedR.map((r) => `
+  // ライバル紹介：名のある代表を最大4枚まで1枚ずつ、それ以外（多すぎる分＋無名）は1行に集約
+  //（固定ステージに収めるため縦に伸ばさない・QA無スクロール）。
+  const MAX_NAMED_CARDS = 4;
+  const namedR = rUnits.filter((u) => u.isRival);
+  const mobR = rUnits.filter((u) => !u.isRival);
+  const shown = namedR.slice(0, MAX_NAMED_CARDS);
+  const folded = namedR.length - shown.length + mobR.length; // 残りネームド＋無名
+  const memberNote = t.unitSize > 1 ? `<span class="tb-rival-mem">＋仲間${t.unitSize - 1}</span>` : "";
+  const namedCards = shown.map((u) => `
       <div class="tb-rival named">
-        <div class="tb-rival-art" style="${r.assets?.portrait ? `--art:url('${r.assets.portrait}')` : `background:${r.color}`}"></div>
+        <div class="tb-rival-art" style="${u.lead?.assets?.portrait ? `--art:url('${u.lead.assets.portrait}')` : `background:${u.color}`}"></div>
         <div class="tb-rival-info">
-          <div class="tb-rival-name" style="color:${r.color}">${esc(r.name)}</div>
-          ${r.rivalTitle ? `<div class="tb-rival-title">${esc(r.rivalTitle)}</div>` : ""}
-          ${r.introLine ? `<div class="tb-rival-line">「${esc(r.introLine)}」</div>` : ""}
+          <div class="tb-rival-name" style="color:${u.color}">${esc(u.name)}${memberNote}</div>
+          ${u.rivalTitle ? `<div class="tb-rival-title">${esc(u.rivalTitle)}</div>` : ""}
+          ${u.introLine ? `<div class="tb-rival-line">「${esc(u.introLine)}」</div>` : ""}
         </div>
       </div>`).join("");
-  const mobSummary = mobR.length ? `
+  const mobSummary = folded > 0 ? `
       <div class="tb-rival tb-mobsum">
-        <div class="tb-rival-art" style="background:${mobR[0].color}"></div>
+        <div class="tb-rival-art" style="background:${(mobR[0] || namedR[namedR.length - 1])?.color || "#555"}"></div>
         <div class="tb-rival-info">
-          <div class="tb-rival-name">ほか ${mobR.length} 名</div>
-          <div class="tb-rival-title tb-mob">名もなき打ち手たち</div>
+          <div class="tb-rival-name">ほか ${folded} ${word}</div>
+          <div class="tb-rival-title tb-mob">${mobR.length ? "名もなき打ち手たち" : "手練れたち"}</div>
         </div>
       </div>` : "";
   const rivalCards = namedCards + mobSummary;
@@ -850,12 +881,12 @@ function showTournamentBriefing(t, rivals, onStart, onCancel) {
         <div class="tb-tre-txt"><b>${esc(t.treasure?.name || "")}</b><small>${esc(t.treasure?.reading || "")}</small><div class="tb-tre-sym">${esc(t.treasure?.symbol || t.treasure?.baseYaku || "")}</div></div>
       </div>
       <div class="tb-rules">
-        <div class="tb-rule"><span class="tb-rk">出場</span><span class="tb-rv"><b>${t.entrants} 名</b>（毎節は卓に4人ずつ・相手は入れ替わる）</span></div>
+        <div class="tb-rule"><span class="tb-rk">出場</span><span class="tb-rv"><b>${t.entrants} 名</b>（${t.unitCount} ${word}／毎節 ${t.unitsAtTable} ${word}が対戦）</span></div>
         <div class="tb-rule"><span class="tb-rk">ルール</span><span class="tb-rv">半荘 ${t.matches} 節（各 25,000 持ち・節ごとリセット）</span></div>
         <div class="tb-rule"><span class="tb-rk">順位点</span><span class="tb-rv">ウマ ${umaStr}（Mリーグ準拠）</span></div>
         <div class="tb-rule"><span class="tb-rk">優勝条件</span><span class="tb-rv">全 ${t.matches} 節の<b>累積ポイント1位</b>で『${esc(t.treasure?.name || "宝")}』獲得</span></div>
       </div>
-      <div class="tb-rivals-head">立ちはだかる者たち（${t.entrants - 1} 名）</div>
+      <div class="tb-rivals-head">立ちはだかる者たち（${rUnits.length} ${word}）</div>
       <div class="tb-rivals">${rivalCards}</div>
       <div class="tb-btns"></div>
     </div>`;
@@ -866,47 +897,108 @@ function showTournamentBriefing(t, rivals, onStart, onCancel) {
   btns.appendChild(mkBtn("やめておく", "btn-ron", () => close(false)));
   btns.appendChild(mkBtn("この卓に挑む", "btn-tsumo", () => close(true)));
 }
+
 async function playTournamentMatch() {
-  const run = tournamentRun;
-  const profile = await profileRepo.loadProfile();
-  const av = activeAvatar(profile);
-  const section = `第 ${run.matchIndex + 1} / ${run.t.matches} 節`;
-  // この節の同卓ライバル（弟子＋3）。残りの出場者は別卓扱い（onTournamentMatchDone で擬似加算）。
-  run.seated = seatRivalsFor(run.field, run.matchIndex, run.t.playerCount - 1);
-  launchHonestMatch({
-    avatar: av, opponents: run.seated, players: run.t.playerCount, rounds: run.t.rounds || 2, // 半荘
-    startPoints: 25000, // M リーグ＝節ごと 25000 開始
-    tournament: true,
-    isLast: run.matchIndex >= run.t.matches - 1,
-    matchLabel: section,
-    tournamentInfo: { name: run.t.name, section, treasureName: run.t.treasure?.name || "", tier: run.t.tier, entrants: run.t.entrants },
-    onResult: (result) => onTournamentMatchDone(result),
+  const run = tournamentRun; const t = run.t;
+  const section = `第 ${run.matchIndex + 1} / ${t.matches} 節`;
+  const seated = seatUnitsFor(run.units, run.matchIndex, t.unitsAtTable);
+  run.seatedUnitIds = seated.map((u) => u.id);
+  const tournamentInfo = { name: t.name, section, treasureName: t.treasure?.name || "", tier: t.tier, entrants: t.entrants };
+  const ctx = { tournament: true, tournamentInfo, matchLabel: section, rounds: t.rounds || 2, onResult: (result) => onTournamentMatchDone(result) };
+  const deshiUnit = seated.find((u) => u.isDeshi);
+  const rivalSeated = seated.filter((u) => !u.isDeshi);
+  if (t.format === "pair") {
+    launchPairTournamentMatch(deshiUnit, rivalSeated[0], ctx);
+  } else if (t.format === "team") {
+    launchTeamTournamentMatch(deshiUnit, rivalSeated, ctx);
+  } else {
+    // 個人戦：弟子（avatar）＋同卓ライバルの代表を launchHonestMatch へ。
+    const profile = await profileRepo.loadProfile();
+    const av = activeAvatar(profile);
+    launchHonestMatch({
+      avatar: av, opponents: rivalSeated.map((u) => u.members[0]), players: t.playerCount, rounds: t.rounds || 2,
+      startPoints: 25000, tournament: true, isLast: run.matchIndex >= t.matches - 1, matchLabel: section,
+      tournamentInfo, onResult: (result) => onTournamentMatchDone(result),
+    });
+  }
+}
+
+// ペア大会の1節（2対2・自ペア=弟子＋師匠）。結果は honestCtx.onResult でユニット順位を返す。
+async function launchPairTournamentMatch(deshiUnit, rivalUnit, ctx) {
+  teamBattleData = null; humanIndex = 0; selectedRounds = ctx.rounds || 2;
+  // 席: 0=弟子, 1=敵A, 2=師匠(対面), 3=敵B。
+  const order = [deshiUnit.members[0], rivalUnit.members[0], deshiUnit.members[1], rivalUnit.members[1]];
+  await charImages.load(order.filter((c) => !c.isMob));
+  const abilities = order.map((c) => instantiateAbilities(c));
+  const seated = order.map((c, i) => ({ character: c, abilities: abilities[i] }));
+  for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
+  pairBattleData = {
+    pairOf: [0, 1, 0, 1], pairs: [{ seats: [0, 2] }, { seats: [1, 3] }], chars: order,
+    hp: order.map((c) => c.stats.startingPoints),
+    pairScore: [order[0].stats.startingPoints + order[2].stats.startingPoints, order[1].stats.startingPoints + order[3].stats.startingPoints],
+    unitIds: [deshiUnit.id, rivalUnit.id], isTournament: true,
+  };
+  honestCtx = ctx; honestAutoPlay = false;
+  const dealerIndex = Math.floor(Math.random() * seated.length);
+  showScreen("match-intro-screen");
+  showMatchIntro(el("match-intro-screen"), {
+    seated, humanIndex, mode: { rounds: selectedRounds, players: 4 }, dealerIndex, audio,
+    pairs: pairBattleData.pairs.map((p) => ({ seats: p.seats, chars: p.seats.map((s) => order[s]) })),
+    tournament: ctx.tournamentInfo, onComplete: () => beginGame(seated, dealerIndex),
   });
 }
+
+// 団体大会の1節（4チーム対抗・自チーム=弟子＋師匠＋仲間）。結果は honestCtx.onResult でユニット順位を返す。
+async function launchTeamTournamentMatch(deshiUnit, rivalUnits, ctx) {
+  pairBattleData = null; humanIndex = 0; selectedRounds = ctx.rounds || 2;
+  const allUnits = [deshiUnit, ...rivalUnits];
+  const allTeams = allUnits.map((u) => u.members);
+  await charImages.load(allTeams.flat().filter((c) => c && !c.isMob));
+  const abilitiesByTeam = allTeams.map((team) => team.map((c) => (c ? instantiateAbilities(c) : null)));
+  const seated = allTeams.map((team, ti) => ({ character: team[0], abilities: abilitiesByTeam[ti][0] }));
+  for (const team of allTeams) for (const c of team) if (c) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
+  teamBattleData = {
+    numTeams: allTeams.length,
+    teams: allTeams.map((team, ti) => ({
+      chars: team, activeIdx: 0, hps: team.map((c) => c.stats.startingPoints),
+      score: team.reduce((a, c) => a + (c?.stats.startingPoints || 0), 0), abilitiesByMember: abilitiesByTeam[ti],
+    })),
+    unitIds: allUnits.map((u) => u.id), isTournament: true,
+  };
+  honestCtx = ctx; honestAutoPlay = false;
+  const dealerIndex = Math.floor(Math.random() * seated.length);
+  showScreen("match-intro-screen");
+  showMatchIntro(el("match-intro-screen"), {
+    seated, humanIndex, mode: { rounds: selectedRounds, players: allTeams.length }, dealerIndex, audio,
+    teams: teamBattleData.teams, tournament: ctx.tournamentInfo, onComplete: () => beginGame(seated, dealerIndex),
+  });
+}
+
 async function onTournamentMatchDone(result) {
-  const run = tournamentRun;
-  const per = leaguePoints(result.standings || [], run.t.uma); // この節のポイント（弟子＋同卓ライバル）
+  const run = tournamentRun; const t = run.t;
+  // 同卓ユニットの節ポイント（素点は基準＝ユニット人数×25000、ウマは卓のユニット数で決定）。
+  const per = leaguePoints(result.standings || [], t.uma, t.base);
   const deltaById = {};
   for (const x of per) { run.totals[x.id] = (run.totals[x.id] || 0) + x.pt; deltaById[x.id] = x.pt; }
-  // 卓に居なかった出場者は別卓扱いで擬似ポイントを加算（全員の累積を動かす＝シーズンの手触り）。
-  const seatedIds = new Set((run.seated || []).map((r) => r.id));
-  for (const r of run.field) {
-    if (seatedIds.has(r.id)) continue;
-    const pt = simAbsentLeaguePt(run.t.uma, !!r.isRival);
-    run.totals[r.id] = (run.totals[r.id] || 0) + pt;
-    deltaById[r.id] = pt;
+  // 卓に居なかったユニットは別卓扱いで擬似ポイントを加算（全員の累積を動かす＝シーズンの手触り）。
+  const seatedSet = new Set(run.seatedUnitIds || []);
+  for (const u of run.units) {
+    if (seatedSet.has(u.id)) continue;
+    const pt = simAbsentLeaguePt(t.uma, !!u.isRival);
+    run.totals[u.id] = (run.totals[u.id] || 0) + pt;
+    deltaById[u.id] = pt;
   }
   run.matchIndex += 1;
-  const finished = run.matchIndex >= run.t.matches;
+  const finished = run.matchIndex >= t.matches;
   const ranked = Object.keys(run.totals).sort((a, b) => run.totals[b] - run.totals[a]);
   // 順位表演出（ヒリヒリ）→ 次節 or 最終結果。
-  showTournamentStandings(run, { ranked, deltaById, finished, sectionLabel: `第 ${run.matchIndex} / ${run.t.matches} 節` }, async (action) => {
+  showTournamentStandings(run, { ranked, deltaById, finished, entrants: t.entrants, sectionLabel: `第 ${run.matchIndex} / ${t.matches} 節` }, async (action) => {
     if (finished || action === "retreat") {
-      const finalRank = ranked.findIndex((id) => id === run.deshiId);
+      const finalRank = ranked.findIndex((id) => id === run.deshiUnitId);
       const cur = await profileRepo.loadProfile();
-      const res = applyLeagueResult(cur, run.t, finalRank, action === "retreat");
+      const res = applyLeagueResult(cur, t, finalRank, action === "retreat");
       await profileRepo.saveProfile(res.profile);
-      const t = run.t; const standings = ranked.map((id, i) => ({ name: run.names[id], pt: run.totals[id], isHuman: id === run.deshiId, place: i + 1 }));
+      const standings = ranked.map((id, i) => ({ name: run.names[id], pt: run.totals[id], isHuman: id === run.deshiUnitId, place: i + 1 }));
       tournamentRun = null;
       openMentorHome({ league: { name: t.name, treasure: t.treasure, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, standings } });
     } else {
@@ -922,14 +1014,14 @@ function updateTournamentHud() {
   gs.querySelector(".game-tourney-hud")?.remove();
   const info = honestCtx?.tournamentInfo;
   if (!info) return;
-  const fieldN = info.entrants || (tournamentRun ? tournamentRun.field.length + 1 : 4);
-  let rankTxt = `開幕節（全${fieldN}名）`;
   const run = tournamentRun;
+  const unitN = run ? run.units.length : 8;
+  let rankTxt = `開幕節（全${unitN}組）`;
   if (run && run.matchIndex > 0) {
     const ranked = Object.keys(run.totals).sort((a, b) => run.totals[b] - run.totals[a]);
-    const place = ranked.findIndex((id) => id === run.deshiId);
-    const tot = run.totals[run.deshiId] || 0;
-    if (place >= 0) rankTxt = `前節まで ${place + 1}/${fieldN}位（${tot > 0 ? "+" : ""}${tot}pt）`;
+    const place = ranked.findIndex((id) => id === run.deshiUnitId);
+    const tot = run.totals[run.deshiUnitId] || 0;
+    if (place >= 0) rankTxt = `前節まで ${place + 1}/${unitN}位（${tot > 0 ? "+" : ""}${tot}pt）`;
   }
   const hud = document.createElement("div");
   hud.className = "game-tourney-hud";
@@ -945,7 +1037,7 @@ function showTournamentStandings(run, info, onDone) {
   const rows = info.ranked.map((id, i) => {
     const total = run.totals[id];
     const d = info.deltaById[id] ?? 0;
-    const me = id === run.deshiId;
+    const me = id === run.deshiUnitId;
     return `
       <div class="ts-row${me ? " me" : ""}" style="animation-delay:${(info.ranked.length - 1 - i) * 0.12}s">
         <div class="ts-place ts-p${i + 1}">${i + 1}</div>
@@ -2951,7 +3043,20 @@ function showTeamBattleGameOver() {
     }, reveal(0) * 1000 + 650);
   }
 
-  overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+  // 大会（団体M リーグ）：4チームの結果をユニット順位として大会へ返す。
+  const btnsT = overlay.querySelector(".go-buttons");
+  if (honestCtx?.tournament && teamBattleData.unitIds) {
+    const standings = order.map((ti, i) => ({ id: teamBattleData.unitIds[ti], name: teamLabelOf(ti), points: totalOf(teams[ti]), rank: i, isHuman: ti === humanIndex }));
+    const result = { standings, placement: order.indexOf(humanIndex), won: order[0] === humanIndex };
+    const ctx = honestCtx; honestCtx = null;
+    const note = document.createElement("div");
+    note.className = "go-tourney-note";
+    note.textContent = `${ctx.matchLabel || "大会"}　この節：${order.indexOf(humanIndex) + 1} 位`;
+    btnsT.parentElement.insertBefore(note, btnsT);
+    btnsT.appendChild(mkBtn("順位表へ", "btn-tsumo", () => { overlay.classList.add("hidden"); ctx.onResult?.(result, "continue"); }));
+  } else {
+    btnsT.appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+  }
 }
 
 // ペア戦の結果画面。団体戦版と同じ「ペア点数の降順ランキング＋優勝ペア」。
@@ -3064,7 +3169,20 @@ function showPairBattleGameOver() {
     }, reveal(0) * 1000 + 650);
   }
 
-  overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+  // 大会（ペアM リーグ）：2ペアの結果をユニット順位として大会へ返す。
+  const btnsP = overlay.querySelector(".go-buttons");
+  if (honestCtx?.tournament && pairBattleData.unitIds) {
+    const standings = order.map((pid, i) => ({ id: pairBattleData.unitIds[pid], name: pairLabelOf(pid), points: totalOf(pid), rank: i, isHuman: pid === myPair }));
+    const result = { standings, placement: order.indexOf(myPair), won: order[0] === myPair };
+    const ctx = honestCtx; honestCtx = null;
+    const note = document.createElement("div");
+    note.className = "go-tourney-note";
+    note.textContent = `${ctx.matchLabel || "大会"}　この節：${order.indexOf(myPair) + 1} 位`;
+    btnsP.parentElement.insertBefore(note, btnsP);
+    btnsP.appendChild(mkBtn("順位表へ", "btn-tsumo", () => { overlay.classList.add("hidden"); ctx.onResult?.(result, "continue"); }));
+  } else {
+    btnsP.appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+  }
 }
 
 // ----------------------------------------------------------------- helpers
