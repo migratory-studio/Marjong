@@ -17,7 +17,8 @@ import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
-import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState } from "../progression/progressionService.js";
+import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState, setMentorMemory } from "../progression/progressionService.js";
+import { pickMentorGreeting, pickRestTalk } from "../data/mentorVoiceMaster.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
@@ -126,6 +127,18 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   const actionsLeft = di.actionsLeft;
   const timeLabel = TIME_OF_DAY[Math.min(di.actionsUsed, TIME_OF_DAY.length - 1)];
 
+  // 師匠の一言を状況連動で選ぶ（調子・時間帯・絆・直近結果・前回の2択を参照）。
+  const mem = profile.mentorMemory || {};
+  const recentOutcome = (mem.lastOutcomeDay != null && (di.day - mem.lastOutcomeDay) <= 1) ? mem.lastOutcome : null;
+  const greetCtx = {
+    condTier: cond.tone,
+    time: ["asa", "hiru", "yoru"][Math.min(di.actionsUsed, 2)],
+    bondLevel: avatar.bondLevel ?? 1,
+    lastOutcome: (recentOutcome === "daiseikou" || recentOutcome === "shippai") ? recentOutcome : null,
+    afterChoice: mem.lastChoice || null,
+  };
+  const greetLine = pickMentorGreeting(avatar.mentorCharacterId, greetCtx) || mentorLine(actionsLeft);
+
   // ---- 表示値の解決（未実装ぶんは仮値）----
   const soul = profile.wallet?.soul ?? 0;
   const meta = profile.wallet?.meta ?? 0;            // 継承（メタ通貨・未実装→0）
@@ -201,7 +214,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         ${mAbilityName ? `<div class="mhx-np-tip"><div class="mhx-np-tip-h">能力</div><div class="mhx-np-tip-n">${esc(mAbilityName)}</div><div class="mhx-np-tip-d">${esc(mAbilityDesc)}</div></div>` : ""}
       </div>
       <div class="mhx-bubble">
-        <div class="mhx-q">${esc(mentorLine(actionsLeft))}</div>
+        <div class="mhx-q">${esc(greetLine)}</div>
       </div>
     </div>
 
@@ -371,6 +384,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-bar"><div class="mhx-fill mhx-md-fill" style="width:${curPct}%"></div></div>
       </div>
       <p class="mhx-md-result" hidden></p>
+      <div class="mhx-rt" hidden></div>
       <button type="button" class="mhx-md-btn"${available ? "" : " disabled"}>${available ? "休憩する（1行動）" : "今日はもう動けない"}</button>
     `;
     let didRest = false;
@@ -396,6 +410,29 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         const r = card.querySelector(".mhx-md-result");
         r.textContent = parts.join("　／　"); r.hidden = false;
         btn.disabled = true; btn.textContent = "ゆっくり休んだ";
+        // 休憩中の2択コミュ（双方向）。選ぶと師匠が返し、その選択を覚える。
+        const talk = pickRestTalk(avatar.mentorCharacterId, { bondLevel: avatar.bondLevel ?? 1, condTier: cond.tone });
+        if (talk) {
+          const rt = card.querySelector(".mhx-rt");
+          rt.innerHTML = `
+            <p class="mhx-rt-prompt">${esc(talk.prompt)}</p>
+            <div class="mhx-rt-choices">${talk.choices.map((c, i) => `<button type="button" class="mhx-rt-choice" data-i="${i}">${esc(c.label)}</button>`).join("")}</div>
+            <p class="mhx-rt-reply" hidden></p>`;
+          rt.hidden = false;
+          let picked = false;
+          rt.querySelectorAll(".mhx-rt-choice").forEach((b) => {
+            b.addEventListener("click", async () => {
+              if (picked) return; picked = true;
+              const ch = talk.choices[Number(b.getAttribute("data-i"))];
+              const cur = await repository.loadProfile();
+              await repository.saveProfile(setMentorMemory(cur, { lastChoice: ch.memory }));
+              const reply = rt.querySelector(".mhx-rt-reply");
+              reply.textContent = ch.reply; reply.hidden = false;
+              rt.querySelectorAll(".mhx-rt-choice").forEach((x) => { x.disabled = true; });
+              b.classList.add("is-picked");
+            });
+          });
+        }
       } catch (e) {
         const r = card.querySelector(".mhx-md-result");
         r.textContent = e?.message || "休憩に失敗しました。"; r.hidden = false;
@@ -426,7 +463,12 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       if (done) return;
       try {
         const res = trainParam(profile, key);
-        await repository.saveProfile(res.profile);
+        // 大成功／失敗は師匠が覚えて、次の一言に反映する。
+        let saved = res.profile;
+        if (res.outcome === "daiseikou" || res.outcome === "shippai") {
+          saved = setMentorMemory(saved, { lastOutcome: res.outcome, lastOutcomeDay: dayInfo(saved).day });
+        }
+        await repository.saveProfile(saved);
         done = true;
         const parts = [];
         if (res.soul) parts.push(`ソウル +${res.soul}`);

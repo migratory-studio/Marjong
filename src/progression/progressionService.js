@@ -346,6 +346,19 @@ export function trainParam(profile, key, rng = Math.random) {
   };
 }
 
+// ------------------------------------------------- 師匠の記憶（双方向・蓄積）
+// 休憩の2択や直近の訓練結果を覚えて、次の「師匠の一言」に反映する。
+// patch 例: { lastChoice:"honest" } / { lastOutcome:"daiseikou", lastOutcomeDay: 12 }
+export function setMentorMemory(profile, patch) {
+  const mem = { ...(profile.mentorMemory || {}), ...patch };
+  if (patch.lastChoice) {
+    const counts = { ...(mem.counts || {}) };
+    counts[patch.lastChoice] = (counts[patch.lastChoice] || 0) + 1;
+    mem.counts = counts;
+  }
+  return { ...profile, mentorMemory: mem };
+}
+
 // ------------------------------------------------- 雀荘巡り（候補選択・§4.6.8）
 // シナリオ進捗（当面 0。経済再調整バッチで実進捗に差し替え）。
 function scenarioProgressLevel(_profile) { return 0; }
