@@ -74,7 +74,7 @@ export function treasureRankFor(count) {
 // 師匠の初期段位（宝数換算・基本は四蓮策士=4 以上）。ホーム表示や格の目安に使う。
 export const MENTOR_TREASURE_RANK = {
   shiyue: 8,        // 八蓮極士（読みの達人・神算鬼謀）
-  bibi: 6,          // 六蓮達士（守りの達人）
+  bibi: 5,          // 五蓮闘士（正典：5つで停滞＝覇道編で残り4つに挑み直す軸。scenario/design/bibi.json）
   kakeha_ruina: 5,  // 五蓮闘士（博徒）
 };
 // 師匠の段位（mentorId → 段位オブジェクト）。未定義師匠は四蓮策士（=4）を下限に。
