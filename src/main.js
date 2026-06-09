@@ -19,7 +19,8 @@ import { showMentorHome } from "./screens/mentorHomeScreen.js";
 import { showRest } from "./screens/restScreen.js";
 import { showGrowth } from "./screens/growthScreen.js";
 import { showAbilityChange } from "./screens/abilityChangeScreen.js";
-import { showScenarioList } from "./screens/scenarioListScreen.js";
+import { showScenarioList, scenariosForMentor } from "./screens/scenarioListScreen.js";
+import { markScenarioRead } from "./progression/scenarioService.js";
 import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
@@ -652,10 +653,27 @@ async function openMentorMode() {
     showAvatarCreate(el("avatar-create-screen"), {
       repository: profileRepo,
       onBack: () => navigate("home"),
-      onCreated: () => openMentorHome(),
+      // 作成完了で師弟シナリオ第1章を自動再生 → 読了後に師弟ホームへ。
+      onCreated: (_saved, avatar) => playFirstChapterThenHome(avatar),
     });
     goScreen("avatar-create-screen");
   }
+}
+
+// マイキャラ作成直後、その師匠の第1章（sortOrder 先頭・unlock=always）を自動再生する。
+function playFirstChapterThenHome(avatar) {
+  const first = scenariosForMentor(avatar?.mentorCharacterId)[0];
+  if (!first) { openMentorHome(); return; }
+  showScreen("scenario-screen");
+  playScenario(first.scenarioId, {
+    audio,
+    onEnd: async () => {
+      const fresh = await profileRepo.loadProfile();
+      const res = markScenarioRead(fresh, first); // 既読化＋初回ソウル
+      if (res.firstRead) await profileRepo.saveProfile(res.profile);
+      openMentorHome();
+    },
+  });
 }
 
 // 師弟ホーム（ハブ）。休憩 / 育成 / 能力変更 / マイキャラへ振り分ける（Phase 2B）。
