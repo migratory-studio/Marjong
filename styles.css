@@ -1045,6 +1045,29 @@ body {
 #mentor-home-screen.mh2 .mhx-tr-rank { font-family:var(--font-min); font-size:18px; color:#5a4520; margin:10px 0 6px; }
 #mentor-home-screen.mh2 .mhx-tr-rank b { font-size:26px; color:#8f2418; letter-spacing:.06em; }
 
+/* ===== 異能段位 獲得演出 ===== */
+#mentor-home-screen.mh2 .mhx-dan { position:relative; text-align:center; padding:14px 8px 6px; overflow:hidden; }
+#mentor-home-screen.mh2 .mhx-dan-rays { position:absolute; left:50%; top:84px; width:520px; height:520px; transform:translate(-50%,-50%); pointer-events:none; z-index:0;
+  background:repeating-conic-gradient(from 0deg, rgba(255,221,140,.22) 0deg 7deg, transparent 7deg 16deg);
+  -webkit-mask:radial-gradient(circle, #000 0 38%, transparent 62%); mask:radial-gradient(circle, #000 0 38%, transparent 62%);
+  animation:mhxDanSpin 14s linear infinite; }
+@keyframes mhxDanSpin { to { transform:translate(-50%,-50%) rotate(360deg); } }
+#mentor-home-screen.mh2 .mhx-dan-kicker { position:relative; z-index:1; font-family:var(--font-go); font-size:12px; letter-spacing:.34em; color:#c8a44d; margin-bottom:8px; }
+#mentor-home-screen.mh2 .mhx-dan-seal { position:relative; z-index:1; width:88px; height:88px; margin:2px auto 12px; border-radius:50%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; color:#3a2400;
+  background:radial-gradient(circle at 38% 32%, #ffe9a8, #d6a23a 70%, #b8862a); border:2px solid #fff2cf;
+  box-shadow:0 0 22px rgba(214,162,58,.7), inset 0 2px 4px rgba(255,255,255,.6), inset 0 -3px 6px rgba(120,80,10,.4);
+  animation:mhxDanPop .5s cubic-bezier(.2,1.5,.4,1) both; }
+#mentor-home-screen.mh2 .mhx-dan-seal-n { font-family:var(--font-min); font-size:40px; line-height:.9; font-weight:700; }
+#mentor-home-screen.mh2 .mhx-dan-seal-s { font-family:var(--font-min); font-size:13px; letter-spacing:.1em; opacity:.85; }
+@keyframes mhxDanPop { from { transform:scale(.3) rotate(-25deg); opacity:0; } }
+#mentor-home-screen.mh2 .mhx-dan-name { position:relative; z-index:1; font-family:var(--font-min); font-size:38px; letter-spacing:.12em; color:#8f2418;
+  text-shadow:0 1px 0 #fff4dc, 0 0 14px rgba(214,162,58,.45); }
+#mentor-home-screen.mh2 .mhx-dan-read { position:relative; z-index:1; font-family:var(--font-go); font-size:13px; letter-spacing:.16em; color:#7a5d2e; margin-top:3px; }
+#mentor-home-screen.mh2 .mhx-dan-msg { position:relative; z-index:1; font-family:var(--font-min); font-size:14px; color:#5a4520; margin:12px 0 16px; }
+#mentor-home-screen.mh2 .mhx-dan.is-max .mhx-dan-name { font-size:42px; color:#a8202a; text-shadow:0 1px 0 #fff4dc, 0 0 20px rgba(214,162,58,.7); }
+#mentor-home-screen.mh2 .mhx-dan.is-max .mhx-dan-seal { box-shadow:0 0 34px rgba(214,162,58,.95), inset 0 2px 4px rgba(255,255,255,.6), inset 0 -3px 6px rgba(120,80,10,.4); }
+
 /* 大成功フラッシュ（訓練が大成功した瞬間の閃光＋文字） */
 #mentor-home-screen.mh2 .mhx-daiseikou-fx { position:absolute; inset:0; z-index:5; pointer-events:none; overflow:hidden; border-radius:16px; display:flex; align-items:center; justify-content:center; }
 #mentor-home-screen.mh2 .mhx-dk-burst { position:absolute; left:50%; top:46%; width:40px; height:40px; transform:translate(-50%,-50%); border-radius:50%;

@@ -53,6 +53,24 @@ export function oppHpForLv(oppLv = 2) {
 // 最終累積順位 → クリア評価ランク（§4.5.2・満貫級が下限）。
 export const PLACE_RANKS = ["役満級", "倍満級", "跳満級", "満貫級"];
 
+// 異能段位（集めた宝の数 → 段位名）。宝1つごとに昇段、9で九蓮宝士。
+export const TREASURE_RANKS = [
+  { n: 1, name: "一蓮緑士", reading: "いちれんりょくし" },
+  { n: 2, name: "二蓮打士", reading: "にれんだし" },
+  { n: 3, name: "三蓮巧士", reading: "さんれんこうし" },
+  { n: 4, name: "四蓮策士", reading: "よんれんさくし" },
+  { n: 5, name: "五蓮闘士", reading: "ごれんとうし" },
+  { n: 6, name: "六蓮達士", reading: "ろくれんたつし" },
+  { n: 7, name: "七蓮覇士", reading: "しちれんはし" },
+  { n: 8, name: "八蓮極士", reading: "はちれんきょくし" },
+  { n: 9, name: "九蓮宝士", reading: "きゅうれんほうし" },
+];
+// 宝の数 → 段位（1〜9）。0/未満は null。
+export function treasureRankFor(count) {
+  if (!count || count < 1) return null;
+  return TREASURE_RANKS[Math.min(9, count) - 1] || null;
+}
+
 export const tournamentById = (id) => TREASURE_TOURNAMENTS.find((t) => t.id === id) || TREASURE_TOURNAMENTS[0];
 
 // 形式 → 卓人数（個人戦）。pair/team は専用対局（別系統）なので playerCount は実装側で扱う。

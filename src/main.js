@@ -26,7 +26,7 @@ import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult } from "./progression/progressionService.js";
-import { tournamentRunConfig, oppHpForLv } from "./data/tournamentMaster.js";
+import { tournamentRunConfig, oppHpForLv, treasureRankFor } from "./data/tournamentMaster.js";
 import { nextTreasureStep } from "./data/mentorCampaignMaster.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
@@ -1021,8 +1021,11 @@ async function onTournamentMatchDone(result) {
       const res = applyLeagueResult(cur, t, finalRank, action === "retreat");
       await profileRepo.saveProfile(res.profile);
       const standings = ranked.map((id, i) => ({ name: run.names[id], pt: run.totals[id], isHuman: id === run.deshiUnitId, place: i + 1 }));
+      // 宝獲得＝異能段位の昇段。獲得後の宝数から段位を引いて演出に渡す。
+      const treasureCount = res.profile.records?.treasures?.length || 0;
+      const rankUp = res.won ? treasureRankFor(treasureCount) : null;
       tournamentRun = null;
-      openMentorHome({ league: { name: t.name, treasure: t.treasure, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, standings } });
+      openMentorHome({ league: { name: t.name, treasure: t.treasure, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, standings, rankUp } });
     } else {
       playTournamentMatch();
     }

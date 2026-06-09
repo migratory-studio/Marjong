@@ -803,6 +803,27 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     if (won) audio?.playPip?.(2600, 0.6);
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
+
+  // ---- 異能段位 獲得演出（宝獲得＝昇段。league の後に出す）----
+  function openDaniRankModal(rk, onDone) {
+    const KANJI = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
+    const isMax = rk.n >= 9;
+    const html = `
+      <div class="mhx-dan${isMax ? " is-max" : ""}">
+        <div class="mhx-dan-rays"></div>
+        <div class="mhx-dan-kicker">異 能 段 位 ＿ 獲 得</div>
+        <div class="mhx-dan-seal"><span class="mhx-dan-seal-n">${KANJI[rk.n - 1] || rk.n}</span><span class="mhx-dan-seal-s">蓮</span></div>
+        <div class="mhx-dan-name">${esc(rk.name)}</div>
+        <div class="mhx-dan-read">${esc(rk.reading)}</div>
+        <div class="mhx-dan-msg">${isMax ? "九つの宝、すべて掌中に。" : `集めた宝　${rk.n} / 9`}</div>
+        <button type="button" class="mhx-md-btn mhx-dan-btn">${isMax ? "——九蓮宝士" : "よし"}</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    audio?.playPip?.(2600, 0.6);
+    setTimeout(() => audio?.playPip?.(3200, 0.5), 130);
+    if (isMax) setTimeout(() => audio?.playPip?.(3800, 0.5), 300);
+    card.querySelector(".mhx-dan-btn")?.addEventListener("click", close);
+  }
   // 出場ゲート不合格（大劣勢＝門前払い）。
   function openTournamentGateModal(g, onDone) {
     const html = `
@@ -905,6 +926,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     flash?.duo ? (next) => openDuoResultModal(flash.duo, next) : null,
     flash?.duoBlocked ? () => openDuoBlockedModal() : null,
     flash?.league ? (next) => openLeagueResultModal(flash.league, next) : null,
+    flash?.league?.rankUp ? (next) => openDaniRankModal(flash.league.rankUp, next) : null,
     flash?.tournamentGate ? (next) => openTournamentGateModal(flash.tournamentGate, next) : null,
     showBanner ? (next) => openDayTransition(daySummary, next) : null,
   ]);
