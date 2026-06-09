@@ -116,6 +116,13 @@ const BGM_TRACKS = ["mahjong-ingame1.mp3", "mahjong-ingame2.mp3"].map((n) => enc
 const BGM_HOME = enc("sound/bgm/Peritune_Hanadoki.mp3");              // title / home screen
 const BGM_SELECT = enc("sound/bgm/PerituneMaterial_Amenoshita3.mp3"); // character select
 const BGM_MENTOR = enc("sound/bgm/PerituneMaterial_Otogi4.mp3");      // 師弟ホーム（ほのぼの和風 / Peritune Otogi4）
+// 宝大会＝ティア別のインゲームBGM（PeriTune／要クレジット表記）。T1=剣戟 / T2=EpicBattle / T3=天ノ下。
+// ※T1/T2 の mp3 は sound/bgm/ に配置（下記ファイル名にリネーム）。T3 は既存 Amenoshita3 を流用。
+const BGM_TOURNEY = {
+  1: enc("sound/bgm/PeriTune_Kengeki.mp3"),       // https://peritune.com/blog/2021/08/17/kengeki/
+  2: enc("sound/bgm/PeriTune_EpicBattle.mp3"),    // https://peritune.com/blog/2021/09/16/epicbattle_j/
+  3: enc("sound/bgm/PerituneMaterial_Amenoshita3.mp3"), // 既存流用（天ノ下 / character select と同曲）
+};
 const SE_DAHAI = ["１", "２", "３", "４"].map((n) => enc(`sound/se/dahai/牌を置く・その${n}.mp3`));
 const SE_SHUFFLE = enc("sound/se/麻雀牌をまぜる.mp3"); // start of hand (deal)
 const SE_KINGAKU = enc("sound/se/shakiin2.mp3");     // on win (score reveal)
@@ -212,6 +219,13 @@ export class AudioManager {
   // Start a random in-game BGM track (loops). Called at the start of each hand.
   playRandomBgm() {
     this.playBgm(BGM_TRACKS[(Math.random() * BGM_TRACKS.length) | 0], { force: true });
+  }
+
+  // 宝大会のティア別BGM（大会中は1曲で通す）。force:false なので2局目以降は同曲なら no-op＝曲が続く。
+  // ファイル未配置なら play() が失敗して無音になるだけ（クラッシュしない）。
+  playTournamentBgm(tier) {
+    const src = BGM_TOURNEY[tier] || BGM_TRACKS[0];
+    this.playBgm(src);
   }
 
   // Title / home and character-select screen BGM.

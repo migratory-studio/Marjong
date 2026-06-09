@@ -1503,7 +1503,10 @@ function beginGame(seated, dealerIndex) {
   game.bus.on(Events.TILE_DISCARDED, () => audio.playDahai());
   // BGM (random per hand) + deal-shuffle SE
   game.bus.on(Events.HAND_STARTED, () => {
-    audio.playRandomBgm(); audio.playShuffle();
+    // 宝大会中はティア別BGMで通す（force:false＝同曲継続）。それ以外は従来どおり局ごとランダム。
+    const tier = honestCtx?.tournamentInfo?.tier;
+    if (tier) audio.playTournamentBgm(tier); else audio.playRandomBgm();
+    audio.playShuffle();
     // 得点推移の記録：各局のはじまり＝直前までの持ち点スナップショット（全員ぶん）。
     scoreHistory.push({ label: game.roundLabel(), points: game.players.map((p) => p.points) });
   });
