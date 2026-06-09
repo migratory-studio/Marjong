@@ -25,7 +25,7 @@ import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
-import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyTournamentResult } from "./progression/progressionService.js";
+import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, leaguePoints } from "./progression/progressionService.js";
 import { TOURNAMENT_MASTER } from "./data/tournamentMaster.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
@@ -54,6 +54,8 @@ function setPendingVoiceSet(v) { pendingVoiceSet = v || null; }
 if (typeof window !== "undefined") window.__setVoiceSet = setPendingVoiceSet;
 
 const el = (id) => document.getElementById(id);
+// HTML 差し込み用の最小エスケープ（モブ名・マイキャラ名など）。
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 let game, renderer, humanIndex = 0;
 let hpCells = null; // 相棒ボード（右側HP表示）の playerIndex -> セル参照マップ
 const tileImages = new TileImages();
@@ -759,47 +761,97 @@ async function launchHonestMatch(config) {
   });
 }
 
-// 大会（宝への道）は「全手動の実麻雀」を N 戦（§4.6.9 を連戦）。runHp を持ち越す。
-let tournamentRun = null; // { t, matchIndex, wins, runHp }
+// 大会（M リーグ制）。全手動の半荘を N 節、固定ライバルと累積ポイントで競う。
+let tournamentRun = null; // { t, matchIndex, rivals, totals:{id:pt}, names:{id:name}, deshiId }
 async function openTournament() {
   const profile = await profileRepo.loadProfile();
   const t = TOURNAMENT_MASTER[0];
   const gate = tournamentGate(profile, t);
   if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
   const av = activeAvatar(profile);
-  tournamentRun = { t, matchIndex: 0, wins: 0, runHp: av?.avatarHpCurrent ?? 25000 };
+  // ライバルは大会通して固定（同じ顔ぶれと累積で競る＝リーグの手触り）。
+  const rivals = makeMobRoster(3, { seedPrefix: `league-${t.id}`, startingPoints: 25000 });
+  const totals = { [av.avatarId]: 0 };
+  const names = { [av.avatarId]: av.name };
+  for (const r of rivals) { totals[r.id] = 0; names[r.id] = r.name; }
+  tournamentRun = { t, matchIndex: 0, rivals, totals, names, deshiId: av.avatarId };
   playTournamentMatch();
 }
 async function playTournamentMatch() {
   const run = tournamentRun;
   const profile = await profileRepo.loadProfile();
   const av = activeAvatar(profile);
-  // 大会の相手は全員 25000 開始のモブ（弟子は runHp を持ち越して着席）。
-  const mobs = makeMobRoster(3, { seedPrefix: `tourney-${run.matchIndex}-${Date.now()}`, startingPoints: 25000 });
   launchHonestMatch({
-    avatar: av, opponents: mobs, players: 4, rounds: 1,
-    startPoints: Math.max(1, Math.round(run.runHp)),
+    avatar: av, opponents: run.rivals, players: 4, rounds: run.t.rounds || 2, // 半荘
+    startPoints: 25000, // M リーグ＝節ごと 25000 開始
     tournament: true,
     isLast: run.matchIndex >= run.t.matches - 1,
-    matchLabel: `第 ${run.matchIndex + 1} / ${run.t.matches} 戦`,
-    onResult: (result, action) => onTournamentMatchDone(result, action),
+    matchLabel: `第 ${run.matchIndex + 1} / ${run.t.matches} 節`,
+    onResult: (result) => onTournamentMatchDone(result),
   });
 }
-async function onTournamentMatchDone(result, action) {
+async function onTournamentMatchDone(result) {
   const run = tournamentRun;
-  run.runHp = Math.max(0, result.finalPoints ?? 0); // 残点＝次戦の持ち越し
-  if ((result.placement ?? 3) <= 1) run.wins += 1;  // 連対＝勝ち抜き
+  const per = leaguePoints(result.standings || [], run.t.uma); // この節のポイント（弟子＋ライバル）
+  for (const x of per) run.totals[x.id] = (run.totals[x.id] || 0) + x.pt;
   run.matchIndex += 1;
-  const defeated = run.runHp <= 0;
   const finished = run.matchIndex >= run.t.matches;
-  if (action === "retreat" || defeated || finished) {
-    const cur = await profileRepo.loadProfile();
-    const res = applyTournamentResult(cur, run.t, { wins: run.wins, matchNo: run.matchIndex, hp: run.runHp });
-    await profileRepo.saveProfile(res.profile);
-    const name = run.t.name; tournamentRun = null;
-    openMentorHome({ tournament: { name, cleared: res.cleared, defeated: res.defeated, wins: res.wins, matches: res.matches, rank: res.rank, meta: res.meta, soul: res.soul, finalHp: res.finalHp, retreated: action === "retreat" } });
+  const ranked = Object.keys(run.totals).sort((a, b) => run.totals[b] - run.totals[a]);
+  const deltaById = Object.fromEntries(per.map((x) => [x.id, x.pt]));
+  // 順位表演出（ヒリヒリ）→ 次節 or 最終結果。
+  showTournamentStandings(run, { ranked, deltaById, finished, sectionLabel: `第 ${run.matchIndex} / ${run.t.matches} 節` }, async (action) => {
+    if (finished || action === "retreat") {
+      const finalRank = ranked.findIndex((id) => id === run.deshiId);
+      const cur = await profileRepo.loadProfile();
+      const res = applyLeagueResult(cur, run.t, finalRank, action === "retreat");
+      await profileRepo.saveProfile(res.profile);
+      const t = run.t; const standings = ranked.map((id, i) => ({ name: run.names[id], pt: run.totals[id], isHuman: id === run.deshiId, place: i + 1 }));
+      tournamentRun = null;
+      openMentorHome({ league: { name: t.name, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, standings } });
+    } else {
+      playTournamentMatch();
+    }
+  });
+}
+
+// 大会 順位表演出（節間）。累積ポイントで 4 者を並べ、この節の増減＋弟子ハイライト＋カウントアップ。
+function showTournamentStandings(run, info, onDone) {
+  const host = el("app") || document.body;
+  const ov = document.createElement("div");
+  ov.className = "tourney-standings";
+  const rows = info.ranked.map((id, i) => {
+    const total = run.totals[id];
+    const d = info.deltaById[id] ?? 0;
+    const me = id === run.deshiId;
+    return `
+      <div class="ts-row${me ? " me" : ""}" style="animation-delay:${(info.ranked.length - 1 - i) * 0.12}s">
+        <div class="ts-place ts-p${i + 1}">${i + 1}</div>
+        <div class="ts-name">${esc(run.names[id])}${me ? '<span class="ts-you">YOU</span>' : ""}</div>
+        <div class="ts-delta ${d >= 0 ? "up" : "dn"}">${d >= 0 ? "+" : ""}${d}</div>
+        <div class="ts-total" data-to="${total}">0</div>
+      </div>`;
+  }).join("");
+  ov.innerHTML = `
+    <div class="ts-scrim"></div>
+    <div class="ts-card">
+      <div class="ts-head">大会 順位表 <small>${esc(info.sectionLabel)}</small></div>
+      <div class="ts-list">${rows}</div>
+      <div class="ts-btns"></div>
+    </div>`;
+  host.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  // 累積ポイントのカウントアップ。
+  ov.querySelectorAll(".ts-total").forEach((node, idx) => {
+    const to = +node.getAttribute("data-to");
+    setTimeout(() => tweenNum(node, 0, to, 650, (v) => (v > 0 ? "+" : "") + v), 300 + idx * 90);
+  });
+  const btns = ov.querySelector(".ts-btns");
+  const close = (action) => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); onDone(action); };
+  if (info.finished) {
+    btns.appendChild(mkBtn("最終結果へ", "btn-tsumo", () => close("finish")));
   } else {
-    playTournamentMatch();
+    btns.appendChild(mkBtn("次の節へ", "btn-tsumo", () => close("continue")));
+    btns.appendChild(mkBtn("ここで退く", "btn-ron", () => close("retreat")));
   }
 }
 
@@ -2581,22 +2633,18 @@ function showGameOver() {
 
   // 本気対局（Phase 4A）は「もう一度(reload)」ではなく結果を育成へ返して戻る。
   if (honestCtx) {
-    const result = { placement: hRank, numPlayers: N, finalPoints: human.points, won: hRank === 0 };
+    const standings = ranks.map((p, i) => ({ id: p.character.id, name: p.character.name, points: p.points, rank: i, isHuman: p === human }));
+    const result = { placement: hRank, numPlayers: N, finalPoints: human.points, won: hRank === 0, standings };
     const ctx = honestCtx; honestCtx = null;
     const go = (action) => { overlay.classList.add("hidden"); ctx.onResult?.(result, action); };
     const btns = overlay.querySelector(".go-buttons");
     if (ctx.tournament) {
-      // 大会連戦：宝への道 HP（次戦の持ち越し）を見せ、次戦／撤退（最終戦は結果へ）。
+      // 大会（M リーグ）：この節の結果 → 順位表へ。
       const note = document.createElement("div");
       note.className = "go-tourney-note";
-      note.textContent = `${ctx.matchLabel || "大会"}　宝への道 HP：${human.points.toLocaleString()}`;
+      note.textContent = `${ctx.matchLabel || "大会"}　この節：${hRank + 1} 位`;
       btns.parentElement.insertBefore(note, btns);
-      if (ctx.isLast) {
-        btns.appendChild(mkBtn("結果へ", "btn-tsumo", () => go("continue")));
-      } else {
-        btns.appendChild(mkBtn("次戦へ", "btn-tsumo", () => go("continue")));
-        btns.appendChild(mkBtn("撤退する", "btn-ron", () => go("retreat")));
-      }
+      btns.appendChild(mkBtn("順位表へ", "btn-tsumo", () => go("continue")));
     } else {
       btns.appendChild(mkBtn("師弟ホームへ", "btn-tsumo", () => go()));
     }

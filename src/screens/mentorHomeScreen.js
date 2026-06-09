@@ -733,25 +733,28 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
 
-  // ---- 大会リザルト（Phase 4B・クリア評価＋継承）----
-  function openTournamentResultModal(r, onDone) {
-    const cleared = r.cleared;
+  // ---- 大会（M リーグ）最終結果＋クリア評価 ----
+  function openLeagueResultModal(r, onDone) {
+    const won = r.won;
+    const place = (r.finalRank ?? 3) + 1;
+    const rows = (r.standings || []).map((s, i) => `
+      <div class="mhx-lg-row${s.isHuman ? " me" : ""}">
+        <span class="mhx-lg-place ts-p${i + 1}">${i + 1}</span>
+        <span class="mhx-lg-name">${esc(s.name)}${s.isHuman ? '<span class="ts-you">YOU</span>' : ""}</span>
+        <span class="mhx-lg-pt">${s.pt > 0 ? "+" : ""}${s.pt}</span>
+      </div>`).join("");
     const html = `
-      <div class="mhx-pr mhx-tr">
-        <div class="mhx-pr-ttl">${cleared ? "大会 完走！" : r.defeated ? "敗退…" : "大会 終了"}</div>
-        <div class="mhx-pr-head"><span class="mhx-cond tone-${cleared ? "vgood" : "bad"}">${esc(r.name || "大会")}</span><span class="mhx-pr-sum">${r.wins ?? 0} / ${r.matches ?? 0} 勝ち抜き</span></div>
-        ${cleared ? `
-          <div class="mhx-tr-rank">評価 <b>${esc(r.rank || "満貫級")}</b></div>
-          <div class="mhx-pr-soul">継承 <b>+${r.meta ?? 0}</b>　／　ソウル <b>+${r.soul ?? 0}</b></div>
-          <p class="mhx-pr-sub">宝への道が、また一歩ひらけた。</p>
-        ` : `
-          <p class="mhx-pr-sub">${r.defeated ? "点棒が尽きた。育てて出直そう。" : "また挑もう。"}</p>
-          <p class="mhx-pr-none">残り HP ${(r.finalHp ?? 0).toLocaleString()}</p>
-        `}
+      <div class="mhx-pr mhx-lg">
+        <div class="mhx-pr-ttl">${won ? "優勝！" : r.retreated ? "途中退場" : `最終 ${place} 位`}</div>
+        <div class="mhx-pr-head"><span class="mhx-cond tone-${won ? "vgood" : place <= 2 ? "good" : "bad"}">${esc(r.name || "大会")}</span></div>
+        <div class="mhx-lg-list">${rows}</div>
+        <div class="mhx-tr-rank">評価 <b>${esc(r.rank || "満貫級")}</b></div>
+        <div class="mhx-pr-soul">継承 <b>+${r.meta ?? 0}</b>　／　ソウル <b>+${r.soul ?? 0}</b></div>
+        <p class="mhx-pr-sub">${won ? "宝への道が、また一歩ひらけた。" : "悔しさは、次の糧に。"}</p>
         <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);
-    if (cleared) audio?.playPip?.(2600, 0.6);
+    if (won) audio?.playPip?.(2600, 0.6);
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
   // 出場ゲート不合格（大劣勢＝門前払い）。
@@ -854,7 +857,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     flash?.parlor ? (next) => openParlorResultModal(flash.parlor, next) : null,
     flash?.honest ? (next) => openHonestResultModal(flash.honest, next) : null,
     flash?.duo ? (next) => openDuoResultModal(flash.duo, next) : null,
-    flash?.tournament ? (next) => openTournamentResultModal(flash.tournament, next) : null,
+    flash?.league ? (next) => openLeagueResultModal(flash.league, next) : null,
     flash?.tournamentGate ? (next) => openTournamentGateModal(flash.tournamentGate, next) : null,
     (showBanner && daySummary) ? (next) => openDaySummaryModal(daySummary, next) : null,
     showBanner ? () => openDayBanner() : null,

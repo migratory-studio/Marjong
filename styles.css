@@ -913,8 +913,40 @@ body {
 #mentor-home-screen.mh2 .mhx-duo-btns .mhx-md-btn small { font-size:11px; font-weight:400; opacity:.85; }
 #mentor-home-screen.mh2 .mhx-duo-auto { filter:saturate(.85); }
 
-/* 大会連戦の経過ノート（対局終了画面・宝への道 HP） */
+/* 大会連戦の経過ノート（対局終了画面） */
 .go-tourney-note { text-align:center; font-family:"Yu Gothic","Noto Sans JP",sans-serif; font-size:15px; font-weight:700; color:#ffe39a; margin:6px 0 10px; text-shadow:0 2px 6px rgba(0,0,0,.6); }
+
+/* 大会 順位表演出（節間・ヒリヒリ） */
+.tourney-standings { position:absolute; inset:0; z-index:90; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:"Yu Gothic","Noto Sans JP",sans-serif; }
+.tourney-standings.is-open { opacity:1; }
+.tourney-standings .ts-scrim { position:absolute; inset:0; background:rgba(4,6,10,.82); }
+.tourney-standings .ts-card { position:relative; z-index:1; width:560px; max-width:90%; padding:26px 28px; background:linear-gradient(180deg,#10141e,#0a0d14); border:2px solid #c8a44d; border-radius:16px; box-shadow:0 26px 70px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,220,140,.12); }
+.tourney-standings .ts-head { text-align:center; font-size:22px; letter-spacing:.14em; color:#ecd592; margin-bottom:16px; }
+.tourney-standings .ts-head small { display:block; font-size:12px; color:#9a8a66; letter-spacing:.1em; margin-top:3px; }
+.tourney-standings .ts-list { display:flex; flex-direction:column; gap:8px; margin-bottom:18px; }
+.tourney-standings .ts-row { display:flex; align-items:center; gap:12px; padding:9px 12px; border-radius:9px; background:rgba(255,255,255,.04); border:1px solid rgba(200,164,77,.18); animation:tsRow .4s ease both; }
+.tourney-standings .ts-row.me { background:linear-gradient(90deg,rgba(214,162,58,.22),rgba(214,162,58,.06)); border-color:rgba(236,213,146,.55); }
+@keyframes tsRow { 0%{opacity:0; transform:translateX(-18px);} 100%{opacity:1; transform:translateX(0);} }
+.tourney-standings .ts-place { width:30px; height:30px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:7px; font-weight:900; font-size:16px; color:#1a120a; background:#8a99a8; }
+.ts-p1 { background:linear-gradient(135deg,#ffe39a,#d6a23a)!important; box-shadow:0 0 10px rgba(214,162,58,.6); }
+.ts-p2 { background:linear-gradient(135deg,#dfe6ee,#9fb0c4)!important; }
+.ts-p3 { background:linear-gradient(135deg,#e0b083,#b07a44)!important; }
+.tourney-standings .ts-name { flex:1; font-size:17px; color:#f0e7d0; }
+.tourney-standings .ts-you { font-size:10px; font-weight:800; color:#1a120a; background:#ecd592; border-radius:4px; padding:1px 6px; margin-left:8px; letter-spacing:.08em; }
+.tourney-standings .ts-delta { width:56px; text-align:right; font-weight:800; font-size:15px; }
+.tourney-standings .ts-delta.up { color:#8fd06a; }
+.tourney-standings .ts-delta.dn { color:#ff8e7a; }
+.tourney-standings .ts-total { width:64px; text-align:right; font-weight:800; font-size:18px; color:#ffe39a; }
+.tourney-standings .ts-btns { display:flex; gap:12px; justify-content:center; }
+.tourney-standings .ts-btns button { min-width:140px; }
+
+/* 大会（M リーグ）最終結果の順位行 */
+#mentor-home-screen.mh2 .mhx-lg-list { display:flex; flex-direction:column; gap:6px; margin:10px 0 12px; }
+#mentor-home-screen.mh2 .mhx-lg-row { display:flex; align-items:center; gap:10px; padding:6px 10px; border-radius:7px; background:#16241d; border:1px solid #2a3f34; }
+#mentor-home-screen.mh2 .mhx-lg-row.me { background:linear-gradient(90deg,rgba(214,162,58,.2),rgba(214,162,58,.05)); border-color:rgba(236,213,146,.5); }
+#mentor-home-screen.mh2 .mhx-lg-place { width:24px; height:24px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:6px; font-weight:900; font-size:14px; color:#1a120a; background:#8a99a8; }
+#mentor-home-screen.mh2 .mhx-lg-name { flex:1; font-size:15px; color:#e8efe9; text-align:left; }
+#mentor-home-screen.mh2 .mhx-lg-pt { font-family:var(--font-go); font-weight:800; font-size:15px; color:#ffe39a; }
 
 /* 大会リザルトの評価ランク */
 #mentor-home-screen.mh2 .mhx-tr-rank { font-family:var(--font-min); font-size:18px; color:#5a4520; margin:10px 0 6px; }

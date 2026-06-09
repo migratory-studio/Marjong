@@ -356,36 +356,36 @@ export function trainParam(profile, key, rng = Math.random) {
   };
 }
 
-// ------------------------------------------------- 大会（初級）（Phase 4B・§4.6.5 / §4.5.2）
+// ------------------------------------------------- 大会（M リーグ制）（Phase 4B・§4.6.10 / §4.5.2）
 // 出場ゲート：相手評価が「大劣勢」だと門前払い（§4.6.2）。
 export function tournamentGate(profile, t) {
   const av = activeAvatar(profile);
   const self = avatarParams6(av);
-  const opp = paramsFromLv(t.oppLv, "tourney:" + t.id);
+  const opp = paramsFromLv(t.gateOppLv ?? t.rivalLv ?? 2, "tourney:" + t.id);
   const { tier } = evaluateTier(self, opp);
   return { ok: tier.id !== "dai_ressei", tier };
 }
 
-// 大会の結果反映。session＝autobattle の onExit（{ wins, matchNo, hp }）。
-// 完走（全 matches 終了かつ HP>0）でクリア＝評価ランク＋継承＋ tournament_won。HP は持ち越し。
-export function applyTournamentResult(profile, t, session = {}) {
-  const matches = t.matches;
-  const wins = session.wins ?? 0;
-  const finalHp = Math.max(0, session.hp ?? 0);
-  const cleared = finalHp > 0 && (session.matchNo ?? 1) >= matches;
-  // runHp 持ち越し（最終 HP → avatarHpCurrent）。
-  let p = withActiveAvatar(profile, (a) => ({ ...a, avatarHpCurrent: Math.min(a.avatarHpMax, finalHp) }));
-  let soul = 0, meta = 0, rank = null;
-  if (cleared) {
-    const wi = Math.max(0, Math.min(matches, wins));
-    rank = t.evalRanks[Math.min(wi, t.evalRanks.length - 1)];
-    meta = t.metaByWins[Math.min(wi, t.metaByWins.length - 1)] || 1;
-    soul = t.soulClear || 0;
-    p = grantSoul(p, soul);
-    p = { ...p, wallet: { ...(p.wallet || {}), meta: (p.wallet?.meta ?? 0) + meta } };
-    p = { ...p, records: { ...(p.records || {}), tournamentsWon: (p.records?.tournamentsWon ?? 0) + 1 } };
-  }
-  return { profile: p, cleared, defeated: finalHp <= 0, wins, matches, rank, meta, soul, finalHp };
+// その節（半荘）の各プレイヤーのポイント＝素点((最終−25000)/1000)＋ウマ。
+export function leaguePoints(standings = [], uma = [50, 10, -10, -30]) {
+  return standings.map((s) => ({
+    id: s.id, isHuman: !!s.isHuman, rank: s.rank,
+    pt: Math.round(((s.points ?? 25000) - 25000) / 1000) + (uma[s.rank] ?? 0),
+  }));
+}
+
+// 全節終了後の結果反映。finalRank＝弟子の累積ポイント順位(0..3)。
+// 完走で必ず評価＋継承＋ソウル（失敗なし路線）。最終1位＝優勝で tournament_won++。持ち点は持ち越さない（節ごと 25000）。
+export function applyLeagueResult(profile, t, finalRank = 3, retreated = false) {
+  const place = Math.max(0, Math.min((t.rankByPlace?.length ?? 4) - 1, finalRank));
+  const rank = t.rankByPlace[place];
+  const meta = t.metaByPlace[place] || 1;
+  const soul = t.soulClear || 0;
+  let p = grantSoul(profile, soul);
+  p = { ...p, wallet: { ...(p.wallet || {}), meta: (p.wallet?.meta ?? 0) + meta } };
+  const won = place === 0 && !retreated;
+  if (won) p = { ...p, records: { ...(p.records || {}), tournamentsWon: (p.records?.tournamentsWon ?? 0) + 1 } };
+  return { profile: p, finalRank: place, won, rank, meta, soul, retreated };
 }
 
 // ------------------------------------------------- 本気対局の結果反映（Phase 4A・§4.6.9）
