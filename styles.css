@@ -623,6 +623,14 @@ body {
 #mentor-home-screen.mh2 .mhx-pr-sum { font-family:var(--font-go); font-size:13px; color:#5a4520; }
 #mentor-home-screen.mh2 .mhx-pr-sum b { color:#2a2012; font-size:16px; }
 #mentor-home-screen.mh2 .mhx-pr-soul { font-family:var(--font-go); font-size:14px; color:#5a4520; margin-bottom:12px; }
+/* 二人打ち：点棒＝HP の増減表示 */
+#mentor-home-screen.mh2 .mhx-pr-hp { font-family:var(--font-go); font-size:15px; color:#5a4520; margin:6px 0 10px; }
+#mentor-home-screen.mh2 .mhx-pr-hp b { font-size:19px; color:#2a2012; }
+#mentor-home-screen.mh2 .mhx-pr-hp b.up { color:#2e7d32; }
+#mentor-home-screen.mh2 .mhx-pr-hp b.dn { color:#b8392b; }
+#mentor-home-screen.mh2 .mhx-pr-hpd { font-size:13px; margin-left:4px; }
+#mentor-home-screen.mh2 .mhx-pr-hpd.up { color:#2e7d32; }
+#mentor-home-screen.mh2 .mhx-pr-hpd.dn { color:#b8392b; }
 #mentor-home-screen.mh2 .mhx-pr-soul b { color:#b8902f; font-size:18px; }
 #mentor-home-screen.mh2 .mhx-pr-sub { font-family:var(--font-min); font-size:14px; color:#8f2418; letter-spacing:.08em; margin-bottom:10px; }
 #mentor-home-screen.mh2 .mhx-pr-stats { display:flex; flex-direction:column; gap:9px; margin-bottom:16px; }

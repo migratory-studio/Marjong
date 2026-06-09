@@ -426,9 +426,14 @@ export function applyHonestResult(profile, result = {}) {
 export function applyDuoResult(profile, result = {}) {
   const av = activeAvatar(profile);
   if (!av) throw new Error("マイキャラがいません");
+  // 持ち点＝HP（点棒＝HP）。対局前の HP を賭けて打ち、対局後の残点が新しい HP になる。
+  const hpMax = av.avatarHpMax || 1;
+  const hpBefore = Math.max(0, Math.min(hpMax, av.avatarHpCurrent ?? hpMax)); // ＝この対局の持ち点
   const won = (result.placement ?? 1) === 0;
-  const fp = Math.max(0, result.finalPoints ?? 0);
-  const closeness = Math.max(0, Math.min(1.5, fp / 25000)); // 0=完敗 / 1=五分 / 1.5=快勝
+  const fp = Math.max(0, Math.round(result.finalPoints ?? hpBefore)); // 対局後の残点
+  const hpAfter = Math.max(0, Math.min(hpMax, fp));                   // 新しい HP（上限＝最大HP）
+  const base = hpBefore > 0 ? hpBefore : hpMax;
+  const closeness = Math.max(0, Math.min(1.5, fp / base)); // 0=完敗 / 1=五分 / 1.5=快勝（賭けたHP基準）
   const cur = avatarParams6(av);
   const before = { ...cur };
   const gains = {};
@@ -437,9 +442,9 @@ export function applyDuoResult(profile, result = {}) {
   apply("read", Math.max(0, Math.round(1 + closeness * 2)));   // 副 1..4
   const soul = won ? 200 : Math.round(60 * closeness);
   let p = soul > 0 ? grantSoul(profile, soul) : profile;
-  p = withActiveAvatar(p, (a) => ({ ...a, params6: cur }));
+  p = withActiveAvatar(p, (a) => ({ ...a, params6: cur, avatarHpCurrent: hpAfter })); // ★結果を HP に反映
   const ended = endAction(p, won ? 1 : 0, { type: "duo", label: "二人打ち（本気）", won }); // 勝てば調子↑
-  return { profile: ended.profile, soul, gains, before, after: { ...cur }, won, closeness, finalPoints: fp, dayAdvanced: ended.dayAdvanced };
+  return { profile: ended.profile, soul, gains, before, after: { ...cur }, won, closeness, finalPoints: fp, hpBefore, hpAfter, hpDelta: hpAfter - hpBefore, dayAdvanced: ended.dayAdvanced };
 }
 
 // ------------------------------------------------- 師匠の記憶（双方向・蓄積）
