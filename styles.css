@@ -955,7 +955,7 @@ body {
 .tourney-standings .ts-card { position:relative; z-index:1; width:560px; max-width:90%; padding:26px 28px; background:linear-gradient(180deg,#10141e,#0a0d14); border:2px solid #c8a44d; border-radius:16px; box-shadow:0 26px 70px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,220,140,.12); }
 .tourney-standings .ts-head { text-align:center; font-size:22px; letter-spacing:.14em; color:#ecd592; margin-bottom:16px; }
 .tourney-standings .ts-head small { display:block; font-size:12px; color:#9a8a66; letter-spacing:.1em; margin-top:3px; }
-.tourney-standings .ts-list { display:flex; flex-direction:column; gap:8px; margin-bottom:18px; max-height:52vh; overflow-y:auto; }
+.tourney-standings .ts-list { display:flex; flex-direction:column; gap:8px; margin-bottom:18px; max-height:calc(var(--stage-h) * 0.5); overflow-y:auto; }
 .tourney-standings .ts-row { display:flex; align-items:center; gap:12px; padding:9px 12px; border-radius:9px; background:rgba(255,255,255,.04); border:1px solid rgba(200,164,77,.18); animation:tsRow .4s ease both; }
 .tourney-standings .ts-row.me { background:linear-gradient(90deg,rgba(214,162,58,.22),rgba(214,162,58,.06)); border-color:rgba(236,213,146,.55); }
 @keyframes tsRow { 0%{opacity:0; transform:translateX(-18px);} 100%{opacity:1; transform:translateX(0);} }
@@ -1025,7 +1025,7 @@ body {
 #mentor-home-screen.mh2 .mhx-lg-treasure small { display:block; font-size:11px; color:#6a5836; margin-top:2px; }
 
 /* 大会（M リーグ）最終結果の順位行 */
-#mentor-home-screen.mh2 .mhx-lg-list { display:flex; flex-direction:column; gap:6px; margin:10px 0 12px; max-height:40vh; overflow-y:auto; }
+#mentor-home-screen.mh2 .mhx-lg-list { display:flex; flex-direction:column; gap:6px; margin:10px 0 12px; max-height:calc(var(--stage-h) * 0.4); overflow-y:auto; }
 #mentor-home-screen.mh2 .mhx-lg-row { display:flex; align-items:center; gap:10px; padding:6px 10px; border-radius:7px; background:#16241d; border:1px solid #2a3f34; }
 #mentor-home-screen.mh2 .mhx-lg-row.me { background:linear-gradient(90deg,rgba(214,162,58,.2),rgba(214,162,58,.05)); border-color:rgba(236,213,146,.5); }
 #mentor-home-screen.mh2 .mhx-lg-place { width:24px; height:24px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:6px; font-weight:900; font-size:14px; color:#1a120a; background:#8a99a8; }
@@ -1066,7 +1066,7 @@ body {
 #mentor-home-screen.mh2 .mhx-ds-tag.tone-good  { background:linear-gradient(135deg,#5a9a3a,#3a7a2a); color:#eaffd9; }
 #mentor-home-screen.mh2 .mhx-ds-tag.tone-vgood { background:linear-gradient(135deg,#ffe39a,#d6a23a); color:#3a2400; box-shadow:0 0 7px rgba(214,162,58,.5); }
 /* 日の移り変わり：前日サマリ→今日の区切り（QA #9 統合モーダル） */
-#mentor-home-screen.mh2 .mhx-dt { max-height:86vh; overflow-y:auto; }
+#mentor-home-screen.mh2 .mhx-dt { max-height:calc(var(--stage-h) * 0.82); overflow-y:auto; }
 #mentor-home-screen.mh2 .mhx-dt .mhx-ds { margin-bottom:4px; }
 #mentor-home-screen.mh2 .mhx-dt-sep { display:flex; align-items:center; gap:10px; margin:10px 0 14px; color:var(--ink-soft); opacity:.7; font-family:var(--font-min); font-size:12px; letter-spacing:.2em; }
 #mentor-home-screen.mh2 .mhx-dt-sep::before,
