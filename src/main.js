@@ -34,6 +34,7 @@ import { waits } from "./core/rules/winCheck.js";
 import { shanten } from "./core/rules/shanten.js";
 import { pickVoiceLine } from "./data/voiceLines.js";
 import { makeMobRoster, mobSilhouettePaths } from "./data/mobMaster.js";
+import { tournamentRoster } from "./data/tournamentRivalMaster.js";
 import { isDebugMode } from "./app/debug.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
@@ -760,12 +761,14 @@ async function launchHonestMatch(config) {
     seated, humanIndex,
     mode: { rounds: selectedRounds, players: selectedPlayers },
     dealerIndex, audio,
+    tournament: config.tournamentInfo || null,
     onComplete: () => beginGame(seated, dealerIndex),
   });
 }
 
-// 大会（M リーグ制）。全手動の半荘を N 節、固定ライバルと累積ポイントで競う。
-let tournamentRun = null; // { t, matchIndex, rivals, totals:{id:pt}, names:{id:name}, deshiId }
+// 大会（M リーグ制）。出場者は entrants 名（弟子含む・4〜8）。毎節は卓に4人ずつ着き（弟子＋3名）、
+// 残りの出場者は別卓扱い（擬似結果）で累積に反映。全 N 節の累積ポイント1位で優勝。
+let tournamentRun = null; // { t, matchIndex, field, totals, names, deshiId }
 async function openTournament() {
   const profile = await profileRepo.loadProfile();
   const av = activeAvatar(profile);
@@ -776,35 +779,126 @@ async function openTournament() {
   if (!t.runnable) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: `この形式（${t.format}）は準備中` } }); return; }
   const gate = tournamentGate(profile, t);
   if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
-  // ライバルは大会通して固定（同じ顔ぶれと累積で競る＝リーグの手触り）。卓人数−1 体。
-  const rivals = makeMobRoster(t.playerCount - 1, { seedPrefix: `league-${t.id}`, startingPoints: 25000 });
-  const totals = { [av.avatarId]: 0 };
-  const names = { [av.avatarId]: av.name };
-  for (const r of rivals) { totals[r.id] = 0; names[r.id] = r.name; }
-  tournamentRun = { t, matchIndex: 0, rivals, totals, names, deshiId: av.avatarId };
-  playTournamentMatch();
+  // 出場ライバルは大会通して固定（同じ顔ぶれと累積で競る＝リーグの手触り）。出場者−1 体。
+  // ティアが上がるほど“名のあるライバル”が増え、残りはシルエットのモブで埋める（§4.6.10 #1）。
+  const field = tournamentRoster(t.id, t.tier, t.entrants - 1, { seedPrefix: "league", startingPoints: 25000 });
+  // 開幕前に大会要項（ルール・優勝条件・ライバル紹介）の専用画面をはさむ（じっくり演出・#2）。
+  showTournamentBriefing(t, field, () => {
+    const totals = { [av.avatarId]: 0 };
+    const names = { [av.avatarId]: av.name };
+    for (const r of field) { totals[r.id] = 0; names[r.id] = r.name; }
+    tournamentRun = { t, matchIndex: 0, field, totals, names, deshiId: av.avatarId };
+    playTournamentMatch();
+  }, () => openMentorHome());
+}
+
+// この節に弟子と同卓するライバルを選ぶ（出場者をローテーションで着卓させ、相手が節ごとに替わる）。
+function seatRivalsFor(field, matchIndex, seats) {
+  const R = field.length;
+  if (R <= seats) return field.slice(0, seats);
+  const out = [];
+  for (let k = 0; k < seats; k++) out.push(field[(matchIndex * seats + k) % R]);
+  return out;
+}
+// 卓に居ない出場者の「1節ぶん」擬似ポイント（別卓の結果）。実リーグの分布に寄せ、ネームドは少し強気。
+function simAbsentLeaguePt(uma, isNamed, rng = Math.random) {
+  const base = uma[Math.floor(rng() * uma.length)] ?? 0; // ランダム着順のウマ
+  const soten = Math.round((rng() * 2 - 1) * 16);        // 素点ゆらぎ ±16
+  return base + soten + (isNamed ? 4 : 0);
+}
+
+// 大会 要項画面（開幕前）。ルール・優勝条件・ライバル紹介を“じっくり”見せてから挑む（#2）。
+function showTournamentBriefing(t, rivals, onStart, onCancel) {
+  const host = el("app") || document.body;
+  const FMT = { solo4: "個人戦・四人打ち", solo3: "個人戦・三人打ち", pair: "ペア戦", team: "団体戦", final: "最終決戦" };
+  const umaStr = (t.uma || []).map((u) => (u > 0 ? "+" : "") + u).join(" / ");
+  // ライバル紹介：名のある者は肩書き＋口上を1枚ずつ、無名のモブは1行に集約（縦に伸ばさない）。
+  const namedR = rivals.filter((r) => r.isRival);
+  const mobR = rivals.filter((r) => !r.isRival);
+  const namedCards = namedR.map((r) => `
+      <div class="tb-rival named">
+        <div class="tb-rival-art" style="${r.assets?.portrait ? `--art:url('${r.assets.portrait}')` : `background:${r.color}`}"></div>
+        <div class="tb-rival-info">
+          <div class="tb-rival-name" style="color:${r.color}">${esc(r.name)}</div>
+          ${r.rivalTitle ? `<div class="tb-rival-title">${esc(r.rivalTitle)}</div>` : ""}
+          ${r.introLine ? `<div class="tb-rival-line">「${esc(r.introLine)}」</div>` : ""}
+        </div>
+      </div>`).join("");
+  const mobSummary = mobR.length ? `
+      <div class="tb-rival tb-mobsum">
+        <div class="tb-rival-art" style="background:${mobR[0].color}"></div>
+        <div class="tb-rival-info">
+          <div class="tb-rival-name">ほか ${mobR.length} 名</div>
+          <div class="tb-rival-title tb-mob">名もなき打ち手たち</div>
+        </div>
+      </div>` : "";
+  const rivalCards = namedCards + mobSummary;
+  const ov = document.createElement("div");
+  ov.className = "tourney-brief";
+  ov.innerHTML = `
+    <div class="ts-scrim"></div>
+    <div class="tb-card">
+      <div class="tb-head">
+        <div class="tb-cup">CUP</div>
+        <div class="tb-head-txt">
+          <div class="tb-name">${esc(t.name)}</div>
+          <div class="tb-tier">${esc(FMT[t.format] || "")}　・　ティア ${t.tier}</div>
+        </div>
+      </div>
+      <div class="tb-treasure">
+        <div class="tb-tre-mark">宝</div>
+        <div class="tb-tre-txt"><b>${esc(t.treasure?.name || "")}</b><small>${esc(t.treasure?.reading || "")}</small><div class="tb-tre-sym">${esc(t.treasure?.symbol || t.treasure?.baseYaku || "")}</div></div>
+      </div>
+      <div class="tb-rules">
+        <div class="tb-rule"><span class="tb-rk">出場</span><span class="tb-rv"><b>${t.entrants} 名</b>（毎節は卓に4人ずつ・相手は入れ替わる）</span></div>
+        <div class="tb-rule"><span class="tb-rk">ルール</span><span class="tb-rv">半荘 ${t.matches} 節（各 25,000 持ち・節ごとリセット）</span></div>
+        <div class="tb-rule"><span class="tb-rk">順位点</span><span class="tb-rv">ウマ ${umaStr}（Mリーグ準拠）</span></div>
+        <div class="tb-rule"><span class="tb-rk">優勝条件</span><span class="tb-rv">全 ${t.matches} 節の<b>累積ポイント1位</b>で『${esc(t.treasure?.name || "宝")}』獲得</span></div>
+      </div>
+      <div class="tb-rivals-head">立ちはだかる者たち（${t.entrants - 1} 名）</div>
+      <div class="tb-rivals">${rivalCards}</div>
+      <div class="tb-btns"></div>
+    </div>`;
+  host.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const close = (go) => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); go ? onStart() : onCancel(); };
+  const btns = ov.querySelector(".tb-btns");
+  btns.appendChild(mkBtn("やめておく", "btn-ron", () => close(false)));
+  btns.appendChild(mkBtn("この卓に挑む", "btn-tsumo", () => close(true)));
 }
 async function playTournamentMatch() {
   const run = tournamentRun;
   const profile = await profileRepo.loadProfile();
   const av = activeAvatar(profile);
+  const section = `第 ${run.matchIndex + 1} / ${run.t.matches} 節`;
+  // この節の同卓ライバル（弟子＋3）。残りの出場者は別卓扱い（onTournamentMatchDone で擬似加算）。
+  run.seated = seatRivalsFor(run.field, run.matchIndex, run.t.playerCount - 1);
   launchHonestMatch({
-    avatar: av, opponents: run.rivals, players: run.t.playerCount, rounds: run.t.rounds || 2, // 半荘
+    avatar: av, opponents: run.seated, players: run.t.playerCount, rounds: run.t.rounds || 2, // 半荘
     startPoints: 25000, // M リーグ＝節ごと 25000 開始
     tournament: true,
     isLast: run.matchIndex >= run.t.matches - 1,
-    matchLabel: `第 ${run.matchIndex + 1} / ${run.t.matches} 節`,
+    matchLabel: section,
+    tournamentInfo: { name: run.t.name, section, treasureName: run.t.treasure?.name || "", tier: run.t.tier, entrants: run.t.entrants },
     onResult: (result) => onTournamentMatchDone(result),
   });
 }
 async function onTournamentMatchDone(result) {
   const run = tournamentRun;
-  const per = leaguePoints(result.standings || [], run.t.uma); // この節のポイント（弟子＋ライバル）
-  for (const x of per) run.totals[x.id] = (run.totals[x.id] || 0) + x.pt;
+  const per = leaguePoints(result.standings || [], run.t.uma); // この節のポイント（弟子＋同卓ライバル）
+  const deltaById = {};
+  for (const x of per) { run.totals[x.id] = (run.totals[x.id] || 0) + x.pt; deltaById[x.id] = x.pt; }
+  // 卓に居なかった出場者は別卓扱いで擬似ポイントを加算（全員の累積を動かす＝シーズンの手触り）。
+  const seatedIds = new Set((run.seated || []).map((r) => r.id));
+  for (const r of run.field) {
+    if (seatedIds.has(r.id)) continue;
+    const pt = simAbsentLeaguePt(run.t.uma, !!r.isRival);
+    run.totals[r.id] = (run.totals[r.id] || 0) + pt;
+    deltaById[r.id] = pt;
+  }
   run.matchIndex += 1;
   const finished = run.matchIndex >= run.t.matches;
   const ranked = Object.keys(run.totals).sort((a, b) => run.totals[b] - run.totals[a]);
-  const deltaById = Object.fromEntries(per.map((x) => [x.id, x.pt]));
   // 順位表演出（ヒリヒリ）→ 次節 or 最終結果。
   showTournamentStandings(run, { ranked, deltaById, finished, sectionLabel: `第 ${run.matchIndex} / ${run.t.matches} 節` }, async (action) => {
     if (finished || action === "retreat") {
@@ -821,7 +915,29 @@ async function onTournamentMatchDone(result) {
   });
 }
 
-// 大会 順位表演出（節間）。累積ポイントで 4 者を並べ、この節の増減＋弟子ハイライト＋カウントアップ。
+// 対局中の大会バッジ（左上）。大会名・節・前節までの累積順位を常時表示してヒリヒリ感を出す（#2）。
+function updateTournamentHud() {
+  const gs = el("game-screen");
+  if (!gs) return;
+  gs.querySelector(".game-tourney-hud")?.remove();
+  const info = honestCtx?.tournamentInfo;
+  if (!info) return;
+  const fieldN = info.entrants || (tournamentRun ? tournamentRun.field.length + 1 : 4);
+  let rankTxt = `開幕節（全${fieldN}名）`;
+  const run = tournamentRun;
+  if (run && run.matchIndex > 0) {
+    const ranked = Object.keys(run.totals).sort((a, b) => run.totals[b] - run.totals[a]);
+    const place = ranked.findIndex((id) => id === run.deshiId);
+    const tot = run.totals[run.deshiId] || 0;
+    if (place >= 0) rankTxt = `前節まで ${place + 1}/${fieldN}位（${tot > 0 ? "+" : ""}${tot}pt）`;
+  }
+  const hud = document.createElement("div");
+  hud.className = "game-tourney-hud";
+  hud.innerHTML = `<div class="gth-cup">CUP</div><div class="gth-txt"><div class="gth-name">${esc(info.name || "大会")}</div><div class="gth-sec">${esc(info.section || "")}　${esc(rankTxt)}</div></div>`;
+  gs.appendChild(hud);
+}
+
+// 大会 順位表演出（節間）。累積ポイントで全出場者を並べ、この節の増減＋弟子ハイライト＋カウントアップ。
 function showTournamentStandings(run, info, onDone) {
   const host = el("app") || document.body;
   const ov = document.createElement("div");
@@ -1271,6 +1387,7 @@ function beginGame(seated, dealerIndex) {
 
   showScreen("game-screen");
   buildHpBoard(); // 右側に卓配置どおりのキャラHP（相棒ボード）を構築
+  updateTournamentHud(); // 大会中なら左上に「大会名／節／累積順位」バッジを出す（#2）
   el("table").addEventListener("click", onCanvasClick);
   el("table").addEventListener("mousemove", onCanvasHover);
   el("table").addEventListener("mouseleave", () => { renderer.setHover(null); render(); });

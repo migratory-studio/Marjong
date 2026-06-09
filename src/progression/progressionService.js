@@ -293,7 +293,7 @@ export const TRAIN_OUTCOMES = {
   daiseikou: { label: "大成功", tone: "great", mult: 2.2, line: "筋がいい。我が見込んだ通りだ。" },
   seikou:    { label: "成功",   tone: "good",  mult: 1.5, line: "うむ、よく伸びた。" },
   bunan:     { label: "無難",   tone: "ok",    mult: 1.0, line: "悪くない。地道が一番だ。" },
-  shippai:   { label: "失敗",   tone: "bad",   mult: 0.34, line: "ま、こういう日もある。気にするな。" },
+  shippai:   { label: "成果イマイチ", tone: "bad", mult: 0.34, line: "ま、こういう日もある。気にするな。" },
 };
 
 // 伸びの引きの良さは「メンタル（恒常）」と「当日の調子（変動）」の合算。

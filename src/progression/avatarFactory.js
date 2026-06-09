@@ -15,8 +15,24 @@ export const AVATAR_DEFAULTS = {
   bondExp: 0,
   itemSlotCount: 0,
   // オートバトル用 6 パラメータの初期値（§4.6.1）。低めスタートで育成の伸びしろを残す。
-  params6: { fire: 12, guard: 12, read: 12, gamble: 10, speed: 12, mental: 12 },
+  // 全員フラット（＝のっぺり）を避けるため、ベースを基準にして型ごとに配分を傾ける（initialParams6）。
+  // 合計は従来（≈70）を維持して初戦の出場ゲートを通せる強さを保つ（base10×6 + 6 + 4 = 70）。
+  params6: { fire: 10, guard: 10, read: 10, gamble: 10, speed: 10, mental: 10 },
 };
+
+// 型（スキルテンプレート）ごとの初期ステ偏り。主 +PRIMARY / 副 +SECONDARY を加算して個性を立てる。
+const AFFINITY_PRIMARY = 6;
+const AFFINITY_SECONDARY = 4;
+
+// 型に応じて配分を傾けた初期 6 パラメータを返す（作成確認プレビューと本生成で同じ値を使う）。
+export function initialParams6(skillTemplateId) {
+  const base = { ...AVATAR_DEFAULTS.params6 };
+  const tmpl = skillTemplateById(skillTemplateId);
+  const aff = tmpl?.paramAffinity || [];
+  if (aff[0] && base[aff[0]] != null) base[aff[0]] += AFFINITY_PRIMARY;
+  if (aff[1] && base[aff[1]] != null) base[aff[1]] += AFFINITY_SECONDARY;
+  return base;
+}
 
 // アバターの 6 パラメータを安全に取り出す（旧データ・未設定は既定値で補完）。
 export function avatarParams6(avatar) {
@@ -54,7 +70,8 @@ export function buildNewAvatar({ name, profileText = "", mentorCharacterId, skil
     bondLevel: AVATAR_DEFAULTS.bondLevel,
     bondExp: AVATAR_DEFAULTS.bondExp,
     itemSlotCount: AVATAR_DEFAULTS.itemSlotCount,
-    params6: { ...AVATAR_DEFAULTS.params6 },
+    params6: initialParams6(skillTemplateId), // 型ごとに配分を傾けた初期ステ（§4.6.1）
+
     equippedItemInstanceIds: [],
     presetIds: {
       icon: presetIds.icon ?? null,

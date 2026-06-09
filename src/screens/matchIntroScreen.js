@@ -74,7 +74,7 @@ function hpGauge(points, maxHp, accent) {
  * @param {object} [opts.audio]     AudioManager（任意。SE 用）
  * @param {Function} opts.onComplete 演出完了で呼ばれる
  */
-export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, teams = null, pairs = null, onComplete }) {
+export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, teams = null, pairs = null, tournament = null, onComplete }) {
   const N = seated.length;
   const rounds = mode.rounds === 2 ? 2 : 1;
   const players = N;
@@ -110,6 +110,14 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
 
       <!-- Phase A: VS 対戦カード -->
       <div class="mi-phase mi-versus${isTeam ? " mi-versus-team" : ""}${isPair ? " mi-versus-team mi-versus-pair" : ""}" data-phase="versus">
+        ${tournament ? `
+        <div class="mi-tourney">
+          <div class="mi-tourney-cup">CUP</div>
+          <div class="mi-tourney-txt">
+            <div class="mi-tourney-name">${tournament.name || "大会"}${tournament.treasureName ? `<span class="mi-tourney-tre">宝『${tournament.treasureName}』</span>` : ""}</div>
+            <div class="mi-tourney-sec">${tournament.section || ""}${tournament.tier ? `　・　ティア ${tournament.tier}` : ""}</div>
+          </div>
+        </div>` : ""}
         <div class="mi-modebar">
           <span class="mi-badge">${isTeam ? `${players}チーム対抗` : isPair ? "ペア戦 2対2" : players === 2 ? "二人打ち" : players === 3 ? "三人打ち" : "四人打ち"}</span>
           <span class="mi-badge">${rounds === 2 ? "半荘戦" : "東風戦"}</span>
@@ -154,10 +162,11 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
         <div class="mi-card-info">
           <div class="mi-card-reading">${c.reading || ""}</div>
           <div class="mi-card-name" style="color:${c.color}">${c.name}</div>
-          <div class="mi-card-role" style="--role:${role.color}">${role.label}</div>
+          <div class="mi-card-role" style="--role:${role.color}">${c.isRival && c.rivalTitle ? c.rivalTitle : role.label}</div>
           ${hpGauge(c.stats?.startingPoints || 0, maxHp, c.color)}
-          ${isHuman ? `<div class="mi-card-you">YOU</div>` : ""}
+          ${isHuman ? `<div class="mi-card-you">YOU</div>` : c.isRival && c.introLine ? `<div class="mi-card-line">「${c.introLine}」</div>` : ""}
         </div>`;
+      if (c.isRival) card.classList.add("is-rival");
       card.querySelector(".mi-card-art").appendChild(makeArt(c, "portrait", "mi-card-portrait"));
       cardsBox.appendChild(card);
     }

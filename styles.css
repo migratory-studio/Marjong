@@ -546,22 +546,28 @@ body {
 }
 #mentor-home-screen.mh2 .mhx-cname { font-size:18px; letter-spacing:.12em; color:var(--ink-soft); }
 #mentor-home-screen.mh2 .mhx-cname b { color:var(--kin-lit); font-weight:600; }
-#mentor-home-screen.mh2 .mhx-topright { display:flex; align-items:center; gap:14px; }
-#mentor-home-screen.mh2 .mhx-cur { display:flex; align-items:center; gap:7px; }
+#mentor-home-screen.mh2 .mhx-topright { display:flex; align-items:center; gap:12px; }
+/* 通貨と日付情報をそれぞれ丸ピルでグルーピング＝ひと目で区別（QA #10） */
+#mentor-home-screen.mh2 .mhx-purse,
+#mentor-home-screen.mh2 .mhx-dayinfo {
+  display:flex; align-items:center; gap:15px; padding:4px 14px;
+  background:rgba(255,255,255,.05); border:1px solid rgba(200,164,77,.24); border-radius:999px;
+}
+#mentor-home-screen.mh2 .mhx-cur { display:flex; align-items:center; gap:6px; }
 #mentor-home-screen.mh2 .mhx-coin {
-  width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-size:12px; color:#1a130a; font-family:var(--font-min);
+  width:21px; height:21px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:11px; color:#1a130a; font-family:var(--font-min); flex:none;
   box-shadow:inset 0 1px 2px rgba(255,255,255,.5), inset 0 -2px 3px rgba(0,0,0,.35), 0 0 6px rgba(0,0,0,.4);
 }
 #mentor-home-screen.mh2 .mhx-soul .mhx-coin { background:radial-gradient(circle at 35% 30%,#ff8e6b,#b8392b); color:#ffe; box-shadow:inset 0 1px 2px rgba(255,255,255,.4),0 0 10px rgba(200,70,40,.55); }
 #mentor-home-screen.mh2 .mhx-kei .mhx-coin { background:radial-gradient(circle at 35% 30%,#f0d68a,#b8902f); }
-#mentor-home-screen.mh2 .mhx-val { font-family:var(--font-go); font-size:15px; color:#f0e7d0; font-weight:600; letter-spacing:.02em; }
-#mentor-home-screen.mh2 .mhx-val small { font-size:11px; color:var(--ink-soft); font-weight:400; margin-left:1px; }
-#mentor-home-screen.mh2 .mhx-divider { width:1px; height:22px; background:rgba(200,164,77,.3); }
-#mentor-home-screen.mh2 .mhx-day { font-family:var(--font-min); font-size:15px; color:var(--ink-soft); letter-spacing:.18em; opacity:.92; }
-#mentor-home-screen.mh2 .mhx-day b { color:#f0e7d0; font-weight:600; font-size:17px; }
+#mentor-home-screen.mh2 .mhx-val { font-family:var(--font-go); font-size:16px; color:#f4ecd6; font-weight:700; letter-spacing:.02em; }
+#mentor-home-screen.mh2 .mhx-cur-lab { font-family:var(--font-min); font-size:10px; color:var(--ink-soft); opacity:.72; letter-spacing:.05em; }
+#mentor-home-screen.mh2 .mhx-day { display:flex; align-items:center; font-family:var(--font-min); font-size:14px; color:var(--ink-soft); opacity:.92; }
+#mentor-home-screen.mh2 .mhx-day b { color:#f4ecd6; font-weight:700; font-size:18px; line-height:1; }
+#mentor-home-screen.mh2 .mhx-day-u { font-size:13px; margin-left:3px; letter-spacing:.05em; opacity:.85; }
 #mentor-home-screen.mh2 .mhx-time { margin-left:8px; padding:1px 9px; border-radius:999px; font-family:var(--font-min); font-size:13px; color:#1a120a; background:linear-gradient(135deg,#ffe39a,#d6a23a); font-weight:700; letter-spacing:.08em; }
-#mentor-home-screen.mh2 .mhx-acts { font-family:var(--font-min); font-size:13px; color:var(--ink-soft); letter-spacing:.1em; opacity:.92; }
+#mentor-home-screen.mh2 .mhx-acts { font-family:var(--font-min); font-size:13px; color:var(--ink-soft); letter-spacing:.06em; opacity:.92; }
 #mentor-home-screen.mh2 .mhx-acts b { color:#ffcf6b; font-weight:700; font-size:16px; }
 #mentor-home-screen.mh2 .mhx-acts small { opacity:.7; }
 
@@ -825,10 +831,15 @@ body {
 }
 #mentor-home-screen.mh2 .mhx-b1 { font-size:9px; letter-spacing:.1em; font-family:var(--font-go); }
 #mentor-home-screen.mh2 .mhx-b2 { font-size:20px; line-height:1; font-family:var(--font-min); }
-#mentor-home-screen.mh2 .mhx-txt { z-index:1; flex:1; }
-#mentor-home-screen.mh2 .mhx-s { font-family:var(--font-go); font-size:11px; letter-spacing:.22em; color:#ffdcc0; }
-#mentor-home-screen.mh2 .mhx-m { font-family:var(--font-min); font-size:25px; letter-spacing:.06em; text-shadow:0 1px 3px rgba(0,0,0,.5); }
-#mentor-home-screen.mh2 .mhx-na { z-index:1; font-family:var(--font-go); font-size:13px; letter-spacing:.1em; color:#ffe6b0; opacity:.9; }
+#mentor-home-screen.mh2 .mhx-txt { z-index:1; flex:1; display:flex; flex-direction:column; justify-content:center; gap:1px; min-width:0; }
+#mentor-home-screen.mh2 .mhx-s { font-family:var(--font-go); font-size:10px; letter-spacing:.16em; color:#ffd0b3; opacity:.9; }
+#mentor-home-screen.mh2 .mhx-m { font-family:var(--font-min); font-size:22px; line-height:1.08; letter-spacing:.03em; text-shadow:0 1px 3px rgba(0,0,0,.5); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+#mentor-home-screen.mh2 .mhx-tre { font-family:var(--font-min); font-size:12px; letter-spacing:.02em; color:#ffe6b0; opacity:.92; }
+#mentor-home-screen.mh2 .mhx-tre b { font-weight:600; color:#fff3df; }
+#mentor-home-screen.mh2 .mhx-tre small { font-size:10px; opacity:.62; margin-left:5px; letter-spacing:.04em; }
+#mentor-home-screen.mh2 .mhx-na { z-index:1; flex:none; display:flex; flex-direction:column; align-items:flex-end; gap:4px; }
+#mentor-home-screen.mh2 .mhx-na-fmt { font-family:var(--font-go); font-size:12px; letter-spacing:.06em; color:#ffe6b0; opacity:.92; }
+#mentor-home-screen.mh2 .mhx-na-tier { font-family:var(--font-go); font-size:11px; font-weight:700; color:#5a3410; background:linear-gradient(135deg,#ffe6a8,#d8b056); border-radius:5px; padding:1px 7px; letter-spacing:.04em; }
 #mentor-home-screen.mh2 .mhx-next:hover { filter:brightness(1.06); }
 /* 準備中の大会CTA: 脈動なし・くすませる */
 #mentor-home-screen.mh2 .mhx-next-off { cursor:default; filter:grayscale(.45) brightness(.7); animation:none; }
@@ -944,7 +955,7 @@ body {
 .tourney-standings .ts-card { position:relative; z-index:1; width:560px; max-width:90%; padding:26px 28px; background:linear-gradient(180deg,#10141e,#0a0d14); border:2px solid #c8a44d; border-radius:16px; box-shadow:0 26px 70px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,220,140,.12); }
 .tourney-standings .ts-head { text-align:center; font-size:22px; letter-spacing:.14em; color:#ecd592; margin-bottom:16px; }
 .tourney-standings .ts-head small { display:block; font-size:12px; color:#9a8a66; letter-spacing:.1em; margin-top:3px; }
-.tourney-standings .ts-list { display:flex; flex-direction:column; gap:8px; margin-bottom:18px; }
+.tourney-standings .ts-list { display:flex; flex-direction:column; gap:8px; margin-bottom:18px; max-height:52vh; overflow-y:auto; }
 .tourney-standings .ts-row { display:flex; align-items:center; gap:12px; padding:9px 12px; border-radius:9px; background:rgba(255,255,255,.04); border:1px solid rgba(200,164,77,.18); animation:tsRow .4s ease both; }
 .tourney-standings .ts-row.me { background:linear-gradient(90deg,rgba(214,162,58,.22),rgba(214,162,58,.06)); border-color:rgba(236,213,146,.55); }
 @keyframes tsRow { 0%{opacity:0; transform:translateX(-18px);} 100%{opacity:1; transform:translateX(0);} }
@@ -961,13 +972,60 @@ body {
 .tourney-standings .ts-btns { display:flex; gap:12px; justify-content:center; }
 .tourney-standings .ts-btns button { min-width:140px; }
 
+/* ===== 大会 要項画面（開幕前ブリーフィング・#2）===== */
+.tourney-brief { position:absolute; inset:0; z-index:92; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:"Yu Gothic","Noto Sans JP",sans-serif; }
+.tourney-brief.is-open { opacity:1; }
+.tourney-brief .ts-scrim { position:absolute; inset:0; background:rgba(4,6,10,.86); }
+.tourney-brief .tb-card { position:relative; z-index:1; width:680px; max-width:94%; max-height:92%; overflow:auto; padding:24px 30px; background:linear-gradient(180deg,#12161f,#0a0d14); border:2px solid #c8a44d; border-radius:16px; box-shadow:0 26px 70px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,220,140,.12); color:#e8efe9; }
+.tourney-brief .tb-head { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.tourney-brief .tb-cup { width:48px; height:48px; flex:none; border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:var(--font-go); font-size:13px; font-weight:800; color:#5a3410; background:linear-gradient(180deg,#ffe6a8,#d8b056); border:1px solid #fff2cf; box-shadow:0 2px 6px rgba(0,0,0,.4); }
+.tourney-brief .tb-name { font-family:var(--font-min); font-size:26px; letter-spacing:.04em; color:#ffe7ab; }
+.tourney-brief .tb-tier { font-family:var(--font-go); font-size:13px; color:#9a8a66; letter-spacing:.06em; margin-top:2px; }
+.tourney-brief .tb-treasure { display:flex; align-items:center; gap:13px; padding:9px 14px; margin-bottom:11px; background:linear-gradient(90deg,rgba(214,162,58,.16),rgba(214,162,58,.03)); border:1px solid rgba(236,213,146,.4); border-radius:11px; }
+.tourney-brief .tb-tre-mark { width:34px; height:34px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-min); font-size:16px; color:#1a130a; background:radial-gradient(circle at 35% 30%,#ffe39a,#c8932f); box-shadow:0 0 10px rgba(214,162,58,.5); }
+.tourney-brief .tb-tre-txt b { font-family:var(--font-min); font-size:19px; color:#fff3df; }
+.tourney-brief .tb-tre-txt small { font-size:11px; color:#9a8a66; margin-left:7px; }
+.tourney-brief .tb-tre-sym { font-size:12px; color:#cfc3a6; margin-top:2px; opacity:.9; }
+.tourney-brief .tb-rules { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.tourney-brief .tb-rule { display:flex; gap:12px; align-items:baseline; font-size:13.5px; }
+.tourney-brief .tb-rk { flex:none; width:74px; font-family:var(--font-go); font-size:11px; letter-spacing:.08em; color:#8aa0c0; text-align:right; }
+.tourney-brief .tb-rv { color:#e3e9e6; }
+.tourney-brief .tb-rv b { color:#ffe39a; }
+.tourney-brief .tb-rivals-head { font-family:var(--font-go); font-size:12px; letter-spacing:.16em; color:#c8a44d; margin:0 0 7px; padding-bottom:4px; border-bottom:1px solid rgba(200,164,77,.25); }
+.tourney-brief .tb-rivals { display:flex; flex-direction:column; gap:6px; margin-bottom:16px; }
+.tourney-brief .tb-rival { display:flex; align-items:center; gap:11px; padding:6px 10px; border-radius:9px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.07); }
+.tourney-brief .tb-rival.named { background:linear-gradient(90deg,rgba(184,57,43,.16),rgba(255,255,255,.02)); border-color:rgba(240,192,116,.32); }
+.tourney-brief .tb-rival-art { width:34px; height:34px; flex:none; border-radius:7px; background:#2a2f3a center/180% no-repeat; background-image:var(--art); filter:saturate(.9); }
+.tourney-brief .tb-rival-name { font-size:15px; font-weight:700; }
+.tourney-brief .tb-rival-title { font-family:var(--font-go); font-size:11px; color:#e9b87a; letter-spacing:.04em; margin-top:1px; }
+.tourney-brief .tb-rival-title.tb-mob { color:#7c8694; }
+.tourney-brief .tb-rival-line { font-size:11.5px; color:#cfc3a6; margin-top:2px; opacity:.9; }
+.tourney-brief .tb-mobsum .tb-rival-art { filter:grayscale(.4) brightness(.7); }
+.tourney-brief .tb-btns { display:flex; gap:12px; justify-content:center; }
+.tourney-brief .tb-btns button { min-width:160px; }
+
+/* ===== 対局中の大会バッジ（左上・#2）===== */
+.game-tourney-hud { position:absolute; left:14px; top:12px; z-index:30; display:flex; align-items:center; gap:9px; padding:6px 12px 6px 8px; background:linear-gradient(180deg,rgba(18,12,8,.9),rgba(12,8,6,.78)); border:1px solid rgba(240,192,116,.5); border-radius:10px; box-shadow:0 4px 14px rgba(0,0,0,.5); pointer-events:none; }
+.game-tourney-hud .gth-cup { width:30px; height:30px; flex:none; border-radius:6px; display:flex; align-items:center; justify-content:center; font-family:var(--font-go); font-size:10px; font-weight:800; color:#5a3410; background:linear-gradient(180deg,#ffe6a8,#d8b056); }
+.game-tourney-hud .gth-name { font-family:var(--font-min); font-size:15px; color:#ffe7ab; letter-spacing:.03em; line-height:1.1; }
+.game-tourney-hud .gth-sec { font-family:var(--font-go); font-size:11px; color:#cdbb92; letter-spacing:.04em; margin-top:2px; }
+
+/* ===== 対局開始演出：大会リボン＋ライバル口上（#2）===== */
+.mi-tourney { position:absolute; top:64px; left:50%; transform:translateX(-50%); z-index:5; display:flex; align-items:center; gap:11px; padding:6px 16px; background:linear-gradient(180deg,rgba(18,12,8,.92),rgba(12,8,6,.8)); border:1px solid rgba(240,192,116,.55); border-radius:999px; box-shadow:0 4px 16px rgba(0,0,0,.5); }
+.mi-tourney .mi-tourney-cup { width:26px; height:26px; flex:none; border-radius:50%; display:flex; align-items:center; justify-content:center; font-family:var(--font-go); font-size:9px; font-weight:800; color:#5a3410; background:linear-gradient(180deg,#ffe6a8,#d8b056); }
+.mi-tourney .mi-tourney-name { font-family:var(--font-min); font-size:17px; color:#ffe7ab; letter-spacing:.04em; }
+.mi-tourney .mi-tourney-tre { font-size:11px; color:#e9b87a; margin-left:9px; }
+.mi-tourney .mi-tourney-sec { font-family:var(--font-go); font-size:11px; color:#cdbb92; letter-spacing:.06em; margin-top:1px; }
+.mi-card.is-rival .mi-card-role { color:#e9b87a; }
+.mi-card-line { margin-top:6px; font-size:11px; color:#d8cba8; line-height:1.35; max-width:150px; opacity:.92; }
+
 /* 大会優勝＝宝の獲得 */
 #mentor-home-screen.mh2 .mhx-lg-treasure { text-align:center; font-family:var(--font-min); font-size:17px; color:#5a4520; margin:8px 0 4px; }
 #mentor-home-screen.mh2 .mhx-lg-treasure b { font-size:24px; color:#8f2418; letter-spacing:.06em; }
 #mentor-home-screen.mh2 .mhx-lg-treasure small { display:block; font-size:11px; color:#6a5836; margin-top:2px; }
 
 /* 大会（M リーグ）最終結果の順位行 */
-#mentor-home-screen.mh2 .mhx-lg-list { display:flex; flex-direction:column; gap:6px; margin:10px 0 12px; }
+#mentor-home-screen.mh2 .mhx-lg-list { display:flex; flex-direction:column; gap:6px; margin:10px 0 12px; max-height:40vh; overflow-y:auto; }
 #mentor-home-screen.mh2 .mhx-lg-row { display:flex; align-items:center; gap:10px; padding:6px 10px; border-radius:7px; background:#16241d; border:1px solid #2a3f34; }
 #mentor-home-screen.mh2 .mhx-lg-row.me { background:linear-gradient(90deg,rgba(214,162,58,.2),rgba(214,162,58,.05)); border-color:rgba(236,213,146,.5); }
 #mentor-home-screen.mh2 .mhx-lg-place { width:24px; height:24px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:6px; font-weight:900; font-size:14px; color:#1a120a; background:#8a99a8; }
@@ -1000,7 +1058,20 @@ body {
 #mentor-home-screen.mh2 .mhx-ds-log { list-style:none; margin:0 0 12px; padding:0; display:flex; flex-direction:column; gap:5px; }
 #mentor-home-screen.mh2 .mhx-ds-log li { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:6px 12px; background:#16241d; border:1px solid #2a3f34; border-radius:8px; }
 #mentor-home-screen.mh2 .mhx-ds-act { font-family:var(--font-min); font-size:15px; color:#e8efe9; }
-#mentor-home-screen.mh2 .mhx-ds-tag { font-family:var(--font-go); font-size:12px; color:#d9c9a3; }
+/* 行動の成果タグ＝調子トーンの色ピルで一目で良し悪しが分かる（QA #5） */
+#mentor-home-screen.mh2 .mhx-ds-tag { font-family:var(--font-go); font-size:11px; font-weight:700; padding:2px 9px; border-radius:999px; letter-spacing:.03em; color:#d9c9a3; }
+#mentor-home-screen.mh2 .mhx-ds-tag.tone-vbad  { background:#5a3a3a; color:#ffc9c9; }
+#mentor-home-screen.mh2 .mhx-ds-tag.tone-bad   { background:#6a4a3a; color:#ffd8b8; }
+#mentor-home-screen.mh2 .mhx-ds-tag.tone-ok    { background:#3a4a4a; color:#cfe0dd; }
+#mentor-home-screen.mh2 .mhx-ds-tag.tone-good  { background:linear-gradient(135deg,#5a9a3a,#3a7a2a); color:#eaffd9; }
+#mentor-home-screen.mh2 .mhx-ds-tag.tone-vgood { background:linear-gradient(135deg,#ffe39a,#d6a23a); color:#3a2400; box-shadow:0 0 7px rgba(214,162,58,.5); }
+/* 日の移り変わり：前日サマリ→今日の区切り（QA #9 統合モーダル） */
+#mentor-home-screen.mh2 .mhx-dt { max-height:86vh; overflow-y:auto; }
+#mentor-home-screen.mh2 .mhx-dt .mhx-ds { margin-bottom:4px; }
+#mentor-home-screen.mh2 .mhx-dt-sep { display:flex; align-items:center; gap:10px; margin:10px 0 14px; color:var(--ink-soft); opacity:.7; font-family:var(--font-min); font-size:12px; letter-spacing:.2em; }
+#mentor-home-screen.mh2 .mhx-dt-sep::before,
+#mentor-home-screen.mh2 .mhx-dt-sep::after { content:""; flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(200,164,77,.45),transparent); }
+#mentor-home-screen.mh2 .mhx-dt .mhx-ds-ttl .mhx-ds-sub { margin-left:10px; }
 #mentor-home-screen.mh2 .mhx-ds-grid { display:flex; flex-direction:column; gap:7px; margin:0 0 16px; }
 #mentor-home-screen.mh2 .mhx-ds-cell { display:flex; align-items:center; gap:10px; justify-content:center; }
 #mentor-home-screen.mh2 .mhx-ds-k { font-family:var(--font-go); font-size:12px; color:#6a5836; min-width:78px; text-align:right; }

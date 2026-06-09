@@ -8,12 +8,13 @@
 //   - **無双国書（final）は全キャラの最終で固定**。会場で人数（形式）が確定する（詩玥＝ペア）。
 //   - **ティア**は格・難度の目安（T1→T2→T3 の順に挑むのが基本）。同ティア内の順序はキャラ自由。
 //
-// format: "solo4"(個人・四麻) / "solo3"(個人・三麻) / "pair"(ペア＝2人) / "team"(団体＝3人)
+// format: "solo4"(個人・四麻) / "pair"(ペア＝2対2の4卓) / "team"(団体＝チーム戦)
 //         / "final"(無双国書＝会場でキャラ別に人数確定)
+// ※大会は基本「4人卓以上の規模＝Mリーグ準拠」。三麻(solo3)は大会では使わない（コード上は残置）。
 // tier:   1 登竜門級 / 2 役満級 / 3 神域級
 export const TREASURE_TOURNAMENTS = [
   { id: "menzen-kaiken",    name: "門前開鍵杯", treasure: { name: "門前開鍵", reading: "メンゼンカイケン", baseYaku: "門前清自摸和", symbol: "孤独な試練を独力で開くマスターキー" }, format: "solo4", tier: 1 },
-  { id: "chin-iki",         name: "清一器杯",   treasure: { name: "清一器",   reading: "チンイッキ",       baseYaku: "清一色",        symbol: "一色に研ぎ澄ました純粋の器" },     format: "solo3", tier: 1 },
+  { id: "chin-iki",         name: "清一器杯",   treasure: { name: "清一器",   reading: "チンイッキ",       baseYaku: "清一色",        symbol: "一色に研ぎ澄ました純粋の器" },     format: "solo4", tier: 1 },
   { id: "ji-peeko",         name: "至盃口杯",   treasure: { name: "至盃口",   reading: "ジーペーコー",     baseYaku: "二盃口",        symbol: "1対1の美学を極めた聖杯" },         format: "pair",  tier: 1 },
   { id: "musou-kan",        name: "無双冠杯",   treasure: { name: "無双冠",   reading: "ムソウカン",       baseYaku: "国士無双",      symbol: "孤高の王が戴く王冠" },             format: "solo4", tier: 2 },
   { id: "kyou-sharin",      name: "鏡車輪杯",   treasure: { name: "鏡車輪",   reading: "キョウシャリン",   baseYaku: "大車輪",        symbol: "「もう一人の自分」を映す円鏡" },   format: "pair",  tier: 2 },
@@ -25,11 +26,16 @@ export const TREASURE_TOURNAMENTS = [
 
 // ティア別の大会ラン既定値（節数・順位点・報酬の格・ゲート相手 Lv の目安）。
 // 実際の相手 Lv はキャラ進捗で上書きする（無ければこの既定値）。順位点（ウマ）は M リーグ準拠。
+// ティアは「節数・順位点・報酬・敵の強さ・ネームド比率」を担当（出場者数は形式で固定＝下記 ENTRANTS_BY_FORMAT）。
 export const TOURNAMENT_TIER = {
   1: { matches: 3, rounds: 2, uma: [50, 10, -10, -30], soulClear: 500,  metaByPlace: [3, 2, 1, 1], defaultOppLv: 2 },
   2: { matches: 4, rounds: 2, uma: [50, 10, -10, -30], soulClear: 900,  metaByPlace: [6, 4, 2, 1], defaultOppLv: 5 },
-  3: { matches: 4, rounds: 2, uma: [50, 10, -10, -30], soulClear: 1500, metaByPlace: [9, 6, 3, 2], defaultOppLv: 8 },
+  3: { matches: 5, rounds: 2, uma: [50, 10, -10, -30], soulClear: 1500, metaByPlace: [9, 6, 3, 2], defaultOppLv: 8 },
 };
+
+// 出場者（エントリー）総数を形式で固定（Mリーグ＝8基準）。弟子を含む人数。
+// 個人=8 / ペア=16（＝8ペア×2人） / 団体=32。毎節は卓に4人ずつ着き、残りは別卓（擬似結果）で累積に反映。
+export const ENTRANTS_BY_FORMAT = { solo4: 8, solo3: 8, pair: 16, team: 32, final: 8 };
 
 // 最終累積順位 → クリア評価ランク（§4.5.2・満貫級が下限）。
 export const PLACE_RANKS = ["役満級", "倍満級", "跳満級", "満貫級"];
@@ -50,9 +56,12 @@ export function tournamentRunConfig(id, opts = {}) {
   const format = (t.format === "final" && opts.finalFormat) ? opts.finalFormat : t.format;
   const playerCount = PLAYER_COUNT[format] || 4;
   const runnable = format === "solo4" || format === "solo3"; // pair/team は別系統（順次対応）
+  // 出場者総数（弟子含む）は形式で固定（個人8 / ペア16 / 団体32）。卓は常に playerCount（基本4）。
+  // 超える分は別卓扱いで累積に反映する。
+  const entrants = ENTRANTS_BY_FORMAT[format] || Math.max(playerCount, 8);
   return {
     id: t.id, name: t.name, treasure: t.treasure, format, tier: t.tier, isFinal: !!t.isFinal,
-    playerCount, runnable,
+    playerCount, entrants, runnable,
     matches: tc.matches, rounds: tc.rounds, uma: UMA_BY_COUNT[playerCount] || tc.uma,
     soulClear: tc.soulClear, metaByPlace: tc.metaByPlace, rankByPlace: PLACE_RANKS,
     gateOppLv: oppLv, rivalLv: oppLv,

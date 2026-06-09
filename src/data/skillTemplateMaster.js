@@ -21,6 +21,7 @@ export const SKILL_TEMPLATE_MASTER = [
     name: "幸運のツモ",
     description: "ツモ運を引き寄せる攻撃型の基礎。手が早く、押しの展開に強い。",
     familyId: "draw",
+    paramAffinity: ["gamble", "speed"], // 運でツモる＝勝負勘(主)・速度(副)に寄せる（初期ステ配分）
     rarity: "normal",
     mentorCharacterIds: ["shiyue"],
     integrationTier: "hook_only",
@@ -34,6 +35,7 @@ export const SKILL_TEMPLATE_MASTER = [
     name: "中張の速攻",
     description: "2〜8の中張牌を呼び込み、タンヤオ軸で手数を押し付ける速攻型。",
     familyId: "draw",
+    paramAffinity: ["speed", "fire"], // 速攻＝速度(主)・火力(副)
     rarity: "normal",
     mentorCharacterIds: ["shiyue"],
     integrationTier: "hook_only",
@@ -48,6 +50,7 @@ export const SKILL_TEMPLATE_MASTER = [
     name: "身代わり人形",
     description: "発動後しばらく、ロン・ツモを帳消しにする——自分は失点せず、勝者も得点を得られない。誰にも奪わせない無効化の軸。",
     familyId: "defense",
+    paramAffinity: ["guard", "mental"], // 守りの要＝守備(主)・メンタル(副)
     rarity: "rare",
     mentorCharacterIds: ["bibi"],
     integrationTier: "engine_assisted",
@@ -61,6 +64,7 @@ export const SKILL_TEMPLATE_MASTER = [
     name: "危険察知",
     description: "場の気配から危険牌を見抜き、放銃を避ける守備型の基礎。",
     familyId: "defense",
+    paramAffinity: ["read", "guard"], // 察知＝読み(主)・守備(副)
     rarity: "normal",
     mentorCharacterIds: ["bibi"],
     integrationTier: "hook_only",
@@ -75,6 +79,7 @@ export const SKILL_TEMPLATE_MASTER = [
     name: "点棒の賭け",
     description: "1巡目に点棒を賭け、和了点を1.5〜2倍へ膨らませる博打型。外せば賭け金は丸損。",
     familyId: "gamble",
+    paramAffinity: ["gamble", "fire"], // 博打＝勝負勘(主)・火力(副)
     rarity: "rare",
     mentorCharacterIds: ["kakeha_ruina"],
     integrationTier: "target_select",
@@ -88,6 +93,7 @@ export const SKILL_TEMPLATE_MASTER = [
     name: "ドラ手繰り",
     description: "ドラを手元へ集める一発逆転型。最強格の打点だが守りは脆い。",
     familyId: "gamble",
+    paramAffinity: ["fire", "gamble"], // 一発逆転＝火力(主)・勝負勘(副)
     rarity: "rare",
     mentorCharacterIds: ["kakeha_ruina"],
     integrationTier: "hook_only",

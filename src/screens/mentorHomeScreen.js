@@ -200,12 +200,14 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-cname">〔 <b>${esc(chapter)}</b> 〕</div>
       </div>
       <div class="mhx-topright">
-        <div class="mhx-cur mhx-soul"><div class="mhx-coin">魂</div><div class="mhx-val">${esc(soul.toLocaleString())}<small> ソウル</small></div></div>
-        <div class="mhx-cur mhx-kei"><div class="mhx-coin">継</div><div class="mhx-val">${esc(meta)}<small> 継承</small></div></div>
-        <div class="mhx-divider"></div>
-        <div class="mhx-day"><b>${day == null ? "—" : esc(day)}</b> 日目<span class="mhx-time">${esc(timeLabel)}</span></div>
-        <div class="mhx-acts" title="1日3回まで行動できる">行動 <b>${actionsLeft}</b><small>/${ACTIONS_PER_DAY}</small></div>
-        <div class="mhx-divider"></div>
+        <div class="mhx-purse" title="所持通貨">
+          <div class="mhx-cur mhx-soul" title="ソウル（育成通貨）"><div class="mhx-coin">魂</div><div class="mhx-val">${esc(soul.toLocaleString())}</div><div class="mhx-cur-lab">ソウル</div></div>
+          <div class="mhx-cur mhx-kei" title="継承（メタ通貨）"><div class="mhx-coin">継</div><div class="mhx-val">${esc(meta)}</div><div class="mhx-cur-lab">継承</div></div>
+        </div>
+        <div class="mhx-dayinfo" title="1日3回まで行動できる">
+          <div class="mhx-day"><b>${day == null ? "—" : esc(day)}</b><span class="mhx-day-u">日目</span><span class="mhx-time">${esc(timeLabel)}</span></div>
+          <div class="mhx-acts">行動 <b>${actionsLeft}</b><small>/${ACTIONS_PER_DAY}</small></div>
+        </div>
         <button type="button" class="mhx-gear" title="設定">⚙</button>
       </div>
     </div>
@@ -307,8 +309,12 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       return `
         <button type="button" class="mhx-next" data-tournament="1" title="${esc(nx.name)}に挑戦">
           <div class="mhx-badge"><span class="mhx-b1">CUP</span><span class="mhx-b2">杯</span></div>
-          <div class="mhx-txt"><div class="mhx-s">次 の 大 会 へ　宝『${esc(nx.treasure.name)}』</div><div class="mhx-m">${esc(nx.name)}</div></div>
-          <div class="mhx-na">${esc(FMT[nx.format] || "")} T${nx.tier}</div>
+          <div class="mhx-txt">
+            <div class="mhx-s">次の大会へ</div>
+            <div class="mhx-m">${esc(nx.name)}</div>
+            <div class="mhx-tre">宝『<b>${esc(nx.treasure.name)}</b>』<small>${esc(nx.treasure.reading || "")}</small></div>
+          </div>
+          <div class="mhx-na"><span class="mhx-na-fmt">${esc(FMT[nx.format] || "")}</span><span class="mhx-na-tier">T${nx.tier}</span></div>
         </button>`;
     })()}
 
@@ -423,7 +429,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       <button type="button" class="mhx-md-btn"${available ? "" : " disabled"}>${available ? "休憩する（1行動）" : "今日はもう動けない"}</button>
     `;
     let didRest = false;
-    const { card } = openModal(container, html, () => { if (didRest) refresh(); });
+    const { card, close } = openModal(container, html, () => { if (didRest) refresh(); });
     const btn = card.querySelector(".mhx-md-btn");
     btn?.addEventListener("click", async () => {
       if (didRest || actionsLeft <= 0) return;
@@ -444,16 +450,19 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         if (res.bondUp) parts.push("…師匠との距離が、少し縮まった気がする。");
         const r = card.querySelector(".mhx-md-result");
         r.textContent = parts.join("　／　"); r.hidden = false;
-        btn.disabled = true; btn.textContent = "ゆっくり休んだ";
         // 休憩中の2択コミュ（双方向）。選ぶと師匠が返し、その選択を覚える。
+        // 質問があるときは「ゆっくり休んだ」ボタンを出さず、回答が前進導線になる（双方向の見せ場を任意化しない）。
         const talk = pickRestTalk(avatar.mentorCharacterId, { bondLevel: avatar.bondLevel ?? 1, condTier: cond.tone });
         if (talk) {
+          btn.remove();
           const rt = card.querySelector(".mhx-rt");
           rt.innerHTML = `
             <p class="mhx-rt-prompt">${esc(talk.prompt)}</p>
             <div class="mhx-rt-choices">${talk.choices.map((c, i) => `<button type="button" class="mhx-rt-choice" data-i="${i}">${esc(c.label)}</button>`).join("")}</div>
-            <p class="mhx-rt-reply" hidden></p>`;
+            <p class="mhx-rt-reply" hidden></p>
+            <button type="button" class="mhx-md-btn mhx-rt-done" hidden>うん、また明日</button>`;
           rt.hidden = false;
+          const doneBtn = rt.querySelector(".mhx-rt-done");
           let picked = false;
           rt.querySelectorAll(".mhx-rt-choice").forEach((b) => {
             b.addEventListener("click", async () => {
@@ -465,8 +474,13 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
               reply.textContent = ch.reply; reply.hidden = false;
               rt.querySelectorAll(".mhx-rt-choice").forEach((x) => { x.disabled = true; });
               b.classList.add("is-picked");
+              doneBtn.hidden = false;
             });
           });
+          doneBtn.addEventListener("click", () => close());
+        } else {
+          btn.disabled = false; btn.textContent = "ゆっくり休んだ";
+          btn.onclick = () => close();
         }
       } catch (e) {
         const r = card.querySelector(".mhx-md-result");
@@ -612,10 +626,36 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     openModal(container, html);
   }
 
-  // ---- 日の始まりバナー（〇日目＋師匠・弟子の調子）----
-  function openDayBanner() {
+  // ---- 日の移り変わり（前日の手応え＋今日の調子を1枚に統合）----
+  // s（前日サマリ）が無ければ初日＝今日の調子だけを出す。モーダル連打を避けるため1枚にまとめる（QA #9）。
+  function openDayTransition(s, onDone) {
+    const OUT = { daiseikou: "大成功", seikou: "成功", bunan: "無難", shippai: "成果イマイチ" };
+    const OUTTONE = { daiseikou: "vgood", seikou: "good", bunan: "ok", shippai: "bad" };
+    let recapHtml = "";
+    if (s) {
+      const logHtml = (s.log || []).map((e) => {
+        if (e.type === "train") return `<li><span class="mhx-ds-act">${esc(e.label || "修行")}</span><span class="mhx-ds-tag tone-${OUTTONE[e.outcome] || "ok"}">${esc(OUT[e.outcome] || "")}</span></li>`;
+        if (e.type === "duo") return `<li><span class="mhx-ds-act">二人打ち（本気）</span><span class="mhx-ds-tag tone-${e.won ? "vgood" : "good"}">${e.won ? "勝利" : "惜敗"}</span></li>`;
+        if (e.type === "parlor") return `<li><span class="mhx-ds-act">雀荘巡り（${esc(e.label || "")}）</span><span class="mhx-ds-tag tone-ok">勝ち抜き ${e.wins ?? 0}</span></li>`;
+        return `<li><span class="mhx-ds-act">休憩</span><span class="mhx-ds-tag tone-good">回復</span></li>`;
+      }).join("");
+      const gainStr = Object.entries(s.gains || {}).map(([k, v]) => `${esc(PARAM_LABELS[k] || k)} +${v}`).join("　/　");
+      const rankStr = (s.rankUps || []).map((u) => `<span class="mhx-ds-rk"><b>${esc(u.label)}</b> <span class="mhx-stat-rank rank-${u.from}">${u.from}</span>▶<span class="mhx-stat-rank rank-${u.to}">${u.to}</span></span>`).join("　");
+      recapHtml = `
+        <div class="mhx-ds">
+          <div class="mhx-ds-ttl"><b>${esc(s.day)}</b> 日目 を終えて<span class="mhx-ds-sub">今日の手応え</span></div>
+          <ul class="mhx-ds-log">${logHtml || '<li><span class="mhx-ds-act">…静かな一日だった</span></li>'}</ul>
+          <div class="mhx-ds-grid">
+            <div class="mhx-ds-cell"><span class="mhx-ds-k">能力値</span><span class="mhx-ds-v">${gainStr ? esc(gainStr) : "変化なし"}${s.total ? `　<small>(計 +${s.total})</small>` : ""}</span></div>
+            ${s.rankUps?.length ? `<div class="mhx-ds-cell"><span class="mhx-ds-k">ランクアップ</span><span class="mhx-ds-v">${rankStr}</span></div>` : ""}
+            <div class="mhx-ds-cell"><span class="mhx-ds-k">ソウル</span><span class="mhx-ds-v">${s.soul >= 0 ? "+" : ""}${(s.soul || 0).toLocaleString()}</span></div>
+          </div>
+        </div>
+        <div class="mhx-dt-sep"><span>翌日</span></div>`;
+    }
     const html = `
-      <div class="mhx-db">
+      <div class="mhx-db mhx-dt">
+        ${recapHtml}
         <div class="mhx-db-day"><b>${esc(day)}</b> 日目</div>
         <div class="mhx-db-sub">今日の調子</div>
         <div class="mhx-db-conds">
@@ -630,39 +670,11 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
             <span class="mhx-cond tone-${cond.tone}">${esc(cond.label)}</span>
           </div>
         </div>
-        <p class="mhx-db-note">1日 ${ACTIONS_PER_DAY} 回まで行動できる。調子は育成の伸びに効く（失敗で下がる）。</p>
-        <button type="button" class="mhx-md-btn mhx-db-btn">今日も励む</button>
-      </div>`;
-    const { card, close } = openModal(container, html);
-    card.querySelector(".mhx-db-btn")?.addEventListener("click", close);
-  }
-
-  // ---- 今日の手応えサマリ（一日の終わり＝新しい日の頭に、前日を振り返る）----
-  function openDaySummaryModal(s, onDone) {
-    const ACT = { train: "修行", rest: "休憩", parlor: "雀荘巡り" };
-    const OUT = { daiseikou: "大成功", seikou: "成功", bunan: "無難", shippai: "失敗" };
-    const logHtml = (s.log || []).map((e) => {
-      if (e.type === "train") return `<li><span class="mhx-ds-act">${esc(e.label || "修行")}</span><span class="mhx-ds-tag">${esc(OUT[e.outcome] || "")}</span></li>`;
-      if (e.type === "duo") return `<li><span class="mhx-ds-act">二人打ち（本気）</span><span class="mhx-ds-tag">${e.won ? "勝利" : "惜敗"}</span></li>`;
-      if (e.type === "parlor") return `<li><span class="mhx-ds-act">雀荘巡り（${esc(e.label || "")}）</span><span class="mhx-ds-tag">勝ち抜き ${e.wins ?? 0}</span></li>`;
-      return `<li><span class="mhx-ds-act">休憩</span></li>`;
-    }).join("");
-    const gainStr = Object.entries(s.gains || {}).map(([k, v]) => `${esc(PARAM_LABELS[k] || k)} +${v}`).join("　/　");
-    const rankStr = (s.rankUps || []).map((u) => `<span class="mhx-ds-rk"><b>${esc(u.label)}</b> <span class="mhx-stat-rank rank-${u.from}">${u.from}</span>▶<span class="mhx-stat-rank rank-${u.to}">${u.to}</span></span>`).join("　");
-    const html = `
-      <div class="mhx-ds">
-        <div class="mhx-ds-ttl"><b>${esc(s.day)}</b> 日目 を終えて</div>
-        <div class="mhx-ds-sub">今日の手応え</div>
-        <ul class="mhx-ds-log">${logHtml || '<li><span class="mhx-ds-act">…静かな一日だった</span></li>'}</ul>
-        <div class="mhx-ds-grid">
-          <div class="mhx-ds-cell"><span class="mhx-ds-k">能力値</span><span class="mhx-ds-v">${gainStr ? esc(gainStr) : "変化なし"}${s.total ? `　<small>(計 +${s.total})</small>` : ""}</span></div>
-          ${s.rankUps?.length ? `<div class="mhx-ds-cell"><span class="mhx-ds-k">ランクアップ</span><span class="mhx-ds-v">${rankStr}</span></div>` : ""}
-          <div class="mhx-ds-cell"><span class="mhx-ds-k">ソウル</span><span class="mhx-ds-v">${s.soul >= 0 ? "+" : ""}${(s.soul || 0).toLocaleString()}</span></div>
-        </div>
-        <button type="button" class="mhx-md-btn mhx-ds-btn">次の日へ</button>
+        ${day === 1 ? `<p class="mhx-db-note">1日 ${ACTIONS_PER_DAY} 回まで行動できる。調子は育成の伸びに効く。</p>` : ""}
+        <button type="button" class="mhx-md-btn mhx-db-btn">${s ? "次の日へ" : "今日も励む"}</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);
-    card.querySelector(".mhx-ds-btn")?.addEventListener("click", close);
+    card.querySelector(".mhx-db-btn")?.addEventListener("click", close);
   }
 
   // ---- ランクアップ演出（1日の終わり→新しい日の頭に出す）----
@@ -872,7 +884,6 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     flash?.duo ? (next) => openDuoResultModal(flash.duo, next) : null,
     flash?.league ? (next) => openLeagueResultModal(flash.league, next) : null,
     flash?.tournamentGate ? (next) => openTournamentGateModal(flash.tournamentGate, next) : null,
-    (showBanner && daySummary) ? (next) => openDaySummaryModal(daySummary, next) : null,
-    showBanner ? () => openDayBanner() : null,
+    showBanner ? (next) => openDayTransition(daySummary, next) : null,
   ]);
 }

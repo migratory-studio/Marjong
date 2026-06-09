@@ -15,7 +15,7 @@ import {
   presetsOfType, presetById, defaultPresetIds, defaultPresetIdForType,
   DESHI_PRESET_SETS,
 } from "../data/avatarPresetMaster.js";
-import { buildNewAvatar, addAvatarToProfile, AVATAR_DEFAULTS } from "../progression/avatarFactory.js";
+import { buildNewAvatar, addAvatarToProfile, initialParams6 } from "../progression/avatarFactory.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
 import { statViews, rankCells } from "../autobattle/statSystem.js";
 
@@ -335,7 +335,7 @@ export async function showAvatarCreate(container, { repository, onCreated, onBac
     const iconP = presetById(state.presetIds.icon);
     const name = nameInput.value.trim();
     const bio = bioInput.value.trim();
-    const paramsHtml = statViews(AVATAR_DEFAULTS.params6).map((s) => {
+    const paramsHtml = statViews(initialParams6(state.skillTemplateId)).map((s) => {
       const segs = rankCells(s.value).map((c) =>
         `<span class="statgauge-seg${c.on ? " on" : ""}"${c.on ? ` style="background:${c.color}"` : ""}></span>`).join("");
       return `
