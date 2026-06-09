@@ -71,6 +71,17 @@ export function treasureRankFor(count) {
   return TREASURE_RANKS[Math.min(9, count) - 1] || null;
 }
 
+// 師匠の初期段位（宝数換算・基本は四蓮策士=4 以上）。ホーム表示や格の目安に使う。
+export const MENTOR_TREASURE_RANK = {
+  shiyue: 8,        // 八蓮極士（読みの達人・神算鬼謀）
+  bibi: 6,          // 六蓮達士（守りの達人）
+  kakeha_ruina: 5,  // 五蓮闘士（博徒）
+};
+// 師匠の段位（mentorId → 段位オブジェクト）。未定義師匠は四蓮策士（=4）を下限に。
+export function mentorRankFor(mentorId) {
+  return treasureRankFor(MENTOR_TREASURE_RANK[mentorId] || 4);
+}
+
 export const tournamentById = (id) => TREASURE_TOURNAMENTS.find((t) => t.id === id) || TREASURE_TOURNAMENTS[0];
 
 // 形式 → 卓人数（個人戦）。pair/team は専用対局（別系統）なので playerCount は実装側で扱う。

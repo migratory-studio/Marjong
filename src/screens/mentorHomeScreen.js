@@ -22,6 +22,7 @@ import { pickMentorGreeting, pickRestTalk, pickMentorPraise } from "../data/ment
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
 import { nextTreasureInfo } from "../data/mentorCampaignMaster.js";
+import { treasureRankFor, mentorRankFor } from "../data/tournamentMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
@@ -165,6 +166,9 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // 師匠フレーバー（「今日の様子」＝師匠の調子）
   const mentorTitle = MENTOR_TITLE[mentor?.role] || "師範";
   const mood = mentorCond.label;
+  // 異能段位：弟子＝集めた宝の数 / 師匠＝マスタ初期値（基本 四蓮策士以上）。
+  const deshiRank = treasureRankFor((profile.records?.treasures || []).length); // 0個なら null＝無段
+  const mentorRank = mentorRankFor(avatar.mentorCharacterId);
   const mAbility = mentor?.abilities?.[0]?.abilityId ? abilityDef(mentor.abilities[0].abilityId) : null;
   const mAbilityName = mAbility?.name || "";
   const mAbilityDesc = mAbility?.desc || mentor?.bio || "";
@@ -222,6 +226,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-np-main">
           <span class="mhx-np-nm">${esc(mentor?.name || "師匠")}${mentor?.reading ? `<small>${esc(mentor.reading)}</small>` : ""}</span>
           <div class="mhx-np-sub">
+            ${mentorRank ? `<span class="mhx-dan-chip" title="異能段位：${esc(mentorRank.reading)}">${esc(mentorRank.name)}</span>` : ""}
             <span class="mhx-np-title">${esc(mentorTitle)}</span>
             <span class="mhx-np-lv">技 Lv${MENTOR_SKILL_LEVEL}</span>
             <span class="mhx-np-mood mhx-cond tone-${mentorCond.tone}">今日：${esc(mood)}</span>
@@ -286,7 +291,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       <div class="mhx-port">${discipleIcon ? `<img class="mhx-port-img" alt="" src="${esc(discipleIcon)}">` : "弟子"}</div>
       <div class="mhx-who">
         <div class="mhx-dn">${esc(avatar.name)}${tmpl ? `<small>${esc(tmpl.name)}</small>` : ""}</div>
-        <div class="mhx-lv"><span class="mhx-lvtag">LV</span><b>${esc(avatar.avatarLevel)}</b><span class="mhx-cond tone-${cond.tone}" title="今日の調子">${esc(cond.label)}</span></div>
+        <div class="mhx-lv"><span class="mhx-lvtag">LV</span><b>${esc(avatar.avatarLevel)}</b><span class="mhx-cond tone-${cond.tone}" title="今日の調子">${esc(cond.label)}</span><span class="mhx-dan-chip${deshiRank ? "" : " is-none"}" title="異能段位${deshiRank ? "：" + esc(deshiRank.reading) : "（宝を集めて昇段）"}">${deshiRank ? esc(deshiRank.name) : "無段"}</span></div>
       </div>
       <div class="mhx-hp">
         <div class="mhx-hp-top">
