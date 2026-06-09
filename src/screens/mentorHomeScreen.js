@@ -747,6 +747,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       <div class="mhx-pr mhx-lg">
         <div class="mhx-pr-ttl">${won ? "優勝！" : r.retreated ? "途中退場" : `最終 ${place} 位`}</div>
         <div class="mhx-pr-head"><span class="mhx-cond tone-${won ? "vgood" : place <= 2 ? "good" : "bad"}">${esc(r.name || "大会")}</span></div>
+        ${won && r.treasure ? `<div class="mhx-lg-treasure">宝『<b>${esc(r.treasure.name)}</b>』を獲得！<small>${esc(r.treasure.baseYaku || "")}</small></div>` : ""}
         <div class="mhx-lg-list">${rows}</div>
         <div class="mhx-tr-rank">評価 <b>${esc(r.rank || "満貫級")}</b></div>
         <div class="mhx-pr-soul">継承 <b>+${r.meta ?? 0}</b>　／　ソウル <b>+${r.soul ?? 0}</b></div>

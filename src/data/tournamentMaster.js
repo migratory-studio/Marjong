@@ -1,22 +1,51 @@
-// 大会マスタ — major_update_specification.md §4.6.10（Phase 4B / M リーグ制）。
+// 大会（九大至宝）マスタ — major_update_specification.md §4.6.10 / world.md §11。
 //
-// 大会＝**M リーグ制**：各「節」は半荘（東南戦・25000 持ち点）。素点（(最終−25000)/1000）＋
-// 順位点（ウマ）でその節のポイントを出し、**節をまたいで累積**。最終の累積ポイント順位で評価。
-// 失敗なし路線（§4.5.2）：トビ終了はあるが大会脱落はせず、全節を打ち切る。最終1位＝優勝。
-export const TOURNAMENT_MASTER = [
-  {
-    id: "beginner",
-    name: "初級リーグ・宝への道",
-    matches: 3,                 // 節数（半荘の本数）
-    rounds: 2,                  // 各節＝半荘（東南戦）
-    gateOppLv: 2,               // 出場ゲート判定用の相手 param Lv
-    rivalLv: 2,                 // ライバル（モブ）の param Lv（将来 mobLvBand）
-    uma: [50, 10, -10, -30],    // 順位点（M リーグ準拠：1位+50 / 2位+10 / 3位△10 / 4位△30）
-    // 弟子の最終順位(0..3) → クリア評価ランク（§4.5.2・満貫級が下限）と継承（メタ通貨）量。
-    rankByPlace: ["役満級", "倍満級", "跳満級", "満貫級"],
-    metaByPlace: [5, 3, 2, 1],
-    soulClear: 500,             // 完走ソウル
-  },
+// 九蓮宝士＝9種の大会すべてで優勝（＝9つの「宝」を集める）。本マスタは各大会の“素性”だけを定義し、
+// **敵の強さ（oppLv 等）はここに持たない**：キャラごとに挑戦する順番が違う＝同じ宝でも到達時の
+// 相手の強さが変わるため、強さは「ティア既定値 × キャラ進捗」で実行時に与える（tournamentRunConfig）。
+//
+// 例外（順序の固定要件）:
+//   - **無双国書（final）は全キャラの最終で固定**。会場で人数（形式）が確定する（詩玥＝ペア）。
+//   - **ティア**は格・難度の目安（T1→T2→T3 の順に挑むのが基本）。同ティア内の順序はキャラ自由。
+//
+// format: "solo4"(個人・四麻) / "solo3"(個人・三麻) / "pair"(ペア＝2人) / "team"(団体＝3人)
+//         / "final"(無双国書＝会場でキャラ別に人数確定)
+// tier:   1 登竜門級 / 2 役満級 / 3 神域級
+export const TREASURE_TOURNAMENTS = [
+  { id: "menzen-kaiken",    name: "門前開鍵杯", treasure: { name: "門前開鍵", reading: "メンゼンカイケン", baseYaku: "門前清自摸和", symbol: "孤独な試練を独力で開くマスターキー" }, format: "solo4", tier: 1 },
+  { id: "chin-iki",         name: "清一器杯",   treasure: { name: "清一器",   reading: "チンイッキ",       baseYaku: "清一色",        symbol: "一色に研ぎ澄ました純粋の器" },     format: "solo3", tier: 1 },
+  { id: "ji-peeko",         name: "至盃口杯",   treasure: { name: "至盃口",   reading: "ジーペーコー",     baseYaku: "二盃口",        symbol: "1対1の美学を極めた聖杯" },         format: "pair",  tier: 1 },
+  { id: "musou-kan",        name: "無双冠杯",   treasure: { name: "無双冠",   reading: "ムソウカン",       baseYaku: "国士無双",      symbol: "孤高の王が戴く王冠" },             format: "solo4", tier: 2 },
+  { id: "kyou-sharin",      name: "鏡車輪杯",   treasure: { name: "鏡車輪",   reading: "キョウシャリン",   baseYaku: "大車輪",        symbol: "「もう一人の自分」を映す円鏡" },   format: "pair",  tier: 2 },
+  { id: "daisanken",        name: "大三剣杯",   treasure: { name: "大三剣",   reading: "ダイサンケン",     baseYaku: "大三元",        symbol: "戦場を支配する一振りの剣" },       format: "team",  tier: 2 },
+  { id: "tenankou",         name: "天暗刻杯",   treasure: { name: "天暗刻",   reading: "テンアンコウ",     baseYaku: "四暗刻",        symbol: "天から与えられた意思を封じた球体" }, format: "team",  tier: 2 },
+  { id: "tenchi-shingyoku", name: "天地神玉杯", treasure: { name: "天地神玉", reading: "テンチシンギョク", baseYaku: "天和・地和",    symbol: "確率を捻じ曲げる神がかった運の水晶玉" }, format: "pair", tier: 3 },
+  { id: "musou-kokusho",    name: "無双国書杯", treasure: { name: "無双国書", reading: "ムソウコクショ",   baseYaku: "国士無双（真理）", symbol: "全真理が記された禁書／最終ピース" }, format: "final", tier: 3, isFinal: true },
 ];
 
-export const tournamentById = (id) => TOURNAMENT_MASTER.find((t) => t.id === id) || TOURNAMENT_MASTER[0];
+// ティア別の大会ラン既定値（節数・順位点・報酬の格・ゲート相手 Lv の目安）。
+// 実際の相手 Lv はキャラ進捗で上書きする（無ければこの既定値）。順位点（ウマ）は M リーグ準拠。
+export const TOURNAMENT_TIER = {
+  1: { matches: 3, rounds: 2, uma: [50, 10, -10, -30], soulClear: 500,  metaByPlace: [3, 2, 1, 1], defaultOppLv: 2 },
+  2: { matches: 4, rounds: 2, uma: [50, 10, -10, -30], soulClear: 900,  metaByPlace: [6, 4, 2, 1], defaultOppLv: 5 },
+  3: { matches: 4, rounds: 2, uma: [50, 10, -10, -30], soulClear: 1500, metaByPlace: [9, 6, 3, 2], defaultOppLv: 8 },
+};
+
+// 最終累積順位 → クリア評価ランク（§4.5.2・満貫級が下限）。
+export const PLACE_RANKS = ["役満級", "倍満級", "跳満級", "満貫級"];
+
+export const tournamentById = (id) => TREASURE_TOURNAMENTS.find((t) => t.id === id) || TREASURE_TOURNAMENTS[0];
+
+// 大会の“素性”＋ティア既定値＋実行時の相手 Lv をマージした、ラン用コンフィグ。
+// opts.oppLv＝キャラ進捗で決まる相手の強さ（省略時はティア既定値）。
+export function tournamentRunConfig(id, opts = {}) {
+  const t = tournamentById(id);
+  const tc = TOURNAMENT_TIER[t.tier] || TOURNAMENT_TIER[1];
+  const oppLv = opts.oppLv ?? tc.defaultOppLv;
+  return {
+    id: t.id, name: t.name, treasure: t.treasure, format: t.format, tier: t.tier, isFinal: !!t.isFinal,
+    matches: tc.matches, rounds: tc.rounds, uma: tc.uma,
+    soulClear: tc.soulClear, metaByPlace: tc.metaByPlace, rankByPlace: PLACE_RANKS,
+    gateOppLv: oppLv, rivalLv: oppLv,
+  };
+}

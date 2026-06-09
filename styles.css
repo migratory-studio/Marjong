@@ -961,6 +961,11 @@ body {
 .tourney-standings .ts-btns { display:flex; gap:12px; justify-content:center; }
 .tourney-standings .ts-btns button { min-width:140px; }
 
+/* 大会優勝＝宝の獲得 */
+#mentor-home-screen.mh2 .mhx-lg-treasure { text-align:center; font-family:var(--font-min); font-size:17px; color:#5a4520; margin:8px 0 4px; }
+#mentor-home-screen.mh2 .mhx-lg-treasure b { font-size:24px; color:#8f2418; letter-spacing:.06em; }
+#mentor-home-screen.mh2 .mhx-lg-treasure small { display:block; font-size:11px; color:#6a5836; margin-top:2px; }
+
 /* 大会（M リーグ）最終結果の順位行 */
 #mentor-home-screen.mh2 .mhx-lg-list { display:flex; flex-direction:column; gap:6px; margin:10px 0 12px; }
 #mentor-home-screen.mh2 .mhx-lg-row { display:flex; align-items:center; gap:10px; padding:6px 10px; border-radius:7px; background:#16241d; border:1px solid #2a3f34; }

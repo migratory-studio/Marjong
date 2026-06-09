@@ -384,7 +384,10 @@ export function applyLeagueResult(profile, t, finalRank = 3, retreated = false) 
   let p = grantSoul(profile, soul);
   p = { ...p, wallet: { ...(p.wallet || {}), meta: (p.wallet?.meta ?? 0) + meta } };
   const won = place === 0 && !retreated;
-  if (won) p = { ...p, records: { ...(p.records || {}), tournamentsWon: (p.records?.tournamentsWon ?? 0) + 1 } };
+  if (won) {
+    const treasures = Array.from(new Set([...(p.records?.treasures || []), t.id].filter(Boolean)));
+    p = { ...p, records: { ...(p.records || {}), tournamentsWon: (p.records?.tournamentsWon ?? 0) + 1, treasures } };
+  }
   return { profile: p, finalRank: place, won, rank, meta, soul, retreated };
 }
 

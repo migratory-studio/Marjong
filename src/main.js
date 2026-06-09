@@ -26,7 +26,7 @@ import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, leaguePoints } from "./progression/progressionService.js";
-import { TOURNAMENT_MASTER } from "./data/tournamentMaster.js";
+import { tournamentRunConfig } from "./data/tournamentMaster.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -767,7 +767,9 @@ async function launchHonestMatch(config) {
 let tournamentRun = null; // { t, matchIndex, rivals, totals:{id:pt}, names:{id:name}, deshiId }
 async function openTournament() {
   const profile = await profileRepo.loadProfile();
-  const t = TOURNAMENT_MASTER[0];
+  // 当面は詩玥編の最初の宝＝門前開鍵（個人四麻）。将来はキャラ進捗で大会と相手 Lv を決める。
+  const t = tournamentRunConfig("menzen-kaiken");
+  if (t.format !== "solo4") { openMentorHome({ tournamentGate: { name: t.name, tierLabel: "この形式（" + t.format + "）は準備中" } }); return; }
   const gate = tournamentGate(profile, t);
   if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
   const av = activeAvatar(profile);
@@ -809,7 +811,7 @@ async function onTournamentMatchDone(result) {
       await profileRepo.saveProfile(res.profile);
       const t = run.t; const standings = ranked.map((id, i) => ({ name: run.names[id], pt: run.totals[id], isHuman: id === run.deshiId, place: i + 1 }));
       tournamentRun = null;
-      openMentorHome({ league: { name: t.name, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, standings } });
+      openMentorHome({ league: { name: t.name, treasure: t.treasure, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, standings } });
     } else {
       playTournamentMatch();
     }
