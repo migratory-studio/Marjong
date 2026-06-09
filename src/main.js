@@ -25,7 +25,7 @@ import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
-import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult } from "./progression/progressionService.js";
+import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult } from "./progression/progressionService.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -718,6 +718,7 @@ function launchAutoBattle(profile, { oppLv, oppHpMax, maxMatches, seed = Date.no
 
 // ── 本気対局（Phase 4A・§4.6.9）。既存 beginGame を流用する“橋”。──
 let honestCtx = null; // 本気対局中の文脈（{ onResult } 等）。null＝通常（フリー対戦）。
+let honestAutoPlay = false; // 本気タイマンを「オート（AI自動打ち）」で始めるか。beginGame が消費。
 // マイキャラを対局エンジン用の character へ変換（立ち絵/能力を載せる）。
 function avatarToCharacter(avatar) {
   const icon = presetById(avatar?.presetIds?.icon)?.assetPath || "";
@@ -736,6 +737,7 @@ function avatarToCharacter(avatar) {
 // 本気対局を起動。config: { avatar, opponents:[character], rounds, players, voiceSet, onResult(result) }
 async function launchHonestMatch(config) {
   honestCtx = config;
+  honestAutoPlay = !!config.autoPlay; // 「オート」起動なら beginGame が autoPlay=ON にする
   teamBattleData = null; pairBattleData = null; humanIndex = 0;
   selectedRounds = config.rounds || 1;
   selectedPlayers = config.players || (1 + (config.opponents?.length || 3));
@@ -788,6 +790,22 @@ async function openMentorSub(target, payload) {
     // §4.6 オートバトルのプロト起動（大会未実装のためデバッグ導線から）。
     const profile = await profileRepo.loadProfile();
     launchAutoBattle(profile, { oppLv: 1, oppHpMax: 6000, onExit: () => back() });
+  } else if (target === "duo-match") {
+    // §4.6.9 B2 二人打ち＝師匠とのタイマン（二人麻雀）。payload.auto でオート/本気。
+    const profile = await profileRepo.loadProfile();
+    const av = activeAvatar(profile);
+    const mentorBase = CHARACTERS.find((c) => c.id === av?.mentorCharacterId) || CHARACTERS[0];
+    const mentor = { ...mentorBase, stats: { ...mentorBase.stats, startingPoints: 25000 } }; // 五分の持ち点で打ち筋の差を見る
+    launchHonestMatch({
+      avatar: av, opponents: [mentor], players: 2, rounds: 2, // 二人麻雀・東南戦
+      voiceSet: "shugyo", autoPlay: !!payload?.auto, returnTo: "mentor-home",
+      onResult: async (result) => {
+        const cur = await profileRepo.loadProfile();
+        const res = applyDuoResult(cur, result);
+        await profileRepo.saveProfile(res.profile);
+        openMentorHome({ duo: { won: res.won, soul: res.soul, gains: res.gains, before: res.before, after: res.after, closeness: res.closeness, finalPoints: res.finalPoints } });
+      },
+    });
   } else if (target === "honest-proto") {
     // §4.6.9 本気対局（4人・モブ）プロト。橋(launchHonestMatch)→結果反映→師弟ホーム。
     const profile = await profileRepo.loadProfile();
@@ -1090,7 +1108,8 @@ function beginGame(seated, dealerIndex) {
   el("table").addEventListener("mouseleave", () => { renderer.setHover(null); render(); });
   initSettingsUI(audio); // gear icon + volume panel (idempotent against re-init)
   initNoNakiToggle();
-  autoPlay = false; // 毎対局オートは OFF から開始（前回 ON の持ち越しを防ぐ）
+  autoPlay = honestAutoPlay; // 通常は OFF。本気タイマンの「オート」起動時のみ ON で開始。
+  honestAutoPlay = false;
   initAutoToggle();
 
   // game.startHand() emits HAND_STARTED -> BGM. This runs inside the

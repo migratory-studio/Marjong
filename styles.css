@@ -907,6 +907,12 @@ body {
 #mentor-home-screen.mh2 .mhx-md-hp-top { display:flex; justify-content:space-between; font-family:var(--font-go); font-size:12px; color:#5a4a2c; margin-bottom:6px; }
 #mentor-home-screen.mh2 .mhx-md-fill { transition:width .6s cubic-bezier(.22,.61,.36,1); }
 #mentor-home-screen.mh2 .mhx-md-result { font-family:var(--font-go); font-size:14px; color:#4a3c24; font-weight:600; margin:0 0 13px; letter-spacing:.02em; }
+/* 二人打ち＝師匠タイマンの オート/本気 選択 */
+#mentor-home-screen.mh2 .mhx-duo-btns { display:flex; gap:12px; }
+#mentor-home-screen.mh2 .mhx-duo-btns .mhx-md-btn { flex:1; display:flex; flex-direction:column; gap:3px; line-height:1.2; }
+#mentor-home-screen.mh2 .mhx-duo-btns .mhx-md-btn small { font-size:11px; font-weight:400; opacity:.85; }
+#mentor-home-screen.mh2 .mhx-duo-auto { filter:saturate(.85); }
+
 /* 大成功フラッシュ（訓練が大成功した瞬間の閃光＋文字） */
 #mentor-home-screen.mh2 .mhx-daiseikou-fx { position:absolute; inset:0; z-index:5; pointer-events:none; overflow:hidden; border-radius:16px; display:flex; align-items:center; justify-content:center; }
 #mentor-home-screen.mh2 .mhx-dk-burst { position:absolute; left:50%; top:46%; width:40px; height:40px; transform:translate(-50%,-50%); border-radius:50%;

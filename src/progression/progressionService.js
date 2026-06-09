@@ -383,6 +383,28 @@ export function applyHonestResult(profile, result = {}) {
   return { profile: p, soul, gains, before, after: { ...cur }, placement: place, numPlayers: n, won: place === 0 };
 }
 
+// ------------------------------------------------- 二人打ち＝師匠タイマンの結果（Phase 4A B2・§4.6.9）
+// 二人麻雀(futari)で師匠と打った結果を反映。メンタル(主)・読み(副)が伸びる＝二人打ちの主旨。
+// 「惜敗で伸び」＝残点が多い(食らいついた)ほど経験 UP。勝てば調子↑＋ソウル。1 行動を消費。
+export function applyDuoResult(profile, result = {}) {
+  const av = activeAvatar(profile);
+  if (!av) throw new Error("マイキャラがいません");
+  const won = (result.placement ?? 1) === 0;
+  const fp = Math.max(0, result.finalPoints ?? 0);
+  const closeness = Math.max(0, Math.min(1.5, fp / 25000)); // 0=完敗 / 1=五分 / 1.5=快勝
+  const cur = avatarParams6(av);
+  const before = { ...cur };
+  const gains = {};
+  const apply = (k, g) => { const b = cur[k] || 0; const a = Math.min(PARAM_CAP, b + g); gains[k] = (gains[k] || 0) + (a - b); cur[k] = a; };
+  apply("mental", Math.max(1, Math.round(2 + closeness * 3))); // 主 2..6
+  apply("read", Math.max(0, Math.round(1 + closeness * 2)));   // 副 1..4
+  const soul = won ? 200 : Math.round(60 * closeness);
+  let p = soul > 0 ? grantSoul(profile, soul) : profile;
+  p = withActiveAvatar(p, (a) => ({ ...a, params6: cur }));
+  const ended = endAction(p, won ? 1 : 0, { type: "duo", label: "二人打ち（本気）", won }); // 勝てば調子↑
+  return { profile: ended.profile, soul, gains, before, after: { ...cur }, won, closeness, finalPoints: fp, dayAdvanced: ended.dayAdvanced };
+}
+
 // ------------------------------------------------- 師匠の記憶（双方向・蓄積）
 // 休憩の2択や直近の訓練結果を覚えて、次の「師匠の一言」に反映する。
 // patch 例: { lastChoice:"honest" } / { lastOutcome:"daiseikou", lastOutcomeDay: 12 }

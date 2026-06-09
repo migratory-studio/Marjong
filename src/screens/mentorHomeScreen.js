@@ -246,7 +246,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-cat">実戦</div>
         <div class="mhx-tags">
           ${tagTrain("鍛 錬", "火力・速度を鍛える", "drill")}
-          ${tagTrain("二人打ち", "メンタル・読み", "duo")}
+          <div class="mhx-tag" data-duo="1" role="button" tabindex="0"><span class="mhx-cmd">二人打ち</span><span class="mhx-desc">師匠とタイマン</span></div>
           <div class="mhx-tag" data-parlor="1" role="button" tabindex="0"><span class="mhx-cmd">雀荘巡り</span><span class="mhx-desc">打ちに出かける</span></div>
         </div>
       </div>
@@ -524,6 +524,26 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     });
   }
 
+  // ---- 二人打ち＝師匠タイマン（オート/本気を選ぶ・§4.6.9 B2）----
+  function openDuoModal() {
+    const canGo = actionsLeft > 0;
+    const html = `
+      <div class="mhx-md-head">
+        <div class="mhx-md-icon">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</div>
+        <div class="mhx-md-title"><span class="mhx-md-by">二人打ち</span><span class="mhx-md-ttl">師匠とタイマン</span></div>
+      </div>
+      <p class="mhx-md-line">${canGo ? esc(mentor?.name || "師匠") + "「一局、付き合え。…手は抜かんぞ」" : "今日はもう動けない。また明日だ。"}</p>
+      <p class="mhx-md-prof"><small>二人麻雀（東南戦）。メンタル・読みが伸びる。<b>負けても、どれだけ食らいつけたかで伸びが変わる</b>。</small></p>
+      ${canGo ? `<div class="mhx-duo-btns">
+        <button type="button" class="mhx-md-btn mhx-duo-auto">オートで打つ<small>AI にまかせて見る</small></button>
+        <button type="button" class="mhx-md-btn mhx-duo-honest">本気で打つ<small>自分の手で（手動）</small></button>
+      </div>` : ""}
+    `;
+    const { card, close } = openModal(container, html);
+    card.querySelector(".mhx-duo-auto")?.addEventListener("click", () => { close(); onNavigate?.("duo-match", { auto: true }); });
+    card.querySelector(".mhx-duo-honest")?.addEventListener("click", () => { close(); onNavigate?.("duo-match", { auto: false }); });
+  }
+
   // ---- 雀荘巡りモーダル（その日の候補から1つ選ぶ・§4.6.8）----
   function openParlorModal() {
     const st = parlorState(profile);
@@ -611,6 +631,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     const OUT = { daiseikou: "大成功", seikou: "成功", bunan: "無難", shippai: "失敗" };
     const logHtml = (s.log || []).map((e) => {
       if (e.type === "train") return `<li><span class="mhx-ds-act">${esc(e.label || "修行")}</span><span class="mhx-ds-tag">${esc(OUT[e.outcome] || "")}</span></li>`;
+      if (e.type === "duo") return `<li><span class="mhx-ds-act">二人打ち（本気）</span><span class="mhx-ds-tag">${e.won ? "勝利" : "惜敗"}</span></li>`;
       if (e.type === "parlor") return `<li><span class="mhx-ds-act">雀荘巡り（${esc(e.label || "")}）</span><span class="mhx-ds-tag">勝ち抜き ${e.wins ?? 0}</span></li>`;
       return `<li><span class="mhx-ds-act">休憩</span></li>`;
     }).join("");
@@ -693,6 +714,25 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
 
+  // ---- 二人打ちタイマン リザルト（惜敗で伸び・能力値上昇演出を流用）----
+  function openDuoResultModal(r, onDone) {
+    const rows = gainRowsFrom(r);
+    const head = r.won ? "勝利！" : (r.closeness >= 0.8 ? "惜敗——あと一歩" : "完敗…でも、まだ");
+    const tone = r.won ? "vgood" : (r.closeness >= 0.8 ? "good" : "bad");
+    const html = `
+      <div class="mhx-pr">
+        <div class="mhx-pr-ttl">師匠との一局</div>
+        <div class="mhx-pr-head"><span class="mhx-cond tone-${tone}">${esc(head)}</span><span class="mhx-pr-sum">残点 ${(r.finalPoints || 0).toLocaleString()}</span></div>
+        ${r.soul ? `<div class="mhx-pr-soul">獲得ソウル <b>+${r.soul}</b></div>` : ""}
+        <div class="mhx-pr-sub">${r.won ? "師匠を越えた一局。" : "食らいついた分が、力になった。"}</div>
+        <div class="mhx-pr-stats mhx-pg-list">${rows.length ? gainGaugesHtml(rows) : '<div class="mhx-pr-none">変化なし</div>'}</div>
+        <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    animateGainGauges(card);
+    card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
+  }
+
   // 複数のモーダルを順番に出す（前のを閉じたら次へ）。
   function runModals(list) {
     const seq = list.filter(Boolean);
@@ -716,6 +756,9 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   const parlorTile = container.querySelector(".mhx-tag[data-parlor]");
   parlorTile?.addEventListener("click", openParlorModal);
   parlorTile?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openParlorModal(); } });
+  const duoTile = container.querySelector(".mhx-tag[data-duo]");
+  duoTile?.addEventListener("click", openDuoModal);
+  duoTile?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDuoModal(); } });
   const status = container.querySelector(".mhx-status");
   status?.addEventListener("click", () => onNavigate?.("avatar"));
   status?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onNavigate?.("avatar"); } });
@@ -775,6 +818,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   runModals([
     flash?.parlor ? (next) => openParlorResultModal(flash.parlor, next) : null,
     flash?.honest ? (next) => openHonestResultModal(flash.honest, next) : null,
+    flash?.duo ? (next) => openDuoResultModal(flash.duo, next) : null,
     (showBanner && daySummary) ? (next) => openDaySummaryModal(daySummary, next) : null,
     showBanner ? () => openDayBanner() : null,
   ]);
