@@ -127,14 +127,14 @@ export function getMobById(id) {
 //   seedPrefix   … seed の接頭辞（大会ごとに変えると別人の集団になる）。
 //   abilityIds   … 能力割り当て。配列なら i 番目を循環適用、文字列なら全員同一、
 //                  null（既定）なら全員能力なし。
-export function makeMobRoster(count, { seedPrefix = "mob", abilityIds = null } = {}) {
+export function makeMobRoster(count, { seedPrefix = "mob", abilityIds = null, startingPoints = null } = {}) {
   const roster = [];
   const seen = new Map(); // name -> 出現回数。同卓に同名が並ぶのを避ける（順位は決定論的）。
   for (let i = 0; i < count; i++) {
     const abilityId = Array.isArray(abilityIds)
       ? abilityIds[i % abilityIds.length]
       : abilityIds || undefined;
-    const mob = makeMob({ seed: `${seedPrefix}-${i}`, abilityId });
+    const mob = makeMob({ seed: `${seedPrefix}-${i}`, abilityId, startingPoints: startingPoints ?? undefined });
     // 表示名が被ったら通し番号を後置（雀士・己 → 雀士・己(2)）。i 順なので結果は決定論的。
     const n = (seen.get(mob.name) || 0) + 1;
     seen.set(mob.name, n);

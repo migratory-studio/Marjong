@@ -722,7 +722,7 @@ function launchAutoBattle(profile, { oppLv, oppHpMax, maxMatches, seed = Date.no
 let honestCtx = null; // 本気対局中の文脈（{ onResult } 等）。null＝通常（フリー対戦）。
 let honestAutoPlay = false; // 本気タイマンを「オート（AI自動打ち）」で始めるか。beginGame が消費。
 // マイキャラを対局エンジン用の character へ変換（立ち絵/能力を載せる）。
-function avatarToCharacter(avatar) {
+function avatarToCharacter(avatar, startPoints = 25000) {
   const icon = presetById(avatar?.presetIds?.icon)?.assetPath || "";
   const portrait = presetById(avatar?.presetIds?.standing)?.assetPath || "";
   const abilityId = skillTemplateById(avatar?.skillTemplateId)?.runtimeAbilityId;
@@ -731,19 +731,19 @@ function avatarToCharacter(avatar) {
     name: avatar?.name || "弟子",
     reading: "", color: "#e0b85a", role: "attacker", bio: "",
     profile: avatar?.profileText || "",
-    stats: { startingPoints: 25000 }, // 単発の本気対局＝固定25000（§4.6.9）
+    stats: { startingPoints: startPoints }, // 単発＝25000／大会＝runHp 持ち越し（§4.6.9/§14.3）
     assets: { icon, portrait, voices: {} },
     abilities: abilityId ? [{ abilityId, params: {} }] : [],
   };
 }
-// 本気対局を起動。config: { avatar, opponents:[character], rounds, players, voiceSet, onResult(result) }
+// 本気対局を起動。config: { avatar, opponents:[character], rounds, players, voiceSet, startPoints, onResult(result, action) }
 async function launchHonestMatch(config) {
   honestCtx = config;
   honestAutoPlay = !!config.autoPlay; // 「オート」起動なら beginGame が autoPlay=ON にする
   teamBattleData = null; pairBattleData = null; humanIndex = 0;
   selectedRounds = config.rounds || 1;
   selectedPlayers = config.players || (1 + (config.opponents?.length || 3));
-  const deshi = avatarToCharacter(config.avatar);
+  const deshi = avatarToCharacter(config.avatar, config.startPoints);
   const order = [deshi, ...(config.opponents || [])];
   const seated = order.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
   await charImages.load([deshi]); // 弟子の立ち絵/アイコンを描画キャッシュへ
@@ -759,21 +759,48 @@ async function launchHonestMatch(config) {
   });
 }
 
-// 大会（初級）を起動（Phase 4B）。ゲート判定→autobattle 連戦(runHp 持ち越し)→結果反映。
+// 大会（宝への道）は「全手動の実麻雀」を N 戦（§4.6.9 を連戦）。runHp を持ち越す。
+let tournamentRun = null; // { t, matchIndex, wins, runHp }
 async function openTournament() {
   const profile = await profileRepo.loadProfile();
   const t = TOURNAMENT_MASTER[0];
   const gate = tournamentGate(profile, t);
   if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
-  launchAutoBattle(profile, {
-    oppLv: t.oppLv, oppHpMax: t.oppHpMax, maxMatches: t.matches, completeLabel: "大会を終える",
-    onExit: async (session) => {
-      const cur = await profileRepo.loadProfile();
-      const res = applyTournamentResult(cur, t, session);
-      await profileRepo.saveProfile(res.profile);
-      openMentorHome({ tournament: { name: t.name, cleared: res.cleared, defeated: res.defeated, wins: res.wins, matches: res.matches, rank: res.rank, meta: res.meta, soul: res.soul, finalHp: res.finalHp } });
-    },
+  const av = activeAvatar(profile);
+  tournamentRun = { t, matchIndex: 0, wins: 0, runHp: av?.avatarHpCurrent ?? 25000 };
+  playTournamentMatch();
+}
+async function playTournamentMatch() {
+  const run = tournamentRun;
+  const profile = await profileRepo.loadProfile();
+  const av = activeAvatar(profile);
+  // 大会の相手は全員 25000 開始のモブ（弟子は runHp を持ち越して着席）。
+  const mobs = makeMobRoster(3, { seedPrefix: `tourney-${run.matchIndex}-${Date.now()}`, startingPoints: 25000 });
+  launchHonestMatch({
+    avatar: av, opponents: mobs, players: 4, rounds: 1,
+    startPoints: Math.max(1, Math.round(run.runHp)),
+    tournament: true,
+    isLast: run.matchIndex >= run.t.matches - 1,
+    matchLabel: `第 ${run.matchIndex + 1} / ${run.t.matches} 戦`,
+    onResult: (result, action) => onTournamentMatchDone(result, action),
   });
+}
+async function onTournamentMatchDone(result, action) {
+  const run = tournamentRun;
+  run.runHp = Math.max(0, result.finalPoints ?? 0); // 残点＝次戦の持ち越し
+  if ((result.placement ?? 3) <= 1) run.wins += 1;  // 連対＝勝ち抜き
+  run.matchIndex += 1;
+  const defeated = run.runHp <= 0;
+  const finished = run.matchIndex >= run.t.matches;
+  if (action === "retreat" || defeated || finished) {
+    const cur = await profileRepo.loadProfile();
+    const res = applyTournamentResult(cur, run.t, { wins: run.wins, matchNo: run.matchIndex, hp: run.runHp });
+    await profileRepo.saveProfile(res.profile);
+    const name = run.t.name; tournamentRun = null;
+    openMentorHome({ tournament: { name, cleared: res.cleared, defeated: res.defeated, wins: res.wins, matches: res.matches, rank: res.rank, meta: res.meta, soul: res.soul, finalHp: res.finalHp, retreated: action === "retreat" } });
+  } else {
+    playTournamentMatch();
+  }
 }
 
 async function openMentorSub(target, payload) {
@@ -2556,10 +2583,23 @@ function showGameOver() {
   if (honestCtx) {
     const result = { placement: hRank, numPlayers: N, finalPoints: human.points, won: hRank === 0 };
     const ctx = honestCtx; honestCtx = null;
-    overlay.querySelector(".go-buttons").appendChild(mkBtn("師弟ホームへ", "btn-tsumo", () => {
-      overlay.classList.add("hidden");
-      ctx.onResult?.(result);
-    }));
+    const go = (action) => { overlay.classList.add("hidden"); ctx.onResult?.(result, action); };
+    const btns = overlay.querySelector(".go-buttons");
+    if (ctx.tournament) {
+      // 大会連戦：宝への道 HP（次戦の持ち越し）を見せ、次戦／撤退（最終戦は結果へ）。
+      const note = document.createElement("div");
+      note.className = "go-tourney-note";
+      note.textContent = `${ctx.matchLabel || "大会"}　宝への道 HP：${human.points.toLocaleString()}`;
+      btns.parentElement.insertBefore(note, btns);
+      if (ctx.isLast) {
+        btns.appendChild(mkBtn("結果へ", "btn-tsumo", () => go("continue")));
+      } else {
+        btns.appendChild(mkBtn("次戦へ", "btn-tsumo", () => go("continue")));
+        btns.appendChild(mkBtn("撤退する", "btn-ron", () => go("retreat")));
+      }
+    } else {
+      btns.appendChild(mkBtn("師弟ホームへ", "btn-tsumo", () => go()));
+    }
   } else {
     overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
   }

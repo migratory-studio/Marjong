@@ -913,6 +913,9 @@ body {
 #mentor-home-screen.mh2 .mhx-duo-btns .mhx-md-btn small { font-size:11px; font-weight:400; opacity:.85; }
 #mentor-home-screen.mh2 .mhx-duo-auto { filter:saturate(.85); }
 
+/* 大会連戦の経過ノート（対局終了画面・宝への道 HP） */
+.go-tourney-note { text-align:center; font-family:"Yu Gothic","Noto Sans JP",sans-serif; font-size:15px; font-weight:700; color:#ffe39a; margin:6px 0 10px; text-shadow:0 2px 6px rgba(0,0,0,.6); }
+
 /* 大会リザルトの評価ランク */
 #mentor-home-screen.mh2 .mhx-tr-rank { font-family:var(--font-min); font-size:18px; color:#5a4520; margin:10px 0 6px; }
 #mentor-home-screen.mh2 .mhx-tr-rank b { font-size:26px; color:#8f2418; letter-spacing:.06em; }
