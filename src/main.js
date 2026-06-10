@@ -20,7 +20,7 @@ import { showRest } from "./screens/restScreen.js";
 import { showGrowth } from "./screens/growthScreen.js";
 import { showAbilityChange } from "./screens/abilityChangeScreen.js";
 import { showScenarioList, scenariosForMentor } from "./screens/scenarioListScreen.js";
-import { markScenarioRead } from "./progression/scenarioService.js";
+import { markScenarioRead, tournamentStoryGate, episodeNumberOf } from "./progression/scenarioService.js";
 import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
@@ -842,6 +842,12 @@ async function openTournament() {
   // キャンペーン順で「次に挑む宝」を決める（記録済みの宝はスキップ）。
   const step = nextTreasureStep(av?.mentorCharacterId, profile.records?.treasures || []);
   if (!step) { openMentorHome({ tournamentGate: { name: "九蓮宝士", tierLabel: "九つの宝、すべて制覇！" } }); return; }
+  // ストーリーゲート：前の大会で解禁された章を読むまで、次の宝には挑めない（物語が先）。
+  const storyPending = tournamentStoryGate(profile);
+  if (storyPending) {
+    openMentorHome({ storyGate: { scenarioId: storyPending.scenarioId, title: storyPending.title, episode: episodeNumberOf(profile, storyPending.scenarioId) } });
+    return;
+  }
   const t = tournamentRunConfig(step.id, { oppLv: step.oppLv, finalFormat: step.finalFormat });
   const gate = tournamentGate(profile, t);
   if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
@@ -1211,6 +1217,23 @@ async function openMentorSub(target, payload) {
       },
     });
     goScreen("scenario-list-screen");
+  } else if (target === "play-scenario") {
+    // 解禁モーダル/大会ストーリーゲートの「視聴する」→ 一覧を経由せず直接再生。
+    // 読了で既読化＋初回ソウルを付与し、師弟ホームへ戻ってリザルトを出す。
+    const profile = await profileRepo.loadProfile();
+    const s = scenariosForMentor(activeAvatar(profile)?.mentorCharacterId)
+      .find((x) => x.scenarioId === payload?.scenarioId);
+    if (!s) { back(); return; }
+    showScreen("scenario-screen");
+    playScenario(s.scenarioId, {
+      audio,
+      onEnd: async () => {
+        const fresh = await profileRepo.loadProfile();
+        const res = markScenarioRead(fresh, s);
+        if (res.firstRead) await profileRepo.saveProfile(res.profile);
+        openMentorHome({ scenarioRead: { title: s.title, soul: res.soul, bondUp: res.bondUp } });
+      },
+    });
   } else if (target === "settings") {
     // 師弟ホームの歯車 → 設定。戻ると現状はホームへ（設定画面の戻りは home 固定）。
     navigate("settings");

@@ -77,7 +77,8 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
       list.forEach((s, idx) => {
         const read = isScenarioRead(profile, s.scenarioId);
         const ev = evaluateUnlock(s, ctx, titleOf);
-        const unlocked = debug || ev.unlocked;
+        // 既読は常に読み返せる（ゲート再調整で条件が上がっても、読んだ物語は資産）。
+        const unlocked = debug || ev.unlocked || read;
         const forced = debug && !ev.unlocked; // 本来ロックだがデバッグで解放
 
         const kouhen = (s.sortOrder ?? 0) >= 130; // 覇道編（後編）は青枠で明示
@@ -110,7 +111,9 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
               const fresh = await repository.loadProfile();
               const res = markScenarioRead(fresh, s);
               if (res.firstRead) await repository.saveProfile(res.profile);
-              await render(res.soul ? `「${s.title}」を読了！　ソウル +${res.soul}` : null);
+              // 絆は数値で見せない（CLAUDE.md ピラー1）。Lv 上昇は質的な一言で滲ませる。
+              const bondNote = res.bondUp ? "　…師匠との距離が、少し縮まった気がする。" : "";
+              await render(res.soul ? `「${s.title}」を読了！　ソウル +${res.soul}${bondNote}` : null);
             });
           };
         } else {

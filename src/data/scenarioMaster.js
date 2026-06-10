@@ -130,7 +130,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "avatar_level",
-        "value": 3
+        "value": 4
       }
     ],
     "firstReadReward": {
@@ -174,7 +174,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "bond_level",
-        "value": 3
+        "value": 4
       }
     ],
     "firstReadReward": {
@@ -218,7 +218,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "avatar_level",
-        "value": 5
+        "value": 6
       }
     ],
     "firstReadReward": {
@@ -262,7 +262,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "bond_level",
-        "value": 4
+        "value": 5
       }
     ],
     "firstReadReward": {
@@ -305,8 +305,8 @@ export const SCENARIO_MASTER = [
         "value": "mentor-shiyue-bond-06"
       },
       {
-        "type": "bond_level",
-        "value": 5
+        "type": "skill_level",
+        "value": 3
       }
     ],
     "firstReadReward": {
@@ -347,6 +347,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-shiyue-bond-07"
+      },
+      {
+        "type": "bond_level",
+        "value": 6
       }
     ],
     "firstReadReward": {
@@ -389,8 +393,8 @@ export const SCENARIO_MASTER = [
         "value": "mentor-shiyue-bond-08"
       },
       {
-        "type": "bond_level",
-        "value": 6
+        "type": "skill_level",
+        "value": 4
       }
     ],
     "firstReadReward": {

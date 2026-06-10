@@ -169,5 +169,47 @@ function freshProfile({ soul = 0 } = {}) {
   ok("trait が結果に同梱（null 可）", "trait" in res);
 }
 
+// --- シナリオ解禁の通知と大会ストーリーゲート（scenarioService）---
+{
+  const { markScenarioRead, unlockedUnreadScenarios, tournamentStoryGate, unnotifiedUnlocks, markUnlockNotified, episodeNumberOf } =
+    await import("../src/progression/scenarioService.js");
+  const { SCENARIO_MASTER } = await import("../src/data/scenarioMaster.js");
+  const mentor = activeAvatar(freshProfile()).mentorCharacterId;
+  const chapters = SCENARIO_MASTER
+    .filter((s) => s.isEnabled && s.scenarioType === "bond" && s.mentorCharacterId === mentor)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
+
+  // 新規プロフィール: 解禁済み未読 = 第1話のみ（第2話以降は前話読了が必要）。
+  let p = freshProfile();
+  const pend0 = unlockedUnreadScenarios(p);
+  eq("新規は第1話だけが解禁済み未読", pend0.map((s) => s.scenarioId).join(), chapters[0].scenarioId);
+  eq("episodeNumberOf は1始まり", episodeNumberOf(p, chapters[0].scenarioId), 1);
+  ok("新規に大会ストーリーゲートは無い", tournamentStoryGate(p) === null);
+
+  // 通知の記録: 一度 markUnlockNotified したら unnotifiedUnlocks に出ない（未読のままでも）。
+  eq("未通知の解禁 = 第1話", unnotifiedUnlocks(p).length, 1);
+  p = markUnlockNotified(p, [chapters[0].scenarioId]);
+  eq("通知済みは再度出ない", unnotifiedUnlocks(p).length, 0);
+
+  // 第1話を読むと既読化し、解禁済み未読から消える（次話は条件未達なら出ない）。
+  p = markScenarioRead(p, chapters[0]).profile;
+  ok("読了した章は解禁済み未読から消える", !unlockedUnreadScenarios(p).some((s) => s.scenarioId === chapters[0].scenarioId));
+
+  // 大会ストーリーゲート: 1〜10話既読＋優勝1回 → won ゲートの第11話が「読むまで挑戦不可」として返る。
+  const kouhenIdx = chapters.findIndex((s) => (s.unlockConditions || []).some((c) => c.type === "tournament_won"));
+  if (kouhenIdx >= 0) {
+    let q = freshProfile();
+    q = {
+      ...q,
+      scenarioProgress: chapters.slice(0, kouhenIdx).map((s) => ({ scenarioId: s.scenarioId, readAt: "2026-01-01", version: 1 })),
+      records: { ...(q.records || {}), tournamentsWon: 1 },
+    };
+    eq("優勝で解禁された未読章がゲートに出る", tournamentStoryGate(q)?.scenarioId, chapters[kouhenIdx].scenarioId);
+    // その章を読めばゲート解除（次の won 章は優勝数が足りず未解禁）。
+    q = markScenarioRead(q, chapters[kouhenIdx]).profile;
+    ok("読了でゲート解除", tournamentStoryGate(q) === null);
+  }
+}
+
 console.log(fails === 0 ? "\nALL PASS" : `\n${fails} FAILED`);
 process.exit(fails === 0 ? 0 : 1);

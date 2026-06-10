@@ -24,7 +24,7 @@ import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/sta
 import { nextTreasureInfo } from "../data/mentorCampaignMaster.js";
 import { treasureRankFor, mentorRankFor } from "../data/tournamentMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
-import { isScenarioRead } from "../progression/scenarioService.js";
+import { isScenarioRead, unnotifiedUnlocks, markUnlockNotified, episodeNumberOf } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
 import { isDebugMode } from "../app/debug.js";
 
@@ -870,6 +870,63 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
 
+  // 大会ストーリーゲート：前の大会で解禁された章を読むまで次の宝に挑めない（物語が先）。
+  function openStoryGateModal(g, onDone) {
+    let navigating = false;
+    const html = `
+      <div class="mhx-md-head">
+        <div class="mhx-md-icon">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</div>
+        <div class="mhx-md-title"><span class="mhx-md-by">大会の前に</span><span class="mhx-md-ttl">${esc(mentor?.name || "師匠")}</span></div>
+      </div>
+      <p class="mhx-md-line">「卓に着くのは、それからだ。——聞いてほしい話がある。」</p>
+      <p class="mhx-su-name">${g.episode ? `第${g.episode}話　` : ""}「${esc(g.title)}」</p>
+      <div class="mhx-su-btns">
+        <button type="button" class="mhx-md-btn mhx-su-play">視聴する</button>
+        <button type="button" class="mhx-rt-choice mhx-su-later">あとで</button>
+      </div>`;
+    const { card, close } = openModal(container, html, () => { if (!navigating) onDone?.(); });
+    card.querySelector(".mhx-su-play")?.addEventListener("click", () => {
+      navigating = true; close(); onNavigate?.("play-scenario", { scenarioId: g.scenarioId });
+    });
+    card.querySelector(".mhx-su-later")?.addEventListener("click", () => close());
+  }
+  // 章の解禁通知。数値や条件は見せず「新しい物語が来た」ことだけを告げる。
+  function openScenarioUnlockModal(s, onDone) {
+    const ep = episodeNumberOf(profile, s.scenarioId);
+    let navigating = false;
+    // 同じ章で何度も出さない（通知済みを記録。読む/読まないとは独立）。
+    profile = markUnlockNotified(profile, [s.scenarioId]);
+    repository.saveProfile(profile);
+    const html = `
+      <div class="mhx-md-head">
+        <div class="mhx-md-icon">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</div>
+        <div class="mhx-md-title"><span class="mhx-md-by">新しい物語</span><span class="mhx-md-ttl">${esc(mentor?.name || "師匠")}</span></div>
+      </div>
+      <p class="mhx-md-line">「——少し、話しておきたいことがある。」</p>
+      <p class="mhx-su-name">${ep ? `第${ep}話　` : ""}「${esc(s.title)}」が解禁</p>
+      <div class="mhx-su-btns">
+        <button type="button" class="mhx-md-btn mhx-su-play">視聴する</button>
+        <button type="button" class="mhx-rt-choice mhx-su-later">あとで</button>
+      </div>`;
+    const { card, close } = openModal(container, html, () => { if (!navigating) onDone?.(); });
+    audio?.playPip?.(2200, 0.4);
+    card.querySelector(".mhx-su-play")?.addEventListener("click", () => {
+      navigating = true; close(); onNavigate?.("play-scenario", { scenarioId: s.scenarioId });
+    });
+    card.querySelector(".mhx-su-later")?.addEventListener("click", () => close());
+  }
+  // 直接視聴（play-scenario）からの読了リザルト。絆は数値で見せない（CLAUDE.md ピラー1）。
+  function openScenarioReadModal(r, onDone) {
+    const html = `
+      <div class="mhx-pr">
+        <div class="mhx-pr-ttl">読了</div>
+        <p class="mhx-pr-sub">「${esc(r.title)}」${r.soul ? `<br>ソウル +${r.soul}` : ""}${r.bondUp ? "<br>…師匠との距離が、少し縮まった気がする。" : ""}</p>
+        <button type="button" class="mhx-md-btn mhx-pr-btn">うん</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
+  }
+
   // 複数のモーダルを順番に出す（前のを閉じたら次へ）。
   function runModals(list) {
     const seq = list.filter(Boolean);
@@ -958,11 +1015,15 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     flash?.honest ? (next) => openHonestResultModal(flash.honest, next) : null,
     flash?.duo ? (next) => openDuoResultModal(flash.duo, next) : null,
     flash?.duoBlocked ? () => openDuoBlockedModal() : null,
+    flash?.scenarioRead ? (next) => openScenarioReadModal(flash.scenarioRead, next) : null,
     flash?.league ? (next) => openLeagueResultModal(flash.league, next) : null,
     flash?.league?.rankUp ? (next) => openDaniRankModal(flash.league.rankUp, next) : null,
     flash?.tournamentGate ? (next) => openTournamentGateModal(flash.tournamentGate, next) : null,
+    flash?.storyGate ? (next) => openStoryGateModal(flash.storyGate, next) : null,
     // 「〇ヶ月目を終えて」→次の月へ → 「〇ヶ月目（今月の調子）」の順で2枚に分けて出す（ごちゃつき回避）。
     (showBanner && daySummary) ? (next) => openDaySummaryModal(daySummary, next) : null,
     showBanner ? (next) => openDayBanner(next) : null,
+    // 章の解禁通知はしんがり（リザルト/月替わりを見届けてから「新しい物語」へ誘う）。
+    ...unnotifiedUnlocks(profile).map((s) => (next) => openScenarioUnlockModal(s, next)),
   ]);
 }
