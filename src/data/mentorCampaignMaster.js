@@ -25,7 +25,9 @@ export const MENTOR_CAMPAIGN = {
   // ティアも前後する（物語正典を優先。ティアは節数・報酬の「格」、難度は oppLv が担う）。
   shiyue: [
     { id: "menzen-kaiken",    oppLv: 4 },                       // 個人
-    { id: "daisanken",        oppLv: 6 },                       // 団体（師匠＋マモリ同卓）
+    // 団体（師匠＋マモリ同卓）。ep11「二人の九蓮」でマモリが「組みに来た／正式に協力相手になる」＝
+    // トリオ結成。その章を読むまで挑めない（団体戦なのに3人目が未加入、を防ぐ・requireScenario）。
+    { id: "daisanken",        oppLv: 6, requireScenario: "mentor-shiyue-bond-11" },
     { id: "ji-peeko",         oppLv: 7 },                       // ペア
     { id: "kyou-sharin",      oppLv: 8 },                       // ペア
     { id: "chin-iki",         oppLv: 8 },                       // 個人

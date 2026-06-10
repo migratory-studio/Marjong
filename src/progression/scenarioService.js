@@ -63,11 +63,24 @@ export function unlockedUnreadScenarios(profile) {
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-// 大会ストーリーゲート：前の大会優勝（tournament_won）で解禁された章が未読なら、
-// その章を返す（＝読むまで次の大会に挑めない）。なければ null。
-export function tournamentStoryGate(profile) {
-  return unlockedUnreadScenarios(profile)
-    .find((s) => (s.unlockConditions || []).some((c) => c.type === "tournament_won")) || null;
+// 大会ストーリーゲート：次の大会に挑む前に「読んでおくべき章」が未読なら、誘導先の章を返す。
+// なければ null。nextStep（キャンペーンの次の宝）を渡すと requireScenario も判定する。
+//   (A) 形式導入ゲート：step.requireScenario（団体/ペアの仲間が加入する章など）が未読の間はブロック。
+//       いま読める章があればそこへ順に誘導し、まだ手前の章がロック中なら locked 表示で足止め。
+//   (B) 後日譚ゲート：優勝（tournament_won）で解禁された章が未読なら、それを読むまで次へ進めない。
+// 返り値: { ...scenario, locked } または null。locked=true は「視聴導線なしの足止め」。
+export function tournamentStoryGate(profile, nextStep = null) {
+  if (nextStep?.requireScenario && !isScenarioRead(profile, nextStep.requireScenario)) {
+    const readable = unlockedUnreadScenarios(profile);
+    const target = readable.find((s) => s.scenarioId === nextStep.requireScenario)
+      || readable[0]
+      || SCENARIO_MASTER.find((s) => s.scenarioId === nextStep.requireScenario)
+      || null;
+    if (target) return { ...target, locked: !readable.some((s) => s.scenarioId === target.scenarioId) };
+  }
+  const won = unlockedUnreadScenarios(profile)
+    .find((s) => (s.unlockConditions || []).some((c) => c.type === "tournament_won"));
+  return won ? { ...won, locked: false } : null;
 }
 
 // 解禁通知（モーダル）をまだ出していない章。出したら markUnlockNotified で記録する。

@@ -873,17 +873,22 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // 大会ストーリーゲート：前の大会で解禁された章を読むまで次の宝に挑めない（物語が先）。
   function openStoryGateModal(g, onDone) {
     let navigating = false;
+    // locked＝前提章はまだ手前の章がロック中（レベル/前話未達）＝視聴導線を出さず足止めだけ。
+    const line = g.locked
+      ? "「その話を聞くには、まだ早い。——もう少し、足を運んでからだ。」"
+      : "「卓に着くのは、それからだ。——聞いてほしい話がある。」";
+    const buttons = g.locked
+      ? `<button type="button" class="mhx-md-btn mhx-su-later">わかった</button>`
+      : `<button type="button" class="mhx-md-btn mhx-su-play">視聴する</button>
+         <button type="button" class="mhx-rt-choice mhx-su-later">あとで</button>`;
     const html = `
       <div class="mhx-md-head">
         <div class="mhx-md-icon">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</div>
         <div class="mhx-md-title"><span class="mhx-md-by">大会の前に</span><span class="mhx-md-ttl">${esc(mentor?.name || "師匠")}</span></div>
       </div>
-      <p class="mhx-md-line">「卓に着くのは、それからだ。——聞いてほしい話がある。」</p>
-      <p class="mhx-su-name">${g.episode ? `第${g.episode}話　` : ""}「${esc(g.title)}」</p>
-      <div class="mhx-su-btns">
-        <button type="button" class="mhx-md-btn mhx-su-play">視聴する</button>
-        <button type="button" class="mhx-rt-choice mhx-su-later">あとで</button>
-      </div>`;
+      <p class="mhx-md-line">${line}</p>
+      ${g.locked ? "" : `<p class="mhx-su-name">${g.episode ? `第${g.episode}話　` : ""}「${esc(g.title)}」</p>`}
+      <div class="mhx-su-btns">${buttons}</div>`;
     const { card, close } = openModal(container, html, () => { if (!navigating) onDone?.(); });
     card.querySelector(".mhx-su-play")?.addEventListener("click", () => {
       navigating = true; close(); onNavigate?.("play-scenario", { scenarioId: g.scenarioId });

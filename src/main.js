@@ -842,10 +842,11 @@ async function openTournament() {
   // キャンペーン順で「次に挑む宝」を決める（記録済みの宝はスキップ）。
   const step = nextTreasureStep(av?.mentorCharacterId, profile.records?.treasures || []);
   if (!step) { openMentorHome({ tournamentGate: { name: "九蓮宝士", tierLabel: "九つの宝、すべて制覇！" } }); return; }
-  // ストーリーゲート：前の大会で解禁された章を読むまで、次の宝には挑めない（物語が先）。
-  const storyPending = tournamentStoryGate(profile);
+  // ストーリーゲート：物語が先。前の大会で解禁された章／この大会の前提章（仲間の加入など）が
+  // 未読なら、読むまで次の宝には挑めない（step を渡して requireScenario も判定）。
+  const storyPending = tournamentStoryGate(profile, step);
   if (storyPending) {
-    openMentorHome({ storyGate: { scenarioId: storyPending.scenarioId, title: storyPending.title, episode: episodeNumberOf(profile, storyPending.scenarioId) } });
+    openMentorHome({ storyGate: { scenarioId: storyPending.scenarioId, title: storyPending.title, episode: episodeNumberOf(profile, storyPending.scenarioId), locked: !!storyPending.locked } });
     return;
   }
   const t = tournamentRunConfig(step.id, { oppLv: step.oppLv, finalFormat: step.finalFormat });

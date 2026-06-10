@@ -209,6 +209,25 @@ function freshProfile({ soul = 0 } = {}) {
     q = markScenarioRead(q, chapters[kouhenIdx]).profile;
     ok("読了でゲート解除", tournamentStoryGate(q) === null);
   }
+
+  // 形式導入ゲート（step.requireScenario）: 団体戦・大三剣はマモリ加入章(ep11)読了が前提。
+  {
+    const { campaignFor } = await import("../src/data/mentorCampaignMaster.js");
+    const dai = campaignFor("shiyue").find((st) => st.id === "daisanken");
+    eq("大三剣に requireScenario が設定されている", dai?.requireScenario, "mentor-shiyue-bond-11");
+    // ep11 未読なら大三剣はブロック（前提章へ誘導 or locked 足止め）。
+    let q = freshProfile();
+    q = { ...q,
+      scenarioProgress: chapters.slice(0, 10).map((s) => ({ scenarioId: s.scenarioId, readAt: "2026-01-01", version: 1 })),
+      records: { ...(q.records || {}), tournamentsWon: 1 } };
+    ok("ep11 未読だと大三剣はストーリーゲートで止まる", tournamentStoryGate(q, dai) !== null);
+    // ep11 を読めば、大三剣の前提ゲートは解除される。
+    q = markScenarioRead(q, chapters[10]).profile; // chapters[10] = 第11話
+    ok("ep11 読了で大三剣の前提ゲート解除", tournamentStoryGate(q, dai) === null);
+    // requireScenario が無いステップ（menzen）には前提ゲートはかからない。
+    const menzen = campaignFor("shiyue").find((st) => st.id === "menzen-kaiken");
+    ok("menzen に前提ゲートは無い", tournamentStoryGate(freshProfile(), menzen) === null);
+  }
 }
 
 console.log(fails === 0 ? "\nALL PASS" : `\n${fails} FAILED`);
