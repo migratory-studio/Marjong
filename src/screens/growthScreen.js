@@ -89,6 +89,9 @@ export async function showGrowth(container, { repository, onBack } = {}) {
       const card = elt("div", "growth-card");
       card.appendChild(elt("div", "growth-card-title", { textContent: `スキル Lv（${tmpl ? tmpl.name : "能力"}）` }));
       card.appendChild(elt("div", "growth-card-now", { textContent: `現在: スキル Lv ${skInfo.current}` }));
+      // 説明文＝いまの効果（マスタ effectDescription。未設計のテンプレはテンプレ説明で代用）。
+      const eff = skInfo.currentEntry?.effectDescription || tmpl?.description || "";
+      if (eff) card.appendChild(elt("div", "growth-card-next growth-card-effect", { textContent: `効果: ${eff}` }));
       if (skInfo.next) {
         card.appendChild(elt("div", "growth-card-next", { textContent: `→ Lv ${skInfo.next.skillLevel}：${skInfo.next.unlockDescription}` }));
         const afford = soulNow >= skInfo.next.soulCost;

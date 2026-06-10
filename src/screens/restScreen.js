@@ -47,7 +47,7 @@ export async function showRest(container, { repository, onBack } = {}) {
     const bubble = elt("div", "mh-bubble mentor-card-bubble");
     bubble.appendChild(elt("span", "mh-bubble-name", { textContent: mentor ? mentor.name : "師匠" }));
     bubble.appendChild(elt("p", "mh-bubble-text", {
-      textContent: available ? "ゆっくり休め。明日に備えるのも実力のうちだ。" : "今日はもう十分休んだ。また明日な。",
+      textContent: available ? "ゆっくり休め。来月に備えるのも実力のうちだ。" : "今月はもう十分休んだ。また来月な。",
     }));
     card.appendChild(bubble);
 
@@ -65,7 +65,7 @@ export async function showRest(container, { repository, onBack } = {}) {
     const msg = elt("p", "rest-result hidden");
     card.appendChild(msg);
 
-    const restBtn = elt("button", "primary", { type: "button", textContent: available ? "休憩する" : "今日は休憩済み", disabled: !available });
+    const restBtn = elt("button", "primary", { type: "button", textContent: available ? "休憩する" : "今月は休憩済み", disabled: !available });
     restBtn.onclick = async () => {
       try {
         const res = rest(profile);

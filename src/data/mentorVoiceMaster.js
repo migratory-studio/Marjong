@@ -7,7 +7,8 @@
 //
 // ── ctx 語彙（任意・無ければ既定で評価。指定の無い行は常に候補＝フォールバック）──
 //   condTier   : 弟子の調子 tone  "vbad"|"bad"|"ok"|"good"|"vgood"
-//   time       : 時間帯          "asa"|"hiru"|"yoru"（その日の行動数 0/1/2+）
+//   time       : 月内の時期      "asa"|"hiru"|"yoru"（その月の行動数 0/1/2+ ＝上旬/中旬/下旬。
+//                キー名は旧仕様の名残。1ターン=1ヶ月の縮尺）
 //   bondMin    : 絆Lv 下限
 //   lastOutcome: 直近の訓練結果  "daiseikou"|"shippai"（最近のみ）
 //   afterChoice: 直近の休憩2択で覚えたタグ（双方向の呼び戻し）
@@ -36,8 +37,8 @@ function templateGreetings(name) {
   const t = (l) => `［テンプレ］${name}・${l}：ここに一言が入ります`;
   return [
     G({}, t("ホーム挨拶")),
-    G({ time: "asa" }, t("朝の挨拶")),
-    G({ time: "yoru" }, t("夜の挨拶")),
+    G({ time: "asa" }, t("月初めの挨拶")),
+    G({ time: "yoru" }, t("月末の挨拶")),
     G({ condTier: "vgood" }, t("弟子が絶好調")),
     G({ condTier: "vbad" }, t("弟子が絶不調")),
     G({ lastOutcome: "daiseikou" }, t("前回大成功への反応")),
@@ -56,18 +57,18 @@ function templateRestTalks(name) {
 
 // ── 詩玥（シ・ユエ）── 楽天・軽口。素性（深謀遠慮／恩師の喪失／点棒嫌い）は絆が深いほど滲む。
 const SHIYUE_GREET = [
-  G({}, "今日はどうする？ まずは一息つくか、腕を磨くか。"),
+  G({}, "今月はどうする？ まずは一息つくか、腕を磨くか。"),
   G({}, "さ、修行の時間ネ。我（ウォ）がしっかり見ててやるダヨ。"),
-  G({ time: "asa" }, "おはよ。今日も一日、ツモっていこ？"),
-  G({ time: "hiru" }, "お、まだ動けるネ。昼の一打、いっとく？"),
-  G({ time: "yoru" }, "そろそろ日が暮れるヨ。最後にもうひと頑張り？　無理は禁物だけどネ。"),
-  G({ condTier: "vgood" }, "うわ、いい顔してるヨ今日！　乗ってる日は伸びるダヨ、いっとこ？"),
+  G({ time: "asa" }, "新しい月が来たヨ。今月も、ツモっていこ？"),
+  G({ time: "hiru" }, "お、まだ動けるネ。月なかばの一打、いっとく？"),
+  G({ time: "yoru" }, "今月もそろそろ終わりネ。最後にもうひと頑張り？　無理は禁物だけどヨ。"),
+  G({ condTier: "vgood" }, "うわ、いい顔してるヨ！　乗ってる月は伸びるダヨ、いっとこ？"),
   G({ condTier: "good" }, "調子よさそうネ。この波、逃さないでヨ。"),
-  G({ condTier: "bad" }, "ちょっと重そう？　ま、そういう日もあるダヨ。"),
-  G({ condTier: "vbad" }, "……顔色、よくないネ。今日は休むのも修行だヨ？　無理しないで。"),
+  G({ condTier: "bad" }, "ちょっと重そう？　ま、そういう月もあるダヨ。"),
+  G({ condTier: "vbad" }, "……顔色、よくないネ。今月は休むのも修行だヨ？　無理しないで。"),
   G({ lastOutcome: "daiseikou" }, "この前のアレ、見事だったネ！　その調子で頼むヨ、相棒。"),
   G({ lastOutcome: "shippai" }, "この前はうまくいかなかったネ。……気にすんな、次があるダヨ。"),
-  G({ afterChoice: "honest" }, "この前『しんどい』って言ってたネ。今日は……ちゃんと見とくから、言ってヨ？"),
+  G({ afterChoice: "honest" }, "この前『しんどい』って言ってたネ。今月は……ちゃんと見とくから、言ってヨ？"),
   G({ afterChoice: "tough" }, "前は強がってたけど、ホントに平気ネ？　ま、その意気は好きだヨ。"),
   G({ afterChoice: "scary" }, "点棒、こわいって言ってたネ。……だいじょぶ、減ったらツモで返せばいいダヨ。"),
   G({ bondMin: 3 }, "……なんか、お前といると調子が出るんダ。我のほうが、ネ。"),
@@ -91,14 +92,14 @@ const SHIYUE_REST = [
 
 // ── ビビ ── 物静か・凛とした芯。守りの人。心を許すと茶目っ気。
 const BIBI_GREET = [
-  G({}, "……今日も来たね。えらい。何をする？"),
+  G({}, "……今月も来たね。えらい。何をする？"),
   G({}, "焦らなくていい。守りを固めるところから、ね。"),
-  G({ time: "asa" }, "おはよう。……朝の静けさ、嫌いじゃないでしょ。"),
-  G({ time: "yoru" }, "もう夜。無理は禁物。……でも、あと一つだけなら、見ててあげる。"),
-  G({ condTier: "vgood" }, "いい目をしてる。……今日は、攻めても沈まないかもね。"),
-  G({ condTier: "vbad" }, "顔が疲れてる。……今日は守りの日。休むのも、立派な手。"),
+  G({ time: "asa" }, "月の初め。……静かに始めるの、嫌いじゃないでしょ。"),
+  G({ time: "yoru" }, "もう月末。無理は禁物。……でも、あと一つだけなら、見ててあげる。"),
+  G({ condTier: "vgood" }, "いい目をしてる。……今月は、攻めても沈まないかもね。"),
+  G({ condTier: "vbad" }, "顔が疲れてる。……今月は守りの月。休むのも、立派な手。"),
   G({ lastOutcome: "daiseikou" }, "この前のあれ、見てた。……ちゃんと、誰にも奪わせなかったね。"),
-  G({ lastOutcome: "shippai" }, "うまくいかない日もある。……守りきれなくても、あなたは沈んでない。"),
+  G({ lastOutcome: "shippai" }, "うまくいかない月もある。……守りきれなくても、あなたは沈んでない。"),
   G({ afterChoice: "rely" }, "この前、頼ってくれたね。……うん、その距離で、いい。"),
   G({ bondMin: 5 }, "……ねえ。わたしが守るのは、点棒じゃなくて——あなた、なんだよ。" ),
 ];
@@ -115,12 +116,12 @@ const BIBI_REST = [
 
 // ── 賭羽ルイナ ── 女博徒・大胆不敵・色気と余裕。賭け／天秤の語彙。
 const RUINA_GREET = [
-  G({}, "来たわね。さて……今日はどんな賭けに出る？"),
+  G({}, "来たわね。さて……今月はどんな賭けに出る？"),
   G({}, "勝率？　そんなの、賽を振ってから考えればいいのよ。"),
-  G({ time: "asa" }, "朝から熱いじゃない。……いい目をしてるわ。"),
-  G({ time: "yoru" }, "夜は、勝負が映えるの。最後にひと勝負、どう？"),
-  G({ condTier: "vgood" }, "ふふ、ツキが乗ってるわね。こういう日は——大きく張りなさい。"),
-  G({ condTier: "vbad" }, "今日は分が悪い。……引き際を知るのも、博徒の才よ。"),
+  G({ time: "asa" }, "月明けから熱いじゃない。……いい目をしてるわ。"),
+  G({ time: "yoru" }, "締めの勝負は映えるのよ。月末にひと勝負、どう？"),
+  G({ condTier: "vgood" }, "ふふ、ツキが乗ってるわね。こういう月は——大きく張りなさい。"),
+  G({ condTier: "vbad" }, "今月は分が悪い。……引き際を知るのも、博徒の才よ。"),
   G({ lastOutcome: "daiseikou" }, "この前の大勝負、見事だったわ。……痺れたわよ、ちょっとね。"),
   G({ lastOutcome: "shippai" }, "負けたって？　いいじゃない。笑って次を張れる子は、強くなる。"),
   G({ afterChoice: "allin" }, "この前は全張りだったわね。……その度胸、嫌いじゃないわ。"),
@@ -154,6 +155,48 @@ const RUINA_PRAISE = [
   G({ bondMin: 3 }, "最高じゃない。……あんた、いつかあたしを超えるかもね。"),
 ];
 
+// ── 対局見守り相槌（battle quips）── オート対局（雀荘巡り等）に同行した師匠の相槌。
+// event: matchStart(試合開始) / bigWin(満貫以上) / bigLoss(大放銃・被ツモ) / pinch(HP25%初到達)
+//        tobi(飛び) / bustWin(相手を飛ばした) / abilityUse(必殺発動) / readWin(読み勝ち)
+//        complete(完走) / retreat(撤退) / rareGuest(レア客登場)
+// cond は greeting と同じ語彙（bondMin / condTier）。絆が深いほど素が滲む行を混ぜること。
+const Q = (event, cond, text) => ({ event, cond, text });
+const SHIYUE_BATTLE = [
+  Q("matchStart", {}, "よーし、我（ウォ）がしっかり見ててやるネ。気楽にいこ？"),
+  Q("matchStart", {}, "ここの卓、いい匂いがするヨ。……勝負の匂いネ。"),
+  Q("matchStart", { condTier: "vgood" }, "今日のお前、目がキラキラしてるヨ。荒稼ぎの予感ネ！"),
+  Q("bigWin", {}, "満貫!?　……ふっふーん、我の弟子だからネ。当然ヨ。"),
+  Q("bigWin", {}, "うわ、デカい！　今夜はごちそうだネ！"),
+  Q("bigWin", { bondMin: 3 }, "……今の手、きれいだったヨ。我、ちょっと見惚れたネ。"),
+  Q("bigLoss", {}, "いったた……。だいじょぶ、点棒は減っても腕は減らないダヨ。"),
+  Q("bigLoss", {}, "ま、麻雀だからネ。そういう日もある。顔上げてこ？"),
+  Q("bigLoss", { bondMin: 4 }, "……今の、我まで胸が痛いヨ。……ほんと、点棒ってやつは。"),
+  Q("pinch", {}, "おい、顔上げて。『ツモれば勝ち』ダロ？　我が見てる。まだ終わってないヨ。"),
+  Q("pinch", { bondMin: 4 }, "……減ってく点棒、見てるの……我のほうがつらいかもネ。でもお前なら返せる。我は知ってるヨ。"),
+  Q("tobi", {}, "——もういい、よく打った。帰ろ？　今日のことは我が覚えとく。次で取り返すネ。"),
+  Q("bustWin", {}, "飛ばした!?　あはは、容赦ないネぇ！　誰に似たんだか……我か。"),
+  Q("abilityUse", {}, "出た、必殺！　そこで切るのが勝負勘ネ！"),
+  Q("abilityUse", {}, "いい呼吸ヨ！　切り札は出す瞬間がすべてダヨ。"),
+  Q("readWin", {}, "ほら、読み通り！　相手の癖、ちゃんと見えてたネ。"),
+  Q("readWin", { bondMin: 3 }, "……いい読みだった。……我も昔、そういうの得意だったんダ。"),
+  Q("riichiSelf", {}, "いいリーチだ。あとはツモるだけネ！"),
+  Q("riichiSelf", {}, "乗った！　その手、我も好きヨ。"),
+  Q("riichiOpp", {}, "リーチ……！　慌てない慌てない。深呼吸ネ。"),
+  Q("riichiOpp", { bondMin: 3 }, "……来たね。だいじょぶ、我はお前の隣にいるヨ。"),
+  Q("rareGuest", {}, "おっ、あれは……腕利きが来たネ。面白くなってきたヨ？"),
+  Q("complete", {}, "完走！　お疲れさま、いい巡りだったネ。帰ってお茶にしよ？"),
+  Q("retreat", {}, "引き際を知るのも腕のうちダヨ。……ん、いい判断ネ。"),
+];
+function templateBattleQuips(name) {
+  const t = (l) => `［テンプレ］${name}・見守り${l}：ここに相槌が入ります`;
+  return [
+    "matchStart", "bigWin", "bigLoss", "pinch", "tobi", "bustWin",
+    "abilityUse", "readWin", "complete", "retreat", "rareGuest",
+    "riichiSelf", "riichiOpp",
+  ].map((ev) => Q(ev, {}, t(ev)));
+}
+const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE };
+
 const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET };
 const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST };
 const EXPLICIT_PRAISE = { shiyue: SHIYUE_PRAISE, bibi: BIBI_PRAISE, kakeha_ruina: RUINA_PRAISE };
@@ -169,6 +212,9 @@ export const MENTOR_REST_TALKS = Object.fromEntries(
 function templatePraise(name) { return [G({}, `［テンプレ］${name}・大成功への素出し`)]; }
 export const MENTOR_PRAISE = Object.fromEntries(
   CHARACTER_MASTER.map((c) => [c.id, EXPLICIT_PRAISE[c.id] || templatePraise(c.name)])
+);
+export const MENTOR_BATTLE_QUIPS = Object.fromEntries(
+  CHARACTER_MASTER.map((c) => [c.id, EXPLICIT_BATTLE[c.id] || templateBattleQuips(c.name)])
 );
 
 // 一致候補から「意味の強い条件」を重めにした重み付きランダムで 1 つ返す。
@@ -206,4 +252,16 @@ export function pickMentorPraise(charId, ctx = {}) {
   const matches = all.filter((e) => gMatch(e.cond, ctx));
   if (!matches.length) return null;
   return matches[(Math.random() * matches.length) | 0].text;
+}
+
+// 対局見守り相槌を1つ返す（絆行を greetWeight で重め＝絆で言い方が変わる）。無ければ null。
+// rng 注入式：オート対局の演出抽選は決定論（fxRng）で引くため。
+export function pickMentorBattleQuip(charId, event, ctx = {}, rng = Math.random) {
+  const all = MENTOR_BATTLE_QUIPS[charId] || templateBattleQuips(nameOf(charId));
+  const matches = all.filter((e) => e.event === event && gMatch(e.cond, ctx));
+  if (!matches.length) return null;
+  const weights = matches.map((m) => greetWeight(m.cond));
+  let r = rng() * weights.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < matches.length; i++) { if ((r -= weights[i]) < 0) return matches[i].text; }
+  return matches[matches.length - 1].text;
 }

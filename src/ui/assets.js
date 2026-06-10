@@ -25,6 +25,16 @@ export function tilePath(kind /*, red */) {
   return `graphic/${dir}/${pfx}${rankOf(kind)}_1.gif`;
 }
 
+// 演出用: ランダムな牌画像パスを 1 つ返す（オート対局のフレーバー手牌・河など、
+// エンジン非依存の見た目専用）。数牌:字牌 ≒ 3:1 で実際の山に近い比率。
+export function flavorTilePath(rng = Math.random) {
+  if (rng() < 0.78) {
+    const [dir, pfx] = Object.values(SUIT_DIR)[Math.floor(rng() * 3)];
+    return `graphic/${dir}/${pfx}${1 + Math.floor(rng() * 9)}_1.gif`;
+  }
+  return `graphic/tupai2_1/${HONOR_FILE[Math.floor(rng() * HONOR_FILE.length)]}_1.gif`;
+}
+
 export class TileImages {
   constructor() {
     this.cache = new Map(); // path -> {img, ready}

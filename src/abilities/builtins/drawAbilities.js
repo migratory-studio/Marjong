@@ -6,23 +6,36 @@ import { abilityDef } from "../../data/abilityMaster.js";
 import { tilesToCounts, isTerminalOrHonor, isSimple, kindLabel } from "../../core/tiles.js";
 import { waits } from "../../core/rules/winCheck.js";
 import { shanten } from "../../core/rules/shanten.js";
+import { estimateDangerInfo, DANGER_SUPER, DANGER_HIGH, DANGER_WARN } from "./defenseAbilities.js";
 
-// "ツモ偏重" — while active, biases each draw toward tiles that improve the hand
-// the most. Looks ahead at the next few wall tiles and picks the one that
-// maximises the number of useful (wait-advancing) tiles afterwards.
+// "ツモ偏重 / 幸運のツモ" — while active, biases each draw toward tiles that
+// improve the hand the most. Looks ahead at the next few wall tiles and picks
+// the one that brings the hand closest to a win.
 // Manual: activate once per game; stays active for the rest of that hand.
+//
+// params（skillLevelMaster lv-lucky-draw の runtimeParams・§10.5 Phase 7）:
+//   lookaheadDepth … 候補配列の先頭N件だけ走査する（候補窓 peekLive(8) は固定＝8が天井）
+//   doraPreference … handPotential 同点ならドラ/赤5の候補を優先する（Lv9+）
+//   dangerTier     … 超越帯: マモリの危険感知の副次付与 0〜3（Lv6+。パッシブ動作）
+//   maxCharges / cooldown … abilityDef を上書き（maxChargesOverride 由来）
 export class LuckyDrawAbility extends Ability {
-  constructor() {
-    super(abilityDef("lucky-draw"));
+  constructor(params = {}) {
+    super({ ...abilityDef("lucky-draw"), ...params });
+    this.lookaheadDepth = params.lookaheadDepth ?? 8;
+    this.doraPreference = params.doraPreference ?? false;
+    this.dangerTier = params.dangerTier ?? 0;
   }
 
   [Hooks.MODIFY_DRAW](ctx, api) {
     if (!this.isActive) return undefined;
     const player = ctx.player;
     const baseCounts = tilesToCounts(player.hand);
+    // doraPreference: 同点タイブレーク用のドラ判定（赤5は tile.red）。
+    const doraKinds = this.doraPreference ? new Set(ctx.wall?.doraKinds?.() ?? []) : null;
+    const isDora = (t) => !!t && (t.red || doraKinds.has(t.kind));
     let best = ctx.defaultTile;
     let bestScore = -1;
-    for (const tile of ctx.candidates) {
+    for (const tile of ctx.candidates.slice(0, this.lookaheadDepth)) {
       baseCounts[tile.kind]++;
       // score = how close to tenpai/win the hand becomes (cheap heuristic)
       const score = handPotential(baseCounts, player.melds.length);
@@ -30,10 +43,22 @@ export class LuckyDrawAbility extends Ability {
       if (score > bestScore) {
         bestScore = score;
         best = tile;
+      } else if (doraKinds && score === bestScore && isDora(tile) && !isDora(best)) {
+        best = tile; // 伸びが同点ならドラ/赤5を引き寄せる
       }
     }
     if (best && best !== ctx.defaultTile) api.log(`有利牌を引き寄せた`);
     return best;
+  }
+
+  // 超越帯（Lv6+）の副次付与: マモリの危険感知が段階的に宿る。
+  // tier1=超危険(赤)のみ / tier2=赤＋橙 / tier3=フル3段階（マモリ相当）。
+  // 「常時」＝発動状態（isActive）に依存しないパッシブ動作。
+  [Hooks.PROVIDE_DANGER_INFO](ctx, api) {
+    if (!(this.dangerTier > 0)) return undefined;
+    const minLevel =
+      this.dangerTier >= 3 ? DANGER_WARN : this.dangerTier === 2 ? DANGER_HIGH : DANGER_SUPER;
+    return estimateDangerInfo(api.opponents()).filter((d) => d.level >= minLevel);
   }
 }
 
@@ -180,16 +205,27 @@ export class DoraPullAbility extends Ability {
   }
 }
 
-// Heuristic: higher when the hand is closer to a win.
-// Counts the number of tiles that would bring the hand to tenpai/agari.
+// Heuristic: higher when the 14-tile shape (hand + candidate) is closer to a win.
+// shanten が主軸（和了形=-1 が最高）。テンパイ同士は「最良打牌後の待ち種数」で
+// 広いテンパイを好む。
+// ※旧実装は14枚 counts に waits() を直接当てていたが、waits は「あと1枚」前提
+//   なので14枚では常に空＝全候補同点＝先頭固定（実質no-op）だった。
 function handPotential(counts, numMelds) {
-  const total = counts.reduce((a, b) => a + b, 0);
-  // Only meaningful for 13/14-tile shapes; approximate with wait breadth.
-  const w = waits(counts, numMelds);
-  return w.length * 10 + total; // breadth dominates
+  const s = shanten(counts, numMelds);
+  let breadth = 0;
+  if (s === 0) {
+    for (let d = 0; d < 34; d++) {
+      if (counts[d] === 0) continue;
+      counts[d]--;
+      const w = waits(counts, numMelds).length;
+      counts[d]++;
+      if (w > breadth) breadth = w;
+    }
+  }
+  return -s * 100 + breadth;
 }
 
-registerAbility("lucky-draw", () => new LuckyDrawAbility());
+registerAbility("lucky-draw", (params) => new LuckyDrawAbility(params));
 registerAbility("summon-tile", (params) => new SummonTileAbility(params));
 registerAbility("rootou", () => new RootouAbility());
 registerAbility("chunchan", () => new ChunchanAbility());

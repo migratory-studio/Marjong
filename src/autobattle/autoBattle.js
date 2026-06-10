@@ -51,6 +51,24 @@ const CFG = {
   abilityHanBoost: 0.55,    // 打点/和了質の引きを上げる（rollHand へ加算）
   abilityTsumoRate: 0.70,   // 能力発動時はツモ（全員払い）に寄せる＝派手
   conditionWinStep: 0.02,   // 当日の調子（bias ±2）→ 局取り確率に軽く反映（±0.04）
+  // 読み合い（軸2）: matchup[自コマンド][相手スタンス] = { p:取り確率加算, dmg:負け時被ダメ倍率, hb:勝ち時hanBoost加算 }
+  // 三すくみ: 押す⊳様子見、引く⊳押す、様子見⊳引く。相手 last は全体的に被ダメ↑の「危険局」（安全解=引く）。
+  // p の振れ幅 ±0.10〜0.12 は param 差の効き（diffScale:60、lv差1≒±0.13）と同格＝読みが育成と同じ重みで効く。
+  stance: {
+    matchup: {
+      push:  { push: { dmg: 1.15, hb: 0.10 }, pull: { p: -0.10, dmg: 0.85 }, watch: { p: 0.12, hb: 0.15 }, last: { p: 0.04, dmg: 1.40, hb: 0.30 } },
+      pull:  { push: { p: 0.10, dmg: 0.55 },  pull: { dmg: 0.90 },           watch: { p: -0.08 },          last: { p: 0.05, dmg: 0.60 } },
+      watch: { push: { p: -0.08, dmg: 1.15 }, pull: { p: 0.10, dmg: 0.90 },  watch: {},                    last: { p: -0.08, dmg: 1.25 } },
+      last:  { push: { p: 0.05, dmg: 1.30, hb: 0.20 }, pull: { p: -0.06, hb: 0.10 }, watch: { p: 0.10, hb: 0.25 }, last: { dmg: 1.50, hb: 0.40 } },
+    },
+    edgeThreshold: 0.05,        // |p| がこれ以上で「読み勝ち/読み負け」演出対象
+    vagueHintRate: 0.65,        // 未開示時に「曖昧な気配」が出る率
+    vagueHintAccuracy: 0.60,    // 気配が当たっている基礎率
+    vagueAccuracyPerRead: 0.004, // (自read−相手read) 1 につき精度+（0.35..0.90 に clamp）
+  },
+  // めくり演出の裏付け（軸3）: 和了に立直が付く率（コマンド別＋相手側）と、立直時に裏が乗る率。
+  riichiRate: { push: 0.45, pull: 0.10, watch: 0.25, last: 0.60, opp: 0.35 },
+  uraRate: 0.30,              // 立直時に HAN_TABLE で 1 行昇格する率（点数と演出が常に整合）
   // コマンドごとの「自分の効くparam / 相手の抵抗param / 取り確率係数 / 負け時ダメージ基準」
   cmd: {
     push:  { self: "fire",   opp: "guard", k: 1.0, dmgLose: 7000,  win: 3 },
@@ -99,34 +117,58 @@ export function paramsFromLv(lv, seed = "opp") {
 
 // 新しい試合状態を作る。self/opp は 6 パラメータ。hp は試合開始時の現在 HP。
 // conditionBias は当日の調子（-2..+2）。局取り確率に軽く反映する。
-export function newMatch({ self, opp, hp, hpMax, seed = Date.now(), conditionBias = 0, oppHpMax = 25000 }) {
+export function newMatch({ self, opp, hp, hpMax, seed = Date.now(), conditionBias = 0, oppHpMax = 25000, oppHpMaxSeats = null, uraRateAdd = 0 }) {
   const rng = makeRng(seed);
+  const hpSeats = oppHpMaxSeats || [oppHpMax, oppHpMax, oppHpMax]; // 席ごとの上限（レア客席だけ太い等）
   const state = {
     self, opp, hp, hpMax,
     conditionBias,
+    uraRate: clamp(CFG.uraRate + uraRateAdd, 0, 0.9), // 店トレイト「裏ドラ濃いめ」で上乗せ
     rng,
     round: 0,                 // 0..rounds
     rounds: CFG.rounds,
     selfPlacementPts: 0,      // 着順用ポイント（局を取った重みの累積）
     oppPlacementPts: 0,
-    oppHp: [oppHpMax, oppHpMax, oppHpMax], // 相手 3 人の点棒（席バー演出用）
+    oppHp: hpSeats.slice(),   // 相手 3 人の点棒（席バー演出用）
     oppHpMax,
+    oppHpMaxSeats: hpSeats,
     watchStack: 0,
     finished: false,
     result: null,             // 'clear' | 'down'（HP0）
     log: [],
     oppStance: null,          // 今局の相手スタンス
     revealed: false,          // 読み合いで開示されたか
+    hint: null,               // 推定スタンス（revealed=確定 / vague=曖昧。外れていることもある）
+    hintVague: false,
   };
   startRound(state);
   return state;
 }
 
 // 局頭：相手スタンスを決め、読みが高ければ開示する。
+// 未開示でも「曖昧な気配」が出ることがある（読み差で精度が上がる＝情報価値3段: 無し→曖昧→確定）。
 function startRound(state) {
   if (state.finished || state.round >= state.rounds) return;
   state.oppStance = pickOppStance(state);
   state.revealed = (state.self.read - state.opp.read) >= CFG.revealMargin;
+  if (state.revealed) {
+    state.hint = state.oppStance;
+    state.hintVague = false;
+  } else if (state.rng() < CFG.stance.vagueHintRate) {
+    const acc = clamp(CFG.stance.vagueHintAccuracy
+      + (state.self.read - state.opp.read) * CFG.stance.vagueAccuracyPerRead, 0.35, 0.90);
+    state.hintVague = true;
+    if (state.rng() < acc) {
+      state.hint = state.oppStance;
+    } else {
+      // 外れヒント: 実スタンス以外から 1 つ。
+      const others = COMMANDS.map((c) => c.id).filter((id) => id !== state.oppStance);
+      state.hint = others[Math.floor(state.rng() * others.length)];
+    }
+  } else {
+    state.hint = null;
+    state.hintVague = false;
+  }
 }
 
 function pickOppStance(state) {
@@ -141,6 +183,11 @@ function pickOppStance(state) {
 // 開示されていれば相手の今局スタンス、未開示なら null。
 export function revealedOppStance(state) {
   return state.revealed ? state.oppStance : null;
+}
+
+// 今局のヒント情報。{ stance, vague } | null。vague=true の気配は外れていることもある。
+export function oppHint(state) {
+  return state.hint ? { stance: state.hint, vague: state.hintVague } : null;
 }
 
 // 翻 → 点数 ＆ 役名（フレーバー）。子のロン相当の概算。
@@ -158,14 +205,23 @@ const AGGR = { push: 0.7, pull: 0.1, watch: 0.2, last: 1.0 };
 // 和了の翻/点/役を引く。
 // 火力が「狙える翻の上限（幅）」を決める＝低火力はほぼ 1〜2 翻、火力が伸びるほど満貫・跳満まで幅が出る。
 // 勝負勘・攻撃性・能力 boost が上振れ（同じ幅の中で高い方を引きやすく）。
-function rollHand(p, aggression, rng, boost = 0) {
+// 立直＋裏ドラ（軸3）: riichiRate で立直が付き、立直時 uraRate で「HAN_TABLE の 1 行上に昇格」。
+// 点数は常に HAN_TABLE の行から引くため、めくり演出（base→final）と点数が必ず整合する。
+function rollHand(p, aggression, rng, boost = 0, { riichiRate = 0, uraRate = 0 } = {}) {
   const power = clamp((p.fire || 0) / 99, 0, 1);                 // 火力 0..1
   const maxIdx = clamp(Math.round(power * 5) + Math.round(boost * 2), 1, HAN_TABLE.length - 1); // 低火力=1(2翻まで)…高火力=5
   const lift = clamp((p.gamble || 0) / 99 * 0.3 + aggression * 0.4 + boost * 0.5 + rng() * 0.6, 0, 1.2);
   const idx = clamp(Math.floor(lift * (maxIdx + 1)), 0, maxIdx);
-  const e = HAN_TABLE[idx];
-  const yaku = e.yaku[Math.floor(rng() * e.yaku.length)];
-  return { han: e.han, points: e.pts, yaku };
+  const base = HAN_TABLE[idx];
+  const riichi = rng() < riichiRate;
+  let finalIdx = idx;
+  if (riichi && idx < HAN_TABLE.length - 1 && rng() < uraRate) finalIdx = idx + 1; // 裏ドラ乗り＝1 行昇格
+  const e = HAN_TABLE[finalIdx];
+  const yaku = base.yaku[Math.floor(rng() * base.yaku.length)];
+  return {
+    han: e.han, points: e.pts, yaku, riichi,
+    ura: e.han - base.han, baseHan: base.han, basePoints: base.pts,
+  };
 }
 
 // 点棒移動を 1 件適用する（from 席 → to 席、amount 点）。HP/相手バーを更新し、明細を積む。
@@ -173,18 +229,19 @@ function rollHand(p, aggression, rng, boost = 0) {
 function applyPayment(state, from, to, amount, payments) {
   if (amount <= 0) return;
   if (from === 0) state.hp = clamp(state.hp - amount, 0, state.hpMax);
-  else state.oppHp[from - 1] = clamp(state.oppHp[from - 1] - amount, 0, state.oppHpMax);
+  else state.oppHp[from - 1] = clamp(state.oppHp[from - 1] - amount, 0, state.oppHpMaxSeats[from - 1]);
   if (to === 0) state.hp = clamp(state.hp + amount, 0, state.hpMax);
-  else state.oppHp[to - 1] = clamp(state.oppHp[to - 1] + amount, 0, state.oppHpMax);
+  else state.oppHp[to - 1] = clamp(state.oppHp[to - 1] + amount, 0, state.oppHpMaxSeats[to - 1]);
   payments.push({ from, to, amount });
 }
 
 // 自分が払うときの軽減（引く＝守備で受ける／メンタルで振れ幅圧縮）。
-function selfPayAmount(state, base, command) {
+// dmgMul は読み合い相性（matchup.dmg）による倍率。読みが当たれば軽く、外せば重い。
+function selfPayAmount(state, base, command, dmgMul = 1) {
   const guardMul = command === "pull" ? clamp(1 - state.self.guard / 160, 0.4, 1) : 1;
   const spread = clamp(0.25 - state.self.mental * CFG.mentalVarReduce, 0.05, 0.25);
   const noise = 1 + (state.rng() * 2 - 1) * spread;
-  return Math.round(base * guardMul * noise);
+  return Math.round(base * dmgMul * guardMul * noise);
 }
 
 // 自分の取りポイント（着順用）の合計＝seat 0 への純増。表示用。
@@ -210,12 +267,17 @@ export function resolveRound(state, command, opts = {}) {
   if (state.finished) return null;
   const ability = !!opts.ability;
   const c = CFG.cmd[command] || CFG.cmd.push;
+  // 読み合い相性（軸2）。能力発動は last 扱い（呼び出し側が command="last" で渡す）。
+  const mu = (CFG.stance.matchup[command] || {})[state.oppStance] || {};
+  const muP = mu.p || 0;
+  const edge = muP >= CFG.stance.edgeThreshold ? "win" : muP <= -CFG.stance.edgeThreshold ? "lose" : "even";
 
-  // 局を取る確率：自分の効きparam − 相手の抵抗param、＋速度先制、＋様子見スタック、＋能力。
+  // 局を取る確率：自分の効きparam − 相手の抵抗param、＋速度先制、＋様子見スタック、＋相性、＋能力。
   let prob = CFG.baseWin
     + c.k * (state.self[c.self] - state.opp[c.opp]) / CFG.diffScale
     + state.self.speed * CFG.speedWinBonus
     + state.watchStack * CFG.watchBonus
+    + muP
     + (state.conditionBias || 0) * CFG.conditionWinStep
     + (ability ? CFG.abilityWinBonus : 0);
   prob = clamp(prob, 0.05, ability ? 0.99 : 0.95);
@@ -229,7 +291,9 @@ export function resolveRound(state, command, opts = {}) {
   let hand, winnerSeat, winType;
   if (tookRound) {
     // 自分の和了。ツモ（相手 3 人払い）かロン（1 人払い）かを抽選。能力でツモ＆高打点に寄る。
-    const h = rollHand(state.self, AGGR[command] ?? 0.5, state.rng, ability ? CFG.abilityHanBoost : 0);
+    const h = rollHand(state.self, AGGR[command] ?? 0.5, state.rng,
+      (ability ? CFG.abilityHanBoost : 0) + (mu.hb || 0),
+      { riichiRate: CFG.riichiRate[command] ?? 0.3, uraRate: state.uraRate });
     winnerSeat = 0;
     const tsumoRate = ability ? CFG.abilityTsumoRate : CFG.selfTsumoRate;
     if (state.rng() < tsumoRate) {
@@ -240,33 +304,34 @@ export function resolveRound(state, command, opts = {}) {
       winType = "ron";
       applyPayment(state, pickOpp(state.rng), 0, h.points, payments);
     }
-    hand = { winnerSeat, winType, han: h.han, points: h.points };
+    hand = { winnerSeat, winType, han: h.han, points: h.points, yaku: h.yaku, riichi: h.riichi, ura: h.ura, baseHan: h.baseHan, basePoints: h.basePoints };
     state.selfPlacementPts += c.win + (ability ? 2 : 0);
   } else {
     // 相手の和了。ツモ（全員払い）／自分へロン／他家へロン（自分は無傷）を抽選。
     winnerSeat = pickOpp(state.rng);
-    const h = rollHand(state.opp, 0.6, state.rng);
+    const h = rollHand(state.opp, 0.6, state.rng, 0, { riichiRate: CFG.riichiRate.opp, uraRate: state.uraRate });
     const roll = state.rng();
     if (roll < CFG.oppTsumoRate) {
       winType = "tsumo";
       const each = Math.round(h.points / 3);
-      applyPayment(state, 0, winnerSeat, selfPayAmount(state, each, command), payments); // 自分の被ツモ
+      applyPayment(state, 0, winnerSeat, selfPayAmount(state, each, command, mu.dmg || 1), payments); // 自分の被ツモ
       for (let s = 1; s <= 3; s++) if (s !== winnerSeat) applyPayment(state, s, winnerSeat, each, payments);
     } else if (roll < CFG.oppTsumoRate + CFG.oppRonYouRate) {
       winType = "ron";
-      applyPayment(state, 0, winnerSeat, selfPayAmount(state, h.points, command), payments); // 自分の放銃
+      applyPayment(state, 0, winnerSeat, selfPayAmount(state, h.points, command, mu.dmg || 1), payments); // 自分の放銃
     } else {
       // 他家へのロン：自分は無関係（点棒移動は相手同士）。
       winType = "ron";
       const target = pickOpp(state.rng, winnerSeat);
-      hand = { winnerSeat, winType, han: h.han, points: h.points, ronTarget: target };
+      hand = { winnerSeat, winType, han: h.han, points: h.points, yaku: h.yaku, riichi: h.riichi, ura: h.ura, baseHan: h.baseHan, basePoints: h.basePoints, ronTarget: target };
       applyPayment(state, target, winnerSeat, h.points, payments);
     }
-    if (!hand) hand = { winnerSeat, winType, han: h.han, points: h.points };
+    if (!hand) hand = { winnerSeat, winType, han: h.han, points: h.points, yaku: h.yaku, riichi: h.riichi, ura: h.ura, baseHan: h.baseHan, basePoints: h.basePoints };
     state.oppPlacementPts += 2;
   }
   const delta = playerDelta(payments);
-  state.log.push({ round: state.round + 1, command, ability, tookRound, delta, hand });
+  const roundOppStance = state.oppStance, roundRevealed = state.revealed;
+  state.log.push({ round: state.round + 1, command, ability, tookRound, delta, hand, oppStance: roundOppStance, edge });
   state.round += 1;
 
   const oppBust = state.oppHp.some((h) => h <= 0); // 相手が飛んだ＝トビ終了（こちらの勝ち）
@@ -280,7 +345,11 @@ export function resolveRound(state, command, opts = {}) {
     startRound(state);
   }
 
-  return { tookRound, hand, delta, payments, hp: state.hp, oppHp: state.oppHp.slice(), finished: state.finished, result: state.result };
+  return {
+    tookRound, hand, delta, payments, hp: state.hp, oppHp: state.oppHp.slice(),
+    finished: state.finished, result: state.result,
+    oppStance: roundOppStance, revealed: roundRevealed, edge, // 読み合いフィードバック用
+  };
 }
 
 // 試合の最終着順（1〜4 の概算）。プレイヤーの取りポイントを相手平均と比べる簡易版。
@@ -294,9 +363,9 @@ export function finalPlacement(state) {
   return 4;
 }
 
-// 試合終了ごとの自動回復（§4.6.3）。次試合へ持ち越す HP を返す。
-export function healAfterMatch(hp, hpMax) {
-  return Math.min(hpMax, hp + Math.round(hpMax * CFG.healAfterMatch));
+// 試合終了ごとの自動回復（§4.6.3）。次試合へ持ち越す HP を返す。mul は店トレイト「まかない」等の倍率。
+export function healAfterMatch(hp, hpMax, mul = 1) {
+  return Math.min(hpMax, hp + Math.round(hpMax * CFG.healAfterMatch * mul));
 }
 
 export { CFG as AUTOBATTLE_CONFIG };

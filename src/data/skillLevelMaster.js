@@ -10,10 +10,13 @@
 //
 // soulCost はその Lv へ「到達する」ための費用（Lv1 は初期値なので 0）。超越帯は
 // 基準帯より急勾配にしてプレミアム化する。
+// ペース設計（test/leveldesign.mjs で回帰）: Lv5＝師匠相当は重み＝最初の宝（一蓮）より
+// 先には届かず、師弟編フィナーレ（大三剣≈11ヶ月目）前後に到達する。Lv6（読みの目覚め）は
+// 覇道編の中盤、Lv10（神算鬼謀）は最終戦前後＝系譜の完成として終盤に置く。
 // runtimeParams は対局投入時パラメータ。Phase 2B では保存・表示・育成までを使い、
 // 数値差分の対局反映は対応済みテンプレートだけ Phase 7 で行う（§10.5 初期方針）。
-//                   Lv1   2    3    4    5  |    6     7     8     9    10
-const COST_CURVE = [   0, 150, 300, 500, 800, 1200, 1700, 2300, 3000, 4000];
+//                   Lv1   2    3     4     5  |    6     7     8     9    10
+const COST_CURVE = [   0, 400, 800, 1400, 2200, 2800, 3600, 4600, 5800, 7200];
 
 // 6 系統ぶんの Lv テーブルを共通カーブで生成する。unlockDescription だけ
 // テンプレートごとに味付けし、育成画面で「この Lv で何が変わるか」を伝える。
@@ -29,19 +32,51 @@ function buildTable(unlockDescriptions) {
   }));
 }
 
+// 幸運のツモ（詩玥・tmpl-lucky-draw）は skill-smith で本設計済み（正本: skill-smith/output/tmpl-lucky-draw.json）。
+// 基準帯 Lv1〜5 ＝「引き」の完成（Lv5＝現行 LuckyDrawAbility と完全一致：全8候補×1ゲーム2局）。
+// 超越帯 Lv6〜10 ＝「読みが宿る」＝マモリの危険感知(danger-sense)が段階付与され、Lv10＝神算鬼謀の系譜
+// （詩玥の覇道編アーク「読めるし、引ける」とプレイヤーの能力進化をシンクロさせる）。
+// runtimeParams の契約:
+//   lookaheadDepth … 使う候補数（候補窓は registry.resolveDraw の peekLive(8) 固定＝8が天井）
+//   dangerTier     … 危険感知の副次付与 0〜3（1=赤のみ / 2=赤＋橙 / 3=フル3段階＝マモリ相当・常時）
+//   doraPreference … 伸びが同点ならドラ/赤5を優先して引く
+// テキストは2本立て: effectDescription＝「いま何ができるか」（そのLvの効果まとめ・育成画面の現在欄／
+// 対局ツールチップ）、unlockDescription＝「上げると何が変わるか」（次Lvの伸び方説明・強化ボタン横）。
+const LUCKY_DRAW_LEVELS = [
+  { skillLevel: 1,  soulCost: 0,    runtimeParams: { lookaheadDepth: 2, dangerTier: 0, doraPreference: false }, maxChargesOverride: 1, cooldownOverride: null,
+    effectDescription: "発動した局、ツモが有利牌へ寄る。先読み2候補・1ゲーム1局。",
+    unlockDescription: "習得。1ゲーム1局、発動した局のツモが有利牌へ寄る（2候補先読み）。" },
+  { skillLevel: 2,  soulCost: 400,  runtimeParams: { lookaheadDepth: 4, dangerTier: 0, doraPreference: false }, maxChargesOverride: 1, cooldownOverride: null,
+    effectDescription: "発動した局、ツモが有利牌へ寄る。先読み4候補・1ゲーム1局。",
+    unlockDescription: "先読みが4候補に。狙った形へ手が伸びやすくなる。" },
+  { skillLevel: 3,  soulCost: 800,  runtimeParams: { lookaheadDepth: 4, dangerTier: 0, doraPreference: false }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "発動した局、ツモが有利牌へ寄る。先読み4候補・1ゲーム2局。",
+    unlockDescription: "発動が1ゲーム2局に増える。" },
+  { skillLevel: 4,  soulCost: 1400, runtimeParams: { lookaheadDepth: 6, dangerTier: 0, doraPreference: false }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "発動した局、ツモが有利牌へ寄る。先読み6候補・1ゲーム2局。",
+    unlockDescription: "先読みが6候補に。引きの再現性が上がる。" },
+  { skillLevel: 5,  soulCost: 2200, runtimeParams: { lookaheadDepth: 8, dangerTier: 0, doraPreference: false }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "発動した局、ツモが有利牌へ寄る。先読み8候補・1ゲーム2局（師匠・詩玥と同等）。",
+    unlockDescription: "完成基準。8候補先読み×1ゲーム2局＝師匠・詩玥と同等の引き。" },
+  { skillLevel: 6,  soulCost: 2800, runtimeParams: { lookaheadDepth: 8, dangerTier: 1, doraPreference: false }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "引き＝8候補×2局。さらに常時、超危険の牌が赤く視える（読み・弱）。",
+    unlockDescription: "超越域へ。最も危険な牌が赤く\"視える\"ようになる——読みの目覚め。" },
+  { skillLevel: 7,  soulCost: 3600, runtimeParams: { lookaheadDepth: 8, dangerTier: 1, doraPreference: false }, maxChargesOverride: 3, cooldownOverride: null,
+    effectDescription: "引き＝8候補×3局。常時、超危険の牌が赤く視える（読み・弱）。",
+    unlockDescription: "発動が1ゲーム3局に。引きが途切れない。" },
+  { skillLevel: 8,  soulCost: 4600, runtimeParams: { lookaheadDepth: 8, dangerTier: 2, doraPreference: false }, maxChargesOverride: 3, cooldownOverride: null,
+    effectDescription: "引き＝8候補×3局。常時、危険牌を赤・橙の二段階で見分ける（読み・中）。",
+    unlockDescription: "読みが深まり、危険牌を二段階（赤・橙）で見分ける。" },
+  { skillLevel: 9,  soulCost: 5800, runtimeParams: { lookaheadDepth: 8, dangerTier: 2, doraPreference: true },  maxChargesOverride: 3, cooldownOverride: null,
+    effectDescription: "引き＝8候補×3局・同点ならドラ/赤5優先。読みは赤・橙の二段階。",
+    unlockDescription: "同じ伸びならドラ・赤5を引き寄せる。打点が翼になる。" },
+  { skillLevel: 10, soulCost: 7200, runtimeParams: { lookaheadDepth: 8, dangerTier: 3, doraPreference: true },  maxChargesOverride: 3, cooldownOverride: null,
+    effectDescription: "引き＝8候補×3局・ドラ/赤5優先。読みは赤・橙・黄の完全域（マモリ相当・常時）——神算鬼謀。",
+    unlockDescription: "神算鬼謀。読みは三段階の完全域——読めるし、引ける。系譜の完成形。" },
+];
+
 export const SKILL_LEVEL_MASTER = {
-  "lv-lucky-draw": buildTable([
-    "幸運のツモが発動する基礎。",
-    "ツモの引き寄せが安定する。",
-    "高め牌を引く確率が上がる。",
-    "連続発動の取りこぼしが減る。",
-    "師匠相当。ツモ運が完成する。",
-    "超越域へ。引き寄せる有利牌の幅が広がる。",
-    "ツモの先読みが一段深くなる。",
-    "高め・ドラ絡みを優先して引く。",
-    "連続発動でも精度が落ちない。",
-    "育成の極致。ほぼ理想のツモが続く。",
-  ]),
+  "lv-lucky-draw": LUCKY_DRAW_LEVELS,
   "lv-chunchan": buildTable([
     "中張牌の速攻が発動する基礎。",
     "タンヤオ移行が安定する。",
@@ -106,6 +141,21 @@ export const SKILL_LEVEL_MASTER = {
 
 export function skillLevelEntry(tableId, level) {
   return (SKILL_LEVEL_MASTER[tableId] || []).find((e) => e.skillLevel === level) || null;
+}
+
+// Lv エントリ → 対局能力へ渡す params（Phase 7 結線・§10.5）。
+// runtimeParams に maxCharges / cooldown の上書きを畳み込んで1個のオブジェクトにする。
+// effectDescription があれば desc（対局中ツールチップの説明文）も Lv 表記つきで差し替える。
+// abilityDef との合成は能力側コンストラクタ（super({...def, ...params})）が行う。
+// 未対応テンプレ（runtimeParams が空）はそのまま空 params ＝従来挙動になる。
+export function skillRuntimeAbilityParams(tableId, level) {
+  const e = skillLevelEntry(tableId, level);
+  if (!e) return {};
+  const params = { ...e.runtimeParams };
+  if (e.maxChargesOverride != null) params.maxCharges = e.maxChargesOverride;
+  if (e.cooldownOverride != null) params.cooldown = e.cooldownOverride;
+  if (e.effectDescription) params.desc = `Lv${e.skillLevel}：${e.effectDescription}`;
+  return params;
 }
 
 // 次の Lv のエントリ（最大なら null）。育成画面の費用表示・強化可否に使う。

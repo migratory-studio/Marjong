@@ -8,17 +8,31 @@
 import { tournamentById } from "./tournamentMaster.js";
 
 export const MENTOR_CAMPAIGN = {
-  // 詩玥（攻め・引き）：最初は門前開鍵（ツモあがり）から。最終は弟子との 2 人（pair）で九蓮宝士。
+  // 詩玥（攻め・引き）：順序はシナリオ正典（scenario-forge masters/mentor-shiyue-bond-*.brief）と同期。
+  //   1 menzen   … 11話「個人戦・門前開鍵を制し最初の宝」
+  //   2 daisanken… 11話でトリオ結成→12話「団体戦・大三剣の最終戦＝2個目の宝」（師弟編フィナーレ）
+  //   3 ji-peeko … 13話「ふたりの勝ち」直後のペア戦＝辛勝で3個目
+  //   4 kyou-sharin … 14話「読みの達人（鏡）に敗北」→17話「読んで、引く」で勝つ＝
+  //                   “もう一人の自分を映す”鏡車輪＝深謀遠慮との和解の卓
+  //   5 chin-iki … 18話前半のモンタージュ（勝ち星を重ねる）
+  //   6 tenankou … 18話「アビスの壁」＝ネビュラ戦（団体・闇の宝）
+  //   7 musou-kan… 19話前半のモンタージュ
+  //   8 tenchi-shingyoku … 19話「三人の九蓮」＝弟子の一打で8個目（ペア）
+  //   9 musou-kokusho … 20話「神算鬼謀」読了後、二人で九蓮宝士
+  // oppLv は「形式込みの実効難度」で単調増加：ペア/団体は師匠（格上）が同卓して戦力を
+  // 担ぐぶん、同じ oppLv でも個人戦より楽になる。そのため生の oppLv は前後して見えるが、
+  // 体感は約3〜4ヶ月（ターン）に1杯のペースで一定に上がる（回帰は test/leveldesign.mjs）。
+  // ティアも前後する（物語正典を優先。ティアは節数・報酬の「格」、難度は oppLv が担う）。
   shiyue: [
-    { id: "menzen-kaiken",    oppLv: 2 },
-    { id: "chin-iki",         oppLv: 3 },
-    { id: "musou-kan",        oppLv: 5 },
-    { id: "ji-peeko",         oppLv: 4 },
-    { id: "kyou-sharin",      oppLv: 6 },
-    { id: "daisanken",        oppLv: 7 },
-    { id: "tenankou",         oppLv: 8 },
-    { id: "tenchi-shingyoku", oppLv: 9 },
-    { id: "musou-kokusho",    oppLv: 11, finalFormat: "pair" }, // 詩玥＋弟子の二人
+    { id: "menzen-kaiken",    oppLv: 4 },                       // 個人
+    { id: "daisanken",        oppLv: 6 },                       // 団体（師匠＋マモリ同卓）
+    { id: "ji-peeko",         oppLv: 7 },                       // ペア
+    { id: "kyou-sharin",      oppLv: 8 },                       // ペア
+    { id: "chin-iki",         oppLv: 8 },                       // 個人
+    { id: "tenankou",         oppLv: 9 },                       // 団体
+    { id: "musou-kan",        oppLv: 9 },                       // 個人（個人戦は担ぎ無し＝実効は団体9より重い）
+    { id: "tenchi-shingyoku", oppLv: 11 },                      // ペア
+    { id: "musou-kokusho",    oppLv: 12, finalFormat: "pair" }, // 詩玥＋弟子の二人＝カンスト級の壁
   ],
   // ビビ（守り）：最初は清一器。最終は仲間と組む team（背中を守る守備の人）。
   bibi: [

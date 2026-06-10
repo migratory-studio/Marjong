@@ -616,6 +616,7 @@ body {
 #mentor-home-screen.mh2 .mhx-pl-info { flex:1; font-family:var(--font-go); font-size:14px; color:#4a3c24; }
 #mentor-home-screen.mh2 .mhx-pl-info b { font-size:18px; color:#8f2418; font-weight:800; margin-right:1px; }
 #mentor-home-screen.mh2 .mhx-pl-rew { font-family:var(--font-go); font-size:11px; color:#7a5d2e; white-space:nowrap; }
+#mentor-home-screen.mh2 .mhx-pl-trait { display:block; margin-top:3px; font-family:var(--font-go); font-size:11px; color:#8a6a32; font-style:italic; }
 #mentor-home-screen.mh2 .mhx-pl-badge {
   position:absolute; top:-7px; right:10px; padding:1px 9px; border-radius:999px; font-size:11px; font-weight:800;
   color:#fff; background:linear-gradient(135deg,#b5301a,#7a1c10); border:1px solid #ffd0b8; box-shadow:0 2px 6px rgba(0,0,0,.5);
@@ -637,6 +638,7 @@ body {
 #mentor-home-screen.mh2 .mhx-pr-hpd.up { color:#2e7d32; }
 #mentor-home-screen.mh2 .mhx-pr-hpd.dn { color:#b8392b; }
 #mentor-home-screen.mh2 .mhx-pr-soul b { color:#b8902f; font-size:18px; }
+#mentor-home-screen.mh2 .mhx-pr-detail { font-family:var(--font-go); font-size:12px; color:#8a6a32; margin:-8px 0 10px; }
 #mentor-home-screen.mh2 .mhx-pr-sub { font-family:var(--font-min); font-size:14px; color:#8f2418; letter-spacing:.08em; margin-bottom:10px; }
 #mentor-home-screen.mh2 .mhx-pr-stats { display:flex; flex-direction:column; gap:9px; margin-bottom:16px; }
 #mentor-home-screen.mh2 .mhx-pr-stat { display:flex; align-items:center; gap:10px; }
@@ -1183,14 +1185,76 @@ body {
 
 /* 卓エリア */
 #autobattle-screen .ab-table-area { position:relative; flex:1; min-height:360px; }
+/* 麻雀卓（方形ラシャ＋木枠）。手牌・河・中央パネルの舞台。 */
 #autobattle-screen .ab-table {
-  position:absolute; left:50%; top:48%; transform:translate(-50%,-50%);
-  width:420px; height:220px; border-radius:50%;
-  background:radial-gradient(60% 70% at 50% 40%, #2a6b4e, #1d4d39 70%, #163a2b);
-  border:6px solid #2c1a0a; box-shadow:0 18px 40px rgba(0,0,0,.55), inset 0 0 40px rgba(0,0,0,.4);
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:460px; height:280px; border-radius:14px;
+  background:radial-gradient(70% 80% at 50% 42%, #2a6b4e, #1d4d39 70%, #173c2d);
+  border:8px solid #3a2410;
+  box-shadow:0 18px 40px rgba(0,0,0,.55), inset 0 0 46px rgba(0,0,0,.45), 0 0 0 2px #1a0f06;
 }
 #autobattle-screen .ab-table::after {
-  content:""; position:absolute; inset:14px; border-radius:50%; border:1px solid rgba(200,164,77,.25);
+  content:""; position:absolute; inset:6px; border-radius:8px;
+  border:1px solid rgba(200,164,77,.22); pointer-events:none;
+}
+/* 中央の局情報パネル（全自動卓の中央表示風）＋意図チップ */
+#autobattle-screen .ab-center {
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  width:128px; padding:7px 8px 8px; border-radius:10px; text-align:center;
+  background:linear-gradient(180deg,#10131c,#0a0c12); border:1.5px solid #5a4a2a;
+  box-shadow:0 4px 14px rgba(0,0,0,.5), inset 0 0 12px rgba(0,0,0,.6);
+}
+#autobattle-screen .ab-center-round { font-size:17px; letter-spacing:.14em; color:#ecd592; }
+#autobattle-screen .ab-center-rc { font-family:"Yu Gothic","Noto Sans JP",sans-serif; font-size:10px; color:#9a8a66; letter-spacing:.18em; }
+#autobattle-screen .ab-center-intent { display:flex; justify-content:center; min-height:0; }
+/* 手牌: 相手3席=伏せ牌、自分=表向きフレーバー牌（中央は席アバターが手前に座る） */
+#autobattle-screen .ab-hand { position:absolute; display:flex; gap:2px; z-index:1; }
+#autobattle-screen .ab-hand-top { top:6px; left:50%; transform:translateX(-50%); }
+#autobattle-screen .ab-hand-you { bottom:8px; left:50%; transform:translateX(-50%); }
+#autobattle-screen .ab-hand-left { left:8px; top:50%; transform:translateY(-50%); flex-direction:column; }
+#autobattle-screen .ab-hand-right { right:8px; top:50%; transform:translateY(-50%); flex-direction:column; }
+#autobattle-screen .ab-tback {
+  width:18px; height:24px; border-radius:3px;
+  background:linear-gradient(180deg,#f2ead6 0 30%, #b8742e 30%);
+  border:1px solid rgba(0,0,0,.45); box-shadow:0 2px 3px rgba(0,0,0,.45);
+}
+#autobattle-screen .ab-tback-v {
+  width:24px; height:13px;
+  background:linear-gradient(90deg,#f2ead6 0 30%, #b8742e 30%);
+}
+#autobattle-screen .ab-htile {
+  width:24px; height:32px; border-radius:3px; background:#f5efdd;
+  border:1px solid rgba(0,0,0,.4); box-shadow:0 2px 4px rgba(0,0,0,.5);
+}
+/* 河（捨て牌ゾーン）: 局の進行で増え、次局頭で流れる */
+#autobattle-screen .ab-river { position:absolute; display:flex; flex-wrap:wrap; gap:2px; z-index:1; pointer-events:none; }
+#autobattle-screen .ab-river-top { top:40px; left:50%; transform:translateX(-50%); width:170px; justify-content:center; }
+#autobattle-screen .ab-river-you { bottom:48px; left:50%; transform:translateX(-50%); width:170px; justify-content:center; }
+#autobattle-screen .ab-river-left { left:44px; top:50%; transform:translateY(-50%); width:38px; max-height:150px; }
+#autobattle-screen .ab-river-right { right:44px; top:50%; transform:translateY(-50%); width:38px; max-height:150px; justify-content:flex-end; }
+#autobattle-screen .ab-rtile {
+  width:16px; height:21px; border-radius:2px; background:#f5efdd;
+  border:1px solid rgba(0,0,0,.4); box-shadow:0 1px 2px rgba(0,0,0,.4);
+  animation:abRtilePop .22s cubic-bezier(.2,1.4,.4,1);
+}
+@keyframes abRtilePop { 0%{transform:scale(.4); opacity:0;} 100%{transform:none; opacity:1;} }
+/* リーチ棒（千点棒）: 中央パネルの上にスッと置かれる。素材は縦 10×124 → 横倒しで置く。 */
+#autobattle-screen .ab-rstick {
+  position:absolute; left:50%; top:74px; width:10px; height:56px;
+  transform:translate(-50%,-6px) rotate(90deg);
+  opacity:0; transition:opacity .25s, transform .25s; filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));
+}
+#autobattle-screen .ab-rstick.is-on { opacity:1; transform:translate(-50%,0) rotate(90deg); }
+/* 結果カードの倒牌（和了手のフレーバー5枚がパタパタめくれる） */
+#autobattle-screen .ab-r-tiles { display:flex; justify-content:center; gap:3px; min-height:30px; margin-top:4px; }
+#autobattle-screen .ab-rwtile {
+  width:22px; height:29px; border-radius:3px; background:#f5efdd;
+  border:1px solid rgba(0,0,0,.4); box-shadow:0 2px 4px rgba(0,0,0,.5);
+  opacity:0; animation:abTileFlip .3s cubic-bezier(.2,1.3,.4,1) forwards;
+}
+@keyframes abTileFlip {
+  0%{ transform:rotateY(90deg) scale(.8); opacity:0; }
+  100%{ transform:none; opacity:1; }
 }
 #autobattle-screen .ab-seat { position:absolute; width:96px; text-align:center; z-index:3; }
 #autobattle-screen .ab-s-top { top:0; left:50%; transform:translateX(-50%); }
@@ -1234,11 +1298,190 @@ body {
 #autobattle-screen .ab-result-win .ab-r-delta { color:#9be29b; }
 #autobattle-screen .ab-result-lose .ab-r-delta { color:#ff8e7a; }
 
-/* 読み合いヒント */
+/* 読み合いヒント（3段: 開示=金の確信／曖昧=外れることもある気配／無し） */
 #autobattle-screen .ab-hint { text-align:center; font-size:17px; letter-spacing:.06em; min-height:24px; }
 #autobattle-screen .ab-hint-read { color:#cdb88f; }
 #autobattle-screen .ab-hint-read b { color:#ecd592; }
 #autobattle-screen .ab-hint-blind { color:#6f6450; font-style:italic; }
+#autobattle-screen .ab-hint-vague { color:#9a8a66; }
+#autobattle-screen .ab-hint-vague i { color:#bfae87; }
+
+/* 局の経過ビート（コマンド確定→結果カードの間の地の文） */
+#autobattle-screen .ab-beat {
+  position:absolute; left:50%; top:48%; transform:translate(-50%,-50%);
+  z-index:5; max-width:420px; padding:10px 22px; text-align:center;
+  font-size:18px; letter-spacing:.1em; color:#e8dcbf;
+  background:rgba(10,12,20,.82); border:1px solid #5a4a2a; border-radius:10px;
+  text-shadow:0 2px 6px rgba(0,0,0,.8);
+  opacity:0; visibility:hidden; transition:opacity .22s, visibility .22s;
+}
+#autobattle-screen .ab-beat.is-show { opacity:1; visibility:visible; }
+
+/* 結果カードのめくり演出（リーチ chip / 役名スラム / 翻カウント / 裏ドラ昇格 / 読みバッジ） */
+#autobattle-screen .ab-r-riichi {
+  display:inline-block; margin-left:8px; padding:1px 8px; vertical-align:1px;
+  font-size:12px; font-weight:800; letter-spacing:.14em; color:#fff;
+  background:linear-gradient(180deg,#c44, #8e2222); border:1px solid #ffb0a0; border-radius:8px;
+}
+#autobattle-screen .ab-r-yaku { min-height:32px; }
+#autobattle-screen .ab-r-yaku.is-slam { animation:abYakuSlam .28s cubic-bezier(.2,1.6,.4,1); }
+@keyframes abYakuSlam { 0%{transform:scale(2.2); opacity:0;} 100%{transform:scale(1); opacity:1;} }
+#autobattle-screen .ab-r-han-big { min-height:42px; }
+#autobattle-screen .ab-r-han-big.is-big { color:#ffd96e; text-shadow:0 0 14px rgba(255,200,90,.65); }
+#autobattle-screen .ab-r-ura { min-height:18px; font-size:14px; font-weight:800; letter-spacing:.1em; color:#ffd96e; }
+#autobattle-screen .ab-result.is-ura { animation:abUraFlash .55s ease; border-color:#ffd96e; }
+@keyframes abUraFlash {
+  0%,100%{ box-shadow:0 16px 40px rgba(0,0,0,.6); }
+  35%{ box-shadow:0 0 36px rgba(255,217,110,.95), 0 16px 40px rgba(0,0,0,.6); }
+}
+#autobattle-screen .ab-r-pts { min-height:20px; }
+#autobattle-screen .ab-r-delta { min-height:32px; }
+#autobattle-screen .ab-r-edge {
+  display:inline-block; margin-left:8px; padding:2px 9px; vertical-align:3px;
+  font-size:13px; font-weight:800; letter-spacing:.08em; border-radius:9px;
+  animation:abYakuSlam .28s cubic-bezier(.2,1.6,.4,1);
+}
+#autobattle-screen .ab-edge-win { color:#2a1f08; background:linear-gradient(180deg,#ffe39a,#dfb55a); border:1px solid #fff0c0; }
+#autobattle-screen .ab-edge-miss { color:#e8d9d2; background:rgba(120,50,40,.8); border:1px solid #a06050; }
+
+/* 師匠の見守りパネル（雀荘に同行・相槌つき）。結果オーバーレイ(z60)中も相槌が見えるよう z65。 */
+#autobattle-screen .ab-mentor { position:absolute; right:4px; top:2px; width:150px; z-index:65; text-align:center; }
+#autobattle-screen .ab-mentor-frame {
+  width:128px; height:158px; margin:0 auto; overflow:hidden; border-radius:10px;
+  background:linear-gradient(180deg,#241a10,#170f08); border:2px solid #8a6a32;
+  box-shadow:0 6px 16px rgba(0,0,0,.55), inset 0 0 18px rgba(0,0,0,.5);
+  display:flex; align-items:flex-start; justify-content:center;
+}
+#autobattle-screen .ab-mentor-img { width:100%; height:100%; object-fit:cover; object-position:top center; }
+#autobattle-screen .ab-mentor-ph { font-size:44px; color:#8a7a55; align-self:center; }
+#autobattle-screen .ab-mentor-nm { margin-top:4px; font-size:13px; color:#e0cfa3; letter-spacing:.08em; }
+#autobattle-screen .ab-mentor-nm small { display:block; font-size:10px; color:#9a8a66; letter-spacing:.2em; }
+#autobattle-screen .ab-mentor.is-talk .ab-mentor-frame { animation:abMentorBounce .4s ease; border-color:#ecd592; }
+@keyframes abMentorBounce { 0%,100%{transform:none;} 30%{transform:translateY(-5px);} 60%{transform:translateY(1px);} }
+#autobattle-screen .ab-mentor-bubble {
+  position:absolute; top:100%; right:0; margin-top:8px; width:172px; z-index:65;
+  padding:9px 11px; text-align:left; font-size:13px; line-height:1.55; color:#2a2418;
+  background:linear-gradient(180deg,#f5ecd2,#e8d9b0); border:1.5px solid #8a6a32; border-radius:10px;
+  box-shadow:0 8px 18px rgba(0,0,0,.5);
+  opacity:0; visibility:hidden; transform:translateY(-4px);
+  transition:opacity .18s, transform .18s, visibility .18s;
+}
+#autobattle-screen .ab-mentor-bubble::before {
+  content:""; position:absolute; top:-7px; right:24px;
+  border:7px solid transparent; border-bottom-color:#8a6a32; border-top:none;
+}
+#autobattle-screen .ab-mentor-bubble.is-show { opacity:1; visibility:visible; transform:none; }
+
+/* レア客（ネームドが卓に着く）: 席の★装飾＋登場帯 */
+#autobattle-screen .ab-seat.is-rare .ab-seat-ic { border-color:#ffd96e; box-shadow:0 0 14px rgba(255,200,90,.6); }
+#autobattle-screen .ab-seat-rare { font-weight:800; text-shadow:0 1px 4px rgba(0,0,0,.8); }
+#autobattle-screen .ab-rare-banner {
+  position:absolute; left:50%; top:34%; transform:translate(-50%,-50%) scale(.94);
+  z-index:8; min-width:340px; max-width:520px; padding:12px 20px;
+  background:linear-gradient(90deg, rgba(10,12,20,0), rgba(10,12,20,.94) 18%, rgba(10,12,20,.94) 82%, rgba(10,12,20,0));
+  border-top:1px solid #c8a44d; border-bottom:1px solid #c8a44d;
+  opacity:0; transition:opacity .25s, transform .25s;
+}
+#autobattle-screen .ab-rare-banner.is-on { opacity:1; transform:translate(-50%,-50%) scale(1); }
+#autobattle-screen .ab-rare-banner.is-off { opacity:0; }
+#autobattle-screen .ab-rare-inner { display:flex; align-items:center; gap:14px; justify-content:center; }
+#autobattle-screen .ab-rare-ic { width:58px; height:58px; border-radius:50%; object-fit:cover; border:2px solid #ffd96e; box-shadow:0 0 14px rgba(255,200,90,.55); }
+#autobattle-screen .ab-rare-tx { display:flex; flex-direction:column; gap:2px; text-align:left; }
+#autobattle-screen .ab-rare-cap { font-size:12px; letter-spacing:.18em; color:#cdb88f; }
+#autobattle-screen .ab-rare-nm { font-size:22px; letter-spacing:.1em; text-shadow:0 2px 6px rgba(0,0,0,.8); }
+#autobattle-screen .ab-rare-line { font-family:"Yu Gothic","Noto Sans JP",sans-serif; font-size:13px; color:#e8dcbf; }
+#autobattle-screen .ab-res-rare { margin:4px 0 0; font-size:14px; color:#ffd96e; }
+#autobattle-screen .ab-res-rare-line { font-family:"Yu Gothic","Noto Sans JP",sans-serif; font-size:12px; color:#cdb88f; }
+
+/* ── 打撃感（軸A: 格ゲー流ジュース）── */
+/* HP 残像バー: 本体(赤)の下で白いゴーストが遅れて縮む。transition は JS が制御。 */
+#autobattle-screen .ab-bar-track { position:relative; }
+#autobattle-screen .ab-bar-ghost {
+  position:absolute; left:0; top:0; bottom:0; border-radius:9px;
+  background:rgba(255,236,210,.85);
+}
+#autobattle-screen .ab-bar-fill { position:relative; z-index:1; }
+/* 卓シェイク（被ダメ量で 2px / 6px 減衰） */
+#autobattle-screen .ab-table-area.ab-shake-sm { animation:abShakeSm .32s linear; }
+#autobattle-screen .ab-table-area.ab-shake-lg { animation:abShakeLg .5s linear; }
+@keyframes abShakeSm {
+  0%,100%{transform:none;} 20%{transform:translate(2px,-1px);} 40%{transform:translate(-2px,1px);}
+  60%{transform:translate(1px,1px);} 80%{transform:translate(-1px,-1px);}
+}
+@keyframes abShakeLg {
+  0%,100%{transform:none;} 12%{transform:translate(6px,-3px);} 28%{transform:translate(-5px,3px);}
+  44%{transform:translate(4px,2px);} 60%{transform:translate(-3px,-2px);} 78%{transform:translate(2px,1px);}
+}
+/* ヒットストップの白フラッシュ（1 拍止めて重さを出す） */
+#autobattle-screen .ab-freeze {
+  position:absolute; inset:0; z-index:9; pointer-events:none;
+  background:#fff; animation:abFreeze .26s ease-out forwards;
+}
+@keyframes abFreeze { 0%{opacity:.34;} 100%{opacity:0;} }
+/* カウンター演出（読み勝ち＝縁の金フラッシュ） */
+#autobattle-screen .ab-counterflash {
+  position:absolute; inset:0; z-index:9; pointer-events:none; border-radius:8px;
+  box-shadow:inset 0 0 0 0 rgba(255,217,110,0);
+  animation:abCounter .55s ease-out forwards;
+}
+@keyframes abCounter {
+  0%{ box-shadow:inset 0 0 42px 6px rgba(255,217,110,.85); }
+  100%{ box-shadow:inset 0 0 0 0 rgba(255,217,110,0); }
+}
+/* 結果カードのパンチ（満貫以上のラベルをドン） */
+#autobattle-screen .ab-result.is-punch { animation:abPunch .22s cubic-bezier(.2,1.5,.4,1); }
+@keyframes abPunch {
+  0%{ transform:translate(-50%,-50%) scale(1.12); }
+  100%{ transform:translate(-50%,-50%) scale(1); }
+}
+/* 飛び/飛ばしの KO 演出（一文字ドン） */
+#autobattle-screen .ab-ko {
+  position:absolute; inset:0; z-index:50; pointer-events:none;
+  display:flex; align-items:center; justify-content:center;
+  background:radial-gradient(ellipse at center, rgba(0,0,0,.25), rgba(0,0,0,.78));
+  opacity:0; transition:opacity .15s;
+}
+#autobattle-screen .ab-ko.is-on { opacity:1; }
+#autobattle-screen .ab-ko.is-off { opacity:0; transition:opacity .3s; }
+#autobattle-screen .ab-ko-txt {
+  font-size:170px; font-weight:800; letter-spacing:.04em;
+  text-shadow:0 0 40px rgba(0,0,0,.9), 0 6px 18px rgba(0,0,0,.8);
+  transform:scale(2.4); opacity:0;
+}
+#autobattle-screen .ab-ko.is-on .ab-ko-txt { animation:abKoSlam .42s cubic-bezier(.18,1.2,.3,1) forwards; }
+@keyframes abKoSlam {
+  0%{ transform:scale(2.4); opacity:0; }
+  55%{ transform:scale(.96); opacity:1; }
+  100%{ transform:scale(1); opacity:1; }
+}
+#autobattle-screen .ab-ko-lose .ab-ko-txt { color:#ff6a55; }
+#autobattle-screen .ab-ko-win .ab-ko-txt { color:#ffd96e; font-size:96px; }
+
+/* ── 意図チップ（軸B: 相手スタンスの可視化・卓中央パネルに埋め込み）── */
+#autobattle-screen .ab-intent {
+  position:relative; width:42px; height:42px; margin-top:5px; border-radius:50%;
+  display:none; align-items:center; justify-content:center;
+  background:rgba(10,12,20,.88); border:2px solid #5a4a2a;
+}
+#autobattle-screen .ab-intent.is-show { display:flex; animation:abIntentIn .22s cubic-bezier(.2,1.4,.4,1); }
+@keyframes abIntentIn { 0%{transform:scale(.5); opacity:0;} 100%{transform:none; opacity:1;} }
+#autobattle-screen .ab-intent-k { font-size:23px; line-height:1; text-shadow:0 2px 6px rgba(0,0,0,.8); }
+#autobattle-screen .ab-intent-sure { border-color:#ecd592; box-shadow:0 0 14px rgba(236,213,146,.45); }
+#autobattle-screen .ab-intent-vague { opacity:.62; border-style:dashed; }
+#autobattle-screen .ab-intent-vague.is-show { animation:abIntentIn .22s cubic-bezier(.2,1.4,.4,1), abIntentWobble 2.2s ease-in-out .25s infinite; }
+@keyframes abIntentWobble {
+  0%,100%{ transform:rotate(0deg); }
+  25%{ transform:rotate(-4deg); }
+  75%{ transform:rotate(4deg); }
+}
+#autobattle-screen .ab-intent-q {
+  position:absolute; top:-8px; right:-6px; font-size:18px; font-weight:800; color:#bfae87;
+  text-shadow:0 1px 4px rgba(0,0,0,.9);
+}
+#autobattle-screen .ab-intent-push .ab-intent-k { color:#ff8e7a; }
+#autobattle-screen .ab-intent-pull .ab-intent-k { color:#8fb8e8; }
+#autobattle-screen .ab-intent-watch .ab-intent-k { color:#a8c8a0; }
+#autobattle-screen .ab-intent-last .ab-intent-k { color:#ffd96e; }
 
 /* あなたの HP バー */
 #autobattle-screen .ab-self-hp { display:flex; align-items:center; gap:12px; padding:4px 2px; }

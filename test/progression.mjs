@@ -4,7 +4,7 @@ import { createDefaultProfile } from "../src/progression/profileRepository.js";
 import { buildNewAvatar, addAvatarToProfile, activeAvatar } from "../src/progression/avatarFactory.js";
 import { spendSoul, grantSoul, grantSoulOnce, hasReward } from "../src/progression/rewardService.js";
 import {
-  rest, canRestToday, localDate,
+  rest, ensureDay, dayInfo, ACTIONS_PER_DAY,
   levelUpAvatar, upgradeSkill, changeAbility, abilityChangeOptions,
   avatarLevelInfo, skillLevelInfo,
 } from "../src/progression/progressionService.js";
@@ -43,30 +43,32 @@ function freshProfile({ soul = 0 } = {}) {
   ok("hasReward で台帳判定", hasReward(r.profile, "scenario:test"));
 }
 
-// --- 休憩: 日次 1 回 / HP 回復は最大の範囲内 / ソウル・絆 ---
+// --- 休憩: 1 行動を消費（1日 = 3 行動）/ HP 回復は最大の範囲内 / ソウル・絆 ---
 {
   let p = freshProfile({ soul: 0 });
   // 現在 HP を減らしておく（回復が見えるように）
   p = { ...p, avatars: p.avatars.map((a) => ({ ...a, avatarHpCurrent: 1000 })) };
-  ok("初日は休憩できる", canRestToday(p, "2026-06-03"));
+  p = ensureDay(p, () => 0.5).profile;
+  eq("初日は全行動が残っている", dayInfo(p).actionsLeft, ACTIONS_PER_DAY);
 
-  const res = rest(p, "2026-06-03");
+  const res = rest(p);
   const a = activeAvatar(res.profile);
   ok("休憩で HP が回復した", a.avatarHpCurrent > 1000);
   ok("HP は最大を超えない", a.avatarHpCurrent <= a.avatarHpMax);
   ok("休憩でソウル付与", res.profile.wallet.soul > 0);
   ok("休憩で絆経験値付与", a.bondExp > 0 || a.bondLevel > 1);
-  eq("休憩済み日付を保存", res.profile.daily.lastRestDate, "2026-06-03");
+  eq("休憩は 1 行動を消費", dayInfo(res.profile).actionsLeft, ACTIONS_PER_DAY - 1);
 
-  ok("同日2回目は不可", !canRestToday(res.profile, "2026-06-03"));
-  threws("同日2回目の rest は例外", () => rest(res.profile, "2026-06-03"));
-  ok("翌日はまた休憩できる", canRestToday(res.profile, "2026-06-04"));
+  // 3 行動を使い切ると日が進み、ensureDay まで追加行動は不可。
+  const used3 = rest(rest(res.profile).profile);
+  ok("3 行動で日が進む", used3.dayAdvanced === true && used3.profile.dayCount === 2);
+  threws("行動切れの rest は例外", () => rest(used3.profile));
 
   // 満タンからの休憩は HP を増やさない（範囲内クランプ）
-  let full = freshProfile();
+  let full = ensureDay(freshProfile(), () => 0.5).profile;
   const fa = activeAvatar(full);
   eq("初期は満タン", fa.avatarHpCurrent, fa.avatarHpMax);
-  const r3 = rest(full, "2026-06-03");
+  const r3 = rest(full);
   eq("満タン休憩は HP 据え置き", activeAvatar(r3.profile).avatarHpCurrent, fa.avatarHpMax);
   eq("満タンでも回復量0", r3.healed, 0);
 }
@@ -137,6 +139,34 @@ function freshProfile({ soul = 0 } = {}) {
 
   // 別師匠の能力には変えられない
   threws("他師匠の能力へは変更不可", () => changeAbility(freshProfile({ soul: 99999 }), "tmpl-iron-guard"));
+}
+
+// --- 雀荘巡り: 店トレイトの経済整合（ご祝儀/場代/レア客ボーナス・visitParlor extras）---
+{
+  const { visitParlor, parlorState } = await import("../src/progression/progressionService.js");
+  const { traitOfParlor, TRAIT_CFG, PARLOR_TRAITS } = await import("../src/data/parlorTraitMaster.js");
+
+  // トレイトは店名 seed で決定論（同じ店は常に同じ）。
+  ok("traitOfParlor は決定論", JSON.stringify(traitOfParlor("雀荘テスト")) === JSON.stringify(traitOfParlor("雀荘テスト")));
+  // 既知トレイトのみ返る（または null）。
+  const ids = new Set(PARLOR_TRAITS.map((t) => t.id));
+  ok("traitOfParlor は既知トレイトか null", ["A", "B", "雀", "東風荘"].every((n) => {
+    const t = traitOfParlor(n);
+    return t === null || ids.has(t.id);
+  }));
+
+  // visitParlor の経済: soul = round(soulPerWin×wins×soulWinMul) + rareWins×rareGuestSoul − entryCost。
+  const p = freshProfile({ soul: 500 });
+  const cand = parlorState(p).candidates[0];
+  const wins = 2, rareWins = 1;
+  const expected = Math.round(cand.soulPerWin * wins * (cand.trait?.soulWinMul || 1))
+    + rareWins * TRAIT_CFG.rareGuestSoul - (cand.trait?.entryCost || 0);
+  const res = visitParlor(p, 0, wins, Math.random, { rareWins });
+  eq("visitParlor のソウル純増（トレイト込み）", res.soul, expected);
+  eq("財布に純増が反映", res.profile.wallet.soul, 500 + expected);
+  eq("rareWins が結果に乗る", res.rareWins, rareWins);
+  eq("rareBonus の額", res.rareBonus, rareWins * TRAIT_CFG.rareGuestSoul);
+  ok("trait が結果に同梱（null 可）", "trait" in res);
 }
 
 console.log(fails === 0 ? "\nALL PASS" : `\n${fails} FAILED`);

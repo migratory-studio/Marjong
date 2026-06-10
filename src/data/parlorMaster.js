@@ -4,6 +4,7 @@
 // ※連戦数・敵 Lv・ソウルは「種別 × シナリオ進捗」で本調整する想定。現状は仮値＋進捗で微増。
 import { makeRng } from "../autobattle/autoBattle.js";
 import { PARLOR_NAME_ENTRIES, PARLOR_SINGLE, PARLOR_MULTI } from "./parlorNameMaster.js";
+import { traitOfParlor } from "./parlorTraitMaster.js";
 
 // weight=出現重み（楽勝＞拮抗＞チャレンジ≒大会中）。tone は調子チップと同じ配色を流用。
 // oppLv＝相手 param の弱さ（§paramsFromLv 新スケール：0=激弱）。oppHpMax＝相手の点棒（小さいほど飛びやすい）。
@@ -53,7 +54,8 @@ export function rollDailyParlors(dayCount, progress = 0, count = 3) {
       name: entry.name,
       subParams: entry.subs.slice(),       // 副パラメ（1〜2種）
       subParam: entry.subs[0],             // 後方互換（先頭1種）
-      matches: t.matches + Math.floor(progress / 2),
+      trait: traitOfParlor(entry.name),    // 店トレイト（店名 seed で永続固定・無印は null）
+      matches: t.matches + Math.floor(progress / 3), // 連戦数は緩く（勝ち数＝param 直結のため）
       oppLv: t.oppLv + progress,
       oppHpMax: t.oppHpMax + progress * 1500,
       soulPerWin: Math.round(t.soulPerWin * (1 + progress * 0.15)),

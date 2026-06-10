@@ -11,19 +11,26 @@ import { activeAvatar, avatarParams6 } from "./avatarFactory.js";
 import { spendSoul, grantSoul } from "./rewardService.js";
 import { skillTemplateById, templatesForMentor } from "../data/skillTemplateMaster.js";
 import { nextAvatarLevel } from "../data/avatarLevelMaster.js";
-import { nextSkillLevel } from "../data/skillLevelMaster.js";
+import { nextSkillLevel, skillLevelEntry } from "../data/skillLevelMaster.js";
 import { abilityChangeCost } from "../data/abilityChangeCostMaster.js";
 import { rollDailyParlors } from "../data/parlorMaster.js";
+import { TRAIT_CFG } from "../data/parlorTraitMaster.js";
 import { evaluateTier, paramsFromLv } from "../autobattle/autoBattle.js";
 
 // 育成の調整値（バランス調整で動かす単一の出どころ）。
+// ※時間の縮尺：1ターン（コード上の dayCount/“日”）＝ゲーム内の「ひと月」。九蓮宝士到達≈28ヶ月
+//   ＝2年4ヶ月の修行（称号の重み）。識別子は day のまま、表示・文言だけ月に統一している。
+// 絆ペース設計（test/leveldesign.mjs で回帰）: 休憩＋二人打ち＋章読了の3本柱で
+// Lv2≈1ヶ月目 / Lv4≈4ヶ月目 / Lv6≈9〜12ヶ月目 / Lv9≈25ヶ月目前後（詩玥編の章ゲートに対応）。
 export const GROWTH_TUNING = {
   rest: {
     healRatio: 0.5, // 1 回の休憩で最大 HP の何割を回復するか
     soul: 80, // 休憩で得る少量ソウル（§11.2）
-    bondExp: 20, // 休憩で得る絆経験値（§11.2）
+    bondExp: 30, // 休憩で得る絆経験値（§11.2）
   },
-  bondExpPerLevel: 100, // 絆 Lv 上昇に必要な経験値（次 Lv = base * 現Lv）
+  bondExpPerLevel: 40, // 絆 Lv 上昇に必要な経験値（次 Lv = base * 現Lv）
+  duoBondExp: { base: 20, winBonus: 10 }, // 二人打ち＝師匠との時間（勝てば少し弾む）
+  scenarioBondExp: 40, // 師匠の bond シナリオ初回読了（物語の節目で距離が縮まる）
 };
 
 // 端末ローカル日付 "YYYY-MM-DD"（§11.2: ローカル版は端末日付で 1 日 1 回）。
@@ -47,8 +54,20 @@ function withActiveAvatar(profile, updater) {
 
 const clampN = (x, lo, hi) => Math.max(lo, Math.min(hi, x));
 
-// ---------------------------------------------------- 日次ループ／調子（§4.5.3）
-// 1 日 = ACTIONS_PER_DAY 回行動 → 日が進む。日替わりで弟子・師匠の「調子」を抽選。
+// 絆経験値を amount 加算し、Lv 上昇を畳み込んだ結果を返す（しきい値は base × 現Lv で逓増）。
+// 休憩・二人打ち・シナリオ読了が共通で使う（絆の入口を1箇所に）。
+export function gainBond(avatar, amount) {
+  let bondLevel = avatar?.bondLevel ?? 1;
+  let bondExp = (avatar?.bondExp ?? 0) + amount;
+  while (bondExp >= GROWTH_TUNING.bondExpPerLevel * bondLevel) {
+    bondExp -= GROWTH_TUNING.bondExpPerLevel * bondLevel;
+    bondLevel += 1;
+  }
+  return { bondLevel, bondExp, bondUp: bondLevel > (avatar?.bondLevel ?? 1) };
+}
+
+// ---------------------------------------------------- 月次ループ／調子（§4.5.3）
+// 1 ターン（＝ひと月）= ACTIONS_PER_DAY 回行動 → 月が進む。月替わりで弟子・師匠の「調子」を抽選。
 // 調子は 5 段階（index 0=絶不調 … 4=絶好調）。bias は育成の伸び・オート勝率に効く強さ。
 export const ACTIONS_PER_DAY = 3;
 export const CONDITIONS = [
@@ -88,7 +107,7 @@ export function ensureDay(profile, rng = Math.random) {
     startParams6: { ...cur },
     startSoul: profile.wallet?.soul ?? 0,  // 当日の手応えサマリ用（稼ぎの差分）
     log: [],                               // その日の行動ログ
-    parlorsDone: [],  // 雀荘巡りの挑戦済み（日替わりでリセット＝候補シャッフル）
+    parlorsDone: [],  // 雀荘巡りの挑戦済み（月替わりでリセット＝候補シャッフル）
   };
   return {
     profile: { ...profile, dayCount: day, daily },
@@ -139,24 +158,19 @@ export function canRestToday(profile, today = localDate()) {
 export function rest(profile) {
   const av = activeAvatar(profile);
   if (!av) throw new Error("マイキャラがいません");
-  if (dayInfo(profile).actionsLeft <= 0) throw new Error("今日の行動はもう残っていない");
+  if (dayInfo(profile).actionsLeft <= 0) throw new Error("今月の行動はもう残っていない");
 
   const heal = Math.round(av.avatarHpMax * GROWTH_TUNING.rest.healRatio);
   const newHp = Math.min(av.avatarHpMax, av.avatarHpCurrent + heal);
 
-  // 絆経験値の加算と Lv 上昇（しきい値は base * 現Lv で逓増）。
-  let bondLevel = av.bondLevel ?? 1;
-  let bondExp = (av.bondExp ?? 0) + GROWTH_TUNING.rest.bondExp;
-  while (bondExp >= GROWTH_TUNING.bondExpPerLevel * bondLevel) {
-    bondExp -= GROWTH_TUNING.bondExpPerLevel * bondLevel;
-    bondLevel += 1;
-  }
+  // 絆経験値の加算と Lv 上昇（gainBond に集約）。
+  const bond = gainBond(av, GROWTH_TUNING.rest.bondExp);
 
   let next = withActiveAvatar(profile, (a) => ({
     ...a,
     avatarHpCurrent: newHp,
-    bondLevel,
-    bondExp,
+    bondLevel: bond.bondLevel,
+    bondExp: bond.bondExp,
   }));
   next = grantSoul(next, GROWTH_TUNING.rest.soul);
   // 休憩は 1 行動を消費し、調子を 1 段階戻す（上限＝絶好調）。必要なら日が進む。
@@ -172,8 +186,8 @@ export function rest(profile) {
     healed: newHp - av.avatarHpCurrent,
     soul: GROWTH_TUNING.rest.soul,
     bondExp: GROWTH_TUNING.rest.bondExp,
-    bondUp: bondLevel > (av.bondLevel ?? 1),
-    bondLevel,
+    bondUp: bond.bondUp,
+    bondLevel: bond.bondLevel,
   };
 }
 
@@ -214,6 +228,7 @@ export function skillLevelInfo(profile) {
   return {
     current: av.skillLevel,
     tableId: tmpl?.levelTableId ?? null,
+    currentEntry: tmpl ? skillLevelEntry(tmpl.levelTableId, av.skillLevel) : null, // 現Lvの効果（説明文）表示用
     next: tmpl ? nextSkillLevel(tmpl.levelTableId, av.skillLevel) : null, // null なら最大
   };
 }
@@ -293,7 +308,7 @@ export const TRAIN_OUTCOMES = {
   daiseikou: { label: "大成功", tone: "great", mult: 2.2, line: "筋がいい。我が見込んだ通りだ。" },
   seikou:    { label: "成功",   tone: "good",  mult: 1.5, line: "うむ、よく伸びた。" },
   bunan:     { label: "無難",   tone: "ok",    mult: 1.0, line: "悪くない。地道が一番だ。" },
-  shippai:   { label: "成果イマイチ", tone: "bad", mult: 0.34, line: "ま、こういう日もある。気にするな。" },
+  shippai:   { label: "成果イマイチ", tone: "bad", mult: 0.34, line: "ま、こういう時もある。気にするな。" },
 };
 
 // 伸びの引きの良さは「メンタル（恒常）」と「当日の調子（変動）」の合算。
@@ -319,7 +334,7 @@ export function trainParam(profile, key, rng = Math.random) {
   if (!t) throw new Error("未知の育成コマンド: " + key);
   const av = activeAvatar(profile);
   if (!av) throw new Error("マイキャラがいません");
-  if (dayInfo(profile).actionsLeft <= 0) throw new Error("今日の行動はもう残っていない");
+  if (dayInfo(profile).actionsLeft <= 0) throw new Error("今月の行動はもう残っていない");
 
   const cur = avatarParams6(av);
   const before = { ...cur };
@@ -442,10 +457,12 @@ export function applyDuoResult(profile, result = {}) {
   apply("mental", Math.max(1, Math.round(2 + closeness * 3))); // 主 2..6
   apply("read", Math.max(0, Math.round(1 + closeness * 2)));   // 副 1..4
   const soul = won ? 200 : Math.round(60 * closeness);
+  // 師匠との時間＝絆も深まる（勝てば少し弾む）。
+  const bond = gainBond(av, GROWTH_TUNING.duoBondExp.base + (won ? GROWTH_TUNING.duoBondExp.winBonus : 0));
   let p = soul > 0 ? grantSoul(profile, soul) : profile;
-  p = withActiveAvatar(p, (a) => ({ ...a, params6: cur, avatarHpCurrent: hpAfter })); // ★結果を HP に反映
+  p = withActiveAvatar(p, (a) => ({ ...a, params6: cur, avatarHpCurrent: hpAfter, bondLevel: bond.bondLevel, bondExp: bond.bondExp })); // ★結果を HP に反映
   const ended = endAction(p, won ? 1 : 0, { type: "duo", label: "二人打ち（本気）", won }); // 勝てば調子↑
-  return { profile: ended.profile, soul, gains, before, after: { ...cur }, won, closeness, finalPoints: fp, hpBefore, hpAfter, hpDelta: hpAfter - hpBefore, dayAdvanced: ended.dayAdvanced };
+  return { profile: ended.profile, soul, gains, before, after: { ...cur }, won, closeness, finalPoints: fp, hpBefore, hpAfter, hpDelta: hpAfter - hpBefore, bondUp: bond.bondUp, bondLevel: bond.bondLevel, dayAdvanced: ended.dayAdvanced };
 }
 
 // ------------------------------------------------- 師匠の記憶（双方向・蓄積）
@@ -462,8 +479,11 @@ export function setMentorMemory(profile, patch) {
 }
 
 // ------------------------------------------------- 雀荘巡り（候補選択・§4.6.8）
-// シナリオ進捗（当面 0。経済再調整バッチで実進捗に差し替え）。
-function scenarioProgressLevel(_profile) { return 0; }
+// 雀荘の進捗スケール＝集めた宝の数（0〜9）。覇道が進むほど街の卓も強く・実入りも良くなる
+// （連戦数・敵 Lv・敵 HP・ソウルが parlorMaster 側でスケール）。終盤の成長とソウル収入を支える。
+function scenarioProgressLevel(profile) {
+  return Math.min(9, (profile?.records?.treasures || []).length);
+}
 
 // その日の雀荘候補と挑戦済みフラグ。候補は dayCount から決定論生成（同じ日は不変）。
 export function parlorState(profile) {
@@ -475,13 +495,14 @@ export function parlorState(profile) {
   };
 }
 
-// 雀荘を 1 つ訪れた結果を記録する。wins＝オートの勝ち抜き数。
-// ソウル付与＋6 パラメータ成長（勝負勘＝主／雀荘ごとの固定副パラメ・§4.6.1）＋グレーアウト＋1 行動消費。
-export function visitParlor(profile, index, wins = 0, rng = Math.random) {
+// 雀荘を 1 つ訪れた結果を記録する。wins＝オートの勝ち抜き数。extras.rareWins＝レア客撃破数。
+// ソウル付与（店トレイトのご祝儀/場代/レア客ボーナス反映）＋6 パラメータ成長＋グレーアウト＋1 行動消費。
+export function visitParlor(profile, index, wins = 0, rng = Math.random, extras = {}) {
   const cand = rollDailyParlors(profile.dayCount ?? 1, scenarioProgressLevel(profile))[index];
   if (!cand) throw new Error("雀荘が見つかりません");
   const av = activeAvatar(profile);
   if (!av) throw new Error("マイキャラがいません");
+  const trait = cand.trait || null;
 
   // 能力値上昇：勝負勘（主）＋雀荘ごとに固定の副パラメ（店名でにおわせ・1〜2種）。勝つほど伸びる（負けても主は最低 +1）。
   const cur = avatarParams6(av);
@@ -497,8 +518,17 @@ export function visitParlor(profile, index, wins = 0, rng = Math.random) {
   apply("gamble", Math.max(1, (cand.paramMain || 1) + wins));
   for (const sub of subKeys) apply(sub, (cand.paramSub || 1) + Math.floor(wins / 2)); // 副は各パラメに付与
 
-  const soul = Math.max(0, Math.round(cand.soulPerWin * wins));
-  let p = soul > 0 ? grantSoul(profile, soul) : profile;
+  // ソウル経済（店トレイト整合）: 勝ち分×ご祝儀倍率 ＋ レア客撃破ボーナス − 場代（財布は 0 下限）。
+  const winSoul = Math.max(0, Math.round(cand.soulPerWin * wins * (trait?.soulWinMul || 1)));
+  const rareWins = Math.max(0, extras.rareWins || 0);
+  const rareBonus = rareWins * TRAIT_CFG.rareGuestSoul;
+  const fee = trait?.entryCost || 0;
+  const grossSoul = winSoul + rareBonus;
+  let p = grossSoul > 0 ? grantSoul(profile, grossSoul) : profile;
+  // 場代は財布の 0 下限で徴収。実際に払えた額だけを純増（soul）に反映する＝表示と財布が常に一致。
+  const paidFee = Math.min(fee, p.wallet?.soul || 0);
+  if (paidFee > 0) p = { ...p, wallet: { ...p.wallet, soul: (p.wallet?.soul || 0) - paidFee } };
+  const soul = grossSoul - paidFee;
   p = withActiveAvatar(p, (a) => ({ ...a, params6: cur }));
   const done = Array.from(new Set([...(p.daily?.parlorsDone || []), index]));
   p = { ...p, daily: { ...(p.daily || {}), parlorsDone: done } };
@@ -506,6 +536,7 @@ export function visitParlor(profile, index, wins = 0, rng = Math.random) {
 
   return {
     profile: ended.profile, soul, wins, candidate: cand,
+    trait, fee: paidFee, rareWins, rareBonus,
     gains, before, after: { ...cur }, dayAdvanced: ended.dayAdvanced,
   };
 }
