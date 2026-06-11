@@ -36,6 +36,9 @@ import { shanten } from "./core/rules/shanten.js";
 import { pickVoiceLine } from "./data/voiceLines.js";
 import { makeMobRoster, mobSilhouettePaths } from "./data/mobMaster.js";
 import { rivalUnits } from "./data/tournamentRivalMaster.js";
+import { simulateLeagueSection } from "./autobattle/leagueAutoSim.js";
+import { paramsFromLv, PARAM_KEYS } from "./autobattle/autoBattle.js";
+import { pickMentorBigMatchLine, pickMentorBattleQuip } from "./data/mentorVoiceMaster.js";
 import { isDebugMode } from "./app/debug.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
@@ -955,9 +958,22 @@ function showTournamentBriefing(t, rUnits, onStart, onCancel) {
 
 async function playTournamentMatch() {
   const run = tournamentRun; const t = run.t;
-  const section = `第 ${run.matchIndex + 1} / ${t.matches} 節`;
   const seated = seatUnitsFor(run.units, run.matchIndex, t.unitsAtTable);
   run.seatedUnitIds = seated.map((u) => u.id);
+  const isLast = run.matchIndex >= t.matches - 1;
+  const profile = await profileRepo.loadProfile();
+  const av = activeAvatar(profile);
+  // 節前ブリーフィング：卓のメンツ・形勢・総合順位を見せて「オートで観る / 自分で打つ」を選ぶ。
+  // 最終節は「大一番」＝専用口上つきの手動戦のみ（最後だけは自分の手で決める＝体験の山）。
+  showSectionBriefing(run, t, seated, { isLast, profile, av }, {
+    onAuto: () => runAutoSection(run, t, seated, profile, av),
+    onManual: () => launchManualSection(run, t, seated),
+  });
+}
+
+// 手動で打つ節（従来の対局起動）。形式ごとに専用エンジンへ。
+async function launchManualSection(run, t, seated) {
+  const section = `第 ${run.matchIndex + 1} / ${t.matches} 節`;
   const tournamentInfo = { name: t.name, section, treasureName: t.treasure?.name || "", tier: t.tier, entrants: t.entrants };
   const ctx = { tournament: true, tournamentInfo, matchLabel: section, rounds: t.rounds || 2, onResult: (result) => onTournamentMatchDone(result) };
   const deshiUnit = seated.find((u) => u.isDeshi);
@@ -976,6 +992,164 @@ async function playTournamentMatch() {
       tournamentInfo, onResult: (result) => onTournamentMatchDone(result),
     });
   }
+}
+
+// オート節のユニット強度。弟子=育成6パラメータ平均（ペア/団体は師匠の技Lv・修行Lvを上乗せ＝
+// 「師匠も伸びる」がオート節の勝率に直結する）。相手=oppLv 由来（ネームドは少し強気）。
+function unitStrengthFor(u, t, profile, av) {
+  const avg = (p) => PARAM_KEYS.reduce((a, k) => a + (p[k] || 0), 0) / PARAM_KEYS.length;
+  if (u.isDeshi) {
+    let s = avg(avatarParams6(av));
+    if (t.unitSize >= 2) {
+      s += (mentorSkillLevel(profile, av.mentorCharacterId) - 5) * 2;
+      s += mentorGrowthFor(profile, av.mentorCharacterId).level - 1;
+    }
+    return s;
+  }
+  return avg(paramsFromLv(t.gateOppLv ?? t.rivalLv ?? 2, "league:" + u.id)) + (u.isRival ? 3 : 0);
+}
+
+// オートで観る節：シミュレーション＋観戦演出 → 手動と同じ result 形で合流。
+function runAutoSection(run, t, seated, profile, av) {
+  const seats = t.format === "pair" ? 4 : seated.length;
+  const hands = seats * (t.rounds || 1);
+  const units = seated.map((u) => ({
+    id: u.id, name: u.name, color: u.color || (u.isDeshi ? "#f6b352" : "#8a96a8"),
+    isHuman: !!u.isDeshi, start: run.unitStart?.[u.id] ?? t.base,
+    strength: unitStrengthFor(u, t, profile, av),
+  }));
+  const sim = simulateLeagueSection({ units, seats, hands });
+  showLeagueAutoWatch(run, t, units, sim, av, () =>
+    onTournamentMatchDone({ standings: sim.standings, graph: { history: sim.history, players: sim.players } }));
+}
+
+// 節前ブリーフィング（第N節＝オート/手動の選択。最終節＝大一番、本気で勝負！のみ）。
+function showSectionBriefing(run, t, seated, { isLast, profile, av }, { onAuto, onManual }) {
+  const host = el("app") || document.body;
+  const word = UNIT_WORD[t.format] || "人";
+  const mentorChar = CHARACTERS.find((c) => c.id === av?.mentorCharacterId);
+  const tierLabel = tournamentGate(profile, t).tier?.label || "互角"; // 形勢＝出場ゲートと同じ評価
+  const rows = seated.map((u) => `
+    <div class="tsb-row${u.isDeshi ? " me" : ""}${u.isRival ? " named" : ""}">
+      <span class="tsb-dot" style="background:${u.color || (u.isDeshi ? "#f6b352" : "#777")}"></span>
+      <span class="tsb-name">${esc(u.name)}${u.isDeshi ? '<span class="ts-you">YOU</span>' : ""}</span>
+      <span class="tsb-title">${esc(u.rivalTitle || (u.isDeshi ? "" : "腕利き"))}</span>
+    </div>`).join("");
+  // 総合順位（開幕節はまだ無い）。上位3＋圏外なら自分の行を足す。
+  const ranked = Object.keys(run.totals).sort((a, b) => run.totals[b] - run.totals[a]);
+  const myPlace = ranked.findIndex((id) => id === run.deshiUnitId);
+  const standRow = (id, i) => {
+    const me = id === run.deshiUnitId; const v = run.totals[id] || 0;
+    return `<div class="tsb-st${me ? " me" : ""}"><span class="tsb-st-p">${i + 1}</span><span class="tsb-st-n">${esc(run.names[id])}${me ? '<span class="ts-you">YOU</span>' : ""}</span><span class="tsb-st-v">${v > 0 ? "+" : ""}${v}pt</span></div>`;
+  };
+  const standRows = run.matchIndex === 0 ? "" :
+    ranked.slice(0, 3).map(standRow).join("") + (myPlace > 2 ? standRow(run.deshiUnitId, myPlace) : "");
+  // 大一番：優勝条件の目安＋師匠の口上。
+  let bigHtml = "";
+  if (isLast) {
+    // myPlace=-1（理論上の未発見）は首位扱いにせず「追う側」に倒す（防衛的・QA指摘）。
+    const diff = myPlace === 0 ? 0 : (run.totals[ranked[0]] || 0) - (run.totals[run.deshiUnitId] || 0);
+    const situation = myPlace === 0 ? "top" : diff <= 40 ? "chase" : "longshot";
+    const cond = myPlace === 0
+      ? "首位で迎える最終節。守り切れば優勝。"
+      : diff <= 40
+        ? `首位と ${diff}pt 差。この節トップ（+${t.uma?.[0] ?? 50}〜）なら逆転圏。`
+        : `首位と ${diff}pt 差。トップ＋大きな素点まで稼げば、道はある。`;
+    const line = pickMentorBigMatchLine(av?.mentorCharacterId, situation);
+    bigHtml = `
+      <div class="tsb-big">
+        <div class="tsb-big-cond">${esc(cond)}</div>
+        <div class="tsb-big-line">${mentorChar?.assets?.icon ? `<img src="${esc(mentorChar.assets.icon)}" alt="">` : ""}<span>${esc(line)}</span></div>
+      </div>`;
+  }
+  const ov = document.createElement("div");
+  ov.className = "tourney-section" + (isLast ? " is-big" : "");
+  ov.innerHTML = `
+    <div class="ts-scrim"></div>
+    <div class="tsb-card">
+      <div class="tsb-head">
+        <div class="tsb-kicker">${esc(t.name)}</div>
+        <div class="tsb-sec">${isLast ? "大 一 番 ─ 最 終 節" : `第 ${run.matchIndex + 1} / ${t.matches} 節`}</div>
+      </div>
+      <div class="tsb-cols">
+        <div class="tsb-col">
+          <div class="tsb-h">この卓のメンツ（${seated.length} ${word}）</div>
+          ${rows}
+          <div class="tsb-tier">形勢：<b>${esc(tierLabel)}</b></div>
+        </div>
+        <div class="tsb-col">
+          <div class="tsb-h">総合順位${run.matchIndex === 0 ? "" : `（第 ${run.matchIndex} 節まで）`}</div>
+          ${standRows || '<div class="tsb-st tsb-none">開幕節──ここから始まる。</div>'}
+        </div>
+      </div>
+      ${bigHtml}
+      <div class="tsb-btns"></div>
+    </div>`;
+  host.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const close = (fn) => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); fn(); };
+  const btns = ov.querySelector(".tsb-btns");
+  if (isLast) {
+    btns.appendChild(mkBtn("本気で勝負！", "btn-tsumo tsb-go-big", () => close(onManual)));
+  } else {
+    btns.appendChild(mkBtn("オートで観る", "btn-ron", () => close(onAuto)));
+    btns.appendChild(mkBtn("自分で打つ", "btn-tsumo", () => close(onManual)));
+  }
+}
+
+// オート節の観戦演出。雀荘オートと同じ「観るだけ」のテンポ＝局ごとの結果がめくれていき、
+// 弟子ユニットの大物手/被弾には師匠が相槌を打つ。スキップでまとめて結果へ。
+function showLeagueAutoWatch(run, t, units, sim, av, onDone) {
+  const host = el("app") || document.body;
+  const mentorChar = CHARACTERS.find((c) => c.id === av?.mentorCharacterId);
+  const meIdx = units.findIndex((u) => u.isHuman);
+  const bondLevel = av?.bondLevel ?? 1;
+  const ov = document.createElement("div");
+  ov.className = "tourney-watch";
+  ov.innerHTML = `
+    <div class="ts-scrim"></div>
+    <div class="tw-card">
+      <div class="tw-head"><span class="tw-kicker">${esc(t.name)}</span><span class="tw-sec">第 ${run.matchIndex + 1} / ${t.matches} 節 ─ オート観戦</span></div>
+      <div class="tw-pts">${units.map((u, i) => `<div class="tw-pt${u.isHuman ? " me" : ""}"><span class="tw-pt-name" style="color:${u.color}">${esc(u.name)}</span><b class="tw-pt-v" data-i="${i}">${u.start.toLocaleString()}</b></div>`).join("")}</div>
+      <div class="tw-log"></div>
+      <div class="tw-quip">${mentorChar?.assets?.icon ? `<img src="${esc(mentorChar.assets.icon)}" alt="">` : ""}<span class="tw-quip-t"></span></div>
+      <div class="tw-btns"></div>
+    </div>`;
+  host.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const log = ov.querySelector(".tw-log");
+  const quipEl = ov.querySelector(".tw-quip-t");
+  const setQuip = (ev) => { const q = pickMentorBattleQuip(av?.mentorCharacterId, ev, { bondLevel }); if (q) quipEl.textContent = q; };
+  setQuip("matchStart");
+  const renderStep = (s) => {
+    const row = document.createElement("div");
+    row.className = "tw-row";
+    if (s.draw) {
+      row.innerHTML = `<span class="tw-r-l">${esc(s.label)}</span><span class="tw-r-t">流局</span>`;
+    } else {
+      const w = units[s.winner];
+      row.classList.add(s.winner === meIdx ? "win" : s.victim === meIdx ? "pay" : "other");
+      const how = s.tsumo ? "ツモ" : `${esc(units[s.victim]?.name || "")} から`;
+      row.innerHTML = `<span class="tw-r-l">${esc(s.label)}</span><span class="tw-r-t"><b style="color:${w.color}">${esc(w.name)}</b> が ${how} <b>${s.value.toLocaleString()}</b>${s.big ? '<i class="tw-bigtag">大物手！</i>' : ""}</span>`;
+      if (s.winner === meIdx && s.big) { setQuip("bigWin"); audio.playPip?.(2600, 0.4); }
+      else if (s.victim === meIdx && s.big) setQuip("bigLoss");
+      s.points.forEach((p, idx) => { const elv = ov.querySelector(`.tw-pt-v[data-i="${idx}"]`); if (elv) elv.textContent = p.toLocaleString(); });
+    }
+    log.appendChild(row);
+    log.scrollTop = log.scrollHeight;
+  };
+  let i = 0; let timer = null; let done = false;
+  const btns = ov.querySelector(".tw-btns");
+  const finish = () => {
+    if (done) return; done = true;
+    if (timer) clearInterval(timer);
+    while (i < sim.steps.length) renderStep(sim.steps[i++]);
+    setQuip("complete");
+    btns.innerHTML = "";
+    btns.appendChild(mkBtn("結果へ", "btn-tsumo", () => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); onDone(); }));
+  };
+  btns.appendChild(mkBtn("スキップ", "btn-ron", finish));
+  timer = setInterval(() => { if (i >= sim.steps.length) { finish(); return; } renderStep(sim.steps[i++]); }, 850);
 }
 
 // ペア大会の1節（2対2・自ペア=弟子＋師匠）。結果は honestCtx.onResult でユニット順位を返す。

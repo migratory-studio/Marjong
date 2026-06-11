@@ -184,6 +184,21 @@ export function pickMentorRankUpLine(charId, n) {
   return `［テンプレ］${nameOf(charId)}・昇段（${n}蓮）：ここに一言が入ります`;
 }
 
+// ── 大一番（大会・最終節の手動戦）前の口上 ──
+// situation: "top"（首位で迎える）/"chase"（射程圏で追う）/"longshot"（大差を追う）。
+// 詩玥はどの局面でも「ツモれば勝ち」に帰着させる＝口癖が大一番で一番強く響く設計。
+const SHIYUE_BIGMATCH = {
+  top: "首位で大一番、いい眺めネ。……気を抜くなヨ？　最後の一巡まで、二人で締めるダヨ。",
+  chase: "追う大一番——望むところダロ？　我らの麻雀、ぜんぶここで出すヨ。",
+  longshot: "分が悪い？　ふふ、関係ないネ。ツモれば勝ち——最後までそれだけヨ。",
+};
+const EXPLICIT_BIGMATCH = { shiyue: SHIYUE_BIGMATCH };
+export function pickMentorBigMatchLine(charId, situation = "chase") {
+  const set = EXPLICIT_BIGMATCH[charId];
+  if (set) return set[situation] || set.chase;
+  return `［テンプレ］${nameOf(charId)}・大一番の口上（${situation}）：ここに一言が入ります`;
+}
+
 // ── 対局見守り相槌（battle quips）── オート対局（雀荘巡り等）に同行した師匠の相槌。
 // event: matchStart(試合開始) / bigWin(満貫以上) / bigLoss(大放銃・被ツモ) / pinch(HP25%初到達)
 //        tobi(飛び) / bustWin(相手を飛ばした) / abilityUse(必殺発動) / readWin(読み勝ち)

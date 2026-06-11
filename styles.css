@@ -3630,3 +3630,67 @@ button.secondary { color: var(--ink); }
 #mentor-home-screen.mh2 .mhx-dan-line { font-size:13.5px; line-height:1.7; max-width:430px; margin-left:auto; margin-right:auto; }
 /* 師匠の技 Lv 超越帯（Lv6〜10・シナリオ起点）＝ nameplate チップをほんのり緋金に */
 #mentor-home-screen.mh2 .mhx-np-trans { color:#ffd9a0; text-shadow:0 0 6px rgba(232,72,63,.55); }
+
+/* ============================================================
+   大会「大一番」構造 — 節前ブリーフィング & オート観戦
+   ============================================================ */
+/* ---- 節前ブリーフィング（第N節: メンツ/形勢/総合順位 → オート・手動の選択） ---- */
+.tourney-section { position:absolute; inset:0; z-index:90; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:"Yu Gothic","Noto Sans JP",sans-serif; }
+.tourney-section.is-open { opacity:1; }
+.tourney-section .ts-scrim { position:absolute; inset:0; background:rgba(4,6,10,.82); }
+.tourney-section .tsb-card { position:relative; z-index:1; width:620px; max-width:92%; padding:22px 26px 20px; background:linear-gradient(180deg,#10141e,#0a0d14); border:2px solid #c8a44d; border-radius:16px; box-shadow:0 26px 70px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,220,140,.12); color:#e8efe9; }
+.tourney-section .tsb-head { text-align:center; margin-bottom:14px; }
+.tourney-section .tsb-kicker { font-size:12px; color:#9a8a66; letter-spacing:.16em; }
+.tourney-section .tsb-sec { font-size:24px; color:#ecd592; letter-spacing:.18em; margin-top:2px; font-weight:700; }
+.tourney-section.is-big .tsb-sec { color:#ffb38a; text-shadow:0 0 14px rgba(232,72,63,.5); }
+.tourney-section.is-big .tsb-card { border-color:#d65a47; box-shadow:0 26px 70px rgba(0,0,0,.7), 0 0 36px rgba(232,72,63,.22), inset 0 0 0 1px rgba(255,180,140,.14); }
+.tourney-section .tsb-cols { display:flex; gap:16px; margin-bottom:12px; }
+.tourney-section .tsb-col { flex:1; min-width:0; background:rgba(255,255,255,.03); border:1px solid rgba(200,164,77,.18); border-radius:10px; padding:10px 12px; }
+.tourney-section .tsb-h { font-size:11px; color:#9a8a66; letter-spacing:.1em; margin-bottom:7px; }
+.tourney-section .tsb-row { display:flex; align-items:center; gap:8px; padding:4px 2px; font-size:13px; }
+.tourney-section .tsb-row.me .tsb-name { color:#ffd06b; font-weight:700; }
+.tourney-section .tsb-row.named .tsb-name { font-weight:700; }
+.tourney-section .tsb-dot { width:10px; height:10px; border-radius:50%; flex:none; }
+.tourney-section .tsb-name { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tourney-section .tsb-title { margin-left:auto; font-size:10.5px; color:#8a96a8; flex:none; }
+.tourney-section .tsb-tier { margin-top:8px; padding-top:7px; border-top:1px dashed rgba(200,164,77,.3); font-size:12px; color:#9bb3a6; }
+.tourney-section .tsb-tier b { color:#ecd592; font-size:14px; letter-spacing:.08em; }
+.tourney-section .tsb-st { display:flex; align-items:center; gap:8px; padding:4px 2px; font-size:13px; }
+.tourney-section .tsb-st.me .tsb-st-n { color:#ffd06b; font-weight:700; }
+.tourney-section .tsb-st-p { width:20px; height:20px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:5px; background:#39424e; font-size:11px; font-weight:700; }
+.tourney-section .tsb-st.me .tsb-st-p { background:#d6a23a; color:#1a120a; }
+.tourney-section .tsb-st-n { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tourney-section .tsb-st-v { margin-left:auto; font-weight:700; color:#9bb3a6; flex:none; }
+.tourney-section .tsb-none { color:#8a96a8; font-size:12px; }
+.tourney-section .tsb-big { margin-bottom:12px; padding:10px 14px; border-radius:10px; background:linear-gradient(90deg,rgba(232,72,63,.14),rgba(232,72,63,.04)); border:1px solid rgba(232,72,63,.4); }
+.tourney-section .tsb-big-cond { font-size:13px; color:#ffd9c4; font-weight:700; letter-spacing:.04em; margin-bottom:7px; }
+.tourney-section .tsb-big-line { display:flex; align-items:center; gap:9px; font-size:13px; color:#e8efe9; font-family:"Yu Mincho","Noto Serif JP",serif; }
+.tourney-section .tsb-big-line img { width:34px; height:34px; border-radius:50%; object-fit:cover; border:1px solid rgba(232,160,120,.6); flex:none; }
+.tourney-section .tsb-btns { display:flex; gap:12px; justify-content:center; }
+.tourney-section .tsb-btns button { min-width:170px; }
+.tourney-section .tsb-go-big { min-width:260px; font-size:17px; letter-spacing:.12em; }
+
+/* ---- オート観戦（雀荘オートと同じ「観るだけ」テンポ・局結果のめくり＋師匠相槌） ---- */
+.tourney-watch { position:absolute; inset:0; z-index:90; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:"Yu Gothic","Noto Sans JP",sans-serif; }
+.tourney-watch.is-open { opacity:1; }
+.tourney-watch .ts-scrim { position:absolute; inset:0; background:rgba(4,6,10,.82); }
+.tourney-watch .tw-card { position:relative; z-index:1; width:640px; max-width:92%; padding:20px 24px 18px; background:linear-gradient(180deg,#10141e,#0a0d14); border:2px solid #c8a44d; border-radius:16px; box-shadow:0 26px 70px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,220,140,.12); color:#e8efe9; }
+.tourney-watch .tw-head { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px; }
+.tourney-watch .tw-kicker { font-size:12px; color:#9a8a66; letter-spacing:.14em; }
+.tourney-watch .tw-sec { font-size:15px; color:#ecd592; letter-spacing:.1em; font-weight:700; }
+.tourney-watch .tw-pts { display:flex; gap:8px; margin-bottom:10px; }
+.tourney-watch .tw-pt { flex:1; min-width:0; background:rgba(255,255,255,.04); border:1px solid rgba(200,164,77,.18); border-radius:9px; padding:6px 9px; text-align:center; }
+.tourney-watch .tw-pt.me { background:linear-gradient(180deg,rgba(214,162,58,.18),rgba(214,162,58,.05)); border-color:rgba(236,213,146,.5); }
+.tourney-watch .tw-pt-name { display:block; font-size:10.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tourney-watch .tw-pt-v { font-size:15px; }
+.tourney-watch .tw-log { height:210px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; margin-bottom:10px; padding:8px 10px; background:rgba(0,0,0,.25); border:1px solid rgba(200,164,77,.15); border-radius:9px; }
+.tourney-watch .tw-row { display:flex; align-items:center; gap:10px; font-size:13px; padding:3px 4px; border-radius:6px; animation:tsRow .35s ease both; }
+.tourney-watch .tw-row.win { background:rgba(214,162,58,.14); }
+.tourney-watch .tw-row.pay { background:rgba(232,72,63,.12); }
+.tourney-watch .tw-r-l { flex:none; width:46px; color:#9a8a66; font-size:11px; }
+.tourney-watch .tw-r-t { min-width:0; }
+.tourney-watch .tw-bigtag { margin-left:8px; font-style:normal; font-size:11px; color:#ffb38a; font-weight:700; }
+.tourney-watch .tw-quip { display:flex; align-items:center; gap:9px; min-height:38px; margin-bottom:10px; font-size:13px; color:#e8e2cf; font-family:"Yu Mincho","Noto Serif JP",serif; }
+.tourney-watch .tw-quip img { width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid rgba(200,164,77,.5); flex:none; }
+.tourney-watch .tw-btns { display:flex; gap:12px; justify-content:center; }
+.tourney-watch .tw-btns button { min-width:150px; }
