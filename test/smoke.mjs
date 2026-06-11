@@ -44,6 +44,37 @@ const M = (r) => makeKind("m", r), P = (r) => makeKind("p", r), S = (r) => makeK
     res.yaku.map((y) => y.name).join("/"));
 }
 
+// ---- unit: 四開槓 (suukaikan) abortive draw ----
+// 場の槓ドラめくり総数が5に達し、かつめくりの主体が2人以上のとき流局する。
+// ドラニエルの「ドラ寄せ」めくり(席index)＋他家の実カンめくりが複合する経路を、
+// revealKanDoraFrom を直接駆動して検証する（実カンの牌組みは不要）。
+{
+  const four = [CHARACTERS.find((c) => c.id === "doranie") || CHARACTERS[0]];
+  for (let i = 1; i < 4; i++) four.push(CHARACTERS[i % CHARACTERS.length]);
+  const seated = four.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
+
+  // (1) 単一席だけで4枚めくっても流局しない（四槓子狙いは除外＝標準ルール）。
+  const gSolo = new Game(seated.map((s) => ({ ...s, abilities: instantiateAbilities(s.character) })), -1, 1);
+  gSolo.startHand();
+  let solo = false;
+  for (let i = 0; i < 4; i++) solo = gSolo.revealKanDoraFrom(0) || solo;
+  assert(!solo, "single-source 4 reveals must NOT abort (四槓子 allowance)");
+  assert(gSolo.wall.doraRevealed === 5, "doraRevealed caps at 5");
+
+  // (2) 主体が2人(席0＝ドラニエル能力 と 席1＝他家の実カン)で計4枚 → doraRevealed 5 で流局。
+  const gMulti = new Game(seated.map((s) => ({ ...s, abilities: instantiateAbilities(s.character) })), -1, 2);
+  gMulti.startHand();
+  let aborted = false;
+  gMulti.revealKanDoraFrom(0); // 表示牌は基本1＋ここで2枚目
+  gMulti.revealKanDoraFrom(0); // 3枚目
+  gMulti.revealKanDoraFrom(1); // 4枚目
+  aborted = gMulti.revealKanDoraFrom(1); // 5枚目 → 四開槓
+  assert(aborted === true, "multi-source 5th reveal aborts (四開槓)");
+  assert(gMulti.lastResult && gMulti.lastResult.abort === "suukaikan", "suukaikan marked in lastResult");
+  assert(gMulti.phase === Phase.HAND_OVER, "suukaikan ends the hand");
+  console.log("  四開槓: single-source no-abort / multi-source abort OK");
+}
+
 // ---- integration: autoplay ----
 // Seat 4 characters starting at `startIdx` (wrapping) so all abilities — incl.
 // the new game-scoped draw-bias ones — get exercised across the game loop.

@@ -121,6 +121,9 @@ export class Game {
     this.lastDiscardFrom = null;
     this.pendingCalls = null;
     this.firstGoAround = true;
+    // 四開槓判定: 槓ドラ表示牌をめくった主体（席index）の集合。実カン＋ドラニエル能力の
+    // めくりを通算し、追加4枚目で doraRevealed が5に達し、かつ主体が2人以上なら流局。
+    this._kanDoraSources = new Set();
 
     const N = this.numPlayers;
     for (let i = 0; i < N; i++) {
@@ -522,12 +525,12 @@ export class Game {
     p.melds.push(makeMeld(MeldType.KAN_OPEN, tiles, this.lastDiscardFrom, called));
     this._clearAllIppatsu();
     this.firstGoAround = false;
-    this.wall.revealKanDora();
     this.abilities.notify(Hooks.ON_MELD, { player: p, meld: p.melds.at(-1) });
     this.bus.emit(Events.MELD_CALLED, { player: p, type: "kan" });
     this.log(`${p.character.name} がカン（大明槓）`);
     this.pendingCalls = null;
     this.turn = index;
+    if (this.revealKanDoraFrom(index)) return; // 四開槓で流局したらリンシャンを引かず中断
     this._drawRinshan(p);
   }
 
@@ -625,11 +628,47 @@ export class Game {
   // Finish a kan after any 槍槓 window: reveal kan-dora, notify, draw rinshan.
   _completeKan(p) {
     this._chankanActive = false;
-    this.wall.revealKanDora();
     this.abilities.notify(Hooks.ON_MELD, { player: p, meld: p.melds.at(-1) });
     this.bus.emit(Events.MELD_CALLED, { player: p, type: "kan" });
     p.drawnTileId = null;
+    if (this.revealKanDoraFrom(p.index)) return; // 四開槓で流局したらリンシャンを引かず中断
     this._drawRinshan(p);
+  }
+
+  // 槓ドラ表示牌を1枚めくり、四開槓を判定する。`sourceIndex` はめくりの主体（実カンは
+  // カンした席、ドラニエルの「ドラ寄せ」はその席）。追加4枚目がめくられ doraRevealed が
+  // 5 に達した瞬間、めくりに関与した主体が2人以上なら四開槓で流局させる（単一席だけの
+  // 四槓子狙いは流局させない＝標準ルール）。流局させたら true を返す（呼び出し側は以降の
+  // 鳴き処理＝リンシャンツモ等を行わず中断する）。
+  revealKanDoraFrom(sourceIndex) {
+    this._kanDoraSources.add(sourceIndex);
+    this.wall.revealKanDora();
+    if (this.wall.doraRevealed >= 5 && this._kanDoraSources.size >= 2) {
+      this._abortSuukaikan();
+      return true;
+    }
+    return false;
+  }
+
+  // 四開槓による途中流局（abortive draw）。和了者なし・本場 +1・供託リーチ棒は卓に残す。
+  // 聴牌料の授受は無い純粋なアボート（荒牌平局の精算経路は流用しない）。
+  _abortSuukaikan() {
+    this.phase = Phase.HAND_OVER;
+    this._chankanActive = false;
+    this.pendingCalls = null;
+    const before = this.players.map((p) => p.points);
+    this.lastResult = {
+      draw: true,
+      abort: "suukaikan",
+      tenpai: this.players.map(() => false),
+      deltas: this.players.map(() => 0),
+    };
+    this.bus.emit(Events.HAND_DRAWN, this.lastResult);
+    this.log("四開槓——溢れたドラに呑まれ、局は流れた");
+    void before;
+    // 親は流れる。供託は残し、本場 +1（荒牌平局と同じく ryuukyoku 経路で honba を継ぐ）。
+    // ただしテンパイ連荘はしない（dealerKeeps=false 固定）。
+    this._endHand(/*dealerKeeps*/ false, null, /*ryuukyoku*/ true);
   }
 
   // Opponents who can rob an added kan of `kind` (ron only; never the kanner).

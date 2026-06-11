@@ -267,6 +267,18 @@ function computePayment(han, fu, ctx) {
   return result;
 }
 
+// 既存の和了結果に確定ドラ（飜）を後付けして払いを再計算する（ドラニエルの「ドラ寄せ」用）。
+// 役満結果は対象外（呼び出し側で弾く想定）。fu と honba は元の結果・場況をそのまま用いる。
+//   result … buildResult 由来の通常役の結果
+//   extra  … 上乗せする確定ドラ枚数（＝飜数）
+//   isDealer / tsumo / honba … 払い再計算に必要な場況
+export function recomputeWithExtraDora(result, extra, { isDealer, tsumo, honba }) {
+  const dora = (result.dora || 0) + extra;
+  const totalHan = result.totalHan + extra;
+  const payment = computePayment(totalHan, result.fu, { isDealer, tsumo, honba });
+  return { ...result, dora, totalHan, ...payment };
+}
+
 function computeYakumanPayment(times, ctx) {
   const result = { rank: times > 1 ? `${times}倍役満` : "役満", payments: [] };
   const honbaTotal = (ctx.honba || 0) * 300;

@@ -133,9 +133,9 @@ export const CHARACTER_MASTER = [
     reading: "",
     color: "#d9a521",
     role: "gambler",
-    bio: "ドラを手繰り寄せる一発逆転型。最強格だが持ち点は紙。親の満貫＋本場で即トび。",
-    profile: "ドラを手元に集める一発逆転の申し子。最強の打点を生み出すが、その代償か持ち点は紙のように脆い。ハイリスク・ハイリターンの体現者。",
-    stats: { startingPoints: 10000 }, // glass cannon: strongest ability, paper HP
+    bio: "場のドラを暴いて打点を吊り上げる一発逆転型。最強格だが持ち点は紙。親の跳満一撃で即トび。",
+    profile: "新たなドラ表示牌を次々めくり、場ごと巻き込んで打点を釣り上げる博徒。暴いたドラは全員の刃にもなり、めくり過ぎれば四開槓で局そのものが流れる諸刃の賭け。最強の打点と引き換えに、持ち点は賭け金のように紙のごとく脆い。ハイリスク・ハイリターンの体現者。",
+    stats: { startingPoints: 12500 }, // glass cannon: strongest ability, paper HP（4人卓の床が深すぎたので微増）
     assets: assetsFor("doranie"),
     params: { attack: 5, defense: 1, quirk: 4, difficulty: 5 },
     abilities: [{ abilityId: "dora-pull", params: {} }],

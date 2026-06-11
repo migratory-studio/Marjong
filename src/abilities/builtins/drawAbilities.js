@@ -5,6 +5,7 @@ import { registerAbility } from "../registry.js";
 import { abilityDef } from "../../data/abilityMaster.js";
 import { tilesToCounts, isTerminalOrHonor, isSimple, kindLabel } from "../../core/tiles.js";
 import { waits } from "../../core/rules/winCheck.js";
+import { recomputeWithExtraDora } from "../../core/rules/score.js";
 import { shanten } from "../../core/rules/shanten.js";
 import { estimateDangerInfo, DANGER_SUPER, DANGER_HIGH, DANGER_WARN } from "./defenseAbilities.js";
 
@@ -155,53 +156,82 @@ export class ChunchanAbility extends Ability {
   }
 }
 
-// "ドラ寄せ" — once activated, the NEXT draw pulls a dora (incl. red 5) if one
-// is present among the upcoming live-wall candidates; otherwise it's a normal
-// draw (failure). Either way the activation window is just that one draw.
-// Manual: 1局に3回（chargeScope hand / maxCharges 3）かつ 1ゲーム2局まで。
+// "ドラ寄せ" — 発動するたびに新ドラ表示牌を1枚めくる即時効果型（apply）。リンシャンは
+// 引かない。裏ドラ表示牌は wall 側で同じ doraRevealed を参照するため自動で連動する。
+// めくりは全プレイヤーに影響し、和了時は「その局の発動回数」枚分の確定ドラ（飜）が
+// 自分の手にだけ後付けされる（MODIFY_SCORE）。ドラは役ではないので、役無しでは和了
+// できない挙動はそのまま（確定ドラを足すだけでスコアの valid 判定はいじらない）。
+// 場の槓ドラめくり総数が5に達したときの四開槓流局は game 側が判定する。
+// Manual: 1局に2回（chargeScope hand / maxCharges 2）かつ 1ゲーム2局まで。
 // hand スコープの回数だけでは「使える局数」を縛れないので、ゲーム単位で
 // 「発動した局数」を数え、2局を超えたら新しい局では発動できないようにする。
 const DORA_PULL_MAX_HANDS = 2;
 export class DoraPullAbility extends Ability {
   constructor() {
     super(abilityDef("dora-pull"));
-    this._handsUsed = 0;      // この能力を使った局数（ゲーム通算）
-    this._usedThisHand = false; // 今の局で1回でも発動したか
+    this._handsUsed = 0;          // この能力を使った局数（ゲーム通算）
+    this._usedThisHand = false;   // 今の局で1回でも発動したか
+    this._activationsThisHand = 0; // 今の局の発動回数（＝後付けする確定ドラ枚数）
   }
   resetForGame() {
     super.resetForGame();
     this._handsUsed = 0;
     this._usedThisHand = false;
+    this._activationsThisHand = 0;
   }
   resetForHand() {
-    super.resetForHand(); // hand スコープ: charges を 3 に補充・active を false に
+    super.resetForHand(); // hand スコープ: charges を 2 に補充・active を false に
     this._usedThisHand = false;
+    this._activationsThisHand = 0;
   }
   // 既にこの局で使っていれば（回数が残る限り）継続OK。未使用の局では、
   // まだ使用局数が上限未満のときだけ新規に発動できる。
   activationCondition(_api) {
     return this._usedThisHand || this._handsUsed < DORA_PULL_MAX_HANDS;
   }
+  // 即時効果: 新ドラ表示牌を1枚めくる（リンシャンは引かない）。めくりの主体（自分の
+  // 席index）を game に渡し、四開槓の通算カウントに参入させる。四開槓で流局した場合も
+  // めくり自体は成立しているので true を返す（発動は成功＝チャージ消費）。
+  apply(game, player, _params) {
+    this._activationsThisHand++;
+    // 発動回数で口上を出し分ける（確定ドラ枚数＝この発動回数と一致）。
+    if (this._activationsThisHand === 1) {
+      game.log(`【${player.character.name}】「賭けを吊り上げる」——新たなドラ表示牌が1枚、めくれた`);
+    } else {
+      game.log(`【${player.character.name}】「止まれると思ったか？」——ドラ表示牌がもう1枚、めくれた`);
+    }
+    game.revealKanDoraFrom(player.index);
+    return true;
+  }
   activate() {
     const ok = super.activate();
-    if (ok && !this._usedThisHand) {
-      this._usedThisHand = true;
-      this._handsUsed++;
+    if (ok) {
+      // 即時効果型ゆえ持続する「発動状態」を持たない。super.activate() が立てた
+      // active を毎回下ろし、局内の次の発動（最大2回）を canActivate が塞がない
+      // ようにする。回数は charges（maxCharges=2）が縛る。
+      this.active = false;
+      if (!this._usedThisHand) {
+        this._usedThisHand = true;
+        this._handsUsed++;
+      }
     }
     return ok;
   }
-  [Hooks.MODIFY_DRAW](ctx, api) {
-    if (!this.isActive) return undefined;
-    this.active = false; // effect lasts only this single (next) draw, hit or miss
-    const doraKinds = new Set(ctx.wall.doraKinds());
-    const isDora = (t) => t.red || doraKinds.has(t.kind);
-    const hit = ctx.candidates.find(isDora);
-    if (hit) {
-      api.log(`ドラを引き寄せた`);
-      return hit;
-    }
-    api.log(`ドラ寄せ失敗（通常ツモ）`);
-    return undefined; // no dora in candidates -> normal draw
+  // 和了時、その局の発動回数ぶんの確定ドラ（飜）を自分の手にだけ後付けする。
+  // 役満は飜計算の対象外なので素通しする（確定ドラは役満点に影響しない）。
+  [Hooks.MODIFY_SCORE](ctx, api, result) {
+    // 即時効果型ゆえ active は発動直後に下ろす（isActive では判定できない）。確定ドラの
+    // 有無は「その局の発動回数」で判定する。発動回数=後付けする確定ドラ枚数。
+    if (this._activationsThisHand <= 0 || !result || !result.valid) return undefined;
+    if (result.isYakuman) return undefined;
+    const extra = this._activationsThisHand;
+    const out = recomputeWithExtraDora(result, extra, {
+      isDealer: ctx.winner.isDealer,
+      tsumo: result.tsumoEach != null,
+      honba: api.state.honba || 0,
+    });
+    api.log(`ドラ寄せ：確定ドラ${extra}（手の打点に上乗せ）`);
+    return out;
   }
 }
 

@@ -125,9 +125,8 @@ function shouldActivate(id, { sh, turnNo, p }) {
     case "lucky-draw":
     case "rootou":
     case "chunchan": return sh >= 2 && turnNo <= 2;
-    // pull a dora while the hand is still flexible enough to absorb it (1-shanten
-    // or worse). Never at tenpai — a random dora that isn't the winning tile just
-    // gets tsumogiri'd. 5 charges, so spend them aggressively across the hand.
+    // ドラ寄せ: 新ドラ表示牌をめくり、和了時に発動回数ぶんの確定ドラを得る。テンパイ前
+    // （1シャンテン以下＝ sh>=1）に切って打点を仕込む。1局2回ぶん、終盤までに使い切る。
     case "dora-pull": return sh >= 1;
     // open up to speed up a slow closed hand
     case "omni-chi": return sh >= 2 && turnNo <= 3 && p.menzen;
