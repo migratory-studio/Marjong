@@ -16,19 +16,49 @@ import { makeMobRoster, makeMob } from "./mobMaster.js";
 //   T1=1（少数の出場者） / T2=3（中間） / T3=全員（99＝出場者数ぶん全部ネームド）。
 export const NAMED_BY_TIER = { 1: 1, 2: 3, 3: 99 };
 
-// ライバル本体プール。sil＝流用シルエット番号(1〜10) / abilityId＝既存 abilityMaster の id / line＝対局前の口上。
+// ライバル本体プール。sil＝流用シルエット番号(1〜10) / abilityId＝既存 abilityMaster の id。
+// 口上は因縁の段階で変わる（蓄積×反転＝「相手もこちらを覚えている」）：
+//   line    … 初対面（一度もリーグを共にしていない）
+//   rematch … 再会（同じリーグを戦ったことがある）
+//   grudge  … 雪辱（こちらが2回以上上位でフィニッシュ＝向こうの因縁。敗者の言葉が一番キャラが出る）
+//   proud   … 勝ち誇り（こちらが2回以上負け越し＝向こうが「格の差」を口にする。雪辱の的を立てる）
 const RIVAL_POOL = {
-  shizuka:  { name: "黙打ちの静",   reading: "しずか", title: "門前ひとすじ", color: "#6f7e9c", sil: 2, abilityId: "lucky-draw",   line: "……喋らないわ。卓の上で語るから。" },
-  hiro:     { name: "一色の緋呂",   reading: "ひろ",   title: "染め手の鬼",   color: "#b8472f", sil: 7, abilityId: "chunchan",    line: "色を決めたら、もう曲げない。それだけだ。" },
-  ren:      { name: "対(つい)の漣", reading: "れん",   title: "形にこだわる男", color: "#3f8f86", sil: 9, abilityId: "danger-sense", line: "美しい手は、二つで一つ。崩させはしない。" },
-  garou:    { name: "牙狼",         reading: "ガロウ", title: "国士の亡者",   color: "#7a5cc0", sil: 6, abilityId: "dora-pull",    line: "十三種、すべて喰らい尽くしてやる。" },
-  mirei:    { name: "鏡の美玲",     reading: "みれい", title: "写し取る打ち手", color: "#c06a9c", sil: 4, abilityId: "lucky-draw",   line: "あなたの手、そっくり頂くわ。" },
-  enji:     { name: "三槓子の焔司", reading: "えんじ", title: "支配の剣",     color: "#d0682f", sil: 8, abilityId: "kakeha-bet",   line: "場を制すのは、いつだって俺の役だ。" },
-  kurono:   { name: "暗刻の玄乃",   reading: "くろの", title: "闇に伏せる者", color: "#4a5566", sil: 10, abilityId: "danger-sense", line: "見えぬ手こそ、最も重い。" },
-  tenka:    { name: "天運の天香",   reading: "てんか", title: "確率を嗤う女", color: "#caa23a", sil: 5, abilityId: "dora-pull",    line: "運？ いいえ、これが私の実力。" },
-  mukou:    { name: "無垢の無辜",   reading: "むこう", title: "真理の探究者", color: "#8a8f9c", sil: 1, abilityId: "bibi",         line: "最後の頁(ページ)に、何が書いてあると思う？" },
-  shien:    { name: "紫煙のシエン", reading: "しえん", title: "燻(いぶ)す打ち手", color: "#9c6ab0", sil: 3, abilityId: "kakeha-bet", line: "じっくり、じわじわ。逃がさないよ。" },
+  shizuka:  { name: "黙打ちの静",   reading: "しずか", title: "門前ひとすじ", color: "#6f7e9c", sil: 2, abilityId: "lucky-draw",   line: "……喋らないわ。卓の上で語るから。",
+              rematch: "……また会ったわね。……それだけ。", grudge: "……あなたの打牌、ぜんぶ覚えてる。今日は、語らせて。", proud: "……あなたには、負けてない。これからも。" },
+  hiro:     { name: "一色の緋呂",   reading: "ひろ",   title: "染め手の鬼",   color: "#b8472f", sil: 7, abilityId: "chunchan",    line: "色を決めたら、もう曲げない。それだけだ。",
+              rematch: "お前か。前の卓の色は、まだ覚えてるぞ。", grudge: "お前に染められた負けの色が、まだ落ちん。……今日こそ塗り替える。", proud: "お前との卓は、いつも俺の色で終わる。今日もだ。" },
+  ren:      { name: "対(つい)の漣", reading: "れん",   title: "形にこだわる男", color: "#3f8f86", sil: 9, abilityId: "danger-sense", line: "美しい手は、二つで一つ。崩させはしない。",
+              rematch: "また君か。……前の対局、対子のように二つ並べて覚えている。", grudge: "君に崩された形を、何度も並べ直した。……今日は完成させる。", proud: "君とは何度も打ったが、形は崩れていない。……美しいまま勝たせてもらう。" },
+  garou:    { name: "牙狼",         reading: "ガロウ", title: "国士の亡者",   color: "#7a5cc0", sil: 6, abilityId: "dora-pull",    line: "十三種、すべて喰らい尽くしてやる。",
+              rematch: "また貴様か。……いい牙になってきたな。", grudge: "二度も、三度も……！　貴様だけは、ここで喰っておく。", proud: "ハッ、また喰われに来たか。いい度胸だ。" },
+  mirei:    { name: "鏡の美玲",     reading: "みれい", title: "写し取る打ち手", color: "#c06a9c", sil: 4, abilityId: "lucky-draw",   line: "あなたの手、そっくり頂くわ。",
+              rematch: "また会えたわね。あなたの打ち筋、もう写してあるの。", grudge: "鏡のこっち側で、何度も負けたわ。……今日は、あなた以上のあなたになる。", proud: "あなたの手はもう全部写したわ。……勝ち筋まで、ね。" },
+  enji:     { name: "三槓子の焔司", reading: "えんじ", title: "支配の剣",     color: "#d0682f", sil: 8, abilityId: "kakeha-bet",   line: "場を制すのは、いつだって俺の役だ。",
+              rematch: "戻ってきたか。この卓の主役は譲らんぞ。", grudge: "お前の前でだけ、場が言うことを聞かん。……今日で終わらせる。", proud: "お前相手なら、場は俺に従う。いつも通りにな。" },
+  kurono:   { name: "暗刻の玄乃",   reading: "くろの", title: "闇に伏せる者", color: "#4a5566", sil: 10, abilityId: "danger-sense", line: "見えぬ手こそ、最も重い。",
+              rematch: "……また伏せ合う仲か。悪くない。", grudge: "何度伏せても、あなたは見抜いてくる。……ならば今日は、底の底を見せよう。", proud: "……あなたの手は、よく見える。今日も、底まで。" },
+  tenka:    { name: "天運の天香",   reading: "てんか", title: "確率を嗤う女", color: "#caa23a", sil: 5, abilityId: "dora-pull",    line: "運？ いいえ、これが私の実力。",
+              rematch: "あら、また当たったわね。……確率って、意地悪。", grudge: "あなたに負ける確率、計算ではゼロだったのに。……今日、世界を正すわ。", proud: "あなたが私に勝つ確率？　ふふ、小数点の下を探して。" },
+  mukou:    { name: "無垢の無辜",   reading: "むこう", title: "真理の探究者", color: "#8a8f9c", sil: 1, abilityId: "bibi",         line: "最後の頁(ページ)に、何が書いてあると思う？",
+              rematch: "また君だ。……君の章は、読み応えがある。", grudge: "君に負けるたび、頁が増えていく。……結末は、書き換えさせてもらう。", proud: "君の章は、もう読み終えた。……結末も知っている。" },
+  shien:    { name: "紫煙のシエン", reading: "しえん", title: "燻(いぶ)す打ち手", color: "#9c6ab0", sil: 3, abilityId: "kakeha-bet", line: "じっくり、じわじわ。逃がさないよ。",
+              rematch: "おや、また燻し甲斐のある顔が来た。", grudge: "君だけは煙に巻けない。……なら、今日は直火でいこうか。", proud: "君はいつも、いい色に燻し上がる。……今日も、じっくりいこうか。" },
 };
+
+// 因縁段階の口上を解決する。unitOrCharId は "rival:shizuka" 形式でも素の id でも可。
+// history＝profile.records.rivalHistory（{ [id]: { met, beaten, lostTo } }）。無ければ初対面。
+// 優先順位: 雪辱（向こうの因縁・beaten>=2）＞ 勝ち誇り（こちらの純粋な負け越し・lostTo>=2 かつ lostTo>beaten）
+// ＞ 再会 ＞ 初対面。五分（beaten=lostTo=2 等）は雪辱側＝「何度も上に立たれた記憶」のほうが口をつく。
+export function rivalIntroLineFor(unitOrCharId, history = {}) {
+  const id = String(unitOrCharId || "").replace(/^rival:/, "");
+  const def = RIVAL_POOL[id];
+  if (!def) return "";
+  const h = history[id];
+  if (!h || !(h.met > 0)) return def.line;
+  if ((h.beaten || 0) >= 2 && def.grudge) return def.grudge;
+  if ((h.lostTo || 0) >= 2 && (h.lostTo || 0) > (h.beaten || 0) && def.proud) return def.proud;
+  return def.rematch || def.line;
+}
 
 // 大会 → 登場ライバル候補（優先順）。ティアの人数ぶん、頭から採用する。
 // T3（出場8＝相手7）は全員ネームドなので7体ぶん用意する。

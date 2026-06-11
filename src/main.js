@@ -26,7 +26,7 @@ import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById, templateForAbility } from "./data/skillTemplateMaster.js";
 import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
-import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, mentorGrowthFor } from "./progression/progressionService.js";
+import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor } from "./data/tournamentMaster.js";
 import { nextTreasureStep, mentorSkillLevel } from "./data/mentorCampaignMaster.js";
 import { MeldType } from "./core/meld.js";
@@ -35,7 +35,7 @@ import { waits } from "./core/rules/winCheck.js";
 import { shanten } from "./core/rules/shanten.js";
 import { pickVoiceLine } from "./data/voiceLines.js";
 import { makeMobRoster, mobSilhouettePaths } from "./data/mobMaster.js";
-import { rivalUnits } from "./data/tournamentRivalMaster.js";
+import { rivalUnits, rivalIntroLineFor } from "./data/tournamentRivalMaster.js";
 import { simulateLeagueSection } from "./autobattle/leagueAutoSim.js";
 import { paramsFromLv, PARAM_KEYS } from "./autobattle/autoBattle.js";
 import { pickMentorBigMatchLine, pickMentorBattleQuip } from "./data/mentorVoiceMaster.js";
@@ -875,6 +875,13 @@ async function openTournament() {
   const deshiUnit = buildDeshiUnit(av, av.mentorCharacterId, t.format, t.unitSize, profile);
   const oppHp = oppHpForLv(t.gateOppLv ?? t.rivalLv ?? 2);
   const rUnits = rivalUnits(t.id, t.tier, t.unitCount, t.unitSize, { seedPrefix: "league", startingPoints: oppHp });
+  // 因縁の口上：一度リーグを共にしたネームドは「あなた」を覚えている（初対面→再会→雪辱）。
+  const rivalHistory = profile.records?.rivalHistory || {};
+  for (const u of rUnits) {
+    if (!u.isRival) continue;
+    const line = rivalIntroLineFor(u.id, rivalHistory);
+    if (line) { u.introLine = line; if (u.lead) u.lead.introLine = line; }
+  }
   const units = [deshiUnit, ...rUnits];
   // 各ユニットの「開始持ち点」（メンバーHPの合計）。採点の素点＝(最終−開始) の基準。
   const unitStart = {};
@@ -965,10 +972,24 @@ async function playTournamentMatch() {
   const av = activeAvatar(profile);
   // 節前ブリーフィング：卓のメンツ・形勢・総合順位を見せて「オートで観る / 自分で打つ」を選ぶ。
   // 最終節は「大一番」＝専用口上つきの手動戦のみ（最後だけは自分の手で決める＝体験の山）。
+  // 節数の多い T2/T3 は「大一番へ一気に」も選べる＝道中を全シミュで流し、最終節だけが本番（再挑戦も軽い）。
   showSectionBriefing(run, t, seated, { isLast, profile, av }, {
     onAuto: () => runAutoSection(run, t, seated, profile, av),
     onManual: () => launchManualSection(run, t, seated),
+    onRush: () => rushToBigMatch(run, t, profile, av),
   });
+}
+
+// 残りの道中節をすべて即時シミュレートして「大一番」（最終節ブリーフィング）へ直行する。
+// 道中の観戦時間を払わず最終決戦に焦点を当てる＝T2/T3 の節数の重さと再挑戦コストの解。
+function rushToBigMatch(run, t, profile, av) {
+  while (run.matchIndex < t.matches - 1) {
+    const seated = seatUnitsFor(run.units, run.matchIndex, t.unitsAtTable);
+    run.seatedUnitIds = seated.map((u) => u.id);
+    const sim = simulateLeagueSection(simSectionInput(run, t, seated, profile, av));
+    applySectionResult(run, t, { standings: sim.standings });
+  }
+  playTournamentMatch();
 }
 
 // 手動で打つ節（従来の対局起動）。形式ごとに専用エンジンへ。
@@ -1009,8 +1030,8 @@ function unitStrengthFor(u, t, profile, av) {
   return avg(paramsFromLv(t.gateOppLv ?? t.rivalLv ?? 2, "league:" + u.id)) + (u.isRival ? 3 : 0);
 }
 
-// オートで観る節：シミュレーション＋観戦演出 → 手動と同じ result 形で合流。
-function runAutoSection(run, t, seated, profile, av) {
+// オート節シミュレータへの入力（観戦・一気進行が共通で使う卓組み）。
+function simSectionInput(run, t, seated, profile, av) {
   const seats = t.format === "pair" ? 4 : seated.length;
   const hands = seats * (t.rounds || 1);
   const units = seated.map((u) => ({
@@ -1018,13 +1039,20 @@ function runAutoSection(run, t, seated, profile, av) {
     isHuman: !!u.isDeshi, start: run.unitStart?.[u.id] ?? t.base,
     strength: unitStrengthFor(u, t, profile, av),
   }));
+  return { units, seats, hands };
+}
+
+// オートで観る節：シミュレーション＋観戦演出 → 手動と同じ result 形で合流。
+function runAutoSection(run, t, seated, profile, av) {
+  const { units, seats, hands } = simSectionInput(run, t, seated, profile, av);
   const sim = simulateLeagueSection({ units, seats, hands });
   showLeagueAutoWatch(run, t, units, sim, av, () =>
     onTournamentMatchDone({ standings: sim.standings, graph: { history: sim.history, players: sim.players } }));
 }
 
-// 節前ブリーフィング（第N節＝オート/手動の選択。最終節＝大一番、本気で勝負！のみ）。
-function showSectionBriefing(run, t, seated, { isLast, profile, av }, { onAuto, onManual }) {
+// 節前ブリーフィング（第N節＝オート/手動の選択。最終節＝大一番、本気で勝負！のみ。
+// 節数の多い T2/T3 は「大一番へ一気に」＝残りの道中を全シミュで流して最終節に直行できる）。
+function showSectionBriefing(run, t, seated, { isLast, profile, av }, { onAuto, onManual, onRush }) {
   const host = el("app") || document.body;
   const word = UNIT_WORD[t.format] || "人";
   const mentorChar = CHARACTERS.find((c) => c.id === av?.mentorCharacterId);
@@ -1092,6 +1120,10 @@ function showSectionBriefing(run, t, seated, { isLast, profile, av }, { onAuto, 
   if (isLast) {
     btns.appendChild(mkBtn("本気で勝負！", "btn-tsumo tsb-go-big", () => close(onManual)));
   } else {
+    // 道中が2節以上残る T2/T3 のみ「一気に」を出す（T1=3節は道中が短く不要）。
+    if (onRush && t.matches >= 4 && run.matchIndex < t.matches - 2) {
+      btns.appendChild(mkBtn("大一番へ一気に", "btn-ron tsb-rush", () => close(onRush)));
+    }
     btns.appendChild(mkBtn("オートで観る", "btn-ron", () => close(onAuto)));
     btns.appendChild(mkBtn("自分で打つ", "btn-tsumo", () => close(onManual)));
   }
@@ -1203,10 +1235,10 @@ async function launchTeamTournamentMatch(deshiUnit, rivalUnits, ctx) {
   });
 }
 
-async function onTournamentMatchDone(result) {
-  const run = tournamentRun; const t = run.t;
-  // 採点（点棒＝HP）：素点＝(最終−自分の開始HP)/1000。ウマは「その節の増減順位」で配る
-  //（＝育成は持ち点の厚み＝攻めの余裕/トビにくさとして効き、宝は打ち回しの累積で決まる）。
+// 1節ぶんの結果を累積へ反映する採点（手動・オート観戦・一気進行が共通で使う）。
+// 採点（点棒＝HP）：素点＝(最終−自分の開始HP)/1000。ウマは「その節の増減順位」で配る
+//（＝育成は持ち点の厚み＝攻めの余裕/トビにくさとして効き、宝は打ち回しの累積で決まる）。
+function applySectionResult(run, t, result) {
   const seated = (result.standings || []).map((s) => ({
     id: s.id, isHuman: !!s.isHuman,
     net: Math.round(((s.points ?? 0) - (run.unitStart?.[s.id] ?? t.base)) / 1000),
@@ -1222,14 +1254,33 @@ async function onTournamentMatchDone(result) {
     run.totals[u.id] = (run.totals[u.id] || 0) + pt;
     deltaById[u.id] = pt;
   }
+  // この節の自分の結果（節内順位・獲得ptの内訳）。順位表の見出しで真っ先に見せる。
+  const myIdx = seated.findIndex((s) => s.id === run.deshiUnitId || s.isHuman);
+  const sectionResult = myIdx < 0 ? null : {
+    place: myIdx + 1, of: seated.length,
+    net: seated[myIdx].net, uma: t.uma[myIdx] ?? 0,
+    pt: deltaById[run.deshiUnitId] ?? 0,
+  };
   run.matchIndex += 1;
+  return { deltaById, sectionResult };
+}
+
+async function onTournamentMatchDone(result) {
+  const run = tournamentRun; const t = run.t;
+  const { deltaById, sectionResult } = applySectionResult(run, t, result);
   const finished = run.matchIndex >= t.matches;
   const ranked = Object.keys(run.totals).sort((a, b) => run.totals[b] - run.totals[a]);
   // 節間：まず「この節の得点推移グラフ」を自動表示 → 閉じると累積順位表へ。
-  const showStandings = () => showTournamentStandings(run, { ranked, deltaById, finished, entrants: t.entrants, sectionLabel: `第 ${run.matchIndex} / ${t.matches} 節` }, async (action) => {
+  const showStandings = () => showTournamentStandings(run, { ranked, deltaById, sectionResult, finished, entrants: t.entrants, sectionLabel: `第 ${run.matchIndex} / ${t.matches} 節` }, async (action) => {
     if (finished || action === "retreat") {
       const finalRank = ranked.findIndex((id) => id === run.deshiUnitId);
-      const cur = await profileRepo.loadProfile();
+      let cur = await profileRepo.loadProfile();
+      // 因縁の蓄積：このリーグを共にしたネームド全員と「会った」。最終順位でこちらが上なら beaten。
+      const myPos = ranked.indexOf(run.deshiUnitId);
+      cur = recordRivalEncounters(cur, run.units.filter((u) => u.isRival).map((u) => ({
+        id: String(u.id).replace(/^rival:/, ""),
+        beaten: myPos >= 0 && myPos < ranked.indexOf(u.id),
+      })));
       const res = applyLeagueResult(cur, t, finalRank, action === "retreat");
       await profileRepo.saveProfile(res.profile);
       const standings = ranked.map((id, i) => ({ name: run.names[id], pt: run.totals[id], isHuman: id === run.deshiUnitId, place: i + 1 }));
@@ -1237,7 +1288,7 @@ async function onTournamentMatchDone(result) {
       const treasureCount = res.profile.records?.treasures?.length || 0;
       const rankUp = res.won ? treasureRankFor(treasureCount) : null;
       tournamentRun = null;
-      openMentorHome({ league: { name: t.name, treasure: t.treasure, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, exp: res.exp, standings, rankUp } });
+      openMentorHome({ league: { name: t.name, treasure: t.treasure, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, exp: res.exp, bond: res.bond, standings, rankUp } });
     } else {
       playTournamentMatch();
     }
@@ -1289,10 +1340,20 @@ function showTournamentStandings(run, info, onDone) {
         <div class="ts-total" data-to="${total}">0</div>
       </div>`;
   }).join("");
+  // この節の自分の結果＝順位表の最上段で即答する（何位で・何pt稼いだ/失ったか）。
+  const sr = info.sectionResult;
+  const srHtml = sr ? `
+      <div class="ts-secres ${sr.pt >= 0 ? "up" : "dn"}">
+        <span class="ts-sr-lab">この節のあなた</span>
+        <b class="ts-sr-place">${sr.place}<small>位</small><span class="ts-sr-of">/${sr.of}</span></b>
+        <b class="ts-sr-pt">${sr.pt >= 0 ? "+" : ""}${sr.pt}<small>pt</small></b>
+        <span class="ts-sr-detail">素点 ${sr.net >= 0 ? "+" : ""}${sr.net} ／ 順位点 ${sr.uma >= 0 ? "+" : ""}${sr.uma}</span>
+      </div>` : "";
   ov.innerHTML = `
     <div class="ts-scrim"></div>
     <div class="ts-card">
       <div class="ts-head">大会 順位表 <small>${esc(info.sectionLabel)}</small></div>
+      ${srHtml}
       <div class="ts-list">${rows}</div>
       <div class="ts-btns"></div>
     </div>`;

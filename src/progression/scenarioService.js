@@ -29,7 +29,8 @@ export function markScenarioRead(profile, scenario) {
     ...profile,
     scenarioProgress: [
       ...(profile.scenarioProgress || []),
-      { scenarioId: id, readAt: new Date().toISOString(), version: scenario.scenarioVersion ?? 1 },
+      // readDay＝読了したゲーム内の月。scenario_read_prev_month（翌月解禁）の判定に使う。
+      { scenarioId: id, readAt: new Date().toISOString(), readDay: profile.dayCount ?? 1, version: scenario.scenarioVersion ?? 1 },
     ],
   };
 

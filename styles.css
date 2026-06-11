@@ -3614,6 +3614,14 @@ button.secondary { color: var(--ink); }
   border:1px solid rgba(143,36,24,.22); background:rgba(184,57,43,.07);
 }
 #mentor-home-screen.mh2 .mhx-md-mentor b { color:#8f2418; }
+/* 雀荘リザルトの師匠の一言（帰り際のひとこと。アイコン＋セリフ） */
+#mentor-home-screen.mh2 .mhx-pr-quip { display:flex; align-items:center; gap:9px; text-align:left; }
+#mentor-home-screen.mh2 .mhx-pr-quip img { width:30px; height:30px; border-radius:50%; object-fit:cover; border:1px solid rgba(143,36,24,.35); flex:none; }
+/* 大会リザルト: 横長2カラム（左=順位表／右=評価・報酬・経験・敗北2択）。
+   縦積みだと最長ケース（順位8行＋ゲージ＋2択）が 720px を超えるため（無スクロール方針・QA実測）。 */
+#mentor-home-screen.mh2 .mhx-modal-card.is-wide { width:840px; max-width:calc(100% - 48px); }
+#mentor-home-screen.mh2 .mhx-lg-cols { display:flex; gap:20px; align-items:flex-start; text-align:left; margin-top:8px; }
+#mentor-home-screen.mh2 .mhx-lg-col { flex:1; min-width:0; }
 /* nameplate の修行 Lv チップ（覇道編のみ） */
 #mentor-home-screen.mh2 .mhx-np-shugyo { color:#ffb38a; }
 /* 師匠詳細の二人三脚ブロック */
@@ -3694,3 +3702,37 @@ button.secondary { color: var(--ink); }
 .tourney-watch .tw-quip img { width:32px; height:32px; border-radius:50%; object-fit:cover; border:1px solid rgba(200,164,77,.5); flex:none; }
 .tourney-watch .tw-btns { display:flex; gap:12px; justify-content:center; }
 .tourney-watch .tw-btns button { min-width:150px; }
+
+/* ---- 大会: この節の自分の結果（順位表の最上段で即答する帯） ---- */
+.tourney-standings .ts-secres {
+  display:flex; align-items:baseline; gap:12px; margin:-4px 0 12px; padding:10px 16px;
+  border-radius:11px; border:1px solid rgba(236,213,146,.55);
+  background:linear-gradient(90deg,rgba(214,162,58,.26),rgba(214,162,58,.07));
+}
+.tourney-standings .ts-secres.dn { border-color:rgba(232,93,117,.5); background:linear-gradient(90deg,rgba(232,93,117,.2),rgba(232,93,117,.05)); }
+.tourney-standings .ts-sr-lab { font-size:11px; color:#cdb88f; letter-spacing:.1em; flex:none; }
+.tourney-standings .ts-secres.dn .ts-sr-lab { color:#d8a8b4; }
+.tourney-standings .ts-sr-place { font-size:26px; color:#ffd06b; line-height:1; }
+.tourney-standings .ts-sr-place small { font-size:13px; margin-left:1px; }
+.tourney-standings .ts-sr-of { font-size:12px; color:#9a8a66; margin-left:2px; }
+.tourney-standings .ts-secres.dn .ts-sr-place { color:#ff9aa8; }
+.tourney-standings .ts-sr-pt { font-size:22px; color:#ecd592; line-height:1; }
+.tourney-standings .ts-sr-pt small { font-size:12px; margin-left:1px; }
+.tourney-standings .ts-secres.dn .ts-sr-pt { color:#e8a0ac; }
+.tourney-standings .ts-sr-detail { margin-left:auto; font-size:12px; color:#9bb3a6; flex:none; }
+
+/* ---- 大会オーバーレイ共通: モーダル下のボタンをしっかりした押し心地に（細長すぎ対策）。
+       btn-tsumo=主ボタン（金）/ btn-ron=副ボタン（落ち着いた縁取り）に役割分担。 ---- */
+.tourney-brief .tb-btns button, .tourney-standings .ts-btns button,
+.tourney-section .tsb-btns button, .tourney-watch .tw-btns button {
+  font-size:16px; font-weight:700; padding:13px 26px; border-radius:12px;
+  border:2px solid #0003; cursor:pointer; color:#1a120a;
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+}
+.tourney-brief .tb-btns .btn-ron, .tourney-standings .ts-btns .btn-ron,
+.tourney-section .tsb-btns .btn-ron, .tourney-watch .tw-btns .btn-ron {
+  background:rgba(255,255,255,.06); color:#e8e2cf; border:2px solid rgba(200,164,77,.5);
+}
+.tourney-brief .tb-btns button:hover, .tourney-standings .ts-btns button:hover,
+.tourney-section .tsb-btns button:hover, .tourney-watch .tw-btns button:hover { filter:brightness(1.1); }
+.tourney-section .tsb-go-big { padding:15px 34px; font-size:18px; }

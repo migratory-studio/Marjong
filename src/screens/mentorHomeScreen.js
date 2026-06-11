@@ -19,7 +19,7 @@ import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
 import { rest, trainParam, TRAIN_TUNING, trainOptionsFor, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState, setMentorMemory, mentorGrowthFor } from "../progression/progressionService.js";
-import { pickMentorGreeting, pickRestTalk, pickMentorPraise, pickMentorRankUpLine } from "../data/mentorVoiceMaster.js";
+import { pickMentorGreeting, pickRestTalk, pickMentorPraise, pickMentorRankUpLine, pickMentorParlorComment, pickLeagueLossTalk, pickMentorDuoInvite, DUO_INVITE_FALLBACK } from "../data/mentorVoiceMaster.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
 import { nextTreasureInfo, mentorSkillLevel } from "../data/mentorCampaignMaster.js";
@@ -152,6 +152,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // 師匠の一言を状況連動で選ぶ（調子・時間帯・絆・直近結果・前回の2択を参照）。
   const mem = profile.mentorMemory || {};
   const recentOutcome = (mem.lastOutcomeDay != null && (di.day - mem.lastOutcomeDay) <= 1) ? mem.lastOutcome : null;
+  const treasureCount = (profile.records?.treasures || []).length; // 異能段位・余生（cleared）判定の共通材料
   const greetCtx = {
     condTier: cond.tone,
     time: ["asa", "hiru", "yoru"][Math.min(di.actionsUsed, 2)],
@@ -159,6 +160,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     lastOutcome: (recentOutcome === "daiseikou" || recentOutcome === "shippai") ? recentOutcome : null,
     afterChoice: mem.lastChoice || null,
     phase: mentorPhase(profile, avatar.mentorCharacterId).id,
+    treasures: treasureCount,
+    cleared: treasureCount >= 9, // 九蓮宝士達成＝余生の挨拶帯が解禁
   };
   const greetLine = pickMentorGreeting(avatar.mentorCharacterId, greetCtx) || mentorLine(actionsLeft);
 
@@ -178,8 +181,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // 師匠フレーバー（「今日の様子」＝師匠の調子）
   const mentorTitle = MENTOR_TITLE[mentor?.role] || "師範";
   const mood = mentorCond.label;
-  // 異能段位：弟子＝集めた宝の数 / 師匠＝マスタ初期値＋段位の軌跡（弟子の宝数で昇段するキャラも）。
-  const treasureCount = (profile.records?.treasures || []).length;
+  // 異能段位：弟子＝集めた宝の数（treasureCount は greetCtx 算出時に定義済み） / 師匠＝マスタ初期値＋段位の軌跡。
   const deshiRank = treasureRankFor(treasureCount); // 0個なら null＝無段
   const mentorRank = mentorRankFor(avatar.mentorCharacterId, treasureCount);
   // 師匠の昇段検知（段位の軌跡が動いた瞬間だけ通知。初回ロードは記録のみ＝既存昇段ぶんを誤通知しない）。
@@ -493,7 +495,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         r.textContent = parts.join("　／　"); r.hidden = false;
         // 休憩中の2択コミュ（双方向）。選ぶと師匠が返し、その選択を覚える。
         // 質問があるときは「ゆっくり休んだ」ボタンを出さず、回答が前進導線になる（双方向の見せ場を任意化しない）。
-        const talk = pickRestTalk(avatar.mentorCharacterId, { bondLevel: avatar.bondLevel ?? 1, condTier: cond.tone, phase: phase.id });
+        const talk = pickRestTalk(avatar.mentorCharacterId, { bondLevel: avatar.bondLevel ?? 1, condTier: cond.tone, phase: phase.id, treasures: treasureCount, cleared: treasureCount >= 9 });
         if (talk) {
           btn.remove();
           const rt = card.querySelector(".mhx-rt");
@@ -621,12 +623,15 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // ---- 二人打ち＝師匠タイマン（オート/本気を選ぶ・§4.6.9 B2）----
   function openDuoModal() {
     const canGo = actionsLeft > 0;
+    // 誘い文句はマスタ駆動（詩玥のみ本実装・クリア後は「ライバルとして」へ反転）。未実装キャラは従来文言。
+    const invite = pickMentorDuoInvite(avatar.mentorCharacterId, { bondLevel: avatar.bondLevel ?? 1, cleared: treasureCount >= 9 });
+    const inviteHtml = invite ? `「${esc(invite)}」` : DUO_INVITE_FALLBACK;
     const html = `
       <div class="mhx-md-head">
         <div class="mhx-md-icon">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</div>
         <div class="mhx-md-title"><span class="mhx-md-by">二人打ち</span><span class="mhx-md-ttl">師匠とタイマン</span></div>
       </div>
-      <p class="mhx-md-line">${canGo ? esc(mentor?.name || "師匠") + "「一局、付き合え。…手は抜かんぞ」" : "今月はもう動けない。また来月だ。"}</p>
+      <p class="mhx-md-line">${canGo ? esc(mentor?.name || "師匠") + inviteHtml : "今月はもう動けない。また来月だ。"}</p>
       <p class="mhx-md-prof"><small>二人麻雀（東南戦）。<b>持ち点＝今の HP（${hpCur.toLocaleString()}）を賭けて打つ＝結果が HP に反映</b>。師匠は<b>格上</b>。点を奪えれば HP が増え、メンタル・読みも伸びる（食らいつくほど伸びる）。</small></p>
       ${canGo ? `<div class="mhx-duo-btns">
         <button type="button" class="mhx-md-btn mhx-duo-auto">オートで打つ<small>AI にまかせて見る</small></button>
@@ -832,6 +837,14 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     if (r.fee > 0) detail.push(`席料 −${r.fee}`);
     if ((r.rareWins ?? 0) > 0) detail.push(`腕利き撃破 +${r.rareBonus}`);
     const detailHtml = detail.length ? `<div class="mhx-pr-detail">${detail.join("　")}</div>` : "";
+    // 師匠の一言（同行した師匠が帰り際に添える）。大勝＝全勝3連勝以上 or 荒稼ぎ。
+    // 詩玥はここが「点棒嫌い」の滲み口：勝ちすぎた日ほど、素の目が一瞬見える。
+    const matches = r.candidate?.matches ?? 0;
+    const tier = ((r.wins ?? 0) >= matches && (r.wins ?? 0) >= 3) || (r.soul ?? 0) >= 400 ? "bigWin"
+      : (r.wins ?? 0) * 2 >= matches ? "win" : "rough";
+    const comment = pickMentorParlorComment(avatar.mentorCharacterId, tier, { bondLevel: avatar.bondLevel ?? 1 });
+    const commentHtml = comment ? `
+        <div class="mhx-md-mentor mhx-pr-quip">${mentor?.assets?.icon ? `<img src="${esc(mentor.assets.icon)}" alt="">` : ""}<span>${esc(comment)}</span></div>` : "";
     const html = `
       <div class="mhx-pr">
         <div class="mhx-pr-ttl">${esc(r.candidate?.name || "雀荘")} 結果</div>
@@ -843,6 +856,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         ${detailHtml}
         <div class="mhx-pr-sub">能力値が上がった！</div>
         <div class="mhx-pr-stats mhx-pg-list">${rows.length ? gainGaugesHtml(rows) : '<div class="mhx-pr-none">変化なし</div>'}</div>
+        ${commentHtml}
         <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);
@@ -921,19 +935,27 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <span class="mhx-lg-name">${esc(s.name)}${s.isHuman ? '<span class="ts-you">YOU</span>' : ""}</span>
         <span class="mhx-lg-pt">${s.pt > 0 ? "+" : ""}${s.pt}</span>
       </div>`).join("");
+    // 縦積みだと「順位表8行＋経験ゲージ＋敗北2択」の最長ケースが 720px を超える（QA実測 1100px 超）。
+    // 無スクロール方針に従い、横長カード＋2カラム（左=順位表／右=評価・報酬・経験・2択）で収める。
     const html = `
       <div class="mhx-pr mhx-lg">
         <div class="mhx-pr-ttl">${won ? "優勝！" : r.retreated ? "途中退場" : `最終 ${place} 位`}</div>
         <div class="mhx-pr-head"><span class="mhx-cond tone-${won ? "vgood" : place <= 2 ? "good" : "bad"}">${esc(r.name || "大会")}</span></div>
         ${won && r.treasure ? `<div class="mhx-lg-treasure">宝『<b>${esc(r.treasure.name)}</b>』を獲得！<small>${esc(r.treasure.baseYaku || "")}</small></div>` : ""}
-        <div class="mhx-lg-list">${rows}</div>
-        <div class="mhx-tr-rank">評価 <b>${esc(r.rank || "満貫級")}</b></div>
-        <div class="mhx-pr-soul">継承 <b>+${r.meta ?? 0}</b>　／　ソウル <b>+${r.soul ?? 0}</b></div>
-        ${r.exp?.total ? `<div class="mhx-lg-exp"><div class="mhx-lg-exp-h">実戦経験 <b>+${r.exp.total}</b><small>（弱点から伸びる）</small></div><div class="mhx-pg-list mhx-lg-exp-g"></div></div>` : ""}
-        <p class="mhx-pr-sub">${won ? "宝への道が、また一歩ひらけた。" : r.retreated ? "引いた卓のことも、体は覚えている。" : place === 2 ? "あと一歩。——だが、卓で得たものは確かに残った。" : "負けた卓ほど、よく覚えている。経験は裏切らない。"}</p>
+        <div class="mhx-lg-cols">
+          <div class="mhx-lg-col"><div class="mhx-lg-list">${rows}</div></div>
+          <div class="mhx-lg-col">
+            <div class="mhx-tr-rank">評価 <b>${esc(r.rank || "満貫級")}</b></div>
+            <div class="mhx-pr-soul">継承 <b>+${r.meta ?? 0}</b>　／　ソウル <b>+${r.soul ?? 0}</b></div>
+            ${r.exp?.total ? `<div class="mhx-lg-exp"><div class="mhx-lg-exp-h">実戦経験 <b>+${r.exp.total}</b><small>（弱点から伸びる）</small></div><div class="mhx-pg-list mhx-lg-exp-g"></div></div>` : ""}
+            <p class="mhx-pr-sub">${won ? "宝への道が、また一歩ひらけた。" : r.retreated ? "引いた卓のことも、体は覚えている。" : place === 2 ? "あと一歩。——だが、卓で得たものは確かに残った。" : "負けた卓ほど、よく覚えている。経験は裏切らない。"}${r.bond?.bondUp ? "<br>……師匠との距離が、また一歩縮まった気がする。" : ""}</p>
+            <div class="mhx-rt mhx-lg-loss" hidden></div>
+          </div>
+        </div>
         <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);
+    card.classList.add("is-wide");
     if (won) audio?.playPip?.(2600, 0.6);
     // 順位に応じた実戦経験（FE 風ゲージ）。優勝以外でも「持ち帰ったもの」が目に見える。
     if (r.exp?.total) {
@@ -941,7 +963,37 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       gw.innerHTML = gainGaugesHtml(gainRowsFrom(r.exp));
       animateGainGauges(gw);
     }
-    card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
+    const okBtn = card.querySelector(".mhx-pr-btn");
+    okBtn?.addEventListener("click", close);
+    // 敗北の夜の2択（双方向の見せ場）：師匠が問いかけ、答えを覚える（→翌月の挨拶 afterChoice で呼び戻し）。
+    // 退場（自分で引いた）は問い詰めない。質問が出る間は「よし」を隠す＝答えが前進導線（休憩2択と同じ流儀）。
+    if (!won && !r.retreated) {
+      const tier = (r.finalRank ?? 3) === 1 ? "close" : "far";
+      const talk = pickLeagueLossTalk(avatar.mentorCharacterId, tier, { bondLevel: avatar.bondLevel ?? 1 });
+      if (talk) {
+        okBtn.hidden = true;
+        const rt = card.querySelector(".mhx-lg-loss");
+        rt.innerHTML = `
+          <div class="mhx-md-mentor mhx-pr-quip">${mentor?.assets?.icon ? `<img src="${esc(mentor.assets.icon)}" alt="">` : ""}<span>${esc(talk.prompt)}</span></div>
+          <div class="mhx-rt-choices">${talk.choices.map((c, i) => `<button type="button" class="mhx-rt-choice" data-i="${i}">${esc(c.label)}</button>`).join("")}</div>
+          <p class="mhx-rt-reply" hidden></p>`;
+        rt.hidden = false;
+        let picked = false;
+        rt.querySelectorAll(".mhx-rt-choice").forEach((b) => {
+          b.addEventListener("click", async () => {
+            if (picked) return; picked = true;
+            const ch = talk.choices[Number(b.getAttribute("data-i"))];
+            const cur = await repository.loadProfile();
+            await repository.saveProfile(setMentorMemory(cur, { lastChoice: ch.memory }));
+            const reply = rt.querySelector(".mhx-rt-reply");
+            reply.textContent = ch.reply; reply.hidden = false;
+            rt.querySelectorAll(".mhx-rt-choice").forEach((x) => { x.disabled = true; });
+            b.classList.add("is-picked");
+            okBtn.hidden = false;
+          });
+        });
+      }
+    }
   }
 
   // ---- 異能段位 獲得演出（宝獲得＝昇段。league の後に出す）----

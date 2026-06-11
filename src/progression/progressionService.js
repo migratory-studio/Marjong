@@ -30,8 +30,11 @@ export const GROWTH_TUNING = {
     bondExp: 30, // 休憩で得る絆経験値（§11.2）
   },
   bondExpPerLevel: 40, // 絆 Lv 上昇に必要な経験値（次 Lv = base * 現Lv）
-  duoBondExp: { base: 20, winBonus: 10 }, // 二人打ち＝師匠との時間（勝てば少し弾む）
+  duoBondExp: { base: 20, winBonus: 10, clearedMul: 2 }, // 二人打ち＝師匠との時間（勝てば弾む／クリア後は余生の主導線＝倍）
   scenarioBondExp: 40, // 師匠の bond シナリオ初回読了（物語の節目で距離が縮まる）
+  // 大会＝師匠と挑む共闘の大舞台。勝っても負けても距離が縮まる（優勝は大きく弾む）。
+  // クリア（宝9つ≈22ヶ月）時点で絆Lv10前後＝高絆の特別セリフが「物語を終えた者」に届く設計。
+  leagueBondExp: { base: 20, winBonus: 40 },
 };
 
 // 端末ローカル日付 "YYYY-MM-DD"（§11.2: ローカル版は端末日付で 1 日 1 回）。
@@ -432,7 +435,30 @@ export function applyLeagueResult(profile, t, finalRank = 3, retreated = false) 
   }
   const exp = applyLeagueExp(p, t, place, retreated);
   p = exp.profile;
-  return { profile: p, finalRank: place, won, rank, meta, soul, retreated, exp: exp.total > 0 ? exp : null };
+  // 絆：大会は師匠と一緒に挑む舞台。完走で base、優勝なら winBonus が乗る（退場は base のみ）。
+  const av = activeAvatar(p);
+  let bond = null;
+  if (av) {
+    const amount = GROWTH_TUNING.leagueBondExp.base + (won ? GROWTH_TUNING.leagueBondExp.winBonus : 0);
+    const g = gainBond(av, amount);
+    p = withActiveAvatar(p, (a) => ({ ...a, bondLevel: g.bondLevel, bondExp: g.bondExp }));
+    bond = { gained: amount, bondLevel: g.bondLevel, bondUp: g.bondUp };
+  }
+  return { profile: p, finalRank: place, won, rank, meta, soul, retreated, exp: exp.total > 0 ? exp : null, bond };
+}
+
+// ネームドライバルとの因縁を記録する（蓄積：相手も「あなた」を覚えている）。
+// encounters＝[{ id, beaten }]（同じリーグを戦ったネームドごとに、最終順位でこちらが上だったか）。
+// records.rivalHistory = { [id]: { met, beaten, lostTo } }。要項画面の口上の段階分岐が読む。
+export function recordRivalEncounters(profile, encounters = []) {
+  if (!encounters.length) return profile;
+  const hist = { ...(profile.records?.rivalHistory || {}) };
+  for (const e of encounters) {
+    if (!e?.id) continue;
+    const h = hist[e.id] || { met: 0, beaten: 0, lostTo: 0 };
+    hist[e.id] = { met: h.met + 1, beaten: h.beaten + (e.beaten ? 1 : 0), lostTo: h.lostTo + (e.beaten ? 0 : 1) };
+  }
+  return { ...profile, records: { ...(profile.records || {}), rivalHistory: hist } };
 }
 
 // 順位別の実戦経験。「実戦は弱点を炙り出す」＝その時点で最も低いパラメータから +1 ずつ積む。
@@ -514,7 +540,11 @@ export function applyDuoResult(profile, result = {}) {
   apply("read", Math.max(0, Math.round(1 + closeness * 2)));   // 副 1..4
   const soul = won ? 200 : Math.round(60 * closeness);
   // 師匠との時間＝絆も深まる（勝てば少し弾む）。
-  const bond = gainBond(av, GROWTH_TUNING.duoBondExp.base + (won ? GROWTH_TUNING.duoBondExp.winBonus : 0));
+  // 九蓮宝士達成後は倍率＝「物語を終えてなお二人で打つ時間」が余生の絆（Lv11〜12）への主導線。
+  const cleared = (profile.records?.treasures || []).length >= 9;
+  const duoExp = (GROWTH_TUNING.duoBondExp.base + (won ? GROWTH_TUNING.duoBondExp.winBonus : 0))
+    * (cleared ? GROWTH_TUNING.duoBondExp.clearedMul : 1);
+  const bond = gainBond(av, Math.round(duoExp));
   let p = soul > 0 ? grantSoul(profile, soul) : profile;
   p = withActiveAvatar(p, (a) => ({ ...a, params6: cur, avatarHpCurrent: hpAfter, bondLevel: bond.bondLevel, bondExp: bond.bondExp })); // ★結果を HP に反映
   const ended = endAction(p, won ? 1 : 0, { type: "duo", label: "二人打ち（本気）", won }); // 勝てば調子↑

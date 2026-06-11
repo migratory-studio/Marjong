@@ -543,7 +543,7 @@ export const SCENARIO_MASTER = [
     "scenarioType": "bond",
     "unlockConditions": [
       {
-        "type": "scenario_read",
+        "type": "scenario_read_prev_month",
         "value": "mentor-bibi-bond-12"
       },
       {
@@ -565,7 +565,7 @@ export const SCENARIO_MASTER = [
     "scenarioType": "bond",
     "unlockConditions": [
       {
-        "type": "scenario_read",
+        "type": "scenario_read_prev_month",
         "value": "mentor-shiyue-bond-12"
       },
       {

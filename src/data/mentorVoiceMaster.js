@@ -31,6 +31,8 @@ function gMatch(cond, ctx) {
   if (cond.lastOutcome && cond.lastOutcome !== ctx.lastOutcome) return false;
   if (cond.afterChoice && cond.afterChoice !== ctx.afterChoice) return false;
   if (cond.phase && cond.phase !== (ctx.phase || "shitei")) return false;
+  if (cond.cleared && !ctx.cleared) return false;                              // 九蓮宝士達成後のみ
+  if (cond.treasuresMin != null && !((ctx.treasures || 0) >= cond.treasuresMin)) return false; // 宝n個以上＝物語の終盤
   return true;
 }
 
@@ -74,9 +76,12 @@ const SHIYUE_GREET = [
   G({ afterChoice: "honest" }, "この前『しんどい』って言ってたネ。今月は……ちゃんと見とくから、言ってヨ？"),
   G({ afterChoice: "tough" }, "前は強がってたけど、ホントに平気ネ？　ま、その意気は好きだヨ。"),
   G({ afterChoice: "scary" }, "点棒、こわいって言ってたネ。……だいじょぶ、減ったらツモで返せばいいダヨ。"),
+  // 大会敗北の夜の2択（leagueLossTalk）への呼び戻し＝負けた約束を覚えている。
+  G({ afterChoice: "again" }, "この前『すぐ雪辱したい』って言ってたネ。……その顔、ちゃんと火が残ってるヨ。今月、獲りにいこ？"),
+  G({ afterChoice: "rest" }, "負けた夜、ちゃんと休めた？　……無理に強がらないお前のこと、我は結構買ってるんだヨ。"),
   G({ bondMin: 3 }, "……なんか、お前といると調子が出るんダ。我のほうが、ネ。"),
-  // 絆最高：口調がふっと崩れる特別報酬。
-  G({ bondMin: 5 }, "……なあ。『ツモれば勝ち』ってあれ、半分は自分に言い聞かせてるんだ。……お前には、言えるけどネ。"),
+  // 絆の階段（素性の段階開示）：Lv6＝読みの過去に初めて触れる（第8話「見られなかったツモ」の頃）。
+  G({ bondMin: 6 }, "……我サ、人の手を読むの、ほんとは得意だったんだヨ。でも、お前の手だけは——読まなくても、わかる気がするんダ。"),
   // ── 覇道編（師弟編フィナーレ読了後）── 外の強豪の卓へ。高揚の中に、過去がときどき滲む。
   G({ phase: "hadou" }, "ここから先は覇道ネ。外の卓は空気がピリッとしてるヨ。……ふふ、嫌いじゃないダロ？"),
   G({ phase: "hadou" }, "強い奴ほど、いい顔で打つんダヨ。我らも負けてられないネ。"),
@@ -84,6 +89,18 @@ const SHIYUE_GREET = [
   G({ phase: "hadou", condTier: "vgood" }, "その目、覇道の卓でも通じる目だヨ。今月は大きく獲りにいこ？"),
   G({ phase: "hadou", condTier: "vbad" }, "覇道は長いんダ。沈む月があってもいい。……ツモれば勝ち、は逃げないヨ。"),
   G({ phase: "hadou", bondMin: 4 }, "……覇道の卓にいるとサ、たまに昔の我とすれ違う気がするんダ。……ん、独り言ネ。忘れて？"),
+  // 覇道編×高絆：深謀遠慮（昔の呼び名）との和解が日常会話にも滲む（13〜20話のアークと同期）。
+  G({ phase: "hadou", bondMin: 8 }, "深謀遠慮——昔の我の呼び名ネ。ずっと嫌いだったけどサ、お前と打ってたら、あの頃の我も……ま、悪くなかったかもネ。"),
+  // ── 絆最高（Lv10〜）：口調がふっと崩れる特別報酬。物語を最後まで歩いた者だけが聞ける素の声。
+  //    中華娘マーカー（ダヨ/ネ/我）が落ち、最後に一粒だけ戻る——崩れたことが分かる型を守ること。
+  G({ bondMin: 10 }, "……なあ。『ツモれば勝ち』ってあれ、半分は自分に言い聞かせてるんだ。……お前には、言えるけどネ。"),
+  G({ bondMin: 10 }, "……うちの師匠も、よくこうやって隣で見てたんだ。あの人の隣は、あったかかった。……いまは我が、その席にいるんだネ。"),
+  G({ bondMin: 10 }, "……ここまで一緒に来てくれて、ありがとう。……あれ、今の、口調忘れてた？　……ふふ。お前のせいダヨ。"),
+  // ── クリア後（九蓮宝士）：物語が終わっても卓は続く。「余生」の空気＝肩の力が抜けた二人。
+  G({ cleared: true }, "九つの宝、ぜんぶ獲っちゃったネ。……でもサ、我らの卓はまだ終わらないヨ。今日は何して遊ぶ？"),
+  G({ cleared: true }, "九蓮宝士サマの朝は早いネ？　ふふ、冗談ヨ。……肩書きより、お前と打つ一局のほうが大事ダヨ。"),
+  // クリア後×絆カンスト帯＝この物語のいちばん奥の言葉（素のまま語り、最後の一粒で戻る）。
+  G({ cleared: true, bondMin: 12 }, "……全部終わったのに、まだここに来てくれるんだな、お前。……ありがとう。我の麻雀は、お前と打った分だけ、好きになれたヨ。"),
 ];
 const SHIYUE_REST = [
   RT({}, "ね、ちょっと聞いていい？　修行、しんどくない？", [
@@ -102,6 +119,16 @@ const SHIYUE_REST = [
     { key: "fun", label: "ワクワクする", reply: "ふふっ、頼もしいネ！　その顔が見たくて、我は外に連れ出したんダヨ。", memory: "fun" },
     { key: "heavy", label: "正直、重い", reply: "……わかるヨ。点棒の音が違うもんネ。でも、隣に我がいるダロ？", memory: "heavy" },
   ]),
+  // 終盤（宝7つ＝あと少しで物語が終わる頃）：「終わり」を二人で初めて口にする。
+  RT({ treasuresMin: 7 }, "残りの宝、あと少しネ。……ぜんぶ獲ったら、我ら、どうなると思う？", [
+    { key: "together", label: "ずっと相棒だろ？", reply: "……ふふっ。即答ネ。……うん、我もそのつもりヨ。ずっとネ。", memory: "together" },
+    { key: "unknown", label: "想像つかない", reply: "正直ネ。……ま、いいヨ。卓を挟んでれば、我らはずっと我らダヨ。", memory: "unknown" },
+  ]),
+  // クリア後：肩書きの先の話。余生の卓は「何のために打つか」を選び直せる。
+  RT({ cleared: true }, "ね、九蓮宝士サマ。次の目標、決めた？", [
+    { key: "stronger", label: "もっと強くなる", reply: "ふふ、終わりがないネぇ、お前は。……いいヨ、我もまだまだ付き合うダヨ。", memory: "stronger" },
+    { key: "enjoy", label: "のんびり打ちたい", reply: "……それ、最高の贅沢ネ。勝ち負けのない卓も、麻雀ダヨ。", memory: "enjoy" },
+  ]),
 ];
 
 // ── ビビ ── 物静か・凛とした芯。守りの人。心を許すと茶目っ気。
@@ -115,7 +142,11 @@ const BIBI_GREET = [
   G({ lastOutcome: "daiseikou" }, "この前のあれ、見てた。……ちゃんと、誰にも奪わせなかったね。"),
   G({ lastOutcome: "shippai" }, "うまくいかない月もある。……守りきれなくても、あなたは沈んでない。"),
   G({ afterChoice: "rely" }, "この前、頼ってくれたね。……うん、その距離で、いい。"),
-  G({ bondMin: 5 }, "……ねえ。わたしが守るのは、点棒じゃなくて——あなた、なんだよ。" ),
+  G({ afterChoice: "again" }, "……この前の『折れてない』って言葉、思い出してた。……うん。今月も、いける。"),
+  G({ afterChoice: "rest" }, "……ちゃんと休めた？　……弱さを見せられるのは、強さだよ。"),
+  G({ bondMin: 5 }, "……あなたが卓にいると、守りがいがある。……それだけ。深い意味は、まだ内緒。"),
+  // 絆最高（Lv10〜）：いちばん深い本音は、物語を最後まで歩いた者だけに。
+  G({ bondMin: 10 }, "……ねえ。わたしが守るのは、点棒じゃなくて——あなた、なんだよ。" ),
 ];
 const BIBI_REST = [
   RT({}, "少し、話そう。……守るのと、攻めるの。どっちが好き？", [
@@ -139,7 +170,11 @@ const RUINA_GREET = [
   G({ lastOutcome: "daiseikou" }, "この前の大勝負、見事だったわ。……痺れたわよ、ちょっとね。"),
   G({ lastOutcome: "shippai" }, "負けたって？　いいじゃない。笑って次を張れる子は、強くなる。"),
   G({ afterChoice: "allin" }, "この前は全張りだったわね。……その度胸、嫌いじゃないわ。"),
-  G({ bondMin: 5 }, "……あんたには教えとく。あたしが本当に賭けてるのは、点棒じゃない。生き方のほうよ。"),
+  G({ afterChoice: "again" }, "『すぐ取り返す』……あの目、悪くなかったわ。今月、どこで張る？"),
+  G({ afterChoice: "rest" }, "引いて、整えて、また張る。……あんた、博打の呼吸がわかってきたじゃない。"),
+  G({ bondMin: 5 }, "あんたとの修行、悪くない賭けだったわ。……配当はまだ先のお楽しみ、ね。"),
+  // 絆最高（Lv10〜）：いちばん深い本音は、物語を最後まで歩いた者だけに。
+  G({ bondMin: 10 }, "……あんたには教えとく。あたしが本当に賭けてるのは、点棒じゃない。生き方のほうよ。"),
 ];
 const RUINA_REST = [
   RT({}, "ねえ。あんたにとって、賭けって何？", [
@@ -241,6 +276,83 @@ function templateBattleQuips(name) {
 }
 const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE };
 
+// ── 大会敗北の夜の2択（leagueLossTalk）──
+// 大会リザルト（優勝できなかった夜）に師匠が問いかけ、プレイヤーが返せる（双方向の見せ場）。
+// tier: "close"（最終2位＝あと一歩）/ "far"（3位以下）。"any" はどちらでも候補。
+// memory タグ "again"（雪辱）/"rest"（休む）は homeGreeting の afterChoice で呼び戻される＝
+// 負けた夜の約束を、翌月の師匠が覚えている。
+const LL = (tier, cond, prompt, choices) => ({ tier, cond, prompt, choices });
+const SHIYUE_LEAGUE_LOSS = [
+  LL("close", {}, "……あと一歩、だったネ。ねえ、今どんな気持ち？　正直なとこ。", [
+    { key: "again", label: "悔しい。すぐ雪辱したい", reply: "ふふ、いい目だヨ。その火、消さないでネ。——次は獲るヨ、二人で。", memory: "again" },
+    { key: "rest", label: "ちょっと休みたい", reply: "ん、それも強さネ。負けた夜は、ゆっくり茶でも飲も？　……我も付き合うヨ。", memory: "rest" },
+  ]),
+  LL("far", {}, "……今日は、卓が遠かったネ。……顔、上げられそう？", [
+    { key: "again", label: "もう一回挑む", reply: "……ふふ、即答かヨ。頼もしいネ。なら我は、何度でも隣に座るだけヨ。", memory: "again" },
+    { key: "rest", label: "今月は休む", reply: "うん、いい判断ネ。点棒は逃げても、卓は逃げないヨ。……また来月、ネ。", memory: "rest" },
+  ]),
+];
+const BIBI_LEAGUE_LOSS = [
+  LL("any", {}, "……負けたね。……ねえ、ひとつだけ聞かせて。折れてない？", [
+    { key: "again", label: "折れてない", reply: "……うん。その目なら、大丈夫。次は、わたしがぜんぶ守るから。", memory: "again" },
+    { key: "rest", label: "少し、折れたかも", reply: "……正直で、えらい。今日は休も。……あなたを責める人は、ここにはいない。", memory: "rest" },
+  ]),
+];
+const RUINA_LEAGUE_LOSS = [
+  LL("any", {}, "負けたわね。……さ、あんたはどっちの博徒？", [
+    { key: "again", label: "すぐ取り返す", reply: "あはっ、いい啖呵。……でも頭は冷やしときなさい。熱い心と冷えた頭、両方が要るのよ。", memory: "again" },
+    { key: "rest", label: "今日は引く", reply: "引き際を知ってる。……上等よ。それでこそ、次の大勝負が映えるってもの。", memory: "rest" },
+  ]),
+];
+const EXPLICIT_LEAGUE_LOSS = { shiyue: SHIYUE_LEAGUE_LOSS, bibi: BIBI_LEAGUE_LOSS, kakeha_ruina: RUINA_LEAGUE_LOSS };
+// 敗北の2択を1つ返す。未実装キャラは null（リザルトは従来の定型文のまま＝テンプレ文言を本番に出さない）。
+export function pickLeagueLossTalk(charId, tier, ctx = {}) {
+  const all = EXPLICIT_LEAGUE_LOSS[charId];
+  if (!all) return null;
+  const matches = all.filter((e) => (e.tier === tier || e.tier === "any") && gMatch(e.cond, ctx));
+  if (!matches.length) return null;
+  return matches[(Math.random() * matches.length) | 0];
+}
+
+// ── 二人打ちの誘い文句（モーダルの一言）──
+// 未実装キャラは共通フォールバック（従来文言）。クリア後＝師弟からライバルへ、関係の反転。
+const SHIYUE_DUO_INVITE = [
+  G({}, "一局、付き合うヨ。……ふふ、手は抜かないネ？　それが我の愛情ダヨ。"),
+  G({ cleared: true }, "九蓮宝士サマ、一局どう？　……今日は師匠としてじゃなく、ライバルとして打つヨ。本気の本気、ネ。"),
+];
+const EXPLICIT_DUO_INVITE = { shiyue: SHIYUE_DUO_INVITE };
+export const DUO_INVITE_FALLBACK = "「一局、付き合え。…手は抜かんぞ」";
+export function pickMentorDuoInvite(charId, ctx = {}) {
+  const all = EXPLICIT_DUO_INVITE[charId];
+  if (!all) return null;
+  const matches = all.filter((e) => gMatch(e.cond, ctx));
+  if (!matches.length) return null;
+  // クリア後など「より特別な条件」の行を優先（cleared 行があればそちら）。
+  const special = matches.filter((m) => m.cond && Object.keys(m.cond).length);
+  const pool = special.length ? special : matches;
+  return pool[(Math.random() * pool.length) | 0].text;
+}
+
+// ── 雀荘帰りの一言（雀荘リザルトに師匠が添える）──
+// tier: "bigWin"（全勝の荒稼ぎ）/ "win"（勝ち越し）/ "rough"（負け越し・渋い日）。
+// 詩玥の bigWin は素性の反転点：HP＝点棒のゲームで点棒を憎む彼女が、「勝ちすぎた日」にだけ
+// 点棒の山への複雑な目を見せる（序盤の楽勝続きが、そのまま素が滲む装置になる）。
+const P = (tier, cond, text) => ({ tier, cond, text });
+const SHIYUE_PARLOR = [
+  P("bigWin", {}, "……稼ぎすぎだヨ、今日のお前。ふふ、頼もしいけどサ。——点棒の山なんて、明日にはただの数字ネ。"),
+  P("bigWin", { bondMin: 4 }, "山みたいな点棒……。我サ、ほんとはこれ、ちょっと苦手なんだヨ。……でもお前が積んだ山なら、悪くない眺めネ。"),
+  P("bigWin", { bondMin: 8 }, "……昔の我は、こういう山を見るのがこわかったんダ。誰かから奪った高さだからネ。……お前の山は、なんでこんなに軽いんだロ。"),
+  P("win", {}, "おかえり。いい稼ぎだったみたいネ。今夜は豪勢にいこ？"),
+  P("win", {}, "勝ち越しネ。腕、ちゃんと上がってるヨ。我の目に狂いなし！"),
+  P("rough", {}, "おかえり。……渋い顔してるネ。ま、卓銭は授業料ダヨ。"),
+  P("rough", {}, "そういう日もあるヨ。負けた卓のことは、我と二人で覚えとこ。"),
+];
+function templateParlorComments(name) {
+  const t = (l) => `［テンプレ］${name}・雀荘帰り（${l}）：ここに一言が入ります`;
+  return ["bigWin", "win", "rough"].map((tier) => P(tier, {}, t(tier)));
+}
+const EXPLICIT_PARLOR = { shiyue: SHIYUE_PARLOR };
+
 const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET };
 const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST };
 const EXPLICIT_PRAISE = { shiyue: SHIYUE_PRAISE, bibi: BIBI_PRAISE, kakeha_ruina: RUINA_PRAISE };
@@ -260,6 +372,9 @@ export const MENTOR_PRAISE = Object.fromEntries(
 export const MENTOR_BATTLE_QUIPS = Object.fromEntries(
   CHARACTER_MASTER.map((c) => [c.id, EXPLICIT_BATTLE[c.id] || templateBattleQuips(c.name)])
 );
+export const MENTOR_PARLOR_COMMENTS = Object.fromEntries(
+  CHARACTER_MASTER.map((c) => [c.id, EXPLICIT_PARLOR[c.id] || templateParlorComments(c.name)])
+);
 
 // 一致候補から「意味の強い条件」を重めにした重み付きランダムで 1 つ返す。
 // （condTier は常に ctx にあるため、純粋な具体度比較だと汎用/絆/前回選択の行が潰れる。
@@ -267,9 +382,11 @@ export const MENTOR_BATTLE_QUIPS = Object.fromEntries(
 function greetWeight(cond = {}) {
   let w = 1;
   if (cond.phase) w = Math.max(w, 3); // フェーズの空気は重め（覇道編らしさが日常に滲む）
+  if (cond.cleared) w = Math.max(w, 3); // クリア後＝余生の空気も同様に重め
+  if (cond.treasuresMin != null) w = Math.max(w, 3);
   if (cond.condTier) w = Math.max(w, (cond.condTier === "vbad" || cond.condTier === "vgood") ? 3 : 2);
   if (cond.lastOutcome) w = Math.max(w, 4);
-  if (cond.bondMin) w = Math.max(w, 4);
+  if (cond.bondMin) w = Math.max(w, cond.bondMin >= 10 ? 5 : 4); // 口調崩れ帯（最高絆の特別報酬）は埋没させない
   if (cond.afterChoice) w = Math.max(w, 4);
   return w;
 }
@@ -297,6 +414,19 @@ export function pickMentorPraise(charId, ctx = {}) {
   const matches = all.filter((e) => gMatch(e.cond, ctx));
   if (!matches.length) return null;
   return matches[(Math.random() * matches.length) | 0].text;
+}
+
+// 雀荘帰りの一言を1つ返す（tier 一致＋絆行は greetWeight で重め）。
+// 未実装キャラは null（リザルトに行ごと出さない＝［テンプレ］を本番に漏らさない。QA指摘）。
+export function pickMentorParlorComment(charId, tier, ctx = {}) {
+  const all = EXPLICIT_PARLOR[charId];
+  if (!all) return null;
+  const matches = all.filter((e) => e.tier === tier && gMatch(e.cond, ctx));
+  if (!matches.length) return null;
+  const weights = matches.map((m) => greetWeight(m.cond));
+  let r = Math.random() * weights.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < matches.length; i++) { if ((r -= weights[i]) < 0) return matches[i].text; }
+  return matches[matches.length - 1].text;
 }
 
 // 対局見守り相槌を1つ返す（絆行を greetWeight で重め＝絆で言い方が変わる）。無ければ null。

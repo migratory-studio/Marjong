@@ -5,7 +5,11 @@
 //
 // 対応する条件型（scenarioMaster の unlockConditions / vocab）:
 //   always / bond_level / avatar_level / skill_level /
-//   ability_changed_count / scenario_read / tournament_won
+//   ability_changed_count / scenario_read / scenario_read_prev_month / tournament_won
+//
+// scenario_read_prev_month ＝「対象の章を読了し、かつ読了の翌月以降」。フィナーレ直後に
+// 次章へ一気見させず、ひと月の余韻を置くためのクールダウン（旧セーブで readDay が無い
+// 既読は通過扱い＝後方互換）。
 //
 // tournament_won は大会システム（後続フェーズ）の優勝カウンタ records.tournamentsWon を
 // 参照する。未実装の現状は 0 とみなされるため、そのゲートを持つシナリオはロック表示になる。
@@ -14,7 +18,10 @@ import { activeAvatar } from "../progression/avatarFactory.js";
 // プロフィールから解放判定に必要な値を一括で取り出す。
 export function buildUnlockContext(profile) {
   const av = activeAvatar(profile) || {};
-  const readIds = new Set((profile?.scenarioProgress || []).map((p) => p.scenarioId));
+  const progress = profile?.scenarioProgress || [];
+  const readIds = new Set(progress.map((p) => p.scenarioId));
+  const readDays = {};
+  for (const p of progress) { if (p.readDay != null) readDays[p.scenarioId] = p.readDay; }
   return {
     bondLevel: av.bondLevel ?? 1,
     avatarLevel: av.avatarLevel ?? 1,
@@ -22,6 +29,8 @@ export function buildUnlockContext(profile) {
     abilityChangedCount: av.abilityChangedCount ?? 0,
     tournamentWon: profile?.records?.tournamentsWon ?? 0,
     readIds,
+    readDays,
+    dayCount: profile?.dayCount ?? 1,
   };
 }
 
@@ -34,6 +43,7 @@ const LABELS = {
   ability_changed_count: (v) => `能力変更 ${v} 回以上`,
   tournament_won: (v) => `大会優勝 ${v} 回`,
   scenario_read: (v, titleOf) => `「${(titleOf && titleOf(v)) || v}」を読む`,
+  scenario_read_prev_month: (v, titleOf) => `「${(titleOf && titleOf(v)) || v}」を読んだ翌月から`,
 };
 
 // 1 条件を評価して { ok, label } を返す。titleOf は scenario_read のタイトル解決（任意）。
@@ -48,6 +58,11 @@ export function evalCondition(cond, ctx, titleOf) {
     case "ability_changed_count": ok = ctx.abilityChangedCount >= cond.value; break;
     case "tournament_won": ok = ctx.tournamentWon >= cond.value; break;
     case "scenario_read": ok = ctx.readIds.has(cond.value); break;
+    case "scenario_read_prev_month": {
+      const readDay = ctx.readDays?.[cond.value];
+      ok = ctx.readIds.has(cond.value) && (readDay == null || (ctx.dayCount ?? 1) > readDay);
+      break;
+    }
     default: ok = false;
   }
   const label = (LABELS[t] || (() => t))(cond?.value, titleOf);
