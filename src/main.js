@@ -889,7 +889,10 @@ async function openTournament() {
   // 開幕前に大会要項（ルール・優勝条件・ライバル紹介）の専用画面をはさむ（じっくり演出・#2）。
   showTournamentBriefing(t, rUnits, () => {
     const totals = {}; const names = {};
-    for (const u of units) { totals[u.id] = 0; names[u.id] = u.name; }
+    // ペア/団体はユニット名を「◯◯ペア／◯◯チーム」表記に統一（順位表・観戦・結果の至る所で
+    // 「これは2人組/チームの成績」だと一目で分かる）。個人戦は素の名前のまま。
+    const unitSuffix = { pair: "ペア", team: "チーム" }[t.format] || "";
+    for (const u of units) { totals[u.id] = 0; names[u.id] = u.name + unitSuffix; }
     tournamentRun = { t, matchIndex: 0, units, totals, names, deshiUnitId: deshiUnit.id, unitStart };
     playTournamentMatch();
   }, () => openMentorHome());
@@ -1035,7 +1038,8 @@ function simSectionInput(run, t, seated, profile, av) {
   const seats = t.format === "pair" ? 4 : seated.length;
   const hands = seats * (t.rounds || 1);
   const units = seated.map((u) => ({
-    id: u.id, name: u.name, color: u.color || (u.isDeshi ? "#f6b352" : "#8a96a8"),
+    id: u.id, name: run.names?.[u.id] || u.name, // ペア/団体は「◯◯ペア/チーム」表記
+    color: u.color || (u.isDeshi ? "#f6b352" : "#8a96a8"),
     isHuman: !!u.isDeshi, start: run.unitStart?.[u.id] ?? t.base,
     strength: unitStrengthFor(u, t, profile, av),
   }));
@@ -1057,10 +1061,14 @@ function showSectionBriefing(run, t, seated, { isLast, profile, av }, { onAuto, 
   const word = UNIT_WORD[t.format] || "人";
   const mentorChar = CHARACTERS.find((c) => c.id === av?.mentorCharacterId);
   const tierLabel = tournamentGate(profile, t).tier?.label || "互角"; // 形勢＝出場ゲートと同じ評価
+  // ペア/団体の「この卓のメンツ」はメンバー連名（ＡＡ・ＢＢ・ＣＣ）＝自ユニットなら相棒の顔ぶれが見える。
+  const isUnitFmt = t.format === "pair" || t.format === "team";
+  const memberNames = (u) => (u.members || []).map((m) => m?.name).filter(Boolean).join("・");
+  const rowName = (u) => (isUnitFmt && memberNames(u)) || u.name;
   const rows = seated.map((u) => `
     <div class="tsb-row${u.isDeshi ? " me" : ""}${u.isRival ? " named" : ""}">
       <span class="tsb-dot" style="background:${u.color || (u.isDeshi ? "#f6b352" : "#777")}"></span>
-      <span class="tsb-name">${esc(u.name)}${u.isDeshi ? '<span class="ts-you">YOU</span>' : ""}</span>
+      <span class="tsb-name">${esc(rowName(u))}${u.isDeshi ? '<span class="ts-you">YOU</span>' : ""}</span>
       <span class="tsb-title">${esc(u.rivalTitle || (u.isDeshi ? "" : "腕利き"))}</span>
     </div>`).join("");
   // 総合順位（開幕節はまだ無い）。上位3＋圏外なら自分の行を足す。
