@@ -230,5 +230,116 @@ function freshProfile({ soul = 0 } = {}) {
   }
 }
 
+// --- 訓練: 鍛錬の「型」3変種＋6パラメータ全てに主の上げ方がある ---
+{
+  const { TRAIN_TUNING, trainOptionsFor, trainParam, ensureDay: ed } =
+    await import("../src/progression/progressionService.js");
+  const { avatarParams6 } = await import("../src/progression/avatarFactory.js");
+
+  const drills = trainOptionsFor("drill");
+  eq("鍛錬は3つの型を持つ", drills.length, 3);
+  eq("鍛錬の型の主は火力/守備/速度", drills.map((o) => o.main).sort().join(","), ["fire", "guard", "speed"].sort().join(","));
+  // 守備・速度・メンタルも含め、6 パラメータすべてに「主」の上げ方がある（伸び悩み対策の不変条件）。
+  const mains = new Set(Object.values(TRAIN_TUNING).map((t) => t.main));
+  for (const k of ["fire", "guard", "read", "gamble", "speed", "mental"]) {
+    ok(`${k} に主の上げ方がある`, mains.has(k));
+  }
+
+  let p = freshProfile();
+  p = ed(p, () => 0.5).profile;
+  const before = avatarParams6(activeAvatar(p));
+  const res = trainParam(p, "drill_guard", () => 0.5);
+  const after = avatarParams6(activeAvatar(res.profile));
+  ok("鍛錬（受け）で守備が伸びる", after.guard > before.guard);
+  eq("鍛錬（受け）は1行動を消費", dayInfo(res.profile).actionsLeft, ACTIONS_PER_DAY - 1);
+}
+
+// --- 大会: 順位に応じた実戦経験（弱点パラメータから埋まる）＋途中退場は半分 ---
+{
+  const { applyLeagueResult } = await import("../src/progression/progressionService.js");
+  const { tournamentRunConfig } = await import("../src/data/tournamentMaster.js");
+  const { avatarParams6 } = await import("../src/progression/avatarFactory.js");
+  const t = tournamentRunConfig("menzen-kaiken"); // T1: expByPlace=[6,5,4,3]
+
+  // 1キーだけ極端に低くしておく → 実戦経験はそこから先に埋まる。
+  let p = freshProfile();
+  p = { ...p, avatars: p.avatars.map((a) => ({ ...a, params6: { ...a.params6, mental: 1 } })) };
+  const res = applyLeagueResult(p, t, 1); // 最終2位
+  eq("2位でも実戦経験が入る", res.exp?.total, t.expByPlace[1]);
+  ok("経験は最も低いパラメータ（メンタル）から積まれる", (res.exp.gains.mental || 0) >= 1);
+  eq("params6 に反映される", avatarParams6(activeAvatar(res.profile)).mental, 1 + (res.exp.gains.mental || 0));
+  ok("2位は優勝扱いにならない", res.won === false);
+
+  const ret = applyLeagueResult(p, t, 3, true); // 途中退場
+  eq("途中退場は半分（最低1）", ret.exp?.total, Math.max(1, Math.floor(t.expByPlace[3] / 2)));
+
+  // カンスト時は打ち止め（無限ループしない）。
+  let full = freshProfile();
+  full = { ...full, avatars: full.avatars.map((a) => ({ ...a, params6: { fire: 99, guard: 99, read: 99, gamble: 99, speed: 99, mental: 99 } })) };
+  ok("全カンストなら経験は積まれない", applyLeagueResult(full, t, 0).exp === null);
+}
+
+// --- 育成フェーズ: 師弟編フィナーレ読了で覇道編へ ---
+{
+  const { mentorPhase } = await import("../src/progression/scenarioService.js");
+  const { MENTOR_FINALE_SCENARIO } = await import("../src/data/mentorCampaignMaster.js");
+  let p = freshProfile();
+  eq("フィナーレ未読は師弟編", mentorPhase(p, "shiyue").id, "shitei");
+  p = { ...p, scenarioProgress: [{ scenarioId: MENTOR_FINALE_SCENARIO.shiyue, readAt: "2026-01-01", version: 1 }] };
+  eq("フィナーレ読了で覇道編", mentorPhase(p, "shiyue").id, "hadou");
+  eq("finale 未定義の師匠は常に師弟編", mentorPhase(p, "bibi").id, "shitei");
+}
+
+// --- 師匠の修行成長（覇道編・二人三脚）: 座学/鍛錬/二人打ちで師匠も伸びる ---
+{
+  const { trainParam, applyDuoResult, mentorGrowthFor, gainMentorTrainExpIfHadou, MENTOR_GROWTH, ensureDay: ed } =
+    await import("../src/progression/progressionService.js");
+  const { MENTOR_FINALE_SCENARIO } = await import("../src/data/mentorCampaignMaster.js");
+  const toHadou = (p) => ({ ...p, scenarioProgress: [{ scenarioId: MENTOR_FINALE_SCENARIO.shiyue, readAt: "2026-01-01", version: 1 }] });
+
+  // 師弟編では師匠は伸びない。
+  let p = ed(freshProfile(), () => 0.5).profile;
+  ok("師弟編の座学では師匠は伸びない", trainParam(p, "study", () => 0.5).mentor === null);
+  eq("初期の修行は Lv1・補正なし", mentorGrowthFor(p, "shiyue").level, 1);
+  eq("初期の持ち点補正は 0", mentorGrowthFor(p, "shiyue").hpBonus, 0);
+
+  // 覇道編の座学＝師匠に修行 exp。
+  let q = ed(toHadou(freshProfile()), () => 0.5).profile;
+  const tr = trainParam(q, "study", () => 0.5);
+  eq("覇道編の座学で師匠も伸びる", tr.mentor?.gained, MENTOR_GROWTH.exp.study);
+  eq("修行 exp が保存される", mentorGrowthFor(tr.profile, "shiyue").exp, MENTOR_GROWTH.exp.study);
+  // 雀荘巡りは対象外（gainMentorTrainExpIfHadou が menu で弾く）。
+  ok("雀荘巡りは師匠の修行対象外", gainMentorTrainExpIfHadou(q, "shiyue", "parlor") === null);
+
+  // 二人打ち（覇道編）＝最も濃い修行。勝てば上乗せ。
+  const duoP = { ...toHadou(freshProfile()) };
+  const duoQ = ed(duoP, () => 0.5).profile;
+  const win = applyDuoResult(duoQ, { finalPoints: 99999, placement: 0 });
+  eq("覇道編の二人打ち勝利で修行 +3", win.mentor?.gained, MENTOR_GROWTH.exp.duo + MENTOR_GROWTH.exp.duoWin);
+
+  // exp → Lv の畳み込みと levelUp フラグ。
+  let r = toHadou(freshProfile());
+  let lastLevelUp = false;
+  for (let i = 0; i < MENTOR_GROWTH.expPerLevel; i++) {
+    const g = gainMentorTrainExpIfHadou(r, "shiyue", "study");
+    r = g.profile; lastLevelUp = g.levelUp;
+  }
+  eq("expPerLevel ぶん積むと Lv2", mentorGrowthFor(r, "shiyue").level, 2);
+  ok("Lv が上がった回で levelUp=true", lastLevelUp === true);
+  eq("Lv2 の持ち点補正", mentorGrowthFor(r, "shiyue").hpBonus, MENTOR_GROWTH.hpPerLevel);
+}
+
+// --- 師匠の段位の軌跡: 詩玥は九蓮戦の直前に八蓮極士、ビビは五蓮のまま ---
+{
+  const { mentorRankFor } = await import("../src/data/tournamentMaster.js");
+  eq("詩玥: 宝4個では六蓮達士のまま", mentorRankFor("shiyue", 4)?.n, 6);
+  eq("詩玥: 宝5個で七蓮覇士", mentorRankFor("shiyue", 5)?.n, 7);
+  eq("詩玥: 宝8個（九蓮戦直前）で八蓮極士", mentorRankFor("shiyue", 8)?.n, 8);
+  eq("詩玥: 八蓮極士の名前", mentorRankFor("shiyue", 8)?.name, "八蓮極士");
+  eq("ビビ: 宝8個でも五蓮闘士のまま（停滞が正典）", mentorRankFor("bibi", 8)?.n, 5);
+  eq("ルイナ: 軌跡なし＝五蓮のまま", mentorRankFor("kakeha_ruina", 9)?.n, 5);
+  eq("引数なし（従来呼び出し）は初期段位", mentorRankFor("shiyue")?.n, 6);
+}
+
 console.log(fails === 0 ? "\nALL PASS" : `\n${fails} FAILED`);
 process.exit(fails === 0 ? 0 : 1);

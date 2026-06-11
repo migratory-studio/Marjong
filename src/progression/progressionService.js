@@ -16,6 +16,7 @@ import { abilityChangeCost } from "../data/abilityChangeCostMaster.js";
 import { rollDailyParlors } from "../data/parlorMaster.js";
 import { TRAIT_CFG } from "../data/parlorTraitMaster.js";
 import { evaluateTier, paramsFromLv } from "../autobattle/autoBattle.js";
+import { mentorPhase } from "../data/mentorCampaignMaster.js";
 
 // 育成の調整値（バランス調整で動かす単一の出どころ）。
 // ※時間の縮尺：1ターン（コード上の dayCount/“日”）＝ゲーム内の「ひと月」。九蓮宝士到達≈28ヶ月
@@ -302,12 +303,23 @@ export function changeAbility(profile, targetSkillTemplateId) {
 // ------------------------------------------- 育成パラメータ訓練（§4.6.1）
 // 活動コマンドが 6 パラメータを直接伸ばす（主 1＋副 1）。HP を消費し、一部はソウルも得る。
 // 雀荘巡り(parlor)の副は「ランダム 1 種」。数値はチューニング前提。
+// menu＝ホームのコマンド札の単位。鍛錬は札 1 枚で「型」を選ぶ 3 変種（守備・速度を
+// 副+1 でしか伸ばせなかった穴をここで塞ぐ。6 パラメータすべてに「主」の上げ方がある状態が正）。
+// ※ drill のキー名は互換のため「攻め」のまま据え置き（テスト・過去ログが参照）。
 export const TRAIN_TUNING = {
-  study:  { label: "座学",     main: "read",   sub: "guard",  mainGain: 3, subGain: 1, hp: 600 },
-  drill:  { label: "鍛錬",     main: "fire",   sub: "speed",  mainGain: 3, subGain: 1, hp: 1500, soul: 120 },
-  duo:    { label: "二人打ち", main: "mental", sub: "read",   mainGain: 3, subGain: 1, hp: 1500 },
-  parlor: { label: "雀荘巡り", main: "gamble", sub: "random", mainGain: 3, subGain: 2, hp: 2500, soul: 200 },
+  study:       { label: "座学",         menu: "study",  main: "read",   sub: "guard",  mainGain: 3, subGain: 1, hp: 600 },
+  drill:       { label: "鍛錬（攻め）", menu: "drill",  main: "fire",   sub: "speed",  mainGain: 3, subGain: 1, hp: 1500, soul: 120 },
+  drill_guard: { label: "鍛錬（受け）", menu: "drill",  main: "guard",  sub: "mental", mainGain: 3, subGain: 1, hp: 1500, soul: 120 },
+  drill_speed: { label: "鍛錬（捌き）", menu: "drill",  main: "speed",  sub: "read",   mainGain: 3, subGain: 1, hp: 1500, soul: 120 },
+  duo:         { label: "二人打ち",     menu: "duo",    main: "mental", sub: "read",   mainGain: 3, subGain: 1, hp: 1500 },
+  parlor:      { label: "雀荘巡り",     menu: "parlor", main: "gamble", sub: "random", mainGain: 3, subGain: 2, hp: 2500, soul: 200 },
 };
+// ホームのコマンド札（menu）に属する訓練キー一覧。鍛錬は型選択モーダルの選択肢になる。
+export function trainOptionsFor(menuKey) {
+  return Object.entries(TRAIN_TUNING)
+    .filter(([, t]) => t.menu === menuKey)
+    .map(([key, t]) => ({ key, ...t }));
+}
 const PARAM_CAP = 99;
 const ALL_PARAMS = ["fire", "guard", "read", "gamble", "speed", "mental"];
 
@@ -373,11 +385,14 @@ export function trainParam(profile, key, rng = Math.random) {
   // 失敗で調子↓ / 大成功で調子↑。行動を 1 消費（必要なら日が進む）。
   const conditionDelta = outcomeKey === "shippai" ? -1 : outcomeKey === "daiseikou" ? 1 : 0;
   const ended = endAction(p, conditionDelta, { type: "train", key, label: t.label, outcome: outcomeKey });
+  // 覇道編なら師匠も一緒に伸びる（座学・鍛錬。修行 exp → 師匠の持ち点）。
+  const mg = gainMentorTrainExpIfHadou(ended.profile, av.mentorCharacterId, t.menu);
   return {
-    profile: ended.profile, gains, hpCost, soul: t.soul || 0,
+    profile: mg?.profile || ended.profile, gains, hpCost, soul: t.soul || 0,
     outcome: outcomeKey, outcomeLabel: outcome.label, outcomeTone: outcome.tone, outcomeLine: outcome.line,
     conditionDelta, dayAdvanced: ended.dayAdvanced,
     before, after: { ...cur },
+    mentor: mg ? { gained: mg.gained, level: mg.level, levelUp: mg.levelUp } : null,
   };
 }
 
@@ -402,6 +417,7 @@ export function leaguePoints(standings = [], uma = [50, 10, -10, -30], base = 25
 
 // 全節終了後の結果反映。finalRank＝弟子の累積ポイント順位(0..3)。
 // 完走で必ず評価＋継承＋ソウル（失敗なし路線）。最終1位＝優勝で tournament_won++。持ち点は持ち越さない（節ごと 25000）。
+// さらに順位に応じた「実戦経験」で 6 パラメータが伸びる（exp）。優勝以外の大会にも手応えを残す。
 export function applyLeagueResult(profile, t, finalRank = 3, retreated = false) {
   const place = Math.max(0, Math.min((t.rankByPlace?.length ?? 4) - 1, finalRank));
   const rank = t.rankByPlace[place];
@@ -414,7 +430,37 @@ export function applyLeagueResult(profile, t, finalRank = 3, retreated = false) 
     const treasures = Array.from(new Set([...(p.records?.treasures || []), t.id].filter(Boolean)));
     p = { ...p, records: { ...(p.records || {}), tournamentsWon: (p.records?.tournamentsWon ?? 0) + 1, treasures } };
   }
-  return { profile: p, finalRank: place, won, rank, meta, soul, retreated };
+  const exp = applyLeagueExp(p, t, place, retreated);
+  p = exp.profile;
+  return { profile: p, finalRank: place, won, rank, meta, soul, retreated, exp: exp.total > 0 ? exp : null };
+}
+
+// 順位別の実戦経験。「実戦は弱点を炙り出す」＝その時点で最も低いパラメータから +1 ずつ積む。
+// 訓練で後回しになりがちな守備・速度・メンタルの穴を、大会が自然に埋める設計。
+// 途中退場は半分（最低 1）＝逃げても卓に着いたぶんは残る。
+function applyLeagueExp(profile, t, place, retreated) {
+  const av = activeAvatar(profile);
+  const pts = (t.expByPlace || [])[place] || 0;
+  const total0 = retreated ? Math.max(1, Math.floor(pts / 2)) : pts;
+  if (!av || total0 <= 0) return { profile, gains: {}, before: null, after: null, total: 0 };
+  const cur = avatarParams6(av);
+  const before = { ...cur };
+  const gains = {};
+  let total = 0;
+  for (let i = 0; i < total0; i++) {
+    // 現時点で最小のパラメータ（同値は ALL_PARAMS 順で先勝ち）。全カンストなら打ち止め。
+    let low = null;
+    for (const k of ALL_PARAMS) {
+      if ((cur[k] || 0) >= PARAM_CAP) continue;
+      if (low == null || (cur[k] || 0) < (cur[low] || 0)) low = k;
+    }
+    if (!low) break;
+    cur[low] = (cur[low] || 0) + 1;
+    gains[low] = (gains[low] || 0) + 1;
+    total += 1;
+  }
+  const p = withActiveAvatar(profile, (a) => ({ ...a, params6: cur }));
+  return { profile: p, gains, before, after: { ...cur }, total };
 }
 
 // ------------------------------------------------- 本気対局の結果反映（Phase 4A・§4.6.9）
@@ -472,7 +518,50 @@ export function applyDuoResult(profile, result = {}) {
   let p = soul > 0 ? grantSoul(profile, soul) : profile;
   p = withActiveAvatar(p, (a) => ({ ...a, params6: cur, avatarHpCurrent: hpAfter, bondLevel: bond.bondLevel, bondExp: bond.bondExp })); // ★結果を HP に反映
   const ended = endAction(p, won ? 1 : 0, { type: "duo", label: "二人打ち（本気）", won }); // 勝てば調子↑
-  return { profile: ended.profile, soul, gains, before, after: { ...cur }, won, closeness, finalPoints: fp, hpBefore, hpAfter, hpDelta: hpAfter - hpBefore, bondUp: bond.bondUp, bondLevel: bond.bondLevel, dayAdvanced: ended.dayAdvanced };
+  // 覇道編なら師匠も一緒に伸びる（タイマンは一番濃い修行。弟子に点を奪われたら師匠も学ぶ＝上乗せ）。
+  const mg = gainMentorTrainExpIfHadou(ended.profile, av.mentorCharacterId, "duo", { duoWon: won });
+  return { profile: mg?.profile || ended.profile, soul, gains, before, after: { ...cur }, won, closeness, finalPoints: fp, hpBefore, hpAfter, hpDelta: hpAfter - hpBefore, bondUp: bond.bondUp, bondLevel: bond.bondLevel, dayAdvanced: ended.dayAdvanced, mentor: mg ? { gained: mg.gained, level: mg.level, levelUp: mg.levelUp } : null };
+}
+
+// ------------------------------------------------- 師匠の修行成長（覇道編・二人三脚）
+// 覇道編では座学・鍛錬・二人打ちで「師匠も伸びる」。修行 exp → 修行 Lv（最大10）で、
+// 師匠の持ち点（HP）が二人打ち・ペア/団体大会で底上げされる＝相棒が実際に強くなる。
+// （6 パラメータは本気対局エンジンに作用しないため、師匠の成長は「点棒＝HP」の言語で見せる。）
+// 蓄積は profile.mentorGrowth[mentorId].exp（師匠は“人”なのでアバターをまたいで共有）。
+export const MENTOR_GROWTH = {
+  expPerLevel: 6,
+  maxLevel: 10,
+  hpPerLevel: 1200, // 修行 Lv−1 × この値が師匠の持ち点に乗る（Lv10 で +10800）
+  exp: { study: 1, drill: 1, duo: 2, duoWin: 1 }, // menu 別の修行 exp。duoWin＝弟子が点を奪えた時の上乗せ
+};
+
+export function mentorGrowthFor(profile, mentorId) {
+  const exp = profile?.mentorGrowth?.[mentorId]?.exp || 0;
+  const level = Math.min(MENTOR_GROWTH.maxLevel, Math.floor(exp / MENTOR_GROWTH.expPerLevel) + 1);
+  const maxed = level >= MENTOR_GROWTH.maxLevel;
+  return {
+    exp, level, maxed,
+    hpBonus: (level - 1) * MENTOR_GROWTH.hpPerLevel,
+    // 次の Lv までの進み（ゲージ表示用）。カンスト後は 1。
+    nextPct: maxed ? 1 : (exp % MENTOR_GROWTH.expPerLevel) / MENTOR_GROWTH.expPerLevel,
+  };
+}
+
+// 修行 exp を積む（覇道編チェックは呼び出し側 gainMentorTrainExpIfHadou が行う）。
+function gainMentorExp(profile, mentorId, amount) {
+  const before = mentorGrowthFor(profile, mentorId);
+  const exp = before.exp + Math.max(0, amount);
+  const p = { ...profile, mentorGrowth: { ...(profile.mentorGrowth || {}), [mentorId]: { exp } } };
+  const after = mentorGrowthFor(p, mentorId);
+  return { profile: p, gained: amount, level: after.level, levelUp: after.level > before.level };
+}
+
+// 覇道編なら師匠に修行 exp。師弟編では null（師匠はまだ「教える側」＝伸びない）。
+export function gainMentorTrainExpIfHadou(profile, mentorId, menuKey, { duoWon = false } = {}) {
+  const base = MENTOR_GROWTH.exp[menuKey] || 0;
+  if (!base || mentorPhase(profile, mentorId).id !== "hadou") return null;
+  const amount = base + (menuKey === "duo" && duoWon ? MENTOR_GROWTH.exp.duoWin : 0);
+  return gainMentorExp(profile, mentorId, amount);
 }
 
 // ------------------------------------------------- 師匠の記憶（双方向・蓄積）

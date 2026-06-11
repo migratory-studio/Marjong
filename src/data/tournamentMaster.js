@@ -29,10 +29,11 @@ export const TREASURE_TOURNAMENTS = [
 // ティア別の大会ラン既定値（節数・順位点・報酬の格・ゲート相手 Lv の目安）。
 // 実際の相手 Lv はキャラ進捗で上書きする（無ければこの既定値）。順位点（ウマ）は M リーグ準拠。
 // ティアは「節数・順位点・報酬・敵の強さ・ネームド比率」を担当（出場者数は形式で固定＝下記 ENTRANTS_BY_FORMAT）。
+// expByPlace＝順位別の「実戦経験」（6パラメータの伸び総量）。優勝以外でも卓で得たものが残る＝虚無感対策。
 export const TOURNAMENT_TIER = {
-  1: { matches: 3, rounds: 1, uma: [50, 10, -10, -30], soulClear: 500,  metaByPlace: [3, 2, 1, 1], defaultOppLv: 2 }, // 東風戦×3節
-  2: { matches: 4, rounds: 1, uma: [50, 10, -10, -30], soulClear: 900,  metaByPlace: [6, 4, 2, 1], defaultOppLv: 5 }, // 東風戦×4節（半荘×4は体感が長すぎた）
-  3: { matches: 5, rounds: 2, uma: [50, 10, -10, -30], soulClear: 1500, metaByPlace: [9, 6, 3, 2], defaultOppLv: 8 },
+  1: { matches: 3, rounds: 1, uma: [50, 10, -10, -30], soulClear: 500,  metaByPlace: [3, 2, 1, 1], expByPlace: [6, 5, 4, 3],  defaultOppLv: 2 }, // 東風戦×3節
+  2: { matches: 4, rounds: 1, uma: [50, 10, -10, -30], soulClear: 900,  metaByPlace: [6, 4, 2, 1], expByPlace: [8, 6, 5, 4],  defaultOppLv: 5 }, // 東風戦×4節（半荘×4は体感が長すぎた）
+  3: { matches: 5, rounds: 2, uma: [50, 10, -10, -30], soulClear: 1500, metaByPlace: [9, 6, 3, 2], expByPlace: [10, 8, 6, 5], defaultOppLv: 8 },
 };
 
 // 出場者（エントリー）総数を形式で固定（Mリーグ＝8基準）。弟子を含む人数。
@@ -79,9 +80,26 @@ export const MENTOR_TREASURE_RANK = {
   bibi: 5,          // 五蓮闘士（正典：5つで停滞＝覇道編で残り4つに挑み直す軸。scenario/design/bibi.json）
   kakeha_ruina: 5,  // 五蓮闘士（博徒）
 };
+// 師匠の段位の「軌跡」: 弟子の宝の数 → 師匠の蓮数（キャラ別の伸び方）。
+// 詩玥は六蓮で止まっていたのが、弟子との覇道編で再び動き出し、九蓮戦の直前に八蓮極士へ届く
+// （弟子と並んで最後の一つに挑む画）。ビビ・ルイナはトラック無し＝停滞が正典
+// （ビビ「最年少五蓮」のまま。殻破りは物語側 ep12/ep20 で扱う）。
+export const MENTOR_RANK_TRACK = {
+  shiyue: [
+    { treasures: 5, rank: 7 }, // 七蓮覇士
+    { treasures: 8, rank: 8 }, // 八蓮極士＝九蓮宝燈杯の直前
+  ],
+};
 // 師匠の段位（mentorId → 段位オブジェクト）。未定義師匠は四蓮策士（=4）を下限に。
-export function mentorRankFor(mentorId) {
-  return treasureRankFor(MENTOR_TREASURE_RANK[mentorId] || 4);
+// wonTreasures（弟子の宝の数）を渡すと MENTOR_RANK_TRACK ぶん昇段した「今の段位」を返す。
+export function mentorRankFor(mentorId, wonTreasures = null) {
+  let n = MENTOR_TREASURE_RANK[mentorId] || 4;
+  if (wonTreasures != null) {
+    for (const step of MENTOR_RANK_TRACK[mentorId] || []) {
+      if (wonTreasures >= step.treasures) n = Math.max(n, step.rank);
+    }
+  }
+  return treasureRankFor(n);
 }
 
 export const tournamentById = (id) => TREASURE_TOURNAMENTS.find((t) => t.id === id) || TREASURE_TOURNAMENTS[0];
@@ -111,7 +129,7 @@ export function tournamentRunConfig(id, opts = {}) {
     playerCount, entrants, runnable,
     unitSize, unitCount, unitsAtTable, base,
     matches: tc.matches, rounds: tc.rounds, uma,
-    soulClear: tc.soulClear, metaByPlace: tc.metaByPlace, rankByPlace: PLACE_RANKS,
+    soulClear: tc.soulClear, metaByPlace: tc.metaByPlace, expByPlace: tc.expByPlace, rankByPlace: PLACE_RANKS,
     gateOppLv: oppLv, rivalLv: oppLv,
   };
 }

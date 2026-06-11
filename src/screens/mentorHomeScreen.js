@@ -17,14 +17,14 @@ import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
-import { rest, trainParam, TRAIN_TUNING, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState, setMentorMemory } from "../progression/progressionService.js";
-import { pickMentorGreeting, pickRestTalk, pickMentorPraise } from "../data/mentorVoiceMaster.js";
+import { rest, trainParam, TRAIN_TUNING, trainOptionsFor, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState, setMentorMemory, mentorGrowthFor } from "../progression/progressionService.js";
+import { pickMentorGreeting, pickRestTalk, pickMentorPraise, pickMentorRankUpLine } from "../data/mentorVoiceMaster.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
 import { nextTreasureInfo } from "../data/mentorCampaignMaster.js";
 import { treasureRankFor, mentorRankFor } from "../data/tournamentMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
-import { isScenarioRead, unnotifiedUnlocks, markUnlockNotified, episodeNumberOf } from "../progression/scenarioService.js";
+import { isScenarioRead, unnotifiedUnlocks, markUnlockNotified, episodeNumberOf, mentorPhase } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
 import { isDebugMode } from "../app/debug.js";
 
@@ -158,6 +158,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     bondLevel: avatar.bondLevel ?? 1,
     lastOutcome: (recentOutcome === "daiseikou" || recentOutcome === "shippai") ? recentOutcome : null,
     afterChoice: mem.lastChoice || null,
+    phase: mentorPhase(profile, avatar.mentorCharacterId).id,
   };
   const greetLine = pickMentorGreeting(avatar.mentorCharacterId, greetCtx) || mentorLine(actionsLeft);
 
@@ -165,7 +166,11 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   const soul = profile.wallet?.soul ?? 0;
   const meta = profile.wallet?.meta ?? 0;            // 継承（メタ通貨・未実装→0）
   const day = di.day;                                 // ○日目
-  const chapter = "修行の日々";                       // TODO §4.5 mentorCampaignMaster で章名を差す
+  // 育成フェーズ（師弟編→覇道編）。覇道編はホーム全体の空気を変える（is-hadou テーマ＋章名＋一言）。
+  const phase = mentorPhase(profile, avatar.mentorCharacterId);
+  const isHadou = phase.id === "hadou";
+  container.classList.toggle("is-hadou", isHadou);
+  const chapter = `${phase.label} ─ ${phase.subtitle}`;
   const hpMax = avatar.avatarHpMax || 1;
   const hpCur = Math.max(0, Math.min(avatar.avatarHpCurrent ?? hpMax, hpMax));
   const hpPct = Math.round((hpCur / hpMax) * 100);
@@ -173,9 +178,20 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // 師匠フレーバー（「今日の様子」＝師匠の調子）
   const mentorTitle = MENTOR_TITLE[mentor?.role] || "師範";
   const mood = mentorCond.label;
-  // 異能段位：弟子＝集めた宝の数 / 師匠＝マスタ初期値（基本 四蓮策士以上）。
-  const deshiRank = treasureRankFor((profile.records?.treasures || []).length); // 0個なら null＝無段
-  const mentorRank = mentorRankFor(avatar.mentorCharacterId);
+  // 異能段位：弟子＝集めた宝の数 / 師匠＝マスタ初期値＋段位の軌跡（弟子の宝数で昇段するキャラも）。
+  const treasureCount = (profile.records?.treasures || []).length;
+  const deshiRank = treasureRankFor(treasureCount); // 0個なら null＝無段
+  const mentorRank = mentorRankFor(avatar.mentorCharacterId, treasureCount);
+  // 師匠の昇段検知（段位の軌跡が動いた瞬間だけ通知。初回ロードは記録のみ＝既存昇段ぶんを誤通知しない）。
+  const seenRank = profile.records?.mentorRankSeen?.[avatar.mentorCharacterId];
+  let mentorRankUp = null;
+  if (mentorRank && (seenRank == null || mentorRank.n > seenRank)) {
+    if (seenRank != null && mentorRank.n > seenRank) mentorRankUp = mentorRank;
+    profile = { ...profile, records: { ...(profile.records || {}), mentorRankSeen: { ...(profile.records?.mentorRankSeen || {}), [avatar.mentorCharacterId]: mentorRank.n } } };
+    await repository.saveProfile(profile);
+  }
+  // 覇道編の修行成長（師匠も伸びる）＝ nameplate・師匠詳細の表示に使う。
+  const mGrowth = mentorGrowthFor(profile, avatar.mentorCharacterId);
   const mAbility = mentor?.abilities?.[0]?.abilityId ? abilityDef(mentor.abilities[0].abilityId) : null;
   const mAbilityName = mAbility?.name || "";
   const mAbilityDesc = mAbility?.desc || mentor?.bio || "";
@@ -207,7 +223,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     <div class="mhx-topbar">
       <div class="mhx-chapter">
         <button type="button" class="mhx-back" title="ホームへ戻る">‹</button>
-        <div class="mhx-seal">章</div>
+        <div class="mhx-seal">${esc(phase.seal)}</div>
         <div class="mhx-cname">〔 <b>${esc(chapter)}</b> 〕</div>
       </div>
       <div class="mhx-topright">
@@ -236,6 +252,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
             ${mentorRank ? `<span class="mhx-dan-chip" title="異能段位：${esc(mentorRank.reading)}">${esc(mentorRank.name)}</span>` : ""}
             <span class="mhx-np-title">${esc(mentorTitle)}</span>
             <span class="mhx-np-lv">技 Lv${MENTOR_SKILL_LEVEL}</span>
+            ${isHadou ? `<span class="mhx-np-lv mhx-np-shugyo" title="覇道編は師匠も一緒に伸びる（座学・鍛錬・二人打ち）。持ち点 +${mGrowth.hpBonus.toLocaleString()}">修行 Lv${mGrowth.level}</span>` : ""}
             <span class="mhx-np-mood mhx-cond tone-${mentorCond.tone}">今月：${esc(mood)}</span>
           </div>
         </div>
@@ -260,7 +277,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       <div class="mhx-group mhx-jissen">
         <div class="mhx-cat">実戦</div>
         <div class="mhx-tags">
-          ${tagTrain("鍛 錬", "火力・速度を鍛える", "drill")}
+          ${tagTrain("鍛 錬", "型を選んで鍛える", "drill")}
           <div class="mhx-tag" data-duo="1" role="button" tabindex="0"><span class="mhx-cmd">二人打ち</span><span class="mhx-desc">師匠とタイマン</span></div>
           <div class="mhx-tag" data-parlor="1" role="button" tabindex="0"><span class="mhx-cmd">雀荘巡り</span><span class="mhx-desc">打ちに出かける</span></div>
         </div>
@@ -464,7 +481,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         r.textContent = parts.join("　／　"); r.hidden = false;
         // 休憩中の2択コミュ（双方向）。選ぶと師匠が返し、その選択を覚える。
         // 質問があるときは「ゆっくり休んだ」ボタンを出さず、回答が前進導線になる（双方向の見せ場を任意化しない）。
-        const talk = pickRestTalk(avatar.mentorCharacterId, { bondLevel: avatar.bondLevel ?? 1, condTier: cond.tone });
+        const talk = pickRestTalk(avatar.mentorCharacterId, { bondLevel: avatar.bondLevel ?? 1, condTier: cond.tone, phase: phase.id });
         if (talk) {
           btn.remove();
           const rt = card.querySelector(".mhx-rt");
@@ -502,26 +519,40 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   }
 
   // ---- 訓練モーダル（6パラメータを伸ばす）----
-  function openTrainModal(key) {
-    const t = TRAIN_TUNING[key];
-    if (!t) return;
-    const subLabel = t.sub === "random" ? "ランダム" : PARAM_LABELS[t.sub];
+  // menuKey＝コマンド札の単位。鍛錬のように複数の「型」（TRAIN_TUNING の変種）を持つ札は、
+  // モーダル内で型を選んでから実行する（札を増やさずに 6 パラメータ全部へ主の上げ方を用意する）。
+  function openTrainModal(menuKey) {
+    const opts = trainOptionsFor(menuKey);
+    if (!opts.length) return;
+    const single = opts.length === 1;
+    const t = opts[0];
+    const menuLabel = single ? t.label : t.label.replace(/（.+）$/, "");
+    const subLabel = (o) => (o.sub === "random" ? "ランダム" : PARAM_LABELS[o.sub]);
+    const styleName = (o) => (o.label.match(/（(.+)）/)?.[1] || o.label) + "の型";
+    const profLine = single
+      ? `伸びる：<b>${esc(PARAM_LABELS[t.main])}</b>（主）／ ${esc(subLabel(t))}（副）　・　消費 HP ${t.hp.toLocaleString()}${t.soul ? `　・　ソウル +${t.soul}` : ""}`
+      : `型を選ぶ　・　消費 HP ${t.hp.toLocaleString()}${t.soul ? `　・　ソウル +${t.soul}` : ""}`;
+    const action = single
+      ? `<button type="button" class="mhx-md-btn mhx-tr-go" data-key="${esc(t.key)}">${esc(t.label)}する</button>`
+      : `<div class="mhx-duo-btns mhx-tr-styles">${opts.map((o) => `
+          <button type="button" class="mhx-md-btn mhx-tr-go" data-key="${esc(o.key)}">${esc(styleName(o))}<small>主 ${esc(PARAM_LABELS[o.main])}／副 ${esc(subLabel(o))}</small></button>`).join("")}</div>`;
     const html = `
       <div class="mhx-md-head">
         <div class="mhx-md-icon">${mentorIcon ? `<img src="${esc(mentorIcon)}" alt="">` : ""}</div>
-        <div class="mhx-md-title"><span class="mhx-md-by">修行</span><span class="mhx-md-ttl">${esc(t.label)}</span></div>
+        <div class="mhx-md-title"><span class="mhx-md-by">修行</span><span class="mhx-md-ttl">${esc(menuLabel)}</span></div>
       </div>
-      <p class="mhx-md-line">${esc(TRAIN_LINE[key] || "")}</p>
-      <p class="mhx-md-prof">伸びる：<b>${esc(PARAM_LABELS[t.main])}</b>（主）／ ${esc(subLabel)}（副）　・　消費 HP ${t.hp.toLocaleString()}${t.soul ? `　・　ソウル +${t.soul}` : ""}<br><small>※伸びは当日の調子で変動（メンタルが高いほど安定し、大成功も出やすい）</small></p>
+      <p class="mhx-md-line">${esc(TRAIN_LINE[menuKey] || "")}</p>
+      <p class="mhx-md-prof">${profLine}<br><small>※伸びは当日の調子で変動（メンタルが高いほど安定し、大成功も出やすい）</small></p>
       <p class="mhx-md-result" hidden></p>
       <div class="mhx-pg-list mhx-train-gain" hidden></div>
-      <button type="button" class="mhx-md-btn">${esc(t.label)}する</button>
+      <p class="mhx-md-mentor" hidden></p>
+      ${action}
     `;
     let done = false;
     const { card } = openModal(container, html, () => { if (done) refresh(); });
-    const btn = card.querySelector(".mhx-md-btn");
-    btn?.addEventListener("click", async () => {
+    card.querySelectorAll(".mhx-tr-go").forEach((btn) => btn.addEventListener("click", async () => {
       if (done) return;
+      const key = btn.getAttribute("data-key");
       try {
         const res = trainParam(profile, key);
         // 大成功／失敗は師匠が覚えて、次の一言に反映する。
@@ -554,12 +585,25 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         const gw = card.querySelector(".mhx-train-gain");
         gw.innerHTML = gainGaugesHtml(gainRowsFrom(res)); gw.hidden = false;
         animateGainGauges(gw);
-        btn.disabled = true; btn.textContent = "完了";
+        // 覇道編：師匠も一緒に伸びた（修行 exp。Lv が上がった月は強調）。
+        if (res.mentor) {
+          const mw = card.querySelector(".mhx-md-mentor");
+          mw.innerHTML = res.mentor.levelUp
+            ? `<b>${esc(mentor?.name || "師匠")}の修行が Lv${res.mentor.level} に！</b>　二人三脚、いい調子だ。`
+            : `${esc(mentor?.name || "師匠")}も伸びた　<b>修行 +${res.mentor.gained}</b>`;
+          mw.hidden = false;
+        }
+        // 実行後は全部の型ボタンを畳む（押した型だけ「完了」表示）。
+        card.querySelectorAll(".mhx-tr-go").forEach((b) => {
+          b.disabled = true;
+          if (b !== btn) b.hidden = true;
+        });
+        btn.innerHTML = "完了";
       } catch (e) {
         const r = card.querySelector(".mhx-md-result");
         r.textContent = e?.message || "失敗しました。"; r.hidden = false;
       }
-    });
+    }));
   }
 
   // ---- 二人打ち＝師匠タイマン（オート/本気を選ぶ・§4.6.9 B2）----
@@ -646,9 +690,35 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       </div>
       ${mentor?.profile ? `<p class="mhx-md-prof">${esc(mentor.profile)}</p>` : ""}
       ${mAbilityName ? `<div class="mhx-md-abil"><div class="mhx-md-abil-h">能力</div><div class="mhx-md-abil-n">${esc(mAbilityName)}</div><div class="mhx-md-abil-d">${esc(mAbilityDesc)}</div></div>` : ""}
-      <div class="mhx-md-haoh">覇道モードでは、ここに師匠の HP も並びます（二人三脚）。</div>
+      ${isHadou ? `
+      <div class="mhx-md-haoh">
+        <div class="mhx-md-haoh-h">二人三脚 — 覇道編は師匠も伸びる</div>
+        <div class="mhx-md-haoh-row">修行 <b>Lv${mGrowth.level}</b>${mGrowth.maxed ? "<small>（極）</small>" : `<span class="mhx-mg-bar"><i style="width:${Math.round(mGrowth.nextPct * 100)}%"></i></span>`}</div>
+        <div class="mhx-md-haoh-row">大会・タイマンの持ち点 <b>+${mGrowth.hpBonus.toLocaleString()}</b></div>
+        <small>座学・鍛錬・二人打ちのたびに、${esc(mentor?.name || "師匠")}の修行も進む。</small>
+      </div>` : ""}
     `;
     openModal(container, html);
+  }
+
+  // ---- 師匠の昇段演出（段位の軌跡が動いた瞬間。弟子の昇段 openDaniRankModal の師匠版）----
+  function openMentorRankUpModal(rk, onDone) {
+    const KANJI = ["一", "二", "三", "四", "五", "六", "七", "八", "九"];
+    const line = pickMentorRankUpLine(avatar.mentorCharacterId, rk.n);
+    const html = `
+      <div class="mhx-dan mhx-dan-mentor">
+        <div class="mhx-dan-rays"></div>
+        <div class="mhx-dan-kicker">師 匠 ＿ 昇 段</div>
+        <div class="mhx-dan-seal"><span class="mhx-dan-seal-n">${KANJI[rk.n - 1] || rk.n}</span><span class="mhx-dan-seal-s">蓮</span></div>
+        <div class="mhx-dan-name">${esc(mentor?.name || "師匠")} — ${esc(rk.name)}</div>
+        <div class="mhx-dan-read">${esc(rk.reading)}</div>
+        <div class="mhx-dan-msg mhx-dan-line">${esc(line)}</div>
+        <button type="button" class="mhx-md-btn mhx-dan-btn">よし</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    audio?.playPip?.(2600, 0.6);
+    setTimeout(() => audio?.playPip?.(3200, 0.5), 130);
+    card.querySelector(".mhx-dan-btn")?.addEventListener("click", close);
   }
 
   // ---- 「〇ヶ月目を終えて」＝先月の手応えサマリ（→次の月へ）----
@@ -791,6 +861,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         ${r.soul ? `<div class="mhx-pr-soul">獲得ソウル <b>+${r.soul}</b></div>` : ""}
         <div class="mhx-pr-sub">${hd > 0 ? "格上の師匠から、確かに点をもぎ取った。" : "食らいついた分が、力になった。"}${r.bondUp ? "<br>…師匠との距離が、少し縮まった気がする。" : ""}</div>
         <div class="mhx-pr-stats mhx-pg-list">${rows.length ? gainGaugesHtml(rows) : '<div class="mhx-pr-none">変化なし</div>'}</div>
+        ${r.mentor ? `<p class="mhx-md-mentor">${r.mentor.levelUp ? `<b>${esc(mentor?.name || "師匠")}の修行が Lv${r.mentor.level} に！</b>　打ち合うたび、二人とも強くなる。` : `${esc(mentor?.name || "師匠")}も伸びた　<b>修行 +${r.mentor.gained}</b>`}</p>` : ""}
         <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);
@@ -829,11 +900,18 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-lg-list">${rows}</div>
         <div class="mhx-tr-rank">評価 <b>${esc(r.rank || "満貫級")}</b></div>
         <div class="mhx-pr-soul">継承 <b>+${r.meta ?? 0}</b>　／　ソウル <b>+${r.soul ?? 0}</b></div>
-        <p class="mhx-pr-sub">${won ? "宝への道が、また一歩ひらけた。" : "悔しさは、次の糧に。"}</p>
+        ${r.exp?.total ? `<div class="mhx-lg-exp"><div class="mhx-lg-exp-h">実戦経験 <b>+${r.exp.total}</b><small>（弱点から伸びる）</small></div><div class="mhx-pg-list mhx-lg-exp-g"></div></div>` : ""}
+        <p class="mhx-pr-sub">${won ? "宝への道が、また一歩ひらけた。" : r.retreated ? "引いた卓のことも、体は覚えている。" : place === 2 ? "あと一歩。——だが、卓で得たものは確かに残った。" : "負けた卓ほど、よく覚えている。経験は裏切らない。"}</p>
         <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);
     if (won) audio?.playPip?.(2600, 0.6);
+    // 順位に応じた実戦経験（FE 風ゲージ）。優勝以外でも「持ち帰ったもの」が目に見える。
+    if (r.exp?.total) {
+      const gw = card.querySelector(".mhx-lg-exp-g");
+      gw.innerHTML = gainGaugesHtml(gainRowsFrom(r.exp));
+      animateGainGauges(gw);
+    }
     card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
 
@@ -1023,6 +1101,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     flash?.scenarioRead ? (next) => openScenarioReadModal(flash.scenarioRead, next) : null,
     flash?.league ? (next) => openLeagueResultModal(flash.league, next) : null,
     flash?.league?.rankUp ? (next) => openDaniRankModal(flash.league.rankUp, next) : null,
+    // 師匠の昇段（段位の軌跡）。弟子の昇段を見届けたあとに出す＝二人で上がっていく画。
+    mentorRankUp ? (next) => openMentorRankUpModal(mentorRankUp, next) : null,
     flash?.tournamentGate ? (next) => openTournamentGateModal(flash.tournamentGate, next) : null,
     flash?.storyGate ? (next) => openStoryGateModal(flash.storyGate, next) : null,
     // 「〇ヶ月目を終えて」→次の月へ → 「〇ヶ月目（今月の調子）」の順で2枚に分けて出す（ごちゃつき回避）。

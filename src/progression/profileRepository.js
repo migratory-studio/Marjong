@@ -26,6 +26,7 @@ export function createDefaultProfile() {
     daily: {},
     unlockedPresetIds: [],
     rewardLedger: [],
+    mentorGrowth: {}, // 覇道編の「師匠も伸びる」修行 exp（mentorId → { exp }）
   };
 }
 

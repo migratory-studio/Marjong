@@ -12,6 +12,7 @@
 //   bondMin    : 絆Lv 下限
 //   lastOutcome: 直近の訓練結果  "daiseikou"|"shippai"（最近のみ）
 //   afterChoice: 直近の休憩2択で覚えたタグ（双方向の呼び戻し）
+//   phase      : 育成フェーズ    "shitei"|"hadou"（師弟編の最終章読了で hadou。scenarioService.mentorPhase）
 //
 // choices[].memory がプレイヤーの選択タグ。profile.mentorMemory.lastChoice に保存され、
 // 次回以降の greeting の cond.afterChoice で参照される（＝“覚えている”手触り）。
@@ -29,6 +30,7 @@ function gMatch(cond, ctx) {
   if (cond.bondMin != null && !((ctx.bondLevel || 1) >= cond.bondMin)) return false;
   if (cond.lastOutcome && cond.lastOutcome !== ctx.lastOutcome) return false;
   if (cond.afterChoice && cond.afterChoice !== ctx.afterChoice) return false;
+  if (cond.phase && cond.phase !== (ctx.phase || "shitei")) return false;
   return true;
 }
 
@@ -43,6 +45,7 @@ function templateGreetings(name) {
     G({ condTier: "vbad" }, t("弟子が絶不調")),
     G({ lastOutcome: "daiseikou" }, t("前回大成功への反応")),
     G({ lastOutcome: "shippai" }, t("前回失敗へのフォロー")),
+    G({ phase: "hadou" }, t("覇道編の挨拶")),
   ];
 }
 function templateRestTalks(name) {
@@ -74,6 +77,13 @@ const SHIYUE_GREET = [
   G({ bondMin: 3 }, "……なんか、お前といると調子が出るんダ。我のほうが、ネ。"),
   // 絆最高：口調がふっと崩れる特別報酬。
   G({ bondMin: 5 }, "……なあ。『ツモれば勝ち』ってあれ、半分は自分に言い聞かせてるんだ。……お前には、言えるけどネ。"),
+  // ── 覇道編（師弟編フィナーレ読了後）── 外の強豪の卓へ。高揚の中に、過去がときどき滲む。
+  G({ phase: "hadou" }, "ここから先は覇道ネ。外の卓は空気がピリッとしてるヨ。……ふふ、嫌いじゃないダロ？"),
+  G({ phase: "hadou" }, "強い奴ほど、いい顔で打つんダヨ。我らも負けてられないネ。"),
+  G({ phase: "hadou", time: "asa" }, "覇道の月初めネ。残りの宝、ぜんぶ獲りにいくヨ。——もちろん、二人でネ。"),
+  G({ phase: "hadou", condTier: "vgood" }, "その目、覇道の卓でも通じる目だヨ。今月は大きく獲りにいこ？"),
+  G({ phase: "hadou", condTier: "vbad" }, "覇道は長いんダ。沈む月があってもいい。……ツモれば勝ち、は逃げないヨ。"),
+  G({ phase: "hadou", bondMin: 4 }, "……覇道の卓にいるとサ、たまに昔の我とすれ違う気がするんダ。……ん、独り言ネ。忘れて？"),
 ];
 const SHIYUE_REST = [
   RT({}, "ね、ちょっと聞いていい？　修行、しんどくない？", [
@@ -87,6 +97,10 @@ const SHIYUE_REST = [
   RT({ bondMin: 3 }, "なあ。……我の打ち方、ついてこれてる？", [
     { key: "learn", label: "盗ませてもらってる", reply: "ふふっ、いい弟子ネ。ぜんぶ持ってけ、ダヨ。", memory: "learn" },
     { key: "myway", label: "自分の型でいく", reply: "……いいネ、それ。我に似てきたヨ。", memory: "myway" },
+  ]),
+  RT({ phase: "hadou" }, "ね、覇道の卓って、どう？　正直なとこ。", [
+    { key: "fun", label: "ワクワクする", reply: "ふふっ、頼もしいネ！　その顔が見たくて、我は外に連れ出したんダヨ。", memory: "fun" },
+    { key: "heavy", label: "正直、重い", reply: "……わかるヨ。点棒の音が違うもんネ。でも、隣に我がいるダロ？", memory: "heavy" },
   ]),
 ];
 
@@ -155,6 +169,21 @@ const RUINA_PRAISE = [
   G({ bondMin: 3 }, "最高じゃない。……あんた、いつかあたしを超えるかもね。"),
 ];
 
+// ── 師匠の昇段（覇道編・段位の軌跡 MENTOR_RANK_TRACK が動いた瞬間）──
+// n＝新しい蓮数。弟子と歩む覇道で「師匠自身の物語」も再び動き出す、反転の節目。
+// 点棒嫌いの詩玥は段位そのものより「誰と獲るか」を口にする（素性の滲み）。
+const SHIYUE_RANKUP = {
+  7: "気づいたら七蓮覇士、だってサ。あはは、お前と打ってると勝手に増えてくネ。……宝も、楽しさも。",
+  8: "八蓮極士。——昔の我が聞いたら腰を抜かすヨ。……あと一つだネ、相棒。最後も『ツモれば勝ち』、いこ？",
+};
+const EXPLICIT_RANKUP = { shiyue: SHIYUE_RANKUP };
+// 師匠の昇段セリフを返す。未実装キャラはテンプレ（grep: ［テンプレ］）。
+export function pickMentorRankUpLine(charId, n) {
+  const line = EXPLICIT_RANKUP[charId]?.[n];
+  if (line) return line;
+  return `［テンプレ］${nameOf(charId)}・昇段（${n}蓮）：ここに一言が入ります`;
+}
+
 // ── 対局見守り相槌（battle quips）── オート対局（雀荘巡り等）に同行した師匠の相槌。
 // event: matchStart(試合開始) / bigWin(満貫以上) / bigLoss(大放銃・被ツモ) / pinch(HP25%初到達)
 //        tobi(飛び) / bustWin(相手を飛ばした) / abilityUse(必殺発動) / readWin(読み勝ち)
@@ -222,6 +251,7 @@ export const MENTOR_BATTLE_QUIPS = Object.fromEntries(
 //  そこで重み付け：絆・直近結果・前回選択＞極端な調子＞通常の調子＞時間/汎用。変化を残しつつ意味を優先。）
 function greetWeight(cond = {}) {
   let w = 1;
+  if (cond.phase) w = Math.max(w, 3); // フェーズの空気は重め（覇道編らしさが日常に滲む）
   if (cond.condTier) w = Math.max(w, (cond.condTier === "vbad" || cond.condTier === "vgood") ? 3 : 2);
   if (cond.lastOutcome) w = Math.max(w, 4);
   if (cond.bondMin) w = Math.max(w, 4);

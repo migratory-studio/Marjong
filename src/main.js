@@ -26,7 +26,7 @@ import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById } from "./data/skillTemplateMaster.js";
 import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
-import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult } from "./progression/progressionService.js";
+import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor } from "./data/tournamentMaster.js";
 import { nextTreasureStep } from "./data/mentorCampaignMaster.js";
 import { MeldType } from "./core/meld.js";
@@ -763,7 +763,9 @@ const MENTOR_DUO_HP_CAP_READS = 24;      // 強化の上限話数
 function mentorDuoHp(mentorChar, profile) {
   const base = mentorChar?.stats?.startingPoints || 25000; // フリー対戦のHP＝初期状態（格上）
   const read = Math.min(MENTOR_DUO_HP_CAP_READS, (profile?.scenarioProgress || []).length);
-  return base + read * MENTOR_DUO_HP_PER_SCENARIO;
+  // 覇道編の修行成長（座学/鍛錬/二人打ちで師匠も伸びる）＝持ち点の上乗せ。
+  const grown = mentorGrowthFor(profile, mentorChar?.id).hpBonus;
+  return base + read * MENTOR_DUO_HP_PER_SCENARIO + grown;
 }
 
 // 本気対局を起動。config: { avatar, opponents:[character], rounds, players, voiceSet, startPoints, onResult(result, action) }
@@ -803,12 +805,13 @@ function asMatchChar(char, points) {
 }
 // 弟子ユニットを編成する（個人=弟子のみ / ペア=弟子＋師匠 / 団体=弟子＋師匠＋仲間）。
 // 持ち点＝HP：弟子ユニットは育成した HP（avatarHpMax）で打つ＝育成成果が大会の持ち点に直結。
-function buildDeshiUnit(av, mentorId, format, unitSize) {
+// 師匠の持ち点には覇道編の修行成長（mentorGrowth）が乗る＝「2人とも伸びる」が大会の戦力になる。
+function buildDeshiUnit(av, mentorId, format, unitSize, profile = null) {
   const hp = av.avatarHpMax || 25000;
   const members = [avatarToCharacter(av, hp)];
   if (unitSize >= 2) {
     const mentor = CHARACTERS.find((c) => c.id === mentorId) || CHARACTERS[0];
-    members.push(asMatchChar(mentor, hp));
+    members.push(asMatchChar(mentor, hp + mentorGrowthFor(profile, mentorId).hpBonus));
   }
   if (unitSize >= 3) {
     const allyId = ALLY_BY_MENTOR[mentorId] || CHARACTERS.find((c) => c.id !== mentorId)?.id;
@@ -853,7 +856,7 @@ async function openTournament() {
   const gate = tournamentGate(profile, t);
   if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
   // 弟子ユニット＝育成HP / ライバルユニット＝oppLv連動HP（難易度）。計 unitCount＝8。
-  const deshiUnit = buildDeshiUnit(av, av.mentorCharacterId, t.format, t.unitSize);
+  const deshiUnit = buildDeshiUnit(av, av.mentorCharacterId, t.format, t.unitSize, profile);
   const oppHp = oppHpForLv(t.gateOppLv ?? t.rivalLv ?? 2);
   const rUnits = rivalUnits(t.id, t.tier, t.unitCount, t.unitSize, { seedPrefix: "league", startingPoints: oppHp });
   const units = [deshiUnit, ...rUnits];
@@ -1047,7 +1050,7 @@ async function onTournamentMatchDone(result) {
       const treasureCount = res.profile.records?.treasures?.length || 0;
       const rankUp = res.won ? treasureRankFor(treasureCount) : null;
       tournamentRun = null;
-      openMentorHome({ league: { name: t.name, treasure: t.treasure, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, standings, rankUp } });
+      openMentorHome({ league: { name: t.name, treasure: t.treasure, finalRank: res.finalRank, won: res.won, rank: res.rank, meta: res.meta, soul: res.soul, retreated: res.retreated, exp: res.exp, standings, rankUp } });
     } else {
       playTournamentMatch();
     }
@@ -1266,7 +1269,7 @@ async function openMentorSub(target, payload) {
         const cur = await profileRepo.loadProfile();
         const res = applyDuoResult(cur, result);
         await profileRepo.saveProfile(res.profile);
-        openMentorHome({ duo: { won: res.won, soul: res.soul, gains: res.gains, before: res.before, after: res.after, closeness: res.closeness, finalPoints: res.finalPoints, hpBefore: res.hpBefore, hpAfter: res.hpAfter, hpDelta: res.hpDelta, bondUp: res.bondUp } });
+        openMentorHome({ duo: { won: res.won, soul: res.soul, gains: res.gains, before: res.before, after: res.after, closeness: res.closeness, finalPoints: res.finalPoints, hpBefore: res.hpBefore, hpAfter: res.hpAfter, hpDelta: res.hpDelta, bondUp: res.bondUp, mentor: res.mentor } });
       },
     });
   } else if (target === "honest-proto") {

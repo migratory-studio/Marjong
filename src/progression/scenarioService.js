@@ -10,6 +10,8 @@ import { activeAvatar } from "./avatarFactory.js";
 import { GROWTH_TUNING, gainBond } from "./progressionService.js";
 import { SCENARIO_MASTER } from "../data/scenarioMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
+// 育成フェーズ（師弟編→覇道編）の判定はデータ層（mentorCampaignMaster）が正典。ここから再輸出。
+export { mentorPhase } from "../data/mentorCampaignMaster.js";
 
 const ledgerKey = (scenarioId) => `scenario-first-read:${scenarioId}`;
 

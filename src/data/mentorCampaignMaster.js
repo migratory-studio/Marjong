@@ -62,6 +62,27 @@ export const MENTOR_CAMPAIGN = {
   ],
 };
 
+// ------------------------------------------------- 育成フェーズ（章立て）：師弟編 → 覇道編
+// 師弟編の最終章（finaleScenario）を読了すると、育成ホームは「覇道編」フェーズに切り替わる
+// （章名・UI テーマ・師匠の一言が変わる。判定は scenarioService.mentorPhase）。
+// シナリオ未実装の師匠は finale 無し＝常に師弟編のまま。
+export const MENTOR_PHASES = {
+  shitei: { id: "shitei", label: "師弟編", subtitle: "修行の日々", seal: "章" },
+  hadou:  { id: "hadou",  label: "覇道編", subtitle: "九つの宝へ", seal: "覇" },
+};
+export const MENTOR_FINALE_SCENARIO = {
+  shiyue: "mentor-shiyue-bond-12", // 12話「ツモれば、ふたりの勝ち」＝師弟編フィナーレ
+};
+
+// 育成フェーズ判定。師弟編の最終章を読了していれば覇道編、それ以外（finale 未定義含む）は師弟編。
+// データ層に置くのは progressionService（師匠の修行成長）からも循環なしで参照するため。
+// UI からは scenarioService 経由（再エクスポート）でも使える。
+export function mentorPhase(profile, mentorId) {
+  const fin = MENTOR_FINALE_SCENARIO[mentorId];
+  const read = fin && (profile?.scenarioProgress || []).some((p) => p.scenarioId === fin);
+  return read ? MENTOR_PHASES.hadou : MENTOR_PHASES.shitei;
+}
+
 export function campaignFor(mentorId) {
   return MENTOR_CAMPAIGN[mentorId] || MENTOR_CAMPAIGN.shiyue;
 }

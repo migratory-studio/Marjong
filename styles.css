@@ -3554,3 +3554,77 @@ button.secondary { color: var(--ink); }
 .av-skill-card, .av-deshi-card, .av-mentor-pick-card { border-color: rgba(246,179,82,.5); }
 .av-skill-card:hover, .av-mentor-pick-card:hover:not(.is-locked) { border-color: var(--accent); }
 .av-deshi-card:hover { border-color: var(--accent); }
+
+/* ============================================================
+   師弟ホーム 追加スキン — 鍛錬の型選択 / 大会の実戦経験 / 覇道編テーマ
+   （すべて #mentor-home-screen.mh2 配下。他画面へ漏らさない）
+   ============================================================ */
+/* 鍛錬「型」選択（モーダル内3択。コマンド札は増やさない＝レイアウト不変） */
+#mentor-home-screen.mh2 .mhx-tr-styles { margin-top:4px; }
+#mentor-home-screen.mh2 .mhx-tr-styles .mhx-md-btn small { font-size:10px; white-space:nowrap; letter-spacing:0; }
+
+/* 大会リザルト：実戦経験（順位に応じて、その時点の弱点パラメータから伸びる） */
+#mentor-home-screen.mh2 .mhx-lg-exp {
+  margin:2px 0 10px; padding:8px 10px 6px; border-radius:8px;
+  border:1px solid rgba(143,36,24,.25); background:rgba(200,164,77,.10);
+}
+#mentor-home-screen.mh2 .mhx-lg-exp-h { font-family:var(--font-go); font-size:13px; color:#5a4520; margin-bottom:6px; }
+#mentor-home-screen.mh2 .mhx-lg-exp-h b { color:#8f2418; font-size:16px; }
+#mentor-home-screen.mh2 .mhx-lg-exp-h small { color:#6a5836; margin-left:6px; font-size:11px; }
+
+/* ---- 覇道編テーマ（師弟編フィナーレ読了後・scenarioService.mentorPhase）----
+   道場の藍 → 闘場の緋。空気の色だけ差し替え、配置・骨格は一切変えない。 */
+#mentor-home-screen.mh2.is-hadou {
+  --sumi:#120a10; --kon:#3a1020; --shu:#c4252b; --shu-lit:#e8483f;
+  --kin:#d8a93f; --kin-lit:#f4dc9a;
+}
+#mentor-home-screen.mh2.is-hadou .mhx-bg-base {
+  background:
+    radial-gradient(90% 70% at 28% 8%, rgba(118,30,44,.46), transparent 62%),
+    radial-gradient(60% 50% at 50% -8%, rgba(220,140,60,.26), transparent 60%),
+    linear-gradient(180deg,#2a0e16 0%, #170810 52%, #0d0409 100%);
+}
+#mentor-home-screen.mh2.is-hadou .mhx-shoji { opacity:.08; }
+#mentor-home-screen.mh2.is-hadou .mhx-floor {
+  background:
+    linear-gradient(180deg, rgba(18,8,11,0), rgba(12,5,8,.85)),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.22) 0 1px, transparent 1px 96px),
+    linear-gradient(180deg,#3b2026,#1c0e13);
+}
+#mentor-home-screen.mh2.is-hadou .mhx-floor::before { background:linear-gradient(90deg,transparent,rgba(232,72,63,.55),transparent); }
+#mentor-home-screen.mh2.is-hadou .mhx-crest { border-color:rgba(216,169,63,.22); box-shadow:inset 0 0 0 14px rgba(216,169,63,.07); }
+#mentor-home-screen.mh2.is-hadou .mhx-crest::after { content:"覇"; color:rgba(216,169,63,.10); }
+#mentor-home-screen.mh2.is-hadou .mhx-lbody {
+  background:radial-gradient(60% 60% at 50% 35%, #ff7a3c, #b81e14 78%);
+  background-image:repeating-linear-gradient(180deg,rgba(0,0,0,.2) 0 1px, transparent 1px 9px);
+  box-shadow:0 0 34px 8px rgba(232,72,63,.5), inset 0 -8px 14px rgba(0,0,0,.45);
+}
+#mentor-home-screen.mh2.is-hadou .mhx-topbar {
+  background:linear-gradient(180deg,rgba(22,8,12,.96),rgba(22,8,12,.78));
+  border-bottom-color:rgba(216,169,63,.5);
+}
+#mentor-home-screen.mh2.is-hadou .mhx-floorglow { background:radial-gradient(50% 100% at 50% 100%, rgba(232,100,63,.26), transparent 70%); }
+#mentor-home-screen.mh2.is-hadou .mhx-seal { border-color:#f0c87a; box-shadow:inset 0 0 4px rgba(0,0,0,.4), 0 0 8px rgba(232,72,63,.45); }
+
+/* ---- 覇道編「師匠も伸びる」（二人三脚）---- */
+/* 訓練・二人打ちリザルトの師匠成長行（紙モーダル上） */
+#mentor-home-screen.mh2 .mhx-md-mentor {
+  font-family:var(--font-go); font-size:12.5px; color:#5a4520; letter-spacing:.03em;
+  margin:8px 0 2px; padding:7px 10px; border-radius:7px;
+  border:1px solid rgba(143,36,24,.22); background:rgba(184,57,43,.07);
+}
+#mentor-home-screen.mh2 .mhx-md-mentor b { color:#8f2418; }
+/* nameplate の修行 Lv チップ（覇道編のみ） */
+#mentor-home-screen.mh2 .mhx-np-shugyo { color:#ffb38a; }
+/* 師匠詳細の二人三脚ブロック */
+#mentor-home-screen.mh2 .mhx-md-haoh-h { font-weight:700; color:#8f2418; margin-bottom:5px; font-size:12px; }
+#mentor-home-screen.mh2 .mhx-md-haoh-row { display:flex; align-items:center; gap:8px; margin:3px 0; font-size:12px; color:#5a4520; }
+#mentor-home-screen.mh2 .mhx-md-haoh-row b { color:#8f2418; font-size:14px; }
+#mentor-home-screen.mh2 .mhx-mg-bar {
+  flex:1; max-width:160px; height:7px; border-radius:4px; overflow:hidden;
+  background:rgba(90,69,32,.18); border:1px solid rgba(90,69,32,.3);
+}
+#mentor-home-screen.mh2 .mhx-mg-bar i { display:block; height:100%; background:linear-gradient(90deg,#c8a44d,#e8483f); }
+/* 師匠の昇段演出（弟子の mhx-dan を流用しつつ、セリフ行は墨で読ませる） */
+#mentor-home-screen.mh2 .mhx-dan-mentor .mhx-dan-kicker { color:#8f2418; }
+#mentor-home-screen.mh2 .mhx-dan-line { font-size:13.5px; line-height:1.7; max-width:430px; margin-left:auto; margin-right:auto; }
