@@ -71,12 +71,20 @@ export async function showGrowth(container, { repository, onBack } = {}) {
       if (lvInfo.next) {
         const gain = lvInfo.next.avatarHpMax - lvInfo.currentHpMax;
         card.appendChild(elt("div", "growth-card-next", { textContent: `→ Lv ${lvInfo.next.avatarLevel}  最大HP ${lvInfo.next.avatarHpMax}（+${gain}）` }));
-        const afford = soulNow >= lvInfo.next.soulCost;
-        const btn = elt("button", "primary growth-buy", { type: "button", disabled: !afford,
-          textContent: `強化（ソウル ${lvInfo.next.soulCost}）` });
-        if (!afford) btn.title = "ソウルが足りません";
-        btn.onclick = () => buy(levelUpAvatar);
-        card.appendChild(btn);
+        if (lvInfo.locked) {
+          // 宝の解禁制（Lv11〜）: 宝が足りないあいだは費用ではなく解禁条件を見せる。
+          const btn = elt("button", "primary growth-buy", { type: "button", disabled: true,
+            textContent: `宝 ${lvInfo.next.requireTreasures} 個で解禁（あと ${lvInfo.treasuresNeeded} 個）` });
+          btn.title = "大会で優勝して宝を集めると、キャラ Lv の上限が広がります";
+          card.appendChild(btn);
+        } else {
+          const afford = soulNow >= lvInfo.next.soulCost;
+          const btn = elt("button", "primary growth-buy", { type: "button", disabled: !afford,
+            textContent: `強化（ソウル ${lvInfo.next.soulCost}）` });
+          if (!afford) btn.title = "ソウルが足りません";
+          btn.onclick = () => buy(levelUpAvatar);
+          card.appendChild(btn);
+        }
       } else {
         card.appendChild(elt("div", "growth-card-max", { textContent: "最大 Lv に到達しています。" }));
       }

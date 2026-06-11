@@ -7,6 +7,10 @@
 // 保存データ全体の形は §17.1。schemaVersion を持たせ、後方互換の移行を migrateProfile で行う。
 export const SCHEMA_VERSION = 1;
 
+// 改名された大会id（旧→新）。records.treasures に旧idで残る獲得記録を読み込み時に付け替える。
+//   musou-kokusho → kyuuren-houtou … 無双国書杯を九蓮宝燈杯へ改名（2026-06。無双冠との国士無双モチーフ被り解消）
+const RENAMED_TOURNAMENT_IDS = { "musou-kokusho": "kyuuren-houtou" };
+
 // 空のプロフィール（マイキャラ未作成）。§17.1 のキー構成に合わせる。
 export function createDefaultProfile() {
   return {
@@ -38,6 +42,12 @@ export class ProfileRepository {
     const base = createDefaultProfile();
     const merged = { ...base, ...(raw && typeof raw === "object" ? raw : {}) };
     merged.wallet = { ...base.wallet, ...(raw?.wallet || {}) };
+    if (Array.isArray(merged.records?.treasures)) {
+      merged.records = {
+        ...merged.records,
+        treasures: [...new Set(merged.records.treasures.map((id) => RENAMED_TOURNAMENT_IDS[id] || id))],
+      };
+    }
     merged.schemaVersion = SCHEMA_VERSION;
     return merged;
   }

@@ -41,7 +41,7 @@ const ASSIGN = {
   "daisanken":        ["enji", "garou", "shien"],
   "tenankou":         ["kurono", "enji", "garou"],
   "tenchi-shingyoku": ["tenka", "mirei", "shien", "garou", "kurono", "ren", "hiro"],
-  "musou-kokusho":    ["mukou", "garou", "tenka", "enji", "kurono", "mirei", "shien"],
+  "kyuuren-houtou":   ["mukou", "garou", "tenka", "enji", "kurono", "mirei", "shien"],
 };
 
 // 1体のネームド・ライバルを対局用キャラ・オブジェクトに組む（モブと同形）。

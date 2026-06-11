@@ -20,6 +20,22 @@ export const AVATAR_LEVEL_MASTER = [
   { avatarLevel: 8, soulCost: 1300, avatarHpMax: 19000, unlockIds: [] },
   { avatarLevel: 9, soulCost: 1600, avatarHpMax: 22000, unlockIds: [] },
   { avatarLevel: 10, soulCost: 2000, avatarHpMax: 26000, unlockIds: [] },
+  // Lv11〜20: 覇道編〜九蓮宝士後の長期育成枠（師弟編中にカンストしない逃がし）。
+  // HP はグンと伸ばす方針（点棒＝HP の「厚み」。大会の宝は増減で決まるので勝ち確にはならない）。
+  // Lv11〜20 は「宝の解禁制」: 宝（大会優勝）を1つ獲るたびに上限が1つ開く（requireTreasures）。
+  //   - 物語との融合: 宝を集めるほど打ち手の“器”が広がる（点棒＝HP＝器）。
+  //   - 経済との両立: 購入機会が宝1個ごとに分散するので、スキルLv（超越帯・計28,800）と
+  //     財布を食い合わず、どちらも終盤までに完走できる（回帰=test/leveldesign.mjs）。
+  { avatarLevel: 11, soulCost: 1200, avatarHpMax: 29500, requireTreasures: 2, unlockIds: [] },
+  { avatarLevel: 12, soulCost: 1400, avatarHpMax: 33000, requireTreasures: 3, unlockIds: [] },
+  { avatarLevel: 13, soulCost: 1600, avatarHpMax: 36500, requireTreasures: 4, unlockIds: [] },
+  { avatarLevel: 14, soulCost: 1800, avatarHpMax: 40000, requireTreasures: 5, unlockIds: [] },
+  { avatarLevel: 15, soulCost: 2000, avatarHpMax: 44000, requireTreasures: 6, unlockIds: [] },
+  { avatarLevel: 16, soulCost: 2200, avatarHpMax: 48000, requireTreasures: 7, unlockIds: [] },
+  { avatarLevel: 17, soulCost: 2400, avatarHpMax: 52000, requireTreasures: 8, unlockIds: [] },
+  { avatarLevel: 18, soulCost: 2600, avatarHpMax: 56000, requireTreasures: 9, unlockIds: [] },
+  { avatarLevel: 19, soulCost: 2800, avatarHpMax: 60500, requireTreasures: 9, unlockIds: [] },
+  { avatarLevel: 20, soulCost: 3000, avatarHpMax: 65000, requireTreasures: 9, unlockIds: [] },
 ];
 
 export function avatarLevelEntry(level) {

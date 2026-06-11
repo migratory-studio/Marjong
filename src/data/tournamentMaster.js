@@ -5,23 +5,25 @@
 // 相手の強さが変わるため、強さは「ティア既定値 × キャラ進捗」で実行時に与える（tournamentRunConfig）。
 //
 // 例外（順序の固定要件）:
-//   - **無双国書（final）は全キャラの最終で固定**。会場で人数（形式）が確定する（詩玥＝ペア）。
+//   - **九蓮宝燈（final）は全キャラの最終で固定**。会場で人数（形式）が確定する（詩玥＝ペア）。
 //   - **ティア**は格・難度の目安（T1→T2→T3 の順に挑むのが基本）。同ティア内の順序はキャラ自由。
 //
 // format: "solo4"(個人・四麻) / "pair"(ペア＝2対2の4卓) / "team"(団体＝チーム戦)
-//         / "final"(無双国書＝会場でキャラ別に人数確定)
-// ※大会は基本「4人卓以上の規模＝Mリーグ準拠」。三麻(solo3)は大会では使わない（コード上は残置）。
+//         / "final"(九蓮宝燈＝会場でキャラ別に人数確定)
+// ※個人戦は四麻と三麻を半々に：門前開鍵杯=四麻 / 清一器杯・無双冠杯=三麻(solo3)。
+//   九蓮宝燈(final)が個人形式に解決されるときは四麻（finalFormat=solo4）。
+// tableUnits: 毎節の着卓ユニット数の個別上書き（大三剣杯＝3チーム卓→三人打ち。席数はユニット数で決まる）。
 // tier:   1 登竜門級 / 2 役満級 / 3 神域級
 export const TREASURE_TOURNAMENTS = [
   { id: "menzen-kaiken",    name: "門前開鍵杯", treasure: { name: "門前開鍵", reading: "メンゼンカイケン", baseYaku: "門前清自摸和", symbol: "孤独な試練を独力で開くマスターキー" }, format: "solo4", tier: 1 },
-  { id: "chin-iki",         name: "清一器杯",   treasure: { name: "清一器",   reading: "チンイッキ",       baseYaku: "清一色",        symbol: "一色に研ぎ澄ました純粋の器" },     format: "solo4", tier: 1 },
+  { id: "chin-iki",         name: "清一器杯",   treasure: { name: "清一器",   reading: "チンイッキ",       baseYaku: "清一色",        symbol: "一色に研ぎ澄ました純粋の器" },     format: "solo3", tier: 1 }, // 三人打ち（一色＝研ぎ澄まし、の少数卓）
   { id: "ji-peeko",         name: "至盃口杯",   treasure: { name: "至盃口",   reading: "ジーペーコー",     baseYaku: "二盃口",        symbol: "1対1の美学を極めた聖杯" },         format: "pair",  tier: 1 },
-  { id: "musou-kan",        name: "無双冠杯",   treasure: { name: "無双冠",   reading: "ムソウカン",       baseYaku: "国士無双",      symbol: "孤高の王が戴く王冠" },             format: "solo4", tier: 2 },
+  { id: "musou-kan",        name: "無双冠杯",   treasure: { name: "無双冠",   reading: "ムソウカン",       baseYaku: "国士無双",      symbol: "孤高の王が戴く王冠" },             format: "solo3", tier: 2 }, // 三人打ち（孤高＝少数の卓）
   { id: "kyou-sharin",      name: "鏡車輪杯",   treasure: { name: "鏡車輪",   reading: "キョウシャリン",   baseYaku: "大車輪",        symbol: "「もう一人の自分」を映す円鏡" },   format: "pair",  tier: 2 },
-  { id: "daisanken",        name: "大三剣杯",   treasure: { name: "大三剣",   reading: "ダイサンケン",     baseYaku: "大三元",        symbol: "戦場を支配する一振りの剣" },       format: "team",  tier: 2 },
+  { id: "daisanken",        name: "大三剣杯",   treasure: { name: "大三剣",   reading: "ダイサンケン",     baseYaku: "大三元",        symbol: "戦場を支配する一振りの剣" },       format: "team",  tier: 2, tableUnits: 3 }, // 「三」の宝＝三人打ち卓（毎節3チーム着卓・三麻）
   { id: "tenankou",         name: "天暗刻杯",   treasure: { name: "天暗刻",   reading: "テンアンコウ",     baseYaku: "四暗刻",        symbol: "天から与えられた意思を封じた球体" }, format: "team",  tier: 2 },
   { id: "tenchi-shingyoku", name: "天地神玉杯", treasure: { name: "天地神玉", reading: "テンチシンギョク", baseYaku: "天和・地和",    symbol: "確率を捻じ曲げる神がかった運の水晶玉" }, format: "pair", tier: 3 },
-  { id: "musou-kokusho",    name: "無双国書杯", treasure: { name: "無双国書", reading: "ムソウコクショ",   baseYaku: "国士無双（真理）", symbol: "全真理が記された禁書／最終ピース" }, format: "final", tier: 3, isFinal: true },
+  { id: "kyuuren-houtou",   name: "九蓮宝燈杯", treasure: { name: "九蓮宝燈", reading: "チューレンポウトウ", baseYaku: "九蓮宝燈",      symbol: "九つの宝を繋ぎ伝説の紋章を灯す、最後の燈火／最終ピース" }, format: "final", tier: 3, isFinal: true },
 ];
 
 // ティア別の大会ラン既定値（節数・順位点・報酬の格・ゲート相手 Lv の目安）。
@@ -29,7 +31,7 @@ export const TREASURE_TOURNAMENTS = [
 // ティアは「節数・順位点・報酬・敵の強さ・ネームド比率」を担当（出場者数は形式で固定＝下記 ENTRANTS_BY_FORMAT）。
 export const TOURNAMENT_TIER = {
   1: { matches: 3, rounds: 1, uma: [50, 10, -10, -30], soulClear: 500,  metaByPlace: [3, 2, 1, 1], defaultOppLv: 2 }, // 東風戦×3節
-  2: { matches: 4, rounds: 2, uma: [50, 10, -10, -30], soulClear: 900,  metaByPlace: [6, 4, 2, 1], defaultOppLv: 5 },
+  2: { matches: 4, rounds: 1, uma: [50, 10, -10, -30], soulClear: 900,  metaByPlace: [6, 4, 2, 1], defaultOppLv: 5 }, // 東風戦×4節（半荘×4は体感が長すぎた）
   3: { matches: 5, rounds: 2, uma: [50, 10, -10, -30], soulClear: 1500, metaByPlace: [9, 6, 3, 2], defaultOppLv: 8 },
 };
 
@@ -88,7 +90,7 @@ export const tournamentById = (id) => TREASURE_TOURNAMENTS.find((t) => t.id === 
 const PLAYER_COUNT = { solo4: 4, solo3: 3, pair: 4, team: 4, final: 4 };
 
 // 大会の“素性”＋ティア既定値＋実行時の相手 Lv をマージした、ラン用コンフィグ。
-// opts.oppLv＝キャラ進捗で決まる相手の強さ。opts.finalFormat＝無双国書の会場形式（キャラ別）。
+// opts.oppLv＝キャラ進捗で決まる相手の強さ。opts.finalFormat＝九蓮宝燈の会場形式（キャラ別）。
 export function tournamentRunConfig(id, opts = {}) {
   const t = tournamentById(id);
   const tc = TOURNAMENT_TIER[t.tier] || TOURNAMENT_TIER[1];
@@ -100,7 +102,8 @@ export function tournamentRunConfig(id, opts = {}) {
   const entrants = ENTRANTS_BY_FORMAT[format] || Math.max(playerCount, 8);
   const unitSize = UNIT_SIZE_BY_FORMAT[format] || 1;
   const unitCount = Math.max(2, Math.round(entrants / unitSize)); // 常に8
-  const unitsAtTable = UNITS_AT_TABLE_BY_FORMAT[format] || 4;
+  // 大会個別の着卓数上書き（大三剣杯＝3）。team で 3 なら卓は3人＝三麻になる。
+  const unitsAtTable = t.tableUnits || UNITS_AT_TABLE_BY_FORMAT[format] || 4;
   const uma = UMA_BY_UNITS[unitsAtTable] || UMA_BY_UNITS[4];
   const base = 25000 * unitSize; // ユニットの素点基準（ペア=50000 / 団体=75000）
   return {

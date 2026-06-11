@@ -192,13 +192,19 @@ export function rest(profile) {
 }
 
 // ------------------------------------------------- キャラ Lv（HP 成長）（§10.2）
+// Lv11 以降は「宝の解禁制」: マスタの requireTreasures（必要な宝の数）を満たすまで locked。
 export function avatarLevelInfo(profile) {
   const av = activeAvatar(profile);
   if (!av) return null;
+  const next = nextAvatarLevel(av.avatarLevel);
+  const treasures = profile.records?.treasures?.length || 0;
+  const locked = !!next && (next.requireTreasures || 0) > treasures;
   return {
     current: av.avatarLevel,
     currentHpMax: av.avatarHpMax,
-    next: nextAvatarLevel(av.avatarLevel), // null なら最大
+    next, // null なら最大
+    locked, // true なら宝が足りず未解禁
+    treasuresNeeded: locked ? next.requireTreasures - treasures : 0,
   };
 }
 
@@ -208,6 +214,10 @@ export function levelUpAvatar(profile) {
   if (!av) throw new Error("マイキャラがいません");
   const next = nextAvatarLevel(av.avatarLevel);
   if (!next) throw new Error("キャラ Lv は最大です");
+  const treasures = profile.records?.treasures?.length || 0;
+  if ((next.requireTreasures || 0) > treasures) {
+    throw new Error(`Lv ${next.avatarLevel} は宝 ${next.requireTreasures} 個で解禁されます（あと ${next.requireTreasures - treasures} 個）`);
+  }
 
   let p = spendSoul(profile, next.soulCost);
   const hpGain = Math.max(0, next.avatarHpMax - av.avatarHpMax);
@@ -519,7 +529,10 @@ export function visitParlor(profile, index, wins = 0, rng = Math.random, extras 
   for (const sub of subKeys) apply(sub, (cand.paramSub || 1) + Math.floor(wins / 2)); // 副は各パラメに付与
 
   // ソウル経済（店トレイト整合）: 勝ち分×ご祝儀倍率 ＋ レア客撃破ボーナス − 場代（財布は 0 下限）。
-  const winSoul = Math.max(0, Math.round(cand.soulPerWin * wins * (trait?.soulWinMul || 1)));
+  // 段位ボーナス: 宝（＝異能段位）が上がるほど名のある打ち手＝客もレートも上がる。
+  // 宝1つにつき勝ち分 +8%（九蓮宝士＝9つで +72%）。終盤の育成（キャラLv11〜20＋超越帯）の財源。
+  const rankMul = 1 + (profile.records?.treasures?.length || 0) * 0.08;
+  const winSoul = Math.max(0, Math.round(cand.soulPerWin * wins * (trait?.soulWinMul || 1) * rankMul));
   const rareWins = Math.max(0, extras.rareWins || 0);
   const rareBonus = rareWins * TRAIT_CFG.rareGuestSoul;
   const fee = trait?.entryCost || 0;

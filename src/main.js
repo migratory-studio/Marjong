@@ -873,11 +873,13 @@ async function openTournament() {
 function showTournamentBriefing(t, rUnits, onStart, onCancel) {
   const host = el("app") || document.body;
   const FMT = { solo4: "個人戦・四人打ち", solo3: "個人戦・三人打ち", pair: "ペア戦・2対2", team: "団体戦・チーム対抗", final: "最終決戦" };
+  // 大三剣杯など「3チーム卓」の団体戦は三人打ちであることを格式に添える。
+  const fmtLabel = (FMT[t.format] || "") + (t.format === "team" && t.unitsAtTable === 3 ? "・三人打ち" : "");
   const word = UNIT_WORD[t.format] || "人";
   const umaStr = (t.uma || []).map((u) => (u > 0 ? "+" : "") + u).join(" / ");
-  // ライバル紹介：名のある代表を最大4枚まで1枚ずつ、それ以外（多すぎる分＋無名）は1行に集約
-  //（固定ステージに収めるため縦に伸ばさない・QA無スクロール）。
-  const MAX_NAMED_CARDS = 4;
+  // ライバル紹介：名のある代表を最大3枚まで1枚ずつ、それ以外（多すぎる分＋無名）は1行に集約
+  //（固定ステージに収めるため縦に伸ばさない・QA無スクロール。4枚だとT3=ネームド7で81pxあふれる実測）。
+  const MAX_NAMED_CARDS = 3;
   const namedR = rUnits.filter((u) => u.isRival);
   const mobR = rUnits.filter((u) => !u.isRival);
   const shown = namedR.slice(0, MAX_NAMED_CARDS);
@@ -910,7 +912,7 @@ function showTournamentBriefing(t, rUnits, onStart, onCancel) {
         <div class="tb-cup">CUP</div>
         <div class="tb-head-txt">
           <div class="tb-name">${esc(t.name)}</div>
-          <div class="tb-tier">${esc(FMT[t.format] || "")}　・　ティア ${t.tier}</div>
+          <div class="tb-tier">${esc(fmtLabel)}　・　ティア ${t.tier}</div>
         </div>
       </div>
       <div class="tb-treasure">
@@ -1571,6 +1573,13 @@ function beginGame(seated, dealerIndex) {
   setupMatchTalk(game);
 
   showScreen("game-screen");
+  // 前局の結果画面が右サイドを「立ち絵＋セリフ」枠に転用したまま（side-result）だと、
+  // 大会の連戦で相棒ボードが隠れて立ち絵が残り続けるので、対局開始時に必ず復旧する。
+  const sidePanel = document.querySelector("#game-screen .side");
+  if (sidePanel) {
+    sidePanel.classList.remove("side-result");
+    sidePanel.querySelector(".speaker")?.remove();
+  }
   buildHpBoard(); // 右側に卓配置どおりのキャラHP（相棒ボード）を構築
   updateTournamentHud(); // 大会中なら左上に「大会名／節／累積順位」バッジを出す（#2）
   el("table").addEventListener("click", onCanvasClick);
@@ -3136,7 +3145,7 @@ function showTeamBattleGameOver() {
     }, reveal(0) * 1000 + 650);
   }
 
-  // 大会（団体M リーグ）：4チームの結果をユニット順位として大会へ返す。
+  // 大会（団体M リーグ）：着卓全チームの結果をユニット順位として大会へ返す（大三剣杯は3チーム）。
   const btnsT = overlay.querySelector(".go-buttons");
   if (honestCtx?.tournament && teamBattleData.unitIds) {
     const standings = order.map((ti, i) => ({ id: teamBattleData.unitIds[ti], name: teamLabelOf(ti), points: totalOf(teams[ti]), rank: i, isHuman: ti === humanIndex }));
@@ -3327,15 +3336,12 @@ function initNoNakiToggle() {
   sync();
 }
 
-// オート観戦トグル。フリー対戦時のみ表示し、ON で人間席を CPU AI に委ねる（loop /
-// handleCalls 側が autoPlay を見て分岐）。団体戦・シナリオでは体感の主役が消えるため
-// 非表示＋強制 OFF にする（CLAUDE.md の核: フリー限定が正しい）。
+// オート観戦トグル。ON で人間席を CPU AI に委ねる（loop / handleCalls 側が autoPlay を
+// 見て分岐）。団体戦を含む全対局で使用可（交代選択などのモーダルは従来どおり手動）。
 let autoWired = false;
 function initAutoToggle() {
   const btn = el("auto-btn");
   if (!btn) return;
-  const freeMatch = !teamBattleData; // 団体戦は teamBattleData が立つ。フリーのみ許可。
-  if (!freeMatch) { autoPlay = false; btn.classList.add("hidden"); return; }
   btn.classList.remove("hidden");
   const sync = () => {
     btn.classList.toggle("on", autoPlay);
@@ -3483,7 +3489,12 @@ function buildTeamBattleHpBoard(board) {
     headLeft.appendChild(labelSpan);
     const totalEl = document.createElement("span");
     totalEl.className = "tb-total";
+    // 大会中のみ「開始からの増減」を合計点の左に出す（緑=プラス / 赤=マイナス）。
+    const deltaEl = document.createElement("span");
+    deltaEl.className = "hp-delta tb-delta";
+    deltaEl.hidden = true;
     header.appendChild(headLeft);
+    header.appendChild(deltaEl);
     header.appendChild(totalEl);
     block.appendChild(header);
     // 出場中メンバー行
@@ -3545,7 +3556,7 @@ function buildTeamBattleHpBoard(board) {
     }
     block.appendChild(benchRow);
     board.appendChild(block);
-    teamHpCells[pi] = { block, rankEl, totalEl, activeRow, activeFill, activeVal, talkBubble, benchRefs };
+    teamHpCells[pi] = { block, rankEl, totalEl, deltaEl, activeRow, activeFill, activeVal, talkBubble, benchRefs };
   }
   updateTeamBattleHpBoard(true); // 初期構築時はFLIPアニメ無しで順位配置だけ反映
 }
@@ -3576,6 +3587,13 @@ function updateTeamBattleHpBoard(skipAnim = false) {
     const fullTeam = team.chars.reduce((a, c) => a + (c?.stats.startingPoints || 0), 0) || 1;
     refs.totalEl.textContent = teamScore.toLocaleString();
     refs.totalEl.style.color = teamScore < fullTeam * 0.4 ? "var(--danger)" : teamScore < fullTeam ? "var(--accent)" : "";
+    // 大会中は「増減（チーム点数−開始合計）」を表示（個人戦の hp-delta と同じ流儀）。
+    if (refs.deltaEl && teamBattleData.isTournament) {
+      const d = teamScore - fullTeam;
+      refs.deltaEl.textContent = (d > 0 ? "+" : d < 0 ? "" : "±") + d.toLocaleString();
+      refs.deltaEl.className = "hp-delta tb-delta " + (d > 0 ? "up" : d < 0 ? "dn" : "");
+      refs.deltaEl.hidden = false;
+    }
     // チーム得点による順位＝並び順＋メダル
     const rank = rankByTeam[pi];
     refs.block.style.order = rank;
@@ -3643,7 +3661,12 @@ function buildPairBattleHpBoard(board) {
     headLeft.appendChild(labelSpan);
     const totalEl = document.createElement("span");
     totalEl.className = "tb-total";
+    // 大会中のみ「開始からの増減」を合計点の左に出す（団体戦ボードと同じ流儀）。
+    const deltaEl = document.createElement("span");
+    deltaEl.className = "hp-delta tb-delta";
+    deltaEl.hidden = true;
     header.appendChild(headLeft);
+    header.appendChild(deltaEl);
     header.appendChild(totalEl);
     block.appendChild(header);
     // メンバー2人（HP順は update でflex orderにより並べ替え）
@@ -3678,7 +3701,7 @@ function buildPairBattleHpBoard(board) {
       block.appendChild(talkBubble);
     }
     board.appendChild(block);
-    pairHpCells[pid] = { block, rankEl, totalEl, memberRefs, talkBubble };
+    pairHpCells[pid] = { block, rankEl, totalEl, deltaEl, memberRefs, talkBubble };
   }
   updatePairBattleHpBoard(true); // 初期はFLIPなしで配置のみ
 }
@@ -3702,6 +3725,13 @@ function updatePairBattleHpBoard(skipAnim = false) {
     const fullPair = pairBattleData.pairs[pid].seats.reduce((a, s) => a + (pairBattleData.chars[s].stats.startingPoints || 0), 0) || 1;
     refs.totalEl.textContent = score.toLocaleString();
     refs.totalEl.style.color = score < fullPair * 0.4 ? "var(--danger)" : score < fullPair ? "var(--accent)" : "";
+    // 大会中は「増減（ペア点数−開始合計）」を表示。
+    if (refs.deltaEl && pairBattleData.isTournament) {
+      const d = score - fullPair;
+      refs.deltaEl.textContent = (d > 0 ? "+" : d < 0 ? "" : "±") + d.toLocaleString();
+      refs.deltaEl.className = "hp-delta tb-delta " + (d > 0 ? "up" : d < 0 ? "dn" : "");
+      refs.deltaEl.hidden = false;
+    }
     // ペア点数の順位＝並び順＋メダル
     const rank = rankByPair[pid];
     refs.block.style.order = rank;

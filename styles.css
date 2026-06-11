@@ -992,7 +992,8 @@ body {
 .tourney-brief { position:absolute; inset:0; z-index:92; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .2s; font-family:"Yu Gothic","Noto Sans JP",sans-serif; }
 .tourney-brief.is-open { opacity:1; }
 .tourney-brief .ts-scrim { position:absolute; inset:0; background:rgba(4,6,10,.86); }
-.tourney-brief .tb-card { position:relative; z-index:1; width:680px; max-width:94%; max-height:calc(var(--stage-h) - 24px); overflow:auto; padding:22px 30px; background:linear-gradient(180deg,#12161f,#0a0d14); border:2px solid #c8a44d; border-radius:16px; box-shadow:0 26px 70px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,220,140,.12); color:#e8efe9; }
+/* 上下padding 16px: ネームド3枚＋集約1枚（T2団体）でも無スクロールで収まる高さに調整。 */
+.tourney-brief .tb-card { position:relative; z-index:1; width:680px; max-width:94%; max-height:calc(var(--stage-h) - 24px); overflow:auto; padding:16px 30px; background:linear-gradient(180deg,#12161f,#0a0d14); border:2px solid #c8a44d; border-radius:16px; box-shadow:0 26px 70px rgba(0,0,0,.7), inset 0 0 0 1px rgba(255,220,140,.12); color:#e8efe9; }
 .tourney-brief .tb-head { display:flex; align-items:center; gap:14px; margin-bottom:14px; }
 .tourney-brief .tb-cup { width:48px; height:48px; flex:none; border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:var(--font-go); font-size:13px; font-weight:800; color:#5a3410; background:linear-gradient(180deg,#ffe6a8,#d8b056); border:1px solid #fff2cf; box-shadow:0 2px 6px rgba(0,0,0,.4); }
 .tourney-brief .tb-name { font-family:var(--font-min); font-size:26px; letter-spacing:.04em; color:#ffe7ab; }
@@ -2618,6 +2619,8 @@ button.secondary { color: var(--ink); }
   display: grid; grid-template-columns: repeat(2, auto);
   gap: 24px 44px; align-items: start; justify-content: center; z-index: 2;
 }
+/* 3チーム（大三剣杯＝三人打ち卓）のとき、奇数で余る最後のブロックを中央へ。 */
+.mi-teams > .mi-team-block:last-child:nth-child(odd) { grid-column: 1 / -1; justify-self: center; }
 .mi-team-block {
   border: 2px solid rgba(120,150,170,.4); border-radius: 16px;
   padding: 12px 16px 16px;
@@ -3255,6 +3258,8 @@ button.secondary { color: var(--ink); }
 }
 .my-team .tb-header { color: var(--accent); }
 .tb-total { font-size: 12px; font-weight: 900; color: #eef3ef; font-variant-numeric: tabular-nums; }
+/* 大会中の増減値。auto マージンで合計点の左隣に寄せる（space-between の中央化を防ぐ）。 */
+.tb-delta { margin-left: auto; margin-right: 7px; }
 
 /* 出場中メンバー */
 .tb-active {

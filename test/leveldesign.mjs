@@ -62,10 +62,11 @@ function readUnlocked(day) {
 }
 
 // ソウルが貯まり次第キャラ Lv を上げる（予備を少し残す＝スキル強化ぶんの保守化）。
+// Lv11〜 は宝の解禁制（requireTreasures）。未解禁なら買わずにスキルへ回す。
 function buyLevels() {
   for (;;) {
     const info = avatarLevelInfo(p);
-    if (!info?.next) return;
+    if (!info?.next || info.locked) return;
     if ((p.wallet?.soul ?? 0) < Math.round(info.next.soulCost * 1.3)) return;
     p = levelUpAvatar(p).profile;
   }
@@ -208,7 +209,7 @@ ok("最初の宝（門前開鍵）は3〜8ヶ月目", wd(1) >= 3 && wd(1) <= 8);
 ok("2個目（大三剣＝12話の卓）は6〜14ヶ月目", wd(2) >= 6 && wd(2) <= 14);
 // 物語順の不変条件：団体戦・大三剣はマモリが加入する第11話「二人の九蓮」読了後でないと始まらない。
 ok("大三剣は第11話（マモリ加入）読了後に獲得", rd(11) <= wd(2));
-ok("9個目（無双国書）は22〜36ヶ月目＝九蓮宝士到達（約2〜3年の修行）", wd(9) >= 22 && wd(9) <= 36);
+ok("9個目（九蓮宝燈）は22〜36ヶ月目＝九蓮宝士到達（約2〜3年の修行）", wd(9) >= 22 && wd(9) <= 36);
 ok("宝と宝の間隔が空きすぎない（最大6ヶ月）", winDay.every((w, i) => i === 0 || w.day - winDay[i - 1].day <= 6));
 ok("最終戦の前に第20話を読み終えている", rd(20) <= wd(9));
 // スキルLv（幸運のツモ）のペース: Lv5＝師匠相当は「するっと」届かない＝最初の宝（一蓮）より後。
