@@ -83,6 +83,30 @@ export function mentorPhase(profile, mentorId) {
   return read ? MENTOR_PHASES.hadou : MENTOR_PHASES.shitei;
 }
 
+// ------------------------------------------------- 師匠のスキル Lv（技）＝シナリオ起点
+// 師匠の技 Lv は基準 5（§10.5「師匠の初期スキル Lv = 5」）から、覇道編の節目の読了で超越帯へ。
+// 詩玥＝「封印した読みを取り戻す」アークと同期し、ep20（神算鬼謀）で Lv10
+// ＝弟子の Lv10 と同時期に揃う（系譜の完成）。トラック未定義の師匠（ビビ/ルイナ）は 5 のまま
+// （スキルテーブル未設計＝表示のみ。テーブルとトラックを足せば自動で効く）。
+export const MENTOR_SKILL_BASE = 5;
+export const MENTOR_SKILL_TRACK = {
+  shiyue: [
+    { scenarioId: "mentor-shiyue-bond-14", level: 6 },  // 読みの達人（鏡）に敗北＝封印していた読みの自覚
+    { scenarioId: "mentor-shiyue-bond-17", level: 7 },  // 「読んで、引く」＝鏡車輪・和解の入口
+    { scenarioId: "mentor-shiyue-bond-18", level: 8 },  // アビスの壁
+    { scenarioId: "mentor-shiyue-bond-19", level: 9 },  // 三人の九蓮
+    { scenarioId: "mentor-shiyue-bond-20", level: 10 }, // 神算鬼謀＝最終戦は師弟ふたりとも Lv10
+  ],
+};
+export function mentorSkillLevel(profile, mentorId) {
+  let lv = MENTOR_SKILL_BASE;
+  const read = new Set((profile?.scenarioProgress || []).map((p) => p.scenarioId));
+  for (const s of MENTOR_SKILL_TRACK[mentorId] || []) {
+    if (read.has(s.scenarioId)) lv = Math.max(lv, s.level);
+  }
+  return lv;
+}
+
 export function campaignFor(mentorId) {
   return MENTOR_CAMPAIGN[mentorId] || MENTOR_CAMPAIGN.shiyue;
 }

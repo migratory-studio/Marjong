@@ -3628,3 +3628,5 @@ button.secondary { color: var(--ink); }
 /* 師匠の昇段演出（弟子の mhx-dan を流用しつつ、セリフ行は墨で読ませる） */
 #mentor-home-screen.mh2 .mhx-dan-mentor .mhx-dan-kicker { color:#8f2418; }
 #mentor-home-screen.mh2 .mhx-dan-line { font-size:13.5px; line-height:1.7; max-width:430px; margin-left:auto; margin-right:auto; }
+/* 師匠の技 Lv 超越帯（Lv6〜10・シナリオ起点）＝ nameplate チップをほんのり緋金に */
+#mentor-home-screen.mh2 .mhx-np-trans { color:#ffd9a0; text-shadow:0 0 6px rgba(232,72,63,.55); }

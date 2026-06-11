@@ -23,12 +23,12 @@ import { showScenarioList, scenariosForMentor } from "./screens/scenarioListScre
 import { markScenarioRead, tournamentStoryGate, episodeNumberOf } from "./progression/scenarioService.js";
 import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
-import { skillTemplateById } from "./data/skillTemplateMaster.js";
+import { skillTemplateById, templateForAbility } from "./data/skillTemplateMaster.js";
 import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor } from "./data/tournamentMaster.js";
-import { nextTreasureStep } from "./data/mentorCampaignMaster.js";
+import { nextTreasureStep, mentorSkillLevel } from "./data/mentorCampaignMaster.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -803,6 +803,19 @@ const ALLY_BY_MENTOR = { bibi: "homura", shiyue: "mamori", kakeha_ruina: "dorani
 function asMatchChar(char, points) {
   return { ...char, stats: { ...(char?.stats || {}), startingPoints: points } };
 }
+// 師匠の対局投入キャラ。技 Lv（シナリオ起点・mentorSkillLevel）に対応するスキルテーブルが
+// あれば runtimeParams を能力に効かせる（詩玥=lv-lucky-draw は Lv5 が現行性能と一致＝
+// 基準帯では挙動不変、覇道編の超越帯 Lv6〜10 で読み・チャージが冴える）。
+// テーブル未設計の師匠（ビビ/ルイナ等）は従来どおり＝表示のみ。
+function asMentorMatchChar(mentorChar, points, profile) {
+  const c = asMatchChar(mentorChar, points);
+  const ability = c.abilities?.[0];
+  const tmpl = ability ? templateForAbility(ability.abilityId) : null;
+  if (!tmpl?.levelTableId) return c;
+  const lv = mentorSkillLevel(profile, mentorChar?.id);
+  const params = skillRuntimeAbilityParams(tmpl.levelTableId, lv);
+  return { ...c, abilities: [{ ...ability, params: { ...(ability.params || {}), ...params } }] };
+}
 // 弟子ユニットを編成する（個人=弟子のみ / ペア=弟子＋師匠 / 団体=弟子＋師匠＋仲間）。
 // 持ち点＝HP：弟子ユニットは育成した HP（avatarHpMax）で打つ＝育成成果が大会の持ち点に直結。
 // 師匠の持ち点には覇道編の修行成長（mentorGrowth）が乗る＝「2人とも伸びる」が大会の戦力になる。
@@ -811,7 +824,7 @@ function buildDeshiUnit(av, mentorId, format, unitSize, profile = null) {
   const members = [avatarToCharacter(av, hp)];
   if (unitSize >= 2) {
     const mentor = CHARACTERS.find((c) => c.id === mentorId) || CHARACTERS[0];
-    members.push(asMatchChar(mentor, hp + mentorGrowthFor(profile, mentorId).hpBonus));
+    members.push(asMentorMatchChar(mentor, hp + mentorGrowthFor(profile, mentorId).hpBonus, profile));
   }
   if (unitSize >= 3) {
     const allyId = ALLY_BY_MENTOR[mentorId] || CHARACTERS.find((c) => c.id !== mentorId)?.id;
@@ -1259,8 +1272,9 @@ async function openMentorSub(target, payload) {
     }
     const mentorBase = CHARACTERS.find((c) => c.id === av?.mentorCharacterId) || CHARACTERS[0];
     // 師匠は格上：フリー対戦のHP（キャラ既定値）を初期値に、師弟シナリオの進捗（既読数）で強化。
+    // 技 Lv（シナリオ起点）も効く＝覇道編後半の師匠タイマンは歯応えが上がる。
     const mentorHp = mentorDuoHp(mentorBase, profile);
-    const mentor = { ...mentorBase, stats: { ...mentorBase.stats, startingPoints: mentorHp } };
+    const mentor = asMentorMatchChar(mentorBase, mentorHp, profile);
     launchHonestMatch({
       avatar: av, opponents: [mentor], players: 2, rounds: 2, // 二人麻雀・東南戦
       startPoints: stake, // ★持ち点＝弟子の現 HP（師匠は格上HP）

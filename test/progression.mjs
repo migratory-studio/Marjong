@@ -329,6 +329,29 @@ function freshProfile({ soul = 0 } = {}) {
   eq("Lv2 の持ち点補正", mentorGrowthFor(r, "shiyue").hpBonus, MENTOR_GROWTH.hpPerLevel);
 }
 
+// --- 師匠の技 Lv（シナリオ起点）: 覇道編の節目で 5→10、テーブル経由で対局能力に効く ---
+{
+  const { mentorSkillLevel, MENTOR_SKILL_TRACK } = await import("../src/data/mentorCampaignMaster.js");
+  const { templateForAbility } = await import("../src/data/skillTemplateMaster.js");
+  const { skillRuntimeAbilityParams } = await import("../src/data/skillLevelMaster.js");
+  const readUpTo = (n) => Array.from({ length: n }, (_, i) =>
+    ({ scenarioId: `mentor-shiyue-bond-${String(i + 1).padStart(2, "0")}`, readAt: "2026-01-01", version: 1 }));
+
+  eq("未読は基準 Lv5", mentorSkillLevel({ scenarioProgress: [] }, "shiyue"), 5);
+  eq("ep13 まででは Lv5 のまま", mentorSkillLevel({ scenarioProgress: readUpTo(13) }, "shiyue"), 5);
+  eq("ep14（敗北＝読みの自覚）で Lv6", mentorSkillLevel({ scenarioProgress: readUpTo(14) }, "shiyue"), 6);
+  eq("ep17（読んで、引く）で Lv7", mentorSkillLevel({ scenarioProgress: readUpTo(17) }, "shiyue"), 7);
+  eq("ep20（神算鬼謀）で Lv10", mentorSkillLevel({ scenarioProgress: readUpTo(20) }, "shiyue"), 10);
+  eq("トラック未定義の師匠は常に Lv5", mentorSkillLevel({ scenarioProgress: readUpTo(20) }, "bibi"), 5);
+  ok("詩玥のトラックは ep20 で Lv10 に到達する定義", MENTOR_SKILL_TRACK.shiyue.some((s) => s.level === 10));
+
+  // メカ結線: 詩玥の能力（lucky-draw）はテーブル lv-lucky-draw を逆引きでき、Lv10 でフル読み。
+  eq("lucky-draw → lv-lucky-draw を逆引き", templateForAbility("lucky-draw")?.levelTableId, "lv-lucky-draw");
+  eq("Lv10 の runtimeParams は神算鬼謀（dangerTier=3）", skillRuntimeAbilityParams("lv-lucky-draw", 10).dangerTier, 3);
+  // 基準帯 Lv5 は現行 LuckyDrawAbility と一致（dangerTier=0）＝師弟編の挙動は不変。
+  eq("Lv5 は現行性能（dangerTier=0）", skillRuntimeAbilityParams("lv-lucky-draw", 5).dangerTier, 0);
+}
+
 // --- 師匠の段位の軌跡: 詩玥は九蓮戦の直前に八蓮極士、ビビは五蓮のまま ---
 {
   const { mentorRankFor } = await import("../src/data/tournamentMaster.js");

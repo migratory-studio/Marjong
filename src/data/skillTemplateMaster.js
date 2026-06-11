@@ -116,3 +116,9 @@ export function templatesForMentor(mentorCharacterId) {
 export function skillTemplateById(skillTemplateId) {
   return SKILL_TEMPLATE_MASTER.find((t) => t.skillTemplateId === skillTemplateId) || null;
 }
+
+// 対局能力ID → テンプレの逆引き。師匠キャラの能力（characterMaster.abilities[0]）に
+// スキル Lv テーブル（levelTableId）を効かせるときに使う。該当なしは null＝従来挙動。
+export function templateForAbility(runtimeAbilityId) {
+  return SKILL_TEMPLATE_MASTER.find((t) => t.isEnabled && t.runtimeAbilityId === runtimeAbilityId) || null;
+}

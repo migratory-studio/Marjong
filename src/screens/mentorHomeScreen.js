@@ -13,7 +13,8 @@
 //   showMentorHome(container, { repository, onNavigate, onBack });
 //     onNavigate("growth"|"ability-change"|"avatar"|"scenario"|"settings")
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
-import { skillTemplateById } from "../data/skillTemplateMaster.js";
+import { skillTemplateById, templateForAbility } from "../data/skillTemplateMaster.js";
+import { skillLevelEntry } from "../data/skillLevelMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
@@ -21,7 +22,7 @@ import { rest, trainParam, TRAIN_TUNING, trainOptionsFor, ensureDay, dayInfo, CO
 import { pickMentorGreeting, pickRestTalk, pickMentorPraise, pickMentorRankUpLine } from "../data/mentorVoiceMaster.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
-import { nextTreasureInfo } from "../data/mentorCampaignMaster.js";
+import { nextTreasureInfo, mentorSkillLevel } from "../data/mentorCampaignMaster.js";
 import { treasureRankFor, mentorRankFor } from "../data/tournamentMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead, unnotifiedUnlocks, markUnlockNotified, episodeNumberOf, mentorPhase } from "../progression/scenarioService.js";
@@ -30,8 +31,7 @@ import { isDebugMode } from "../app/debug.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
 
-// 師匠スキル Lv は仕様の到達基準 Lv5（§10.5「師匠の初期スキル Lv = 5」）。
-const MENTOR_SKILL_LEVEL = 5;
+// 師匠スキル Lv は基準 5（§10.5）から、覇道編のシナリオ進度で超越帯へ（mentorSkillLevel が正典）。
 // role → 称号（数値でない肩書き。絆とは無関係のフレーバー）。
 const MENTOR_TITLE = {
   attacker: "攻めの達人", defender: "守りの達人", defense: "守りの達人",
@@ -192,9 +192,21 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   }
   // 覇道編の修行成長（師匠も伸びる）＝ nameplate・師匠詳細の表示に使う。
   const mGrowth = mentorGrowthFor(profile, avatar.mentorCharacterId);
+  // 師匠の技 Lv（シナリオ起点・基準5→覇道編の節目で超越帯）。上昇はホームで一度だけ通知する。
+  const mentorSkillLv = mentorSkillLevel(profile, avatar.mentorCharacterId);
+  const seenSkill = profile.records?.mentorSkillSeen?.[avatar.mentorCharacterId];
+  let mentorSkillUp = null;
+  if (seenSkill == null || mentorSkillLv > seenSkill) {
+    if (seenSkill != null && mentorSkillLv > seenSkill) mentorSkillUp = { level: mentorSkillLv };
+    profile = { ...profile, records: { ...(profile.records || {}), mentorSkillSeen: { ...(profile.records?.mentorSkillSeen || {}), [avatar.mentorCharacterId]: mentorSkillLv } } };
+    await repository.saveProfile(profile);
+  }
   const mAbility = mentor?.abilities?.[0]?.abilityId ? abilityDef(mentor.abilities[0].abilityId) : null;
   const mAbilityName = mAbility?.name || "";
-  const mAbilityDesc = mAbility?.desc || mentor?.bio || "";
+  // 能力説明は「今の技 Lv の効果」を優先（詩玥=lv-lucky-draw。テーブル未設計の師匠は能力既定文）。
+  const mSkillTable = mentor?.abilities?.[0]?.abilityId ? templateForAbility(mentor.abilities[0].abilityId)?.levelTableId : null;
+  const mSkillEntry = mSkillTable ? skillLevelEntry(mSkillTable, mentorSkillLv) : null;
+  const mAbilityDesc = mSkillEntry?.effectDescription || mAbility?.desc || mentor?.bio || "";
 
   // ---- シナリオ未読件数（バッジ用）----
   const scList = scenariosForMentor(avatar.mentorCharacterId);
@@ -251,7 +263,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
           <div class="mhx-np-sub">
             ${mentorRank ? `<span class="mhx-dan-chip" title="異能段位：${esc(mentorRank.reading)}">${esc(mentorRank.name)}</span>` : ""}
             <span class="mhx-np-title">${esc(mentorTitle)}</span>
-            <span class="mhx-np-lv">技 Lv${MENTOR_SKILL_LEVEL}</span>
+            <span class="mhx-np-lv${mentorSkillLv > 5 ? " mhx-np-trans" : ""}">技 Lv${mentorSkillLv}</span>
             ${isHadou ? `<span class="mhx-np-lv mhx-np-shugyo" title="覇道編は師匠も一緒に伸びる（座学・鍛錬・二人打ち）。持ち点 +${mGrowth.hpBonus.toLocaleString()}">修行 Lv${mGrowth.level}</span>` : ""}
             <span class="mhx-np-mood mhx-cond tone-${mentorCond.tone}">今月：${esc(mood)}</span>
           </div>
@@ -683,7 +695,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
           <span class="mhx-md-ttl">${esc(mentor?.name || "師匠")}${mentor?.reading ? `<small>${esc(mentor.reading)}</small>` : ""}</span>
           <div class="mhx-md-chips">
             <span class="mhx-chip">${esc(mentorTitle)}</span>
-            <span class="mhx-chip mhx-chip-lv">技 Lv${MENTOR_SKILL_LEVEL}</span>
+            <span class="mhx-chip mhx-chip-lv">技 Lv${mentorSkillLv}${mentorSkillLv > 5 ? "（超越）" : ""}</span>
             <span class="mhx-chip mhx-chip-mood">今月 ${esc(mood)}</span>
           </div>
         </div>
@@ -699,6 +711,23 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       </div>` : ""}
     `;
     openModal(container, html);
+  }
+
+  // ---- 師匠の技 Lv 上昇（シナリオ起点・覇道編の節目）。物語はシナリオ本編が担うので、
+  //      ここは「何が冴えたか」をメカの言葉で短く見せる（effectDescription）。 ----
+  function openMentorSkillUpModal(info, onDone) {
+    const desc = mSkillEntry && info.level === mentorSkillLv ? mSkillEntry.effectDescription : "";
+    const html = `
+      <div class="mhx-pr">
+        <div class="mhx-pr-ttl">師匠の技が冴えた</div>
+        <div class="mhx-pr-head"><span class="mhx-cond tone-vgood">${esc(mentor?.name || "師匠")}　技 Lv${info.level}${info.level > 5 ? "（超越）" : ""}</span></div>
+        ${desc ? `<p class="mhx-pr-sub">${esc(desc)}</p>` : ""}
+        <p class="mhx-pr-sub">覇道の章を経て、隣で打つ技がひとつ深くなった。</p>
+        <button type="button" class="mhx-md-btn mhx-pr-btn">よし</button>
+      </div>`;
+    const { card, close } = openModal(container, html, onDone);
+    audio?.playPip?.(2600, 0.5);
+    card.querySelector(".mhx-pr-btn")?.addEventListener("click", close);
   }
 
   // ---- 師匠の昇段演出（段位の軌跡が動いた瞬間。弟子の昇段 openDaniRankModal の師匠版）----
@@ -1103,6 +1132,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     flash?.league?.rankUp ? (next) => openDaniRankModal(flash.league.rankUp, next) : null,
     // 師匠の昇段（段位の軌跡）。弟子の昇段を見届けたあとに出す＝二人で上がっていく画。
     mentorRankUp ? (next) => openMentorRankUpModal(mentorRankUp, next) : null,
+    // 師匠の技 Lv 上昇（シナリオ起点）。章を読んで戻った直後に出る。
+    mentorSkillUp ? (next) => openMentorSkillUpModal(mentorSkillUp, next) : null,
     flash?.tournamentGate ? (next) => openTournamentGateModal(flash.tournamentGate, next) : null,
     flash?.storyGate ? (next) => openStoryGateModal(flash.storyGate, next) : null,
     // 「〇ヶ月目を終えて」→次の月へ → 「〇ヶ月目（今月の調子）」の順で2枚に分けて出す（ごちゃつき回避）。
