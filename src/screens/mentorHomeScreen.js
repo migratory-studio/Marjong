@@ -22,7 +22,7 @@ import { rest, trainParam, TRAIN_TUNING, trainOptionsFor, ensureDay, dayInfo, CO
 import { pickMentorGreeting, pickRestTalk, pickMentorPraise, pickMentorRankUpLine, pickMentorParlorComment, pickLeagueLossTalk, pickMentorDuoInvite, DUO_INVITE_FALLBACK } from "../data/mentorVoiceMaster.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
-import { nextTreasureInfo, mentorSkillLevel } from "../data/mentorCampaignMaster.js";
+import { nextTreasureInfo, mentorSkillLevel, isMentorEpilogue } from "../data/mentorCampaignMaster.js";
 import { treasureRankFor, mentorRankFor } from "../data/tournamentMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead, unnotifiedUnlocks, markUnlockNotified, episodeNumberOf, mentorPhase } from "../progression/scenarioService.js";
@@ -1056,7 +1056,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   }
   // 章の解禁通知。数値や条件は見せず「新しい物語が来た」ことだけを告げる。
   function openScenarioUnlockModal(s, onDone) {
-    const ep = episodeNumberOf(profile, s.scenarioId);
+    // エピローグ（九蓮優勝後）は話数ではなく「エピローグ」と告げる。
+    const ep = isMentorEpilogue(s.scenarioId) ? "エピローグ" : (episodeNumberOf(profile, s.scenarioId) ? `第${episodeNumberOf(profile, s.scenarioId)}話` : "");
     let navigating = false;
     // 同じ章で何度も出さない（通知済みを記録。読む/読まないとは独立）。
     profile = markUnlockNotified(profile, [s.scenarioId]);
@@ -1067,7 +1068,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         <div class="mhx-md-title"><span class="mhx-md-by">新しい物語</span><span class="mhx-md-ttl">${esc(mentor?.name || "師匠")}</span></div>
       </div>
       <p class="mhx-md-line">「——少し、話しておきたいことがある。」</p>
-      <p class="mhx-su-name">${ep ? `第${ep}話　` : ""}「${esc(s.title)}」が解禁</p>
+      <p class="mhx-su-name">${ep ? `${esc(ep)}　` : ""}「${esc(s.title)}」が解禁</p>
       <div class="mhx-su-btns">
         <button type="button" class="mhx-md-btn mhx-su-play">視聴する</button>
         <button type="button" class="mhx-rt-choice mhx-su-later">あとで</button>

@@ -12,6 +12,7 @@ import { SCENARIO_MASTER } from "../data/scenarioMaster.js";
 import { activeAvatar } from "../progression/avatarFactory.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead, markScenarioRead } from "../progression/scenarioService.js";
+import { isMentorEpilogue } from "../data/mentorCampaignMaster.js";
 import { isDebugMode } from "../app/debug.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
@@ -85,7 +86,9 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
         const row = elt("button", `sclist-row${kouhen ? " is-kouhen" : ""}`, { type: "button", disabled: !unlocked });
         const main = elt("div", "sclist-main");
         main.appendChild(elt("span", "sclist-title", { textContent: unlocked ? s.title : "？？？" }));
-        main.appendChild(elt("span", "sclist-sub", { textContent: `${kouhen ? "覇道編 ・ " : ""}第${idx + 1}話` }));
+        // エピローグ（最終大会の優勝後に読む章）は話数ではなく「エピローグ」表記。
+        const epiLabel = isMentorEpilogue(s.scenarioId) ? "エピローグ" : `第${idx + 1}話`;
+        main.appendChild(elt("span", "sclist-sub", { textContent: `${kouhen ? "覇道編 ・ " : ""}${epiLabel}` }));
         row.appendChild(main);
 
         const status = elt("span", "sclist-status");

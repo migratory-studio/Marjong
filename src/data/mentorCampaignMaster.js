@@ -74,6 +74,16 @@ export const MENTOR_FINALE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-12", // 12話「ツモれば、ふたりの勝ち」＝師弟編フィナーレ
 };
 
+// エピローグ章（最終大会＝九蓮宝燈の優勝後に解禁・読了でスタッフロール）。
+// 詩玥 ep20「神算鬼謀」は優勝後の物語なので、挑戦前に読ませない（unlock=tournament_won 9）。
+// 表示も「第20話」ではなく「エピローグ」（scenarioListScreen / 解禁モーダル）。
+export const MENTOR_EPILOGUE_SCENARIO = {
+  shiyue: "mentor-shiyue-bond-20",
+};
+export function isMentorEpilogue(scenarioId) {
+  return Object.values(MENTOR_EPILOGUE_SCENARIO).includes(scenarioId);
+}
+
 // 育成フェーズ判定。師弟編の最終章を読了していれば覇道編、それ以外（finale 未定義含む）は師弟編。
 // データ層に置くのは progressionService（師匠の修行成長）からも循環なしで参照するため。
 // UI からは scenarioService 経由（再エクスポート）でも使える。

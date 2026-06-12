@@ -21,7 +21,7 @@ import { templatesForMentor } from "../src/data/skillTemplateMaster.js";
 import { SCENARIO_MASTER } from "../src/data/scenarioMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../src/scenario/unlockEvaluator.js";
 import { markScenarioRead, tournamentStoryGate } from "../src/progression/scenarioService.js";
-import { campaignFor, nextTreasureStep } from "../src/data/mentorCampaignMaster.js";
+import { campaignFor, nextTreasureStep, isMentorEpilogue } from "../src/data/mentorCampaignMaster.js";
 import { tournamentRunConfig } from "../src/data/tournamentMaster.js";
 
 let fails = 0;
@@ -202,7 +202,8 @@ ok("第10話（キャラLv8）は14ヶ月目まで", rd(10) <= 14);
 ok("師弟編フィナーレ（第12話）は8〜16ヶ月目", rd(12) >= 8 && rd(12) <= 16);
 ok("覇道編の山場（第14〜17話＝won3）は20ヶ月目まで", rd(17) <= 20);
 ok("第18話（won4）は第17話の後", rd(18) >= rd(17) && rd(18) <= 26);
-ok("第20話（won8）は20〜32ヶ月目", rd(20) >= 20 && rd(20) <= 32);
+// 第20話はエピローグ（won9=九蓮優勝後に解禁）。優勝の直後に読めること（遠すぎない）。
+ok("エピローグ（第20話）は九蓮優勝の直後に読める", rd(20) >= wd(9) && rd(20) <= wd(9) + 2);
 ok("全20話が読める", shiyueChapters.every((s) => readDay[s.scenarioId] != null));
 ok("章は順番どおりに解禁される", shiyueChapters.every((s, i, a) => i === 0 || rd(i + 1) >= rd(i)));
 ok("最初の宝（門前開鍵）は3〜8ヶ月目", wd(1) >= 3 && wd(1) <= 8);
@@ -211,7 +212,9 @@ ok("2個目（大三剣＝12話の卓）は6〜14ヶ月目", wd(2) >= 6 && wd(2)
 ok("大三剣は第11話（マモリ加入）読了後に獲得", rd(11) <= wd(2));
 ok("9個目（九蓮宝燈）は22〜36ヶ月目＝九蓮宝士到達（約2〜3年の修行）", wd(9) >= 22 && wd(9) <= 36);
 ok("宝と宝の間隔が空きすぎない（最大6ヶ月）", winDay.every((w, i) => i === 0 || w.day - winDay[i - 1].day <= 6));
-ok("最終戦の前に第20話を読み終えている", rd(20) <= wd(9));
+// 物語順の不変条件：優勝後の物語（エピローグ）を、挑戦の前に読ませない。
+ok("エピローグは九蓮優勝より前には読めない", rd(20) >= wd(9));
+ok("最終戦の前に第19話までを読み終えている", rd(19) <= wd(9));
 // スキルLv（幸運のツモ）のペース: Lv5＝師匠相当は「するっと」届かない＝最初の宝（一蓮）より後。
 ok("スキルLv5（師匠相当）は最初の宝より後に到達", (skillDay[5] ?? Infinity) > wd(1));
 ok("スキルLv5は師弟編フィナーレ前後（9〜18ヶ月目）", skillDay[5] >= 9 && skillDay[5] <= 18);
@@ -225,7 +228,10 @@ ok("絆Lv10（口調崩れ解禁）は最終決戦前後（17〜26ヶ月目）",
 ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内）", bondDay[12] != null && bondDay[12] <= 40);
 {
   // 章の解禁に8ヶ月以上の砂漠がない（覇道編のモンタージュ期間込みで許容幅8）。
-  const days = shiyueChapters.map((s) => readDay[s.scenarioId]).filter((d) => d != null);
+  // エピローグは「最終大会の優勝後」という物語上の区切りなので砂漠の判定から除く
+  // （ep19〜優勝までの期間は大会消化＝物語が止まっているわけではない）。
+  const days = shiyueChapters.filter((s) => !isMentorEpilogue(s.scenarioId))
+    .map((s) => readDay[s.scenarioId]).filter((d) => d != null);
   const maxGap = Math.max(...days.map((d, i) => (i === 0 ? 0 : d - days[i - 1])));
   ok(`章解禁の最大間隔 ${maxGap} ヶ月 <= 8`, maxGap <= 8);
 }

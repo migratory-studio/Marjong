@@ -28,7 +28,8 @@ import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor } from "./data/tournamentMaster.js";
-import { nextTreasureStep, mentorSkillLevel } from "./data/mentorCampaignMaster.js";
+import { nextTreasureStep, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
+import { showCreditsRoll } from "./screens/creditsRoll.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -669,6 +670,14 @@ async function openMentorMode() {
     });
     goScreen("avatar-create-screen");
   }
+}
+
+// エピローグ章の読了後はスタッフロール（クレジット）を流してから次の画面へ。
+// それ以外の章は即 next。キャスト最後に弟子の名前を載せる＝「あなたもこの物語の登場人物」。
+async function rollCreditsIfEpilogue(scenarioId, next) {
+  if (!isMentorEpilogue(scenarioId)) { next(); return; }
+  const p = await profileRepo.loadProfile();
+  showCreditsRoll(el("app") || document.body, { deshiName: activeAvatar(p)?.name || "", onDone: next });
 }
 
 // マイキャラ作成直後、その師匠の第1章（sortOrder 先頭・unlock=always）を自動再生する。
@@ -1470,12 +1479,13 @@ async function openMentorSub(target, payload) {
     goScreen("avatar-detail-screen");
   } else if (target === "scenario") {
     // シナリオ一覧 → 選択で #scenario-screen 再生 → 終了で一覧へ戻り既読/報酬を反映。
+    // エピローグ読了後はスタッフロールを挟む（読み返しでも流れる＝締めの儀式は何度でも）。
     await showScenarioList(el("scenario-list-screen"), {
       repository: profileRepo,
       onBack: back,
       onPlay: (scenarioId, onEnd) => {
         showScreen("scenario-screen");
-        playScenario(scenarioId, { audio, onEnd: () => { goScreen("scenario-list-screen"); onEnd?.(); } });
+        playScenario(scenarioId, { audio, onEnd: () => rollCreditsIfEpilogue(scenarioId, () => { goScreen("scenario-list-screen"); onEnd?.(); }) });
       },
     });
     goScreen("scenario-list-screen");
@@ -1493,7 +1503,7 @@ async function openMentorSub(target, payload) {
         const fresh = await profileRepo.loadProfile();
         const res = markScenarioRead(fresh, s);
         if (res.firstRead) await profileRepo.saveProfile(res.profile);
-        openMentorHome({ scenarioRead: { title: s.title, soul: res.soul, bondUp: res.bondUp } });
+        rollCreditsIfEpilogue(s.scenarioId, () => openMentorHome({ scenarioRead: { title: s.title, soul: res.soul, bondUp: res.bondUp } }));
       },
     });
   } else if (target === "settings") {

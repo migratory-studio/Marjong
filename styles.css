@@ -3736,3 +3736,28 @@ button.secondary { color: var(--ink); }
 .tourney-brief .tb-btns button:hover, .tourney-standings .ts-btns button:hover,
 .tourney-section .tsb-btns button:hover, .tourney-watch .tw-btns button:hover { filter:brightness(1.1); }
 .tourney-section .tsb-go-big { padding:15px 34px; font-size:18px; }
+
+/* ============================================================
+   スタッフロール — エピローグ読了後（creditsRoll.js）
+   ============================================================ */
+.credits-roll { position:absolute; inset:0; z-index:120; overflow:hidden; opacity:0; transition:opacity .45s; font-family:"Yu Mincho","YuMincho","Noto Serif JP",serif; }
+.credits-roll.is-open { opacity:1; }
+.credits-roll .cr-scrim { position:absolute; inset:0; background:#05060a; }
+.credits-roll .cr-scroll { position:absolute; left:0; right:0; top:0; will-change:transform; text-align:center; color:#ece2c8; }
+.credits-roll .cr-title { font-size:46px; letter-spacing:.5em; text-indent:.5em; color:#ecd592; margin-bottom:10px; text-shadow:0 0 24px rgba(200,164,77,.35); }
+.credits-roll .cr-subtitle { font-size:15px; letter-spacing:.3em; color:#9a8a66; margin-bottom:90px; }
+.credits-roll .cr-section { font-size:13px; letter-spacing:.4em; text-indent:.4em; color:#c8a44d; margin:64px 0 22px; }
+.credits-roll .cr-row { display:flex; align-items:baseline; justify-content:center; gap:18px; margin:10px 0; }
+.credits-roll .cr-k { font-size:12px; color:#9a8a66; letter-spacing:.12em; min-width:200px; text-align:right; }
+.credits-roll .cr-k:empty { min-width:0; }
+.credits-roll .cr-v { font-size:17px; letter-spacing:.14em; }
+.credits-roll .cr-v small { display:block; font-size:10.5px; color:#9a8a66; letter-spacing:.2em; margin-top:2px; }
+.credits-roll .cr-fin { font-size:24px; letter-spacing:.2em; color:#ecd592; margin:110px 0 26px; }
+.credits-roll .cr-lastline { font-size:15px; line-height:2; color:#e8d8b8; margin-bottom:200px; }
+.credits-roll .cr-skip {
+  position:absolute; top:14px; right:16px; z-index:2; font-family:"Yu Gothic","Noto Sans JP",sans-serif;
+  font-size:12px; padding:7px 14px; border-radius:8px; cursor:pointer;
+  background:rgba(255,255,255,.06); color:#cdb88f; border:1px solid rgba(200,164,77,.4);
+}
+.credits-roll .cr-skip:hover { background:rgba(255,255,255,.12); }
+.credits-roll .cr-hint { position:absolute; bottom:12px; right:16px; font-family:"Yu Gothic",sans-serif; font-size:10.5px; color:#5d5546; }
