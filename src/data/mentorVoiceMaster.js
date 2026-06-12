@@ -227,7 +227,13 @@ const SHIYUE_BIGMATCH = {
   chase: "追う大一番——望むところダロ？　我らの麻雀、ぜんぶここで出すヨ。",
   longshot: "分が悪い？　ふふ、関係ないネ。ツモれば勝ち——最後までそれだけヨ。",
 };
-const EXPLICIT_BIGMATCH = { shiyue: SHIYUE_BIGMATCH };
+// ビビはどの局面でも「あなたは沈まない／奪わせない」に帰着＝守りの口上が大一番で一番強く響く。
+const BIBI_BIGMATCH = {
+  top: "首位で大一番……ふふ、いい眺め。最後まで、ビビが背中を守る。一つも、奪わせない。",
+  chase: "追う側、ね。……だいじょうぶ。あなたは沈まない。ビビが、そう決めたから。",
+  longshot: "分が悪い？　……ううん。守りきって、最後にぜんぶ持っていけばいい。いっしょに、ね。",
+};
+const EXPLICIT_BIGMATCH = { shiyue: SHIYUE_BIGMATCH, bibi: BIBI_BIGMATCH };
 export function pickMentorBigMatchLine(charId, situation = "chase") {
   const set = EXPLICIT_BIGMATCH[charId];
   if (set) return set[situation] || set.chase;
@@ -274,7 +280,33 @@ function templateBattleQuips(name) {
     "riichiSelf", "riichiOpp",
   ].map((ev) => Q(ev, {}, t(ev)));
 }
-const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE };
+// ビビの見守り＝守りの相棒。攻めの戦果より「奪わせなかったこと」を褒める。
+// 安全な場面では幼さ（小声の歓声・好奇心・茶目っ気）を出し、守り/ピンチ/飛びは凛とした芯を崩さない。
+const BIBI_BATTLE = [
+  Q("matchStart", {}, "……はじまるね。後ろは、ビビが見てる。安心して打って。"),
+  Q("matchStart", {}, "この卓、ちょっと張りつめてる。……ふふ、でも平気。だれにも、奪わせないから。"),
+  Q("matchStart", { condTier: "vgood" }, "今日のあなた、いい目してる。……攻めても、いいよ。沈んだら、ビビが受けるから。"),
+  Q("bigWin", {}, "わ……っ、おおきい。やった、やったね……！"),
+  Q("bigWin", {}, "満貫……ふふん。ほら、攻めたって沈まないでしょ？"),
+  Q("bigWin", { bondMin: 3 }, "……今の、かっこよかった。ビビ、ちょっと……どきっとしちゃった。"),
+  Q("bigLoss", {}, "……っ、もってかれた。だいじょうぶ、点棒なんて……あとで取り返せる。"),
+  Q("bigLoss", {}, "いたかった、ね。……でも、まだ立ってる。それでいい。"),
+  Q("bigLoss", { bondMin: 4 }, "……やだ。あなたが減るの、見たくないの。……次は、ぜったい受けるから。"),
+  Q("pinch", {}, "……っ、だめ。これ以上は、ビビが受ける。だいじょうぶ。あなたは、沈まない。"),
+  Q("pinch", { bondMin: 4 }, "……こわい顔、しないで。ビビがいる。……ぜったい、奪わせないから。"),
+  Q("tobi", {}, "——もう、いい。よく粘った。今日のことは、ビビが覚えてる。次は、守りきる。"),
+  Q("bustWin", {}, "……飛ばしちゃった。ふふ、ごめんね？　……ううん、ぜんぜん、ごめんじゃないの。"),
+  Q("abilityUse", {}, "身代わり、いくよ。だれのアガりも、ぜんぶ、なかったことにする。"),
+  Q("abilityUse", { bondMin: 4 }, "……ビビが、人形になる番。痛いのは、ぜんぶこっちでいいの。"),
+  Q("readWin", {}, "ほら、ね。……攻めなくたって、ちゃんと勝てる。それが、ビビの麻雀。"),
+  Q("riichiSelf", {}, "……リーチ？　ふふ、めずらしい。いいよ、いってみよ。後ろは見てるから。"),
+  Q("riichiOpp", {}, "リーチ……。慌てないで。ビビの後ろに、隠れていい。"),
+  Q("riichiOpp", { bondMin: 3 }, "……来たね。だいじょうぶ。こういうの、ビビの得意分野なの。"),
+  Q("rareGuest", {}, "……あの人、つよい。ぴりっとした。……ふふ、ちょっと、わくわくするね？"),
+  Q("complete", {}, "完走、おつかれさま。……ちゃんと、誰にも奪われずに帰ってきた。えらい。"),
+  Q("retreat", {}, "引くのも、守り。……うん、いい判断。無理しないあなた、ビビは好きだよ。"),
+];
+const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE, bibi: BIBI_BATTLE };
 
 // ── 大会敗北の夜の2択（leagueLossTalk）──
 // 大会リザルト（優勝できなかった夜）に師匠が問いかけ、プレイヤーが返せる（双方向の見せ場）。
@@ -320,7 +352,11 @@ const SHIYUE_DUO_INVITE = [
   G({}, "一局、付き合うヨ。……ふふ、手は抜かないネ？　それが我の愛情ダヨ。"),
   G({ cleared: true }, "九蓮宝士サマ、一局どう？　……今日は師匠としてじゃなく、ライバルとして打つヨ。本気の本気、ネ。"),
 ];
-const EXPLICIT_DUO_INVITE = { shiyue: SHIYUE_DUO_INVITE };
+const BIBI_DUO_INVITE = [
+  G({}, "一局、いい？　……ビビ、手は抜かないよ。……ふふ、覚悟して？"),
+  G({ cleared: true }, "九蓮宝士さま、一局どう？　……今日はね、守る相手じゃなくて——追いかける目標として、打つの。本気で、いくよ。"),
+];
+const EXPLICIT_DUO_INVITE = { shiyue: SHIYUE_DUO_INVITE, bibi: BIBI_DUO_INVITE };
 export const DUO_INVITE_FALLBACK = "「一局、付き合え。…手は抜かんぞ」";
 export function pickMentorDuoInvite(charId, ctx = {}) {
   const all = EXPLICIT_DUO_INVITE[charId];
@@ -351,7 +387,14 @@ function templateParlorComments(name) {
   const t = (l) => `［テンプレ］${name}・雀荘帰り（${l}）：ここに一言が入ります`;
   return ["bigWin", "win", "rough"].map((tier) => P(tier, {}, t(tier)));
 }
-const EXPLICIT_PARLOR = { shiyue: SHIYUE_PARLOR };
+// ビビは戦果より「奪われずに帰ってきた」を喜ぶ。bigWin×絆は守りの誇り（点棒＝守りきった証）。
+const BIBI_PARLOR = [
+  P("bigWin", {}, "わ……こんなに稼いできたの。ふふ、すごい。……でも、いちばんえらいのは、ぜんぶ守りきったこと。"),
+  P("bigWin", { bondMin: 4 }, "山みたいな点棒……。ねえ、これ、ぜんぶ奪われなかったってことだよね。……ふふ、ビビ、ちょっと誇らしい。"),
+  P("win", {}, "おかえり。勝ち越し、だね。……うん、いい打ち方してた。ビビ、ちゃんと見てたよ。"),
+  P("rough", {}, "おかえり。……渋い顔。だいじょうぶ、減ったぶんは、また積めばいい。今日は、休も？"),
+];
+const EXPLICIT_PARLOR = { shiyue: SHIYUE_PARLOR, bibi: BIBI_PARLOR };
 
 const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET };
 const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST };

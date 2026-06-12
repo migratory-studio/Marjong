@@ -64,7 +64,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "……いらっしゃい。あなたが、噂の新入りさん？",
+    "text": "……いらっしゃい。あなたが、噂の、新入りさん? ……じーっ。……ふふ、ごめんね。つい、見ちゃった。",
     "characterEffect": "fade_in",
     "screenEffect": "none",
     "effectDurationMs": 600
@@ -1530,7 +1530,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "でも……ちょっとだけ、ビビも嬉しいかな。ちいさな宝、ひとつ目。ね。",
+    "text": "でも……ちょっとだけ、ビビも、うれしいかも。えへへ。ちいさな宝、ひとつ目だね。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -1752,7 +1752,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "……焔。あんまり、大きな声を出さないで。この子、まだ慣れてないんだから。",
+    "text": "……焔。声、おっきいよ。びっくりするでしょ? この子、まだ慣れてないんだから。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -3266,7 +3266,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "もう、落ち込んでない? ……うん。よかった。",
+    "text": "もう、落ち込んでない? ……うん。よかったぁ。ビビ、ちょっと、ほっとしちゃった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -7237,7 +7237,26 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "見てるよ、と言ったきり、ビビは口をつぐんだ。守れない卓が、これからずっと続いていく。その先で、見ているだけの自分に、何ができるのか。問いだけが、夜の縁に、置き去りにされていた。",
+    "text": "見てるよ、と言ったきり、ビビは口をつぐんだ。守れない卓が、これからずっと続いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 31,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その先で、見ているだけの自分に、何ができるのか。問いだけが、夜の縁に、置き去りにされていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -7735,7 +7754,27 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "うなずくと、ビビは何も言わず、膝の人形の前足を、そっと両手で包んだ。届かないと思っていた声が、思いがけず、届いていた。けれど、それを喜びきるには、まだ何かが、足りないらしかった。",
+    "text": "うなずくと、ビビは何も言わず、膝の人形の前足を、そっと両手で包んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night",
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-14",
+    "lineNo": 30,
+    "backgroundId": "bg-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "届かないと思っていた声が、思いがけず、届いていた。けれど、それを喜びきるには、まだ何かが、足りないらしかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -8527,7 +8566,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "暗がりのなかに、声だけが、ぽつぽつと落ちていく。泣くのをやめた、というところで、ビビの声色は、少しも変わらなかった。変わらないことが、かえって、聞いている胸を、ひやりとさせる。",
+    "text": "暗がりのなかに、声だけが、ぽつぽつと落ちていく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -8543,9 +8582,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "bibi",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そういうとき、手のなかにあったのが、ラビちゃん。動かない。喋らない。抱きしめても、抱きしめ返してくれない。",
+    "text": "泣くのをやめた、というところで、ビビの声色は、少しも変わらなかった。変わらないことが、かえって、聞いている胸を、ひやりとさせる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -8563,7 +8602,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "ほんとうは……ラビちゃんは、ビビを、守ってなんか、くれなかったの。動けないんだもん。守れるわけ、ないでしょ。",
+    "text": "そういうとき、手のなかにあったのが、ラビちゃん。動かない。喋らない。抱きしめても、抱きしめ返してくれない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -8571,6 +8610,24 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 11,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ほんとうは……ラビちゃんは、ビビを、守ってなんか、くれなかったの。動けないんだもん。守れるわけ、ないでしょ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 12,
     "backgroundId": "bg-black",
     "standings": [
       {
@@ -8588,7 +8645,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 12,
+    "lineNo": 13,
     "backgroundId": "bg-black",
     "standings": [
       {
@@ -8606,7 +8663,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 13,
+    "lineNo": 14,
     "backgroundId": "bg-black",
     "standings": [
       {
@@ -8624,7 +8681,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 14,
+    "lineNo": 15,
     "backgroundId": "bg-black",
     "standings": [
       {
@@ -8642,7 +8699,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 15,
+    "lineNo": 16,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8660,7 +8717,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 16,
+    "lineNo": 17,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8678,7 +8735,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 17,
+    "lineNo": 18,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8696,7 +8753,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 18,
+    "lineNo": 19,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8716,7 +8773,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 19,
+    "lineNo": 20,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8734,7 +8791,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 20,
+    "lineNo": 21,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8752,7 +8809,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8770,7 +8827,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8790,7 +8847,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8801,7 +8858,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "声は、震えなかった。震えるほうが、まだ、ましだったのかもしれない。傷ついてはいけない、と決めた子が、痛みを置き去りにしたまま、ここまで来てしまった。その平らな声が、灯りの下に、静かに沈んでいく。",
+    "text": "声は、震えなかった。震えるほうが、まだ、ましだったのかもしれない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -8809,7 +8866,26 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 24,
+    "lineNo": 25,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "傷ついてはいけない、と決めた子が、痛みを置き去りにしたまま、ここまで来てしまった。その平らな声が、灯りの下に、静かに沈んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 26,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8827,7 +8903,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 25,
+    "lineNo": 27,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8845,7 +8921,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 26,
+    "lineNo": 28,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8863,7 +8939,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 27,
+    "lineNo": 29,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8882,7 +8958,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 28,
+    "lineNo": 30,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8900,7 +8976,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 29,
+    "lineNo": 31,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8919,7 +8995,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-16",
-    "lineNo": 30,
+    "lineNo": 32,
     "backgroundId": "bg-dojo-night",
     "standings": [
       {
@@ -8930,7 +9006,26 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "灯りの下で、ビビは、人形を抱いたまま、長いこと動かなかった。勘定の外に置いてきた痛みに、初めて、名前がついた夜。手を放して、誰かを信じて送り出せるか——その覚悟の、前夜だった。",
+    "text": "灯りの下で、ビビは、人形を抱いたまま、長いこと動かなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-16",
+    "lineNo": 33,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勘定の外に置いてきた痛みに、初めて、名前がついた夜。手を放して、誰かを信じて送り出せるか——その覚悟の、前夜だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -9379,7 +9474,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "ふふ。あのね、ビビ、ひやひやしたんだから。倍満なんて、刺さって。心臓、止まるかと思ったの。",
+    "text": "ふふ。あのね、ビビ、ひやひやしたんだから。倍満なんて、刺さるんだもん。……心臓、とまるかと思った。もう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -9762,7 +9857,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "口ぐせの主語が、ひとつ、ずれた。長いあいだ、自分だけを指していた言葉が、初めて、別の誰かを指す。その小さなずれが、ビビにとって、どれほど大きな一歩なのか——伏せられた睫毛が、かすかに震えていた。",
+    "text": "口ぐせの主語が、ひとつ、ずれた。長いあいだ、自分だけを指していた言葉が、初めて、別の誰かを指す。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -9770,6 +9865,24 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 19,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その小さなずれが、ビビにとって、どれほど大きな一歩なのか——伏せられた睫毛が、かすかに震えていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-18",
+    "lineNo": 20,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9787,7 +9900,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 20,
+    "lineNo": 21,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9805,7 +9918,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9824,7 +9937,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9842,7 +9955,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9861,7 +9974,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9879,7 +9992,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9898,7 +10011,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9917,7 +10030,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9935,7 +10048,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9954,7 +10067,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -9972,7 +10085,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-18",
-    "lineNo": 30,
+    "lineNo": 31,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10105,7 +10218,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "差し出しかけた手が、ゆっくりと、引き戻されていく。あの夜、暗がりで打ち明けた言葉が、いま、自分自身に、跳ね返ってきた。ラビちゃんは、お守りなんかじゃなかった。守る道具でも、なかった。",
+    "text": "差し出しかけた手が、ゆっくりと、引き戻されていく。あの夜、暗がりで打ち明けた言葉が、いま、自分自身に、跳ね返ってきた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -10114,6 +10227,25 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 8,
+    "backgroundId": "bg-dojo-dusk",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ラビちゃんは、お守りなんかじゃなかった。守る道具でも、なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 9,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10131,7 +10263,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 9,
+    "lineNo": 10,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10149,7 +10281,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 10,
+    "lineNo": 11,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10167,7 +10299,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 11,
+    "lineNo": 12,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10186,7 +10318,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 12,
+    "lineNo": 13,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10204,7 +10336,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 13,
+    "lineNo": 14,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10223,7 +10355,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 14,
+    "lineNo": 15,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10242,7 +10374,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 15,
+    "lineNo": 16,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10260,7 +10392,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 16,
+    "lineNo": 17,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10278,7 +10410,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 17,
+    "lineNo": 18,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10296,7 +10428,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 18,
+    "lineNo": 19,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10314,7 +10446,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 19,
+    "lineNo": 20,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10332,7 +10464,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 20,
+    "lineNo": 21,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10351,7 +10483,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10369,7 +10501,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10387,7 +10519,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10406,7 +10538,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10424,7 +10556,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10442,7 +10574,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10461,7 +10593,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10480,7 +10612,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -10498,7 +10630,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-dojo-dusk",
     "standings": [
       {
@@ -11037,7 +11169,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "守られる人形でいることを、やめた子が。誰かを守る人形でいることも、やめた子が。いま、はじめて、自分の足で立つ打ち手として、卓の、その先を見すえている。殻が、すっかり、外れていた。",
+    "text": "守られる人形でいることを、やめた子が。誰かを守る人形でいることも、やめた子が。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -11045,6 +11177,24 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-20",
     "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いま、はじめて、自分の足で立つ打ち手として、卓の、その先を見すえている。殻が、すっかり、外れていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 29,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -11063,7 +11213,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-20",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -11081,7 +11231,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-20",
-    "lineNo": 30,
+    "lineNo": 31,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -11099,7 +11249,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-20",
-    "lineNo": 31,
+    "lineNo": 32,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -11119,7 +11269,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-20",
-    "lineNo": 32,
+    "lineNo": 33,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -11130,7 +11280,27 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "笑って、手を振って、ビビは、人混みのほうへ、軽やかに駆けていった。相棒を胸に、自分の道へ。物語は、ここで終わらない。残りの宝が、その先で待っている。追いかける番が、今度は、ビビにやってきた。",
+    "text": "笑って、手を振って、ビビは、人混みのほうへ、軽やかに駆けていった。相棒を胸に、自分の道へ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night",
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-20",
+    "lineNo": 34,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "物語は、ここで終わらない。残りの宝が、その先で待っている。追いかける番が、今度は、ビビにやってきた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,

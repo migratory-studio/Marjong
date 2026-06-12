@@ -856,7 +856,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 8
+        "value": 9
       }
     ],
     "firstReadReward": {

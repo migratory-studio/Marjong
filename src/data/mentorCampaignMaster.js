@@ -72,6 +72,7 @@ export const MENTOR_PHASES = {
 };
 export const MENTOR_FINALE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-12", // 12話「ツモれば、ふたりの勝ち」＝師弟編フィナーレ
+  bibi: "mentor-bibi-bond-12",     // 12話＝団体戦優勝。守りに閉じたビビが初めて「信じて攻めを託す」転回点（design/bibi.json）
 };
 
 // エピローグ章（最終大会＝九蓮宝燈の優勝後に解禁・読了でスタッフロール）。
@@ -79,6 +80,7 @@ export const MENTOR_FINALE_SCENARIO = {
 // 表示も「第20話」ではなく「エピローグ」（scenarioListScreen / 解禁モーダル）。
 export const MENTOR_EPILOGUE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-20",
+  bibi: "mentor-bibi-bond-20", // 20話＝弟子の個人戦単独優勝を見届け、手を放して見送る。ビビ自身も道へ（殻破り完成）
 };
 export function isMentorEpilogue(scenarioId) {
   return Object.values(MENTOR_EPILOGUE_SCENARIO).includes(scenarioId);
@@ -96,8 +98,8 @@ export function mentorPhase(profile, mentorId) {
 // ------------------------------------------------- 師匠のスキル Lv（技）＝シナリオ起点
 // 師匠の技 Lv は基準 5（§10.5「師匠の初期スキル Lv = 5」）から、覇道編の節目の読了で超越帯へ。
 // 詩玥＝「封印した読みを取り戻す」アークと同期し、ep20（神算鬼謀）で Lv10
-// ＝弟子の Lv10 と同時期に揃う（系譜の完成）。トラック未定義の師匠（ビビ/ルイナ）は 5 のまま
-// （スキルテーブル未設計＝表示のみ。テーブルとトラックを足せば自動で効く）。
+// ＝弟子の Lv10 と同時期に揃う（系譜の完成）。ビビも ep15〜20 で超越帯（焔の火が宿る）へ。
+// トラック未定義の師匠（ルイナ）は 5 のまま（スキルテーブル未設計＝表示のみ。足せば自動で効く）。
 export const MENTOR_SKILL_BASE = 5;
 export const MENTOR_SKILL_TRACK = {
   shiyue: [
@@ -106,6 +108,15 @@ export const MENTOR_SKILL_TRACK = {
     { scenarioId: "mentor-shiyue-bond-18", level: 8 },  // アビスの壁
     { scenarioId: "mentor-shiyue-bond-19", level: 9 },  // 三人の九蓮
     { scenarioId: "mentor-shiyue-bond-20", level: 10 }, // 神算鬼謀＝最終戦は師弟ふたりとも Lv10
+  ],
+  // ビビ＝超越帯（lv-iron-guard Lv6〜10）＝「相棒・焔の火が宿る」＝身代わり（守り）が攻めへ転じる
+  // 殻破りアークと同期。段位（MENTOR_RANK_TRACK）は五蓮で停滞のまま＝外の宝数とは別軸の、内面の成長。
+  bibi: [
+    { scenarioId: "mentor-bibi-bond-15", level: 6 },  // 焔の火＝信じて見送る守りに、攻めの火が灯りはじめる
+    { scenarioId: "mentor-bibi-bond-17", level: 7 },  // ころんで、立つ＝庇わない守りの自覚
+    { scenarioId: "mentor-bibi-bond-18", level: 8 },  // あなたなら＝手を放し、信じて託す
+    { scenarioId: "mentor-bibi-bond-19", level: 9 },  // お守りのラビちゃん＝相棒と自分の足で
+    { scenarioId: "mentor-bibi-bond-20", level: 10 }, // いってきます＝殻破り完成・身代わりの火（焔1.5倍に並ぶ）
   ],
 };
 export function mentorSkillLevel(profile, mentorId) {

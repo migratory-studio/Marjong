@@ -116,9 +116,50 @@ const AMBER_SHIELD_LEVELS = [
     unlockDescription: "天衣無縫（ティエンイー・ウーフォン）——5000点の和了でも盾が甦り、倍満なら二枚同時に。守りと攻めに継ぎ目が無い、隙無き極致。" },
 ];
 
+// 身代わり人形（ビビ・lv-iron-guard）— 守備特化の本結線テーブル（基準帯 Lv1〜5＋超越帯 Lv6〜10）。
+// 基準帯＝「守りの完成」: 守りの窓 discardWindow が 3→6 に伸び、発動回数 maxCharges が 1→2 へ
+// （Lv5＝フリー対戦のビビ＝BibiAbility 既定値と完全一致：窓6・1ゲーム2局・帳消し）。
+// 超越帯＝「身代わりが攻めへ転じる」: 相棒・焔の火が宿り、ビビ自身の満貫以上の和了が
+// winMultiplier 倍に（Lv6=1.1 … Lv10=1.5＝焔の満貫1.5倍に並ぶ）。守りに閉じた人形が、
+// 信じて攻めを託す覇道編アークの体現＝殻破り。詩玥「読みが宿る」・凌雲「守りが循環」と対の構造。
+// runtimeParams の契約は BibiAbility のコンストラクタと対応: discardWindow / winMultiplier（＋ maxChargesOverride）
+const IRON_GUARD_LEVELS = [
+  { skillLevel: 1,  soulCost: 0,    runtimeParams: { discardWindow: 3, winMultiplier: 1 },   maxChargesOverride: 1, cooldownOverride: null,
+    effectDescription: "発動した局、3打牌のあいだロン・ツモを帳消し（失点0・勝者も得点0）。1ゲーム1局。",
+    unlockDescription: "習得。3打牌ぶん、ロン・ツモを帳消しにする守りの芽生え。" },
+  { skillLevel: 2,  soulCost: 400,  runtimeParams: { discardWindow: 4, winMultiplier: 1 },   maxChargesOverride: 1, cooldownOverride: null,
+    effectDescription: "発動した局、4打牌のあいだロン・ツモを帳消し。1ゲーム1局。",
+    unlockDescription: "守りの窓が4打牌に伸びる。受けきれる時間が長くなる。" },
+  { skillLevel: 3,  soulCost: 800,  runtimeParams: { discardWindow: 5, winMultiplier: 1 },   maxChargesOverride: 1, cooldownOverride: null,
+    effectDescription: "発動した局、5打牌のあいだロン・ツモを帳消し。1ゲーム1局。",
+    unlockDescription: "守りの窓が5打牌に。誰にも奪わせない時間がさらに伸びる。" },
+  { skillLevel: 4,  soulCost: 1400, runtimeParams: { discardWindow: 6, winMultiplier: 1 },   maxChargesOverride: 1, cooldownOverride: null,
+    effectDescription: "発動した局、6打牌のあいだロン・ツモを帳消し。1ゲーム1局。",
+    unlockDescription: "守りの窓が6打牌に到達。長い被弾もまるごと引き受ける。" },
+  { skillLevel: 5,  soulCost: 2200, runtimeParams: { discardWindow: 6, winMultiplier: 1 },   maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "発動した局、6打牌のあいだロン・ツモを帳消し。1ゲーム2局（フリー対戦のビビと同等）。",
+    unlockDescription: "完成基準。窓6打牌×1ゲーム2局＝誰にも奪わせない、身代わり人形の守りの完成。" },
+  { skillLevel: 6,  soulCost: 2800, runtimeParams: { discardWindow: 6, winMultiplier: 1.1 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "守り＝窓6×2局。さらに自分の満貫以上の和了が1.1倍に（相棒・焔の火が宿りはじめる）。",
+    unlockDescription: "超越域へ。守りだけだったビビに、焔の火が灯る——満貫以上の和了が1.1倍。" },
+  { skillLevel: 7,  soulCost: 3600, runtimeParams: { discardWindow: 7, winMultiplier: 1.1 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "守り＝窓7×2局。自分の満貫以上の和了が1.1倍。",
+    unlockDescription: "守りの窓が7打牌に。受けながら、攻めの火も絶やさない。" },
+  { skillLevel: 8,  soulCost: 4600, runtimeParams: { discardWindow: 7, winMultiplier: 1.2 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "守り＝窓7×2局。自分の満貫以上の和了が1.2倍。",
+    unlockDescription: "宿った火が強まる——満貫以上の和了が1.2倍に。" },
+  { skillLevel: 9,  soulCost: 5800, runtimeParams: { discardWindow: 8, winMultiplier: 1.3 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "守り＝窓8×2局。自分の満貫以上の和了が1.3倍。",
+    unlockDescription: "守りの窓が8打牌に伸び、攻めの火は1.3倍へ。守りと攻めが拮抗する。" },
+  { skillLevel: 10, soulCost: 7200, runtimeParams: { discardWindow: 8, winMultiplier: 1.5 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "守り＝窓8×2局。自分の満貫以上の和了が1.5倍（焔の満貫1.5倍に並ぶ）。",
+    unlockDescription: "身代わりの火——守りが、攻めに変わる。焔から託された火が、ビビ自身の手に灯る殻破りの極み。満貫以上の和了が1.5倍。" },
+];
+
 export const SKILL_LEVEL_MASTER = {
   "lv-lucky-draw": LUCKY_DRAW_LEVELS,
   "lv-amber-shield": AMBER_SHIELD_LEVELS,
+  "lv-iron-guard": IRON_GUARD_LEVELS,
   "lv-chunchan": buildTable([
     "中張牌の速攻が発動する基礎。",
     "タンヤオ移行が安定する。",
@@ -130,18 +171,6 @@ export const SKILL_LEVEL_MASTER = {
     "鳴き判断が最適化される。",
     "終盤まで手数の優位を保つ。",
     "育成の極致。速攻が止まらない。",
-  ]),
-  "lv-iron-guard": buildTable([
-    "鉄壁の守りが発動する基礎。",
-    "無失点の継続が長くなる。",
-    "発動コストが軽くなる。",
-    "発動回数が増える。",
-    "師匠相当。鉄壁が完成する。",
-    "超越域へ。無失点の持続が伸びる。",
-    "発動コストがさらに軽くなる。",
-    "発動回数が大きく増える。",
-    "守備の穴がほぼ無くなる。",
-    "育成の極致。鉄壁が崩れない。",
   ]),
   "lv-danger-sense": buildTable([
     "危険牌察知の基礎。",

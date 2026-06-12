@@ -28,6 +28,8 @@ export const CREDITS_MASTER = {
   // 締めの一言（行配列＝改行）。師匠未定義は lastLineDefault。
   lastLineByMentor: {
     shiyue: ["「——ツモれば勝ち、ダヨ。", "　また打とうネ、相棒。」"],
+    // ビビ＝口癖『沈まない』の主語が“あなた”へ反転＋最後の言葉『いってきます』（design/bibi.json 覇道編）。
+    bibi: ["「だいじょうぶ。あなたは、もう沈まない。", "　……ビビも、いってくるね。」"],
   },
   lastLineDefault: ["「——また、打とう。」"],
 };
