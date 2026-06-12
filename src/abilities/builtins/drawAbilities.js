@@ -128,6 +128,155 @@ export class SummonTileAbility extends Ability {
   }
 }
 
+// ---- ゼロ・リサーチ（ルクス・ゼロ）の有効牌サーチ ----------------------------
+// 14枚手牌 H（counts）が1シャンテンのとき、「ある打牌 d を切れば (H−d) が1シャンテン
+// になり、そこへ k を1枚足すと聴牌(shanten==0)になる」ような有効牌 k を求める。
+// breadth＝その最良 d を切ったときの聴牌の待ち枚数 waits().length の最大値。
+// 返り値: [{ kind, breadth }] を breadth 降順（同点は kind 昇順）にソートした配列。
+// ※「(H−d) が1シャンテン」を要件に含めるのは仕様どおり。これにより 0シャンテン（既に
+//    聴牌）の手は対象外になり、純粋に「1シャンテン→聴牌」を進める牌だけを拾う。
+export function zeroSearchEffectiveKinds(counts, numMelds) {
+  const c = counts.slice();
+  const breadthByKind = new Map(); // kind -> 最良 breadth
+  for (let d = 0; d < 34; d++) {
+    if (c[d] === 0) continue;
+    c[d]--; // 打牌 d（13枚）
+    if (shanten(c, numMelds) === 1) {
+      // (H−d) が1シャンテン。ここへ各 k を足して聴牌になるか調べる。
+      for (let k = 0; k < 34; k++) {
+        if (c[k] >= 4) continue;
+        c[k]++; // k を足して14枚
+        if (shanten(c, numMelds) === 0) {
+          // 聴牌形の待ち枚数（種類数）を breadth とする。k を含む14枚から、
+          // 各牌を1枚抜いた13枚の waits の最大＝この聴牌のいちばん広い受け。
+          let breadth = 0;
+          for (let r = 0; r < 34; r++) {
+            if (c[r] === 0) continue;
+            c[r]--;
+            const w = waits(c, numMelds).length;
+            c[r]++;
+            if (w > breadth) breadth = w;
+          }
+          const prev = breadthByKind.get(k) ?? -1;
+          if (breadth > prev) breadthByKind.set(k, breadth);
+        }
+        c[k]--;
+      }
+    }
+    c[d]++;
+  }
+  const out = [...breadthByKind.entries()].map(([kind, breadth]) => ({ kind, breadth }));
+  out.sort((a, b) => b.breadth - a.breadth || a.kind - b.kind);
+  return out;
+}
+
+// 「捕捉——確保する / ゼロ・リサーチ」（ルクス・ゼロ）— 1局1回・1ゲーム2局まで。
+// 自分の手番（AWAIT_DISCARD・14枚）で手牌が1シャンテンのとき、残る生牌（王牌除く）を
+// 走査し、聴牌へ進む有効牌のうち「聴牌後の待ちが広い順トップ2」を候補にする。プレイヤー
+// （CPU/フォールバックは自動）が1つ選ぶと、次のツモで確実にその牌を手繰り寄せて聴牌を
+// 確定させる。山に有効牌が無ければ発動できない（＝場に出切っている合図＝読みの材料）。
+const ZERO_SEARCH_MAX_HANDS = 2;
+export class ZeroSearchAbility extends Ability {
+  constructor(params = {}) {
+    super(abilityDef("zero-search"));
+    this._handsUsed = 0;        // この能力を使った局数（ゲーム通算）
+    this._usedThisHand = false; // 今の局で既に発動したか
+    this._targetKind = params.targetKind ?? null; // 確保する有効牌（apply で確定）
+  }
+  resetForGame() {
+    super.resetForGame();
+    this._handsUsed = 0;
+    this._usedThisHand = false;
+    this._targetKind = null;
+  }
+  resetForHand() {
+    super.resetForHand();
+    this._usedThisHand = false;
+    this._targetKind = null;
+  }
+
+  // 残る生牌（王牌除く・全山）に在って、聴牌へ進む有効牌の候補トップ2を返す。
+  // breadth 降順→同点はドラ/赤5を優先→なお同点は kind 昇順。生牌に無い種類は除外。
+  liveCandidates(api) {
+    const p = api.me;
+    const wall = api.state.wall;
+    if (!wall) return [];
+    const ranked = zeroSearchEffectiveKinds(p.counts(), p.numMeldSets());
+    if (ranked.length === 0) return [];
+    // 全山（王牌除く）の残り生牌に在る種類だけに絞る。
+    const liveCounts = tilesToCounts(wall.peekLive(wall.liveRemaining));
+    const live = ranked.filter((e) => liveCounts[e.kind] > 0);
+    if (live.length === 0) return [];
+    // 同点タイブレーク用にドラ/赤5判定を用意（広い順が主、ドラは従）。
+    const doraKinds = new Set(wall.doraKinds?.() ?? []);
+    const liveTiles = wall.peekLive(wall.liveRemaining);
+    const hasRed = (k) => liveTiles.some((t) => t.kind === k && t.red);
+    const isDora = (k) => doraKinds.has(k) || hasRed(k);
+    live.sort((a, b) => b.breadth - a.breadth || (isDora(b.kind) - isDora(a.kind)) || a.kind - b.kind);
+    return live.slice(0, 2).map((e) => e.kind);
+  }
+
+  // 1シャンテンの自手番でのみ発動可・回数/使用局数の上限を満たし、かつ生有効牌が在る。
+  activationCondition(api) {
+    if (!(this._usedThisHand || this._handsUsed < ZERO_SEARCH_MAX_HANDS)) return false;
+    const p = api.me;
+    if (shanten(p.counts(), p.numMeldSets()) !== 1) return false;
+    return this.liveCandidates(api).length > 0;
+  }
+
+  // main.js 能力バー用の表示状態。visible=出すか / candidates=確保候補の kind 配列。
+  uiState(api) {
+    const p = api.me;
+    const is1shanten = shanten(p.counts(), p.numMeldSets()) === 1;
+    const visible =
+      this.ready && this._handsUsed < ZERO_SEARCH_MAX_HANDS && is1shanten && !this.active;
+    const candidates = visible ? this.liveCandidates(api) : [];
+    return { visible, candidates };
+  }
+
+  // 即時適用（apply→activate の順）。確保する有効牌を確定する。params.targetKind が
+  // 指定（人間UI）ならそれを、未指定（CPU/フォールバック）なら最良候補（先頭）を採る。
+  // 候補が無ければ false でチャージ消費せず中断する。
+  apply(game, player, params = {}) {
+    const candidates = this.liveCandidates(new AbilityApiLite(game, player));
+    if (candidates.length === 0) return false;
+    const want = params.targetKind;
+    this._targetKind = (want != null && candidates.includes(want)) ? want : candidates[0];
+    if (!this._usedThisHand) {
+      this._usedThisHand = true;
+      this._handsUsed++;
+    }
+    return true;
+  }
+
+  [Hooks.MODIFY_DRAW](ctx, api) {
+    if (!this.active) return undefined;
+    // 発動した次のツモ1回で解決する（命中・失敗どちらでも使い切り）。
+    this.active = false;
+    const k = this._targetKind;
+    if (k == null) return undefined;
+    // 全山（王牌除く）から targetKind に一致する最初の牌を手繰り寄せる。
+    const all = ctx.wall.peekLive(ctx.wall.liveRemaining);
+    const hit = all.find((t) => t.kind === k);
+    if (hit) {
+      api.log(`「捕捉——確保する」${kindLabel(k)}を山から手繰り寄せた（聴牌）`);
+      return hit;
+    }
+    // 万一山から消えていれば通常ツモ（フォールバック）。
+    return undefined;
+  }
+}
+
+// liveCandidates / apply から api.me / api.state.wall を引くための軽量アダプタ。
+// activateAbility は apply(game, player, params) を直接渡すため、フック用 AbilityApi と
+// 同じ読み口（me / state.wall）だけをここで満たす。
+class AbilityApiLite {
+  constructor(game, player) { this._game = game; this._player = player; }
+  get me() { return this._player; }
+  get state() { return this._game; }
+  log() {}
+}
+
 // "老頭ツモ" — while active, draws are biased toward 么九牌 (terminals/honors).
 // Manual: 1ゲーム2局まで; active for the rest of the hand it is used in.
 export class RootouAbility extends Ability {
@@ -257,6 +406,7 @@ function handPotential(counts, numMelds) {
 
 registerAbility("lucky-draw", (params) => new LuckyDrawAbility(params));
 registerAbility("summon-tile", (params) => new SummonTileAbility(params));
+registerAbility("zero-search", (params) => new ZeroSearchAbility(params));
 registerAbility("rootou", () => new RootouAbility());
 registerAbility("chunchan", () => new ChunchanAbility());
 registerAbility("dora-pull", () => new DoraPullAbility());

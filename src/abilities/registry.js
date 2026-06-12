@@ -90,7 +90,9 @@ export class AbilityManager {
     const chosen = this.modifyForPlayer(Hooks.MODIFY_DRAW, player, ctx, defaultTile);
     if (chosen && chosen !== defaultTile) {
       // find chosen offset in live wall and draw it
-      const offset = wall.peekLive(64).findIndex((t) => t.id === chosen.id);
+      // 全山（王牌除く）を探索窓にする。zero-search は全山から有効牌を手繰り寄せるため
+      // 64枚窓では取りこぼし得る。lucky-draw 等は peekLive(8) 由来の牌で常に窓内なので不変。
+      const offset = wall.peekLive(wall.liveRemaining).findIndex((t) => t.id === chosen.id);
       if (offset >= 0) return wall.drawLiveAt(offset);
     }
     return wall.drawLive();

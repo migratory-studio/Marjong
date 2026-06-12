@@ -94,6 +94,7 @@ let riichiMode = false;
 let recallMode = false; // リコール・ディール: 自分の河の牌を選択中
 let janeDoeMode = false; // 強制ツモ切り: 対象の相手を選択中
 let kakehaMode = false; // 大博打: 賭け金（5000/10000）を選択中
+let luxMode = false; // ゼロ・リサーチ: 確保する有効牌（候補）を選択中
 let noNaki = false; // 鳴きなし: when on, auto-skip pon/chi/kan for the human (ron still offered)
 let autoPlay = false; // オート観戦: when on, the human seat is driven by the CPU AI (free matches only)
 let cpuActionPending = false; // CPU/オートの打牌を setTimeout 済み。loop() の二重キック防止ガード
@@ -2018,8 +2019,8 @@ function onCanvasClick(ev) {
     return; // 河以外のクリックは無視（キャンセルはボタンで）
   }
 
-  // JaneDoe 対象選択中・大博打の賭け金選択中は打牌をブロック（ボタンで選ぶ）。
-  if (janeDoeMode || kakehaMode) return;
+  // JaneDoe 対象選択中・大博打の賭け金選択中・ゼロ・リサーチの有効牌選択中は打牌をブロック（ボタンで選ぶ）。
+  if (janeDoeMode || kakehaMode || luxMode) return;
 
   for (const hb of renderer.handHitboxes) {
     if (!hb.enabled) continue;
@@ -2079,6 +2080,8 @@ function showHumanActions() {
   if (janeDoeMode) { showJaneDoeTargets(idx); return; }
   // 大博打の賭け金選択中は専用ボタンを表示する。
   if (kakehaMode) { showKakehaBets(idx); return; }
+  // ゼロ・リサーチの有効牌選択中は専用ボタンを表示する。
+  if (luxMode) { showLuxCandidates(idx); return; }
 
   // danger marking (defensive ability) -> renderer highlights
   refreshHighlights();
@@ -2114,7 +2117,10 @@ function showHumanActions() {
   // Ability activation buttons / indicators (発動種別ごと)。These go in the side
   // panel (#ability-bar), not the action bar, so they never cover the hand tiles.
   const abilityBar = el("ability-bar");
+  let luxGrayHint = false; // ゼロ・リサーチがグレーアウト中なら下のヒントを出す
   for (const a of game.abilityStatus(idx)) {
+    // visible===false の能力はボタン自体を描画しない（zero-search の1シャンテン外など）。
+    if (a.visible === false) continue;
     if (a.activation === "passive") {
       abilityBar.appendChild(mkChip(`常時: ${a.name}`, "ability-chip passive"));
     } else if (a.active) {
@@ -2150,11 +2156,21 @@ function showHumanActions() {
           render();
           return;
         }
+        // zero-search needs a target kind: enter candidate-selection mode.
+        if (a.id === "zero-search") {
+          luxMode = true;
+          riichiMode = false;
+          showHumanActions();
+          render();
+          return;
+        }
         game.activateAbility(idx, a.id);
         showHumanActions();
         render();
       });
       if (!a.canActivate) btn.disabled = true;
+      // ゼロ・リサーチが表示中だが発動不可＝生有効牌0（グレーアウト）の合図。
+      if (a.id === "zero-search" && a.visible && !a.canActivate) luxGrayHint = true;
       abilityBar.appendChild(btn);
     }
   }
@@ -2174,6 +2190,40 @@ function showHumanActions() {
     ? "河から手牌へ戻す牌を選んでください（ツモ牌は河へ・ロン不可）"
     : riichiMode ? "リーチ宣言牌を選んで切ってください" : "手牌をクリックして打牌";
   bar.appendChild(hint);
+
+  // ゼロ・リサーチがグレーアウト中なら「山に残っていない＝読みの材料」ヒントを添える。
+  if (luxGrayHint) {
+    const lux = document.createElement("span");
+    lux.style.cssText = "align-self:center;color:#7fa8c9;font-size:12px;margin-left:8px;";
+    lux.textContent = "有効牌は山に残っていない——読みの材料に";
+    bar.appendChild(lux);
+  }
+}
+
+// ゼロ・リサーチ（ルクス・ゼロ）の有効牌選択バー。確保候補（待ち広い順トップ2）を
+// 牌ラベルで並べ、選ぶと次のツモでその牌を確定で手繰り寄せる。
+function showLuxCandidates(idx) {
+  clearActions();
+  const bar = el("action-bar");
+  const label = document.createElement("span");
+  label.style.cssText = "align-self:center;color:#4ea1d3;font-weight:700;margin-right:8px;";
+  label.textContent = "確保する有効牌を選択:";
+  bar.appendChild(label);
+  const status = game.abilityStatus(idx).find((a) => a.id === "zero-search");
+  const candidates = (status && status.candidates) || [];
+  for (const kind of candidates) {
+    bar.appendChild(mkBtn(kindLabel(kind), "btn-ability", () => {
+      luxMode = false;
+      game.activateAbility(idx, "zero-search", { targetKind: kind });
+      showHumanActions();
+      render();
+    }));
+  }
+  bar.appendChild(mkBtn("キャンセル", "btn-skip", () => {
+    luxMode = false;
+    showHumanActions();
+    render();
+  }));
 }
 
 // 強制ツモ切り（JaneDoe）の対象選択バー。リーチ中の相手は選べない。

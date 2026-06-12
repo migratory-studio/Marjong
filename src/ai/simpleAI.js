@@ -82,6 +82,15 @@ export function decideAbilityActivations(game, playerIndex) {
       if (params) out.push({ id: ab.id, params });
       continue;
     }
+    // zero-search（ゼロ・リサーチ）: 自手番1シャンテンで生有効牌が在れば発動し、最良
+    // 候補（待ち広い順トップ）を確保する。候補算出は能力本体の liveCandidates に委ねる。
+    if (ab.id === "zero-search") {
+      if (sh === 1 && typeof ab.liveCandidates === "function") {
+        const cands = ab.liveCandidates(game.abilities.apiFor(p));
+        if (cands.length > 0) out.push({ id: ab.id, params: { targetKind: cands[0] } });
+      }
+      continue;
+    }
     if (shouldActivate(ab.id, { sh, turnNo, p })) out.push({ id: ab.id, params: {} });
   }
   return out;

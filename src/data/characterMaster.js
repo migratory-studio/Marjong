@@ -60,17 +60,16 @@ export const CHARACTER_MASTER = [
   },
   {
     id: "yobinin",
-    name: "呼忍",
-    reading: "ヨビ・シノブ",
+    name: "ルクス・ゼロ",
+    reading: "",
     color: "#4ea1d3",
     role: "attacker",
-    bio: "狙った牌を1局1回呼び寄せる器用型。",
-    profile: "必要な一枚を“呼ぶ”技を持つ寡黙な打ち手。狙った牌は逃さないが、力を使うのは勝負どころの一局だけという慎重さも併せ持つ。",
-    stats: { startingPoints: 13000 }, // trimmed: top win rate
+    bio: "山を見通し聴牌を確定させる精密機械型。イーシャンテンの停滞を力ずくで断ち切る。",
+    profile: "感情を映さない無機質な打ち手。手が聴牌の一歩手前で空回りすること——イーシャンテン地獄——を何より嫌う。残る山に光（ルクス）を当てて必要牌の在処を読み切り、在るなら確実に手繰り寄せ、運の揺らぎを零（ゼロ）にする。在らぬときの沈黙さえ、次の一手の材料に変える。",
+    stats: { startingPoints: 13000 },
     assets: assetsFor("yobinin"),
-    params: { attack: 4, defense: 3, quirk: 3, difficulty: 2 },
-    // targetKind: null => 最も欲しい牌を自動で狙う。特定牌に固定したい場合は kind を指定。
-    abilities: [{ abilityId: "summon-tile", params: { targetKind: null } }],
+    params: { attack: 4, defense: 2, quirk: 5, difficulty: 4 },
+    abilities: [{ abilityId: "zero-search", params: {} }],
   },
   {
     id: "kuidoshi",

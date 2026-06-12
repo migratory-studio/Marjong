@@ -248,16 +248,24 @@ export class Game {
   abilityStatus(playerIndex) {
     const p = this.players[playerIndex];
     const api = this.abilities.apiFor(p);
-    return (p.abilities || []).map((ab) => ({
-      id: ab.id,
-      name: ab.name,
-      desc: ab.desc,
-      activation: ab.activation,
-      charges: ab.charges,
-      maxCharges: ab.maxCharges,
-      active: ab.active,
-      canActivate: ab.canActivate(api),
-    }));
+    return (p.abilities || []).map((ab) => {
+      // 能力が uiState(api) を持てば visible/candidates を載せる（持たない能力は従来描画＝
+      // visible:true・candidates:null）。zero-search はこれで「1シャンテン以外では非表示／
+      // 生有効牌0ならグレーアウト」を main.js へ伝える。
+      const ui = typeof ab.uiState === "function" ? ab.uiState(api) : null;
+      return {
+        id: ab.id,
+        name: ab.name,
+        desc: ab.desc,
+        activation: ab.activation,
+        charges: ab.charges,
+        maxCharges: ab.maxCharges,
+        active: ab.active,
+        canActivate: ab.canActivate(api),
+        visible: ui ? ui.visible : true,
+        candidates: ui ? ui.candidates : null,
+      };
+    });
   }
 
   _canTsumo(p) {
