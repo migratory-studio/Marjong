@@ -101,6 +101,24 @@ export const SKILL_TEMPLATE_MASTER = [
     initialSkillLevel: 1,
     isEnabled: true,
   },
+  // ---- 凌雲（守備系・将来の師匠枠）----
+  // 育成テンプレ。フリー対戦の凌雲は characterMaster の params:{}＝コンストラクタ既定値(=Lv5)で
+  // 動くため現挙動には影響しない。これは育成（凌雲師匠化／マイキャラがこの能力を選ぶ）で
+  // lv-amber-shield の Lv 差分（超越帯 Lv6〜10＝天衣無縫）へ到達させるための結線。
+  {
+    skillTemplateId: "tmpl-amber-shield",
+    runtimeAbilityId: "amber-shield",
+    name: "琥珀の盾",
+    description: "致命の一撃だけを受け止める持続シールド。満貫以上の放銃・被ツモを0にし、満貫未満では剥がれる守備特化型。攻めて勝つほど盾が甦る。",
+    familyId: "defense",
+    paramAffinity: ["guard", "mental"], // 守りの要＝守備(主)・メンタル(副)
+    rarity: "rare",
+    mentorCharacterIds: ["kuidoshi"],
+    integrationTier: "engine_assisted",
+    levelTableId: "lv-amber-shield",
+    initialSkillLevel: 1,
+    isEnabled: true,
+  },
 ];
 
 // 初期師匠候補（major_update_specification.md §9.3：攻撃 / 守備 / ギャンブルの3系統）。

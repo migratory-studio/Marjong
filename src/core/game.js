@@ -839,7 +839,7 @@ export class Game {
     const collected = this.players.reduce((s, o) => s - (o === p ? 0 : raw[o.index]), 0);
     raw[p.index] += collected + this.kyotaku;
     this.kyotaku = 0;
-    this._settle(raw, { reason: "tsumo", winnerIndex: p.index });
+    this._settle(raw, { reason: "tsumo", winnerIndex: p.index, rank: res.rank, isYakuman: !!res.isYakuman });
     this._finishWin(p, res, null, before, this._lastDraw.kind);
   }
 
@@ -849,7 +849,7 @@ export class Game {
     raw[loser.index] -= res.ron;
     raw[p.index] += res.ron + this.kyotaku;
     this.kyotaku = 0;
-    this._settle(raw, { reason: "ron", winnerIndex: p.index });
+    this._settle(raw, { reason: "ron", winnerIndex: p.index, rank: res.rank, isYakuman: !!res.isYakuman });
     this._finishWin(p, res, loser, before, kind);
   }
 

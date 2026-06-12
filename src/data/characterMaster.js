@@ -74,16 +74,16 @@ export const CHARACTER_MASTER = [
   },
   {
     id: "kuidoshi",
-    name: "鳴通 優",
-    reading: "ナキドオシ・ユウ",
+    name: "凌雲",
+    reading: "リン・ユン",
     color: "#f6b352",
     role: "blocker",
-    bio: "全方位チーで場を荒らすタンク型。持ち点が多い。",
-    profile: "誰の捨て牌でも拾い上げる鳴きの達人。場を掻き回して相手のペースを崩すのが信条。打点よりもスピードと妨害を好む。",
-    stats: { startingPoints: 17000 }, // tanky: high HP, aggressive calling
+    bio: "詩玥と同郷の守り手。致命の一撃だけを受け止める琥珀の盾を宿す守備特化型。",
+    profile: "詩玥と同じ卓で育った打ち手。あの日の喪失に、詩玥が『攻め』で応えたなら、凌雲は『護り』で応えた。多くを語らず、ただ前に立つ。卓を沈める致命の一撃だけを琥珀の盾で受け止め、守り抜いた先で、攻めることもまた護りだと知る。",
+    stats: { startingPoints: 13000 }, // 守備特化: 盾で大物手を受ける代わり HP は低め
     assets: assetsFor("kuidoshi"),
-    params: { attack: 3, defense: 4, quirk: 4, difficulty: 3 },
-    abilities: [{ abilityId: "omni-chi", params: {} }],
+    params: { attack: 1, defense: 5, quirk: 3, difficulty: 3 },
+    abilities: [{ abilityId: "amber-shield", params: {} }],
   },
   {
     id: "mamori",

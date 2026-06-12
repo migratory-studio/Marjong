@@ -141,6 +141,15 @@ export const ABILITY_MASTER = {
     maxCharges: 2,
     cooldown: 0,
   },
+  "amber-shield": {
+    name: "琥珀の盾",
+    desc: "常時、致命の一撃を受け止める琥珀の盾を張る。閾値（既定=満貫）以上の放銃・被ツモは失点を0に、閾値未満は盾が剥がれる（育成で半額化）。盾はゲームを通しての持続資源で、補充は超越帯の和了でのみ。",
+    blurb: "琥珀の盾 — 満貫以上の放銃/被ツモを0／満貫未満で剥がれる持続シールド",
+    activation: "passive",
+    chargeScope: "game",
+    maxCharges: 0,
+    cooldown: 0,
+  },
 };
 
 // 能力定義を取り出す（既定値をマージして返す）。未知IDは安全なフォールバック。

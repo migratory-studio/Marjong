@@ -75,8 +75,50 @@ const LUCKY_DRAW_LEVELS = [
     unlockDescription: "神算鬼謀。読みは三段階の完全域——読めるし、引ける。系譜の完成形。" },
 ];
 
+// 琥珀の盾（凌雲・lv-amber-shield）— 守備特化の本結線テーブル（基準帯 Lv1〜5＋超越帯 Lv6〜10）。
+// 基準帯＝「受けの完成」: 受け切る閾値が 倍満→満貫 へ下がり、被ツモもカバーするようになる
+// （Lv5＝フリー対戦の凌雲＝AmberShieldAbility 既定値と完全一致：盾1・満貫閾値・被ツモ可・軽減0・補充なし）。
+// 超越帯＝「守りが攻めへ転じる」: 剥がれても半額に抑え（Lv7）、盾枚数が2へ（Lv8）、和了で盾を
+// 編み直す regen が宿り（Lv6〜）、Lv10＝守りと攻めが継ぎ目無く一体化。
+// 称号は 不動雲嵐（Lv5＝受けの完成）→ 天衣無縫（Lv10＝超越）。詩玥の「深謀遠慮→神算鬼謀」と対の構造。
+// runtimeParams の契約は AmberShieldAbility のコンストラクタと対応:
+//   maxShields / protectTier / coverTsumo / stripMitigation / regen
+const AMBER_SHIELD_LEVELS = [
+  { skillLevel: 1,  soulCost: 0,    runtimeParams: { maxShields: 1, protectTier: "baiman",  coverTsumo: false, stripMitigation: 0,   regen: [] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾1枚。倍満以上の放銃だけを受け切る（被ツモは対象外・満貫未満では剥がれる）。",
+    unlockDescription: "習得。盾1枚で倍満以上の放銃のみ受け切る守りの芽生え。" },
+  { skillLevel: 2,  soulCost: 400,  runtimeParams: { maxShields: 1, protectTier: "baiman",  coverTsumo: true,  stripMitigation: 0,   regen: [] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾1枚。倍満以上の放銃・被ツモを受け切る。",
+    unlockDescription: "被ツモも受け止められるようになる。守りの範囲が広がる。" },
+  { skillLevel: 3,  soulCost: 800,  runtimeParams: { maxShields: 1, protectTier: "haneman", coverTsumo: true,  stripMitigation: 0,   regen: [] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾1枚。跳満以上の放銃・被ツモを受け切る。",
+    unlockDescription: "受け切る閾値が跳満まで下がる。より多くの大物手を止める。" },
+  { skillLevel: 4,  soulCost: 1400, runtimeParams: { maxShields: 1, protectTier: "mangan",  coverTsumo: false, stripMitigation: 0,   regen: [] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾1枚。満貫以上の放銃を受け切る（被ツモは対象外）。",
+    unlockDescription: "閾値が満貫まで下がる。致命の一撃をより広く受け止める。" },
+  { skillLevel: 5,  soulCost: 2200, runtimeParams: { maxShields: 1, protectTier: "mangan",  coverTsumo: true,  stripMitigation: 0,   regen: [] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾1枚。満貫以上の放銃・被ツモを受け切る（フリー対戦の凌雲と同等）。",
+    unlockDescription: "完成基準・不動雲嵐（ブードン・ユンラン）。満貫以上の放銃・被ツモを盾1枚で受け切る、動かぬ守りの極み＝凌雲の到達名。" },
+  { skillLevel: 6,  soulCost: 2800, runtimeParams: { maxShields: 1, protectTier: "mangan",  coverTsumo: true,  stripMitigation: 0,   regen: [{ minRank: "mangan", amount: 1 }] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾1枚（満貫以上を受け切る）。さらに満貫以上の和了で剥がれた盾が1枚甦る。",
+    unlockDescription: "超越域へ。満貫以上を自分が和了すると、盾が1枚編み直される——守りが循環し始める。" },
+  { skillLevel: 7,  soulCost: 3600, runtimeParams: { maxShields: 1, protectTier: "mangan",  coverTsumo: true,  stripMitigation: 0.5, regen: [{ minRank: "mangan", amount: 1 }] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾1枚（満貫以上を受け切る）。満貫未満で剥がれても失点を半額に抑える。満貫以上の和了で盾+1。",
+    unlockDescription: "盾が砕けるときも痛みを半分に。剥がれ際の損失を抑えられる。" },
+  { skillLevel: 8,  soulCost: 4600, runtimeParams: { maxShields: 2, protectTier: "mangan",  coverTsumo: true,  stripMitigation: 0.5, regen: [{ minRank: "mangan", amount: 1 }] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾2枚。満貫以上を受け切り、満貫未満は半額。満貫以上の和了で盾+1。",
+    unlockDescription: "盾が2枚に。連続する大物手にも耐え抜ける。" },
+  { skillLevel: 9,  soulCost: 5800, runtimeParams: { maxShields: 2, protectTier: "mangan",  coverTsumo: true,  stripMitigation: 0.5, regen: [{ minRank: "mangan", amount: 1 }, { minRank: "baiman", amount: 2 }] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾2枚。満貫以上を受け切り満貫未満は半額。満貫以上の和了で盾+1、倍満以上なら一気に+2。",
+    unlockDescription: "倍満以上の和了で盾が一度に2枚甦る。攻めるほど守りが満ちる。" },
+  { skillLevel: 10, soulCost: 7200, runtimeParams: { maxShields: 2, protectTier: "mangan",  coverTsumo: true,  stripMitigation: 0.5, regen: [{ minWinPoints: 5000, amount: 1 }, { minRank: "baiman", amount: 2 }] }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "盾2枚。満貫以上を受け切り満貫未満は半額。5000点以上の和了で盾+1、倍満以上なら+2。",
+    unlockDescription: "天衣無縫（ティエンイー・ウーフォン）——5000点の和了でも盾が甦り、倍満なら二枚同時に。守りと攻めに継ぎ目が無い、隙無き極致。" },
+];
+
 export const SKILL_LEVEL_MASTER = {
   "lv-lucky-draw": LUCKY_DRAW_LEVELS,
+  "lv-amber-shield": AMBER_SHIELD_LEVELS,
   "lv-chunchan": buildTable([
     "中張牌の速攻が発動する基礎。",
     "タンヤオ移行が安定する。",

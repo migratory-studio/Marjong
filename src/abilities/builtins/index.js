@@ -8,5 +8,6 @@ import "./recallAbility.js";
 import "./homuraAbility.js";
 import "./janeDoeAbility.js";
 import "./bibiAbility.js";
+import "./amberShieldAbility.js";
 import "./kakehaRuinaAbility.js";
 import "./charybdisAbility.js";
