@@ -1,9 +1,11 @@
 // スタッフロール — エピローグ（九蓮優勝後の最終章）を読み終えたあとに流れる。
 //
-// 物語を最後まで歩いた人への「締めの儀式」。キャストの最後に弟子（プレイヤーの名前）を
-// 置くのは固有性ピラー（"私"がこの物語の登場人物だった、を一行で示す）。
+// 文言は creditsMaster.js（CREDITS_MASTER）が正典＝人や役職が増えたらマスタに足すだけ。
+// キャストは CHARACTER_MASTER から自動生成し、最後に弟子（プレイヤーの名前）を置く
+// ＝固有性ピラー（"私"がこの物語の登場人物だった、を一行で示す）。
 // rAF でゆっくり縦スクロールし、クリックで倍速・スキップボタンで即終了できる。
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
+import { CREDITS_MASTER } from "../data/creditsMaster.js";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -11,37 +13,34 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
 const SPEED = 46;        // px/秒（通常）
 const FAST_MULT = 4;     // クリック押下中の倍速
 
-export function showCreditsRoll(host, { deshiName = "", onDone = null } = {}) {
-  const cast = CHARACTER_MASTER
-    .map((c) => ({ name: c.name, reading: c.reading || "" }));
+export function showCreditsRoll(host, { deshiName = "", mentorId = null, onDone = null } = {}) {
+  const M = CREDITS_MASTER;
   const row = (k, v) => `<div class="cr-row"><span class="cr-k">${esc(k)}</span><span class="cr-v">${v}</span></div>`;
-  const castRows = cast.map((c) =>
+
+  // キャスト＝キャラマスタ全員（読みつき）＋最後に弟子（あなた）。
+  const castRows = CHARACTER_MASTER.map((c) =>
     row("", `${esc(c.name)}${c.reading ? `<small>${esc(c.reading)}</small>` : ""}`)).join("");
+  // スタッフ等＝マスタの sections をそのまま並べる。
+  const sectionsHtml = (M.sections || []).map((sec) => `
+      <div class="cr-section">${esc(sec.heading)}</div>
+      ${(sec.rows || []).map((r) => row(r.role || "", esc(r.name || ""))).join("")}`).join("");
+  const lastLines = M.lastLineByMentor?.[mentorId] || M.lastLineDefault || [];
 
   const ov = document.createElement("div");
   ov.className = "credits-roll";
   ov.innerHTML = `
     <div class="cr-scrim"></div>
     <div class="cr-scroll">
-      <div class="cr-title">九蓮宝士</div>
-      <div class="cr-subtitle">— ツモれば、ふたりの勝ち —</div>
+      <div class="cr-title">${esc(M.title)}</div>
+      <div class="cr-subtitle">${esc(M.subtitle)}</div>
 
       <div class="cr-section">キャスト</div>
       ${castRows}
       ${row("", `${esc(deshiName || "弟子")}<small>そして——あなた</small>`)}
+      ${sectionsHtml}
 
-      <div class="cr-section">スタッフ</div>
-      ${row("企画・原案・ディレクション", esc("乃木回遊"))}
-      ${row("シナリオ・世界観", esc("乃木回遊"))}
-      ${row("ゲームデザイン・開発", esc("乃木回遊"))}
-      ${row("UI素材", esc("こぱんだ屋"))}
-      ${row("開発協力", esc("Claude（Anthropic）"))}
-
-      <div class="cr-section">Special Thanks</div>
-      ${row("", esc("卓を囲んでくれた、すべての打ち手たちへ"))}
-
-      <div class="cr-fin">Thank you for playing!</div>
-      <div class="cr-lastline">「——ツモれば勝ち、ダヨ。<br>　また打とうネ、相棒。」</div>
+      <div class="cr-fin">${esc(M.fin)}</div>
+      <div class="cr-lastline">${lastLines.map((l) => esc(l)).join("<br>")}</div>
     </div>
     <button type="button" class="cr-skip">スキップ ▶</button>
     <div class="cr-hint">クリックで早送り</div>`;

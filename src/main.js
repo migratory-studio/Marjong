@@ -677,7 +677,8 @@ async function openMentorMode() {
 async function rollCreditsIfEpilogue(scenarioId, next) {
   if (!isMentorEpilogue(scenarioId)) { next(); return; }
   const p = await profileRepo.loadProfile();
-  showCreditsRoll(el("app") || document.body, { deshiName: activeAvatar(p)?.name || "", onDone: next });
+  const av = activeAvatar(p);
+  showCreditsRoll(el("app") || document.body, { deshiName: av?.name || "", mentorId: av?.mentorCharacterId || null, onDone: next });
 }
 
 // マイキャラ作成直後、その師匠の第1章（sortOrder 先頭・unlock=always）を自動再生する。
