@@ -81,7 +81,7 @@ export function buildNewAvatar({ name, profileText = "", mentorCharacterId, skil
     },
     abilityChangedCount: 0,
     // 弟子ごとに独立な進行状態（既読/段位/育成日数）。新弟子はゼロから（[[avatarRun]]）。
-    run: { scenarioProgress: [], records: {}, daily: {} },
+    run: { scenarioProgress: [], records: {}, daily: {}, dayCount: 1, tournamentRuns: [] },
     createdAt: now,
     updatedAt: now,
   };
@@ -100,6 +100,8 @@ export function addAvatarToProfile(profile, avatar) {
     scenarioProgress: [],
     records: {},
     daily: {},
+    dayCount: 1,
+    tournamentRuns: [],
   };
 }
 

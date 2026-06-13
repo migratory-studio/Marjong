@@ -11,10 +11,12 @@
 //    rewardLedger（初回報酬の二重取り防止＝アカウント単位）は run に含めず profile レベルのまま。
 import { activeAvatar } from "./avatarFactory.js";
 
-export const RUN_FIELDS = ["scenarioProgress", "records", "daily"];
+// dayCount = 育成の経過ターン（1ターン＝ゲーム内ひと月。トップレベルの別フィールド）。
+// tournamentRuns = 大会の挑戦履歴。いずれも弟子ごとに独立。
+export const RUN_FIELDS = ["scenarioProgress", "records", "daily", "dayCount", "tournamentRuns"];
 
 export function emptyRun() {
-  return { scenarioProgress: [], records: {}, daily: {} };
+  return { scenarioProgress: [], records: {}, daily: {}, dayCount: 1, tournamentRuns: [] };
 }
 
 // profile レベルの進行状態 → アクティブ弟子の run へ書き戻す（保存前に呼ぶ）。
@@ -36,6 +38,8 @@ export function hydrateRun(profile) {
       scenarioProgress: profile.scenarioProgress || [],
       records: profile.records || {},
       daily: profile.daily || {},
+      dayCount: profile.dayCount ?? 1,
+      tournamentRuns: profile.tournamentRuns || [],
     };
   }
   for (const f of RUN_FIELDS) profile[f] = av.run[f] ?? emptyRun()[f];
