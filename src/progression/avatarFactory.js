@@ -80,6 +80,8 @@ export function buildNewAvatar({ name, profileText = "", mentorCharacterId, skil
       frame: presetIds.frame ?? null,
     },
     abilityChangedCount: 0,
+    // 弟子ごとに独立な進行状態（既読/段位/育成日数）。新弟子はゼロから（[[avatarRun]]）。
+    run: { scenarioProgress: [], records: {}, daily: {} },
     createdAt: now,
     updatedAt: now,
   };
@@ -93,6 +95,11 @@ export function addAvatarToProfile(profile, avatar) {
     activeAvatarId: avatar.avatarId,
     avatars: [...(profile.avatars || []), avatar],
     wallet: { ...(profile.wallet || {}), soul: (profile.wallet?.soul ?? 0) + AVATAR_DEFAULTS.creationSoulBonus },
+    // 新弟子をアクティブにする＝進行状態の作業コピーも初期化（新弟子の run は空）。
+    // これが無いと保存時の flush で旧弟子の進行が新弟子へ写ってしまう（[[avatarRun]]）。
+    scenarioProgress: [],
+    records: {},
+    daily: {},
   };
 }
 

@@ -10,6 +10,7 @@ import { ProfileRepository } from "./profileRepository.js";
 import { LocalProfileRepository } from "./localProfileRepository.js";
 import { SupabaseProfileRepository } from "./supabaseProfileRepository.js";
 import { getUser, onAuthChange } from "../auth/authService.js";
+import { flushRun, hydrateRun } from "./avatarRun.js";
 
 export class ProfileRepositoryFacade extends ProfileRepository {
   constructor() {
@@ -45,11 +46,13 @@ export class ProfileRepositoryFacade extends ProfileRepository {
 
   async loadProfile() {
     await this.#refresh();
-    return this.#active().loadProfile();
+    const p = await this.#active().loadProfile();
+    return hydrateRun(p); // アクティブ弟子の run を profile レベルへ反映（per-disciple）
   }
 
   async saveProfile(profile) {
     await this.#refresh();
+    flushRun(profile); // profile レベルの進行状態をアクティブ弟子の run へ退避してから保存
     return this.#active().saveProfile(profile);
   }
 
@@ -74,7 +77,7 @@ export class ProfileRepositoryFacade extends ProfileRepository {
     if ((remote.avatars || []).length > 0) return { migrated: false };
     const local = await this.local.loadProfile();
     if ((local.avatars || []).length === 0) return { migrated: false };
-    await this.remote.saveProfile(local);
+    await this.remote.saveProfile(flushRun(local));
     return { migrated: true, count: local.avatars.length };
   }
 }

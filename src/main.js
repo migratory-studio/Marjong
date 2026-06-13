@@ -14,6 +14,7 @@ import { playScenario } from "./scenario/scenarioPlayer.js";
 import { ProfileRepositoryFacade } from "./progression/profileRepositoryFacade.js";
 import { signInWithGoogle, signOut, getUser } from "./auth/authService.js";
 import { activeAvatar, avatarParams6 } from "./progression/avatarFactory.js";
+import { activateAvatar, hydrateRun } from "./progression/avatarRun.js";
 import { showAvatarCreate } from "./screens/avatarCreateScreen.js";
 import { showAvatarDetail } from "./screens/avatarDetailScreen.js";
 import { showMentorEntry } from "./screens/mentorEntryScreen.js";
@@ -762,6 +763,7 @@ async function deleteAvatar(avatarId) {
   profile.avatars = (profile.avatars || []).filter((a) => a.avatarId !== avatarId);
   if (profile.activeAvatarId === avatarId) {
     profile.activeAvatarId = profile.avatars[0]?.avatarId ?? null;
+    hydrateRun(profile); // 別の弟子へ移ったら、その弟子の進行状態を反映（残弟子がいれば）
   }
   await profileRepo.saveProfile(profile);
   return profile;
@@ -770,7 +772,7 @@ async function deleteAvatar(avatarId) {
 async function selectAvatarThenHome(avatarId) {
   const profile = await profileRepo.loadProfile();
   if ((profile.avatars || []).some((a) => a.avatarId === avatarId)) {
-    profile.activeAvatarId = avatarId;
+    activateAvatar(profile, avatarId); // 弟子ごと独立の進行状態へ切替（run の退避→反映）
     await profileRepo.saveProfile(profile);
   }
   openMentorHome();
