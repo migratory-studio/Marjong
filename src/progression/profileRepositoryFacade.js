@@ -68,6 +68,45 @@ export class ProfileRepositoryFacade extends ProfileRepository {
     if (this.loggedIn) await this.remote.clearProfile();
   }
 
+  // ログイン中のローカル⇄クラウドの状態を判定する。未ログインや非競合では何もしない判断材料に使う。
+  //   戻り値: { state, localCount, cloudCount }
+  //   state: "not-logged-in" | "empty-cloud"(クラウド空&ローカルに弟子有) | "conflict"(両方に弟子有)
+  //          | "cloud-has-data"(クラウドに弟子有・ローカル空=そのままクラウド使用) | "both-empty"
+  async inspectSync() {
+    await this.#refresh();
+    if (!this.loggedIn) return { state: "not-logged-in", localCount: 0, cloudCount: 0 };
+    const remote = await this.remote.loadProfile();
+    const local = await this.local.loadProfile();
+    const cloudCount = (remote.avatars || []).length;
+    const localCount = (local.avatars || []).length;
+    let state;
+    if (cloudCount === 0 && localCount === 0) state = "both-empty";
+    else if (cloudCount === 0 && localCount > 0) state = "empty-cloud";
+    else if (cloudCount > 0 && localCount > 0) state = "conflict";
+    else state = "cloud-has-data";
+    return { state, localCount, cloudCount };
+  }
+
+  // 競合時：クラウドを土台に、この端末(ローカル)の弟子を「追加」してクラウドへ保存する。
+  // アカウント共通値(ソウル/報酬台帳/mentorGrowth/activeAvatarId)はクラウド側を維持=ソウル二重取り等を防ぐ。
+  // unlockedPresetIds だけは和集合（見た目開放は無害なので失わない）。
+  //   戻り値: { merged: true, added: <追加した弟子数> }
+  async mergeLocalIntoCloud() {
+    await this.#refresh();
+    if (!this.loggedIn) return { merged: false, added: 0 };
+    const remote = await this.remote.loadProfile();
+    const local = await this.local.loadProfile();
+    flushRun(local); // active なローカル弟子の作業コピーを avatar.run へ確実に退避（全弟子が run を持つ状態に）
+    const cloudIds = new Set((remote.avatars || []).map((a) => a.avatarId));
+    const added = (local.avatars || []).filter((a) => !cloudIds.has(a.avatarId));
+    remote.avatars = [...(remote.avatars || []), ...added];
+    const union = new Set([...(remote.unlockedPresetIds || []), ...(local.unlockedPresetIds || [])]);
+    remote.unlockedPresetIds = [...union];
+    // wallet / rewardLedger / mentorGrowth / records / scenarioProgress / daily / activeAvatarId はクラウド維持。
+    await this.remote.saveProfile(remote);
+    return { merged: true, added: added.length };
+  }
+
   // 初回同期の最小版: クラウドが空（弟子0体）でローカルに弟子がいれば、ローカルを吸い上げる。
   // ログイン成功直後に呼ぶ。戻り値で移行有無を返す（呼び出し側でトースト等に使える）。
   async syncLocalToCloudIfEmpty() {

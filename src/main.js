@@ -22,6 +22,8 @@ import { showMentorRoster } from "./screens/mentorRosterScreen.js";
 import { showMentorSelect } from "./screens/mentorSelectScreen.js";
 import { showAuthPrompt } from "./screens/authPromptModal.js";
 import { showConfirm } from "./screens/confirmModal.js";
+import { showSyncConflict } from "./screens/syncConflictModal.js";
+import { showAccount } from "./screens/accountScreen.js";
 import { buildPrologueLines } from "./data/prologueScenario.js";
 import { showMentorHome } from "./screens/mentorHomeScreen.js";
 import { showRest } from "./screens/restScreen.js";
@@ -670,14 +672,21 @@ const profileRepo = new ProfileRepositoryFacade();
 
 // 師弟入口メニュー。
 let mentorSyncChecked = false; // 初回同期（ローカル→クラウド吸い上げ）はセッション中1回だけ。
+let pendingSyncConflict = null; // 競合検出時に一時保持し、entry 描画後にモーダルを重ねる。
 async function openMentorMode() {
   const user = await getUser().catch(() => null);
-  // ログイン中かつ未チェックなら、クラウドが空のときだけローカル弟子を吸い上げる。
+  // ログイン中かつ未チェックなら、同期状態を検査して適切に処理する。
   if (user && !mentorSyncChecked) {
     mentorSyncChecked = true;
     try {
-      const res = await profileRepo.syncLocalToCloudIfEmpty();
-      if (res?.migrated) console.info(`初回同期: ローカルの弟子 ${res.count} 体をクラウドへ移行しました`);
+      const info = await profileRepo.inspectSync();
+      if (info.state === "empty-cloud") {
+        const res = await profileRepo.syncLocalToCloudIfEmpty();
+        if (res?.migrated) console.info(`初回同期: ローカルの弟子 ${res.count} 体をクラウドへ移行しました`);
+      } else if (info.state === "conflict") {
+        // 入口を先に描画してから、その上にモーダルを重ねる（背景が見える）
+        pendingSyncConflict = info;
+      }
     } catch (e) {
       console.error("初回同期に失敗", e);
     }
@@ -691,9 +700,41 @@ async function openMentorMode() {
     onTrain: () => openMentorRoster(),
     onLogin: () => loginThenReopenMentor(),
     onLogout: () => logoutThenReopenMentor(),
+    onAccount: () => openAccount(),
     onBack: () => navigate("home"),
   });
   goScreen("mentor-entry-screen");
+  // 競合が検出されていれば、entry 画面の上にモーダルを重ねる。
+  if (pendingSyncConflict) {
+    const conflict = pendingSyncConflict;
+    pendingSyncConflict = null;
+    showSyncConflict({
+      localCount: conflict.localCount,
+      cloudCount: conflict.cloudCount,
+      onUseCloud: () => { /* クラウドのデータをそのまま使う。何もしない。 */ },
+      onMerge: async () => {
+        try {
+          const r = await profileRepo.mergeLocalIntoCloud();
+          console.info("統合: " + r.added + "体追加");
+        } catch (e) {
+          console.error(e);
+        }
+        openMentorMode();
+      },
+    });
+  }
+}
+
+async function openAccount() {
+  const user = await getUser().catch(() => null);
+  const profile = await profileRepo.loadProfile();
+  showAccount(el("account-screen"), {
+    user,
+    profile,
+    onLogout: () => logoutThenReopenMentor(),
+    onBack: () => openMentorMode(),
+  });
+  goScreen("account-screen");
 }
 
 // 「新しく弟子入りする」: キャラ作成(情報のみ) → 師匠選択 → プロローグ確認 → プロローグ or 師弟ホーム。

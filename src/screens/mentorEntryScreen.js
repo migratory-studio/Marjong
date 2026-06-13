@@ -34,7 +34,7 @@ function injectStyle() {
 
 export function showMentorEntry(
   container,
-  { profile, isLoggedIn, accountLabel, onCreate, onTrain, onLogin, onLogout, onBack } = {}
+  { profile, isLoggedIn, accountLabel, onCreate, onTrain, onLogin, onLogout, onAccount, onBack } = {}
 ) {
   injectStyle();
   container.innerHTML = "";
@@ -46,9 +46,9 @@ export function showMentorEntry(
   const account = elt("div", "mentor-entry-account");
   if (isLoggedIn) {
     account.appendChild(elt("span", "mentor-entry-label", { textContent: accountLabel || "ログイン中" }));
-    const logout = elt("button", "secondary", { type: "button", textContent: "ログアウト" });
-    logout.onclick = () => onLogout?.();
-    account.appendChild(logout);
+    const acctBtn = elt("button", "secondary", { type: "button", textContent: "アカウント" });
+    acctBtn.onclick = () => onAccount?.();
+    account.appendChild(acctBtn);
   } else {
     const login = elt("button", "secondary", { type: "button", textContent: "Googleでログイン" });
     login.onclick = () => onLogin?.();
