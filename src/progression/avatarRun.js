@@ -7,8 +7,10 @@
 // そこで「profile レベル＝アクティブ弟子の作業コピー」とし、保存前に flush（profile→弟子.run）、
 // 読込・切替後に hydrate（弟子.run→profile）する。これで消費側を一切変えずに per-disciple を成立。
 //
-// ※ ソウル(wallet)・見た目(unlockedPresetIds)・mentorGrowth（師匠は“人”なので弟子をまたいで共有）・
-//    rewardLedger（初回報酬の二重取り防止＝アカウント単位）は run に含めず profile レベルのまま。
+// ※ ソウル(wallet.soul)は弟子ごと（各弟子が自分で稼いで使う育成通貨）＝run に含める（soul だけ
+//    特別扱い：wallet 内にあり、同じ wallet の meta はアカウント共通なので wallet 全体ではなく soul のみ移す）。
+// ※ アカウント共通＝引継ぎ(wallet.meta)・見た目(unlockedPresetIds)・mentorGrowth（師匠は“人”）・
+//    rewardLedger（初回報酬の二重取り防止）は run に含めず profile レベルのまま。
 import { activeAvatar } from "./avatarFactory.js";
 
 // dayCount = 育成の経過ターン（1ターン＝ゲーム内ひと月。トップレベルの別フィールド）。
@@ -16,7 +18,7 @@ import { activeAvatar } from "./avatarFactory.js";
 export const RUN_FIELDS = ["scenarioProgress", "records", "daily", "dayCount", "tournamentRuns"];
 
 export function emptyRun() {
-  return { scenarioProgress: [], records: {}, daily: {}, dayCount: 1, tournamentRuns: [] };
+  return { scenarioProgress: [], records: {}, daily: {}, dayCount: 1, tournamentRuns: [], soul: 0 };
 }
 
 // profile レベルの進行状態 → アクティブ弟子の run へ書き戻す（保存前に呼ぶ）。
@@ -25,6 +27,7 @@ export function flushRun(profile) {
   if (!av) return profile; // 弟子未作成なら従来どおり profile レベルを使う
   av.run = av.run || emptyRun();
   for (const f of RUN_FIELDS) av.run[f] = profile[f] ?? emptyRun()[f];
+  av.run.soul = profile.wallet?.soul ?? 0; // soul は wallet 内（弟子ごと）。meta はアカウント共通で触らない。
   return profile;
 }
 
@@ -40,9 +43,12 @@ export function hydrateRun(profile) {
       daily: profile.daily || {},
       dayCount: profile.dayCount ?? 1,
       tournamentRuns: profile.tournamentRuns || [],
+      soul: profile.wallet?.soul ?? 0, // 旧データの現ソウルをこの弟子のものとして取り込む
     };
   }
   for (const f of RUN_FIELDS) profile[f] = av.run[f] ?? emptyRun()[f];
+  // soul（弟子ごと）を反映。meta 等アカウント共通の wallet フィールドは維持。
+  profile.wallet = { ...(profile.wallet || {}), soul: av.run.soul ?? 0 };
   return profile;
 }
 
