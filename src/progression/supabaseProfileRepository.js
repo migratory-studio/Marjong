@@ -105,4 +105,14 @@ export class SupabaseProfileRepository extends ProfileRepository {
 
     return { ...profile, schemaVersion: SCHEMA_VERSION };
   }
+
+  // クラウド側を初期化（デバッグの「1からやりなおす」用）。自分の弟子行と profiles 行を削除する。
+  // 行が無くなれば loadProfile は createDefaultProfile を返す＝完全リセット。
+  async clearProfile() {
+    const uid = await this.#requireUserId();
+    const av = await supabase.from("user_avatars").delete().eq("user_id", uid);
+    if (av.error) throw av.error;
+    const pr = await supabase.from("profiles").delete().eq("id", uid);
+    if (pr.error) throw pr.error;
+  }
 }

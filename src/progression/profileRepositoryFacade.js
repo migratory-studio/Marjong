@@ -57,9 +57,12 @@ export class ProfileRepositoryFacade extends ProfileRepository {
     return this.#active().migrateProfile(raw);
   }
 
-  // デバッグの「1からやりなおす」はローカルのみ対象（クラウドは画面から消さない）。
+  // 「1からやりなおす」: ローカルを消し、ログイン中ならクラウドの自分の行も消す。
+  // 片方だけ消すと、次回 loadProfile で残った側のデータ（既読シナリオ等）が復活し整合が崩れる。
   async clearProfile() {
-    return this.local.clearProfile();
+    await this.local.clearProfile();
+    await this.#refresh();
+    if (this.loggedIn) await this.remote.clearProfile();
   }
 
   // 初回同期の最小版: クラウドが空（弟子0体）でローカルに弟子がいれば、ローカルを吸い上げる。
