@@ -3761,3 +3761,63 @@ button.secondary { color: var(--ink); }
 }
 .credits-roll .cr-skip:hover { background:rgba(255,255,255,.12); }
 .credits-roll .cr-hint { position:absolute; bottom:12px; right:16px; font-family:"Yu Gothic",sans-serif; font-size:10.5px; color:#5d5546; }
+
+/* ============================================================================
+   師弟 入口/弟子一覧/認証モーダル（Phase 6）— 購入UIセット(gameUIset_19)スキン適用
+   ・弟子カード = button_rectangle を 9スライス枠（メニューボタンと同じ素材）
+   ・認証モーダル = window_01 の金縁パネル（中央は暗色背景で可読性確保）
+   ============================================================================ */
+
+/* --- 弟子カード（btn.png 9スライス枠・hoverで点灯・修行中は金リング） --- */
+.mentor-roster-card {
+  border: 12px solid transparent;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 12px 15px / 0 stretch;
+  border-radius: 0; background: none; color: var(--ink); cursor: pointer;
+  transition: transform .08s ease;
+}
+.mentor-roster-card:hover { border-image-source: url("graphic/ui/sc/btn_hover.png"); transform: translateY(-2px); }
+.mentor-roster-card.is-active { box-shadow: inset 0 0 0 2px rgba(255,215,102,.9); }
+.mentor-roster-add { justify-content: center; opacity: .9; }
+
+/* --- 認証おすすめモーダル --- */
+.auth-modal-overlay {
+  position: absolute; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.62);
+}
+.auth-modal {
+  width: 620px; max-width: 90%; max-height: 86%; overflow: auto; padding: 26px 32px 24px;
+  border: 16px solid transparent;
+  border-image: url("graphic/ui/sc/panel.png") 18 / 16px / 0 stretch;
+  border-radius: 0; background: rgba(20,32,26,.96); color: var(--ink); text-align: left;
+}
+.auth-modal-title { margin: 0 0 4px; font-size: 24px; color: #f4e3b4; text-shadow: 0 2px 4px rgba(0,0,0,.6); }
+.auth-modal-lead { margin: 0 0 14px; font-size: 14px; color: var(--muted); }
+.auth-modal-rec { margin: 0 0 14px; font-size: 15px; line-height: 1.7; }
+.auth-modal-warn {
+  margin: 0 0 18px; padding: 12px 16px; border-radius: 8px;
+  background: rgba(0,0,0,.25); border-left: 3px solid var(--accent);
+}
+.auth-modal-warn-h { margin: 0 0 8px; font-size: 14px; font-weight: 700; color: #e7c98a; }
+.auth-modal-warn-list { margin: 0; padding-left: 20px; font-size: 13px; line-height: 1.85; color: #d8d2c4; }
+.auth-modal-warn-f { margin: 10px 0 0; font-size: 13.5px; color: #cdbf9a; }
+.auth-modal-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+.auth-modal-btns button { width: 100%; }
+
+/* --- 汎用 確認モーダル（panel.png 金縁・破壊操作の確認） --- */
+.confirm-overlay {
+  position: absolute; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.62);
+}
+.confirm-modal {
+  width: 460px; max-width: 90%; padding: 24px 28px 20px;
+  border: 16px solid transparent;
+  border-image: url("graphic/ui/sc/panel.png") 18 / 16px / 0 stretch;
+  border-radius: 0; background: rgba(20,32,26,.96); color: var(--ink); text-align: left;
+}
+.confirm-title { margin: 0 0 10px; font-size: 20px; color: #f4e3b4; text-shadow: 0 2px 4px rgba(0,0,0,.6); }
+.confirm-msg { margin: 0 0 20px; font-size: 14px; line-height: 1.75; color: #e2dccb; }
+.confirm-btns { display: flex; justify-content: flex-end; gap: 12px; }
+.confirm-btns button { min-width: 110px; }
+/* 破壊操作の主ボタンは赤系（btn枠は維持しつつ文字色で危険を示す）。 */
+button.primary.danger { color: #ff9a9a; text-shadow: 0 1px 2px rgba(0,0,0,.6); }
+button.primary.danger:hover { color: #ffbcbc; }

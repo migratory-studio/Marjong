@@ -2,7 +2,7 @@
 // human input. Engine stays synchronous; this file owns orchestration & timing.
 import { Game, Phase, Events } from "./core/game.js";
 import { CHARACTERS, instantiateAbilities } from "./characters/characters.js";
-import { ROLE_MASTER } from "./data/characterMaster.js";
+import { CHARACTER_MASTER, ROLE_MASTER } from "./data/characterMaster.js";
 import { abilityDef } from "./data/abilityMaster.js";
 import { decideDiscard, decideCall, decideAbilityActivations } from "./ai/simpleAI.js";
 import { CanvasRenderer } from "./ui/canvasRenderer.js";
@@ -11,10 +11,17 @@ import { initSettingsUI, applyAudioSettings, wireSettingsControls } from "./ui/s
 import { showScreen } from "./app/router.js";
 import { initStage, clientToLocalFrac } from "./app/stage.js";
 import { playScenario } from "./scenario/scenarioPlayer.js";
-import { LocalProfileRepository } from "./progression/localProfileRepository.js";
+import { ProfileRepositoryFacade } from "./progression/profileRepositoryFacade.js";
+import { signInWithGoogle, signOut, getUser } from "./auth/authService.js";
 import { activeAvatar, avatarParams6 } from "./progression/avatarFactory.js";
 import { showAvatarCreate } from "./screens/avatarCreateScreen.js";
 import { showAvatarDetail } from "./screens/avatarDetailScreen.js";
+import { showMentorEntry } from "./screens/mentorEntryScreen.js";
+import { showMentorRoster } from "./screens/mentorRosterScreen.js";
+import { showMentorSelect } from "./screens/mentorSelectScreen.js";
+import { showAuthPrompt } from "./screens/authPromptModal.js";
+import { showConfirm } from "./screens/confirmModal.js";
+import { buildPrologueLines } from "./data/prologueScenario.js";
 import { showMentorHome } from "./screens/mentorHomeScreen.js";
 import { showRest } from "./screens/restScreen.js";
 import { showGrowth } from "./screens/growthScreen.js";
@@ -656,21 +663,151 @@ function goScreen(id) {
   SCREEN_BGM[id]?.();
   if (id === "select-screen") resetSelectWizard(); // 開くたびにウィザードを①卓へ
 }
-// 師弟モード: マイキャラがいれば師弟ホーム、いなければ作成画面へ（Phase 2A/2B）。
-const profileRepo = new LocalProfileRepository();
+// 師弟モード（Phase 6）: 入口メニュー（新規入門 / 修行＝弟子一覧 / ログイン）を挟む。
+// profileRepo はログイン中=Supabase / 未ログイン=Local を自動で選ぶファサード。
+const profileRepo = new ProfileRepositoryFacade();
+
+// 師弟入口メニュー。
+let mentorSyncChecked = false; // 初回同期（ローカル→クラウド吸い上げ）はセッション中1回だけ。
 async function openMentorMode() {
-  const profile = await profileRepo.loadProfile();
-  if (activeAvatar(profile)) {
-    openMentorHome();
-  } else {
-    showAvatarCreate(el("avatar-create-screen"), {
-      repository: profileRepo,
-      onBack: () => navigate("home"),
-      // 作成完了で師弟シナリオ第1章を自動再生 → 読了後に師弟ホームへ。
-      onCreated: (_saved, avatar) => playFirstChapterThenHome(avatar),
-    });
-    goScreen("avatar-create-screen");
+  const user = await getUser().catch(() => null);
+  // ログイン中かつ未チェックなら、クラウドが空のときだけローカル弟子を吸い上げる。
+  if (user && !mentorSyncChecked) {
+    mentorSyncChecked = true;
+    try {
+      const res = await profileRepo.syncLocalToCloudIfEmpty();
+      if (res?.migrated) console.info(`初回同期: ローカルの弟子 ${res.count} 体をクラウドへ移行しました`);
+    } catch (e) {
+      console.error("初回同期に失敗", e);
+    }
   }
+  const profile = await profileRepo.loadProfile();
+  showMentorEntry(el("mentor-entry-screen"), {
+    profile,
+    isLoggedIn: !!user,
+    accountLabel: user?.email ?? "",
+    onCreate: () => openMentorCreate(),
+    onTrain: () => openMentorRoster(),
+    onLogin: () => loginThenReopenMentor(),
+    onLogout: () => logoutThenReopenMentor(),
+    onBack: () => navigate("home"),
+  });
+  goScreen("mentor-entry-screen");
+}
+
+// 「新しく弟子入りする」: キャラ作成(情報のみ) → 師匠選択 → プロローグ確認 → プロローグ or 師弟ホーム。
+function openMentorCreate(draft = {}) {
+  showAvatarCreate(el("avatar-create-screen"), {
+    repository: profileRepo,
+    draft,
+    onBack: () => openMentorMode(),
+    onNext: (d) => openMentorSelect(d),
+  });
+  goScreen("avatar-create-screen");
+}
+
+// 師匠選択（別画面）。戻るとキャラ作成へ（入力は draft で保持）。決定でアバター確定→プロローグ確認。
+function openMentorSelect(draft) {
+  showMentorSelect(el("mentor-select-screen"), {
+    repository: profileRepo,
+    draft,
+    onBack: () => openMentorCreate(draft),
+    onDecided: (_saved, avatar) => promptPrologue(avatar),
+  });
+  goScreen("mentor-select-screen");
+}
+
+// 作成直後：プロローグを観るか確認 → 観るなら再生、あとでなら師弟ホームへ。
+function promptPrologue(avatar) {
+  showConfirm({
+    title: "プロローグ",
+    message: "あなたの物語が、ここから始まります。\n出発のプロローグを観ますか？",
+    confirmLabel: "観る",
+    cancelLabel: "あとで（とばす）",
+    danger: false,
+    onConfirm: () => playPrologueThenHome(avatar),
+    onCancel: () => openMentorHome(),
+  });
+}
+
+// プロローグ（手書き・mentor-aware）を再生してから師弟ホームへ。
+function playPrologueThenHome(avatar) {
+  const mentor = CHARACTER_MASTER.find((c) => c.id === avatar?.mentorCharacterId) || null;
+  showScreen("scenario-screen");
+  playScenario(null, {
+    audio,
+    lines: buildPrologueLines({ avatar, mentor }),
+    onEnd: () => openMentorHome(),
+  });
+}
+
+// 「修行する」: 弟子一覧から続ける弟子を選ぶ → activeAvatarId を確定 → 師弟ホーム。
+async function openMentorRoster() {
+  const profile = await profileRepo.loadProfile();
+  showMentorRoster(el("mentor-roster-screen"), {
+    profile,
+    isLoggedIn: profileRepo.isLoggedIn(),
+    onSelect: (avatarId) => selectAvatarThenHome(avatarId),
+    onCreate: () => openMentorCreate(),
+    onDelete: (avatarId) => deleteAvatar(avatarId),
+    onBack: () => openMentorMode(),
+  });
+  goScreen("mentor-roster-screen");
+}
+
+// 弟子を削除する。修行中の弟子を消したら active を別の弟子（無ければ null）へ付け替える。
+// 削除後の最新プロフィールを返す（一覧がその場で再描画＝整理モードを維持）。
+async function deleteAvatar(avatarId) {
+  const profile = await profileRepo.loadProfile();
+  profile.avatars = (profile.avatars || []).filter((a) => a.avatarId !== avatarId);
+  if (profile.activeAvatarId === avatarId) {
+    profile.activeAvatarId = profile.avatars[0]?.avatarId ?? null;
+  }
+  await profileRepo.saveProfile(profile);
+  return profile;
+}
+
+async function selectAvatarThenHome(avatarId) {
+  const profile = await profileRepo.loadProfile();
+  if ((profile.avatars || []).some((a) => a.avatarId === avatarId)) {
+    profile.activeAvatarId = avatarId;
+    await profileRepo.saveProfile(profile);
+  }
+  openMentorHome();
+}
+
+// Google ログイン → リダイレクトで戻ってくると detectSessionInUrl でセッション復元。
+// 戻り先を師弟入口にして、復帰後そのまま続けられるようにする。
+async function loginThenReopenMentor() {
+  try {
+    await signInWithGoogle(window.location.href.split("#")[0]);
+  } catch (e) {
+    console.error("ログイン失敗", e);
+    alert("ログインに失敗しました: " + (e?.message ?? e));
+  }
+}
+
+async function logoutThenReopenMentor() {
+  try {
+    await signOut();
+  } catch (e) {
+    console.error("ログアウト失敗", e);
+  }
+  openMentorMode();
+}
+
+// 初回起動時の認証おすすめモーダル。未ログイン かつ 一度も「このまま遊ぶ」を選んでいない時だけ出す。
+const AUTH_PROMPT_KEY = "mahjong-rpg.authPromptDismissed";
+async function maybeShowAuthPrompt() {
+  try {
+    if (localStorage.getItem(AUTH_PROMPT_KEY)) return; // 既に「ローカルで遊ぶ」を選択済み
+    const user = await getUser().catch(() => null);
+    if (user) return; // ログイン済みなら不要
+    showAuthPrompt({
+      onLogin: () => loginThenReopenMentor(), // OAuth リダイレクト（戻るとログイン状態）
+      onLocal: () => { try { localStorage.setItem(AUTH_PROMPT_KEY, "1"); } catch {} },
+    });
+  } catch { /* モーダル提示失敗は致命でない */ }
 }
 
 // エピローグ章の読了後はスタッフロール（クレジット）を流してから次の画面へ。
@@ -1598,6 +1735,7 @@ function bootHome() {
     se: "home-se-volume", seVal: "home-se-volume-val",
   });
   goScreen("home-screen");
+  maybeShowAuthPrompt(); // 初回起動時に認証をおすすめ（未ログイン＆未提示のときだけ）
   // Browsers block audio before the first user gesture, so the home BGM may not
   // start at boot. Retry once on the first interaction (playHomeBgm no-ops if it
   // already started).

@@ -14,6 +14,7 @@ export const CREDITS_MASTER = {
         { role: "シナリオ・世界観", name: "乃木回遊" },
         { role: "ゲームデザイン・開発", name: "乃木回遊" },
         { role: "UI素材", name: "こぱんだ屋" },
+        { role: "背景素材", name: "みんちりえ" },
         { role: "開発協力", name: "Claude（Anthropic）" },
       ],
     },

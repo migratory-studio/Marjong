@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Phase 6 ログイン縦串テスト</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 40px auto; padding: 0 16px; line-height: 1.7; color: #1c1c1c; }
+    h1 { font-size: 1.2rem; }
+    button { font-size: 1rem; padding: 8px 16px; margin: 4px 8px 4px 0; cursor: pointer; border-radius: 6px; border: 1px solid #888; background: #fff; }
+    button:hover { background: #f0f0f0; }
+    #status { padding: 10px 14px; border-radius: 8px; background: #f4f4f6; margin: 12px 0; }
+    pre { background: #0f1115; color: #d6e2ff; padding: 12px; border-radius: 8px; overflow: auto; font-size: 0.85rem; }
+    .ok { color: #0a7d2e; } .ng { color: #c01515; } .muted { color: #777; }
+    .step { border-left: 3px solid #ccc; padding-left: 12px; margin: 18px 0; }
+  </style>
+</head>
+<body>
+  <h1>Phase 6 ログイン縦串テスト</h1>
+  <p class="muted">認証往復（Google）＋ RLS（自分の行だけ読める）を main.js に触れず単独で証明するページ。本番には含めない使い捨て。</p>
+
+  <div id="status">読み込み中…</div>
+
+  <div class="step">
+    <strong>① 認証</strong><br />
+    <button id="login">Google でログイン</button>
+    <button id="logout">ログアウト</button>
+  </div>
+
+  <div class="step">
+    <strong>② DB 書き込み/読み出し（RLS 検証）</strong><br />
+    <span class="muted">ログイン後に押す。profiles を upsert ＋ ダミー弟子を1体 insert → 自分の行を select して表示。</span><br />
+    <button id="write">テスト書き込み</button>
+    <button id="read">自分の行を読む</button>
+  </div>
+
+  <div class="step">
+    <strong>③ リポジトリ往復テスト（本命）</strong><br />
+    <span class="muted">SupabaseProfileRepository で「弟子2体入りプロフィールを save → load し直して一致するか」を検証。複数弟子の保存・復元の証明。</span><br />
+    <button id="roundtrip">save → load 往復テスト</button>
+  </div>
+
+  <pre id="log">（ログがここに出ます）</pre>
+
+  <script type="module">
+    import { supabase } from "./src/config/supabase.js";
+    import { signInWithGoogle, signOut, getSession, onAuthChange } from "./src/auth/authService.js";
+    import { SupabaseProfileRepository } from "./src/progression/supabaseProfileRepository.js";
+
+    const statusEl = document.getElementById("status");
+    const logEl = document.getElementById("log");
+    const log = (msg, cls = "") => {
+      const line = typeof msg === "string" ? msg : JSON.stringify(msg, null, 2);
+      logEl.textContent += (cls === "ng" ? "❌ " : cls === "ok" ? "✅ " : "• ") + line + "\n";
+    };
+
+    let currentUser = null;
+    function renderStatus(session) {
+      currentUser = session?.user ?? null;
+      if (currentUser) {
+        statusEl.innerHTML = `<span class="ok">ログイン中</span>: ${currentUser.email ?? currentUser.id} <span class="muted">(uid: ${currentUser.id})</span>`;
+      } else {
+        statusEl.innerHTML = `<span class="ng">未ログイン</span>`;
+      }
+    }
+
+    // 起動時：リダイレクトで戻ってきたセッションを拾う
+    try {
+      const session = await getSession();
+      renderStatus(session);
+      log(session ? "セッション復元 OK" : "セッションなし（未ログイン）", session ? "ok" : "");
+    } catch (e) {
+      log("getSession 失敗: " + (e?.message ?? e), "ng");
+    }
+    onAuthChange((session) => { renderStatus(session); });
+
+    document.getElementById("login").onclick = async () => {
+      try {
+        log("Google へリダイレクトします…");
+        await signInWithGoogle(window.location.origin + "/login-test.html");
+      } catch (e) { log("ログイン失敗: " + (e?.message ?? e), "ng"); }
+    };
+
+    document.getElementById("logout").onclick = async () => {
+      try { await signOut(); log("ログアウトしました", "ok"); }
+      catch (e) { log("ログアウト失敗: " + (e?.message ?? e), "ng"); }
+    };
+
+    document.getElementById("write").onclick = async () => {
+      if (!currentUser) return log("先にログインしてください", "ng");
+      try {
+        const up = await supabase.from("profiles").upsert(
+          { id: currentUser.id, display_name: currentUser.email ?? "tester", wallet: { soul: 500 } },
+          { onConflict: "id" }
+        );
+        if (up.error) throw up.error;
+        log("profiles upsert OK", "ok");
+
+        const av = await supabase.from("user_avatars").upsert(
+          {
+            user_id: currentUser.id,
+            avatar_id: "avatar-test-1",
+            name: "テスト弟子",
+            avatar_level: 1,
+            state: { name: "テスト弟子", avatarLevel: 1, params6: { fire: 10 } },
+          },
+          { onConflict: "user_id,avatar_id" }
+        );
+        if (av.error) throw av.error;
+        log("user_avatars upsert OK（弟子1体）", "ok");
+      } catch (e) {
+        log("書き込み失敗: " + (e?.message ?? e), "ng");
+      }
+    };
+
+    document.getElementById("roundtrip").onclick = async () => {
+      if (!currentUser) return log("先にログインしてください", "ng");
+      try {
+        const repo = new SupabaseProfileRepository();
+        const sample = {
+          schemaVersion: 1,
+          profile: { displayName: "往復テスト" },
+          wallet: { soul: 1234 },
+          activeAvatarId: "avatar-rt-2",
+          avatars: [
+            { avatarId: "avatar-rt-1", name: "弟子A", avatarLevel: 3, params6: { fire: 12 } },
+            { avatarId: "avatar-rt-2", name: "弟子B", avatarLevel: 7, params6: { read: 14 } },
+          ],
+          inventory: [{ id: "item-x" }],
+          scenarioProgress: [], tournamentRuns: [], records: {}, daily: {},
+          unlockedPresetIds: ["preset-1"], rewardLedger: [], mentorGrowth: {},
+        };
+        log("save 中…（弟子2体入り）");
+        await repo.saveProfile(sample);
+        log("save OK", "ok");
+
+        log("load し直し…");
+        const loaded = await repo.loadProfile();
+
+        const checks = [
+          ["wallet.soul", loaded.wallet?.soul === 1234],
+          ["activeAvatarId", loaded.activeAvatarId === "avatar-rt-2"],
+          ["弟子2体", (loaded.avatars || []).length === 2],
+          ["弟子Bのlevel復元", loaded.avatars?.find((a) => a.avatarId === "avatar-rt-2")?.avatarLevel === 7],
+          ["misc(profile.displayName)復元", loaded.profile?.displayName === "往復テスト"],
+          ["misc(unlockedPresetIds)復元", (loaded.unlockedPresetIds || [])[0] === "preset-1"],
+        ];
+        let allOk = true;
+        for (const [label, ok] of checks) { log(`${label}: ${ok ? "一致" : "不一致"}`, ok ? "ok" : "ng"); if (!ok) allOk = false; }
+        log(allOk ? "★ 往復テスト 全項目 PASS（複数弟子の保存・復元OK）" : "一部不一致あり（上の赤字を確認）", allOk ? "ok" : "ng");
+      } catch (e) {
+        log("往復テスト失敗: " + (e?.message ?? e), "ng");
+      }
+    };
+
+    document.getElementById("read").onclick = async () => {
+      if (!currentUser) return log("先にログインしてください", "ng");
+      try {
+        const prof = await supabase.from("profiles").select("*").maybeSingle();
+        if (prof.error) throw prof.error;
+        log("自分の profiles:");
+        log(prof.data ?? "(なし)");
+
+        const avs = await supabase.from("user_avatars").select("avatar_id,name,avatar_level");
+        if (avs.error) throw avs.error;
+        log(`自分の弟子 ${avs.data.length} 体（RLS で他人の行は出ないはず）:`, "ok");
+        log(avs.data);
+      } catch (e) {
+        log("読み出し失敗: " + (e?.message ?? e), "ng");
+      }
+    };
+  </script>
+</body>
+</html>

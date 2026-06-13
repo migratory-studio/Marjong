@@ -561,7 +561,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 2,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -580,7 +580,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 3,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -598,7 +598,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 4,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -616,7 +616,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 5,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -635,7 +635,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 6,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -654,7 +654,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 7,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -672,7 +672,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 8,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -690,7 +690,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 9,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -708,7 +708,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 10,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -727,7 +727,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 11,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -745,7 +745,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 12,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -763,7 +763,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 13,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -781,7 +781,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 14,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -799,7 +799,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 15,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -818,7 +818,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 16,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -836,7 +836,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 17,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -854,7 +854,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 18,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -873,7 +873,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 19,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -892,7 +892,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 20,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -911,7 +911,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 21,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -929,7 +929,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-02",
     "lineNo": 22,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -1555,8 +1555,65 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 29,
-    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-school-rooftop",
+    "text": "歓声の渦をそっと抜けて、ビビに手を引かれるまま、会場の屋上へ出た。高く晴れた空が、まるごと、ふたりのものだった。",
+    "bgmId": "bgm-warm",
+    "seId": "se-door",
+    "lineNo": 29
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-school-rooftop",
+    "text": "……ここ、しずかでしょ。勝ったあとはね、こういうところで、ちょっとだけ、息をするの。",
+    "lineNo": 30
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-school-rooftop",
+    "text": "風が、人形の耳を、ふわりと揺らす。欄干に頬杖をついたビビは、めずらしく、ずっと笑っていた。その横顔は、ただの、年相応の女の子に見えた。",
+    "emoteId": "flower",
+    "lineNo": 31
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-03",
+    "lineNo": 32,
+    "backgroundId": "bg-school-rooftop",
     "standings": [
       {
         "characterId": "bibi",
@@ -1570,12 +1627,12 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-night"
+    "bgmId": "bgm-warm"
   },
   {
     "scenarioId": "mentor-bibi-bond-03",
-    "lineNo": 30,
-    "backgroundId": "bg-dojo",
+    "lineNo": 33,
+    "backgroundId": "bg-school-rooftop",
     "standings": [
       {
         "characterId": "bibi",
@@ -2409,7 +2466,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-05",
     "lineNo": 9,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
@@ -2422,7 +2479,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-05",
     "lineNo": 10,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
@@ -2435,7 +2492,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-05",
     "lineNo": 11,
-    "backgroundId": "bg-table",
+    "backgroundId": "bg-dojo",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
@@ -3347,7 +3404,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3366,7 +3423,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3384,7 +3441,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3402,7 +3459,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3420,7 +3477,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3438,7 +3495,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 6,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3456,7 +3513,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 7,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3475,7 +3532,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 8,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3494,7 +3551,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 9,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3512,7 +3569,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 10,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3531,7 +3588,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 11,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3549,7 +3606,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 12,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3567,7 +3624,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 13,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3585,7 +3642,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 14,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3604,7 +3661,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 15,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3622,7 +3679,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 16,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3640,7 +3697,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 17,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3659,7 +3716,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 18,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3677,7 +3734,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3696,7 +3753,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3714,7 +3771,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3732,7 +3789,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3750,7 +3807,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3768,7 +3825,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3786,7 +3843,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3804,7 +3861,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3823,7 +3880,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3841,7 +3898,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -3859,7 +3916,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-07",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5047,7 +5104,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
@@ -5060,7 +5117,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5078,7 +5135,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5097,7 +5154,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5115,7 +5172,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5133,7 +5190,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 6,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5152,7 +5209,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 7,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5171,7 +5228,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 8,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5189,7 +5246,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 9,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5208,7 +5265,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 10,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5226,7 +5283,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 11,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5244,7 +5301,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 12,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5262,7 +5319,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 13,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5280,7 +5337,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 14,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5299,7 +5356,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 15,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5317,7 +5374,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 16,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5335,7 +5392,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 17,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5353,7 +5410,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 18,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5371,7 +5428,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5389,7 +5446,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5407,7 +5464,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5426,7 +5483,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5444,7 +5501,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5462,7 +5519,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5480,7 +5537,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5498,7 +5555,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5516,7 +5573,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5535,7 +5592,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5553,7 +5610,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5571,7 +5628,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 30,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -5590,7 +5647,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
@@ -5603,7 +5660,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5621,7 +5678,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5639,7 +5696,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5657,7 +5714,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5675,7 +5732,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 6,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5693,7 +5750,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 7,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5711,7 +5768,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 8,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5730,7 +5787,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 9,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5748,7 +5805,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 10,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5766,7 +5823,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 11,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5784,7 +5841,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 12,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5802,7 +5859,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 13,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5820,7 +5877,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 14,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5839,7 +5896,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 15,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5857,7 +5914,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 16,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5875,7 +5932,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 17,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5893,7 +5950,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 18,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5912,7 +5969,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5930,7 +5987,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5948,7 +6005,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5967,7 +6024,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -5985,7 +6042,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -6003,7 +6060,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -6022,7 +6079,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -6040,7 +6097,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -6058,7 +6115,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -6076,7 +6133,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -6094,7 +6151,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -6112,7 +6169,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 30,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -7046,7 +7103,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 20,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7064,7 +7121,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 21,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7082,7 +7139,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 22,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7100,7 +7157,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 23,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7118,7 +7175,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 24,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7136,7 +7193,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 25,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7154,7 +7211,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 26,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7172,7 +7229,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 27,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7190,7 +7247,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 28,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7208,7 +7265,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 29,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7227,7 +7284,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 30,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7246,7 +7303,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 31,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7633,7 +7690,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-14",
     "lineNo": 23,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7652,7 +7709,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-14",
     "lineNo": 24,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7670,7 +7727,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-14",
     "lineNo": 25,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7688,7 +7745,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-14",
     "lineNo": 26,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7707,7 +7764,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-14",
     "lineNo": 27,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7726,7 +7783,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-14",
     "lineNo": 28,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7744,7 +7801,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-14",
     "lineNo": 29,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7764,7 +7821,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-14",
     "lineNo": 30,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7784,7 +7841,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 1,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
@@ -7797,7 +7854,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 2,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7816,7 +7873,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 3,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7839,7 +7896,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 4,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7862,7 +7919,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 5,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7885,7 +7942,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 6,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7908,7 +7965,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 7,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7931,7 +7988,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 8,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7955,7 +8012,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 9,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -7978,7 +8035,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 10,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8002,7 +8059,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 11,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8025,7 +8082,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 12,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8049,7 +8106,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 13,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8072,7 +8129,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 14,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8095,7 +8152,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 15,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8118,7 +8175,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 16,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8141,7 +8198,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 17,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8165,7 +8222,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 18,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8188,7 +8245,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 19,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8211,7 +8268,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 20,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8234,7 +8291,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 21,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8257,7 +8314,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 22,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8281,7 +8338,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 23,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8304,7 +8361,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 24,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8327,7 +8384,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 25,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8350,7 +8407,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 26,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8373,7 +8430,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 27,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8396,7 +8453,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 28,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8415,7 +8472,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 29,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -8434,7 +8491,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
@@ -8447,7 +8504,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8465,7 +8522,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8483,7 +8540,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8501,7 +8558,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8700,7 +8757,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 16,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8718,7 +8775,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 17,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8736,7 +8793,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 18,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8754,7 +8811,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8774,7 +8831,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8792,7 +8849,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8810,7 +8867,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8828,7 +8885,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8848,7 +8905,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8867,7 +8924,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8886,7 +8943,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8904,7 +8961,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8922,7 +8979,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8940,7 +8997,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8959,7 +9016,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 30,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8977,7 +9034,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 31,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -8996,7 +9053,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 32,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9015,7 +9072,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-16",
     "lineNo": 33,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9446,7 +9503,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-17",
     "lineNo": 26,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -9464,7 +9521,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-17",
     "lineNo": 27,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -9483,7 +9540,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-17",
     "lineNo": 28,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -9501,7 +9558,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-17",
     "lineNo": 29,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -9519,7 +9576,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-17",
     "lineNo": 30,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "bibi",
@@ -9538,7 +9595,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
@@ -9551,7 +9608,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9569,7 +9626,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9587,7 +9644,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9605,7 +9662,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9623,7 +9680,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 6,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9643,7 +9700,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 7,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9661,7 +9718,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 8,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9679,7 +9736,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 9,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9698,7 +9755,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 10,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9716,7 +9773,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 11,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9734,7 +9791,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 12,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9753,7 +9810,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 13,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9771,7 +9828,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 14,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9790,7 +9847,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 15,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9809,7 +9866,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 16,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9827,7 +9884,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 17,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9847,7 +9904,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 18,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9865,7 +9922,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9883,7 +9940,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9901,7 +9958,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9919,7 +9976,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9938,7 +9995,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9956,7 +10013,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9975,7 +10032,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -9993,7 +10050,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10012,7 +10069,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10031,7 +10088,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10049,7 +10106,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10068,7 +10125,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 30,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10086,7 +10143,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-18",
     "lineNo": 31,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10104,7 +10161,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
@@ -10117,7 +10174,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10135,7 +10192,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10153,7 +10210,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10171,7 +10228,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10190,7 +10247,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 6,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10208,7 +10265,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 7,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10227,7 +10284,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 8,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10246,7 +10303,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 9,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10264,7 +10321,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 10,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10282,7 +10339,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 11,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10300,7 +10357,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 12,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10319,7 +10376,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 13,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10337,7 +10394,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 14,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10356,7 +10413,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 15,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10375,7 +10432,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 16,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10393,7 +10450,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 17,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10411,7 +10468,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 18,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10429,7 +10486,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10447,7 +10504,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10465,7 +10522,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10484,7 +10541,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10502,7 +10559,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10520,7 +10577,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10539,7 +10596,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10557,7 +10614,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10575,7 +10632,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10594,7 +10651,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10613,7 +10670,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -10631,7 +10688,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 30,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -12864,7 +12921,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-03",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -12883,7 +12940,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-03",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -12901,7 +12958,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-03",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -12919,7 +12976,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-03",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -12938,7 +12995,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-03",
     "lineNo": 30,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14117,7 +14174,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-05",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14136,7 +14193,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-05",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14154,7 +14211,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-05",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14172,7 +14229,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14191,7 +14248,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14209,7 +14266,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14227,7 +14284,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14245,7 +14302,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14263,7 +14320,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 6,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14281,7 +14338,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 7,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14299,7 +14356,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 8,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14317,7 +14374,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 9,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14337,7 +14394,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 10,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14355,7 +14412,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 11,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14373,7 +14430,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 12,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14391,7 +14448,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 13,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14409,7 +14466,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 14,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14427,7 +14484,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 15,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14445,7 +14502,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 16,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14463,7 +14520,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 17,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14481,7 +14538,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 18,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14499,7 +14556,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14517,7 +14574,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14535,7 +14592,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14553,7 +14610,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14571,7 +14628,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14589,7 +14646,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14608,7 +14665,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14626,7 +14683,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14645,7 +14702,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14663,7 +14720,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14681,7 +14738,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 1,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14700,7 +14757,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 2,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14718,7 +14775,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 3,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14736,7 +14793,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 4,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14754,7 +14811,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 5,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14979,7 +15036,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 19,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -14998,7 +15055,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 20,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15016,7 +15073,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 21,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15034,7 +15091,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 22,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15052,7 +15109,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 23,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15070,7 +15127,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 24,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15088,7 +15145,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 25,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15106,7 +15163,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 26,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15124,7 +15181,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 27,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15142,7 +15199,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 28,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15160,7 +15217,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-07",
     "lineNo": 29,
-    "backgroundId": "bg-rain",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15179,7 +15236,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15198,7 +15255,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15216,7 +15273,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15234,7 +15291,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15252,7 +15309,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15270,7 +15327,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 6,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15288,7 +15345,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 7,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15501,7 +15558,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15520,7 +15577,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15538,7 +15595,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15556,7 +15613,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15574,7 +15631,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15593,7 +15650,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15611,7 +15668,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15629,7 +15686,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15647,7 +15704,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -15666,7 +15723,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -17364,8 +17421,128 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 27,
-    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-cafe",
+    "text": "その足で、三人で駅前の喫茶店に流れ込んだ。結成の祝杯——といっても、湯気の立つお茶が三つ、並んだだけ。",
+    "bgmId": "bgm-warm",
+    "seId": "se-door",
+    "lineNo": 27
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-cafe",
+    "text": "ふふ、こういうの、なんだか照れるネ。……あ、ここは我が持つヨ。ほら、これで足りるロ。",
+    "emoteId": "music",
+    "lineNo": 28
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-cafe",
+    "text": "言うが早いか、詩玥は札を数えもせず、ぽんと置いた。多すぎる。マモリが、ため息ひとつで、それを一枚ずつ、正確に三等分へ並べ直していく。",
+    "seId": "se-tile",
+    "lineNo": 29
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "mamori",
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-cafe",
+    "text": "……割り勘だ。お前の「だいたい」は、いつも多すぎる。こういうところは、昔から、何も変わらないな。",
+    "lineNo": 30
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-cafe",
+    "text": "細かいネ、あんたは。……でもネ。その細かいの、我、嫌いじゃないヨ。今は、ネ。",
+    "emoteId": "flower",
+    "lineNo": 31
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-11",
+    "lineNo": 32,
+    "backgroundId": "bg-cafe",
     "standings": [
       {
         "characterId": "shiyue",
@@ -17387,8 +17564,8 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-11",
-    "lineNo": 28,
-    "backgroundId": "bg-dojo",
+    "lineNo": 33,
+    "backgroundId": "bg-cafe",
     "standings": [
       {
         "characterId": "shiyue",
@@ -17411,7 +17588,79 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 1,
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-train",
+    "text": "大三剣の舞台は、遠い街にあった。三人で電車に揺られて、半日。窓の外を、知らない景色が、後ろへ流れていく。",
+    "bgmId": "bgm-daily",
+    "lineNo": 1
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-train",
+    "text": "遠征なんて、ひさしぶりネ。……昔はネ、こういう電車、ひとりで乗ってたヨ。今日は、三人ダヨ。",
+    "emoteId": "music",
+    "lineNo": 2
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "backgroundId": "bg-ryokan",
+    "text": "その夜は、会場ちかくの旅館に泊まった。畳のにおい。窓辺に座った詩玥は、めずらしく口数すくなに、明日の卓を、静かに見すえていた。明日、ふたつ目の宝を獲る。",
+    "bgmId": "bgm-resolve",
+    "lineNo": 3
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-12",
+    "lineNo": 4,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17436,7 +17685,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 2,
+    "lineNo": 5,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17459,7 +17708,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 3,
+    "lineNo": 6,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17482,7 +17731,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 4,
+    "lineNo": 7,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17506,7 +17755,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 5,
+    "lineNo": 8,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17531,7 +17780,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 6,
+    "lineNo": 9,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17554,7 +17803,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 7,
+    "lineNo": 10,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17578,7 +17827,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 8,
+    "lineNo": 11,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17602,7 +17851,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 9,
+    "lineNo": 12,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17625,7 +17874,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 10,
+    "lineNo": 13,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17649,7 +17898,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 11,
+    "lineNo": 14,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17672,7 +17921,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 12,
+    "lineNo": 15,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17695,7 +17944,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 13,
+    "lineNo": 16,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17718,7 +17967,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 14,
+    "lineNo": 17,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17742,7 +17991,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 15,
+    "lineNo": 18,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17766,7 +18015,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 16,
+    "lineNo": 19,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17792,7 +18041,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 17,
+    "lineNo": 20,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17816,7 +18065,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 18,
+    "lineNo": 21,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17840,7 +18089,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 19,
+    "lineNo": 22,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17864,7 +18113,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 20,
+    "lineNo": 23,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17887,7 +18136,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 21,
+    "lineNo": 24,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17910,7 +18159,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 22,
+    "lineNo": 25,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17933,7 +18182,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 23,
+    "lineNo": 26,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17956,7 +18205,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 24,
+    "lineNo": 27,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -17979,7 +18228,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 25,
+    "lineNo": 28,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -18002,7 +18251,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 26,
+    "lineNo": 29,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -18025,7 +18274,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 27,
+    "lineNo": 30,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -18048,7 +18297,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 28,
+    "lineNo": 31,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -18073,7 +18322,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 29,
+    "lineNo": 32,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -18097,7 +18346,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
-    "lineNo": 30,
+    "lineNo": 33,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -18548,7 +18797,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 19,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18563,7 +18812,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "卓を離れ、会場の隅へ戻る。三つ目を手にしたというのに、詩玥は、自分の手のひらをじっと見下ろしていた。何かを探すように、指を、ゆっくり開いたり閉じたりしている。",
+    "text": "勝っても晴れない顔の詩玥に連れられて、会場を出た。流れ着いたのは、通りの奥の、薄暗いバー。三つ目を手にしたというのに、詩玥は、運ばれたグラスにも口をつけず、自分の手のひらをじっと見下ろしていた。何かを探すように、指を、ゆっくり開いたり閉じたりしている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -18572,7 +18821,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 20,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18595,7 +18844,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 21,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18618,7 +18867,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 22,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18642,7 +18891,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 23,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18665,7 +18914,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 24,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18688,7 +18937,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 25,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18711,7 +18960,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 26,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18734,7 +18983,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 27,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18758,7 +19007,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 28,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18781,7 +19030,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-13",
     "lineNo": 29,
-    "backgroundId": "bg-hall",
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "shiyue",
@@ -18796,7 +19045,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "引きだけで、本当にいいのか。——会場をあとにしても、その問いだけが、この人の背中に小さく灯ったまま、消えずに残る。次の山は、思っていたよりずっと、早く来た。",
+    "text": "引きだけで、本当にいいのか。——店を出て夜風に当たっても、その問いだけが、この人の背中に小さく灯ったまま、消えずに残る。次の山は、思っていたよりずっと、早く来た。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -19184,7 +19433,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 17,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19207,7 +19456,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 18,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19231,7 +19480,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 19,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19254,7 +19503,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 20,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19277,7 +19526,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 21,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19301,7 +19550,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 22,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19324,7 +19573,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 23,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19347,7 +19596,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 24,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19370,7 +19619,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 25,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19393,7 +19642,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 26,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19416,7 +19665,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 27,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19434,7 +19683,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 28,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19452,7 +19701,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 29,
-    "backgroundId": "bg-corridor",
+    "backgroundId": "bg-school-corridor",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19471,7 +19720,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19490,7 +19739,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19509,7 +19758,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 3,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19527,7 +19776,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 4,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19546,7 +19795,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 5,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19565,7 +19814,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 6,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19585,7 +19834,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 7,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19604,7 +19853,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 8,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19622,7 +19871,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 9,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19640,7 +19889,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 10,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19714,7 +19963,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 14,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19732,7 +19981,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 15,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19750,7 +19999,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 16,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19768,7 +20017,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 17,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19787,7 +20036,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 18,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19805,7 +20054,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19823,7 +20072,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19842,7 +20091,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19860,7 +20109,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19879,7 +20128,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19897,7 +20146,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19915,7 +20164,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19933,7 +20182,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19952,7 +20201,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19970,7 +20219,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -19989,7 +20238,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 1,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20008,7 +20257,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 2,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20118,7 +20367,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 8,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20137,7 +20386,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 9,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20157,7 +20406,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 10,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20175,7 +20424,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 11,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20193,7 +20442,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 12,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20211,7 +20460,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 13,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20230,7 +20479,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 14,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20249,7 +20498,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 15,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20267,7 +20516,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 16,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20285,7 +20534,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 17,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20304,7 +20553,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 18,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20322,7 +20571,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 19,
-    "backgroundId": "bg-dojo-night",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20341,7 +20590,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20361,7 +20610,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20379,7 +20628,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20397,7 +20646,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20415,7 +20664,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20433,7 +20682,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20453,7 +20702,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20471,7 +20720,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20489,7 +20738,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20508,7 +20757,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -20526,7 +20775,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 30,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22426,7 +22675,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 20,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22450,7 +22699,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 21,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22473,7 +22722,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 22,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22497,7 +22746,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22520,7 +22769,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22543,7 +22792,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22566,7 +22815,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22589,7 +22838,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22613,7 +22862,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -22636,7 +22885,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23122,7 +23371,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 23,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23146,7 +23395,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 24,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23169,7 +23418,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 25,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23192,7 +23441,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 26,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23215,7 +23464,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 27,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23238,7 +23487,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 28,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23261,7 +23510,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 29,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23285,7 +23534,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 30,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23308,7 +23557,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 31,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",
@@ -23331,7 +23580,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-20",
     "lineNo": 32,
-    "backgroundId": "bg-dojo-dusk",
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "shiyue",

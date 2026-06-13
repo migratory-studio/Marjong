@@ -70,13 +70,13 @@ export function listScenarios() {
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
-export function playScenario(scenarioId, { onEnd, audio } = {}) {
-  const meta = SCENARIO_MASTER.find((s) => s.scenarioId === scenarioId);
-  const lines = SCENARIO_LINE_MASTER
-    .filter((l) => l.scenarioId === scenarioId)
+// scenarioId からマスタを引いて再生する。opts.lines を渡すと、マスタを引かずその行配列を
+// そのまま再生する（手書きプロローグ等＝scenario-forge 非経由のインライン再生）。
+export function playScenario(scenarioId, { onEnd, audio, lines: linesOverride } = {}) {
+  const lines = (linesOverride || SCENARIO_LINE_MASTER.filter((l) => l.scenarioId === scenarioId))
     .slice()
     .sort((a, b) => a.lineNo - b.lineNo);
-  if (!meta || lines.length === 0) {
+  if (lines.length === 0) {
     console.warn(`[scenarioPlayer] シナリオが見つからない: ${scenarioId}`);
     onEnd?.();
     return;
@@ -271,6 +271,7 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
   // 話者の <img> を返す（emote/効果の対象）。
   function reconcileStage(line) {
     const stands = standingsOf(line).filter((st) => {
+      if (st.portraitSrc) return true; // 立ち絵URL直指定（モブ・弟子＝CHARACTER_MASTER 非依存）
       const ch = charById(st.characterId);
       return ch && ch.assets?.portrait;
     });
@@ -298,9 +299,9 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
         slot.style.left = `${targetLeft}%`;
         const img = document.createElement("img");
         img.className = "sc-standing";
-        img.alt = ch.name || "";
-        img.src = portraitFor(ch, st.standingId);
-        img.style.objectPosition = ch.portraitPos || "top center";
+        img.alt = ch?.name || st.name || "";
+        img.src = st.portraitSrc || portraitFor(ch, st.standingId);
+        img.style.objectPosition = st.objectPosition || ch?.portraitPos || "top center";
         img.onerror = () => { slot.style.display = "none"; };
         slot.appendChild(img);
         elStage.appendChild(slot);
@@ -315,7 +316,7 @@ export function playScenario(scenarioId, { onEnd, audio } = {}) {
         }
         // 表情(standingId)が変わった → 立ち絵を差し替え（表情別素材があるときだけ実際に変化）。
         if (rec.standingId !== st.standingId) {
-          rec.img.src = portraitFor(ch, st.standingId);
+          rec.img.src = st.portraitSrc || portraitFor(ch, st.standingId);
           rec.standingId = st.standingId;
         }
       }
