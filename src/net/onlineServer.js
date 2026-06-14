@@ -49,27 +49,27 @@ export function serveRoom(connection, game, roster, { seat = 0, token = null, ..
 }
 
 // 1卓ぶんのホスト。接続(intent.join)は待機列に入れ、人間が揃うか時間切れで卓を確定して開始する。
-// 開始後の接続(intent.rejoin)は token→席を照合して同じ卓へ復帰させる。DO は 1 インスタンス=1卓
-// なので this.host を DO に保持、worker は room 名でこれを引く。
+// 開始後の接続(intent.rejoin)は token→卓/席を照合して同じ卓へ復帰させる。**常設マッチメイカー型**：
+// DO は対局を開始しても締め出さず、次の待機バッチを受け付け続ける（1 DO で複数卓を順次/並行に持てる）。
+// これにより「直近に対局を始めた卓が居座って新規参加を弾く→2人が別バケツに散る」問題を避ける。
 export class RoomHost {
   constructor() {
-    this.room = null;          // 開始後の AuthorityRoom（確定するまで null）
-    this.waiting = [];         // 開始前の待機席 [{connection, charId}]（着席順＝席番号）
-    this.timer = null;         // マッチング締切タイマー
+    this.room = null;          // 直近に開始した AuthorityRoom（テスト/デバッグ参照用）
+    this.waiting = [];         // 現在の待機バッチ [{connection, charId}]（着席順＝席番号）
+    this.timer = null;         // マッチング締切タイマー（バッチごと）
     this.opts = null;          // AuthorityRoom へ渡す pacing/timeout/matchWaitMs
-    this.seatTokens = {};      // token -> seat（開始後の rejoin 照合用）
+    this.tokenSeat = {};       // token -> { room, seat }（全アクティブ卓ぶんの rejoin 照合）
   }
 
   handle(connection, opts = {}) {
     connection.onMessage((msg) => {
       if (!msg) return;
       if (msg.type === "intent.join") {
-        if (this.room) { connection.send({ type: "evt.matchClosed" }); connection.close?.(); return; } // 対局中の卓
         this._enqueue(connection, msg.charId, opts);
       } else if (msg.type === "intent.rejoin") {
-        const seat = (msg.token != null) ? this.seatTokens[msg.token] : undefined;
-        if (this.room && seat != null) {
-          this.room.rejoin(seat, connection); // 席を本人へ戻し snapshot 送付
+        const e = (msg.token != null) ? this.tokenSeat[msg.token] : undefined;
+        if (e) {
+          e.room.rejoin(e.seat, connection); // 席を本人へ戻し snapshot 送付
         } else {
           connection.send({ type: "evt.rejoinFailed", reason: "対局が見つかりません" });
           connection.close?.();
@@ -78,17 +78,16 @@ export class RoomHost {
     });
   }
 
-  // 待機列へ着席。満席＝即開始 / 待機時間ゼロ＝即開始 / それ以外は締切タイマーを張って人間を待つ。
+  // 待機バッチへ着席。満席＝即開始 / 待機時間ゼロ＝即開始 / それ以外は締切タイマーで人間を待つ。
   _enqueue(connection, charId, opts) {
-    if (this.waiting.length >= CAPACITY) { connection.send({ type: "evt.matchClosed" }); connection.close?.(); return; }
     this.opts = opts;
     const entry = { connection, charId };
     this.waiting.push(entry);
-    // 待機中の離脱：席を外して人数表示を更新（全員抜けたらタイマーも止める）。開始後は AuthorityRoom 任せ。
+    // 待機中の離脱のみ面倒を見る（現バッチに居る間だけ）。開始後の席は AuthorityRoom 側(dropSeat)が担当。
     connection.onClose?.(() => {
-      if (this.room) return;
       const i = this.waiting.indexOf(entry);
-      if (i >= 0) this.waiting.splice(i, 1);
+      if (i < 0) return; // 既に開始済みでこのバッチには居ない
+      this.waiting.splice(i, 1);
       if (this.waiting.length === 0 && this.timer) { clearTimeout(this.timer); this.timer = null; }
       else this._broadcastWaiting();
     });
@@ -106,9 +105,10 @@ export class RoomHost {
     for (const w of this.waiting) w.connection.send(msg);
   }
 
-  // 卓を確定して対局開始。待機中の人間を席 0.. に並べ、空席は CPU 補填。席ごとに token を発行。
+  // バッチを確定して対局開始。待機中の人間を席 0.. に並べ、空席は CPU 補填。席ごとに token を発行。
+  // 開始後も this.waiting を空にして次バッチを受け付け続ける（締め出さない）。
   _start() {
-    if (this.room || this.waiting.length === 0) return;
+    if (this.waiting.length === 0) return;
     if (this.timer) { clearTimeout(this.timer); this.timer = null; }
     const seats = this.waiting.slice(0, CAPACITY);
     this.waiting = [];
@@ -118,11 +118,10 @@ export class RoomHost {
     const room = new AuthorityRoom(game, connections, this.opts || {});
     room.roster = roster;
     room.seatTokens = {};
-    this.seatTokens = {};
     seats.forEach((s, seat) => {
       const token = randomToken();
       room.seatTokens[seat] = token;
-      this.seatTokens[token] = seat;
+      this.tokenSeat[token] = { room, seat };
       s.connection.send({ type: "welcome", seat, roster, token, rules: { players: game.numPlayers } });
       s.connection.onClose?.(() => room.dropSeat(seat));
     });

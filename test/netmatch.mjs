@@ -90,7 +90,28 @@ async function teardown(server, eps) { for (const ep of eps) ep.close(); await w
     await teardown(server, [a.ep, b.ep]);
   }
 
-  if (failures === 0) console.log("\n✅ netmatch (待機→時間切れCPU / 複数人同卓 / 満席即開始 / 進捗通知) checks passed");
+  // --- (5) 常設マッチメイカー：開始後も次バッチを受け付ける（締め出さない） ---
+  {
+    const { host, server } = await makeHost({ matchWaitMs: 120 });
+    const a = await joinClient(server, "shiyue");          // バッチ1
+    await until(() => host.room != null, 2000, "バッチ1開始");
+    const room1 = host.room;
+    const tok1 = welcomeOf(a.c)?.token;
+    // バッチ1開始後の新規参加が matchClosed されず、新しいバッチで開始する
+    const b = await joinClient(server, "kuidoshi");        // バッチ2
+    const cc = await joinClient(server, "bibi");
+    await until(() => host.room !== room1, 2000, "バッチ2が別卓で開始");
+    assert(!b.c.received.some((m) => m.type === "evt.matchClosed"), "開始後の参加が締め出されない(matchClosedなし)");
+    assert(welcomeOf(b.c) && welcomeOf(cc.c), "バッチ2の両者に welcome");
+    assert(host.room !== room1, "バッチ2は別の AuthorityRoom");
+    // 両卓の token がそれぞれ rejoin 照合表に載っている（複数卓を同時管理）
+    assert(tok1 && host.tokenSeat[tok1] && host.tokenSeat[tok1].room === room1, "バッチ1の token は卓1を指す");
+    const tok2 = welcomeOf(b.c)?.token;
+    assert(tok2 && host.tokenSeat[tok2] && host.tokenSeat[tok2].room === host.room, "バッチ2の token は卓2を指す");
+    await teardown(server, [a.ep, b.ep, cc.ep]);
+  }
+
+  if (failures === 0) console.log("\n✅ netmatch (待機→時間切れCPU / 複数人同卓 / 満席即開始 / 進捗通知 / 常設マッチメイカー) checks passed");
   else { console.error(`\n❌ ${failures} failure(s)`); process.exit(1); }
   process.exit(0);
 })();
