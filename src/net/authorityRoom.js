@@ -9,7 +9,7 @@
 // 踏襲しつつ、描画を持たないサーバ版（決定は controller、状態変更はここ＝L1/L2 と同じ A/B 分離）。
 import { Phase } from "../core/game.js";
 import { decideDiscard, decideCall, decideAbilityActivations } from "../ai/simpleAI.js";
-import { attachRecorder } from "./eventLog.js";
+import { attachRecorder, snapshotEvent } from "./eventLog.js";
 import { redactFor } from "./redact.js";
 
 const INTENT_TIMEOUT = 8000; // ms。未応答は自動ツモ切り/パス扱い。
@@ -50,10 +50,21 @@ export class AuthorityRoom {
   // 切断/離席 → その席を CPU 代打ちに切り替える。以後 decideTurn/decideCalls はローカル AI を使い、
   // ack 待ちもこの席を待たない。手番待ち中なら null 解決＝自動ツモ切り/パスで即座に進行を続ける。
   dropSeat(seat) {
+    if (this.connections[seat]) this.connections[seat]._dropped = true; // 旧端点の close で誤 drop しない印
     delete this.connections[seat];
     const p = this.pending.get(seat);
     if (p) { this.pending.delete(seat); clearTimeout(p.timer); p.resolve(null); }
     if (this._ackResolve && this._allAcked()) { const r = this._ackResolve; this._ackResolve = null; r(); }
+  }
+
+  // 再接続：CPU代打ち中の席を本人へ戻す。新端点を席に紐づけ、現在の盤面スナップショット(席別
+  // redaction)を送ってクライアントが途中局面から再構築できるようにする。次の手番から本人が打つ。
+  rejoin(seat, endpoint) {
+    this.connections[seat] = endpoint;
+    endpoint.onMessage((msg) => this._onIntent(seat, msg));
+    endpoint.onClose?.(() => { if (this.connections[seat] === endpoint) this.dropSeat(seat); });
+    endpoint.send({ type: "welcome", seat, roster: this.roster, token: this.token, rules: { players: this.game.numPlayers }, rejoined: true });
+    endpoint.send(redactFor(snapshotEvent(this.game), seat));
   }
 
   // wire Event は宛先席ごとに redaction して送る（他席の手牌/ツモは送らない＝漏洩防止）。

@@ -1,41 +1,22 @@
-// 通信対戦 ローカル権威サーバ（テスト中・L4c-2 ①b）。Run: node server-online.mjs
+// 通信対戦 ローカル権威サーバ（テスト中・L4c-2 ①b/リコネクト）。Run: node server-online.mjs
 //
-// ws で待ち受け、クライアントの intent.join{charId} を受けて 1 卓を立てる（席0=その雀士、残り3席は
-// CPU 補填＝接続の無い席）。対局は AuthorityRoom が回し、wire Event を席別 redaction して配信する。
-// 切断は serveRoom 内で dropSeat → CPU 代打ち。これはローカル開発用で、本番は同じ serveRoom ロジックを
-// Cloudflare Worker + Durable Object(WebSocketPair) へ移植する（L4c-2 ①c）。
+// ws で待ち受け、接続URLの ?room=合言葉 ごとに 1 卓（RoomHost）を持つ。最初の接続(intent.join)で卓を
+// 立て、同じ room へ繋ぎ直す接続(intent.rejoin{token})は対局途中から復帰させる。本番は同じ
+// RoomHost/serveRoom ロジックを Cloudflare Durable Object(worker/) で動かす（DO は room=DO で隔離）。
 import { createWsServer } from "./src/net/wsServer.js";
-import { serveRoom } from "./src/net/onlineServer.js";
-import { Game } from "./src/core/game.js";
-import { CHARACTERS, instantiateAbilities } from "./src/characters/characters.js";
+import { RoomHost } from "./src/net/onlineServer.js";
 
 const PORT = Number(process.env.PORT) || 8787;
-const seatOf = (cs) => cs.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
-function shuffled(a) {
-  const x = a.slice();
-  for (let i = x.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [x[i], x[j]] = [x[j], x[i]]; }
-  return x;
-}
+const hosts = new Map(); // room 名 → RoomHost
+const ROOM_OPTS = { timeout: 120000, pacing: { cpuDelay: 650, cutInWait: 1700, nakiWait: 1100 } };
 
 const server = await createWsServer(PORT);
-console.log(`麻雀オンライン権威サーバ: ws://127.0.0.1:${server.port}  (Ctrl+C で停止)`);
+console.log(`麻雀オンライン権威サーバ: ws://127.0.0.1:${server.port}/ws?room=合言葉  (Ctrl+C で停止)`);
 
-server.onConnection((conn) => {
-  let started = false;
-  // join 受信で卓を構築。以後 serveRoom(=AuthorityRoom) が conn.onMessage を intent ハンドラへ張り替える。
-  conn.onMessage((msg) => {
-    if (started || !msg || msg.type !== "intent.join") return;
-    started = true;
-    const human = CHARACTERS.find((c) => c.id === msg.charId) || CHARACTERS[0];
-    const cpus = shuffled(CHARACTERS.filter((c) => c.id !== human.id)).slice(0, 3);
-    const chars = [human, ...cpus];
-    const game = new Game(seatOf(chars), /*human seat*/ 0, undefined, { maxRounds: 1 });
-    serveRoom(conn, game, chars.map((c) => c.id), {
-      seat: 0,
-      timeout: 120000, // 人間の手番は長めに待つ
-      pacing: { cpuDelay: 650, cutInWait: 1700, nakiWait: 1100 }, // ブラウザで CPU の手が見える間合い
-    });
-    console.log(`卓開始: 席0=${human.name} / CPU=${cpus.map((c) => c.name).join("・")}`);
-  });
-  conn.onClose?.(() => { if (started) console.log("クライアント切断（席0はCPU代打ち）"); });
+server.onConnection((conn, req) => {
+  let room = "default";
+  try { room = new URL(req.url, "ws://x").searchParams.get("room") || "default"; } catch { /* keep default */ }
+  let host = hosts.get(room);
+  if (!host) { host = new RoomHost(); hosts.set(room, host); }
+  host.handle(conn, ROOM_OPTS);
 });

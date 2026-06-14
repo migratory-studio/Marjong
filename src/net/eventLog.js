@@ -53,6 +53,24 @@ function serializeResult(r) {
   }
 }
 
+// 再接続用の盤面スナップショット（wire Event）。現在の局面一式を運ぶ。redactFor で席別に
+// 他席手牌を伏せて配信し、applyEvent("evt.snapshot") が途中局面からレプリカを組み直す。
+export function snapshotEvent(game) {
+  return {
+    type: "evt.snapshot",
+    handNumber: game.handNumber,
+    seatWinds: game.players.map((p) => p.seatWind),
+    hands: game.players.map((p) => p.hand.map(tileLite)), // 配信時に自席以外を null 化(redactFor)
+    seats: game.players.map((p) => ({
+      discards: p.discards.map((t) => ({ id: t.id, kind: t.kind, tsumogiri: !!t.tsumogiri, riichiTile: !!t.riichiTile })),
+      melds: serializeMelds(p),
+      riichi: !!p.riichi,
+    })),
+    lastDiscard: game.lastDiscard ? { id: game.lastDiscard.id, kind: game.lastDiscard.kind } : null,
+    pub: publicSnapshot(game),
+  };
+}
+
 // 完全状態スナップショット（決定論テストの「真」。redaction なしの全公開＋全手牌）。
 export function fullSnapshot(game) {
   return {

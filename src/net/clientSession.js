@@ -40,6 +40,11 @@ export class ClientSession {
       return;
     }
     if (!this.replica) return; // welcome 前の取りこぼし保険（通常は到達しない）
+    if (msg.type === "evt.snapshot") {
+      // 再接続：途中局面からレプリカを組み直す。
+      applyEvent(this.replica, msg, { viewpoint: this.seat });
+      return;
+    }
     if (WIRE_EVENTS.has(msg.type)) {
       // 自席視点で適用：他席手牌は伏せ札(枚数のみ)になる（受信 Event も席別 redaction 済み）。
       applyEvent(this.replica, msg, { viewpoint: this.seat });

@@ -33,7 +33,8 @@ export function createWsServer(port = 0) {
     wss.once("listening", () => {
       resolve({
         port: wss.address().port,
-        onConnection: (cb) => wss.on("connection", (sock) => cb(wrapWs(sock))),
+        // cb(endpoint, req) — req.url で room 名を取り出せる（リコネクトの卓引き当て用）。
+        onConnection: (cb) => wss.on("connection", (sock, req) => cb(wrapWs(sock), req)),
         close: () => new Promise((r) => wss.close(r)),
       });
     });

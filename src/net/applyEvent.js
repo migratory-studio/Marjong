@@ -116,6 +116,25 @@ export function applyEvent(game, evt, opts = {}) {
       // 席ごとの durable 状態は変えない（点数は pub で同期）。結果画面が読む lastResult を据える。
       if (evt.result) game.lastResult = evt.result;
       break;
+    case "evt.snapshot": {
+      // 再接続：途中局面からレプリカを丸ごと組み直す（席別 redaction 済みを受ける）。
+      game.handNumber = evt.handNumber;
+      game.players.forEach((p, i) => {
+        p.hand = (evt.hands[i] || []).map(tileFrom); // 自席のみ実値、他席は後段の伏せ札正規化
+        const s = evt.seats[i];
+        p.discards = s.discards.map((t) => ({ id: t.id, kind: t.kind, tsumogiri: t.tsumogiri, riichiTile: t.riichiTile }));
+        p.melds = s.melds.map((m) => ({
+          type: m.type, tiles: m.tiles.map(tileFrom), from: m.from,
+          calledTile: m.calledTileId != null ? { id: m.calledTileId } : null,
+        }));
+        p.riichi = !!s.riichi;
+        p.kita = [];
+        p.drawnTileId = null;
+        if (evt.seatWinds) p.seatWind = evt.seatWinds[i];
+      });
+      game.lastDiscard = evt.lastDiscard ? { id: evt.lastDiscard.id, kind: evt.lastDiscard.kind } : null;
+      break;
+    }
   }
   syncPublic(game, evt.pub);
   // redaction モード: 他席手牌は伏せ札（枚数のみ）に正規化する。自席は実 tile を tracking 済み
