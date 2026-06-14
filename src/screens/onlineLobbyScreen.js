@@ -24,13 +24,18 @@ function elt(tag, cls, props = {}) {
   return e;
 }
 
-// マッチング対戦ロビーの戦績パネル。段位/RP・通算対局・最高連勝・よく使う相棒（卓表示の代わり）。
+// マッチング対戦ロビーの戦績パネル。段位/RP（プロフィール）＋オンライン専用戦績（対局数/トップ率/
+// 平均着順＝online_results集計）＋よく使う相棒（卓表示の代わり）。
 function buildStatsPanel(stats) {
   const box = elt("div", "online-stats");
   const s = stats || {};
   const rpText = s.rankAtMax ? `RP ${s.tierRp ?? 0}` : `RP ${s.tierRp ?? 0} / ${s.rankNext ?? "?"}`;
+  const o = s.online; // null=未ログイン/未取得 / {games:0}=記録なし
+  const games = o?.games ?? 0;
+  const topRate = (o && games) ? `${Math.round(o.firstRate * 100)}%` : "—";
+  const avgRank = (o && games) ? o.avgRank.toFixed(2) : "—";
   box.innerHTML = `
-    <div class="online-stats-head">あなたの戦績</div>
+    <div class="online-stats-head">あなたのオンライン戦績</div>
     <div class="ost-rank">
       <div class="ost-dan"><b>${s.rankTitle || "—"}</b><small>${s.rankKana || ""}</small></div>
       <div class="ost-gauge">
@@ -38,9 +43,10 @@ function buildStatsPanel(stats) {
         <div class="ost-rp">${rpText}</div>
       </div>
     </div>
-    <div class="ost-grid">
-      <div class="ost-cell"><span class="ost-k">通算対局</span><span class="ost-v">${s.totalMatches ?? 0}</span></div>
-      <div class="ost-cell"><span class="ost-k">最高連勝</span><span class="ost-v">${s.maxWinStreak ?? 0}</span></div>
+    <div class="ost-grid ost-grid-3">
+      <div class="ost-cell"><span class="ost-k">対局数</span><span class="ost-v">${games}</span></div>
+      <div class="ost-cell"><span class="ost-k">トップ率</span><span class="ost-v">${topRate}</span></div>
+      <div class="ost-cell"><span class="ost-k">平均着順</span><span class="ost-v">${avgRank}</span></div>
     </div>
     <div class="ost-buddy">
       <span class="ost-k">よく使う相棒</span>

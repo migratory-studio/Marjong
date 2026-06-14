@@ -28,6 +28,28 @@ export async function recordOnlineResult({ charId, rank, numPlayers, finalPoints
   }
 }
 
+// 自分のオンライン戦績を集計して返す（ログイン中のみ）。online_results を全件読んで畳む。
+// 戻り値: { games, firsts, firstRate, avgRank, lasts, lastRate } / 未ログインは null。
+export async function fetchMyOnlineStats() {
+  const user = await getUser();
+  if (!user) return null;
+  const { data, error } = await supabase
+    .from("online_results")
+    .select("rank, num_players")
+    .eq("user_id", user.id);
+  if (error) throw error;
+  const rows = data || [];
+  const games = rows.length;
+  if (!games) return { games: 0, firsts: 0, firstRate: 0, avgRank: 0, lasts: 0, lastRate: 0 };
+  let firsts = 0, lasts = 0, rankSum = 0;
+  for (const r of rows) {
+    if (r.rank === 1) firsts++;
+    if (r.num_players && r.rank === r.num_players) lasts++; // 最下位＝ラス
+    rankSum += r.rank;
+  }
+  return { games, firsts, firstRate: firsts / games, avgRank: rankSum / games, lasts, lastRate: lasts / games };
+}
+
 /* ---- Supabase 側のテーブル作成 SQL（一度だけ実行）----
 create table if not exists public.online_results (
   id uuid primary key default gen_random_uuid(),

@@ -40,7 +40,7 @@ import { AuthorityRoom } from "./net/authorityRoom.js";
 import { applyEvent } from "./net/applyEvent.js";
 import { connectWebSocket } from "./net/wsTransport.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
-import { recordOnlineResult } from "./progression/onlineResults.js";
+import { recordOnlineResult, fetchMyOnlineStats } from "./progression/onlineResults.js";
 import { defaultRankState, applyMatchToRank, describeRank, seasonIdFromDate } from "./progression/onlineRank.js";
 import { pushRanking, fetchLeaderboard, fetchMyStanding } from "./progression/onlineRankRepo.js";
 import { showOnlineLeaderboard } from "./screens/onlineLeaderboardScreen.js";
@@ -2023,14 +2023,16 @@ const ONLINE_WS_URL = "wss://mahjong-online.nogi-kaiyu.workers.dev/ws";
 async function openOnlineLobby(mode, opts = {}) {
   showScreen("online-lobby-screen");
   // マッチング対戦のロビー左側は戦績を見せる（卓表示だと「ここでマッチング中」と誤解されるため）。
-  let profile = null;
-  try { profile = await profileRepo.loadProfile(); } catch { /* 未ログインは戦績なしで描く */ }
+  // 戦績は「オンライン対戦だけ」の集計（online_results）。プロフィールは段位/名前/推し用。
+  let profile = null, onlineStats = null;
+  try { profile = await profileRepo.loadProfile(); } catch { /* 未ログインは段位等を既定で描く */ }
+  try { onlineStats = await fetchMyOnlineStats(); } catch { /* 取得失敗は戦績なし扱い */ }
   showOnlineLobby(el("online-lobby-screen"), {
     mode,
     characters: CHARACTERS,
     audio,
     joinCode: opts.joinCode || null, // 合言葉で参加するときの既定コード
-    stats: profileStatsForLobby(profile), // 戦績パネル用
+    stats: profileStatsForLobby(profile, onlineStats), // 戦績パネル用
     onBack: () => goScreen("online-screen"),
     onStart: ({ charId, code }) => {
       const ov = (typeof window !== "undefined") ? window.__ONLINE_WS_URL : undefined;
@@ -2195,17 +2197,16 @@ function topCompanionId(bonds) {
   return topId;
 }
 
-// マッチング対戦ロビーの戦績パネル用にプロフィールを要約する（段位/RP・通算/最高連勝・推し）。
-function profileStatsForLobby(profile) {
+// マッチング対戦ロビーの戦績パネル用に要約。段位/RP・推しはプロフィール、対局数/トップ率/平均着順は
+// オンライン専用集計(online_results)から。onlineStats=null（未ログイン/未取得）は戦績「—」表示。
+function profileStatsForLobby(profile, onlineStats) {
   const r = describeRank(profile?.onlineRank || defaultRankState());
-  const hist = profile?.playerHistory || {};
   const oshiId = topCompanionId(profile?.companionBonds);
   const oshi = oshiId ? CHARACTERS.find((c) => c.id === oshiId) : null;
   return {
     name: normalizeUsername(profile?.profile?.displayName || "") || "名無し",
     rankTitle: r.title, rankKana: r.kana, tierRp: r.tierRp, rankNext: r.next, rankAtMax: r.atMax, rankPct: r.progressPct,
-    totalMatches: hist.totalMatches ?? 0,
-    maxWinStreak: hist.maxWinStreak ?? 0,
+    online: onlineStats, // { games, firstRate, avgRank, ... } or null
     oshi: oshi ? { name: oshi.name, color: oshi.color, icon: oshi.assets?.icon || null } : null,
   };
 }
