@@ -40,6 +40,7 @@ import { applyEvent } from "./net/applyEvent.js";
 import { connectWebSocket } from "./net/wsTransport.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { recordOnlineResult } from "./progression/onlineResults.js";
+import { defaultRankState, applyMatchToRank, describeRank } from "./progression/onlineRank.js";
 import { skillTemplateById, templateForAbility } from "./data/skillTemplateMaster.js";
 import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
@@ -3896,21 +3897,26 @@ function showGameOver() {
       btns.appendChild(mkBtn("師弟ホームへ", "btn-tsumo", () => go()));
     }
   } else if (online) {
-    // 通信対戦（テスト中）：順位を Supabase に記録し、ロビー/トップへ戻れるようにする。
+    // 通信対戦（テスト中）：順位を Supabase に記録し、段位を更新表示し、ロビー/トップへ戻れる。
     const btns = overlay.querySelector(".go-buttons");
-    const note = document.createElement("div");
-    note.className = "go-tourney-note";
-    note.textContent = "結果を記録中…";
-    btns.parentElement.insertBefore(note, btns);
+    // 段位パネル（叩き台・UI素材使用）。読込中プレースホルダ→非同期で結果反映。
+    const panel = document.createElement("div");
+    panel.className = "go-rank-panel loading";
+    panel.innerHTML = `<div class="go-rank-head">オンライン段位</div><div class="go-rank-body">記録中…</div>`;
+    btns.parentElement.insertBefore(panel, btns);
+
+    const finishedAt = new Date().toISOString();
     const opponents = game.players.filter((_, i) => i !== humanIndex).map((p) => p.character.id);
-    recordOnlineResult({ charId: human.character.id, rank: hRank + 1, numPlayers: N, finalPoints: human.points, opponents })
-      .then((status) => {
-        note.textContent =
-          status === "recorded" ? `戦績を記録しました（${hRank + 1} 位 / ${N} 人）`
-          : status === "skipped" ? `この対局：${hRank + 1} 位 / ${N} 人（ログインで戦績が残ります）`
-          : `この対局：${hRank + 1} 位 / ${N} 人`;
-      })
-      .catch(() => { note.textContent = `この対局：${hRank + 1} 位 / ${N} 人`; });
+    // 戦績ログ（online_results）。表示は段位パネル側に集約するので結果は捨てる。
+    recordOnlineResult({ charId: human.character.id, rank: hRank + 1, numPlayers: N, finalPoints: human.points, opponents });
+    // 段位更新（profile.onlineRank）→ パネル描画＋昇段演出。
+    applyOnlineRankUpdate({ placement: hRank + 1, numPlayers: N, finishedAt })
+      .then((res) => renderRankPanel(panel, res, human.character))
+      .catch((e) => {
+        console.warn("段位更新失敗", e);
+        panel.className = "go-rank-panel";
+        panel.innerHTML = `<div class="go-rank-head">オンライン段位</div><div class="go-rank-body">この対局：${hRank + 1} 位 / ${N} 人</div>`;
+      });
     // 通信状態を片付けてから遷移（再接続タイマ停止・WS切断・online クリア）。
     const leave = (target) => {
       overlay.classList.add("hidden");
@@ -3926,6 +3932,58 @@ function showGameOver() {
   } else {
     overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
   }
+}
+
+// 対局結果を段位状態へ適用して保存。戻り値 { before, after, delta, promotedTo }。
+// online_results を正とした再計算ではなく increment（高速）。profile.onlineRank を更新。
+async function applyOnlineRankUpdate({ placement, numPlayers, finishedAt }) {
+  const profile = await profileRepo.loadProfile();
+  const before = profile.onlineRank || defaultRankState();
+  const { state, delta, promotedTo } = applyMatchToRank(before, { placement, numPlayers, finishedAt });
+  profile.onlineRank = state;
+  await profileRepo.saveProfile(profile);
+  return { before, after: state, delta, promotedTo };
+}
+
+// 昇段時のキャラ一言（叩き台。正式には step4 で voiceLines の danUp イベント化）。
+function danUpLineFor(character) {
+  if (character?.id === "shiyue") return "ふふん、また一段上ったアルね。我と打てば当然ヨ？";
+  return "また一歩、上ったね。";
+}
+
+// 結果画面の段位パネルを描画（UI素材＝panel/gauge）。昇段なら banner＋一言＋バー演出。
+function renderRankPanel(panel, { before, after, delta, promotedTo }, character) {
+  const b = describeRank(before);
+  const a = describeRank(after);
+  const promoted = !!promotedTo;
+  const deltaStr = delta > 0 ? `+${delta}` : `${delta}`;
+  const rpText = a.atMax ? `RP ${a.tierRp}` : `RP ${a.tierRp} / ${a.next}`;
+  panel.className = "go-rank-panel" + (promoted ? " promoted" : "");
+  panel.innerHTML = `
+    <div class="go-rank-head">オンライン段位</div>
+    ${promoted ? `<div class="go-rank-promote">昇段！　<b>${b.title}</b> → <b>${a.title}</b></div>` : ""}
+    <div class="go-rank-main">
+      <div class="go-rank-dan">
+        <span class="go-rank-title">${a.title}</span>
+        <span class="go-rank-kana">${a.kana}</span>
+      </div>
+      <div class="go-rank-gauge">
+        <div class="go-rank-bar hpbar"><div class="hpfill high"></div></div>
+        <div class="go-rank-meta">
+          <span class="go-rank-rp">${rpText}</span>
+          <span class="go-rank-delta ${delta < 0 ? "minus" : ""}">RP ${deltaStr}</span>
+        </div>
+      </div>
+    </div>
+    ${promoted ? `<div class="go-rank-line">「${danUpLineFor(character)}」</div>` : ""}`;
+  // バー充填アニメ：同段なら旧進捗→新進捗、昇段なら新段の0%→新進捗。
+  // rAF はタブ非アクティブ時に発火しないことがあるため、強制リフローで transition を確実に走らせる。
+  const fill = panel.querySelector(".hpfill");
+  const startPct = promoted ? 0 : b.progressPct;
+  fill.style.width = startPct + "%";
+  void fill.offsetWidth; // 開始値を確定させる（この後の代入で width transition が走る）
+  fill.style.width = a.progressPct + "%";
+  if (promoted) setTimeout(() => audio.playSe(sePath("シャキーン1.mp3"), 0.9), 200);
 }
 
 // 団体戦の対局終了: 順位は「チーム得点（3人の合計HP）」で集計。優勝チームのエースを
