@@ -34,6 +34,7 @@ import { showScenarioList, scenariosForMentor } from "./screens/scenarioListScre
 import { markScenarioRead, tournamentStoryGate, episodeNumberOf } from "./progression/scenarioService.js";
 import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showOnlineLobby } from "./screens/onlineLobbyScreen.js";
+import { showRoomCodeModal } from "./screens/roomCodeModal.js";
 import { createLoopback } from "./net/transport.js";
 import { AuthorityRoom } from "./net/authorityRoom.js";
 import { applyEvent } from "./net/applyEvent.js";
@@ -754,13 +755,8 @@ async function renderOnlineProfile() {
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 未ログイン/読込失敗は既定値で描く */ }
   const name = normalizeUsername(profile?.profile?.displayName || "") || "名無し";
-  // よく使う相棒＝絆が最も育っているキャラ（level優先→exp）。※絆は数値を見せない方針なのでキャラだけ。
-  const bonds = profile?.companionBonds || {};
-  let topId = null, topKey = -1;
-  for (const [id, b] of Object.entries(bonds)) {
-    const key = (b?.level ?? 1) * 1e7 + (b?.exp ?? 0);
-    if (key > topKey) { topKey = key; topId = id; }
-  }
+  // よく使う相棒＝絆が最も育っているキャラ。※絆は数値を見せない方針なのでキャラだけ。
+  const topId = topCompanionId(profile?.companionBonds);
   const topChar = topId ? CHARACTERS.find((c) => c.id === topId) : null;
   // 段位・RP は競技ランクなので数値表示OK。
   const r = describeRank(profile?.onlineRank || defaultRankState());
@@ -1951,6 +1947,10 @@ function bootHome() {
   }
   // 通信対戦（テスト中）の入口: モード選択 → ロビー。
   el("online-room-btn")?.addEventListener("click", () => { audio.playClick?.(); openOnlineLobby("room"); });
+  el("online-join-btn")?.addEventListener("click", () => {
+    audio.playClick?.();
+    showRoomCodeModal({ onSubmit: (code) => openOnlineLobby("room", { joinCode: code }) });
+  });
   el("online-match-btn")?.addEventListener("click", () => { audio.playClick?.(); openOnlineLobby("match"); });
   el("online-rank-btn")?.addEventListener("click", () => { audio.playClick?.(); openOnlineLeaderboard(); });
   // Volumes apply regardless of starting screen; the home 設定 controls share
@@ -2019,12 +2019,18 @@ async function startGame() {
 const ONLINE_WS_URL = "wss://mahjong-online.nogi-kaiyu.workers.dev/ws";
 
 // 通信対戦（テスト中）: ロビーを開く。mode = "room" | "match"。
-function openOnlineLobby(mode) {
+// opts.joinCode があれば「合言葉で参加」モード（その合言葉のルームへ入る）。
+async function openOnlineLobby(mode, opts = {}) {
   showScreen("online-lobby-screen");
+  // マッチング対戦のロビー左側は戦績を見せる（卓表示だと「ここでマッチング中」と誤解されるため）。
+  let profile = null;
+  try { profile = await profileRepo.loadProfile(); } catch { /* 未ログインは戦績なしで描く */ }
   showOnlineLobby(el("online-lobby-screen"), {
     mode,
     characters: CHARACTERS,
     audio,
+    joinCode: opts.joinCode || null, // 合言葉で参加するときの既定コード
+    stats: profileStatsForLobby(profile), // 戦績パネル用
     onBack: () => goScreen("online-screen"),
     onStart: ({ charId, code }) => {
       const ov = (typeof window !== "undefined") ? window.__ONLINE_WS_URL : undefined;
@@ -2111,9 +2117,13 @@ function showOnlineMatchIntro(seated) {
   const labels = seated.map((s, i) => {
     const info = onlineSeatInfo?.[i];
     if (!info || info.cpu) return { name: s.character.name, sub: "CPU", cpu: true };
+    // 推し＝相手が送ってきた最高絆キャラ。無ければこの対局の持ちキャラで代用。
+    const oshiChar = (info.oshi && CHARACTERS.find((c) => c.id === info.oshi)) || s.character;
     return {
       name: info.name || "名無し",
       sub: describeRank({ dan: info.dan || 1, tierRp: 0 }).title, // 段位の称号
+      oshiName: oshiChar.name,
+      oshiColor: oshiChar.color,
       you: i === humanIndex,
     };
   });
@@ -2138,14 +2148,15 @@ async function startMatchmaking(charId, base, room, mode) {
   teamBattleData = null; pairBattleData = null;
   selectedTeamBattle = false; selectedPairBattle = false;
   selectedPlayers = 4; selectedRounds = 1;
-  // 自分の表示情報（ユーザー名・段位）を join に同梱して、相手の対局開始画面/卓上にも出せるようにする。
-  let name = null, dan = 1;
+  // 自分の表示情報（ユーザー名・段位・推し）を join に同梱して、相手の対局開始画面/卓上にも出せるように。
+  let name = null, dan = 1, oshi = null;
   try {
     const p = await profileRepo.loadProfile();
     name = normalizeUsername(p?.profile?.displayName || "") || null;
     dan = describeRank(p?.onlineRank || defaultRankState()).dan;
+    oshi = topCompanionId(p?.companionBonds);
   } catch { /* 未ログイン等は名前なしで参加（CPU同様 名無し扱い） */ }
-  matchmaking = { base, room, mode, charId, name, dan, attempt: 0 };
+  matchmaking = { base, room, mode, charId, name, dan, oshi, attempt: 0 };
   connectMatchmaking();
 }
 
@@ -2171,7 +2182,32 @@ async function connectMatchmaking() {
   if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ: 強制切断テスト用
   ep.onMessage(onlineClientMessage); // matchWaiting→探索表示 / welcome→beginGame(client化) / 以降 wire Event
   ep.onClose?.(() => handleWsClose(ep));
-  ep.send({ type: "intent.join", charId: mm.charId, name: mm.name, dan: mm.dan });
+  ep.send({ type: "intent.join", charId: mm.charId, name: mm.name, dan: mm.dan, oshi: mm.oshi });
+}
+
+// 相棒絆が最も育っているキャラID（=よく使う相棒/推し）。level優先→exp。無ければ null。
+function topCompanionId(bonds) {
+  let topId = null, topKey = -1;
+  for (const [id, b] of Object.entries(bonds || {})) {
+    const key = (b?.level ?? 1) * 1e7 + (b?.exp ?? 0);
+    if (key > topKey) { topKey = key; topId = id; }
+  }
+  return topId;
+}
+
+// マッチング対戦ロビーの戦績パネル用にプロフィールを要約する（段位/RP・通算/最高連勝・推し）。
+function profileStatsForLobby(profile) {
+  const r = describeRank(profile?.onlineRank || defaultRankState());
+  const hist = profile?.playerHistory || {};
+  const oshiId = topCompanionId(profile?.companionBonds);
+  const oshi = oshiId ? CHARACTERS.find((c) => c.id === oshiId) : null;
+  return {
+    name: normalizeUsername(profile?.profile?.displayName || "") || "名無し",
+    rankTitle: r.title, rankKana: r.kana, tierRp: r.tierRp, rankNext: r.next, rankAtMax: r.atMax, rankPct: r.progressPct,
+    totalMatches: hist.totalMatches ?? 0,
+    maxWinStreak: hist.maxWinStreak ?? 0,
+    oshi: oshi ? { name: oshi.name, color: oshi.color, icon: oshi.assets?.icon || null } : null,
+  };
 }
 
 // 接続断の検知 → 対局が生きている間は自動で同じ卓へ再接続（リコネクト・ライト版）。

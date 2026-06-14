@@ -65,8 +65,8 @@ export class RoomHost {
     connection.onMessage((msg) => {
       if (!msg) return;
       if (msg.type === "intent.join") {
-        // charId=使用キャラ / name=ユーザー名 / dan=段位（表示用。CPU席や未ログインは欠落しうる）。
-        this._enqueue(connection, { charId: msg.charId, name: msg.name, dan: msg.dan }, opts);
+        // charId=使用キャラ / name=ユーザー名 / dan=段位 / oshi=推しキャラID（表示用。欠落しうる）。
+        this._enqueue(connection, { charId: msg.charId, name: msg.name, dan: msg.dan, oshi: msg.oshi }, opts);
       } else if (msg.type === "intent.rejoin") {
         const e = (msg.token != null) ? this.tokenSeat[msg.token] : undefined;
         if (e) {
@@ -84,7 +84,7 @@ export class RoomHost {
   _enqueue(connection, info, opts) {
     this.opts = opts;
     const meta = (typeof info === "string") ? { charId: info } : (info || {});
-    const entry = { connection, charId: meta.charId, name: meta.name ?? null, dan: meta.dan ?? null };
+    const entry = { connection, charId: meta.charId, name: meta.name ?? null, dan: meta.dan ?? null, oshi: meta.oshi ?? null };
     this.waiting.push(entry);
     // 待機中の離脱のみ面倒を見る（現バッチに居る間だけ）。開始後の席は AuthorityRoom 側(dropSeat)が担当。
     connection.onClose?.(() => {
@@ -121,7 +121,7 @@ export class RoomHost {
     // 席ごとの表示情報（対局開始画面/卓上ネームプレート用）。人間席=名前/段位、空席=CPU。
     const playersInfo = roster.map((charId, seat) => {
       const h = seats[seat];
-      return h ? { charId, name: h.name, dan: h.dan } : { charId, cpu: true };
+      return h ? { charId, name: h.name, dan: h.dan, oshi: h.oshi } : { charId, cpu: true };
     });
     const room = new AuthorityRoom(game, connections, this.opts || {});
     room.roster = roster;

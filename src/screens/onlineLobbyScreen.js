@@ -24,6 +24,42 @@ function elt(tag, cls, props = {}) {
   return e;
 }
 
+// マッチング対戦ロビーの戦績パネル。段位/RP・通算対局・最高連勝・よく使う相棒（卓表示の代わり）。
+function buildStatsPanel(stats) {
+  const box = elt("div", "online-stats");
+  const s = stats || {};
+  const rpText = s.rankAtMax ? `RP ${s.tierRp ?? 0}` : `RP ${s.tierRp ?? 0} / ${s.rankNext ?? "?"}`;
+  box.innerHTML = `
+    <div class="online-stats-head">あなたの戦績</div>
+    <div class="ost-rank">
+      <div class="ost-dan"><b>${s.rankTitle || "—"}</b><small>${s.rankKana || ""}</small></div>
+      <div class="ost-gauge">
+        <div class="ost-bar hpbar"><div class="hpfill high" style="width:${s.rankPct ?? 0}%"></div></div>
+        <div class="ost-rp">${rpText}</div>
+      </div>
+    </div>
+    <div class="ost-grid">
+      <div class="ost-cell"><span class="ost-k">通算対局</span><span class="ost-v">${s.totalMatches ?? 0}</span></div>
+      <div class="ost-cell"><span class="ost-k">最高連勝</span><span class="ost-v">${s.maxWinStreak ?? 0}</span></div>
+    </div>
+    <div class="ost-buddy">
+      <span class="ost-k">よく使う相棒</span>
+      <span class="ost-buddy-v"></span>
+    </div>`;
+  const bv = box.querySelector(".ost-buddy-v");
+  if (s.oshi) {
+    const ic = s.oshi.icon
+      ? elt("img", "ost-buddy-icon", { src: s.oshi.icon, alt: "" })
+      : elt("span", "ost-buddy-icon ost-buddy-fb");
+    if (!s.oshi.icon) ic.style.background = s.oshi.color || "#2a3f34";
+    const nm = elt("span", "ost-buddy-name", { textContent: s.oshi.name });
+    bv.append(ic, nm);
+  } else {
+    bv.appendChild(elt("span", "ost-buddy-none", { textContent: "まだいないよ" }));
+  }
+  return box;
+}
+
 function makeIcon(c) {
   const path = c.assets?.icon;
   if (path) {
@@ -40,15 +76,17 @@ function makeIcon(c) {
   return fb;
 }
 
-export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack }) {
+export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack, joinCode = null, stats = null }) {
   if (root._cleanup) root._cleanup(); // 前回の開封で仕掛けたタイマーを掃除
   root.innerHTML = "";
   const timers = [];
   root._cleanup = () => { timers.forEach(clearTimeout); timers.length = 0; };
 
   let pickedId = null;
+  const isRoom = mode === "room";
+  const isJoin = isRoom && !!joinCode; // 合言葉で「参加」する側（ホストはコード発行）
   let code = null; // ルーム対戦のあいことば（onStart で部屋名に使う）
-  const modeLabel = mode === "room" ? "ルーム対戦" : "マッチング対戦";
+  const modeLabel = !isRoom ? "マッチング対戦" : isJoin ? "合言葉で参加" : "ルーム対戦";
 
   // --- header ---
   const head = elt("header", "online-head");
@@ -60,7 +98,7 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
   head.querySelector(".online-back").onclick = () => { audio?.playClick?.(); root._cleanup(); onBack(); };
 
   const note = elt("p", "online-note");
-  note.textContent = mode === "room"
+  note.textContent = isRoom
     ? "※ 同じあいことばの相手と同卓します。最大30秒待っても揃わなければ空席に CPU が入ります。"
     : "※ 開始すると相手を探します。最大30秒待っても揃わなければ空席に CPU が入ります。";
   root.appendChild(note);
@@ -68,40 +106,41 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
   const body = elt("div", "online-body");
   root.appendChild(body);
 
-  // --- 左：卓の状況（合言葉 or マッチング ＋ 4席の埋まり） ---
+  // --- 左カラム: ルーム=合言葉＋卓 / マッチング=戦績（卓表示はマッチング中と誤解されるため出さない） ---
   const left = elt("div", "online-col online-col-left");
   body.appendChild(left);
+  const seatEls = []; // ルーム時のみ作る（参照は ?. でガード）
 
-  if (mode === "room") {
-    code = makeCode(4);
+  if (isRoom) {
+    code = joinCode || makeCode(4);
     const codeBox = elt("div", "online-codebox");
     codeBox.innerHTML =
       `<div class="online-codebox-k">あいことば</div>` +
       `<div class="online-code">${code}</div>` +
-      `<div class="online-codebox-sub">この合言葉を相手に伝えて招待（同じ合言葉で同卓）</div>`;
+      `<div class="online-codebox-sub">${isJoin ? "この合言葉のルームに入ります" : "この合言葉を相手に伝えて招待（同じ合言葉で同卓）"}</div>`;
     left.appendChild(codeBox);
+
+    const tableHead = elt("div", "online-table-head", { textContent: "卓（4人）" });
+    left.appendChild(tableHead);
+    const seatList = elt("div", "online-seats");
+    left.appendChild(seatList);
+    for (let i = 0; i < 4; i++) {
+      const row = elt("div", "online-seat");
+      const who = elt("span", "online-seat-who", { textContent: i === 0 ? "あなた" : `席 ${i + 1}` });
+      const st = elt("span", "online-seat-state");
+      if (i === 0) { st.textContent = "雀士を選択"; st.className = "online-seat-state is-you"; }
+      else { st.textContent = "開始後に相手 / CPU"; }
+      row.append(who, st);
+      seatList.appendChild(row);
+      seatEls.push({ row, who, st });
+    }
   } else {
     const mm = elt("div", "online-mm");
     mm.innerHTML =
       `<div class="online-mm-title">準備ができたら「対局開始」<span class="online-dots"></span></div>` +
       `<div class="online-mm-sub">開始後、対戦相手を探します</div>`;
     left.appendChild(mm);
-  }
-
-  const tableHead = elt("div", "online-table-head", { textContent: "卓（4人）" });
-  left.appendChild(tableHead);
-  const seatList = elt("div", "online-seats");
-  left.appendChild(seatList);
-  const seatEls = [];
-  for (let i = 0; i < 4; i++) {
-    const row = elt("div", "online-seat");
-    const who = elt("span", "online-seat-who", { textContent: i === 0 ? "あなた" : `席 ${i + 1}` });
-    const st = elt("span", "online-seat-state");
-    if (i === 0) { st.textContent = "雀士を選択"; st.className = "online-seat-state is-you"; }
-    else { st.textContent = "開始後に相手 / CPU"; }
-    row.append(who, st);
-    seatList.appendChild(row);
-    seatEls.push({ row, who, st });
+    left.appendChild(buildStatsPanel(stats)); // 戦績パネル
   }
 
   // --- 右：自分の雀士を選ぶ ---
@@ -121,8 +160,7 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
       pickedId = c.id;
       for (const [, el2] of cardById) el2.classList.remove("is-picked");
       card.classList.add("is-picked");
-      seatEls[0].st.textContent = c.name;
-      seatEls[0].st.className = "online-seat-state is-you";
+      if (seatEls[0]) { seatEls[0].st.textContent = c.name; seatEls[0].st.className = "online-seat-state is-you"; } // 卓表示はルーム時のみ
       updateStart();
     };
     cardById.set(c.id, card);

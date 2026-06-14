@@ -162,16 +162,19 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
       if (label) {
         // 通信対戦カード: ユーザー名＋段位を主役にし、持ちキャラ（推し）を立ち絵＋名前で添える。
         const isCpu = !!label.cpu;
+        const oshiName = label.oshiName || c.name; // 推しキャラ名（無ければ持ちキャラ）
+        const oshiColor = label.oshiColor || c.color;
         card.innerHTML = `
           <div class="mi-card-art"></div>
           <div class="mi-card-info">
             <div class="mi-card-username"></div>
             <div class="mi-card-dan${isCpu ? " is-cpu" : ""}"></div>
-            ${isCpu ? "" : `<div class="mi-card-oshi">推し <b style="color:${c.color}">${c.name}</b></div>`}
+            ${isCpu ? "" : `<div class="mi-card-oshi">推し <b style="color:${oshiColor}"></b></div>`}
             ${label.you ? `<div class="mi-card-you">YOU</div>` : ""}
           </div>`;
         card.querySelector(".mi-card-username").textContent = label.name || "名無し"; // 入力値は textContent で安全に
         card.querySelector(".mi-card-dan").textContent = label.sub || "";
+        if (!isCpu) card.querySelector(".mi-card-oshi b").textContent = oshiName;
       } else {
         card.innerHTML = `
           <div class="mi-card-art"></div>

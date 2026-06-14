@@ -3959,6 +3959,27 @@ button.primary.danger:hover { color: #ffbcbc; }
 .online-profile .op-rank-rp { display: block; margin-top: 3px; color: #9be29b; font-size: 11px; font-variant-numeric: tabular-nums; }
 .online-mm-title { font-weight: 700; color: var(--ink); font-size: 15px; }
 .online-mm-sub { margin-top: 8px; color: var(--muted); font-size: 12px; }
+/* マッチング対戦ロビーの戦績パネル（卓表示の代わり） */
+.online-stats { margin-top: 12px; background: #14201a; border: 1px solid #2a3f34; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+.online-stats-head { color: var(--muted); font-size: 12px; letter-spacing: .1em; }
+.ost-rank { display: flex; align-items: center; gap: 12px; }
+.ost-dan { line-height: 1.05; white-space: nowrap; }
+.ost-dan b { color: #e7d9b4; font-size: 18px; }
+.ost-dan small { display: block; color: var(--muted); font-size: 10px; letter-spacing: .08em; }
+.ost-gauge { flex: 1; min-width: 0; }
+.ost-bar { display: block; width: 100%; height: 12px; border-radius: 999px; }
+.ost-rp { margin-top: 4px; color: #9be29b; font-size: 12px; font-variant-numeric: tabular-nums; }
+.ost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ost-cell { display: flex; flex-direction: column; gap: 2px; background: rgba(16,26,21,.6); border: 1px solid #243a30; border-radius: 10px; padding: 8px 12px; }
+.ost-k { color: var(--muted); font-size: 11px; letter-spacing: .06em; }
+.ost-v { color: var(--ink); font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ost-buddy { display: flex; align-items: center; gap: 10px; }
+.ost-buddy-v { display: flex; align-items: center; gap: 8px; }
+.ost-buddy-icon { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid #3a5446; }
+.ost-buddy-icon.ost-buddy-fb { display: inline-block; }
+.ost-buddy-name { color: var(--ink); font-weight: 700; font-size: 15px; }
+.ost-buddy-none { color: var(--muted); font-size: 13px; }
+.room-code-input { text-transform: uppercase; letter-spacing: .3em; text-align: center; font-weight: 800; }
 /* マッチング探索オーバーレイ（reconnect-overlay/-card を流用） */
 .match-search-card { text-align: center; min-width: 280px; }
 .match-search-title { font-weight: 800; color: var(--ink); font-size: 17px; }
