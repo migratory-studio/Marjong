@@ -3983,6 +3983,12 @@ button.primary.danger:hover { color: #ffbcbc; }
 .ost-buddy-name { color: var(--ink); font-weight: 700; font-size: 15px; }
 .ost-buddy-none { color: var(--muted); font-size: 13px; }
 .room-code-input { text-transform: uppercase; letter-spacing: .3em; text-align: center; font-weight: 800; }
+
+/* 通信対戦トップ: メニューを横並びにして固定ステージ内（縦スクロールなし）に収める */
+#online-screen.menu-screen { max-width: 1000px; gap: 18px; justify-content: center; }
+#online-screen .menu-list { flex-direction: row; flex-wrap: wrap; justify-content: center; max-width: 100%; gap: 12px; }
+#online-screen .menu-btn { flex: 1 1 0; min-width: 180px; align-items: center; text-align: center; gap: 4px; padding: 16px 18px; }
+#online-screen .menu-btn-sub { font-size: 12px; }
 /* マッチング探索オーバーレイ（reconnect-overlay/-card を流用） */
 .match-search-card { text-align: center; min-width: 280px; }
 .match-search-title { font-weight: 800; color: var(--ink); font-size: 17px; }
