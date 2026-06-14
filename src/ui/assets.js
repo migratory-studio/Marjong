@@ -5,34 +5,31 @@
 import { suitOf, rankOf, honorOf, isHonor, SUITS } from "../core/tiles.js";
 
 // ----------------------------------------------------------------- tile images
-// Maps engine tile kinds to the actual files in graphic/.
-// Naming convention (kept as-is from the asset pack):
-//   manzu2_1/p_ms{1..9}_1.gif   (萬子 1..9)
-//   pinzu2_1/p_ps{1..9}_1.gif   (筒子 1..9)
-//   sozu2_1/p_ss{1..9}_1.gif    (索子 1..9)
-//   tupai2_1/p_ji_{e,s,w,n}_1.gif   (東南西北)
-//   tupai2_1/p_no_1.gif             (白 - blank tile)
-//   tupai2_1/p_ji_h_1.gif           (發)
-//   tupai2_1/p_ji_c_1.gif           (中)
-// No dedicated red-5 art in this pack -> red fives reuse the normal 5 image.
-const SUIT_DIR = { [SUITS.MAN]: ["manzu2_1", "p_ms"], [SUITS.PIN]: ["pinzu2_1", "p_ps"], [SUITS.SOU]: ["sozu2_1", "p_ss"] };
+// FluffyStuff の Riichi Mahjong Tiles（CC0／商用可・帰属不要）。各牌は graphic/tiles/
+// 配下の単体完成形 SVG（300×400, 3:4）。萬筒索 ManN/PinN/SouN、字牌＝東南西北白發中、
+// 赤5＝{Suit}5-Dora、裏牌＝Back.svg。出典: https://github.com/FluffyStuff/riichi-mahjong-tiles
+const TILE_DIR = "graphic/tiles";
+const SUIT_NAME = { [SUITS.MAN]: "Man", [SUITS.PIN]: "Pin", [SUITS.SOU]: "Sou" };
 // honor index (1..7) = 東南西北白發中
-const HONOR_FILE = ["p_ji_e", "p_ji_s", "p_ji_w", "p_ji_n", "p_no", "p_ji_h", "p_ji_c"];
+const HONOR_NAME = ["Ton", "Nan", "Shaa", "Pei", "Haku", "Hatsu", "Chun"];
+const BACK_PATH = `${TILE_DIR}/Back.svg`;
+const FRONT_PATH = `${TILE_DIR}/Front.svg`; // 牌の白い下地。各牌SVGは図柄のみ＝Frontに重ねて描く。
 
-export function tilePath(kind /*, red */) {
-  if (isHonor(kind)) return `graphic/tupai2_1/${HONOR_FILE[honorOf(kind) - 1]}_1.gif`;
-  const [dir, pfx] = SUIT_DIR[suitOf(kind)];
-  return `graphic/${dir}/${pfx}${rankOf(kind)}_1.gif`;
+export function tilePath(kind, red = false) {
+  if (isHonor(kind)) return `${TILE_DIR}/${HONOR_NAME[honorOf(kind) - 1]}.svg`;
+  const r = rankOf(kind);
+  const suffix = red && r === 5 ? "-Dora" : ""; // 赤5は専用アート
+  return `${TILE_DIR}/${SUIT_NAME[suitOf(kind)]}${r}${suffix}.svg`;
 }
 
 // 演出用: ランダムな牌画像パスを 1 つ返す（オート対局のフレーバー手牌・河など、
 // エンジン非依存の見た目専用）。数牌:字牌 ≒ 3:1 で実際の山に近い比率。
 export function flavorTilePath(rng = Math.random) {
   if (rng() < 0.78) {
-    const [dir, pfx] = Object.values(SUIT_DIR)[Math.floor(rng() * 3)];
-    return `graphic/${dir}/${pfx}${1 + Math.floor(rng() * 9)}_1.gif`;
+    const suit = Object.values(SUIT_NAME)[Math.floor(rng() * 3)];
+    return `${TILE_DIR}/${suit}${1 + Math.floor(rng() * 9)}.svg`;
   }
-  return `graphic/tupai2_1/${HONOR_FILE[Math.floor(rng() * HONOR_FILE.length)]}_1.gif`;
+  return `${TILE_DIR}/${HONOR_NAME[Math.floor(rng() * HONOR_NAME.length)]}.svg`;
 }
 
 export class TileImages {
@@ -44,7 +41,12 @@ export class TileImages {
   // Preload every tile face. Resolves once all attempts settle (loaded or failed).
   load() {
     const paths = new Set();
-    for (let kind = 0; kind < 34; kind++) paths.add(tilePath(kind));
+    for (let kind = 0; kind < 34; kind++) {
+      paths.add(tilePath(kind, false));
+      if (!isHonor(kind) && rankOf(kind) === 5) paths.add(tilePath(kind, true)); // 赤5アート
+    }
+    paths.add(BACK_PATH); // 裏牌
+    paths.add(FRONT_PATH); // 牌の白い下地
     const jobs = [...paths].map((p) => this._loadOne(p));
     return Promise.allSettled(jobs).then(() => { this.ready = true; });
   }
@@ -60,10 +62,22 @@ export class TileImages {
     });
   }
 
-  // Returns a ready <img> for the tile, or null if unavailable.
-  // `red` is accepted for API symmetry but ignored — pack has no red-5 art.
-  get(kind, _red = false) {
-    const entry = this.cache.get(tilePath(kind));
+  // Returns a ready <img> for the tile, or null if unavailable. `red` selects the
+  // dedicated red-5 (赤5) art when applicable.
+  get(kind, red = false) {
+    const entry = this.cache.get(tilePath(kind, red));
+    return entry && entry.ok ? entry.img : null;
+  }
+
+  // Tile back (裏牌) image, or null until loaded.
+  getBack() {
+    const entry = this.cache.get(BACK_PATH);
+    return entry && entry.ok ? entry.img : null;
+  }
+
+  // 牌の白い下地（Front）。各牌SVGは図柄のみなので、この上に重ねて描く。
+  getFront() {
+    const entry = this.cache.get(FRONT_PATH);
     return entry && entry.ok ? entry.img : null;
   }
 }

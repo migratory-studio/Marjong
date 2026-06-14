@@ -59,8 +59,8 @@
 
 | 種別 | 場所 | 出典 |
 |---|---|---|
-| 牌画像（萬子/筒子/索子/字牌） | `graphic/manzu2_1` 等 | ❓要確認 |
-| キャラ立ち絵・アイコン | `graphic/chars/` | ❓要確認（自作 or 生成 or 素材） |
+| 牌画像（萬子/筒子/索子/字牌・赤5・裏牌） | `graphic/tiles/`（`*.svg`） | **FluffyStuff / Riichi Mahjong Tiles** — **CC0**（パブリックドメイン／商用可・帰属表示不要）。https://github.com/FluffyStuff/riichi-mahjong-tiles |
+| キャラ立ち絵・アイコン | `graphic/chars/` | **r-id 氏（BOOTH）** の立ち絵素材がほとんど（https://booth.pm/ ＋「r-id」）。※各素材の利用規約（**商用利用・改変の可否**）は要確認 |
 | モブ（シルエット） | `graphic/chars/mobs/` | ❓要確認 |
 | 背景 | `graphic/bg/` | ❓要確認 |
 | 表情・エモート | `graphic/emo/` | ❓要確認 |

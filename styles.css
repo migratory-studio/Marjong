@@ -1250,6 +1250,11 @@ body {
   position:absolute; left:50%; top:74px; width:10px; height:56px;
   transform:translate(-50%,-6px) rotate(90deg);
   opacity:0; transition:opacity .25s, transform .25s; filter:drop-shadow(0 2px 3px rgba(0,0,0,.6));
+  background:#f4efe3; border:1px solid #c9c2ad; border-radius:5px; /* 素材レスの点棒（象牙色の棒） */
+}
+#autobattle-screen .ab-rstick::after { /* 中央の赤丸（千点棒の標識） */
+  content:""; position:absolute; left:50%; top:50%; width:6px; height:6px;
+  border-radius:50%; background:#d23b3b; transform:translate(-50%,-50%);
 }
 #autobattle-screen .ab-rstick.is-on { opacity:1; transform:translate(-50%,0) rotate(90deg); }
 /* 結果カードの倒牌（和了手のフレーバー5枚がパタパタめくれる） */
@@ -1956,9 +1961,9 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   border: 10px solid var(--felt-edge); border-radius: 18px;
 }
 .action-bar {
-  /* jantama-style: lower-right, right-aligned, sitting just above the hand
-     (the hand occupies the bottom ~74px of the board) so it never covers tiles. */
-  position: absolute; bottom: 88px; right: 20px; left: auto; transform: none;
+  /* jantama-style: lower-right, right-aligned, sitting just above the hand.
+     手牌を1.5倍に拡大したぶん下~86px(scale≤1)を占有するので、被らないよう bottom を上げる。 */
+  position: absolute; bottom: 112px; right: 20px; left: auto; transform: none;
   display: flex; gap: 10px; flex-wrap: wrap-reverse; justify-content: flex-end;
   align-items: flex-end; max-width: 66%;
 }

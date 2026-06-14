@@ -327,12 +327,10 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
   function placeRiichiStick() {
     const table = container.querySelector(".ab-table");
     if (!table || table.querySelector(".ab-rstick")) return;
-    const img = document.createElement("img");
-    img.className = "ab-rstick";
-    img.src = "graphic/ms_1/b_1_1.gif";
-    img.alt = "";
-    table.appendChild(img);
-    requestAnimationFrame(() => img.classList.add("is-on"));
+    const stick = document.createElement("div"); // 素材レスの点棒（CSSで描画）
+    stick.className = "ab-rstick";
+    table.appendChild(stick);
+    requestAnimationFrame(() => stick.classList.add("is-on"));
   }
 
   // 局頭の卓リセット（前局の河・リーチ棒を流す）。

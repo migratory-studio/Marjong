@@ -8,7 +8,8 @@ const TILE_W = 38;
 const TILE_H = 52;
 const SMALL = 0.62;
 // 自分の手牌だけ拡大して見やすくする倍率（牌サイズ・間隔・当たり判定すべてに適用）。
-const HAND_SCALE = 1.3;
+// スマホでもタップしやすいよう大きめに。門前14牌でも横幅は卓内(≈900/960px)に収まる上限。
+const HAND_SCALE = 1.5;
 
 const SUIT_COLOR = {
   [SUITS.MAN]: "#b5341f",
@@ -39,16 +40,8 @@ export class CanvasRenderer {
     this.W = canvas.width;
     this.H = canvas.height;
 
-    // 画像の読み込み完了で再描画する小ヘルパー。
-    const loadImg = (src) => {
-      const im = new Image();
-      im.onload = () => this.render();
-      im.src = src;
-      return im;
-    };
-    // リーチ宣言で場に出す点棒(1000点)の立ち絵素材。縦長(10×124)なので描画時に横倒しにする。
-    // （点棒=HPのゲージ表示は右サイドの相棒ボードへ集約済み。卓上にはHPバーを描かない。）
-    this.riichiStick = loadImg("graphic/b_1_1.gif");
+    // リーチ棒は素材を使わず Canvas で直接描く（_riichiStick）。点棒=HP のゲージは
+    // 右サイドの相棒ボードに集約済みで、卓上にはHPバーを描かない。
   }
 
   setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false } = {}) {
@@ -182,19 +175,34 @@ export class CanvasRenderer {
     let x, y;
     const positions = {
       0: [this.W / 2, this.H - 132],
-      1: [this.W - 150, this.H / 2 + 120],
-      2: [this.W / 2, 84],
-      3: [150, this.H / 2 - 120],
+      1: [this.W - 210, this.H / 2 + 120],
+      2: [this.W / 2, 78],
+      3: [210, this.H / 2 - 120],
     };
     [x, y] = positions[seat];
     ctx.textAlign = "center";
     const isTurn = this.game.turn === p.index && this.game.phase === Phase.AWAIT_DISCARD;
+    // 手動発動能力が発動中のプレイヤーは、プレートを能力カラーで光らせて一目で分かるようにする。
+    const activeAbility = (p.abilities || []).find((a) => a.activation === "manual" && a.active);
+    const ABILITY_GLOW = "#c9a0ff";
     // plate — HP(点棒)は右サイドの相棒ボードに集約したので、ここは名前＋状態のみ。
     // 高さを詰めたプレートに名前を縦中央で置き、リーチ/北だけ下に出す。
-    ctx.fillStyle = isTurn ? "#244b39" : "#1a2c23";
+    ctx.save();
+    if (activeAbility) { ctx.shadowColor = ABILITY_GLOW; ctx.shadowBlur = 20; }
+    ctx.fillStyle = activeAbility ? "#33265a" : (isTurn ? "#244b39" : "#1a2c23");
     roundRect(ctx, x - 90, y - 18, 180, 36, 8);
     ctx.fill();
-    if (isTurn) { ctx.strokeStyle = p.character.color; ctx.lineWidth = 2; ctx.stroke(); }
+    ctx.restore();
+    if (activeAbility) {
+      ctx.strokeStyle = ABILITY_GLOW; ctx.lineWidth = 2.5;
+      roundRect(ctx, x - 90, y - 18, 180, 36, 8); ctx.stroke();
+    } else if (isTurn) {
+      ctx.strokeStyle = p.character.color; ctx.lineWidth = 2;
+      roundRect(ctx, x - 90, y - 18, 180, 36, 8); ctx.stroke();
+    }
+
+    // 発動中バッジ：プレート上に「⚡発動中 能力名」をピル型で出す。
+    if (activeAbility) this._abilityBadge(x, y - 18 - 8, activeAbility.name, ABILITY_GLOW);
 
     // Character icon just left of the plate (real art if present, else a colored disc).
     this._seatIcon(p, x - 90 - 22, y, 18, isTurn);
@@ -216,6 +224,30 @@ export class CanvasRenderer {
       ctx.font = "bold 12px sans-serif";
       ctx.fillText(`北 ×${p.kita.length}`, x, p.riichi ? y + 46 : y + 32);
     }
+  }
+
+  // 能力発動中バッジ。ネームプレートの上に「⚡ 能力名」をピル型＋発光で出す。
+  // cx=プレート中央x / bottomY=バッジ下端の基準y。
+  _abilityBadge(cx, bottomY, name, color) {
+    const ctx = this.ctx;
+    const label = `⚡ ${name}`;
+    ctx.save();
+    ctx.font = "bold 12px sans-serif";
+    const padX = 9, h = 20;
+    const w = ctx.measureText(label).width + padX * 2;
+    const bx = cx - w / 2, by = bottomY - h;
+    ctx.shadowColor = color; ctx.shadowBlur = 12;
+    ctx.fillStyle = "#2a1f4a";
+    roundRect(ctx, bx, by, w, h, h / 2); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = color; ctx.lineWidth = 1.5;
+    roundRect(ctx, bx, by, w, h, h / 2); ctx.stroke();
+    ctx.fillStyle = "#f0e6ff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, cx, by + h / 2 + 0.5);
+    ctx.textBaseline = "alphabetic";
+    ctx.restore();
   }
 
   // Round character icon. Uses the loaded icon image when available; otherwise
@@ -307,14 +339,15 @@ export class CanvasRenderer {
     if (seat === 2) {
       const totalW = n * (back + 3);
       let x = this.W / 2 - totalW / 2;
-      const y = 116;
+      const y = 128;
       for (let i = 0; i < n; i++) { this._back(x, y, back, back * 1.35); x += back + 3; }
     } else {
       const th = back * 1.05;
       const totalH = n * (th + 3);
       let y = this.H / 2 - totalH / 2;
-      const x = seat === 3 ? 96 : this.W - 96 - back;
-      for (let i = 0; i < n; i++) { this._back(x, y, back, th); y += th + 3; }
+      const x = seat === 3 ? 52 : this.W - 52 - back;
+      // 左右の相手は牌を立てて横から見た「側面」を見せる（背面ではなく厚みの面）。
+      for (let i = 0; i < n; i++) { this._tileSide(x, y, back, th, seat); y += th + 3; }
     }
   }
 
@@ -369,19 +402,29 @@ export class CanvasRenderer {
 
   _drawMelds(p, seat) {
     if (p.melds.length === 0) return;
+    const ctx = this.ctx;
     const scale = SMALL;
     const tw = TILE_W * scale, th = TILE_H * scale;
     const gap = 2, meldGap = 9;
     const layouts = p.melds.map((m) => this._meldLayout(m, p.index));
     const totalW = this._meldsWidth(layouts, tw, th, gap, meldGap);
 
-    // melds are drawn left-to-right; pick a corner per seat.
-    let x, y;
-    if (seat === 0) { y = this.H - 64; x = this.W - 16 - totalW; }
-    else if (seat === 2) { y = 64; x = 16; }
-    else if (seat === 1) { y = 96; x = this.W - 16 - totalW; }
-    else { y = this.H - 128; x = 16; }
+    // 鳴き牌ブロックを「その席の向き」に回した局所フレームで描く（河と同じ慣習）。
+    // 局所フレーム: 原点(0,0)=ブロック左上、x右・y下で上端揃え・左→右に並べる。
+    // angle で各席の手前向きへ回転 → 対面=180°/下家=右90°/上家=左90°、自席=正立。
+    // origin は回転後にブロックが画面のその席の手前に来るよう逆算した画面座標。
+    const handTop = this.H - 8 - TILE_H * HAND_SCALE; // 自分の手牌の上端
+    let originX, originY, angle;
+    if (seat === 0) { angle = 0; originX = this.W - 16 - totalW; originY = handTop - 8 - th; }
+    else if (seat === 2) { angle = Math.PI; originX = 16 + totalW; originY = 96 + th; }
+    else if (seat === 1) { angle = -Math.PI / 2; originX = this.W - 18 - th; originY = this.H / 2 + totalW / 2; }
+    else { angle = Math.PI / 2; originX = 18 + th; originY = this.H / 2 - totalW / 2; }
 
+    ctx.save();
+    ctx.translate(originX, originY);
+    ctx.rotate(angle);
+    let x = 0;
+    const y = 0;
     for (const layout of layouts) {
       for (const cell of layout) {
         if (cell.faceDown) {
@@ -398,6 +441,7 @@ export class CanvasRenderer {
       }
       x += meldGap;
     }
+    ctx.restore();
   }
 
   _drawRiver(pIndex, seat) {
@@ -427,18 +471,8 @@ export class CanvasRenderer {
     // to screen coords by a simple offset. We record them while drawing.
     const selfHitboxes = seat === 0;
 
-    // リーチ宣言中はその家の手前(河と中央箱の間)に点棒を横倒しで1本置く。
-    if (p.riichi) {
-      const stick = this.riichiStick;
-      if (stick && stick.complete && stick.naturalWidth > 0) {
-        const len = 120, thick = 10; // 点棒の長辺/短辺（素材アスペクト≈10:124を維持）
-        ctx.save();
-        ctx.translate(0, 80); // 中央箱(局所y=70)と河(同92)の隙間
-        ctx.rotate(Math.PI / 2); // 縦長素材を横向きへ（局所yが画面x＝長辺方向になる）
-        ctx.drawImage(stick, -thick / 2, -len / 2, thick, len);
-        ctx.restore();
-      }
-    }
+    // リーチ宣言中はその家の手前(河と中央箱の間)に点棒を横向きで1本置く（素材レス描画）。
+    if (p.riichi) this._riichiStick(0, 80); // 中央箱(局所y=70)と河(同92)の隙間
 
     let rowIndex = -1;
     let rowX = ox;
@@ -492,10 +526,14 @@ export class CanvasRenderer {
 
     const img = this.tileImages ? this.tileImages.get(kind, opts.red) : null;
     if (img) {
-      // image face: clip to rounded rect and draw the sprite
+      // image face: clip to rounded rect, lay the white tile base (Front) then the figure.
+      // FluffyStuff の各牌SVGは図柄のみ＝下地が無いので、Front を敷かないと文字以外が透ける。
       ctx.save();
       roundRect(ctx, x, y, w, h, 5 * s);
       ctx.clip();
+      const front = this.tileImages.getFront ? this.tileImages.getFront() : null;
+      if (front) ctx.drawImage(front, x, y, w, h);
+      else { ctx.fillStyle = "#f5f0eb"; ctx.fillRect(x, y, w, h); } // 下地フォールバック
       ctx.drawImage(img, x, y, w, h);
       ctx.restore();
       ctx.strokeStyle = "#c9c2ad"; ctx.lineWidth = 1;
@@ -565,11 +603,57 @@ export class CanvasRenderer {
 
   _back(x, y, w, h) {
     const ctx = this.ctx;
+    const img = this.tileImages ? this.tileImages.getBack() : null;
+    if (img) {
+      ctx.save();
+      roundRect(ctx, x, y, w, h, 4); ctx.clip();
+      const front = this.tileImages.getFront ? this.tileImages.getFront() : null;
+      if (front) ctx.drawImage(front, x, y, w, h); // 白い下地（裏面の透過対策）
+      ctx.drawImage(img, x, y, w, h);
+      ctx.restore();
+      ctx.strokeStyle = "#c9c2ad"; ctx.lineWidth = 1;
+      roundRect(ctx, x, y, w, h, 4); ctx.stroke();
+      return;
+    }
+    // 画像未ロード時のフォールバック（緑の牌裏）。
     ctx.fillStyle = "#2e6f4f";
     roundRect(ctx, x, y, w, h, 4); ctx.fill();
     ctx.strokeStyle = "#1c4632"; ctx.lineWidth = 1; ctx.stroke();
     ctx.fillStyle = "#3c8a63";
     roundRect(ctx, x + w * 0.2, y + h * 0.2, w * 0.6, h * 0.6, 3); ctx.fill();
+  }
+
+  // 立てた牌を横から見た「側面」（左右の相手手牌用）。象牙の側面＋卓中央側に覗く
+  // 白い天面で、牌の厚み＝立体感を出す。背面(Back)を並べるより自然に見える。
+  _tileSide(x, y, w, h, seat) {
+    const ctx = this.ctx;
+    // 側面本体（象牙、わずかに陰）
+    ctx.fillStyle = "#ddd6c2";
+    roundRect(ctx, x, y, w, h, 3); ctx.fill();
+    // 天面ハイライト：卓中央側の辺に白い細帯（立てた牌の上面が覗く）
+    const lipW = Math.max(5, w * 0.26);
+    const lipX = seat === 1 ? x : x + w - lipW; // 右席=左辺/左席=右辺が中央側
+    ctx.fillStyle = "#f6f1e6";
+    roundRect(ctx, lipX, y, lipW, h, 3); ctx.fill();
+    // 牌の輪郭
+    ctx.strokeStyle = "#b3ab95"; ctx.lineWidth = 1;
+    roundRect(ctx, x, y, w, h, 3); ctx.stroke();
+  }
+
+  // リーチ棒(千点棒)を素材なしで描く。(cx,cy)中心の横長の白棒＋中央の赤丸。
+  // 河フレームは呼び出し側で回転済みなので、ここは常に「横向き」で描けばよい。
+  _riichiStick(cx, cy) {
+    const ctx = this.ctx;
+    const len = 116, thick = 10;
+    const x = cx - len / 2, y = cy - thick / 2;
+    ctx.save();
+    ctx.fillStyle = "#f4efe3"; // 象牙色の棒
+    roundRect(ctx, x, y, len, thick, thick / 2); ctx.fill();
+    ctx.strokeStyle = "#c9c2ad"; ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = "#d23b3b"; // 中央の赤丸（千点棒の標識）
+    ctx.beginPath();
+    ctx.arc(cx, cy, thick * 0.3, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
   }
 }
 
