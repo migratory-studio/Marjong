@@ -742,6 +742,54 @@ function goScreen(id) {
   showScreen(id);
   SCREEN_BGM[id]?.();
   if (id === "select-screen") resetSelectWizard(); // 開くたびにウィザードを①卓へ
+  if (id === "online-screen") renderOnlineProfile(); // プロフィール帯を最新の名前/相棒/段位で更新
+}
+
+// 通信対戦メニューのプロフィール帯：ユーザー名 / よく使う相棒 / 段位・RP。online-screen を開くたびに更新。
+// プロフィール読込は非同期なので、描画できしだい DOM を差し替える（描画前は前回値のまま）。
+async function renderOnlineProfile() {
+  const panel = el("online-profile");
+  if (!panel) return;
+  let profile = null;
+  try { profile = await profileRepo.loadProfile(); } catch { /* 未ログイン/読込失敗は既定値で描く */ }
+  const name = normalizeUsername(profile?.profile?.displayName || "") || "名無し";
+  // よく使う相棒＝絆が最も育っているキャラ（level優先→exp）。※絆は数値を見せない方針なのでキャラだけ。
+  const bonds = profile?.companionBonds || {};
+  let topId = null, topKey = -1;
+  for (const [id, b] of Object.entries(bonds)) {
+    const key = (b?.level ?? 1) * 1e7 + (b?.exp ?? 0);
+    if (key > topKey) { topKey = key; topId = id; }
+  }
+  const topChar = topId ? CHARACTERS.find((c) => c.id === topId) : null;
+  // 段位・RP は競技ランクなので数値表示OK。
+  const r = describeRank(profile?.onlineRank || defaultRankState());
+  const rpText = r.atMax ? `RP ${r.tierRp}` : `RP ${r.tierRp} / ${r.next}`;
+  const icon = topChar?.assets?.icon
+    ? `<img class="op-bd-icon" src="${topChar.assets.icon}" alt="">`
+    : `<span class="op-bd-icon op-bd-fb" style="background:${topChar?.color || "#2a3f34"}"></span>`;
+  panel.hidden = false;
+  panel.innerHTML = `
+    <div class="op-cell op-id">
+      <span class="op-k">プレイヤー</span>
+      <span class="op-name"></span>
+    </div>
+    <div class="op-cell op-buddy">
+      <span class="op-k">よく使う相棒</span>
+      <span class="op-bd">${topChar ? `${icon}<span class="op-bd-name"></span>` : `<span class="op-bd-none">まだいないよ</span>`}</span>
+    </div>
+    <div class="op-cell op-rank">
+      <span class="op-k">段位</span>
+      <span class="op-rank-row">
+        <span class="op-rank-dan"><b>${r.title}</b><small>${r.kana}</small></span>
+        <span class="op-rank-gauge">
+          <span class="op-rank-bar hpbar"><span class="hpfill high" style="width:${r.progressPct}%"></span></span>
+          <span class="op-rank-rp">${rpText}</span>
+        </span>
+      </span>
+    </div>`;
+  // 名前/相棒名はユーザー入力・マスタ文字列なので textContent で安全に入れる。
+  panel.querySelector(".op-name").textContent = name;
+  if (topChar) panel.querySelector(".op-bd-name").textContent = topChar.name;
 }
 // 師弟モード（Phase 6）: 入口メニュー（新規入門 / 修行＝弟子一覧 / ログイン）を挟む。
 // profileRepo はログイン中=Supabase / 未ログイン=Local を自動で選ぶファサード。

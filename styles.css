@@ -3926,6 +3926,27 @@ button.primary.danger:hover { color: #ffbcbc; }
 .online-mm {
   background: #14201a; border: 1px solid #2a3f34; border-radius: 12px; padding: 16px;
 }
+/* 通信対戦メニューのプロフィール帯（名前 / よく使う相棒 / 段位・RP） */
+.online-profile {
+  width: 100%; max-width: 380px;
+  display: flex; flex-direction: column; gap: 8px;
+  background: #14201a; border: 1px solid #2a3f34; border-radius: 12px; padding: 12px 16px;
+}
+.online-profile .op-cell { display: flex; align-items: center; gap: 10px; }
+.online-profile .op-k { flex: 0 0 88px; color: var(--muted); font-size: 11px; letter-spacing: .08em; }
+.online-profile .op-name { font-weight: 800; color: var(--ink); font-size: 16px; }
+.online-profile .op-bd { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.op-bd-icon { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1px solid #3a5446; flex: 0 0 auto; }
+.op-bd-icon.op-bd-fb { display: inline-block; }
+.online-profile .op-bd-name { font-weight: 700; color: var(--ink); font-size: 14px; }
+.online-profile .op-bd-none { color: var(--muted); font-size: 13px; }
+.online-profile .op-rank-row { display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1; }
+.online-profile .op-rank-dan { line-height: 1.05; white-space: nowrap; }
+.online-profile .op-rank-dan b { color: #e7d9b4; font-size: 15px; }
+.online-profile .op-rank-dan small { display: block; color: var(--muted); font-size: 9px; letter-spacing: .08em; }
+.online-profile .op-rank-gauge { flex: 1; min-width: 0; }
+.online-profile .op-rank-bar { display: block; width: 100%; height: 12px; border-radius: 999px; }
+.online-profile .op-rank-rp { display: block; margin-top: 3px; color: #9be29b; font-size: 11px; font-variant-numeric: tabular-nums; }
 .online-mm-title { font-weight: 700; color: var(--ink); font-size: 15px; }
 .online-mm-sub { margin-top: 8px; color: var(--muted); font-size: 12px; }
 /* マッチング探索オーバーレイ（reconnect-overlay/-card を流用） */
