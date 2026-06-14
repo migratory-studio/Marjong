@@ -22,6 +22,7 @@ import { showMentorRoster } from "./screens/mentorRosterScreen.js";
 import { showMentorSelect } from "./screens/mentorSelectScreen.js";
 import { showAuthPrompt } from "./screens/authPromptModal.js";
 import { showConfirm } from "./screens/confirmModal.js";
+import { showUsernameModal, normalizeUsername } from "./screens/usernameModal.js";
 import { showSyncConflict } from "./screens/syncConflictModal.js";
 import { showAccount } from "./screens/accountScreen.js";
 import { buildPrologueLines } from "./data/prologueScenario.js";
@@ -1779,10 +1780,54 @@ async function openMentorSub(target, payload) {
 
 function navigate(target) {
   if (target === "mentor") { openMentorMode(); return; }
+  if (target === "online") { enterOnline(); return; } // 通信対戦はログイン+名前ゲートを通す
   const id = NAV_TARGETS[target];
   if (!id) return;
   if (target === "settings") resyncHomeSettings(); // reflect in-game edits
   goScreen(id);
+}
+
+// 通信対戦の入場ゲート: ①ログイン必須 → ②ユーザーネーム必須 → online-screen。
+// ランクは「誰の記録か」が要るので、未ログイン/名前なしでは入場させない。
+async function enterOnline() {
+  const user = await getUser().catch(() => null);
+  if (!user) {
+    showConfirm({
+      title: "ログインが必要だよ",
+      message:
+        "通信対戦は、段位やオンラインの記録を残すために\nアカウント連携（Googleログイン）が必要なんだ。\nログインすると、育てた弟子もクラウドに保存されるよ。",
+      confirmLabel: "Googleでログイン",
+      cancelLabel: "やめる",
+      onConfirm: () => {
+        signInWithGoogle(window.location.href.split("#")[0]).catch((e) => {
+          console.error("ログイン開始失敗", e);
+          alert("ログインを開始できませんでした。少し時間をおいて試してね。");
+        });
+      },
+    });
+    return;
+  }
+  // ログイン済: ユーザーネーム未設定なら入力を要求してから入場。
+  const profile = await profileRepo.loadProfile().catch(() => null);
+  const current = normalizeUsername(profile?.profile?.displayName || "");
+  if (!current) {
+    showUsernameModal({
+      onSubmit: async (name) => {
+        try {
+          const p = await profileRepo.loadProfile();
+          p.profile = p.profile || {};
+          p.profile.displayName = name;
+          await profileRepo.saveProfile(p);
+          goScreen("online-screen");
+        } catch (e) {
+          console.error("ユーザーネーム保存失敗", e);
+          alert("名前の保存に失敗しました。通信状態を確認して試してね。");
+        }
+      },
+    });
+    return;
+  }
+  goScreen("online-screen");
 }
 function bootHome() {
   for (const btn of document.querySelectorAll("[data-nav]")) {
