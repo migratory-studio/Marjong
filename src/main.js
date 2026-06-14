@@ -38,6 +38,7 @@ import { AuthorityRoom } from "./net/authorityRoom.js";
 import { applyEvent } from "./net/applyEvent.js";
 import { connectWebSocket } from "./net/wsTransport.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
+import { recordOnlineResult } from "./progression/onlineResults.js";
 import { skillTemplateById, templateForAbility } from "./data/skillTemplateMaster.js";
 import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
@@ -2036,6 +2037,14 @@ function onlineClientMessage(msg) {
     reconnectSuccess();
     return;
   }
+  if (msg.type === "evt.gameOver") {
+    // 権威からの終局通知。レプリカの gameOver はイベントで同期されないため、ここで立てて結果画面へ。
+    // この通知は最終局の ack 送出後（結果オーバーレイを閉じた後）に届くので、そのまま結果へ進める。
+    // 二重発火（再接続後の重複通知など）に備え一度だけ表示する。
+    game.gameOver = true; // 以降 handleWsClose の自動再接続も抑止される
+    if (!game._goShownOnline) { game._goShownOnline = true; showGameOver(); }
+    return;
+  }
   if (ONLINE_WIRE.has(msg.type)) {
     applyEvent(game, msg, { viewpoint: humanIndex, emit: true });
     return;
@@ -3841,6 +3850,34 @@ function showGameOver() {
     } else {
       btns.appendChild(mkBtn("師弟ホームへ", "btn-tsumo", () => go()));
     }
+  } else if (online) {
+    // 通信対戦（テスト中）：順位を Supabase に記録し、ロビー/トップへ戻れるようにする。
+    const btns = overlay.querySelector(".go-buttons");
+    const note = document.createElement("div");
+    note.className = "go-tourney-note";
+    note.textContent = "結果を記録中…";
+    btns.parentElement.insertBefore(note, btns);
+    const opponents = game.players.filter((_, i) => i !== humanIndex).map((p) => p.character.id);
+    recordOnlineResult({ charId: human.character.id, rank: hRank + 1, numPlayers: N, finalPoints: human.points, opponents })
+      .then((status) => {
+        note.textContent =
+          status === "recorded" ? `戦績を記録しました（${hRank + 1} 位 / ${N} 人）`
+          : status === "skipped" ? `この対局：${hRank + 1} 位 / ${N} 人（ログインで戦績が残ります）`
+          : `この対局：${hRank + 1} 位 / ${N} 人`;
+      })
+      .catch(() => { note.textContent = `この対局：${hRank + 1} 位 / ${N} 人`; });
+    // 通信状態を片付けてから遷移（再接続タイマ停止・WS切断・online クリア）。
+    const leave = (target) => {
+      overlay.classList.add("hidden");
+      reconnecting = false;
+      if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
+      showReconnectOverlay(null);
+      onlineWsEp?.close?.();
+      online = null;
+      goScreen(target);
+    };
+    btns.appendChild(mkBtn("ロビーに戻る", "btn-tsumo", () => leave("online-screen")));
+    btns.appendChild(mkBtn("トップへ", "btn-skip", () => leave("home-screen")));
   } else {
     overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
   }
