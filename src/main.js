@@ -4179,26 +4179,24 @@ function showGameOver() {
       btns.appendChild(mkBtn("師弟ホームへ", "btn-tsumo", () => go()));
     }
   } else if (online) {
-    // 通信対戦（テスト中）：順位を Supabase に記録し、段位を更新表示し、ロビー/トップへ戻れる。
+    // 通信対戦（テスト中）：順位を Supabase に記録し、段位を更新し、ロビー/トップへ戻れる。
     const btns = overlay.querySelector(".go-buttons");
-    // 段位パネル（叩き台・UI素材使用）。読込中プレースホルダ→非同期で結果反映。
-    const panel = document.createElement("div");
-    panel.className = "go-rank-panel loading";
-    panel.innerHTML = `<div class="go-rank-head">オンライン段位</div><div class="go-rank-body">記録中…</div>`;
-    btns.parentElement.insertBefore(panel, btns);
-
     const finishedAt = new Date().toISOString();
     const opponents = game.players.filter((_, i) => i !== humanIndex).map((p) => p.character.id);
-    // 戦績ログ（online_results）。表示は段位パネル側に集約するので結果は捨てる。
+    // 戦績ログ（online_results）。表示は段位モーダル側に集約するので結果は捨てる。
     recordOnlineResult({ charId: human.character.id, rank: hRank + 1, numPlayers: N, finalPoints: human.points, opponents });
-    // 段位更新（profile.onlineRank）→ パネル描画＋昇段演出。
+    // 段位更新（profile.onlineRank）→ 対局終了の捲り演出が一段落してから「段位モーダル」(FE風)を出す。
+    // ※以前は go-overlay 内にパネルを差し込んでいたが「対局終了」バナーに丸被りしたため、独立モーダルへ。
+    let rankRes = null, rankFailed = false;
     applyOnlineRankUpdate({ placement: hRank + 1, numPlayers: N, finishedAt })
-      .then((res) => renderRankPanel(panel, res, human.character))
-      .catch((e) => {
-        console.warn("段位更新失敗", e);
-        panel.className = "go-rank-panel";
-        panel.innerHTML = `<div class="go-rank-head">オンライン段位</div><div class="go-rank-body">この対局：${hRank + 1} 位 / ${N} 人</div>`;
-      });
+      .then((res) => { rankRes = res; })
+      .catch((e) => { console.warn("段位更新失敗", e); rankFailed = true; });
+    const popRank = () => {
+      if (rankFailed) return;                              // 取得失敗時はモーダルなし（結果だけ見せる）
+      if (!rankRes) { setTimeout(popRank, 150); return; }  // データ未着なら少し待つ
+      showRankUpModal(rankRes, human.character);
+    };
+    setTimeout(popRank, reveal(0) * 1000 + 900); // 1位の捲り＋点数カウントが終わってから
     // 通信状態を片付けてから遷移（再接続タイマ停止・WS切断・online クリア）。
     const leave = (target) => {
       overlay.classList.add("hidden");
@@ -4260,39 +4258,95 @@ function danUpLineFor(character) {
   return "また一歩、上ったね。";
 }
 
-// 結果画面の段位パネルを描画（UI素材＝panel/gauge）。昇段なら banner＋一言＋バー演出。
-function renderRankPanel(panel, { before, after, delta, promotedTo }, character) {
-  const b = describeRank(before);
-  const a = describeRank(after);
-  const promoted = !!promotedTo;
-  const deltaStr = delta > 0 ? `+${delta}` : `${delta}`;
-  const rpText = a.atMax ? `RP ${a.tierRp}` : `RP ${a.tierRp} / ${a.next}`;
-  panel.className = "go-rank-panel" + (promoted ? " promoted" : "");
-  panel.innerHTML = `
-    <div class="go-rank-head">オンライン段位</div>
-    ${promoted ? `<div class="go-rank-promote">昇段！　<b>${b.title}</b> → <b>${a.title}</b></div>` : ""}
-    <div class="go-rank-main">
-      <div class="go-rank-dan">
-        <span class="go-rank-title">${a.title}</span>
-        <span class="go-rank-kana">${a.kana}</span>
+// 対局終了後に出るオンライン段位モーダル（FE風ゲージ演出）。師弟パラメータの能力値上昇演出と同じ
+// 言語：RP ゲージを before→after まで満たし、昇段ぶんは「満タン→フラッシュ→次段位の0%から」を繰り返す。
+// 数値は競技ランクなので見せる。つづけるで閉じる（裏の対局終了画面のボタンへ）。
+function showRankUpModal({ before, after, delta }, character, onClose) {
+  const promoted = after.dan > before.dan;
+  const deltaStr = `RP ${delta >= 0 ? "+" : ""}${delta}`;
+  const host = el("app") || document.body;
+  const ov = document.createElement("div");
+  ov.className = "rankup-overlay";
+  ov.innerHTML = `
+    <div class="rankup-card">
+      <div class="rankup-head">オンライン段位</div>
+      <div class="rankup-promote" hidden>昇段！</div>
+      <div class="rankup-dan">
+        <span class="rankup-title"></span>
+        <span class="rankup-kana"></span>
       </div>
-      <div class="go-rank-gauge">
-        <div class="go-rank-bar hpbar"><div class="hpfill high"></div></div>
-        <div class="go-rank-meta">
-          <span class="go-rank-rp">${rpText}</span>
-          <span class="go-rank-delta ${delta < 0 ? "minus" : ""}">RP ${deltaStr}</span>
+      <div class="rankup-gauge">
+        <div class="rankup-bar hpbar"><div class="hpfill high rankup-fill"></div></div>
+        <div class="rankup-meta">
+          <span class="rankup-rp"></span>
+          <span class="rankup-delta ${delta < 0 ? "minus" : ""}">${deltaStr}</span>
         </div>
       </div>
-    </div>
-    ${promoted ? `<div class="go-rank-line">「${danUpLineFor(character)}」</div>` : ""}`;
-  // バー充填アニメ：同段なら旧進捗→新進捗、昇段なら新段の0%→新進捗。
-  // rAF はタブ非アクティブ時に発火しないことがあるため、強制リフローで transition を確実に走らせる。
-  const fill = panel.querySelector(".hpfill");
-  const startPct = promoted ? 0 : b.progressPct;
-  fill.style.width = startPct + "%";
-  void fill.offsetWidth; // 開始値を確定させる（この後の代入で width transition が走る）
-  fill.style.width = a.progressPct + "%";
-  if (promoted) setTimeout(() => audio.playSe(sePath("シャキーン1.mp3"), 0.9), 200);
+      <div class="rankup-line" hidden></div>
+      <button type="button" class="primary rankup-close" disabled>つづける</button>
+    </div>`;
+  host.appendChild(ov);
+  const fill = ov.querySelector(".rankup-fill");
+  const titleEl = ov.querySelector(".rankup-title");
+  const kanaEl = ov.querySelector(".rankup-kana");
+  const rpEl = ov.querySelector(".rankup-rp");
+  const promoteEl = ov.querySelector(".rankup-promote");
+  const lineEl = ov.querySelector(".rankup-line");
+  const closeBtn = ov.querySelector(".rankup-close");
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const close = () => { ov.remove(); onClose?.(); };
+  closeBtn.onclick = () => { audio?.playClick?.(); close(); };
+
+  const capOf = (dan) => describeRank({ dan, tierRp: 0 }).next; // null=最高位
+  const pctOf = (dan, rp) => { const cap = capOf(dan); return cap == null ? 100 : Math.min(100, Math.round((rp / cap) * 100)); };
+  const setDan = (dan) => { const d = describeRank({ dan, tierRp: 0 }); titleEl.textContent = d.title; kanaEl.textContent = d.kana; };
+  const rpFmt = (dan) => { const cap = capOf(dan); return (v) => (cap == null ? `RP ${v}` : `RP ${v} / ${cap}`); };
+
+  (async () => {
+    requestAnimationFrame(() => ov.classList.add("show"));
+    audio?.playPip?.(1500, 0.35);
+    // 初期表示：before（段位・ゲージ・RP）を即セット。
+    setDan(before.dan);
+    fill.style.transition = "none"; fill.style.width = pctOf(before.dan, before.tierRp) + "%";
+    rpEl.textContent = rpFmt(before.dan)(before.tierRp);
+    void fill.offsetWidth; fill.style.transition = "";
+    await sleep(550);
+
+    // 昇段ぶん：現段位を満タン→フラッシュ→次段位 0% から。
+    let dan = before.dan;
+    while (dan < after.dan) {
+      fill.style.width = "100%"; rpEl.textContent = rpFmt(dan)(capOf(dan));
+      audio?.playPip?.(2200, 0.5);
+      await sleep(500);
+      ov.classList.add("is-rankup");
+      promoteEl.hidden = false;
+      dan += 1; setDan(dan);
+      fill.style.transition = "none"; fill.style.width = "0%"; rpEl.textContent = rpFmt(dan)(0);
+      void fill.offsetWidth; fill.style.transition = "";
+      audio?.playSe?.(sePath("シャキーン1.mp3"), 0.9);
+      await sleep(440);
+      ov.classList.remove("is-rankup");
+    }
+
+    // 最終段位で after.tierRp まで満たす（同段なら単純に before→after）。
+    fill.style.width = pctOf(after.dan, after.tierRp) + "%";
+    tweenNum(rpEl, promoted ? 0 : before.tierRp, after.tierRp, 650, rpFmt(after.dan));
+    // 充填に合わせてピピピッ（FE風）。
+    for (let i = 0; i < 4; i++) setTimeout(() => audio?.playPip?.(1500 + i * 140, 0.32), i * 130);
+    await sleep(720);
+
+    if (promoted) { lineEl.hidden = false; lineEl.textContent = `「${danUpLineFor(character)}」`; }
+    closeBtn.disabled = false;
+  })();
+}
+// デバッグ: 段位モーダルを単体で確認する。__rankUpDemo(placement, beforeDan, beforeRp)。
+// 例) window.__rankUpDemo(0, 1, 160) で昇段（萌芽→蓮蕾）演出。
+if (typeof window !== "undefined") {
+  window.__rankUpDemo = (placement = 0, beforeDan = 1, beforeRp = 160) => {
+    const before = { dan: beforeDan, tierRp: beforeRp, seasonId: "demo", seasonScore: 0 };
+    const r = applyMatchToRank(before, { placement, numPlayers: 4, finishedAt: new Date().toISOString() });
+    showRankUpModal({ before, after: r.state, delta: r.delta }, CHARACTERS[0]);
+  };
 }
 
 // 団体戦の対局終了: 順位は「チーム得点（3人の合計HP）」で集計。優勝チームのエースを
