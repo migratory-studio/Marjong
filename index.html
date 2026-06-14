@@ -68,12 +68,19 @@
           <span class="menu-btn-title">マッチング対戦</span>
           <span class="menu-btn-sub">おまかせで相手を探す</span>
         </button>
+        <button type="button" class="menu-btn" id="online-rank-btn">
+          <span class="menu-btn-title">順位表</span>
+          <span class="menu-btn-sub">今シーズンの段位ランキング</span>
+        </button>
       </nav>
       <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
     </section>
 
     <!-- Online lobby (JS-rendered: room/matchmaking + char pick) -->
     <section id="online-lobby-screen" class="screen hidden"></section>
+
+    <!-- Online leaderboard (JS-rendered: season ranking) -->
+    <section id="online-leaderboard-screen" class="screen menu-screen hidden"></section>
 
     <!-- Settings -->
     <section id="settings-screen" class="screen menu-screen hidden">

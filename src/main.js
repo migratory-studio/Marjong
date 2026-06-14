@@ -40,7 +40,9 @@ import { applyEvent } from "./net/applyEvent.js";
 import { connectWebSocket } from "./net/wsTransport.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { recordOnlineResult } from "./progression/onlineResults.js";
-import { defaultRankState, applyMatchToRank, describeRank } from "./progression/onlineRank.js";
+import { defaultRankState, applyMatchToRank, describeRank, seasonIdFromDate } from "./progression/onlineRank.js";
+import { pushRanking, fetchLeaderboard, fetchMyStanding } from "./progression/onlineRankRepo.js";
+import { showOnlineLeaderboard } from "./screens/onlineLeaderboardScreen.js";
 import { skillTemplateById, templateForAbility } from "./data/skillTemplateMaster.js";
 import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
@@ -1837,6 +1839,7 @@ function bootHome() {
   // 通信対戦（テスト中）の入口: モード選択 → ロビー。
   el("online-room-btn")?.addEventListener("click", () => { audio.playClick?.(); openOnlineLobby("room"); });
   el("online-match-btn")?.addEventListener("click", () => { audio.playClick?.(); openOnlineLobby("match"); });
+  el("online-rank-btn")?.addEventListener("click", () => { audio.playClick?.(); openOnlineLeaderboard(); });
   // Volumes apply regardless of starting screen; the home 設定 controls share
   // the same AudioManager + storage as the in-game gear panel.
   applyAudioSettings(audio);
@@ -3942,7 +3945,34 @@ async function applyOnlineRankUpdate({ placement, numPlayers, finishedAt }) {
   const { state, delta, promotedTo } = applyMatchToRank(before, { placement, numPlayers, finishedAt });
   profile.onlineRank = state;
   await profileRepo.saveProfile(profile);
+  // 順位表（全員が読める集計表）へ自分の当季行を upsert（未ログインは skip）。失敗は握りつぶす。
+  pushRanking({
+    seasonId: state.seasonId,
+    username: profile.profile?.displayName || "名無し",
+    seasonScore: state.seasonScore,
+    dan: state.dan,
+    tierRp: state.tierRp,
+  }).catch(() => {});
   return { before, after: state, delta, promotedTo };
+}
+
+// 順位表を開く（今シーズン）。上位＋自分の順位を取得して描画。
+async function openOnlineLeaderboard() {
+  const seasonId = seasonIdFromDate(new Date());
+  const user = await getUser().catch(() => null);
+  showScreen("online-leaderboard-screen");
+  showOnlineLeaderboard(el("online-leaderboard-screen"), {
+    seasonLabel: seasonId,
+    myUserId: user?.id || null,
+    load: async () => {
+      const [top, me] = await Promise.all([
+        fetchLeaderboard(seasonId, 7),
+        fetchMyStanding(seasonId).catch(() => null),
+      ]);
+      return { top, me };
+    },
+    onBack: () => goScreen("online-screen"),
+  });
 }
 
 // 昇段時のキャラ一言（叩き台。正式には step4 で voiceLines の danUp イベント化）。
