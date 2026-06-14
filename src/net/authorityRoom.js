@@ -69,21 +69,23 @@ export class AuthorityRoom {
       return;
     }
     const p = this.pending.get(seat);
-    if (p && msg.type === `intent.${p.kind}`) {
+    if (p && p.kinds.some((k) => msg.type === `intent.${k}`)) {
       this.pending.delete(seat);
       clearTimeout(p.timer);
       p.resolve(msg);
     }
   }
 
-  // 指定席からの Intent を待つ。timeout で null を返す（呼び出し側で自動処理）。
-  awaitIntent(seat, kind) {
+  // 指定席からの Intent を待つ。kinds は文字列 or 配列（"discard"/["discard","ability"] 等）。
+  // timeout で null を返す（呼び出し側で自動処理）。
+  awaitIntent(seat, kinds) {
+    const list = Array.isArray(kinds) ? kinds : [kinds];
     return new Promise((resolve) => {
       const timer = setTimeout(() => {
         const p = this.pending.get(seat);
         if (p && p.resolve === resolve) { this.pending.delete(seat); resolve(null); }
       }, this.timeout);
-      this.pending.set(seat, { kind, resolve, timer });
+      this.pending.set(seat, { kinds: list, resolve, timer });
     });
   }
 
@@ -105,26 +107,36 @@ export class AuthorityRoom {
     const g = this.game;
     if (!this.isRemote(seat)) return decideDiscard(g, seat);
     const p = g.players[seat];
-    const opts = g.actionOptions(seat);
-    // リーチ中/強制ツモ切りは権威が自動で裁く（クライアントに委ねない＝L2 と同じ思想）。
-    if ((p.riichi && opts && !opts.tsumo) || (opts && opts.forcedTsumogiri && !opts.tsumo)) {
-      return { type: "discard", tileId: p.drawnTileId, riichi: false };
+    // 手番中ループ：能力発動(intent.ability)は権威がその場で適用し、更新した awaitDiscard を再送して
+    // 継続する（発動はターンを終わらせない）。打牌/ツモ/カン(intent.discard)で終了。
+    while (true) {
+      const opts = g.actionOptions(seat);
+      // リーチ中/強制ツモ切りは権威が自動で裁く（クライアントに委ねない＝L2 と同じ思想）。
+      if ((p.riichi && opts && !opts.tsumo) || (opts && opts.forcedTsumogiri && !opts.tsumo)) {
+        return { type: "discard", tileId: p.drawnTileId, riichi: false };
+      }
+      // 人間UIの描画材料を権威が計算して同梱（レプリカでは actionOptions 等を再計算できないため）。
+      let danger = null;
+      try { danger = g.abilities.dangerInfo(p) || null; } catch { danger = null; }
+      this.sendToSeat(seat, {
+        type: "evt.awaitDiscard", you: true, seat,
+        options: opts || null,
+        abilityStatus: (() => { try { return g.abilityStatus(seat); } catch { return []; } })(),
+        danger,
+      });
+      const intent = await this.awaitIntent(seat, ["discard", "ability"]);
+      if (!intent) return { type: "discard", tileId: p.drawnTileId, riichi: false }; // timeout=自動ツモ切り
+      if (intent.type === "intent.ability") {
+        // ホスト側で能力を発動（recall=河↔手牌 / jane-doe / kakeha / zero-search 等）。発動結果は
+        // ABILITY_USED 等の Event で配信され、ループ先頭で更新済み awaitDiscard を再送する。
+        try { g.activateAbility(seat, intent.abilityId, intent.params || {}); }
+        catch (e) { console.error("activateAbility (online) failed", e); }
+        continue;
+      }
+      if (intent.action === "tsumo") return { type: "tsumo" };
+      if (intent.action === "kan") return { type: "kan", kind: intent.kind, kanType: intent.kanType };
+      return { type: "discard", tileId: intent.tileId, riichi: !!intent.riichi };
     }
-    // 人間UIの描画材料を権威が計算して同梱（クライアントのレプリカでは actionOptions 等を再計算
-    // できないため）。options=打牌/リーチ/カン/北の可否, abilityStatus=能力ボタン, danger=危険牌。
-    let danger = null;
-    try { danger = g.abilities.dangerInfo(p) || null; } catch { danger = null; }
-    this.sendToSeat(seat, {
-      type: "evt.awaitDiscard", you: true, seat,
-      options: opts || null,
-      abilityStatus: (() => { try { return g.abilityStatus(seat); } catch { return []; } })(),
-      danger,
-    });
-    const intent = await this.awaitIntent(seat, "discard");
-    if (!intent) return { type: "discard", tileId: p.drawnTileId, riichi: false }; // timeout=自動ツモ切り
-    if (intent.action === "tsumo") return { type: "tsumo" };
-    if (intent.action === "kan") return { type: "kan", kind: intent.kind, kanType: intent.kanType };
-    return { type: "discard", tileId: intent.tileId, riichi: !!intent.riichi };
   }
 
   async decideCalls(callers) {

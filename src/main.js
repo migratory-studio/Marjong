@@ -2421,10 +2421,7 @@ function onCanvasClick(ev) {
   if (recallMode) {
     for (const hb of renderer.riverHitboxes) {
       if (x >= hb.x && x <= hb.x + hb.w && y >= hb.y && y <= hb.y + hb.h) {
-        recallMode = false;
-        game.activateAbility(actor.index, "recall-deal", { riverTileId: hb.tileId });
-        showHumanActions();
-        render();
+        fireAbility(actor.index, "recall-deal", { riverTileId: hb.tileId });
         return;
       }
     }
@@ -2477,6 +2474,20 @@ function onCanvasHover(ev) {
   const w = waits(counts, p.numMeldSets());
   if (w.length === 0) { renderer.setHover(null); render(); return; } // not tenpai
   renderer.setHover({ x: hit.x + hit.w / 2, y: hit.y, waits: w });
+  render();
+}
+
+// 能力発動の確定。オフラインはローカル適用、オンラインはホスト(権威)へ intent.ability を送る
+// （適用結果は権威の Event＋awaitDiscard 再送→showHumanActions で反映）。選択サブモードは解除。
+function fireAbility(idx, abilityId, params = {}) {
+  recallMode = false; janeDoeMode = false; kakehaMode = false; luxMode = false;
+  if (online) {
+    clearActions();
+    online.send({ type: "intent.ability", abilityId, params });
+    return;
+  }
+  game.activateAbility(idx, abilityId, params);
+  showHumanActions();
   render();
 }
 
@@ -2537,9 +2548,6 @@ function showHumanActions() {
       abilityBar.appendChild(mkChip(`常時: ${a.name}`, "ability-chip passive"));
     } else if (a.active) {
       abilityBar.appendChild(mkChip(`発動中: ${a.name}`, "ability-chip active"));
-    } else if (online) {
-      // テスト中（オンライン）は手動発動を見送り、状態だけ表示する。
-      abilityBar.appendChild(mkChip(`${a.name}（オンライン未対応）`, "ability-chip"));
     } else {
       // remaining-count UI sits above the activation button (not inline in it).
       if (a.maxCharges !== Infinity) {
@@ -2579,9 +2587,7 @@ function showHumanActions() {
           render();
           return;
         }
-        game.activateAbility(idx, a.id);
-        showHumanActions();
-        render();
+        fireAbility(idx, a.id); // 無対象能力: 即発動（オンラインは intent.ability）
       });
       if (!a.canActivate) btn.disabled = true;
       // ゼロ・リサーチが表示中だが発動不可＝生有効牌0（グレーアウト）の合図。
@@ -2624,15 +2630,10 @@ function showLuxCandidates(idx) {
   label.style.cssText = "align-self:center;color:#4ea1d3;font-weight:700;margin-right:8px;";
   label.textContent = "確保する有効牌を選択:";
   bar.appendChild(label);
-  const status = game.abilityStatus(idx).find((a) => a.id === "zero-search");
+  const status = (online ? (online.opts?.abilityStatus || []) : game.abilityStatus(idx)).find((a) => a.id === "zero-search");
   const candidates = (status && status.candidates) || [];
   for (const kind of candidates) {
-    bar.appendChild(mkBtn(kindLabel(kind), "btn-ability", () => {
-      luxMode = false;
-      game.activateAbility(idx, "zero-search", { targetKind: kind });
-      showHumanActions();
-      render();
-    }));
+    bar.appendChild(mkBtn(kindLabel(kind), "btn-ability", () => fireAbility(idx, "zero-search", { targetKind: kind })));
   }
   bar.appendChild(mkBtn("キャンセル", "btn-skip", () => {
     luxMode = false;
@@ -2651,12 +2652,7 @@ function showJaneDoeTargets(idx) {
   bar.appendChild(label);
   for (const o of game.players) {
     if (o.index === idx) continue;
-    const btn = mkBtn(`${o.character.name}${o.riichi ? "（リーチ中）" : ""}`, "btn-ability", () => {
-      janeDoeMode = false;
-      game.activateAbility(idx, "jane-doe", { targetIndex: o.index });
-      showHumanActions();
-      render();
-    });
+    const btn = mkBtn(`${o.character.name}${o.riichi ? "（リーチ中）" : ""}`, "btn-ability", () => fireAbility(idx, "jane-doe", { targetIndex: o.index }));
     if (o.riichi) btn.disabled = true;
     bar.appendChild(btn);
   }
@@ -2677,12 +2673,7 @@ function showKakehaBets(idx) {
   label.textContent = "賭け金を選択:";
   bar.appendChild(label);
   for (const [amount, mult] of [[5000, "1.5"], [10000, "2"]]) {
-    const btn = mkBtn(`${amount}点（和了${mult}倍）`, "btn-ability", () => {
-      kakehaMode = false;
-      game.activateAbility(idx, "kakeha-bet", { betAmount: amount });
-      showHumanActions();
-      render();
-    });
+    const btn = mkBtn(`${amount}点（和了${mult}倍）`, "btn-ability", () => fireAbility(idx, "kakeha-bet", { betAmount: amount }));
     if (me.points < amount) btn.disabled = true;
     bar.appendChild(btn);
   }

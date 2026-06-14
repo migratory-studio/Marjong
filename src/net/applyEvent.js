@@ -127,6 +127,9 @@ export function applyEvent(game, evt, opts = {}) {
       p.hand = Array.from({ length: n }, FACE_DOWN);
     });
   }
+  // 理牌：オフラインの _sortHand と同じ並び(kind→id)に揃える。レプリカはイベント順で手牌を
+  // 積むため、揃えないと画面の手牌がバラバラに見える（伏せ札 kind=-1/id=null は実質no-op）。
+  for (const p of game.players) p.hand.sort((a, b) => (a.kind - b.kind) || ((a.id ?? 0) - (b.id ?? 0)));
   // emit モード: レプリカの bus に、エンジンと同じイベントを再発火する。これでレンダラ/SE/相棒
   // ボード/カットイン等の既存リスナがそのまま動く（クライアントは applyEvent だけで描画できる）。
   if (opts.emit) emitForEvent(game, evt);
