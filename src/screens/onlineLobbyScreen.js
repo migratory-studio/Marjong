@@ -143,8 +143,13 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
   };
 
   // --- 空席をCPUで補填（マッチング不成立=タイムアウトの代替演出） ---
+  // マッチング待ち時間。これを過ぎるまで相手を探し、タイムアウトで空席を CPU 補填する。
+  // テスト版なので実際の探索はしないが、「ちゃんと待っている」体感のため席は時間をかけて埋める。
+  const MATCH_TIMEOUT_MS = 30000;
+  // 3席を待ち時間の 45% / 72% / 100% のタイミングで順に埋める（最後の席＝タイムアウト確定）。
+  const fillAt = [0.45, 0.72, 1.0].map((r) => Math.round(MATCH_TIMEOUT_MS * r));
   const fillSeat = (i, idx) => {
-    after(700 + idx * 450, () => {
+    after(fillAt[idx], () => {
       const s = seatEls[i];
       if (!s) return;
       s.st.innerHTML = `<span class="online-cpu-badge">CPU 補填</span>`;
