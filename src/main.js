@@ -1983,7 +1983,9 @@ function openOnlineLobby(mode) {
       const base = ov || ONLINE_WS_URL;
       // room=合言葉(招待制・同じ合言葉の人と同卓) / match=共有マッチング卓(他の待機者と相席)。
       // どちらもサーバ側で人間が揃うか時間切れまで待ってから開始する（空席は CPU 補填）。
-      const room = mode === "room" ? `room-${code}` : "match";
+      // マッチング部屋名は **バージョン付き**: サーバ挙動を変えたら番号を上げ、古いコードを保持した
+      // 既存 Durable Object（退避まで旧コードのまま動く）を確実に避けてフレッシュな DO に入る。
+      const room = mode === "room" ? `room-${code}` : "match2";
       startMatchmaking(charId, base, room, mode);
     },
   });
