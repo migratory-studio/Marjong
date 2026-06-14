@@ -3832,3 +3832,107 @@ button.primary.danger:hover { color: #ffbcbc; }
 .sync-conflict-note {
   margin: 0 0 14px; font-size: 12px; color: var(--muted); line-height: 1.6;
 }
+
+/* ===== 通信対戦（テスト中） ===== */
+.test-badge {
+  display: inline-block; vertical-align: middle; margin-left: 8px;
+  padding: 2px 12px; border-radius: 999px; font-size: 13px; font-weight: 800;
+  letter-spacing: .06em; color: #20140a;
+  background: linear-gradient(135deg, #f6b352, #c98a2e);
+  box-shadow: 0 1px 0 rgba(0,0,0,.25);
+}
+
+#online-lobby-screen {
+  display: flex; flex-direction: column; height: 100%;
+  padding: 22px 30px 18px; box-sizing: border-box; gap: 10px;
+}
+.online-head { position: relative; text-align: center; }
+.online-head h1 { margin: 0; font-size: 26px; }
+.online-back { position: absolute; left: 0; top: 2px; }
+.online-mode-label {
+  display: inline-block; margin-top: 6px; color: var(--accent);
+  font-weight: 800; letter-spacing: .08em; font-size: 14px;
+}
+.online-note { margin: 0; text-align: center; color: var(--muted); font-size: 12px; }
+
+.online-body { flex: 1; display: flex; gap: 18px; min-height: 0; }
+.online-col {
+  background: #1c2c24; border: 2px solid #2a3f34; border-radius: 14px;
+  padding: 16px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px;
+}
+.online-col-left { width: 420px; flex: none; }
+.online-col-right { flex: 1; min-width: 0; }
+
+/* 合言葉（ルーム） */
+.online-codebox {
+  background: #14201a; border: 1px solid #2a3f34; border-radius: 12px;
+  padding: 14px; text-align: center;
+}
+.online-codebox-k { color: var(--muted); font-size: 12px; letter-spacing: .14em; }
+.online-code {
+  font-size: 44px; font-weight: 900; letter-spacing: .22em; color: var(--accent);
+  font-family: "Courier New", monospace; margin: 4px 0 6px;
+}
+.online-codebox-sub { color: var(--muted); font-size: 11px; }
+
+/* マッチング */
+.online-mm {
+  background: #14201a; border: 1px solid #2a3f34; border-radius: 12px; padding: 16px;
+}
+.online-mm-title { font-weight: 700; color: var(--ink); font-size: 15px; }
+.online-mm-bar {
+  margin-top: 12px; height: 8px; border-radius: 999px; background: #0e1813; overflow: hidden;
+}
+.online-mm-fill {
+  height: 100%; width: 8%; border-radius: 999px;
+  background: linear-gradient(90deg, #f6b352, #c98a2e);
+  animation: onlineMmScan 1.4s ease-in-out infinite alternate;
+}
+@keyframes onlineMmScan { from { width: 12%; } to { width: 86%; } }
+.online-dots::after { content: ""; animation: onlineDots 1.2s steps(4, end) infinite; }
+@keyframes onlineDots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+
+/* 卓の席 */
+.online-table-head { color: var(--muted); font-size: 12px; letter-spacing: .1em; }
+.online-seats { display: flex; flex-direction: column; gap: 8px; }
+.online-seat {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #14201a; border: 1px solid #2a3f34; border-radius: 10px; padding: 9px 14px;
+}
+.online-seat.is-filled { border-color: rgba(246,179,82,.4); }
+.online-seat-who { font-weight: 700; color: var(--ink); }
+.online-seat-state { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 8px; }
+.online-seat-state.is-you { color: var(--accent); font-weight: 800; }
+.online-spinner {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 2px solid #2a3f34; border-top-color: var(--accent);
+  display: inline-block; animation: onlineSpin .8s linear infinite;
+}
+@keyframes onlineSpin { to { transform: rotate(360deg); } }
+.online-cpu-badge {
+  padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 800;
+  color: #20140a; background: linear-gradient(135deg, #9ec59a, #6f9a6a);
+}
+
+/* 雀士選択グリッド */
+.online-pick-head { color: var(--muted); font-size: 12px; letter-spacing: .1em; }
+.online-char-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 8px; overflow: hidden; align-content: start;
+}
+.olc-card {
+  display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 8px 4px; cursor: pointer; color: var(--ink);
+  background: #14201a; border: 2px solid #2a3f34; border-radius: 12px;
+  transition: border-color .12s, transform .08s;
+}
+.olc-card:hover { border-color: var(--role, var(--accent)); transform: translateY(-1px); }
+.olc-card.is-picked { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(246,179,82,.35) inset; }
+.olc-icon { width: 46px; height: 46px; border-radius: 50%; object-fit: cover; background: #0e1813; }
+.olc-icon-fb { width: 46px; height: 46px; border-radius: 50%; }
+.olc-name { font-size: 12px; font-weight: 700; text-align: center; line-height: 1.2; }
+
+/* フッター */
+.online-foot { display: flex; justify-content: center; }
+.online-start { min-width: 240px; }
+.online-start:disabled { opacity: .45; cursor: not-allowed; }

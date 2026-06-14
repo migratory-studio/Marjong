@@ -32,6 +32,11 @@ import { showAbilityChange } from "./screens/abilityChangeScreen.js";
 import { showScenarioList, scenariosForMentor } from "./screens/scenarioListScreen.js";
 import { markScenarioRead, tournamentStoryGate, episodeNumberOf } from "./progression/scenarioService.js";
 import { showMatchIntro } from "./screens/matchIntroScreen.js";
+import { showOnlineLobby } from "./screens/onlineLobbyScreen.js";
+import { createLoopback } from "./net/transport.js";
+import { AuthorityRoom } from "./net/authorityRoom.js";
+import { applyEvent } from "./net/applyEvent.js";
+import { connectWebSocket } from "./net/wsTransport.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { skillTemplateById, templateForAbility } from "./data/skillTemplateMaster.js";
 import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
@@ -99,7 +104,12 @@ let teamHpCells = null;          // 団体戦HPボードのDOM参照マップ
 let selectedPairBattle = false;  // ペア戦モードが選択されているか
 let pairBattleData = null;       // ペア戦中の状態（独立新モード）。null = 非ペア戦
 let pairHpCells = null;          // ペア戦HPボードのDOM参照マップ
-let pendingCpuCallDecisions = null; // cached while waiting on human call
+// L1: 非同期ポンプ runHand() 用の状態。人間の手番/鳴きの決定は DOM ハンドラが
+// これらの resolver を解決して返す（CPU/オートは AI 経路、将来のオンラインは別経路）。
+let humanTurnResolver = null;  // 解決値: 打牌/ツモ/カンの決定、または SWITCH_TO_AI
+let humanCallResolver = null;  // 解決値: { action, meta }
+const SWITCH_TO_AI = Symbol("switch-to-ai"); // オート観戦に切替＝AI に手を委ねる合図
+const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 let riichiMode = false;
 let recallMode = false; // リコール・ディール: 自分の河の牌を選択中
 let janeDoeMode = false; // 強制ツモ切り: 対象の相手を選択中
@@ -107,7 +117,11 @@ let kakehaMode = false; // 大博打: 賭け金（5000/10000）を選択中
 let luxMode = false; // ゼロ・リサーチ: 確保する有効牌（候補）を選択中
 let noNaki = false; // 鳴きなし: when on, auto-skip pon/chi/kan for the human (ron still offered)
 let autoPlay = false; // オート観戦: when on, the human seat is driven by the CPU AI (free matches only)
-let cpuActionPending = false; // CPU/オートの打牌を setTimeout 済み。loop() の二重キック防止ガード
+// 通信対戦（テスト中）。null=オフライン。{ send, opts, ... } のとき、人間の手番/鳴きは Intent を
+// 権威へ送り、結果は wire Event→applyEvent(emit) でレプリカ(game)の bus に再発火し描画される。
+// 権威は in-browser ループバック（startOnlineRoom）か、実 WS サーバ（startOnlineMatchWS）。
+let online = null;
+let onlineWsEp = null; // 実 WS 接続時の transport 端点（welcome 受信→beginGame で client 化）
 let meldCalledFlag = false; // set by MELD_CALLED listener during a resolveCalls
 let abilityCutInFlag = false; // set by ABILITY_USED listener; CPU loop waits on it
 const NAKI_WAIT = 1100; // ms pause to show the naki call banner
@@ -1769,6 +1783,9 @@ function bootHome() {
   for (const btn of document.querySelectorAll("[data-nav]")) {
     btn.addEventListener("click", () => { audio.playClick?.(); navigate(btn.dataset.nav); });
   }
+  // 通信対戦（テスト中）の入口: モード選択 → ロビー。
+  el("online-room-btn")?.addEventListener("click", () => { audio.playClick?.(); openOnlineLobby("room"); });
+  el("online-match-btn")?.addEventListener("click", () => { audio.playClick?.(); openOnlineLobby("match"); });
   // Volumes apply regardless of starting screen; the home 設定 controls share
   // the same AudioManager + storage as the in-game gear panel.
   applyAudioSettings(audio);
@@ -1825,6 +1842,153 @@ function startGame() {
     audio,
     onComplete: () => beginGame(seated, dealerIndex),
   });
+}
+
+// 通信対戦の権威サーバ（Cloudflare Worker + Durable Object）。既定はこの本番URL。
+// 開発時は window.__ONLINE_WS_URL で差し替え可：
+//   "ws://127.0.0.1:8788/ws" など … そのローカルサーバへ接続
+//   "loopback" … サーバ無しの in-browser 権威（オフラインでも遊べる）
+const ONLINE_WS_URL = "wss://mahjong-online.nogi-kaiyu.workers.dev/ws";
+
+// 通信対戦（テスト中）: ロビーを開く。mode = "room" | "match"。
+function openOnlineLobby(mode) {
+  showScreen("online-lobby-screen");
+  showOnlineLobby(el("online-lobby-screen"), {
+    mode,
+    characters: CHARACTERS,
+    audio,
+    onBack: () => goScreen("online-screen"),
+    onStart: ({ charId }) => {
+      const ov = (typeof window !== "undefined") ? window.__ONLINE_WS_URL : undefined;
+      if (ov === "loopback") { startOnlineMatch(charId); return; } // 開発: サーバ無し権威
+      const base = ov || ONLINE_WS_URL;
+      // テスト中は毎回新しい卓（=自分＋CPU補填）。合言葉での卓共有（複数人）は次の課題。
+      const room = "r" + Math.random().toString(36).slice(2, 8);
+      startOnlineMatchWS(charId, `${base}?room=${room}`);
+    },
+  });
+}
+
+// 通信対戦の対局を開始（テスト中＝4人東風固定・自席以外は CPU 補填）。startGame と同じ
+// 入口（showMatchIntro → beginGame）を通すので、対局中の挙動はフリー対戦と同一。
+function startOnlineMatch(charId) {
+  humanIndex = 0;
+  teamBattleData = null;
+  pairBattleData = null;
+  selectedTeamBattle = false;
+  selectedPairBattle = false;
+  selectedPlayers = 4;
+  selectedRounds = 1; // テスト中は東風戦固定
+  const human = CHARACTERS.find((c) => c.id === charId) || CHARACTERS[0];
+  const cpus = shuffled(CHARACTERS.filter((c) => c.id !== human.id)).slice(0, 3);
+  const order = [human, ...cpus];
+  const seated = order.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
+  for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
+  const dealerIndex = Math.floor(Math.random() * seated.length);
+  showScreen("match-intro-screen");
+  showMatchIntro(el("match-intro-screen"), {
+    seated,
+    humanIndex,
+    mode: { rounds: selectedRounds, players: selectedPlayers },
+    dealerIndex,
+    audio,
+    onComplete: () => beginGame(seated, dealerIndex, { online: true }),
+  });
+}
+
+// 通信対戦（テスト中・ループバック）: ③ 本物のクライアント化。
+// 画面に映す `game` は「レプリカ」（applyEvent で駆動。自席手牌のみ実値・他席は伏せ札）。権威は
+// 別インスタンス authGame（ヘッドレス）で AuthorityRoom が回す。席0の意思決定は Intent で権威へ、
+// 結果は wire Event → applyEvent(emit) でレプリカの bus を発火＝既存の描画/SE/相棒ボード配線が動く。
+// （ループバックなので transport を WS/DO に差し替えれば別マシンでもそのまま成立＝L4c-2 ①。）
+const ONLINE_WIRE = new Set([
+  "handStarted", "tileDrawn", "tileDiscarded", "riichiDeclared", "meldCalled", "abilityUsed", "handWon", "handDrawn",
+]);
+// オンライン共通: 結果画面トリガ（権威の HAND_WON/HAND_DRAWN が applyEvent(emit) でレプリカ bus に
+// 再発火する）＋オート観戦ボタンを隠す。loopback / WS どちらの client 化でも使う。
+function wireOnlineCommon() {
+  game.bus.on(Events.HAND_WON, () => { if (online) showHandResult(); });
+  game.bus.on(Events.HAND_DRAWN, () => { if (online) showHandResult(); });
+  el("auto-btn")?.classList.add("hidden");
+}
+
+// in-browser ループバック権威（サーバ不要のテスト経路）。
+function startOnlineRoom(seated, dealerIndex) {
+  const authSeated = seated.map((s) => ({ character: s.character, abilities: instantiateAbilities(s.character) }));
+  const authGame = new Game(authSeated, humanIndex, undefined, { maxRounds: selectedRounds, dealerIndex });
+  const { a: roomEp, b: clientEp } = createLoopback();
+  const room = new AuthorityRoom(authGame, { [humanIndex]: roomEp }, {
+    timeout: 120000,
+    pacing: { cpuDelay: CPU_DELAY, cutInWait: ABILITY_CUTIN_WAIT, nakiWait: NAKI_WAIT },
+  });
+  clientEp.onMessage(onlineClientMessage);
+  online = { room, send: (m) => clientEp.send(m), opts: null, callOpts: null };
+  wireOnlineCommon();
+  room.run().catch((e) => console.error("online room crashed", e));
+}
+
+// 実 WS 権威クライアント。online.send は onlineWsEp へ。権威(サーバ)は join 後すでに対局開始済みで、
+// welcome 後の handStarted 以降が onlineClientMessage に届く（描画/結果は loopback と同じ経路）。
+function startOnlineClientWS() {
+  online = { send: (m) => onlineWsEp.send(m), opts: null, callOpts: null, ws: true };
+  wireOnlineCommon();
+}
+
+// 実 WS サーバへ接続して対局（テスト中）。window.__ONLINE_WS_URL があるとロビーがこちらを呼ぶ。
+async function startOnlineMatchWS(charId, url) {
+  humanIndex = 0;
+  teamBattleData = null; pairBattleData = null;
+  selectedTeamBattle = false; selectedPairBattle = false;
+  selectedPlayers = 4; selectedRounds = 1;
+  let ep;
+  try { ep = await connectWebSocket(url); }
+  catch (e) {
+    console.error("WS接続失敗", e);
+    alert("オンラインサーバに接続できませんでした：" + url);
+    goScreen("online-screen");
+    return;
+  }
+  onlineWsEp = ep;
+  ep.onMessage(onlineClientMessage); // welcome → beginGame(client化) → 以降 wire Event を描画
+  ep.onClose?.(() => console.warn("オンライン接続が切れました"));
+  ep.send({ type: "intent.join", charId });
+}
+
+// 権威（ループバック/WS 共通）からのメッセージ。welcome でレプリカ構築→対局画面、wire Event は
+// applyEvent(emit) でレプリカ(game)を描画、awaitX は自席 UI。
+function onlineClientMessage(msg) {
+  if (msg.type === "welcome") {
+    // サーバが席割と卓の顔ぶれ(roster=charId列)を通知 → レプリカを構築して対局へ。
+    const seated = (msg.roster || []).map((id) => {
+      const c = CHARACTERS.find((x) => x.id === id) || CHARACTERS[0];
+      return { character: c, abilities: instantiateAbilities(c) };
+    });
+    for (const s of seated) audio.registerCharacterVoices(s.character.id, s.character.assets?.voices || {});
+    humanIndex = msg.seat != null ? msg.seat : 0;
+    beginGame(seated, 0, { online: true, ws: true });
+    return;
+  }
+  if (!game || !online) return; // welcome 前の取りこぼし保険（通常は到達しない）
+  if (ONLINE_WIRE.has(msg.type)) {
+    applyEvent(game, msg, { viewpoint: humanIndex, emit: true });
+    return;
+  }
+  if (msg.type === "evt.awaitDiscard" && msg.seat === humanIndex) {
+    // 権威の「あなたの打牌番」シグナル。pub.phase は emit 時点で前フェーズが残ることがあるため
+    // （親=自席で最初に打つ場合など）、ここで phase/turn を確定させる（onCanvasClick のガード対策）。
+    game.phase = Phase.AWAIT_DISCARD;
+    game.turn = msg.seat;
+    online.opts = msg; // { options, abilityStatus, danger } を showHumanActions が使う
+    showHumanActions();
+    render(); // phase 確定後に再描画＝手牌ヒットボックスを正しい手番状態で再計算（打牌可に）
+    return;
+  }
+  if (msg.type === "evt.awaitCalls" && msg.seat === humanIndex) {
+    game.phase = Phase.AWAIT_CALLS; // 鳴き窓中は打牌ガードを効かせる
+    online.callOpts = msg.options;
+    showCallActions({ index: humanIndex, options: msg.options });
+    render();
+  }
 }
 
 // デバッグ専用: 選択キャラ（未選択なら詩玥）vs モブ3体で通常対局を即開始する。
@@ -1971,7 +2135,8 @@ function startPairBattleGame(partnerId) {
 }
 
 // 実対局の生成と開始。対局開始演出（showMatchIntro）の onComplete から呼ばれる。
-function beginGame(seated, dealerIndex) {
+function beginGame(seated, dealerIndex, opts = {}) {
+  online = null; // 既定はオフライン。オンライン時のみ startOnlineRoom が設定する。
   // 団体戦は個人が飛んでも交代で続行する。終了（団体トビ）は「いずれかのチームが
   // 全滅（3人全員のHPが尽きてチーム合計が0以下）」したとき、または規定局完了。
   const teamBustCheck = teamBattleData
@@ -2047,8 +2212,14 @@ function beginGame(seated, dealerIndex) {
   // game.startHand() emits HAND_STARTED -> BGM. This runs inside the
   // start-button click (a user gesture), satisfying browser autoplay policy.
   scoreHistory = []; // この対局の得点推移を録り直す（HAND_STARTED で各局を積む）
-  game.startHand();
-  loop();
+  if (opts.online) {
+    // オンライン（テスト中）: `game` はレプリカ。権威は実 WS サーバ（opts.ws）か in-browser ループバック。
+    if (opts.ws) startOnlineClientWS();
+    else startOnlineRoom(seated, dealerIndex);
+  } else {
+    game.startHand();
+    startPump();
+  }
 
   // 対局開始: 自キャラが一言（マスタ駆動・一定時間で自動で消える）。
   // （一旦オフ。再開するときはこの行のコメントを外す）
@@ -2056,51 +2227,138 @@ function beginGame(seated, dealerIndex) {
 }
 
 // ----------------------------------------------------------------- main loop
-function loop() {
-  render();
-  // Show the hand-over presentation (ron/tsumo banner + win/draw screen) first,
-  // even when this hand ends the game (トビ終了 / 最終局). The result screen is
-  // reached via the "結果へ" button in that overlay, not directly here.
-  if (game.phase === Phase.HAND_OVER) { showHandResult(); return; }
+// 非同期ポンプ。同期 loop() を置き換え、フェーズごとに「決定の供給(stepTurn/stepCalls)」を
+// await する。CPU/オートは AI、人間は DOM ハンドラ(resolver)から決定が返る。演出の間合いは
+// await delay() で従来の setTimeout と同じ尺を保つ。1局ぶんを回し、HAND_OVER/GAME_OVER で抜ける
+// （次局は結果画面の「次の局へ」ボタンが startHand()+startPump() で再開する）。
+function startPump() {
+  runHand().catch((e) => console.error("runHand crashed", e));
+}
 
-  if (game.isGameOver()) { showGameOver(); return; }
-
-  if (game.phase === Phase.AWAIT_CALLS) { handleCalls(); return; }
-
-  if (game.phase === Phase.AWAIT_DISCARD) {
-    const actor = game.players[game.turn];
-    if (actor.isHuman && !autoPlay) {
-      // After own riichi: auto-tsumogiri the drawn tile (unless tsumo is available).
-      const opts = game.actionOptions(actor.index);
-      if (actor.riichi && opts && !opts.tsumo) {
-        autoTsumogiri(actor, "リーチ中（自動ツモ切り）");
-        return;
-      }
-      // JaneDoe で強制ツモ切りにされている: ツモ和了以外は自動でツモ切り。
-      if (opts && opts.forcedTsumogiri && !opts.tsumo) {
-        autoTsumogiri(actor, "強制ツモ切り中");
-        return;
-      }
-      showHumanActions();
-    } else {
-      // CPU 席、またはオート観戦 ON で AI に委ねた人間席。どちらも同じ判断ルート。
-      clearActions();
-      // Activate any manual abilities first so the cut-in plays during the wait,
-      // then discard. A fired ability extends the pause (ウェイト) so it reads.
-      const index = game.turn;
-      abilityCutInFlag = false;
-      for (const a of decideAbilityActivations(game, index)) game.activateAbility(index, a.id, a.params);
-      const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : CPU_DELAY;
-      // cpuActionPending: この待ち時間中に loop() が再キックされても二重に
-      // setTimeout しないためのガード（オートのトグル連打対策。下の auto-btn 参照）。
-      cpuActionPending = true;
-      setTimeout(() => { cpuActionPending = false; cpuDiscard(index); loop(); }, wait);
-    }
+async function runHand() {
+  while (true) {
+    render();
+    // Show the hand-over presentation (ron/tsumo banner + win/draw screen) first,
+    // even when this hand ends the game (トビ終了 / 最終局). The result screen is
+    // reached via the "結果へ" button in that overlay, not directly here.
+    if (game.phase === Phase.HAND_OVER) { showHandResult(); return; }
+    if (game.isGameOver()) { showGameOver(); return; }
+    if (game.phase === Phase.AWAIT_CALLS) { await stepCalls(); continue; }
+    if (game.phase === Phase.AWAIT_DISCARD) { await stepTurn(); continue; }
+    return; // GAME_OVER フェーズ等
   }
 }
 
+// ----------------------------------------------------------------- decision layer
+// 決定の供給源(A)。runHand/stepTurn/stepCalls は「決定の取得」をすべて controller 経由で行い、
+// 「状態の変更(B)」(applyTurnDecision / game.resolveCalls / game.activateAbility) はポンプ側で行う。
+// オフラインは LocalController。将来のオンライン(権威/クライアント)はこの口を差し替えるだけにする。
+const LocalController = {
+  // 自動発動する能力を返す（発動=状態変更は pump が activateAbility する）。人間席(手動発動)は空。
+  decideAbilities(game, seat) {
+    const actor = game.players[seat];
+    if (actor.isHuman && !autoPlay) return [];
+    return decideAbilityActivations(game, seat);
+  },
+  // 手番の決定を返す。人間席=リーチ/強制中は自動ツモ切り・それ以外は resolver 待ち、
+  // CPU/オート席=AI(演出ウェイト込み)。オートへの切替時は SWITCH_TO_AI がそのまま返る。
+  async decideTurn(game, seat) {
+    const actor = game.players[seat];
+    if (actor.isHuman && !autoPlay) {
+      // After own riichi: auto-tsumogiri the drawn tile (unless tsumo is available).
+      const opts = game.actionOptions(seat);
+      if (actor.riichi && opts && !opts.tsumo) return autoTsumogiri(actor, "リーチ中（自動ツモ切り）");
+      // JaneDoe で強制ツモ切りにされている: ツモ和了以外は自動でツモ切り。
+      if (opts && opts.forcedTsumogiri && !opts.tsumo) return autoTsumogiri(actor, "強制ツモ切り中");
+      return waitHumanTurn(seat); // 打牌/ツモ/カンの決定、または SWITCH_TO_AI
+    }
+    // CPU 席、またはオート観戦 ON で AI に委ねた人間席。どちらも同じ判断ルート。
+    clearActions();
+    // A fired ability sets abilityCutInFlag (ON_... listener) and extends the pause so it reads.
+    const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : CPU_DELAY;
+    await delay(wait);
+    return decideDiscard(game, seat);
+  },
+  // 鳴き窓の全決定を返す。CPU/オート分を集め、人間が caller なら resolver 待ちで足す。
+  // humanInvolved は鳴きバナー後の間合い(人間あり=200 / なし=250)の出し分けに使う。
+  async decideCalls(game, callers) {
+    let humanCaller = autoPlay ? null : callers.find((c) => game.players[c.index].isHuman);
+    // 鳴きなし: drop pon/chi/kan from the human's options (ron is not a naki, so it
+    // stays). If nothing's left to ask, the human is simply omitted => treated as
+    // a pass by resolveCalls (which only acts on decisions it's given).
+    if (humanCaller && noNaki) {
+      if (humanCaller.options.ron) {
+        humanCaller = { index: humanCaller.index, options: { ron: true, pon: false, kan: false, chi: [] } };
+      } else {
+        humanCaller = null;
+      }
+    }
+    // CPU decisions first. オート観戦中は人間席も AI 判断に含める（humanCaller は null）。
+    const cpuDecisions = callers
+      .filter((c) => autoPlay || !game.players[c.index].isHuman)
+      .map((c) => ({ index: c.index, ...decideCall(game, c.index, c.options) }));
+    if (!humanCaller) return { decisions: cpuDecisions, humanInvolved: false };
+    // human is among callers: show buttons and wait for the choice.
+    const hd = await waitHumanCall(humanCaller);
+    const decisions = [...cpuDecisions];
+    if (hd.action !== "pass") decisions.push({ index: humanCaller.index, action: hd.action, meta: hd.meta });
+    else decisions.push({ index: humanCaller.index, action: "pass" });
+    return { decisions, humanInvolved: true };
+  },
+};
+let controller = LocalController; // 差し替え点（オフライン=Local / 将来=Authority/Online）
+
+// 1手番ぶん: 決定(A)を controller から取得し、状態変更(B)はここで行う。
+async function stepTurn() {
+  const seat = game.turn;
+  // 能力の自動発動（人間席は空配列）。発動は pump が行い、cut-in 演出が AI の wait を延ばす。
+  abilityCutInFlag = false;
+  for (const a of controller.decideAbilities(game, seat)) game.activateAbility(seat, a.id, a.params);
+  const d = await controller.decideTurn(game, seat);
+  if (d === SWITCH_TO_AI) return; // オートに切替→runHand が AI 分岐で同席を再処理
+  applyTurnDecision(seat, d);
+}
+
+// 手番決定(打牌/ツモ/カン/北抜き)を実エンジンへ適用する唯一の口。CPU/人間/(将来)権威で共有。
+function applyTurnDecision(seat, d) {
+  if (!d) return;
+  if (d.type === "tsumo") { game.doTsumo(seat); return; }
+  if (d.type === "kan") { game.declareKan(seat, d.kind, d.kanType); return; }
+  if (d.type === "nuki") { game.nukiKita(seat); return; }
+  game.discard(seat, d.tileId, d.riichi);
+}
+
+// 人間の手番: アクションUIを出し、終端アクション(打牌/ツモ/カン)が resolver を解決するまで待つ。
+// 中間操作(リーチ切替/北抜き/リコール/能力選択)は resolver を解決せず showHumanActions を再描画する。
+function waitHumanTurn(seat) {
+  return new Promise((resolve) => {
+    humanTurnResolver = resolve;
+    showHumanActions();
+  });
+}
+// 人間の手番決定を、決定 → Intent へ変換（オンライン時に権威へ送る）。
+function turnIntent(d) {
+  if (d.type === "tsumo") return { type: "intent.discard", action: "tsumo" };
+  if (d.type === "kan") return { type: "intent.discard", action: "kan", kind: d.kind, kanType: d.kanType };
+  return { type: "intent.discard", tileId: d.tileId, riichi: !!d.riichi };
+}
+function resolveHumanTurn(decision) {
+  if (online) {
+    // オンライン: ローカルに適用せず Intent を権威へ送る（結果は bus 経由で描画される）。
+    if (decision === SWITCH_TO_AI) return; // オンラインではオート観戦切替なし
+    clearActions();
+    online.send(turnIntent(decision));
+    return;
+  }
+  if (!humanTurnResolver) return;
+  const r = humanTurnResolver;
+  humanTurnResolver = null;
+  clearActions();
+  r(decision);
+}
+
 const AUTO_TSUMOGIRI_DELAY = 700; // ms — long enough for the player to see what they drew
-function autoTsumogiri(actor, hintText = "リーチ中（自動ツモ切り）") {
+async function autoTsumogiri(actor, hintText = "リーチ中（自動ツモ切り）") {
   clearActions();
   const bar = el("action-bar");
   const hint = document.createElement("span");
@@ -2110,68 +2368,41 @@ function autoTsumogiri(actor, hintText = "リーチ中（自動ツモ切り）")
   // re-render to refresh highlights / hand display
   refreshHighlights();
   render();
-  setTimeout(() => {
-    clearActions();
-    game.discard(actor.index, actor.drawnTileId, false);
-    loop();
-  }, AUTO_TSUMOGIRI_DELAY);
-}
-
-function cpuDiscard(index) {
-  // Ability activation now happens in loop() (before the cut-in wait); here we
-  // just choose and execute the discard / tsumo / kan.
-  const d = decideDiscard(game, index);
-  if (!d) return;
-  if (d.type === "tsumo") { game.doTsumo(index); return; }
-  if (d.type === "kan") { game.declareKan(index, d.kind, d.kanType); return; }
-  if (d.type === "nuki") { game.nukiKita(index); return; }
-  game.discard(index, d.tileId, d.riichi);
+  await delay(AUTO_TSUMOGIRI_DELAY);
+  clearActions();
+  // 決定を返すだけ（適用は pump の applyTurnDecision）。drawnTileId は待ち明けに確定。
+  return { type: "discard", tileId: actor.drawnTileId, riichi: false };
 }
 
 // ----------------------------------------------------------------- calls
-function handleCalls() {
-  const callers = game.pendingCalls.callers;
-  // オート観戦: 人間席も CPU と同じく decideCall に委ねる（下の CPU decisions に含める）。
-  let humanCaller = autoPlay ? null : callers.find((c) => game.players[c.index].isHuman);
-
-  // 鳴きなし: drop pon/chi/kan from the human's options (ron is not a naki, so it
-  // stays). If nothing's left to ask, the human is simply omitted => treated as
-  // a pass by resolveCalls (which only acts on decisions it's given).
-  if (humanCaller && noNaki) {
-    if (humanCaller.options.ron) {
-      humanCaller = { index: humanCaller.index, options: { ron: true, pon: false, kan: false, chi: [] } };
-    } else {
-      humanCaller = null;
-    }
-  }
-
-  // CPU decisions first. オート観戦中は人間席も AI 判断に含める（humanCaller は null）。
-  const cpuDecisions = callers
-    .filter((c) => autoPlay || !game.players[c.index].isHuman)
-    .map((c) => ({ index: c.index, ...decideCall(game, c.index, c.options) }));
-
-  if (!humanCaller) {
-    meldCalledFlag = false;
-    game.resolveCalls(cpuDecisions);
-    setTimeout(loop, meldCalledFlag ? NAKI_WAIT : 250); // pause to show naki banner
-    return;
-  }
-
-  // human is among callers: show buttons, stash cpu decisions
-  pendingCpuCallDecisions = cpuDecisions;
-  showCallActions(humanCaller);
-}
-
-function resolveHumanCall(action, meta) {
-  const human = game.pendingCalls.callers.find((c) => game.players[c.index].isHuman);
-  const decisions = [...pendingCpuCallDecisions];
-  if (action !== "pass") decisions.push({ index: human.index, action, meta });
-  else decisions.push({ index: human.index, action: "pass" });
-  pendingCpuCallDecisions = null;
-  clearActions();
+// 鳴き窓: 決定(A)を controller から取得し、resolveCalls(B)と鳴きバナーぶんの間合いはここで。
+// 間合いは従来の尺を踏襲（鳴き成立=NAKI_WAIT / 人間あり=200 / 人間なし=250）。
+async function stepCalls() {
+  const { decisions, humanInvolved } = await controller.decideCalls(game, game.pendingCalls.callers);
   meldCalledFlag = false;
   game.resolveCalls(decisions);
-  setTimeout(loop, meldCalledFlag ? NAKI_WAIT : 200); // pause to show naki banner
+  await delay(meldCalledFlag ? NAKI_WAIT : humanInvolved ? 200 : 250); // pause to show naki banner
+}
+
+// 人間の鳴き選択を待つ。終端ボタン(ロン/カン/ポン/チー/スキップ)が resolver を解決する。
+function waitHumanCall(humanCaller) {
+  return new Promise((resolve) => {
+    humanCallResolver = resolve;
+    showCallActions(humanCaller);
+  });
+}
+function resolveHumanCall(action, meta) {
+  if (online) {
+    // オンライン: 鳴き選択を Intent で権威へ送る（適用は権威→bus 経由で描画）。
+    clearActions();
+    online.send({ type: "intent.call", action, meta });
+    return;
+  }
+  if (!humanCallResolver) return;
+  const r = humanCallResolver;
+  humanCallResolver = null;
+  clearActions();
+  r({ action, meta });
 }
 
 // ----------------------------------------------------------------- human input
@@ -2208,9 +2439,7 @@ function onCanvasClick(ev) {
     if (x >= hb.x && x <= hb.x + hb.w && y >= hb.y && y <= hb.y + hb.h) {
       const wasRiichi = riichiMode;
       riichiMode = false;
-      clearActions();
-      game.discard(actor.index, hb.tileId, wasRiichi);
-      loop();
+      resolveHumanTurn({ type: "discard", tileId: hb.tileId, riichi: wasRiichi });
       return;
     }
   }
@@ -2254,7 +2483,8 @@ function onCanvasHover(ev) {
 function showHumanActions() {
   clearActions();
   const idx = game.turn;
-  const opts = game.actionOptions(idx);
+  // オンラインはレプリカ上で actionOptions を再計算できないため、権威が awaitDiscard で送った値を使う。
+  const opts = online ? (online.opts && online.opts.options) : game.actionOptions(idx);
   if (!opts) return;
 
   // JaneDoe 対象選択中は専用の対象ボタンを表示する。
@@ -2268,7 +2498,7 @@ function showHumanActions() {
   refreshHighlights();
 
   const bar = el("action-bar");
-  if (opts.tsumo) bar.appendChild(mkBtn("ツモ和了", "btn-tsumo", () => { clearActions(); game.doTsumo(idx); loop(); }));
+  if (opts.tsumo) bar.appendChild(mkBtn("ツモ和了", "btn-tsumo", () => resolveHumanTurn({ type: "tsumo" })));
   if (opts.riichi) {
     bar.appendChild(mkBtn(riichiMode ? "リーチ解除" : "リーチ", "btn-riichi", () => {
       riichiMode = !riichiMode;
@@ -2280,9 +2510,7 @@ function showHumanActions() {
   if (opts.kans.length > 0) {
     bar.appendChild(mkBtn("カン", "btn-kan", () => {
       const k = opts.kans[0];
-      clearActions();
-      game.declareKan(idx, k.kind, k.type);
-      loop();
+      resolveHumanTurn({ type: "kan", kind: k.kind, kanType: k.type });
     }));
   }
   // 北抜き (三麻): pull a North tile as nuki-dora, then act again (no turn passes).
@@ -2299,13 +2527,19 @@ function showHumanActions() {
   // panel (#ability-bar), not the action bar, so they never cover the hand tiles.
   const abilityBar = el("ability-bar");
   let luxGrayHint = false; // ゼロ・リサーチがグレーアウト中なら下のヒントを出す
-  for (const a of game.abilityStatus(idx)) {
+  // オンラインは権威が送った abilityStatus を表示する。手動発動はテスト中は未対応（intent 化は後段）
+  // ＝発動ボタンは出さずチップ表示のみ。受動能力は権威側で従来どおり効く。
+  const abilityList = online ? (online.opts?.abilityStatus || []) : game.abilityStatus(idx);
+  for (const a of abilityList) {
     // visible===false の能力はボタン自体を描画しない（zero-search の1シャンテン外など）。
     if (a.visible === false) continue;
     if (a.activation === "passive") {
       abilityBar.appendChild(mkChip(`常時: ${a.name}`, "ability-chip passive"));
     } else if (a.active) {
       abilityBar.appendChild(mkChip(`発動中: ${a.name}`, "ability-chip active"));
+    } else if (online) {
+      // テスト中（オンライン）は手動発動を見送り、状態だけ表示する。
+      abilityBar.appendChild(mkChip(`${a.name}（オンライン未対応）`, "ability-chip"));
     } else {
       // remaining-count UI sits above the activation button (not inline in it).
       if (a.maxCharges !== Infinity) {
@@ -2488,15 +2722,22 @@ function showCallActions(humanCaller) {
 function refreshHighlights() {
   renderer.setHighlights({
     riichiMode,
-    riichiKinds: riichiMode ? game.actionOptions(game.turn)?.riichiDiscards : null,
+    riichiKinds: riichiKindsNow(),
     danger: currentDanger(),
     recallMode,
   });
 }
 
+// リーチ宣言牌（オンラインは権威配信値、オフラインはレプリカでない実 Game から）。
+function riichiKindsNow() {
+  if (!riichiMode) return null;
+  if (online) return online.opts?.options?.riichiDiscards || null;
+  return game.actionOptions(game.turn)?.riichiDiscards || null;
+}
+
 function currentDanger() {
-  const human = game.players[humanIndex];
-  const info = game.abilities.dangerInfo(human);
+  // オンラインは権威が awaitDiscard で送った危険牌情報を使う（レプリカでは dangerInfo を計算不可）。
+  const info = online ? (online.opts?.danger || null) : game.abilities.dangerInfo(game.players[humanIndex]);
   if (!info) return null;
   const map = new Map();
   for (const d of info) map.set(d.kind, d.level);
@@ -2506,7 +2747,7 @@ function currentDanger() {
 function render() {
   renderer.setHighlights({
     riichiMode,
-    riichiKinds: riichiMode ? game.actionOptions(game.turn)?.riichiDiscards : null,
+    riichiKinds: riichiKindsNow(),
     danger: currentDanger(),
     recallMode,
   });
@@ -2717,10 +2958,15 @@ function showWinResult(overlay, r) {
 function appendNextButton(box, r) {
   const deltas = game.lastResult && game.lastResult.deltas; // capture before next hand
   const proceed = () => {
-    if (game.isGameOver()) { showGameOver(); return; }
+    if (game.isGameOver()) {
+      if (online) online.send({ type: "intent.ack" }); // 権威の run() を終了させる
+      showGameOver();
+      return;
+    }
     showPointFx(deltas); // animate +N / -N over the table
+    if (online) { online.send({ type: "intent.ack" }); return; } // 権威が次局を開始 → bus で描画
     game.startHand();
-    loop();
+    startPump();
   };
   const btn = mkBtn(game.isGameOver() ? "結果へ" : "次の局へ", "btn-tsumo", () => {
     el("win-overlay").classList.add("hidden");
@@ -3838,7 +4084,7 @@ function initNoNakiToggle() {
   sync();
 }
 
-// オート観戦トグル。ON で人間席を CPU AI に委ねる（loop / handleCalls 側が autoPlay を
+// オート観戦トグル。ON で人間席を CPU AI に委ねる（stepTurn / stepCalls 側が autoPlay を
 // 見て分岐）。団体戦を含む全対局で使用可（交代選択などのモーダルは従来どおり手動）。
 let autoWired = false;
 function initAutoToggle() {
@@ -3854,9 +4100,9 @@ function initAutoToggle() {
     btn.addEventListener("click", () => {
       autoPlay = !autoPlay;
       sync();
-      // OFF→ON を自分の手番中に押したら、その場で AI に手を進めさせる。
-      // cpuActionPending 中（前回キックの待ち時間中）は再キックしない＝二重 setTimeout を防ぐ。
-      if (autoPlay && !cpuActionPending && game && game.phase === Phase.AWAIT_DISCARD && game.players[game.turn].isHuman) loop();
+      // OFF→ON を自分の手番中（=resolver 待ち）に押したら、待ちを畳んで AI に手を委ねる。
+      // humanTurnResolver が立っていないとき（CPU待ち/自動ツモ切り中など）は何もしない。
+      if (autoPlay && humanTurnResolver && game && game.phase === Phase.AWAIT_DISCARD && game.players[game.turn].isHuman) resolveHumanTurn(SWITCH_TO_AI);
     });
     autoWired = true;
   }

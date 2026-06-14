@@ -1,0 +1,14 @@
+# 通信対戦 権威サーバ（Cloudflare Worker + Durable Object）。
+# ローカル: npx wrangler dev    本番: npx wrangler deploy
+name = "mahjong-online"
+main = "worker/index.js"
+compatibility_date = "2025-01-01"
+
+# 1卓 = 1 Durable Object。SQLite ストレージ版クラス＝無料プランでも使える（要・時期確認）。
+[[durable_objects.bindings]]
+name = "ROOM"
+class_name = "MahjongRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["MahjongRoom"]

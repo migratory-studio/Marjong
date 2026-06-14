@@ -54,15 +54,26 @@
       <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
     </section>
 
-    <!-- Online (coming soon) -->
+    <!-- Online (テスト中): mode select -->
     <section id="online-screen" class="screen menu-screen hidden">
-      <header class="menu-head"><h1>通信対戦</h1></header>
-      <div class="coming-soon">
-        <div class="coming-soon-badge">Coming Soon</div>
-        <p>通信対戦は今後のアップデートで実装予定です。</p>
-      </div>
+      <header class="menu-head"><h1>通信対戦 <span class="test-badge">テスト中</span></h1>
+        <p class="lead">合言葉のルーム戦か、おまかせマッチング。空席は CPU が補う。</p>
+      </header>
+      <nav class="menu-list">
+        <button type="button" class="menu-btn" id="online-room-btn">
+          <span class="menu-btn-title">ルーム対戦</span>
+          <span class="menu-btn-sub">合言葉で相手を招く</span>
+        </button>
+        <button type="button" class="menu-btn" id="online-match-btn">
+          <span class="menu-btn-title">マッチング対戦</span>
+          <span class="menu-btn-sub">おまかせで相手を探す</span>
+        </button>
+      </nav>
       <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
     </section>
+
+    <!-- Online lobby (JS-rendered: room/matchmaking + char pick) -->
+    <section id="online-lobby-screen" class="screen hidden"></section>
 
     <!-- Settings -->
     <section id="settings-screen" class="screen menu-screen hidden">
