@@ -183,8 +183,9 @@ let onlineWsUrl = null; // 再接続用に接続先URLを保持
 let onlineToken = null; // 再接続用トークン（welcome で受領）。同じ卓へ rejoin する鍵
 let reconnecting = false; // 再接続シーケンス中フラグ
 let reconnectTimer = null;
-let matchmaking = null; // マッチング探索中の状態 { base, room, mode, charId, attempt }（welcome で解除）
+let matchmaking = null; // マッチング探索中の状態 { base, room, mode, charId, name, dan, attempt }（welcome で解除）
 let matchCountdownTimer = null; // 探索オーバーレイの「あとX秒」カウントダウン
+let onlineSeatInfo = null; // 通信対戦の席ごと表示情報 [{charId,name,dan}|{charId,cpu}]（welcome で受領）
 let meldCalledFlag = false; // set by MELD_CALLED listener during a resolveCalls
 let abilityCutInFlag = false; // set by ABILITY_USED listener; CPU loop waits on it
 const NAKI_WAIT = 1100; // ms pause to show the naki call banner
@@ -2104,15 +2105,47 @@ function startOnlineClientWS() {
   wireOnlineCommon();
 }
 
+// 通信対戦の対局開始画面。各席の「ユーザー名＋段位（推し＝持ちキャラの立ち絵）」を VS カードで見せる。
+// 親決め演出（Phase B）はオンラインでは権威が決めるためスキップし、完了で対局画面を表に出す。
+function showOnlineMatchIntro(seated) {
+  const labels = seated.map((s, i) => {
+    const info = onlineSeatInfo?.[i];
+    if (!info || info.cpu) return { name: s.character.name, sub: "CPU", cpu: true };
+    return {
+      name: info.name || "名無し",
+      sub: describeRank({ dan: info.dan || 1, tierRp: 0 }).title, // 段位の称号
+      you: i === humanIndex,
+    };
+  });
+  showScreen("match-intro-screen");
+  showMatchIntro(el("match-intro-screen"), {
+    seated,
+    humanIndex,
+    mode: { rounds: selectedRounds, players: seated.length },
+    dealerIndex: humanIndex, // skipSeating なので親決めには使われない
+    audio,
+    labels,
+    skipSeating: true,
+    onComplete: () => { showScreen("game-screen"); render(); },
+  });
+}
+
 // マッチング開始（テスト中）。サーバへ接続して待機列に入り、人間が揃うか時間切れで対局が始まる。
 // 探索中は「対戦相手を探しています」オーバーレイを出し、welcome 受信で対局へ移る。match モードで
 // 卓が満席/対局中(evt.matchClosed)だった場合は別バケツ（match-1, match-2, …）へ自動で繋ぎ直す。
-function startMatchmaking(charId, base, room, mode) {
+async function startMatchmaking(charId, base, room, mode) {
   humanIndex = 0;
   teamBattleData = null; pairBattleData = null;
   selectedTeamBattle = false; selectedPairBattle = false;
   selectedPlayers = 4; selectedRounds = 1;
-  matchmaking = { base, room, mode, charId, attempt: 0 };
+  // 自分の表示情報（ユーザー名・段位）を join に同梱して、相手の対局開始画面/卓上にも出せるようにする。
+  let name = null, dan = 1;
+  try {
+    const p = await profileRepo.loadProfile();
+    name = normalizeUsername(p?.profile?.displayName || "") || null;
+    dan = describeRank(p?.onlineRank || defaultRankState()).dan;
+  } catch { /* 未ログイン等は名前なしで参加（CPU同様 名無し扱い） */ }
+  matchmaking = { base, room, mode, charId, name, dan, attempt: 0 };
   connectMatchmaking();
 }
 
@@ -2138,7 +2171,7 @@ async function connectMatchmaking() {
   if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ: 強制切断テスト用
   ep.onMessage(onlineClientMessage); // matchWaiting→探索表示 / welcome→beginGame(client化) / 以降 wire Event
   ep.onClose?.(() => handleWsClose(ep));
-  ep.send({ type: "intent.join", charId: mm.charId });
+  ep.send({ type: "intent.join", charId: mm.charId, name: mm.name, dan: mm.dan });
 }
 
 // 接続断の検知 → 対局が生きている間は自動で同じ卓へ再接続（リコネクト・ライト版）。
@@ -2263,6 +2296,7 @@ function onlineClientMessage(msg) {
   if (msg.type === "welcome") {
     hideMatchSearchOverlay(); matchmaking = null; // 探索終了 → 対局へ
     if (msg.token) onlineToken = msg.token; // 再接続トークンを保持
+    onlineSeatInfo = Array.isArray(msg.players) ? msg.players : null; // 席ごとの名前/段位（卓上＆開始画面用）
     if (msg.rejoined) { reconnectSuccess(); return; } // 再接続: 既存の対局へ復帰（snapshot が続く）
     // サーバが席割と卓の顔ぶれ(roster=charId列)を通知 → レプリカを構築して対局へ。
     const seated = (msg.roster || []).map((id) => {
@@ -2271,7 +2305,10 @@ function onlineClientMessage(msg) {
     });
     for (const s of seated) audio.registerCharacterVoices(s.character.id, s.character.assets?.voices || {});
     humanIndex = msg.seat != null ? msg.seat : 0;
+    // レプリカを先に構築（=以降のサーバイベントが適用される）。対局開始画面はその上に重ねて見せ、
+    // 完了で game-screen を表に出す（イベントは画面が隠れている間もレプリカに反映され続ける）。
     beginGame(seated, 0, { online: true, ws: true });
+    showOnlineMatchIntro(seated);
     return;
   }
   if (msg.type === "evt.rejoinFailed") { reconnectGiveUp(); return; }
@@ -2478,6 +2515,10 @@ function beginGame(seated, dealerIndex, opts = {}) {
     bustCheck: teamBustCheck || pairBustCheck,
   });
   renderer = new CanvasRenderer(el("table"), game, humanIndex, tileImages, charImages);
+  // 通信対戦の卓上ネームプレートはユーザー名で出す（席→名前。CPU/未設定は null＝キャラ名にフォールバック）。
+  renderer.seatLabels = (opts.online && onlineSeatInfo)
+    ? onlineSeatInfo.map((p) => (p && !p.cpu ? (p.name || "名無し") : null))
+    : null;
   if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__pairBattleData = pairBattleData; window.__tbFx = showTeamBattleDamageFx; window.__showGameOver = showGameOver; window.__activeVoiceSet = activeVoiceSet; } // debug handle
 
   game.bus.on(Events.STATE_CHANGED, () => render());

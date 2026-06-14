@@ -96,6 +96,7 @@ async function teardown(server, eps) { for (const ep of eps) ep.close(); await w
     const a = await joinClient(server, "shiyue");          // バッチ1
     await until(() => host.room != null, 2000, "バッチ1開始");
     const room1 = host.room;
+    await until(() => welcomeOf(a.c), 2000, "バッチ1 welcome 到着"); // welcome は socket 越しで遅延しうる
     const tok1 = welcomeOf(a.c)?.token;
     // バッチ1開始後の新規参加が matchClosed されず、新しいバッチで開始する
     const b = await joinClient(server, "kuidoshi");        // バッチ2

@@ -65,7 +65,8 @@ export class RoomHost {
     connection.onMessage((msg) => {
       if (!msg) return;
       if (msg.type === "intent.join") {
-        this._enqueue(connection, msg.charId, opts);
+        // charId=使用キャラ / name=ユーザー名 / dan=段位（表示用。CPU席や未ログインは欠落しうる）。
+        this._enqueue(connection, { charId: msg.charId, name: msg.name, dan: msg.dan }, opts);
       } else if (msg.type === "intent.rejoin") {
         const e = (msg.token != null) ? this.tokenSeat[msg.token] : undefined;
         if (e) {
@@ -79,9 +80,11 @@ export class RoomHost {
   }
 
   // 待機バッチへ着席。満席＝即開始 / 待機時間ゼロ＝即開始 / それ以外は締切タイマーで人間を待つ。
-  _enqueue(connection, charId, opts) {
+  // info = { charId, name, dan }（name/dan は表示用・任意）。文字列だけ渡されても charId として受ける。
+  _enqueue(connection, info, opts) {
     this.opts = opts;
-    const entry = { connection, charId };
+    const meta = (typeof info === "string") ? { charId: info } : (info || {});
+    const entry = { connection, charId: meta.charId, name: meta.name ?? null, dan: meta.dan ?? null };
     this.waiting.push(entry);
     // 待機中の離脱のみ面倒を見る（現バッチに居る間だけ）。開始後の席は AuthorityRoom 側(dropSeat)が担当。
     connection.onClose?.(() => {
@@ -115,14 +118,20 @@ export class RoomHost {
     const { game, roster } = buildSeatedGame(seats.map((s) => s.charId));
     const connections = {};
     seats.forEach((s, seat) => { connections[seat] = s.connection; });
+    // 席ごとの表示情報（対局開始画面/卓上ネームプレート用）。人間席=名前/段位、空席=CPU。
+    const playersInfo = roster.map((charId, seat) => {
+      const h = seats[seat];
+      return h ? { charId, name: h.name, dan: h.dan } : { charId, cpu: true };
+    });
     const room = new AuthorityRoom(game, connections, this.opts || {});
     room.roster = roster;
+    room.players = playersInfo; // リコネクト時の welcome にも載せられるよう保持
     room.seatTokens = {};
     seats.forEach((s, seat) => {
       const token = randomToken();
       room.seatTokens[seat] = token;
       this.tokenSeat[token] = { room, seat };
-      s.connection.send({ type: "welcome", seat, roster, token, rules: { players: game.numPlayers } });
+      s.connection.send({ type: "welcome", seat, roster, players: playersInfo, token, rules: { players: game.numPlayers } });
       s.connection.onClose?.(() => room.dropSeat(seat));
     });
     this.room = room;

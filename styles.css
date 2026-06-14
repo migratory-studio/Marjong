@@ -2617,6 +2617,16 @@ button.secondary { color: var(--ink); }
   background: var(--accent); color: #1a1a1a; font-weight: 900; font-size: 12px;
   border-radius: 6px; padding: 2px 8px; box-shadow: 0 2px 6px rgba(0,0,0,.4);
 }
+/* 通信対戦カード: ユーザー名＋段位を主役に、持ちキャラ（推し）を添える */
+.mi-card-username { font-size: 20px; font-weight: 800; color: var(--ink); line-height: 1.15; text-shadow: 0 1px 2px rgba(0,0,0,.5); word-break: break-word; }
+.mi-card-dan {
+  display: inline-block; margin: 6px 0 4px; font-size: 12px; font-weight: 800;
+  color: #e7d9b4; border: 1px solid rgba(231,217,180,.5); background: rgba(231,217,180,.12);
+  border-radius: 999px; padding: 2px 12px; letter-spacing: .04em;
+}
+.mi-card-dan.is-cpu { color: var(--muted); border-color: #3a5446; background: rgba(58,84,70,.25); }
+.mi-card-oshi { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.mi-card-oshi b { font-weight: 800; }
 
 /* ---- Phase A（団体戦）: チーム枠に3人カードを並べる。自チームを左上に強調、
        先鋒に「一番手」マーク、控えはトーンダウン。2×2 グリッド。 ---- */

@@ -64,7 +64,7 @@ export class AuthorityRoom {
     endpoint.onMessage((msg) => this._onIntent(seat, msg));
     endpoint.onClose?.(() => { if (this.connections[seat] === endpoint) this.dropSeat(seat); });
     const token = (this.seatTokens && this.seatTokens[seat]) || this.token;
-    endpoint.send({ type: "welcome", seat, roster: this.roster, token, rules: { players: this.game.numPlayers }, rejoined: true });
+    endpoint.send({ type: "welcome", seat, roster: this.roster, players: this.players, token, rules: { players: this.game.numPlayers }, rejoined: true });
     endpoint.send(redactFor(snapshotEvent(this.game), seat));
   }
 

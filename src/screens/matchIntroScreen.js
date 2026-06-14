@@ -74,7 +74,7 @@ function hpGauge(points, maxHp, accent) {
  * @param {object} [opts.audio]     AudioManager（任意。SE 用）
  * @param {Function} opts.onComplete 演出完了で呼ばれる
  */
-export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, teams = null, pairs = null, tournament = null, onComplete }) {
+export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, teams = null, pairs = null, tournament = null, labels = null, skipSeating = false, onComplete }) {
   const N = seated.length;
   const rounds = mode.rounds === 2 ? 2 : 1;
   const players = N;
@@ -152,20 +152,37 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
     for (const s of seated) {
       const c = s.character;
       const role = roleDef(c.role);
-      const isHuman = seated.indexOf(s) === humanIndex;
+      const i = seated.indexOf(s);
+      const isHuman = i === humanIndex;
+      const label = labels?.[i] || null; // 通信対戦: { name(ユーザー名), sub(段位 or "CPU"), cpu, you }
       const card = document.createElement("div");
-      card.className = `mi-card${isHuman ? " is-human" : ""}`;
+      card.className = `mi-card${isHuman ? " is-human" : ""}${label ? " mi-card-online" : ""}`;
       card.style.setProperty("--role", role.color);
       card.style.setProperty("--char", c.color);
-      card.innerHTML = `
-        <div class="mi-card-art"></div>
-        <div class="mi-card-info">
-          <div class="mi-card-reading">${c.reading || ""}</div>
-          <div class="mi-card-name" style="color:${c.color}">${c.name}</div>
-          <div class="mi-card-role" style="--role:${role.color}">${c.isRival && c.rivalTitle ? c.rivalTitle : role.label}</div>
-          ${hpGauge(c.stats?.startingPoints || 0, maxHp, c.color)}
-          ${isHuman ? `<div class="mi-card-you">YOU</div>` : c.isRival && c.introLine ? `<div class="mi-card-line">「${c.introLine}」</div>` : ""}
-        </div>`;
+      if (label) {
+        // 通信対戦カード: ユーザー名＋段位を主役にし、持ちキャラ（推し）を立ち絵＋名前で添える。
+        const isCpu = !!label.cpu;
+        card.innerHTML = `
+          <div class="mi-card-art"></div>
+          <div class="mi-card-info">
+            <div class="mi-card-username"></div>
+            <div class="mi-card-dan${isCpu ? " is-cpu" : ""}"></div>
+            ${isCpu ? "" : `<div class="mi-card-oshi">推し <b style="color:${c.color}">${c.name}</b></div>`}
+            ${label.you ? `<div class="mi-card-you">YOU</div>` : ""}
+          </div>`;
+        card.querySelector(".mi-card-username").textContent = label.name || "名無し"; // 入力値は textContent で安全に
+        card.querySelector(".mi-card-dan").textContent = label.sub || "";
+      } else {
+        card.innerHTML = `
+          <div class="mi-card-art"></div>
+          <div class="mi-card-info">
+            <div class="mi-card-reading">${c.reading || ""}</div>
+            <div class="mi-card-name" style="color:${c.color}">${c.name}</div>
+            <div class="mi-card-role" style="--role:${role.color}">${c.isRival && c.rivalTitle ? c.rivalTitle : role.label}</div>
+            ${hpGauge(c.stats?.startingPoints || 0, maxHp, c.color)}
+            ${isHuman ? `<div class="mi-card-you">YOU</div>` : c.isRival && c.introLine ? `<div class="mi-card-line">「${c.introLine}」</div>` : ""}
+          </div>`;
+      }
       if (c.isRival) card.classList.add("is-rival");
       card.querySelector(".mi-card-art").appendChild(makeArt(c, "portrait", "mi-card-portrait"));
       cardsBox.appendChild(card);
@@ -328,6 +345,7 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
   root.addEventListener("click", () => {
     if (finished) return;
     if (phase === "versus") {
+      if (skipSeating) { clearTimers(); finish(); return; } // 通信対戦: 親決めは権威が行うのでスキップ
       phase = "seating";
       clearTimers();
       runSeating();
@@ -346,6 +364,7 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
   const autoToSeating = 700 + 200 * animTargets.length + 1400;
   after(autoToSeating, () => {
     if (finished || phase !== "versus") return;
+    if (skipSeating) { finish(); return; } // 通信対戦: 着席/親決めを省いてそのまま対局へ
     phase = "seating";
     runSeating();
   });

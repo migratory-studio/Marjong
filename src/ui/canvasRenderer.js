@@ -208,9 +208,12 @@ export class CanvasRenderer {
     this._seatIcon(p, x - 90 - 22, y, 18, isTurn);
 
     const windName = { 27: "東", 28: "南", 29: "西", 30: "北" }[p.seatWind];
+    // 卓上ネームプレートは「プレイヤーの名前」。通信対戦では seatLabels[席]=ユーザー名を出す
+    // （CPU席や非オンラインは未設定→キャラ名にフォールバック）。HPゲージ側はキャラ名のまま。
+    const plateName = this.seatLabels?.[p.index] ?? p.character.name;
     ctx.fillStyle = p.character.color;
     ctx.font = "bold 15px sans-serif";
-    ctx.fillText(`${windName} ${p.character.name}${p.isDealer ? "(親)" : ""}`, x, y + 5);
+    ctx.fillText(`${windName} ${plateName}${p.isDealer ? "(親)" : ""}`, x, y + 5);
 
     if (p.riichi) {
       ctx.fillStyle = "#f0d264";
