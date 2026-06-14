@@ -27,6 +27,15 @@ export function createDefaultProfile() {
     unlockedPresetIds: [],
     rewardLedger: [],
     mentorGrowth: {}, // 覇道編の「師匠も伸びる」修行 exp（mentorId → { exp }）
+    companionBonds: {}, // 相棒絆（charId → { level, exp }）。全弟子横断。仕様: docs/companion-bond-and-history.md
+    playerHistory: {   // プレイヤー永続履歴（連勝/連敗/打ち筋）。全弟子横断。
+      winStreak: 0,
+      loseStreak: 0,
+      maxWinStreak: 0,
+      lastPlacement: null,
+      totalMatches: 0,
+      styleCounts: {},
+    },
   };
 }
 
@@ -48,6 +57,20 @@ export class ProfileRepository {
         ...merged.records,
         treasures: [...new Set(merged.records.treasures.map((id) => RENAMED_TOURNAMENT_IDS[id] || id))],
       };
+    }
+    // 欠損補完（旧セーブに companionBonds / playerHistory が無い場合）。
+    if (!merged.companionBonds || typeof merged.companionBonds !== "object") {
+      merged.companionBonds = {};
+    }
+    if (!merged.playerHistory || typeof merged.playerHistory !== "object") {
+      merged.playerHistory = { ...base.playerHistory };
+    } else {
+      // 個別キーの欠損も既定値で埋める
+      const ph = base.playerHistory;
+      merged.playerHistory = { ...ph, ...merged.playerHistory };
+      if (!merged.playerHistory.styleCounts || typeof merged.playerHistory.styleCounts !== "object") {
+        merged.playerHistory.styleCounts = {};
+      }
     }
     merged.schemaVersion = SCHEMA_VERSION;
     return merged;

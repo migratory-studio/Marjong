@@ -8,7 +8,15 @@
 //   agari   : { isYakuman, score }
 //   damage  : { dmgAmount, hpFrac }      hpFrac = 被弾後の持ち点 / 開始持ち点
 //   matchEnd: { rankIndex, numPlayers }  rankIndex = 0始まり(0=1位)
-//   （任意 / 追々）: { skillLevel }       cond.skillLevelMin の評価に使う
+//   （任意）: { skillLevel }              cond.skillLevelMin の評価に使う
+//   （任意）: { voiceSet }               cond.voiceSet 専用セリフを解放
+//   ── 相棒絆＋プレイヤー履歴（仕様: docs/companion-bond-and-history.md §2/§3） ──
+//   { companionBondLevel }   profile.companionBonds[相棒id].level → cond.companionBondMin で段階解放
+//   { winStreak }            playerHistory.winStreak  → cond.winStreakMin
+//   { loseStreak }           playerHistory.loseStreak → cond.loseStreakMin
+//   { lastHandResult }       matchTalk.lastHandResult（"agari"|"dealIn"|"tsumoLoss"|"draw"|null）
+//                            → cond.lastHandResult で前の局の結果参照
+//   { playStyleTag }         topPlayStyle(playerHistory) → cond.playStyleTag で多用打ち筋参照
 //
 import { CHARACTER_VOICE_MASTER } from "./characterVoiceMaster.js";
 
@@ -41,6 +49,18 @@ function condMatches(cond, ctx) {
   // voiceSet 指定のある行は ctx.voiceSet が一致したときだけ候補。指定なしの行は
   // 常に候補＝フォールバック。これにより「一致すれば専用／無ければ通常」が成立する。
   if (cond.voiceSet && cond.voiceSet !== ctx.voiceSet) return false;
+  // ── 相棒絆＋プレイヤー履歴（仕様: docs/companion-bond-and-history.md §3） ──
+  // companionBondMin: 相棒絆 Lv 下限。未供給時は Lv1 とみなす（未対局でも既定で通る）。
+  // ※ 師弟側の bondMin（avatar.bondLevel）とは別物＝名前で区別する。
+  if (cond.companionBondMin != null && !((Number(ctx.companionBondLevel) || 1) >= cond.companionBondMin)) return false;
+  // winStreakMin: 連勝数下限。ctx.winStreak 未供給なら 0 とみなす。
+  if (cond.winStreakMin   != null && !(Number(ctx.winStreak)  >= cond.winStreakMin))  return false;
+  // loseStreakMin: 連敗数下限。ctx.loseStreak 未供給なら 0 とみなす。
+  if (cond.loseStreakMin  != null && !(Number(ctx.loseStreak) >= cond.loseStreakMin)) return false;
+  // lastHandResult: 前の局の結果（"agari"|"dealIn"|"tsumoLoss"|"draw"）。未供給は不一致扱い。
+  if (cond.lastHandResult && cond.lastHandResult !== ctx.lastHandResult) return false;
+  // playStyleTag: 多用する打ち筋タグ（"riichi"|"meld"|"aggressive"|"defensive"）。未供給は不一致扱い。
+  if (cond.playStyleTag   && cond.playStyleTag   !== ctx.playStyleTag)   return false;
   return true;
 }
 
