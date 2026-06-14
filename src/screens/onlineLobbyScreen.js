@@ -44,11 +44,10 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
   if (root._cleanup) root._cleanup(); // 前回の開封で仕掛けたタイマーを掃除
   root.innerHTML = "";
   const timers = [];
-  const after = (ms, fn) => { timers.push(setTimeout(fn, ms)); };
   root._cleanup = () => { timers.forEach(clearTimeout); timers.length = 0; };
 
   let pickedId = null;
-  let seatsReady = false; // 空席のCPU補填が完了したか
+  let code = null; // ルーム対戦のあいことば（onStart で部屋名に使う）
   const modeLabel = mode === "room" ? "ルーム対戦" : "マッチング対戦";
 
   // --- header ---
@@ -61,7 +60,9 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
   head.querySelector(".online-back").onclick = () => { audio?.playClick?.(); root._cleanup(); onBack(); };
 
   const note = elt("p", "online-note");
-  note.textContent = "※ サーバ未接続のテスト版です。空席は CPU で補填されます。";
+  note.textContent = mode === "room"
+    ? "※ 同じあいことばの相手と同卓します。最大30秒待っても揃わなければ空席に CPU が入ります。"
+    : "※ 開始すると相手を探します。最大30秒待っても揃わなければ空席に CPU が入ります。";
   root.appendChild(note);
 
   const body = elt("div", "online-body");
@@ -72,18 +73,18 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
   body.appendChild(left);
 
   if (mode === "room") {
-    const code = makeCode(4);
+    code = makeCode(4);
     const codeBox = elt("div", "online-codebox");
     codeBox.innerHTML =
       `<div class="online-codebox-k">あいことば</div>` +
       `<div class="online-code">${code}</div>` +
-      `<div class="online-codebox-sub">この合言葉で相手を招待（テスト中：相手は CPU）</div>`;
+      `<div class="online-codebox-sub">この合言葉を相手に伝えて招待（同じ合言葉で同卓）</div>`;
     left.appendChild(codeBox);
   } else {
     const mm = elt("div", "online-mm");
     mm.innerHTML =
-      `<div class="online-mm-title">対戦相手を探しています<span class="online-dots"></span></div>` +
-      `<div class="online-mm-bar"><div class="online-mm-fill"></div></div>`;
+      `<div class="online-mm-title">準備ができたら「対局開始」<span class="online-dots"></span></div>` +
+      `<div class="online-mm-sub">開始後、対戦相手を探します</div>`;
     left.appendChild(mm);
   }
 
@@ -97,7 +98,7 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
     const who = elt("span", "online-seat-who", { textContent: i === 0 ? "あなた" : `席 ${i + 1}` });
     const st = elt("span", "online-seat-state");
     if (i === 0) { st.textContent = "雀士を選択"; st.className = "online-seat-state is-you"; }
-    else { st.innerHTML = `<span class="online-spinner"></span>探索中…`; }
+    else { st.textContent = "開始後に相手 / CPU"; }
     row.append(who, st);
     seatList.appendChild(row);
     seatEls.push({ row, who, st });
@@ -134,35 +135,12 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
   footer.appendChild(startBtn);
   root.appendChild(footer);
 
-  const updateStart = () => { startBtn.disabled = !(pickedId && seatsReady); };
+  // 雀士を選べば開始可能。実際の相手探し（最大30秒待ち→空席CPU補填）は開始後にサーバ側で行う。
+  const updateStart = () => { startBtn.disabled = !pickedId; };
   startBtn.onclick = () => {
     if (startBtn.disabled) return;
     audio?.playClick?.();
     root._cleanup();
-    onStart({ charId: pickedId, mode });
+    onStart({ charId: pickedId, mode, code });
   };
-
-  // --- 空席をCPUで補填（マッチング不成立=タイムアウトの代替演出） ---
-  // マッチング待ち時間。これを過ぎるまで相手を探し、タイムアウトで空席を CPU 補填する。
-  // テスト版なので実際の探索はしないが、「ちゃんと待っている」体感のため席は時間をかけて埋める。
-  const MATCH_TIMEOUT_MS = 30000;
-  // 3席を待ち時間の 45% / 72% / 100% のタイミングで順に埋める（最後の席＝タイムアウト確定）。
-  const fillAt = [0.45, 0.72, 1.0].map((r) => Math.round(MATCH_TIMEOUT_MS * r));
-  const fillSeat = (i, idx) => {
-    after(fillAt[idx], () => {
-      const s = seatEls[i];
-      if (!s) return;
-      s.st.innerHTML = `<span class="online-cpu-badge">CPU 補填</span>`;
-      s.row.classList.add("is-filled");
-      if (idx === 2) {
-        seatsReady = true;
-        const mm = left.querySelector(".online-mm-title");
-        if (mm) mm.textContent = "マッチング不成立 → CPU で補填しました";
-        const fill = left.querySelector(".online-mm-fill");
-        if (fill) fill.style.width = "100%";
-        updateStart();
-      }
-    });
-  };
-  [1, 2, 3].forEach((seat, idx) => fillSeat(seat, idx));
 }

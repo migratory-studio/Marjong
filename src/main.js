@@ -61,6 +61,7 @@ import { simulateLeagueSection } from "./autobattle/leagueAutoSim.js";
 import { paramsFromLv, PARAM_KEYS } from "./autobattle/autoBattle.js";
 import { pickMentorBigMatchLine, pickMentorBattleQuip } from "./data/mentorVoiceMaster.js";
 import { isDebugMode } from "./app/debug.js";
+import { applyMatchToCompanion, detectPlayStyle, topPlayStyle } from "./progression/companionBond.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
 
@@ -69,10 +70,61 @@ const CPU_DELAY = 650; // ms between CPU actions (visualisation)
 // pendingVoiceSet を beginGame 直前にセットすると次の対局に適用される。
 let activeVoiceSet = null;
 let pendingVoiceSet = null;
-// セリフ解決の共通入口。activeVoiceSet を ctx に注入してから pickVoiceLine を呼ぶ。
-// 呼び出し側 ctx が voiceSet を明示していればそちらを優先。
+
+// ── 対局中セリフの動的 ctx（相棒絆＋プレイヤー履歴）。仕様: docs/companion-bond-and-history.md ──
+// 対局開始時に profile のスナップショットを取り（primeMatchVoiceState）、同期の vline がそこから
+// companionBondLevel / winStreak / 前局結果 / 多用する打ち筋 を補って pickVoiceLine に渡す。
+// 絆は「本人 × 相棒キャラ」で集約：師弟対局で師匠＝詩玥と打って貯めた絆を、フリー対戦で詩玥を
+// 操作キャラにしたとき同じ companionBonds[shiyue] として読む（経路をまたいで一つに）。
+let matchVoiceState = null; // { companionBonds, history } のスナップショット（対局外は null）
+let lastHandResult = null;  // 「前の局」の結果 "agari"|"dealIn"|"tsumoLoss"|"draw"（対局をまたいで保持）
+
+// 対局開始前に呼ぶ。現在の profile から相棒絆・履歴のスナップショットを作る（同期 vline 用）。
+async function primeMatchVoiceState() {
+  try {
+    const p = await profileRepo.loadProfile();
+    matchVoiceState = { companionBonds: p?.companionBonds || {}, history: p?.playerHistory || {} };
+  } catch { matchVoiceState = null; }
+  lastHandResult = null;
+}
+
+// charId（＝対局中に喋る相棒キャラ）に対する動的 ctx。スナップショット未取得なら空。
+function matchVoiceCtxFor(charId) {
+  if (!matchVoiceState) return {};
+  const h = matchVoiceState.history || {};
+  return {
+    companionBondLevel: matchVoiceState.companionBonds?.[charId]?.level ?? 1,
+    winStreak: h.winStreak ?? 0,
+    loseStreak: h.loseStreak ?? 0,
+    lastPlacement: h.lastPlacement ?? null,
+    lastHandResult,
+    playStyleTag: topPlayStyle(h),
+  };
+}
+
+// フリー対戦（個人）の終局で相棒（＝操作キャラ）との絆・履歴を更新（本気/大会は結果反映側で加算）。
+async function applyFreeMatchToCompanion({ companionId, placement, numPlayers, styleTags }) {
+  if (!companionId) return;
+  try {
+    const p = await profileRepo.loadProfile();
+    await profileRepo.saveProfile(applyMatchToCompanion(p, { companionId, placement, numPlayers, styleTags }));
+  } catch (e) { console.error("companion bond 更新失敗(free):", e); }
+}
+
+// 「前の局」の結果を人間視点で導出（vline の lastHandResult 用）。
+function deriveHandResult(r) {
+  if (!r) return null;
+  if (r.draw) return "draw";
+  if (r.winner === humanIndex) return "agari";
+  if (r.loser === humanIndex) return "dealIn";
+  if ((r.deltas?.[humanIndex] ?? 0) < 0) return "tsumoLoss";
+  return null;
+}
+
+// セリフ解決の共通入口。activeVoiceSet＋動的ctx（絆/履歴）を注入してから pickVoiceLine を呼ぶ。
+// 呼び出し側 ctx が明示した値を最優先（matchEnd の rankIndex 等を壊さない）。
 function vline(charId, event, ctx = {}) {
-  return pickVoiceLine(charId, event, { voiceSet: activeVoiceSet, ...ctx });
+  return pickVoiceLine(charId, event, { voiceSet: activeVoiceSet, ...matchVoiceCtxFor(charId), ...ctx });
 }
 // シナリオ戦などが「次の対局のセリフセット」を仕込む入口。beginGame がこれを
 // activeVoiceSet に確定する。例: setPendingVoiceSet("shugyo") → 二人麻雀を開始。
@@ -131,6 +183,8 @@ let onlineWsUrl = null; // 再接続用に接続先URLを保持
 let onlineToken = null; // 再接続用トークン（welcome で受領）。同じ卓へ rejoin する鍵
 let reconnecting = false; // 再接続シーケンス中フラグ
 let reconnectTimer = null;
+let matchmaking = null; // マッチング探索中の状態 { base, room, mode, charId, attempt }（welcome で解除）
+let matchCountdownTimer = null; // 探索オーバーレイの「あとX秒」カウントダウン
 let meldCalledFlag = false; // set by MELD_CALLED listener during a resolveCalls
 let abilityCutInFlag = false; // set by ABILITY_USED listener; CPU loop waits on it
 const NAKI_WAIT = 1100; // ms pause to show the naki call banner
@@ -988,6 +1042,7 @@ function mentorDuoHp(mentorChar, profile) {
 // 本気対局を起動。config: { avatar, opponents:[character], rounds, players, voiceSet, startPoints, onResult(result, action) }
 async function launchHonestMatch(config) {
   honestCtx = config;
+  await primeMatchVoiceState(); // 相棒絆・履歴のスナップショット（読む側。加算は結果反映側）
   honestAutoPlay = !!config.autoPlay; // 「オート」起動なら beginGame が autoPlay=ON にする
   teamBattleData = null; pairBattleData = null; humanIndex = 0;
   selectedRounds = config.rounds || 1;
@@ -1503,8 +1558,13 @@ async function onTournamentMatchDone(result) {
         id: String(u.id).replace(/^rival:/, ""),
         beaten: myPos >= 0 && myPos < ranked.indexOf(u.id),
       })));
+      const beforeTreasures = (cur.records?.treasures || []).length;
       const res = applyLeagueResult(cur, t, finalRank, action === "retreat");
-      await profileRepo.saveProfile(res.profile);
+      let np = res.profile;
+      const leagueAv = activeAvatar(np);
+      const afterTreasures = (np.records?.treasures || []).length;
+      if (leagueAv?.mentorCharacterId) np = applyMatchToCompanion(np, { companionId: leagueAv.mentorCharacterId, placement: res.finalRank, numPlayers: t.rankByPlace?.length ?? 4, styleTags: [], treasureJustCleared: beforeTreasures < 9 && afterTreasures >= 9 });
+      await profileRepo.saveProfile(np);
       const standings = ranked.map((id, i) => ({ name: run.names[id], pt: run.totals[id], isHuman: id === run.deshiUnitId, place: i + 1 }));
       // 宝獲得＝異能段位の昇段。獲得後の宝数から段位を引いて演出に渡す。
       const treasureCount = res.profile.records?.treasures?.length || 0;
@@ -1740,7 +1800,9 @@ async function openMentorSub(target, payload) {
       onResult: async (result) => {
         const cur = await profileRepo.loadProfile();
         const res = applyDuoResult(cur, result);
-        await profileRepo.saveProfile(res.profile);
+        let np = res.profile;
+        if (av?.mentorCharacterId) np = applyMatchToCompanion(np, { companionId: av.mentorCharacterId, placement: result.placement ?? 1, numPlayers: 2, styleTags: [] });
+        await profileRepo.saveProfile(np);
         openMentorHome({ duo: { won: res.won, soul: res.soul, gains: res.gains, before: res.before, after: res.after, closeness: res.closeness, finalPoints: res.finalPoints, hpBefore: res.hpBefore, hpAfter: res.hpAfter, hpDelta: res.hpDelta, bondUp: res.bondUp, mentor: res.mentor } });
       },
     });
@@ -1755,7 +1817,9 @@ async function openMentorSub(target, payload) {
       onResult: async (result) => {
         const cur = await profileRepo.loadProfile();
         const res = applyHonestResult(cur, result);
-        await profileRepo.saveProfile(res.profile);
+        let np = res.profile;
+        if (av?.mentorCharacterId) np = applyMatchToCompanion(np, { companionId: av.mentorCharacterId, placement: res.placement, numPlayers: res.numPlayers, styleTags: result.styleTags || [] });
+        await profileRepo.saveProfile(np);
         openMentorHome({ honest: { placement: res.placement, numPlayers: res.numPlayers, soul: res.soul, gains: res.gains, before: res.before, after: res.after, won: res.won } });
       },
     });
@@ -1858,7 +1922,8 @@ function bootHome() {
 }
 
 // ----------------------------------------------------------------- start
-function startGame() {
+async function startGame() {
+  await primeMatchVoiceState(); // 相棒絆・履歴のスナップショット（個人/ペア/団体すべて／読む側）
   if (selectedTeamBattle) { startTeamBattleGame(); return; }
   if (selectedPairBattle) { startPairBattleGame(cpuPicks[0]); return; }
   humanIndex = 0;
@@ -1912,13 +1977,14 @@ function openOnlineLobby(mode) {
     characters: CHARACTERS,
     audio,
     onBack: () => goScreen("online-screen"),
-    onStart: ({ charId }) => {
+    onStart: ({ charId, code }) => {
       const ov = (typeof window !== "undefined") ? window.__ONLINE_WS_URL : undefined;
       if (ov === "loopback") { startOnlineMatch(charId); return; } // 開発: サーバ無し権威
       const base = ov || ONLINE_WS_URL;
-      // テスト中は毎回新しい卓（=自分＋CPU補填）。合言葉での卓共有（複数人）は次の課題。
-      const room = "r" + Math.random().toString(36).slice(2, 8);
-      startOnlineMatchWS(charId, `${base}?room=${room}`);
+      // room=合言葉(招待制・同じ合言葉の人と同卓) / match=共有マッチング卓(他の待機者と相席)。
+      // どちらもサーバ側で人間が揃うか時間切れまで待ってから開始する（空席は CPU 補填）。
+      const room = mode === "room" ? `room-${code}` : "match";
+      startMatchmaking(charId, base, room, mode);
     },
   });
 }
@@ -1988,26 +2054,41 @@ function startOnlineClientWS() {
   wireOnlineCommon();
 }
 
-// 実 WS サーバへ接続して対局（テスト中）。window.__ONLINE_WS_URL があるとロビーがこちらを呼ぶ。
-async function startOnlineMatchWS(charId, url) {
+// マッチング開始（テスト中）。サーバへ接続して待機列に入り、人間が揃うか時間切れで対局が始まる。
+// 探索中は「対戦相手を探しています」オーバーレイを出し、welcome 受信で対局へ移る。match モードで
+// 卓が満席/対局中(evt.matchClosed)だった場合は別バケツ（match-1, match-2, …）へ自動で繋ぎ直す。
+function startMatchmaking(charId, base, room, mode) {
   humanIndex = 0;
   teamBattleData = null; pairBattleData = null;
   selectedTeamBattle = false; selectedPairBattle = false;
   selectedPlayers = 4; selectedRounds = 1;
+  matchmaking = { base, room, mode, charId, attempt: 0 };
+  connectMatchmaking();
+}
+
+// 現在の matchmaking 状態でサーバへ接続して join を送る。再試行時は同じ関数を attempt を上げて呼ぶ。
+async function connectMatchmaking() {
+  const mm = matchmaking;
+  if (!mm) return;
+  const roomName = mm.attempt === 0 ? mm.room : `${mm.room}-${mm.attempt}`;
+  const url = `${mm.base}?room=${encodeURIComponent(roomName)}`;
   onlineWsUrl = url; onlineToken = null; reconnecting = false;
+  showMatchSearchOverlay();
   let ep;
   try { ep = await connectWebSocket(url); }
   catch (e) {
     console.error("WS接続失敗", e);
+    hideMatchSearchOverlay(); matchmaking = null;
     alert("オンラインサーバに接続できませんでした：" + url);
     goScreen("online-screen");
     return;
   }
+  if (!matchmaking) { ep.close?.(); return; } // 接続待ちの間にキャンセルされた
   onlineWsEp = ep;
   if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ: 強制切断テスト用
-  ep.onMessage(onlineClientMessage); // welcome → beginGame(client化) → 以降 wire Event を描画
+  ep.onMessage(onlineClientMessage); // matchWaiting→探索表示 / welcome→beginGame(client化) / 以降 wire Event
   ep.onClose?.(() => handleWsClose(ep));
-  ep.send({ type: "intent.join", charId });
+  ep.send({ type: "intent.join", charId: mm.charId });
 }
 
 // 接続断の検知 → 対局が生きている間は自動で同じ卓へ再接続（リコネクト・ライト版）。
@@ -2062,10 +2143,75 @@ function showReconnectOverlay(text) {
   }
 }
 
+// --- マッチング探索オーバーレイ（接続後〜welcome までの「相手を探しています」表示） ---
+function showMatchSearchOverlay() {
+  let ov = el("match-search-overlay");
+  if (!ov) { ov = document.createElement("div"); ov.id = "match-search-overlay"; ov.className = "reconnect-overlay"; (el("app") || document.body).appendChild(ov); }
+  ov.innerHTML =
+    `<div class="reconnect-card match-search-card">` +
+    `<div class="match-search-title">対戦相手を探しています<span class="online-dots"></span></div>` +
+    `<div class="match-search-count"><span id="match-search-joined">1</span> / 4 人</div>` +
+    `<div class="match-search-sub" id="match-search-sub">空席は時間内に揃わなければ CPU が入ります</div>` +
+    `<div class="reconnect-btns"><button class="ghost-back" id="match-search-cancel">← やめる</button></div>` +
+    `</div>`;
+  el("match-search-cancel").onclick = () => { audio?.playClick?.(); cancelMatchmaking(); };
+}
+function updateMatchSearchOverlay(info) {
+  const j = el("match-search-joined");
+  if (j && info.joined != null) j.textContent = info.joined;
+  if (info.waitMs != null) startMatchCountdown(info.waitMs);
+}
+function startMatchCountdown(ms) {
+  clearInterval(matchCountdownTimer);
+  let remain = Math.ceil(ms / 1000);
+  const sub = el("match-search-sub");
+  const tick = () => {
+    if (sub) sub.textContent = remain > 0 ? `あと約 ${remain} 秒で開始（空席は CPU が入ります）` : "まもなく開始…";
+    if (remain <= 0) { clearInterval(matchCountdownTimer); matchCountdownTimer = null; return; }
+    remain -= 1;
+  };
+  tick();
+  matchCountdownTimer = setInterval(tick, 1000);
+}
+function hideMatchSearchOverlay() {
+  clearInterval(matchCountdownTimer); matchCountdownTimer = null;
+  el("match-search-overlay")?.remove();
+}
+// 探索を中止してオンライン入口へ戻る。
+function cancelMatchmaking() {
+  matchmaking = null;
+  hideMatchSearchOverlay();
+  onlineWsEp?.close?.(); onlineWsEp = null;
+  goScreen("online-screen");
+}
+// 卓が対局中(evt.matchClosed)だったときの再試行。match は別バケツへ、room(招待制)は諦める。
+function retryMatchmaking() {
+  if (!matchmaking) return;
+  onlineWsEp?.close?.(); onlineWsEp = null;
+  if (matchmaking.mode === "room") {
+    hideMatchSearchOverlay(); matchmaking = null;
+    alert("この合言葉の卓はすでに対局中です。別の合言葉でやり直してください。");
+    goScreen("online-screen");
+    return;
+  }
+  matchmaking.attempt += 1;
+  if (matchmaking.attempt > 5) {
+    hideMatchSearchOverlay(); matchmaking = null;
+    alert("空いている卓が見つかりませんでした。少し待ってからもう一度お試しください。");
+    goScreen("online-screen");
+    return;
+  }
+  connectMatchmaking(); // 次のバケツ（match-1, match-2, …）へ繋ぎ直す
+}
+
 // 権威（ループバック/WS 共通）からのメッセージ。welcome でレプリカ構築→対局画面、wire Event は
 // applyEvent(emit) でレプリカ(game)を描画、awaitX は自席 UI。
 function onlineClientMessage(msg) {
+  // 探索中（welcome 前）のマッチング進捗。game/online がまだ無い段階で届くため最初に処理する。
+  if (msg.type === "evt.matchWaiting") { updateMatchSearchOverlay(msg); return; }
+  if (msg.type === "evt.matchClosed") { retryMatchmaking(); return; }
   if (msg.type === "welcome") {
+    hideMatchSearchOverlay(); matchmaking = null; // 探索終了 → 対局へ
     if (msg.token) onlineToken = msg.token; // 再接続トークンを保持
     if (msg.rejoined) { reconnectSuccess(); return; } // 再接続: 既存の対局へ復帰（snapshot が続く）
     // サーバが席割と卓の顔ぶれ(roster=charId列)を通知 → レプリカを構築して対局へ。
@@ -3882,10 +4028,15 @@ function showGameOver() {
   const graphSnapshot = scoreHistory.slice();
   overlay.querySelector(".go-buttons").appendChild(mkBtn("📈 得点推移", "btn-tsumo go-graph-btn", () => showScoreGraph(graphSnapshot, graphPlayers)));
 
+  // フリー対戦（個人）：相棒（＝操作キャラ）との絆・履歴を更新（本気/大会は結果反映側で加算）。
+  if (!honestCtx) {
+    applyFreeMatchToCompanion({ companionId: human.character.id, placement: hRank, numPlayers: N, styleTags: detectPlayStyle(human, game.lastResult) });
+  }
+
   // 本気対局（Phase 4A）は「もう一度(reload)」ではなく結果を育成へ返して戻る。
   if (honestCtx) {
     const standings = ranks.map((p, i) => ({ id: p.character.id, name: p.character.name, points: p.points, rank: i, isHuman: p === human }));
-    const result = { placement: hRank, numPlayers: N, finalPoints: human.points, won: hRank === 0, standings, graph: { history: graphSnapshot, players: graphPlayers } };
+    const result = { placement: hRank, numPlayers: N, finalPoints: human.points, won: hRank === 0, standings, graph: { history: graphSnapshot, players: graphPlayers }, styleTags: detectPlayStyle(human, game.lastResult) };
     const ctx = honestCtx; honestCtx = null;
     const go = (action) => { overlay.classList.add("hidden"); ctx.onResult?.(result, action); };
     const btns = overlay.querySelector(".go-buttons");
@@ -5028,6 +5179,10 @@ function resetMatchTalk() {
 // 対局のイベントに検出を配線（beginGame から一度だけ）。
 function setupMatchTalk(g) {
   resetMatchTalk();
+
+  // 「前の局」の結果を人間視点で記録（次局以降の相槌が ctx.lastHandResult で参照）。
+  g.bus.on(Events.HAND_WON, (r) => { lastHandResult = deriveHandResult(r); });
+  g.bus.on(Events.HAND_DRAWN, () => { lastHandResult = "draw"; });
 
   // 局のはじまり：配牌直後に一言（シャッフルSEと被らないよう少し遅らせる）。
   g.bus.on(Events.HAND_STARTED, () => {

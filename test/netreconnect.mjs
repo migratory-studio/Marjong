@@ -22,7 +22,8 @@ async function until(pred, ms, label) { const t0 = Date.now(); while (!pred()) {
   let room = null;
   const server = await createSocketServer(0);
   // ホスト経由で接続を捌く（join→卓作成 / rejoin→復帰）。room を覗いて検証に使う。
-  server.onConnection((conn) => { host.handle(conn, { timeout: 5000, pacing: { cpuDelay: 25, nakiWait: 10 } }); });
+  // matchWaitMs:0 ＝ 待機を挟まず join 即開始（このテストは単独参加→CPU→rejoin を検証する）。
+  server.onConnection((conn) => { host.handle(conn, { timeout: 5000, matchWaitMs: 0, pacing: { cpuDelay: 25, nakiWait: 10 } }); });
 
   // --- client1: join して数手進める ---
   const ep1 = await connectSocket("127.0.0.1", server.port);

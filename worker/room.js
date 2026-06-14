@@ -34,9 +34,13 @@ export class MahjongRoom {
     const client = pair[0];
     const server = pair[1];
     server.accept();
-    // join で卓を作り、rejoin で同じ卓へ復帰（RoomHost が token 照合）。
+    // マッチング待機時間。?wait=ms で上書き可（テスト用。既定 30 秒）。
+    const waitParam = Number(new URL(request.url).searchParams.get("wait"));
+    const matchWaitMs = Number.isFinite(waitParam) && waitParam >= 0 ? waitParam : 30000;
+    // join は待機列へ（人間が揃うか時間切れで開始）、rejoin で同じ卓へ復帰（RoomHost が token 照合）。
     this.host.handle(wrapServerWs(server), {
       timeout: 120000,
+      matchWaitMs,
       pacing: { cpuDelay: 650, cutInWait: 1700, nakiWait: 1100 },
     });
     return new Response(null, { status: 101, webSocket: client });
