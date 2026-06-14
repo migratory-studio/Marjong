@@ -35,8 +35,10 @@ export class MahjongRoom {
     const server = pair[1];
     server.accept();
     // マッチング待機時間。?wait=ms で上書き可（テスト用。既定 30 秒）。
-    const waitParam = Number(new URL(request.url).searchParams.get("wait"));
-    const matchWaitMs = Number.isFinite(waitParam) && waitParam >= 0 ? waitParam : 30000;
+    // 注意: get("wait") は未指定だと null。Number(null)===0 なので「指定あり」を先に判定すること。
+    const waitRaw = new URL(request.url).searchParams.get("wait");
+    const waitParam = (waitRaw == null || waitRaw === "") ? NaN : Number(waitRaw);
+    const matchWaitMs = (Number.isFinite(waitParam) && waitParam >= 0) ? waitParam : 30000;
     // join は待機列へ（人間が揃うか時間切れで開始）、rejoin で同じ卓へ復帰（RoomHost が token 照合）。
     this.host.handle(wrapServerWs(server), {
       timeout: 120000,
