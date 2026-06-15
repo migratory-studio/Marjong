@@ -12,7 +12,7 @@ import { decideDiscard, decideCall, decideAbilityActivations } from "../ai/simpl
 import { attachRecorder, snapshotEvent } from "./eventLog.js";
 import { redactFor } from "./redact.js";
 
-const INTENT_TIMEOUT = 8000; // ms。未応答は自動ツモ切り/パス扱い。
+const INTENT_TIMEOUT = 15000; // ms。1手の持ち時間。超過した遠隔席は CPU 代打ち(autoSeats)へ。
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 const meldTotal = (game) => game.players.reduce((s, p) => s + p.melds.length, 0);
 
@@ -34,6 +34,7 @@ export class AuthorityRoom {
     // 演出ペーシング（ブラウザ描画用。ヘッドレス＝省略で 0＝即時）。CPU の間合い/カットイン/鳴き待ち。
     this.pacing = opts.pacing || null;
     this.pending = new Map();   // seat -> { kind, resolve, timer }
+    this.autoSeats = new Set(); // CPU 代打ち中の遠隔席（長考超過 or 本人がオート委任）。本人が "オート解除" で外す。
     this.acks = new Set();      // 現局の結果を反映済みの遠隔席
     this._ackResolve = null;
     this.done = false;
@@ -52,6 +53,7 @@ export class AuthorityRoom {
   dropSeat(seat) {
     if (this.connections[seat]) this.connections[seat]._dropped = true; // 旧端点の close で誤 drop しない印
     delete this.connections[seat];
+    this.autoSeats.delete(seat); // 切断席は connections から消えて isRemote=false＝恒久 CPU 扱い。autoSeats に残しても無意味なのでクリア。
     const p = this.pending.get(seat);
     if (p) { this.pending.delete(seat); clearTimeout(p.timer); p.resolve(null); }
     if (this._ackResolve && this._allAcked()) { const r = this._ackResolve; this._ackResolve = null; r(); }
@@ -61,6 +63,7 @@ export class AuthorityRoom {
   // redaction)を送ってクライアントが途中局面から再構築できるようにする。次の手番から本人が打つ。
   rejoin(seat, endpoint) {
     this.connections[seat] = endpoint;
+    this.autoSeats.delete(seat); // 本人が戻った＝代打ち解除。次の手番から本人が打つ。
     endpoint.onMessage((msg) => this._onIntent(seat, msg));
     endpoint.onClose?.(() => { if (this.connections[seat] === endpoint) this.dropSeat(seat); });
     const token = (this.seatTokens && this.seatTokens[seat]) || this.token;
@@ -74,10 +77,23 @@ export class AuthorityRoom {
   }
   sendToSeat(seat, msg) { this.connections[seat] && this.connections[seat].send(msg); }
 
+  // 長考超過で CPU 代打ちへ。本人席へだけ通知（他席はモーダル不要）。以後 decideTurn/decideCalls/
+  // decideAbilities はこの席をローカル AI で裁き、Intent 待ちをしない（＝待たずに進む）。
+  _enterAuto(seat, reason) {
+    if (this.autoSeats.has(seat)) return;
+    this.autoSeats.add(seat);
+    this.sendToSeat(seat, { type: "evt.autoOn", seat, reason });
+  }
+
   _onIntent(seat, msg) {
     if (msg.type === "intent.ack") {
       this.acks.add(seat);
       if (this._ackResolve && this._allAcked()) { const r = this._ackResolve; this._ackResolve = null; r(); }
+      return;
+    }
+    if (msg.type === "intent.resumeControl") {
+      // 本人が「オート解除」を押した。代打ちを外し、次の手番から本人へ手番を渡す。
+      if (this.autoSeats.delete(seat)) this.sendToSeat(seat, { type: "evt.autoOff", seat });
       return;
     }
     const p = this.pending.get(seat);
@@ -109,15 +125,18 @@ export class AuthorityRoom {
     return new Promise((resolve) => { this._ackResolve = resolve; });
   }
 
+  // 代打ち中の遠隔席は CPU と同じく扱う（ローカル AI で裁き、Intent を待たない）。
+  _cpuLike(seat) { return !this.isRemote(seat) || this.autoSeats.has(seat); }
+
   // --- 決定層(A)。CPU=ローカル AI、遠隔=Intent。状態変更(B)はポンプ側で行う。 ---
   decideAbilities(seat) {
-    if (this.isRemote(seat)) return []; // 遠隔席の能力発動は intent 化(L4 follow-up)。今は CPU 席のみ。
+    if (!this._cpuLike(seat)) return []; // 遠隔席(本人操作中)の能力発動は intent 化(L4 follow-up)。
     return decideAbilityActivations(this.game, seat);
   }
 
   async decideTurn(seat) {
     const g = this.game;
-    if (!this.isRemote(seat)) return decideDiscard(g, seat);
+    if (this._cpuLike(seat)) return decideDiscard(g, seat);
     const p = g.players[seat];
     // 手番中ループ：能力発動(intent.ability)は権威がその場で適用し、更新した awaitDiscard を再送して
     // 継続する（発動はターンを終わらせない）。打牌/ツモ/カン(intent.discard)で終了。
@@ -137,7 +156,11 @@ export class AuthorityRoom {
         danger,
       });
       const intent = await this.awaitIntent(seat, ["discard", "ability"]);
-      if (!intent) return { type: "discard", tileId: p.drawnTileId, riichi: false }; // timeout=自動ツモ切り
+      if (!intent) {
+        // 持ち時間(15s)超過。以後この席は CPU 代打ちへ切替え、本人へモーダル通知。今手も CPU が打つ。
+        this._enterAuto(seat, "timeout");
+        return decideDiscard(g, seat);
+      }
       if (intent.type === "intent.ability") {
         // ホスト側で能力を発動（recall=河↔手牌 / jane-doe / kakeha / zero-search 等）。発動結果は
         // ABILITY_USED 等の Event で配信され、ループ先頭で更新済み awaitDiscard を再送する。
@@ -155,12 +178,15 @@ export class AuthorityRoom {
     const g = this.game;
     const decisions = [];
     for (const c of callers) {
-      if (!this.isRemote(c.index)) decisions.push({ index: c.index, ...decideCall(g, c.index, c.options) });
+      if (this._cpuLike(c.index)) decisions.push({ index: c.index, ...decideCall(g, c.index, c.options) });
     }
-    const remote = callers.filter((c) => this.isRemote(c.index));
+    const remote = callers.filter((c) => !this._cpuLike(c.index));
     await Promise.all(remote.map(async (c) => {
       this.sendToSeat(c.index, { type: "evt.awaitCalls", you: true, seat: c.index, options: c.options });
       const intent = await this.awaitIntent(c.index, "call");
+      // 鳴き窓も持ち時間超過(null)なら代打ちへ。打牌手番と挙動を揃え、本人にモーダルを出す
+      // （以後の手番も CPU 化。明示パスは intent が返るので代打ちには入らない）。
+      if (!intent) this._enterAuto(c.index, "timeout");
       decisions.push(intent && intent.action && intent.action !== "pass"
         ? { index: c.index, action: intent.action, meta: intent.meta }
         : { index: c.index, action: "pass" });
@@ -192,10 +218,14 @@ export class AuthorityRoom {
       }
       if (g.phase === Phase.AWAIT_DISCARD) {
         const seat = g.turn;
+        // 手番開始通知（「長考中」バッジ＝他席 / 持ち時間＝自席）。長考しうるのは本人操作の遠隔席だけ
+        // なので、CPU/代打ち席の手番では配信しない（無駄な配信を避ける＝バッジ閾値でも抑制されるが、
+        // 配信自体を絞ってトラフィックを抑える）。配信は接続席のみ（_broadcast が connections を回す）。
+        if (!this._cpuLike(seat)) this._broadcast({ type: "evt.turn", seat, ms: this.timeout });
         const acts = this.decideAbilities(seat);
         for (const a of acts) g.activateAbility(seat, a.id, a.params);
-        // CPU 席は間合い（カットインが出たら長め）。遠隔席は Intent 待ち＝人間のペースなので置かない。
-        if (!this.isRemote(seat)) await this._pace(acts.length ? (P.cutInWait || 0) : (P.cpuDelay || 0));
+        // CPU/代打ち席は間合い（カットインが出たら長め）。本人操作の遠隔席は Intent 待ち＝人間のペース。
+        if (this._cpuLike(seat)) await this._pace(acts.length ? (P.cutInWait || 0) : (P.cpuDelay || 0));
         applyTurnDecision(g, seat, await this.decideTurn(seat));
         continue;
       }

@@ -41,7 +41,7 @@ export class MahjongRoom {
     const matchWaitMs = (Number.isFinite(waitParam) && waitParam >= 0) ? waitParam : 30000;
     // join は待機列へ（人間が揃うか時間切れで開始）、rejoin で同じ卓へ復帰（RoomHost が token 照合）。
     this.host.handle(wrapServerWs(server), {
-      timeout: 120000,
+      timeout: 15000, // 1手の持ち時間(ms)。超過席は CPU 代打ち(AuthorityRoom.autoSeats)へ。
       matchWaitMs,
       pacing: { cpuDelay: 650, cutInWait: 1700, nakiWait: 1100 },
     });

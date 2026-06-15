@@ -187,6 +187,13 @@ let reconnectTimer = null;
 let matchmaking = null; // マッチング探索中の状態 { base, room, mode, charId, name, dan, attempt }（welcome で解除）
 let matchCountdownTimer = null; // 探索オーバーレイの「あとX秒」カウントダウン
 let onlineSeatInfo = null; // 通信対戦の席ごと表示情報 [{charId,name,dan}|{charId,cpu}]（welcome で受領）
+// 通信対戦の手番/待機 UI 状態。
+let onlineTurnSeat = null;      // 直近の evt.turn の席（手番中の席）。
+let thinkingBadgeTimer = null;  // 他席の「長考中」バッジを出すまでの猶予タイマー（約3秒）。
+let onlineAutoSelf = false;     // 自席が CPU 代打ち中（長考超過）か。
+let ackWaitTimer = null;        // 局間「通信待機中…」を出すまでの猶予タイマー（自分は ack 済・次局待ち）。
+const THINK_BADGE_DELAY = 3000; // ms。これ以上手番が続いたら「長考中」を出す。
+const ACK_WAIT_DELAY = 3000;    // ms。ack 後これ以上次局が来なければ「通信待機中…」を出す。
 let meldCalledFlag = false; // set by MELD_CALLED listener during a resolveCalls
 let abilityCutInFlag = false; // set by ABILITY_USED listener; CPU loop waits on it
 const NAKI_WAIT = 1100; // ms pause to show the naki call banner
@@ -2097,7 +2104,7 @@ function startOnlineRoom(seated, dealerIndex) {
   const authGame = new Game(authSeated, humanIndex, undefined, { maxRounds: selectedRounds, dealerIndex });
   const { a: roomEp, b: clientEp } = createLoopback();
   const room = new AuthorityRoom(authGame, { [humanIndex]: roomEp }, {
-    timeout: 120000,
+    // timeout 未指定＝AuthorityRoom 既定(15s)。本番 WS と揃え、ループバックでも代打ちを確認できる。
     pacing: { cpuDelay: CPU_DELAY, cutInWait: ABILITY_CUTIN_WAIT, nakiWait: NAKI_WAIT },
   });
   clientEp.onMessage(onlineClientMessage);
@@ -2361,10 +2368,17 @@ function onlineClientMessage(msg) {
     // この通知は最終局の ack 送出後（結果オーバーレイを閉じた後）に届くので、そのまま結果へ進める。
     // 二重発火（再接続後の重複通知など）に備え一度だけ表示する。
     game.gameOver = true; // 以降 handleWsClose の自動再接続も抑止される
+    resetOnlineTurnUi(); // 長考バッジ/代打ちモーダル/待機トーストが残らないよう一掃
     if (!game._goShownOnline) { game._goShownOnline = true; showGameOver(); }
     return;
   }
+  if (msg.type === "evt.turn") { handleOnlineTurn(msg.seat, msg.ms); return; }
+  if (msg.type === "evt.autoOn") { enterAutoTakeover(); return; }
+  if (msg.type === "evt.autoOff") { exitAutoTakeover(); return; }
   if (ONLINE_WIRE.has(msg.type)) {
+    // 動き出し（打牌）/結果/次局開始で「長考中」バッジを解除する。
+    if (msg.type === "tileDiscarded" || msg.type === "handWon" || msg.type === "handDrawn") setThinkingSeat(null);
+    if (msg.type === "handStarted") { setThinkingSeat(null); hideOnlineWaitToast(); } // 次局到来＝局間待ち解除
     applyEvent(game, msg, { viewpoint: humanIndex, emit: true });
     return;
   }
@@ -2384,6 +2398,75 @@ function onlineClientMessage(msg) {
     showCallActions({ index: humanIndex, options: msg.options });
     render();
   }
+}
+
+// 通信対戦の手番/待機 UI ----------------------------------------------------
+// 手番開始通知。他席なら一定時間後に「長考中」バッジ、自席なら持ち時間の起点（UI は awaitDiscard が出す）。
+function handleOnlineTurn(seat, ms) {
+  onlineTurnSeat = seat;
+  clearTimeout(thinkingBadgeTimer); thinkingBadgeTimer = null;
+  setThinkingSeat(null); // 前席のバッジを消す
+  hideOnlineWaitToast(); // 手番が動いた＝局は進行中。局間待ちトーストは引っ込める。
+  if (seat === humanIndex) return; // 自席は ③ の持ち時間/代打ち側で扱う（バッジは出さない）
+  // 他席：3秒以上手番が続いたら「長考中」。CPU は即打つので閾値に届かず出ない。
+  thinkingBadgeTimer = setTimeout(() => {
+    if (onlineTurnSeat === seat) setThinkingSeat(seat);
+  }, THINK_BADGE_DELAY);
+}
+
+// レンダラへ「長考中」席を伝えて再描画。null で消灯。
+function setThinkingSeat(seat) {
+  if (!renderer) return;
+  if (renderer.thinkingSeat === seat) return;
+  renderer.thinkingSeat = seat;
+  if (game && !game.gameOver) render();
+}
+
+// 自席が長考超過 → CPU 代打ち開始。操作 UI を畳み、「CPU代打ち中」＋「オート解除」モーダルを出す。
+function enterAutoTakeover() {
+  onlineAutoSelf = true;
+  clearActions();
+  let ov = el("takeover-overlay");
+  if (!ov) { ov = document.createElement("div"); ov.id = "takeover-overlay"; ov.className = "reconnect-overlay"; (el("app") || document.body).appendChild(ov); }
+  ov.innerHTML =
+    `<div class="reconnect-card takeover-card">` +
+    `<div class="takeover-title">長考時間超過</div>` +
+    `<div class="takeover-sub"><span class="online-spinner"></span>CPU 代打ち中</div>` +
+    `<div class="reconnect-btns"><button class="btn-tsumo" id="takeover-resume">オート解除</button></div>` +
+    `</div>`;
+  el("takeover-resume").onclick = () => {
+    audio?.playClick?.();
+    online?.send({ type: "intent.resumeControl" });
+    const b = el("takeover-resume");
+    if (b) { b.disabled = true; b.textContent = "解除中…"; } // 次の手番から本人へ。evt.autoOff で閉じる。
+  };
+}
+
+// CPU 代打ち解除（本人が「オート解除」を押し、サーバが受理）。
+function exitAutoTakeover() {
+  onlineAutoSelf = false;
+  el("takeover-overlay")?.remove();
+}
+
+// 局間「通信待機中…」トースト：自分は次局へ進む準備ができたが、他家の足並みを待っている間に出す。
+function showOnlineWaitToast() {
+  let ov = el("online-wait-toast");
+  if (!ov) { ov = document.createElement("div"); ov.id = "online-wait-toast"; ov.className = "online-wait-toast"; (el("app") || document.body).appendChild(ov); }
+  ov.innerHTML = `<span class="online-spinner"></span><span>通信待機中<span class="online-dots"></span></span>`;
+}
+function hideOnlineWaitToast() {
+  clearTimeout(ackWaitTimer); ackWaitTimer = null;
+  el("online-wait-toast")?.remove();
+}
+
+// 通信対戦を抜ける/開始しなおすときに手番・待機 UI を全リセット（タイマー/オーバーレイのリーク防止）。
+function resetOnlineTurnUi() {
+  onlineTurnSeat = null;
+  onlineAutoSelf = false;
+  clearTimeout(thinkingBadgeTimer); thinkingBadgeTimer = null;
+  if (renderer) renderer.thinkingSeat = null;
+  el("takeover-overlay")?.remove();
+  hideOnlineWaitToast();
 }
 
 // デバッグ専用: 選択キャラ（未選択なら詩玥）vs モブ3体で通常対局を即開始する。
@@ -2532,6 +2615,7 @@ function startPairBattleGame(partnerId) {
 // 実対局の生成と開始。対局開始演出（showMatchIntro）の onComplete から呼ばれる。
 function beginGame(seated, dealerIndex, opts = {}) {
   online = null; // 既定はオフライン。オンライン時のみ startOnlineRoom が設定する。
+  resetOnlineTurnUi(); // 前局/前対局の手番・待機 UI（長考バッジ/代打ちモーダル/待機トースト）を一掃。
   // 団体戦は個人が飛んでも交代で続行する。終了（団体トビ）は「いずれかのチームが
   // 全滅（3人全員のHPが尽きてチーム合計が0以下）」したとき、または規定局完了。
   const teamBustCheck = teamBattleData
@@ -3354,7 +3438,14 @@ function appendNextButton(box, r) {
       return;
     }
     showPointFx(deltas); // animate +N / -N over the table
-    if (online) { online.send({ type: "intent.ack" }); return; } // 権威が次局を開始 → bus で描画
+    if (online) {
+      online.send({ type: "intent.ack" }); // 権威が次局を開始 → bus で描画
+      // ① 局間待ち：自分は次局へ進める状態だが、他家の ack 待ちで開始が遅れることがある。
+      // 3秒来なければ「通信待機中…」を出し、次局(handStarted)受信で引っ込める。
+      clearTimeout(ackWaitTimer);
+      ackWaitTimer = setTimeout(() => { if (online && !game.gameOver) showOnlineWaitToast(); }, ACK_WAIT_DELAY);
+      return;
+    }
     game.startHand();
     startPump();
   };
@@ -4205,6 +4296,7 @@ function showGameOver() {
       showReconnectOverlay(null);
       onlineWsEp?.close?.();
       online = null;
+      resetOnlineTurnUi(); // 長考バッジ/代打ちモーダル/待機トーストの後始末（経路追加時の取りこぼし防止）
       goScreen(target);
     };
     btns.appendChild(mkBtn("ロビーに戻る", "btn-tsumo", () => leave("online-screen")));

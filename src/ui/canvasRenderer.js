@@ -37,6 +37,7 @@ export class CanvasRenderer {
     this.handHitboxes = []; // [{tileId, kind, x,y,w,h, enabled}]
     this.riverHitboxes = []; // [{tileId, x,y,w,h}] — the human's OWN river (for リコール選択)
     this.hover = null; // {x, y, waits:[kind...]} for the wait tooltip
+    this.thinkingSeat = null; // 通信対戦: 長考中の席（「⏳ 長考中」バッジ対象）。null=なし。
     this.W = canvas.width;
     this.H = canvas.height;
 
@@ -203,6 +204,9 @@ export class CanvasRenderer {
 
     // 発動中バッジ：プレート上に「⚡発動中 能力名」をピル型で出す。
     if (activeAbility) this._abilityBadge(x, y - 18 - 8, activeAbility.name, ABILITY_GLOW);
+    // 通信対戦: この席が長考中（手番開始から一定時間動きなし）なら「⏳ 長考中」をプレート上に出す。
+    // 能力発動中バッジとは排他（同じ位置）。動き出し（打牌）でホスト側がクリアする。
+    else if (this.thinkingSeat === p.index) this._thinkingBadge(x, y - 18 - 8);
 
     // Character icon just left of the plate (real art if present, else a colored disc).
     this._seatIcon(p, x - 90 - 22, y, 18, isTurn);
@@ -246,6 +250,28 @@ export class CanvasRenderer {
     ctx.strokeStyle = color; ctx.lineWidth = 1.5;
     roundRect(ctx, bx, by, w, h, h / 2); ctx.stroke();
     ctx.fillStyle = "#f0e6ff";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(label, cx, by + h / 2 + 0.5);
+    ctx.textBaseline = "alphabetic";
+    ctx.restore();
+  }
+
+  // 「⏳ 長考中」バッジ。通信対戦で相手の手番が長引いているとき、その席のプレート上に出す。
+  _thinkingBadge(cx, bottomY) {
+    const ctx = this.ctx;
+    const label = "⏳ 長考中";
+    const color = "#f0c060";
+    ctx.save();
+    ctx.font = "bold 12px sans-serif";
+    const padX = 9, h = 20;
+    const w = ctx.measureText(label).width + padX * 2;
+    const bx = cx - w / 2, by = bottomY - h;
+    ctx.fillStyle = "#3a2f12";
+    roundRect(ctx, bx, by, w, h, h / 2); ctx.fill();
+    ctx.strokeStyle = color; ctx.lineWidth = 1.5;
+    roundRect(ctx, bx, by, w, h, h / 2); ctx.stroke();
+    ctx.fillStyle = "#ffe9b0";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(label, cx, by + h / 2 + 0.5);

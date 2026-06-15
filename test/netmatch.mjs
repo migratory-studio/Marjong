@@ -40,6 +40,7 @@ async function teardown(server, eps) { for (const ep of eps) ep.close(); await w
     const a = await joinClient(server, "shiyue");
     assert(host.room == null, "join 直後は卓未確定（待機中）");
     await until(() => host.room != null, 3000, "時間切れで卓確定");
+    await until(() => welcomeOf(a.c), 2000, "welcome 到着"); // welcome は socket 越しで遅延しうる
     const w = welcomeOf(a.c);
     assert(!!w && w.seat === 0, "単独参加は席0");
     assert(w && w.roster && w.roster.length === 4, "空席はCPUで4人に補填");
@@ -53,6 +54,7 @@ async function teardown(server, eps) { for (const ep of eps) ep.close(); await w
     const a = await joinClient(server, "shiyue");
     const b = await joinClient(server, "kuidoshi");
     await until(() => host.room != null, 3000, "2人で卓確定");
+    await until(() => welcomeOf(a.c) && welcomeOf(b.c), 2000, "両者の welcome 到着"); // socket 越しで遅延しうる
     const wa = welcomeOf(a.c), wb = welcomeOf(b.c);
     assert(wa && wb, "両者に welcome");
     const seats = [wa?.seat, wb?.seat].sort();
@@ -103,6 +105,7 @@ async function teardown(server, eps) { for (const ep of eps) ep.close(); await w
     const cc = await joinClient(server, "bibi");
     await until(() => host.room !== room1, 2000, "バッチ2が別卓で開始");
     assert(!b.c.received.some((m) => m.type === "evt.matchClosed"), "開始後の参加が締め出されない(matchClosedなし)");
+    await until(() => welcomeOf(b.c) && welcomeOf(cc.c), 2000, "バッチ2 welcome 到着"); // welcome は socket 越しで遅延しうる（L99 と同様）
     assert(welcomeOf(b.c) && welcomeOf(cc.c), "バッチ2の両者に welcome");
     assert(host.room !== room1, "バッチ2は別の AuthorityRoom");
     // 両卓の token がそれぞれ rejoin 照合表に載っている（複数卓を同時管理）
