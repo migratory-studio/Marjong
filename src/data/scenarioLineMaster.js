@@ -11365,6 +11365,8898 @@ export const SCENARIO_LINE_MASTER = [
     "seId": "se-wind"
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 1,
+    "backgroundId": "bg-bar",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ソウルを賭け、異能で打ち合う麻雀。いまや観客が、武道よりも沸くという、公に開かれた競技だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 2,
+    "backgroundId": "bg-bar",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "頂点には、九蓮宝士の名と、強烈な富と名声が待つ。その入口を求めて、いくつもの流派の戸を叩いてきた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 3,
+    "backgroundId": "bg-bar",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、いちばん会いたかった打ち手の居場所は、道場ではなかった。噂がたどり着いた先は——灯りを落とした、一軒のバー。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 4,
+    "backgroundId": "bg-bar",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "重い扉を、押し開ける。紫煙と、酒の匂い。むせ返るような大人の気配の奥に——カウンターに腰かけた、ひとつの影があった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 5,
+    "backgroundId": "bg-bar",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "羽根飾りのついた、シルクハット。指先では、一枚のカジノチップが、宙を舞っては手のひらに収まる。何度も、危なげなく、まるで運命をもてあそぶように。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 6,
+    "backgroundId": "bg-bar",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひと目で、分かった。この人だ。賭場という賭場で、その名だけが伝説のように囁かれる打ち手——賭羽ルイナ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 7,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——お客かい? それとも、挑戦者かな。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 8,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "流し目が、こちらを捉える。値踏みでも、警戒でもない。ただ——面白いものを見つけた、という色だけが、その瞳に浮かんでいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 9,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "弟子入りを願い出ようとして、ふと、学び舎を出る前の言葉が、頭をよぎる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 10,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "賭羽ルイナ、だけはやめておけ。腕は本物だ。本物だが——どこの誰とも知れん、得体の知れない女だぞ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 11,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "あの人につけば、お前まで呑まれる。首席のお前が、なぜよりによって——あんな、底の知れない打ち手を。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 12,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "口々の心配を振り切って、いま、この扉の内側に立っている。それでも、迷いはなかった。この人の卓を、見たかった。ただ、それだけで。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 13,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "賭羽ルイナに弟子入り、ねえ。——ずいぶんな、物好きだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 14,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "学校の先生がたは、さぞ渋い顔をしただろ? ——『あんな得体の知れない女はやめておけ』、ってね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 15,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "図星に、言葉が詰まる。今しがた頭をよぎったばかりの言葉を、まるで——聞いていたかのように、言い当てられた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 16,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "くるり、と舞っていたチップが、手のひらで、ぴたりと止まった。覗き込むように、その目が、すっと細められる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 17,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——へえ。いい目をしてる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 18,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "イカサマじゃない、運命だ。——あんた、ここに来るべくして来たね。あたしには、それが分かるよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 19,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いい目、と言われた意味を、測りかねる。褒められたのか、見定められたのか。——いや。もっと、得体の知れない何かに、見透かされた気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 20,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気圧されながらも、胸の奥の願いを、口にする。九蓮宝士になりたい。九つの宝を、すべて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 21,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "九つの宝、ねえ。てっぺんかい。——ずいぶん、大きく出たじゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 22,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "笑い飛ばされるかと思った。けれど、こちらを見る目は、逸れない。むしろ——楽しげに、妖しく、光っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 23,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いいだろう。——乗った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 24,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ただし、あたしの教えはひとつきりだ。——生き方ごと、賭けられるかい?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 25,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "賭ける、というその言葉の重さを、このときはまだ、何ひとつ分かっていなかった。それでも——まっすぐに、頷く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 26,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いい返事だ。——ほら、手付けだよ。受け取りな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 27,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指で弾かれたチップが、ひらりと飛んでくる。慌てて受け止めると、手の中で、小さく光った。なぜだか、温かい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 28,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ようこそ、賭け事の世界へ。——退屈だけは、させないよ。あたしの隣はね、いつだって、いい目だらけさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 29,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気づけば、口の端が上がっていた。あれほど耳にした心配が、なぜだか、ずいぶん遠い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 30,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どの流派の戸口でも感じなかったものが、この薄暗い卓には、確かにある。——ここは。どこよりも、妖しくて、どこよりも、生きている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "lineNo": 31,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さて。——手始めに、一勝負といこうか。あんたの運命、見せてもらうよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 1,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "バーの奥に据えられた、年季の入った雀卓。ここが、この伝説の道場らしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 2,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "麻雀ってのはね、配牌に文句を言い出した時点で、もう三流さ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 3,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "どんな目が来ても、あたしが張れば——いい目になる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 4,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "さらりと言ってのける。冗談にも聞こえる。なのに、その流し目の奥が、妙に本気で——背筋が、ひやりとした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 5,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "賭けない麻雀なんざ、ただ眺めてるだけのショーと同じだよ。生きちゃいない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 6,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉とは裏腹に、牌をさばく手つきには、塵ひとつの無駄もない。軽口の奥に、底の見えない何かが沈んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 7,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "やがて、勝負どころが来た。安全に降りるか、危険を承知で押し込むか。指先が、迷って止まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 8,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "おっと。あたしは、教えないよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 9,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ここで張るか、降りるか。——あんたが、決めな。賭けは、いつだって自分の目で選ぶものさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "question"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 10,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "突き放すようでいて、その目はこちらの手元から、ひとときも離れない。値踏みされている。いや——見透かされている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 11,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "息を吸う。迷いを振り切って、牌を前へ出した。張る、と決めた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 12,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ふぅん。——いい目をするじゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 13,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "正解だったのか、外れだったのか。表情からは、まるで読めない。ただ、口の端が、満足げに上がっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 14,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "言っとくけどね、降りるのも、立派なひとつの賭けさ。どっちを選んでも、正解にしちまえばいい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 15,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ただね。——張った時だけ、運命のほうが、ちょいとこっちを向く。……ふふ、不思議だろ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 16,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "運命のほうが、向く。比喩だと笑い飛ばすには、その言い方は、あまりに確信めいていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 17,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "この人は、何かが違う。うまく言えない。けれど、自分で選んで牌を出した手のひらには、確かに、知らない熱が残っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 18,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "その感じ、覚えときな。あんたが今、ちょいとだけ“生きた”って証さ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "lineNo": 19,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次の牌山へ手を伸ばす音が、いつもより、ずっと大きく聞こえる。この卓は、どこよりも生きている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "初めての公式戦。客席のざわめきが、卓のまわりを薄く包んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "競り合う終盤。安全に流すこともできた。けれど、耳の奥で、あの妖しい声がよみがえる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "張った時だけ、運命がこっちを向く——。指が、迷いを振り切って、勝負牌をつかんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——いい目だ。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつの間にか、客席のいちばん近くにいた。ぽつりと、こちらにだけ届く声で、そう呟いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その一言の、直後だった。心臓がひとつ跳ねる。引いた牌の先に——欲しかった一枚が、確かに乗っていた。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "seId": "se-tsumo",
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモ。勝った。初めての、自分で選び取った勝ち。……いや。本当に、自分だけの力だったのだろうか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの人が「いい目だ」と言った、その直後に、目が応えた。偶然と呼ぶには——タイミングが、できすぎている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ほら、ごらん。いい目だったろ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "腕を組んで、こちらの初勝利を、我がことのように楽しんでいる。その笑みの底は、やはり読めない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの、と問いかける。先生が「いい目だ」と言ったから、引けたんですか——と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さあねえ。——あんたが、引いたのさ。あたしは、そう言っただけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "答えになっていない。けれど、それ以上は、妖しい笑みの向こうへ仕舞い込まれてしまう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ま、これはまだ、ちいさな大博打さ。上には、もっと派手な舞台がいくらでもある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——せいぜい、楽しみにしときな。あたしの隣は、退屈しないよ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "初勝利の高揚と、説明のつかないぞくぞくが、胸の中で混ざり合う。この人の隣には、まだ見ぬ景色がある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "熱が引かないうちに、もう次の卓が見たくなっている。きっと、これがその入口なのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 1,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつものバーで、いつもの稽古。チップを躍らせるルイナの手元を、盗むように眺めていた、その時だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 2,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "店の扉が、勢いよく開け放たれる。差し込む光の中に立っていたのは——金の長い髪に、頭の左右から、竜のような角を生やした、ひとりの少女。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 3,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天真爛漫な笑みと、その手にちらつく、青い炎。——明らかに、ただ者ではない。なのにルイナは、顔も上げず、気だるげに串をかじっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 4,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ルイナー! 遊びに来たぞ! ……お? なんじゃ、見ない顔がおるな。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 5,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "げ。来たのか、騒がしいのが。——ああ、あたしの弟子だよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 6,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ほほう、弟子か! わらわはドラニエル。天界一の麻雀好きじゃ。よろしくのう、弟子よ!",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 7,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天界一。——聞き間違いだろうか。挨拶の規模が、人間のそれではない。思わず、首をかしげる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 8,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ああ、こいつね。——麻雀がやりたすぎて、天界から降りてきた天使なんだってさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 9,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あまりにさらりと言うものだから、頷きかけて——固まる。天使。いま、天使と言わなかったか。比喩、では、なく?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "confused"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 10,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "むっ。その顔は、信じておらんな? 比喩ではないぞ。わらわは正真正銘、天界からまかり越した、天使じゃ!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "temper"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 11,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "頭の角。手のひらに、ふっと灯る青い火。——冗談だと笑い飛ばすには、その存在は、あまりに現実離れしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 12,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さあね。本人がそう言ってるのさ。——あたしも、確かめたことはないよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 13,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天使を、天使と疑いもせず、平然と隣に置いている。——考えてみれば。この人自身もまた、底の知れない、得体の知れなさだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 14,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "人ならざる天使と、何者とも知れぬ伝説。——この二人が並ぶと、卓のまわりだけ、世界の理(ことわり)が、少し違って見える。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 15,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "下界の麻雀は、最高じゃのう! 天界には、こんなに胸の躍るものは無かったわ。——なあルイナ、ひさびさに、わらわと組もうぞ!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 16,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "組まないよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 17,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "即答だった。取りつく島もない。けれど、二人の間に流れる空気は、不思議とやわらかい。長い、長い付き合いの、気安さだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 18,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "むー、つれないのう! いつもそれじゃ。天使の誘いを、こうも袖にする人間は、お主くらいなものじゃぞ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "gloom"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 19,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ふふ。天使だろうが、悪魔だろうが、あたしは誰とも組まないのさ。——気が向いたら、勝手に隣にいる。それで、十分だろ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 20,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ならばよい! では今日は、一勝負だけ付き合え。——ぬるい賭けは、目が覚めんからのう。額を倍に、せんか!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flare"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 21,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "お、いいねえ。乗った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 22,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "止める間もない。賭け金が、見る間に膨らんでいく。——人ならざる者と、底の知れない女が、競うように張り合えば、こうなるらしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 23,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "嵐のような二人に挟まれて、目が回る。これが、師の腐れ縁——というものらしかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 24,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ま、こういう奴さ。仲良くしてやってくれ。——してやらなくても、勝手に懐くだろうけどね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 25,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "うむ! よろしくのう、弟子よ! ——お主、いずれ分かるぞ。この女の隣は、下界でいちばん、面白い場所じゃ!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "lineNo": 26,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天使が、太鼓判を押す。——人ならざる者すら、こうも惹きつける。この人は、本当に、何者なのだろう。賑やかな夜の隅で、その問いだけが、静かに残った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "大会会場の、人いきれの通路。雑踏のざわめきの中に、ふと、聞き慣れた名前が混じった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "ギャラリー",
+    "text": "おい、見たか。あれが賭羽ルイナだ。……あの女に、まともに勝った奴を、俺は知らねえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "ギャラリー",
+    "text": "勝つときも負けるときも、ぜんぶあの女の手のひらの上だって話さ。……どこの生まれかも、本名も、誰も知らねえ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師の名が、伝説として囁かれている。素性も過去も知れないのに——いや、知れないからこそ、誰もが恐れ、惹かれていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの人の隣にいる自分を、少しだけ誇らしく思った——その時だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "——おや。君は……あの時の、首席じゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "振り返ると、見覚えのある顔。学び舎を出るあの日、誰より心配してくれた、恩師だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "その後、どうしている。……正直に言うとね、賭羽ルイナの弟子になったと聞いて、職員室は大騒ぎだったよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "あんな、得体の知れない打ち手のもとへ、よりによって首席が……と。皆、君が呑まれてしまうのを恐れていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "心配は、もっともだ。けれど今は、迷いなく言える。あの人の下で、賭けることの意味が、少しずつ分かってきたのだ、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "……ほう。顔つきが、変わったな。学び舎にいた、あの優等生の頃より——ずっと、いい目をしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いい目、と教師は言った。あの人の口癖と、同じ言葉。胸の奥が、小さく跳ねる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "賭羽のことは、私たちも遠目に見たことがある。卓に着くだけで、場の空気がまるごと変わるんだ。……あれは、本当に、何者なんだろうな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "長く卓を見てきた教師ですら、師の正体を測りかねている。素性の知れなさは、噂が膨らませた虚像ではないのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "くれぐれも、呑まれるなよ。……いや。今の君の目なら——余計な世話だったかな。達者でな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "去っていく背中。あの日の心配は、いつのまにか、ほんの少しの感心に変わっていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "おかえり。——あたしの噂、たっぷり聞いてきたみたいだね。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつから、そこにいたのだろう。気配もなく、すぐ後ろに立っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "どんな噂だった? ……『勝った者はいない』あたりかな。ふふ、よく言われるよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問わずには、いられなかった。先生は——本当のところ、何者なんですか、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あたしの素性? ——ふふ。知らないほうが、いい目を見られるよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "噂なんてのは、勝手に育つもんさ。あたしは、ただ——出た目に、張ってるだけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ただ張っているだけ、で伝説になる。その一言が、いちばん底を見せない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師の背中が、また少し遠く——そして、抗いようもなく、眩しく見えた。いつか、あの隣に並びたい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "腕利きばかりが集う、夜の一戦。煙草の煙が天井に渦を巻き、卓を囲む視線は、どれも鋭い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ルイナの卓を、客席のいちばん前で見守っていた。あの底知れない打ち筋を、少しでも近くで盗みたかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが、勝負は終盤——オーラスへ来て、流れは完全に、彼女から離れていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "点棒は、最下位。卓の隅に積まれた彼女の持ち点は、もう、ずいぶんと心もとない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "配られた手牌は、和了など望むべくもない、ばらばらの絶望だった。揃う気配すら、どこにもない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰もが思っただろう。ついに——あの賭羽ルイナが、負ける。その瞬間に、立ち会っているのだ、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ほう……? これは、さすがのルイナも、分が悪いのう。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "わらわの天界の目で見てもじゃ。あの手は、もう詰んでおる。残念じゃが、ここまでじゃのう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつのまにか隣に、自称天使のドラニエルが立っていた。腕を組み、めずらしく、神妙な顔をしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "人ならざる者の目をもってしても、終わった盤面に見えるらしい。胸の奥が、きゅっと縮む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ところが——当のルイナだけが、まるで動じていない。それどころか、口の端を、ゆっくりと上げた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……ふふ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——いい目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詰んだ手を前に、なぜ、そんなに妖しく笑えるのか。問いかける声は、出てこない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その一言を合図にしたかのように——彼女の細い指が、静かに動きはじめた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一巡目。他家の捨て牌を拾い、いらない牌を一枚、河へ滑らせる。なんでもない一打に見えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二巡目。三巡目。引いてくる牌が、ひとつ、またひとつと、あの絶望の手に、ぴたりと噛み合っていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "まるで、山のほうが——彼女に従っているかのようだった。引くべき牌が、引くべき順で、彼女の手にだけ集まってくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詰んでいたはずの形が、ありえない速さで、整っていく。卓を囲む強者たちが、誰からともなく、息を呑む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "……は? ちょ、ちょっと待つのじゃ。なんでその牌が、そこに来るんじゃ……?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "隣で、天使が目を白黒させている。その動揺が、かえって、今起きていることの異常さを際立たせた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして——彼女の指が、最後の一枚へと伸びる。卓の上の時間が、一瞬、止まったように感じた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——ツモ。ほら、言ったろ? いい目だ、って。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 500,
+    "seId": "se-tsumo",
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "絶望のどん底から、ありえない逆転。卓の点棒が、ごっそりと彼女のもとへ流れ込んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場が、声を失っていた。歓声よりも先に、戸惑いが満ちる。誰も、今、何が起きたのかを説明できない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "……はぁ!? い、今のは、どういうことじゃ!? あんな目の引き寄せ方、わらわ、天界でも見たことないぞ!?",
+    "characterEffect": "shake",
+    "screenEffect": "none",
+    "effectDurationMs": 400,
+    "emoteId": "shock"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天使が、両手を振り上げて取り乱している。人ならざる者の理(ことわり)をもってしても——彼女のそれは、説明がつかないのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "この人は——いったい、何者なんだ。鋭い読みなのか。とびきりの運なのか。それとも、もっと、別の何かなのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "見たかい。これが——運命に張る、ってことさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あたしと運命は、ちょいと仲がよくてね。あたしが「いい目だ」と言えば——ふふ、そうなるのさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 31,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "冗談のはずだ。普通なら、軽く笑い飛ばす一言。——なのに、今のを見せられては、誰ひとり笑えなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 32,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "むぅ……。なあルイナ。わらわの目でも見抜けぬとは、お主——ほんとうに、人間か?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "question"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 33,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さあねえ。——それも、知らないほうが、面白いだろ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 34,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問いを、するりとかわす。素性も、種も、けっきょく何ひとつ明かされない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 35,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "明かさないまま、ただ伝説だけが、また一つ静かに積み上がる。それが、この人のやり方なのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 36,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "底の知れない畏怖と、抗いがたい憧れ。相反するはずのふたつが、胸の奥で、同時に火を灯す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "lineNo": 37,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——いつか。あの「いい目だ」を、この手で、本当に呼べるようになりたい。胸の底から、そう願った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 1,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古の合間、立ち寄った喫茶店。窓際の席で、湯気の立つカップを挟んで、めずらしく静かな時間が流れていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 2,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ありえない目を引き寄せる、あの夜の光景が、まだ目の奥に焼きついている。問わずにはいられなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 3,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "先生は、どうして——そんなに、賭けるんですか。声が、自分でも分かるくらい、慎重になる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 4,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "おや。藪から棒に、難しいことを訊くじゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 5,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ルイナはカップを口に運び、ひとくち含んでから、窓の外へ視線を流した。答えを探すというより——どう、はぐらかすかを楽しんでいる目だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 6,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "賭けない人生ってのはね。客席に座って、他人の勝負を眺めてるのと同じさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 7,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "安全で、退屈で——そして、ちっとも生きちゃいない。あたしは、卓の内側でしか、息ができない質(たち)でね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 8,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "迷いのない言葉。けれど、その「内側」が、いったいどんな景色なのかは——やはり、見せてくれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 9,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "でも、と食い下がる。失うのが、怖くないんですか。賭けて、全部なくなってしまうのが——。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 10,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "失う? ……ふふ。あんた、あたしが負けたところを、いつか見たかい?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 11,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問い返されて、言葉に詰まる。——そういえば、ない。噂でも、この目でも。この人が「負ける」という光景を、知らない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 12,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "怖い、ねえ。……怖がるってのは、失うかもしれない、って思う者の特権さ。あたしには、縁のない感情だよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 13,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "傲慢にも聞こえる。けれど、あの「ありえない目」を見せられたあとでは——ただの不敵さとして、片づけられない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 14,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "本当に、この人は——失う、ということを知らないのかもしれない。そう思わせるだけの何かが、その横顔にはあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 15,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あんたも、いずれ分かるさ。卓の内側の、あの心地よさが、ね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 16,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——いや。分からなくたって、いい。あんたは、あんたの目を張りな。あたしの真似は、しなくていいのさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 17,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問いを、そっくりこちらへ返される。核心は、結局なにひとつ明かされないまま。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 18,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでも——煙に巻かれるほどに、この人をもっと知りたくなる。冷めかけたカップを、二人して傾けた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "lineNo": 19,
+    "backgroundId": "bg-cafe",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "窓の外を、知らない街の風が通り過ぎていく。この人の隣にいる限り、退屈とは、無縁でいられそうだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "大きな大会の、表彰の間。栄えある九蓮宝士たちの名が、壁にずらりと刻まれている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その手前、五つの宝を制した者に贈られる称号——『五蓮闘士』の列に、見慣れた名があった。賭羽ルイナ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "五つ。あと四つで、頂点——九蓮宝士。けれど、その名は、もう何年も、五の段で止まったままらしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あれほどの打ち手が、なぜ。問いが口をつく前に、ルイナは自分の名を、つまらなそうに眺めていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "先生は、と切り出す。あと四つで、九蓮宝士なんですよね。どうして——獲りに、いかないんですか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ん? ……ああ、これかい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "獲りたく、ならなかったのさ。それだけだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あまりに、あっさりしていた。栄誉への執着も、届かなかった悔しさも——どこにも見当たらない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "普通なら、頂点を前にして足踏みすれば、焦りか、諦めが滲むものだ。なのに、この人にはそのどちらもない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "宝なんてものはね。追いかけて、息せき切って掴むもんじゃないのさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——その気になった時に、向こうから、転がり込んでくる。あたしと運命は、そういう間柄でね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "予言のような、世迷い言のような。けれど、あの夜の「ありえない目」を知っていると——たやすく、笑い飛ばせない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "止まっているのではない。この人は、ただ——急ぐ必要を、感じていないのだ。運命を、待たせておけるほどに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "五の段で止まった名は、停滞の証ではなく——底知れなさの、もうひとつの顔だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ま、強いて言うならね。——最近、ちょいと、その気になりかけてはいるのさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その流し目が、ちらりとこちらを向く。その気にさせたのが、もしや——と思った瞬間、胸が小さく跳ねた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……なんてね。さ、行こうか。こんな壁の名前を眺めてたって、いい目は来やしないよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "背を向けて歩き出す。その後ろ姿は、頂点の手前で止まった者の影など、微塵も背負っていない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "五蓮の女。誰も、その底を知らない。——いつか、この人が「その気」になる日に、隣にいられたら。そう、願った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 1,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その晩も、バーの扉が、勢いよく開け放たれた。誰が来たのかは、もう確かめるまでもない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful",
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 2,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ルイナー！今日こそ打とうぞ！この前のアレ、まだ種明かしを聞いておらんからな！",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 3,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "種なんて、ありゃしないよ。——ま、座んな。今日は何点からいくんだい?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 4,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二人が卓につくなり、場の温度が、ぐんと跳ね上がる。賭け金は、あっという間に膨らみはじめた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 5,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ぬるいぞルイナ！その倍だ、倍にせんか！こんなのでは、わらわの羽がうずいてしまう！",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flare"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 6,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いいねえ。乗った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 7,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "まだまだぬるい！なんなら——魂を賭けるか！それでこそ、張り合いというものじゃ！",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "flare"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 8,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ほう。魂、ねえ。——面白いじゃないか。あたしの運命に、あんたの魂が乗るかどうか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 9,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ついていけない速さで、賭けがどんどん物騒になっていく。人ならざる者と、底の知れない女。止める者がいなければ、どこまでも昇っていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "fluster"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 10,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "たまらず、二人のあいだに割って入った。た、魂は、いくらなんでも賭けちゃダメです——! 声が、見事に裏返る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 11,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "むん? あはは、冗談に決まっておろう! ……たぶん、な!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 12,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さあねえ。あたしは半分、本気だったけどね。——あんたの魂、わりと安く転がってきそうだったし。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 13,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "なっ、安くないわ! わらわの魂は、天界でも一級品じゃぞ!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "temper"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 14,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けらけらと笑い合う、人外と、底知れぬ女。賭け狂いが二人そろうと、止め役は一人で二人分、息が切れる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 15,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひとしきり騒いで、夜も更けた頃。ドラニエルが、満足げに腰を上げた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 16,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "あー、面白かった! のうルイナ、お主とちゃんと組めたら、どんな大会も荒らし放題じゃろうに。もったいない!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 17,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "組まないよ。——気をつけて、お帰り。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 18,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "今日も、取りつく島もない即答。けれど、二人の間に流れる空気は、不思議とやわらかい。長い付き合いの、気安さだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 19,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ふん、いつもそれじゃ。……まあよい。これがルイナだからな。——のう弟子よ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 20,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "この女はな、誰のものにもならん。天界にも、地上にも、運命にすら——縛られんのじゃ。だから、面白い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 21,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "人ならざる者が、そう評する。誰のものにもならない女。——その一言が、師の底知れなさを、いっそう深くした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 22,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……買いかぶりさ。あたしはただ、誰かと足並みを揃えるのが、性に合わないだけだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 23,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "嵐の去ったバーで、ルイナは一人、チップを指先で躍らせる。その横顔は、やはり何も、明かしてはくれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "lineNo": 24,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰のものにもならない、底の知れない女。——その隣に、自分は、どこまで近づけるのだろう。チップの光を、ただ見つめていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 1,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古の総仕上げ。客のいないバーの卓を挟んで向かい合うと、ルイナは杯を傾けながら、めずらしく、自分の麻雀について語りはじめた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 2,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その口が、何かを教えてくれるのは、めったにないことだ。思わず、背筋を伸ばして、聞き入る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 3,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あたしの麻雀はね。——難しいことは、何ひとつ、ありゃしないのさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 4,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "どんな目が来ても、いい目だと思って張る。出た目を恨まず、運命を、味方につける。——ただ、それだけだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 5,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉だけなら、たやすい。誰にでも言える。けれど、それを「ありえない目」にまで通してしまうのが、この人なのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 6,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どうすれば、と問う。どうすれば、先生みたいに——運命を、味方にできるんですか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 7,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ふふ。——あたしの真似をしても、無駄さ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 8,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "運命ってのはね、相手によって、口説き方がまるで違うのさ。あたしのやり方は、あたしにしか効かない。——あんたが真似ても、振り向いちゃくれないよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 9,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あんたは、あんたの運命と——あんたのやり方で、仲良くなりな。それが見つかった時に、あんただけの『いい目だ』が、生まれるよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 10,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "教える、というより——導いて、突き放す。肝心の種そのものは、決して、手渡してはくれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 11,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでも、不思議と、不満はない。むしろ——掴ませてくれない、その底の見えなさにこそ、抗いがたく、惹き込まれていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 12,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ま、焦らなくていい。あんたには、その素質がある。——ちゃんと、いい目をしてるからね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 13,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——最初に、この店の扉を開けた、あの日からね。あたしには、分かってたよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 14,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最初の日から。——この人は、出会った瞬間に、もう、こちらの何かを見抜いていたのだろうか。背筋が、小さく震えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 15,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "何を見抜かれているのか、こちらには、分からない。けれど——見抜かれていること自体は、なぜか、はっきりと確信できた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 16,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "底の知れない人に、最初から、手のひらを見られている。——普通なら、薄気味悪い。なのに、なぜだろう。それが、たまらなく、心地よかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 17,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さ、御託はここまで。——あたしの麻雀じゃなく。あんたの麻雀を、見せておくれ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 18,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "牌をさばく音が、静かなバーに響く。底の知れない人の隣で——いつか、自分だけの『いい目だ』を、見つけたい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "lineNo": 19,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その背中は、まだ、はるか遠い。けれど——追いかける道のりすら、この人の隣では、妖しく輝いて見えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "名うての強豪ばかりが集う、特別な一戦。その卓に、ルイナの姿があった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "客席で固唾を呑む。隣には、いつのまにかドラニエルが。今日ばかりは、茶化す気配もなく、卓を見据えている。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さて。——今日は、ちょいと面白い目を、見せてやろうかね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰にともなく、ルイナが呟く。挑発でも、気負いでもない。ただ、これから起こることを——知っているような口ぶりだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一局目。強豪のひとりが、満を持してリーチを宣言する。場が、ぴりりと張りつめた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だがルイナは、眉ひとつ動かさない。涼しい顔で危険牌をすり抜け、次の瞬間には——自分の手を、軽々と和了ってみせた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二局目も、三局目も。相手が仕掛ければ、その一歩先を。欲しい牌は、まるで呼んだように、彼女の手へ吸い込まれていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一度や二度の、まぐれではない。卓の流れそのものが——彼女の宣言した通りに、ねじ曲がっていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "……おい。おかしいぞ、これは。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "運がいい、なんて次元じゃない。……運命のほうが、あの女に傅(かしず)いておる。まるで、忠犬みたいにな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天界の理を知る者が、声を低くする。運命が、傅く。——その言葉の重さに、背筋が冷たくなった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓上では、強豪たちが次々と沈んでいく。誰の手も、彼女の前では、あらかじめ負けが決まっていたかのようだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ほら、ね。——言ったとおりの、いい目だろ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "圧倒的な、勝ち。会場のどよめきの中で、ルイナだけが、最初から結末を知っていたように、静かに笑っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どうやって、と——掠れた声で問う。読み、なのか。運、なのか。それとも、本当に——運命を、手なずけているのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "運命ってのはね。逆らうものでも、祈るものでもない。——口説いて、手なずけて、味方につけるものさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あたしが「いい目だ」と囁けば……ふふ、あの子は、ちゃんと応えてくれる。長い、長い付き合いだからね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "運命を、恋人のように語る。比喩、と笑うには——たった今、その光景を、まざまざと見せられたばかりだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "……なあルイナ。わらわは天使じゃ。神の御業も、いくらか見てきたつもりじゃ。だが——お主のそれは、見たことがない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "お主、本当に——ただの人間か? それとも、わらわなんぞより、よほど高いところにいる、何かなのか?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "question"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さあね。——人か、そうでないか。そんなもの、いい目の前じゃ、どうでもいいことさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天使ですら測りかねる正体を、当の本人は、妖しく笑って煙に巻く。底は、どこまでも見えない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "畏れ、と呼ぶべきものが、胸を満たす。こんな人に、自分が追いつける日など——本当に、来るのだろうか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……そんな顔をしなさんな。あんたにも、いつか分かるよ。運命の、口説き方が。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "見透かしたように、ルイナが笑う。畏れの底に、それでも消えない火がある。——憧れだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "届くはずがない、と思う。それでも——追いたい。あの妖しい背中へ、手を伸ばさずには、いられなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "無双冠。国士無双を極めた者だけが手にする、二つ目の宝のかかった大会。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その同じ舞台に、師の姿もあった。伝説と、その弟子が、それぞれの卓を勝ち上がっていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "準決勝。自分の卓を終えて、ルイナの卓を見にいくと——ちょうど、オーラスに入ったところだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "点棒は最下位。配られた手は、么九も字牌もばらばらの絶望。……だが、もう、驚かない。この人なら、と思ってしまう自分がいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——いい目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "囁きとともに、彼女の指が舞う。一・九・字牌が、呼ばれたように集まり、十三面待ちへ——そして、最後のひと牌。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモ。国士無双。絶望のどん底から、伝説の手が、なんでもないことのように、咲いた。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "seId": "se-tsumo",
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場が沸く。その妖しい横顔を見ながら、ふと、誇らしさと——ほんの少しの、武者震いを覚えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——そして、決勝。卓に着いて、向かいの席を見て、息を呑んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "当然のように、そこにルイナがいた。まとう気配が、底知れない。飲み込まれる——本能が、そう告げる。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "奇遇だね。——いや、こいつは、必然か。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "手塩にかけた弟子と、こんな大舞台で向かい合えるなんてね。——ふふ。これ以上の、いい目があるかい?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "妖しく、嬉しそうに、目が細められる。畏れも余裕も、ぜんぶ呑み込んで、楽しんでいる——そんな顔だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勝負が動く。ルイナが、これまで見たこともない額を、賭けにいった。運命を、味方につける、あの一手だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——けれど。この日ばかりは、こちらも、退くつもりはなかった。あの背中に追いつくと、決めたのだ。全力で、張り返す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——ほう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いい目に、なったじゃないか。……あたしの前で、その目で張り返すとはね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "運命は、気まぐれだ。ルイナの大勝負の裏で、他家がこつこつと安手を積み——大きく張った彼女が、それで沈んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その崩れた流れに、こちらの手が、するりと滑り込む。——和了。二つ目の宝を、この手で、掴んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo",
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勝った。あの、底知れない人に。……いや。彼女は本当に、運命に裏切られたのだろうか。それとも——。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いやあ、見事に持っていかれた。——あたしの負けだ。あんたの、勝ちだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "負けたほうが、晴れやかに笑っている。その横顔に、悔しさのかけらもない。むしろ——どこか、満足げですらあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "先生、二人でなら、もっと——。思わず、そう口にしかけた。あなたと組めたら、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "個人戦の勝者は、一人しか決まらない。——それで、いいのさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あたしはただ——手塩にかけたあんたと、一度、思いきりぶつかってみたかった。それだけさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勝ったのは、こちらだ。なのに——掌の上で、踊らされたような気もする。この勝ちすら、彼女の描いた目だったのではないか、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さあ、行きな。あんたの宝だ。——胸を張って、受け取っといで。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "背を、そっと押される。底の見えない笑みに見送られて、宝のもとへ歩き出す。——いつか、この人の隣に、並んでみせる。物語は、覇道編へ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 1,
+    "backgroundId": "bg-city",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二つ目の宝を手にした、その翌朝。陽の高い街並みを、当てもなく、二人で歩いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 2,
+    "backgroundId": "bg-city",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九蓮宝士まで、あと七つ。気の遠くなるような、道のりだ。それでも足取りが軽いのは——隣に、この人がいるからだろうか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 3,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ルイナは、露店で買った串を片手に、のんびりと歩いている。賭場の伝説とも知れぬ気軽さで、雑踏に、すっかり溶けこんでいた。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 4,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あれほどの打ち手が、こうして街角を歩いていても、誰も気づかない。——まるで、風だ。掴もうとすれば、すり抜けていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 5,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "昨日のあんた、よかったよ。あたしの前で、よくぞ張り返した。——あれは、なかなかの、見ものだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 6,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "決勝で勝ったのは、こちらだ。なのに、彼女の口ぶりは、まるで楽しい余興を見終えた後のよう。——やはり、底が、読めない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 7,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勝ったはずなのに、掌の上で踊らされた気もする。——その不思議な感覚を、まだ、うまく言葉にできずにいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 8,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふと、ルイナが立ち止まる。串を食べ終えて、こちらへ、ゆっくりと振り向いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 9,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "なあ。——もう一丁、付き合ってやろうか。あんたが、てっぺんを獲るまで、ね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 10,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "思わず、足が止まる。残りの宝に頓着しなかったはずのこの人が——九蓮宝士への道に、自分から、付き合うと言う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 11,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どうして、と訊くと、ルイナは小さく肩をすくめた。なんでもないことのように。けれど、その目だけは、妙に、楽しげだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 12,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あんたが、どこまで『いい目』になるか。——それを、いちばん近くで、見届けたくなってね。なに、ただの興味さ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 13,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ただの興味、と言う。けれど——どこにも留まらない風が、一人の弟子の行く末に、足を止める。それが、どれほど特別なことか。胸が、熱くなった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 14,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "よろしくお願いします、と頭を下げる。声が、少しだけ上ずった。あの底知れない人の、隣を歩く資格を——もらえた気がして。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 15,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ふふ、固いね。——肩の力を抜きな。これから先は、もっと派手で、もっと妖しい卓ばかりさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 16,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あたしの隣を歩くなら——退屈しないことだけは、約束するよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 17,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "再び、二人で歩き出す。雑踏の音が、心なしか、昨日より、ずっと鮮やかに聞こえた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "lineNo": 18,
+    "backgroundId": "bg-city",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "底知れぬ伝説と、その弟子の旅は——ここから、次の幕へ入る。追いつきたい背中は、もう、すぐ隣にある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 1,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "弟子と師、二人で挑む、初めてのペア戦。隣に座るその気配が、いつもより、ずっと近い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 2,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓を挟んで、相手は二人。こちらの一打が、そのまま隣のルイナの勝敗にも、響く。指先が、いつになく緊張する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 3,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "配牌は、芳しくない。バラバラで、和了への道筋が、まるで見えない。いつもの自分なら、ここで降りを考える。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……どうした。その手を、もう諦めるのかい?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "配牌に文句を言うのは、三流——だろ? どんな目も、いい目にして張る。あんたなら、できるさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの言葉が、耳の奥でよみがえる。出た目を、恨まない。運命を、味方につける。——彼女の、引き寄せ方を。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "目を閉じる。深く、息を吸う。この手は、悪い手じゃない。——いい目だ。胸の中で、初めて、自分から、そう唱えてみた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一巡。引いた牌が、ばらばらの手に、ひとつ噛み合う。二巡。また、ひとつ。——気のせいか。それとも。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "見えなかった道筋が、うっすらと、形になっていく。鼓動が速くなる。——もしかして。これが、運命を、引き寄せるということ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、勝負の一打。震える指で、牌を河へ置く。——ツモ。欲しかった一枚が、確かに、手に乗っていた。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "seId": "se-tsumo",
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二人で、ひとつの宝を掴む。けれど、それ以上に——手のひらに残る、あの感覚が、忘れられない。自分の声に、運命が、応えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……ほう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "今の、自分でやったね。——あたしが囁いたわけじゃない。あんたが、あんたの声で、運命を口説いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "胸が、いっぱいになる。ずっと、遠い背中の業だと思っていた。それが今、ほんの一欠片だけ——自分の指先に、宿った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いい目だったよ。——まだ、ほんの片鱗。だけど、確かに、あんたのものさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "認められた。その一言が、どんな宝より、胸に深く沁みる。底知れぬ背中が、ほんの少しだけ——近づいた気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "まだ、ほんの片鱗。だけど——この感覚を育てていけば、いつか。胸の奥で、確かな火が、灯りはじめていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 1,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次の宝のある街へ。駅のホームで、二人並んで、列車を待っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 2,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "風が、ホームを通り抜ける。ルイナの羽根飾りが、ふわりと揺れた。それを見ていたら、前から気になっていたことが、ふと口をついた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 3,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "賭羽、という名前は——どういう、意味なんですか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 4,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ああ、これかい。——賭ける、羽さ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 5,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "風の吹くまま、どこへでも飛ぶ。根を張らず、留まらず、賭けのあるところへ、ふらりと舞い降りる。——そういう生き方の名前だよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 6,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "じゃあ、本当の名前は——と訊きかけて、やめた。きっと、それも、風に紛れて答えになりはしない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 7,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ふふ、賢い。——故郷も、家名も、とっくに賭場で擦っちまった。あたしには、帰る場所も、本当の名も、ありゃしないのさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 8,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "重たい身の上話に、なってもおかしくない言葉だ。なのに、ルイナの声には、湿り気のかけらもない。むしろ——どこか、誇らしげだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 9,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "何も持たないってのは、いいもんだよ。失うものがないぶん、どこまでも、軽く飛べる。——あたしは、風そのものさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 10,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "風そのもの。——その言葉が、すとんと胸に落ちた。どこから来たかも、どこへ行くかも分からない。掴もうとすれば、すり抜けていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 11,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "素性が知れないのは、隠しているからではなかった。この人には、もう、隠すような過去すら——残っていないのだ。ただ、風として、ここにいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 12,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "遠い列車の汽笛が、風に乗って届く。ルイナは、ホームの先の空を、目を細めて眺めていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 13,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……もっとも。最近はどうも、すぐに飛び立つ気に、ならなくてね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 14,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その流し目が、ちらりと、こちらを向く。風が、留まる理由を見つけたかのような——そんな、妖しく優しい目だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 15,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……なんてね。さ、列車が来るよ。次の卓が、あたしたちを待ってる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 16,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "はぐらかされた。けれど今のは——気のせいでは、なかったと思う。掴めない風が、ほんの一瞬、こちらへ向きを変えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "lineNo": 17,
+    "backgroundId": "bg-station",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "滑り込んでくる列車に、二人で乗り込む。掴めないはずの風の隣に、自分は今、確かに立っている。それが、たまらなく、嬉しかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 1,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いくつかの宝を越えた頃。今日の卓は、われながら、悪くない打ちができた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 2,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "終盤の苦しい局面で、降りずに張った。あの「運命の引き寄せ方」を、自分なりに手繰って——会心の、一手。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 3,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対局を終えてバーに戻ると、カウンターのルイナが、頬杖をついて、こちらをじっと見ていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 4,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "見てたよ、今日の卓。——あんた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 5,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……いい目に、なってきたじゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 6,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "胸の奥が、ぎゅっと熱くなる。この人の「いい目だ」を、自分に向けてもらえる日が来るなんて——出会った頃には、想像もできなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 7,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのとき、勢いよく扉が開いた。確かめるまでもない。賑やかな足音の主は——。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 8,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "おお、ちょうどよいところに! のう弟子よ、今日のお主の卓、わらわも空から見ておったぞ!",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 9,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "あの土壇場の一手——あれは、よかった。正直に言うとな、ちょっと、化けたかと思ったぞ!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 10,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天界の目を持つ者にまで、褒められた。人ならざる者が認めるほど、自分の打ちは——変わってきたのだろうか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 11,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "なあルイナ。この弟子、お主の若い頃に……ちょっとだけ、似てきたんじゃないか?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 12,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ルイナの若い頃。——その一言に、思わず耳をそばだてる。素性の知れないこの人の、過去の欠片が、こぼれるかと思って。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 13,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "おや、ドラニエル。あたしに『若い頃』なんて、あったかねえ。——ふふ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 14,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "するりと、かわされる。やはり、底は見せない。けれど、その笑みは、いつもより、ほんの少しだけ柔らかかった気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 15,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "でもね、ドラニエル。似てきた、ってのは——ちょいと違うよ。この子は、あたしの真似をしてるんじゃない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 16,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "この子はこの子のやり方で、自分の運命を、口説きはじめてる。——あたしとは違う、この子だけの『いい目』をね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 17,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "真似ではなく、自分のもの。——その認め方が、何より嬉しかった。模倣ではなく、対等な打ち手として、見てくれている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 18,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ふむ。……ルイナがそこまで言うとは、珍しいのう。よほど、この弟子が気に入っておると見える。けけっ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 19,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さあねえ。——それも、言わぬが花、ってやつさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 20,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "また、はぐらかす。それでも——気に入られている、という確かな手応えが、胸に残った。底知れぬ人との距離が、また一歩、縮まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "lineNo": 21,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつか、先生のように。——いや。先生とは違う、自分だけの『いい目だ』を、もっと深く。三人で囲む卓の灯が、その夜は、ことさら暖かかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次に待つのは、団体戦の宝。卓を囲むには、もう一人——三人目の打ち手が、要る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰のものにもならない、と評された人。ソロを貫いてきたこの人が、いったい、誰を選ぶのか。固唾を呑んで、見守る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "三人目、ねえ。——まあ、あたしの気が向く相手なんて、一人しかいないさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そう言って、ルイナは指を鳴らす。すると、まるで待っていたかのように——会場の扉が、勢いよく開いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "呼んだか、ルイナ! ——む? まさか、まさかとは思うが……。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ああ。——ドラニエル。たまには、あたしと組みな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "——!? い、今、なんと言った!? ついに! ついに、わらわと組む気になったのか、ルイナーっ!",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天使が、羽をばたつかせて飛び上がる。何度せがんでも『組まない』の一点張りだった相手の、突然の心変わりに、目を白黒させている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "なぜ、今になって。——その問いを、こちらが口にするより先に、ルイナはあっさりと言ってのけた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あんたと、もっと上の景色を見たくなってね。——この子と、三人でなら、面白い目が見られそうだろ?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "この子と、三人でなら。——その言葉に、息が止まりそうになる。誰のものにもならない風が、自分を、卓に並べてくれた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それは、弱さを埋めるための妥協ではない。底知れぬ伝説が、初めて『面白い』と思える相手を、二人、見つけた——ただ、それだけの、贅沢な選択だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ふふん、ようやくか! ならば派手にいくぞ! さっそく、賭け金を倍に——",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flare"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "お、いいねえ。乗った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二人そろうと、やっぱりこれだ。慌てて割って入る。お、落ち着いてください、まだ試合も始まってませんから——!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "fluster"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焚きつける天使と、それに乗る伝説と、必死で止める自分。——騒がしい。けれど、不思議と、三人の呼吸は、ぴたりと噛み合っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いざ卓につけば、三人の打ち筋は、まるで一つの生き物のようだった。ドラニエルが場を荒らし、ルイナが運命を手繰り、自分が、その間を繋ぐ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手チームが、なすすべもなく崩れていく。妖しい伝説と、人ならざる天使と、追いすがる弟子。——これ以上に、おかしな卓は、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo",
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ふふ。——悪くない眺めだ。三人で張るのも、たまには、ね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "団体戦の宝を、三人で掴む。『誰のものにもならない』はずの人が作った、妖しくて、騒がしくて——たまらなく、心地いいトリオ。その、はじまりだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "宝も、残すところ、あとわずか。大会の合間の、ざわめく会場で——また、あの声に呼び止められた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "——やあ。久しぶりだな。……いや、驚いた。会場じゅうが、君の話で持ちきりだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの日、学び舎の門で心配してくれた教師が、また、目の前にいる。その顔には、もう、あの頃の不安はない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "賭羽ルイナの弟子が、宝をいくつも重ねて、頂点に手をかけている——。職員室じゃ、もう、誰も君を心配してなどいないよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "皆、誇りに思っている。あんな得体の知れない打ち手のもとで——いや。あの人のもとだからこそ、君は、ここまで化けたんだろうな。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの日の心配が、今は、まっすぐな誇りに変わっている。胸の奥が、じんと熱くなった。ここまで来たのだ、と——実感が、ようやく追いついてくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "……一つだけ、訊いていいか。あの賭羽ルイナという人は——結局、何者なんだ? 君になら、少しは、分かったかい?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問われて、言葉に詰まる。——これだけ近くにいて、なお。あの人の素性も、種も、自分はまだ、何ひとつ知らないのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでも——分からないまま、惹かれ、追いかけてこられた。それで、十分なのだと思う。曖昧に微笑むと、教師は、何かを察したように頷いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "教師",
+    "text": "……そうか。いい目をしている。あの頃より、ずっと。——達者でな。頂上で、待っているよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 11,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その夜。いつものバーで、ルイナと二人、静かに杯を傾けていた。教師の言葉が、まだ胸に温かく残っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 12,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "古い恩師と、再会したんだってね。——いい顔して、帰ってきたじゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 13,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "見ていないはずのことを、当たり前のように言い当てる。——もう、慣れた。この人は、いつだって、何もかも見透かしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 14,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ルイナが、杯を置く。そして、いつもより少しだけ、まっすぐに、こちらを見た。妖しい笑みの奥の、その目で。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 15,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "なあ。——あたしの見てる景色が、ちょっとは、見えてきたかい?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 16,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "見てる、景色。——あの、運命を手なずける高みから、この人が見ているもの。出会った頃は、想像すらできなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 17,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、今なら——ほんの端っこだけ、同じ景色に、手が届きかけている気がする。「……はい。まだ、端っこですけど」。素直に、そう答えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 18,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ふふ。——端っこ、ね。上等さ。あたしの隣に、そこまで近づいてきた奴は、あんたが初めてだよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 19,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あんたが初めて。——その一言が、どんな称賛より、深く胸に刺さる。弱音でも、告白でもない。底知れぬ人が、対等の隣を、認めてくれた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 20,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さあ、もう少しだ。——その端っこから、てっぺんまで。あたしと、最後まで張り合おうじゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "lineNo": 21,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "底の見えない笑みが、今夜は、ほんの少しだけ近い。——追いつく。並ぶ。その先まで。杯の中の月を、二人で、静かに揺らした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "トリオで挑む、団体戦の大一番。九蓮宝士へ、残る宝は、ほんのわずか。だが——卓は、じりじりと、劣勢に傾いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手は、手強い。三人がかりでも、なかなか流れを引き寄せられない。重い空気が、卓を覆う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勝負を動かすなら、ここ。——勝負どころの、大博打。いつもなら、ルイナが運命を手繰り、自分は、その背中を見守る場面だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——いや。今日は、あたしが手繰るのは、やめにしよう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "え、と顔を上げる。劣勢の卓で、ルイナはなぜか、楽しげに——こちらを、まっすぐ見ていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "今度は——あたしが、あんたに張る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "この大一番、あんたの『いい目』に——全部、乗るよ。あたしの運命ごと、あんたに、預ける。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "息を呑む。運命を手なずける、あの伝説が——自分の運命ではなく、こちらの『いい目』に、賭けると言う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それは、誰のものにもならなかった風が、初めて、誰かに身を預ける瞬間だった。弱さからではない。——信じるに足る、と認めた、その証として。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "……おいおい、ルイナ。お主が、自分の運命を、他人に預けるとはな。——よほど、この子を見込んだものじゃ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天使すら、目を見張る。その期待の重さに、指先が震える。——けれど、不思議と、怖くはなかった。むしろ、火が点いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの人が、あたしに張った。——なら、応えるしかない。胸の中で、深く唱える。この手は、いい目だ。あたしと、運命の、いい目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一巡。二巡。——応えるように、牌が集まってくる。劣勢だった流れが、ゆっくりと、こちらへ傾いていく。自分の声に、運命が、頷いている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、勝負の一打。——ツモ。重い流れを、こじ開けた。ルイナの預けた運命ごと、引き寄せて、みせた。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "seId": "se-tsumo",
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——ほら、ね。あたしの目に、狂いはなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あんたは、いい目だ。——あたしが、賭けるに値する、いい目さ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの伝説に、賭けるに値すると言われた。——その言葉が、これまで掴んだどの宝より、ずっしりと、誇らしく胸に満ちる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "トリオで、また一つ、宝を掴む。九蓮宝士は、もう——目の前だ。底知れぬ背中の、すぐ隣まで、来た。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "さあ、いよいよ最後だ。——あんたの『いい目』が、どこまで届くか。あたしも、ドラニエルも、見届けさせてもらうよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "頂(いただき)は、すぐそこ。底の見えない人の隣で、自分の『いい目だ』を握りしめる。——次の卓で、ついに、並んでみせる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後の宝、九蓮宝燈。これを制すれば——九蓮宝士。頂点だ。弟子と、ルイナと、ドラニエル。三人で、その卓に着いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場は、満員。固唾を呑む視線が、卓に突き刺さる。——なのに、この二人ときたら。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ええい、しびれる舞台じゃ! ルイナ、ここで賭け金を吊り上げずして、いつ吊り上げる!?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flare"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "違いない。——いいねえ、乗った。最後くらい、派手にいこうじゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九蓮宝士のかかった大舞台でも、賭け狂い二人は、相変わらずだ。お、落ち着いてください、二人とも! ——いつものように、慌てて割って入る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "fluster"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三人の、いつもの掛け合い。——けれど、卓は甘くない。強敵の前に、点棒はじりじりと削られ、流れは、向こうへ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "オーラス。万事休すか——そう思えた、その時だった。ルイナとドラニエルが、ふと顔を見合わせ、にやりと笑う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "なあ。——気づいてるかい。あたしらが、よってたかって育てて。結局、いちばんの勝負好きは。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "——コイツじゃのう!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二人の視線が、こちらに集まる。——その通りだ。この劣勢を前に、降りる気など、これっぽっちも、湧いてこない。むしろ、胸が、躍っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの人に、賭ける価値があると認められた目で。あの人から、運命ごと預けられた手で。——ここから、ひっくり返す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ありえない大博打へ、踏み込む。絶望的な配牌。だが、もう、怯まない。——胸の中で、はっきりと、唱える。これは、いい目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一巡。応えるように、牌が来る。二巡、三巡。——いつか、あの人が見せた光景が、今、自分の手の中で、起きはじめている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詰んでいたはずの手が、ありえない速さで、形になっていく。会場のどよめきが、遠く聞こえる。運命が——確かに、こちらを向いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのとき、隣のルイナが——いつものように、チップを宙へ放ろうとして。ふと、その手を止めた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "……今日は、運命任せの『いい目だ』は、言わないでおくよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あんたのその目を——あたしが、いい目に、する。チップは投げない。この手で握って、あんたに、全部賭ける。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "握りしめたチップに、二人ぶんの想いが乗る。運命に委ねるのでなく、自らの手で——いい目に、する。その後押しを受けて、最後の一手へ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——ツモ。九蓮宝燈。最後の宝が、ど派手な大捲りとともに、灯った。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 500,
+    "seId": "se-tsumo",
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つの宝が、すべて揃った。会場が、地鳴りのように沸き返る。——弟子と、ルイナと、ドラニエル。三人で、九蓮宝士の頂に立った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰も勝てなかった、賭羽ルイナ。その隣で、同じ頂を、自分の『いい目』で掴んだ。——ついに、並んだのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ど派手だったねえ。——最高に、いい目だ。あたしの賭けは、大当たり、ってわけさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "くしゃっと、頭を撫でられる。並んだ、と思った。——けれど、その妖しい笑みは、やっぱり、まだ一枚、上にある。底は、最後まで、見せてくれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでいい、と思う。追いついても、なお遠い。だからこそ——この人を追いかける旅は、まだ、終わらない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 25,
+    "backgroundId": "bg-bar",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——それから。ど派手な勝ち方も、ど派手な負け方も、この三人は、変わらず繰り返した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 26,
+    "backgroundId": "bg-bar",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その妖しくも華やかな打ち筋は、多くの目をさらい——いつしか三人は、卓を知る者なら誰もが憧れる、伝説の名前になっていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 27,
+    "backgroundId": "bg-bar",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ルイナの行きつけのバーには、ひと勝負挑もうという客が、連日のように押し掛けるようになったとか。——もっとも、勝てた者は、いまだに、いないらしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 28,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "今日もカウンターで、指先のチップを躍らせている。九蓮宝士になっても、素性は知れず、底も見えず——ただ、妖しく、そこにいる。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 29,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——へえ。いい目をしてる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 30,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "イカサマじゃない、運命だ。——どうだい、新入りさん。一丁、張ってみるかい?",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 31,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "新しい誰かに向けられる、あの日と同じ言葉。——底の知れない伝説は、今日も、誰かの運命を、妖しく手招きする。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 32,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "賭羽ルイナ。その素性は、最後まで、誰も知らない。——ただ、彼女の卓は今日も、どこよりも妖しく、どこよりも、生きている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-01",
     "lineNo": 1,
     "backgroundId": "bg-dojo",

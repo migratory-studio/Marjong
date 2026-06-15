@@ -21,7 +21,7 @@ import { templatesForMentor } from "../src/data/skillTemplateMaster.js";
 import { SCENARIO_MASTER } from "../src/data/scenarioMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../src/scenario/unlockEvaluator.js";
 import { markScenarioRead, tournamentStoryGate } from "../src/progression/scenarioService.js";
-import { campaignFor, nextTreasureStep, isMentorEpilogue, mentorSkillLevel, MENTOR_SKILL_TRACK, MENTOR_SKILL_BASE } from "../src/data/mentorCampaignMaster.js";
+import { campaignFor, nextTreasureStep, isMentorEpilogue, mentorSkillLevel, MENTOR_SKILL_TRACK, MENTOR_SKILL_BASE, MENTOR_CAMPAIGN, MENTOR_FINALE_SCENARIO, MENTOR_EPILOGUE_SCENARIO } from "../src/data/mentorCampaignMaster.js";
 import { tournamentRunConfig } from "../src/data/tournamentMaster.js";
 
 let fails = 0;
@@ -265,6 +265,37 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
   ok("ビビ: ep20まで読了で Lv10（最大）", mentorSkillLevel(profileWith(...expectTrack.map(([id]) => id)), "bibi") === 10);
   // 未読飛ばし耐性：ep20 だけ読んでいても max で Lv10（順序非依存・到達済み最高 Lv）。
   ok("ビビ: ep20 のみ読了でも Lv10（max 採用）", mentorSkillLevel(profileWith("mentor-bibi-bond-20"), "bibi") === 10);
+}
+
+// ---- ルイナ編：結線データ整合の単体検証 ----
+// ルイナは技Lvトラック据置（相棒能力の踏襲なし）なので、50ヶ月シムではなく
+// MENTOR_CAMPAIGN / 解禁チェーンの静的整合を検証する（ソロ→トリオ反転・最終team・won同期）。
+{
+  const camp = MENTOR_CAMPAIGN.kakeha_ruina;
+  const ids = camp.map((s) => s.id);
+  ok("ルイナ: 宝順が ソロ→ペア→トリオ→最終 の正典順",
+    JSON.stringify(ids) === JSON.stringify(["menzen-kaiken", "musou-kan", "chin-iki", "ji-peeko", "kyou-sharin", "daisanken", "tenchi-shingyoku", "tenankou", "kyuuren-houtou"]));
+  ok("ルイナ: oppLv は単調非減少", camp.every((s, i, a) => i === 0 || s.oppLv >= a[i - 1].oppLv));
+  ok("ルイナ: daisanken はトリオ結成章(ep17)読了が前提",
+    camp.find((s) => s.id === "daisanken")?.requireScenario === "mentor-kakeha_ruina-bond-17");
+  ok("ルイナ: 最終(九蓮宝燈)は team＝弟子+ルイナ+ドラニエル",
+    camp.find((s) => s.id === "kyuuren-houtou")?.finalFormat === "team");
+  ok("ルイナ: 師弟編フィナーレ=ep12 / エピローグ=ep20",
+    MENTOR_FINALE_SCENARIO.kakeha_ruina === "mentor-kakeha_ruina-bond-12" && MENTOR_EPILOGUE_SCENARIO.kakeha_ruina === "mentor-kakeha_ruina-bond-20");
+
+  // 解禁チェーン（SCENARIO_MASTER のルイナ20話）
+  const rch = SCENARIO_MASTER.filter((s) => s.mentorCharacterId === "kakeha_ruina").sort((a, b) => a.sortOrder - b.sortOrder);
+  ok("ルイナ: 全20話が登録済み", rch.length === 20);
+  const uc = (n) => rch[n - 1]?.unlockConditions || [];
+  const hasType = (n, t) => uc(n).some((c) => c.type === t);
+  const readVal = (n) => uc(n).find((c) => c.type === "scenario_read" || c.type === "scenario_read_prev_month")?.value;
+  const wonVal = (n) => uc(n).find((c) => c.type === "tournament_won")?.value;
+  ok("ルイナ: ep1=always", hasType(1, "always"));
+  ok("ルイナ: ep2〜20は前話 scenario_read で連鎖（読了チェーン）",
+    rch.slice(1).every((s, i) => readVal(i + 2) === rch[i].scenarioId));
+  ok("ルイナ: ep13 はフィナーレ翌月解禁（一気読み防止＝scenario_read_prev_month）", hasType(13, "scenario_read_prev_month"));
+  ok("ルイナ: won階段 ep12=2 / ep17=5 / ep19=7 / ep20=8",
+    wonVal(12) === 2 && wonVal(17) === 5 && wonVal(19) === 7 && wonVal(20) === 8);
 }
 
 console.log(fails ? `\n${fails} FAILED` : "\nALL PASS");

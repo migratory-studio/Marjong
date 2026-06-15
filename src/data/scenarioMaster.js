@@ -19,6 +19,23 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-01",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "いい目だ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "always"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 100
+    },
+    "sortOrder": 10,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-01",
     "mentorCharacterId": "shiyue",
     "title": "ツモれば勝ち",
@@ -44,6 +61,28 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-bibi-bond-01"
+      },
+      {
+        "type": "bond_level",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 120
+    },
+    "sortOrder": 20,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-02",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "張ってみな",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-01"
       },
       {
         "type": "bond_level",
@@ -119,6 +158,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-03",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "ちいさな大博打",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-02"
+      },
+      {
+        "type": "avatar_level",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 150
+    },
+    "sortOrder": 30,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-03",
     "mentorCharacterId": "shiyue",
     "title": "速さの理由",
@@ -157,6 +218,28 @@ export const SCENARIO_MASTER = [
     ],
     "firstReadReward": {
       "soul": 160
+    },
+    "sortOrder": 40,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-04",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "腐れ縁のドラニエル",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-03"
+      },
+      {
+        "type": "bond_level",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 180
     },
     "sortOrder": 40,
     "isEnabled": true,
@@ -207,6 +290,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-05",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "賭羽の噂",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-04"
+      },
+      {
+        "type": "avatar_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 200
+    },
+    "sortOrder": 50,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-05",
     "mentorCharacterId": "shiyue",
     "title": "降りない約束",
@@ -237,6 +342,28 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-bibi-bond-05"
+      },
+      {
+        "type": "bond_level",
+        "value": 4
+      }
+    ],
+    "firstReadReward": {
+      "soul": 200
+    },
+    "sortOrder": 60,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-06",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "ありえない目",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-05"
       },
       {
         "type": "bond_level",
@@ -295,6 +422,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-07",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "なんで、賭けるの",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-06"
+      },
+      {
+        "type": "bond_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 230
+    },
+    "sortOrder": 70,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-07",
     "mentorCharacterId": "shiyue",
     "title": "正しい降り",
@@ -333,6 +482,28 @@ export const SCENARIO_MASTER = [
     ],
     "firstReadReward": {
       "soul": 240
+    },
+    "sortOrder": 80,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-08",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "五蓮の女",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-07"
+      },
+      {
+        "type": "avatar_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 250
     },
     "sortOrder": 80,
     "isEnabled": true,
@@ -383,6 +554,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-09",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "魂は、賭けないで",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-08"
+      },
+      {
+        "type": "bond_level",
+        "value": 6
+      }
+    ],
+    "firstReadReward": {
+      "soul": 280
+    },
+    "sortOrder": 90,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-09",
     "mentorCharacterId": "shiyue",
     "title": "冷たい声",
@@ -421,6 +614,28 @@ export const SCENARIO_MASTER = [
     ],
     "firstReadReward": {
       "soul": 280
+    },
+    "sortOrder": 100,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-10",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "あたしの麻雀",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-09"
+      },
+      {
+        "type": "avatar_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 300
     },
     "sortOrder": 100,
     "isEnabled": true,
@@ -471,6 +686,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-11",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "運命を手なずける",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-10"
+      },
+      {
+        "type": "bond_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 330
+    },
+    "sortOrder": 110,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-11",
     "mentorCharacterId": "shiyue",
     "title": "二人の九蓮",
@@ -515,6 +752,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-12",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "ひとりで、いい",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-11"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 450
+    },
+    "sortOrder": 120,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-12",
     "mentorCharacterId": "shiyue",
     "title": "ツモれば、ふたりの勝ち",
@@ -545,6 +804,28 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read_prev_month",
         "value": "mentor-bibi-bond-12"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 350
+    },
+    "sortOrder": 130,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-13",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "もう一丁、付き合うよ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read_prev_month",
+        "value": "mentor-kakeha_ruina-bond-12"
       },
       {
         "type": "tournament_won",
@@ -603,6 +884,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-14",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "運命の引き寄せ方",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-13"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 360
+    },
+    "sortOrder": 140,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-14",
     "mentorCharacterId": "shiyue",
     "title": "読めない、という事実",
@@ -641,6 +944,28 @@ export const SCENARIO_MASTER = [
     ],
     "firstReadReward": {
       "soul": 360
+    },
+    "sortOrder": 150,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-15",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "賭ける羽",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-14"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 380
     },
     "sortOrder": 150,
     "isEnabled": true,
@@ -691,6 +1016,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-16",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "いい目に、なってきたね",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-15"
+      },
+      {
+        "type": "bond_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 400
+    },
+    "sortOrder": 160,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-16",
     "mentorCharacterId": "shiyue",
     "title": "恩師の翼",
@@ -721,6 +1068,28 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-bibi-bond-16"
+      },
+      {
+        "type": "tournament_won",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 450
+    },
+    "sortOrder": 170,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-17",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "三人で、張る",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-16"
       },
       {
         "type": "tournament_won",
@@ -779,6 +1148,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-18",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "見えてきたかい",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-17"
+      },
+      {
+        "type": "bond_level",
+        "value": 9
+      }
+    ],
+    "firstReadReward": {
+      "soul": 480
+    },
+    "sortOrder": 180,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-18",
     "mentorCharacterId": "shiyue",
     "title": "アビスの壁",
@@ -823,6 +1214,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "あんたに、張る",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-18"
+      },
+      {
+        "type": "tournament_won",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 520
+    },
+    "sortOrder": 190,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-19",
     "mentorCharacterId": "shiyue",
     "title": "三人の九蓮",
@@ -857,6 +1270,28 @@ export const SCENARIO_MASTER = [
       {
         "type": "tournament_won",
         "value": 9
+      }
+    ],
+    "firstReadReward": {
+      "soul": 600
+    },
+    "sortOrder": 200,
+    "isEnabled": true,
+    "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "mentorCharacterId": "kakeha_ruina",
+    "title": "いい目に、する",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kakeha_ruina-bond-19"
+      },
+      {
+        "type": "tournament_won",
+        "value": 8
       }
     ],
     "firstReadReward": {

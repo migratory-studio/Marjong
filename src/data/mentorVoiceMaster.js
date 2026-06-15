@@ -233,7 +233,13 @@ const BIBI_BIGMATCH = {
   chase: "追う側、ね。……だいじょうぶ。あなたは沈まない。ビビが、そう決めたから。",
   longshot: "分が悪い？　……ううん。守りきって、最後にぜんぶ持っていけばいい。いっしょに、ね。",
 };
-const EXPLICIT_BIGMATCH = { shiyue: SHIYUE_BIGMATCH, bibi: BIBI_BIGMATCH };
+// ルイナはどの局面も「いい目だ・張る」に帰着＝賭けの美学が大一番で一番強く響く。
+const RUINA_BIGMATCH = {
+  top: "首位で大一番か。——いい眺めだ。最後の一巡まで、派手に張りきろうじゃないか。",
+  chase: "追う側? 上等だよ。こういう時こそ、賭けは燃えるってもんさ。——いい目だ。",
+  longshot: "分が悪い? ——はっ、最高じゃないか。大穴ほど、張る価値がある。見てな。",
+};
+const EXPLICIT_BIGMATCH = { shiyue: SHIYUE_BIGMATCH, bibi: BIBI_BIGMATCH, kakeha_ruina: RUINA_BIGMATCH };
 export function pickMentorBigMatchLine(charId, situation = "chase") {
   const set = EXPLICIT_BIGMATCH[charId];
   if (set) return set[situation] || set.chase;
@@ -306,7 +312,35 @@ const BIBI_BATTLE = [
   Q("complete", {}, "完走、おつかれさま。……ちゃんと、誰にも奪われずに帰ってきた。えらい。"),
   Q("retreat", {}, "引くのも、守り。……うん、いい判断。無理しないあなた、ビビは好きだよ。"),
 ];
-const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE, bibi: BIBI_BATTLE };
+// ルイナの見守り＝賭けの相棒。攻め・大物手・大博打を「いい張り」と楽しみ、負けは「賭け金は戻らない」と笑い飛ばす。
+// 絆が深い行では、飄々の下の“ちゃんと見てる”優しさを一瞬だけ覗かせる。
+const RUINA_BATTLE = [
+  Q("matchStart", {}, "さて、見物といくよ。あんたの賭けっぷり、見せてもらおうか。"),
+  Q("matchStart", {}, "いい卓だ。……勝負の匂いがするね。"),
+  Q("matchStart", { condTier: "vgood" }, "今日のあんた、いい目をしてる。——派手に荒らしておいで。"),
+  Q("bigWin", {}, "満貫! ——はっ、いい張りだ。それでこそ、あたしの弟子さ。"),
+  Q("bigWin", {}, "でかい一発だね! こういうのを見ると、ぞくぞくするよ。"),
+  Q("bigWin", { bondMin: 3 }, "……今の手、惚れ惚れするね。あたしも、見習いたいくらいさ。"),
+  Q("bigLoss", {}, "おっと、持ってかれたね。なに、賭け金は戻らない——そういうもんさ。"),
+  Q("bigLoss", {}, "いてて。ま、派手に張れば、こういう日もある。気にしなさんな。"),
+  Q("bigLoss", { bondMin: 4 }, "……ちょいと痛かったね。だいじょうぶ、あんたの目はまだ死んでないよ。"),
+  Q("pinch", {}, "後がない? ——いいねえ、そこからが本当の勝負だ。あたしが見てる、張りな。"),
+  Q("pinch", { bondMin: 4 }, "……こんな崖っぷちでも、あんたなら笑って張れる。あたしは、知ってるよ。"),
+  Q("tobi", {}, "——そこまでだ。よく張った。賭けに負けは付きもの、胸張って帰りな。"),
+  Q("bustWin", {}, "飛ばしたね! あはっ、容赦ない。——いいよ、それが勝負ってもんだ。"),
+  Q("abilityUse", {}, "出た、大博打! ……その度胸、嫌いじゃないよ。"),
+  Q("abilityUse", {}, "張ったね。賭けるなら、そのくらい思いきりよくいかなきゃ。"),
+  Q("readWin", {}, "ほら、読み勝ちだ。運命任せじゃない、あんたの目で掴んだ一勝さ。"),
+  Q("readWin", { bondMin: 3 }, "……いい読みだった。あんた、ほんとに育ったね。"),
+  Q("riichiSelf", {}, "リーチか! いい度胸だ。——来な、あんたのいい目。"),
+  Q("riichiSelf", {}, "乗った。その勝負、あたしも好きだよ。"),
+  Q("riichiOpp", {}, "向こうがリーチ……。慌てない慌てない。よく見な。"),
+  Q("riichiOpp", { bondMin: 3 }, "……来たね。だいじょうぶ、あたしが隣にいる。好きに張りな。"),
+  Q("rareGuest", {}, "おや、あれは——腕利きだ。ふふ、面白くなってきたじゃないか。"),
+  Q("complete", {}, "完走だ。お疲れさん。——いい巡りだったね。一杯、やってこ?"),
+  Q("retreat", {}, "引き際を知るのも、博徒の腕さ。……うん、いい判断だ。"),
+];
+const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE, bibi: BIBI_BATTLE, kakeha_ruina: RUINA_BATTLE };
 
 // ── 大会敗北の夜の2択（leagueLossTalk）──
 // 大会リザルト（優勝できなかった夜）に師匠が問いかけ、プレイヤーが返せる（双方向の見せ場）。
@@ -356,7 +390,12 @@ const BIBI_DUO_INVITE = [
   G({}, "一局、いい？　……ビビ、手は抜かないよ。……ふふ、覚悟して？"),
   G({ cleared: true }, "九蓮宝士さま、一局どう？　……今日はね、守る相手じゃなくて——追いかける目標として、打つの。本気で、いくよ。"),
 ];
-const EXPLICIT_DUO_INVITE = { shiyue: SHIYUE_DUO_INVITE, bibi: BIBI_DUO_INVITE };
+// ルイナ＝「組まない」が口癖の博徒。だが弟子だけは別格＝誘いは粋な挑発。クリア後は“好敵手”として張り合う反転。
+const RUINA_DUO_INVITE = [
+  G({}, "一局、付き合いな。……手は抜かないよ? それが、あたしの礼儀ってもんさ。"),
+  G({ cleared: true }, "九蓮宝士サマが、あたしと一局かい? ……いいねえ。今日は師匠じゃなく、好敵手として張り合おうじゃないか。"),
+];
+const EXPLICIT_DUO_INVITE = { shiyue: SHIYUE_DUO_INVITE, bibi: BIBI_DUO_INVITE, kakeha_ruina: RUINA_DUO_INVITE };
 export const DUO_INVITE_FALLBACK = "「一局、付き合え。…手は抜かんぞ」";
 export function pickMentorDuoInvite(charId, ctx = {}) {
   const all = EXPLICIT_DUO_INVITE[charId];
@@ -394,7 +433,16 @@ const BIBI_PARLOR = [
   P("win", {}, "おかえり。勝ち越し、だね。……うん、いい打ち方してた。ビビ、ちゃんと見てたよ。"),
   P("rough", {}, "おかえり。……渋い顔。だいじょうぶ、減ったぶんは、また積めばいい。今日は、休も？"),
 ];
-const EXPLICIT_PARLOR = { shiyue: SHIYUE_PARLOR, bibi: BIBI_PARLOR };
+// ルイナ＝戦果を「いい張り」と楽しむ。bigWin×絆は“賭け金に執着しない”美学（宵越しの銭は持たない）が滲む。
+const RUINA_PARLOR = [
+  P("bigWin", {}, "おかえり。——派手に荒稼ぎだね。あはっ、その引き、見てて気持ちいいよ。"),
+  P("bigWin", { bondMin: 4 }, "山みたいな稼ぎだ。……ま、賭け金なんざ宵越しは持たない主義だけどね。あんたの積んだ山は、悪くない。"),
+  P("win", {}, "おかえり。勝ち越しか、いい目だ。今夜は一杯、奢ってもらおうかね。"),
+  P("win", {}, "ちゃんと勝って帰ってきたね。——その調子さ。"),
+  P("rough", {}, "おかえり。……渋い顔だね。なに、賭け金は戻らない。次で取り返しゃいいのさ。"),
+  P("rough", {}, "スッた日か。ま、笑い飛ばして寝な。明日もまた、卓はあるよ。"),
+];
+const EXPLICIT_PARLOR = { shiyue: SHIYUE_PARLOR, bibi: BIBI_PARLOR, kakeha_ruina: RUINA_PARLOR };
 
 const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET };
 const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST };

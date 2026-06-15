@@ -48,17 +48,21 @@ export const MENTOR_CAMPAIGN = {
     { id: "tenchi-shingyoku", oppLv: 9 },
     { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" },
   ],
-  // 賭羽ルイナ（博徒）：運の宝も早めに。最終は単騎で賭け切る solo4。
+  // 賭羽ルイナ（博徒）：師弟編=個人戦中心（ソロの美学）→覇道編=ペア（弟子と二人）→トリオ（ドラニエル加入）。
+  //   宝順はシナリオ正典（masters/mentor-kakeha_ruina-bond-*）と同期：
+  //     ep12=musou-kan(国士)＝師弟編フィナーレ(won2)／ep17「三人で、張る」=トリオ結成→daisanken／
+  //     ep20=kyuuren＝弟子+ルイナ+ドラニエルの team で九蓮宝士（ソロ→トリオ反転の到達点）。
   kakeha_ruina: [
-    { id: "menzen-kaiken",    oppLv: 2 },
-    { id: "musou-kan",        oppLv: 4 },
-    { id: "chin-iki",         oppLv: 3 },
-    { id: "ji-peeko",         oppLv: 5 },
-    { id: "tenchi-shingyoku", oppLv: 8 },
-    { id: "kyou-sharin",      oppLv: 6 },
-    { id: "daisanken",        oppLv: 7 },
-    { id: "tenankou",         oppLv: 9 },
-    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "solo4" },
+    { id: "menzen-kaiken",    oppLv: 2 },                        // 個人
+    { id: "musou-kan",        oppLv: 4 },                        // 個人・ep12フィナーレ（国士無双／won2）
+    { id: "chin-iki",         oppLv: 5 },                        // 個人
+    { id: "ji-peeko",         oppLv: 5 },                        // ペア（弟子と二人）
+    { id: "kyou-sharin",      oppLv: 6 },                        // ペア（これを取ると5個目＝won5でep17「三人で、張る」が解禁→次の団体戦へ）
+    // 団体（弟子＋ルイナ＋ドラニエル）。ep17「三人で、張る」でトリオ結成＝その章を読むまで挑めない。
+    { id: "daisanken",        oppLv: 7, requireScenario: "mentor-kakeha_ruina-bond-17" },
+    { id: "tenchi-shingyoku", oppLv: 8 },                        // ペア・ep19（won7）
+    { id: "tenankou",         oppLv: 9 },                        // 団体
+    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ルイナ＋ドラニエルのトリオで九蓮宝士
   ],
 };
 
@@ -73,6 +77,7 @@ export const MENTOR_PHASES = {
 export const MENTOR_FINALE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-12", // 12話「ツモれば、ふたりの勝ち」＝師弟編フィナーレ
   bibi: "mentor-bibi-bond-12",     // 12話＝団体戦優勝。守りに閉じたビビが初めて「信じて攻めを託す」転回点（design/bibi.json）
+  kakeha_ruina: "mentor-kakeha_ruina-bond-12", // 12話「ひとりで、いい」＝無双冠(国士無双)で師弟が決勝対峙。賭ける様の白熱の頂点（design/ruina.json）
 };
 
 // エピローグ章（最終大会＝九蓮宝燈の優勝後に解禁・読了でスタッフロール）。
@@ -81,6 +86,7 @@ export const MENTOR_FINALE_SCENARIO = {
 export const MENTOR_EPILOGUE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-20",
   bibi: "mentor-bibi-bond-20", // 20話＝弟子の個人戦単独優勝を見届け、手を放して見送る。ビビ自身も道へ（殻破り完成）
+  kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝九蓮宝燈を弟子の大捲りで制覇。ルイナは弟子に賭ける（いい目だ→いい目に、する）＋後日譚
 };
 export function isMentorEpilogue(scenarioId) {
   return Object.values(MENTOR_EPILOGUE_SCENARIO).includes(scenarioId);
