@@ -239,7 +239,13 @@ const RUINA_BIGMATCH = {
   chase: "追う側? 上等だよ。こういう時こそ、賭けは燃えるってもんさ。——いい目だ。",
   longshot: "分が悪い? ——はっ、最高じゃないか。大穴ほど、張る価値がある。見てな。",
 };
-const EXPLICIT_BIGMATCH = { shiyue: SHIYUE_BIGMATCH, bibi: BIBI_BIGMATCH, kakeha_ruina: RUINA_BIGMATCH };
+// 凌雲はどの局面でも「沈ませない／受けて、前へ」に帰着＝不動の盾の口上が大一番で響く。
+const KUIDOSHI_BIGMATCH = {
+  top: "首位で、大一番。……いい眺めだ。最後まで、僕が背中を護る。一つも、沈ませない。",
+  chase: "追う側か。——望むところだよ。受けて、受けて、最後に前へ出る。いこう、一緒に。",
+  longshot: "分が悪い? ……いいんだ。沈まなければ、まだ終わらない。君を、矢面には立たせないよ。",
+};
+const EXPLICIT_BIGMATCH = { shiyue: SHIYUE_BIGMATCH, bibi: BIBI_BIGMATCH, kakeha_ruina: RUINA_BIGMATCH, kuidoshi: KUIDOSHI_BIGMATCH };
 export function pickMentorBigMatchLine(charId, situation = "chase") {
   const set = EXPLICIT_BIGMATCH[charId];
   if (set) return set[situation] || set.chase;
@@ -340,7 +346,34 @@ const RUINA_BATTLE = [
   Q("complete", {}, "完走だ。お疲れさん。——いい巡りだったね。一杯、やってこ?"),
   Q("retreat", {}, "引き際を知るのも、博徒の腕さ。……うん、いい判断だ。"),
 ];
-const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE, bibi: BIBI_BATTLE, kakeha_ruina: RUINA_BATTLE };
+// 凌雲の見守り＝不動の盾の相棒。攻めの戦果も「攻めることも護りのうち」と肯定し、被弾・ピンチは
+// 「沈まなければいい／受けは僕が」と支える。絆が深い行で、受け切れなかった悔いや故郷訛りが一瞬滲む。
+const KUIDOSHI_BATTLE = [
+  Q("matchStart", {}, "さ、始めようか。……後ろは、僕が見てる。気楽に、いこう。"),
+  Q("matchStart", {}, "いい卓だね。……一打ずつ、確かめていこう。"),
+  Q("matchStart", { condTier: "vgood" }, "今日の君は、いい目をしてる。……攻めても、沈まないよ。"),
+  Q("bigWin", {}, "満貫か。……うん、いい手だった。攻めることも、護りのうちだよ。"),
+  Q("bigWin", {}, "大きいね。……その一打、よく通した。"),
+  Q("bigWin", { bondMin: 3 }, "……今の、きれいだったよ。僕も、つい見惚れた。"),
+  Q("bigLoss", {}, "……大きいの、もらったね。だいじょうぶ。沈んでなければ、まだ立てる。"),
+  Q("bigLoss", {}, "痛かったね。……でも、点棒は、また積めばいい。顔を、上げて。"),
+  Q("bigLoss", { bondMin: 4 }, "……今のは、僕が受けたかった。……次は、前に立つよ。"),
+  Q("pinch", {}, "——ここからが、本番だ。沈まないと、決めたんだろう? 僕が、見てる。"),
+  Q("pinch", { bondMin: 4 }, "……苦しいね。でも、君は折れない。それは、僕が知ってるよ。"),
+  Q("tobi", {}, "——よく、粘った。今日は、ここまで。次は、僕が前で受けるよ。"),
+  Q("bustWin", {}, "飛ばしたね。……ふふ。守り抜いた先に、ちゃんと攻めが、あった。"),
+  Q("abilityUse", {}, "盾、いくよ。……致命の一撃は、ぜんぶ、引き受ける。"),
+  Q("abilityUse", { bondMin: 4 }, "……君は、攻めていい。痛いのは、こっちで持つから。"),
+  Q("readWin", {}, "ほら、読み通り。……相手を知れば、受けは、もっと固くなる。"),
+  Q("readWin", { bondMin: 3 }, "いい読みだ。……“相手を知る”が、身についてきたね。"),
+  Q("riichiSelf", {}, "いいリーチだ。……攻めると決めたら、迷わない。それでいい。"),
+  Q("riichiOpp", {}, "リーチ……。慌てない。受けの形は、もうできてる。"),
+  Q("riichiOpp", { bondMin: 3 }, "……来たね。だいじょうぶ。僕の後ろに、いていい。"),
+  Q("rareGuest", {}, "おや。……あれは、腕利きだね。いい相手だ。よく、見ておこう。"),
+  Q("complete", {}, "完走、お疲れさま。……一度も沈まずに、帰ってこれたね。"),
+  Q("retreat", {}, "引くのも、護りだよ。……うん、いい判断だ。"),
+];
+const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE, bibi: BIBI_BATTLE, kakeha_ruina: RUINA_BATTLE, kuidoshi: KUIDOSHI_BATTLE };
 
 // ── 大会敗北の夜の2択（leagueLossTalk）──
 // 大会リザルト（優勝できなかった夜）に師匠が問いかけ、プレイヤーが返せる（双方向の見せ場）。
@@ -370,7 +403,18 @@ const RUINA_LEAGUE_LOSS = [
     { key: "rest", label: "今日は引く", reply: "引き際を知ってる。……上等よ。それでこそ、次の大勝負が映えるってもの。", memory: "rest" },
   ]),
 ];
-const EXPLICIT_LEAGUE_LOSS = { shiyue: SHIYUE_LEAGUE_LOSS, bibi: BIBI_LEAGUE_LOSS, kakeha_ruina: RUINA_LEAGUE_LOSS };
+// 凌雲＝『何度でも立ち上がる（無冠の九蓮）』へ帰着。memory again/rest は homeGreeting で呼び戻す。
+const KUIDOSHI_LEAGUE_LOSS = [
+  LL("close", {}, "……あと一歩、だったね。ねえ、今、どんな気持ち? 正直なところ。", [
+    { key: "again", label: "悔しい。すぐ立ち上がる", reply: "……うん。その目だ。僕らは、何度でも立ち上がる。それが、僕らだろう?", memory: "again" },
+    { key: "rest", label: "少し、休みたい", reply: "それも、強さだよ。沈んだ夜は、ゆっくりでいい。……僕も、隣にいる。", memory: "rest" },
+  ]),
+  LL("far", {}, "……今日は、卓が遠かったね。……顔、上げられそう?", [
+    { key: "again", label: "もう一度、挑む", reply: "……ふふ、即答だね。なら僕は、何度でも、隣に座るよ。", memory: "again" },
+    { key: "rest", label: "今月は、休む", reply: "うん、いい判断だ。沈まなければ、卓は逃げない。……また、来月。", memory: "rest" },
+  ]),
+];
+const EXPLICIT_LEAGUE_LOSS = { shiyue: SHIYUE_LEAGUE_LOSS, bibi: BIBI_LEAGUE_LOSS, kakeha_ruina: RUINA_LEAGUE_LOSS, kuidoshi: KUIDOSHI_LEAGUE_LOSS };
 // 敗北の2択を1つ返す。未実装キャラは null（リザルトは従来の定型文のまま＝テンプレ文言を本番に出さない）。
 export function pickLeagueLossTalk(charId, tier, ctx = {}) {
   const all = EXPLICIT_LEAGUE_LOSS[charId];
@@ -395,7 +439,12 @@ const RUINA_DUO_INVITE = [
   G({}, "一局、付き合いな。……手は抜かないよ? それが、あたしの礼儀ってもんさ。"),
   G({ cleared: true }, "九蓮宝士サマが、あたしと一局かい? ……いいねえ。今日は師匠じゃなく、好敵手として張り合おうじゃないか。"),
 ];
-const EXPLICIT_DUO_INVITE = { shiyue: SHIYUE_DUO_INVITE, bibi: BIBI_DUO_INVITE, kakeha_ruina: RUINA_DUO_INVITE };
+// 凌雲＝普段は受けの人だが、弟子相手の一局だけは「手を抜かない」。クリア後は“好敵手”として盾を試させる反転。
+const KUIDOSHI_DUO_INVITE = [
+  G({}, "一局、付き合おうか。……手は、抜かないよ? それが、僕の礼儀だ。"),
+  G({ cleared: true }, "九蓮宝士さま、一局どう? ……今日は師匠じゃなく、好敵手として。——僕の盾、抜けるかな。"),
+];
+const EXPLICIT_DUO_INVITE = { shiyue: SHIYUE_DUO_INVITE, bibi: BIBI_DUO_INVITE, kakeha_ruina: RUINA_DUO_INVITE, kuidoshi: KUIDOSHI_DUO_INVITE };
 export const DUO_INVITE_FALLBACK = "「一局、付き合え。…手は抜かんぞ」";
 export function pickMentorDuoInvite(charId, ctx = {}) {
   const all = EXPLICIT_DUO_INVITE[charId];
@@ -442,11 +491,79 @@ const RUINA_PARLOR = [
   P("rough", {}, "おかえり。……渋い顔だね。なに、賭け金は戻らない。次で取り返しゃいいのさ。"),
   P("rough", {}, "スッた日か。ま、笑い飛ばして寝な。明日もまた、卓はあるよ。"),
 ];
-const EXPLICIT_PARLOR = { shiyue: SHIYUE_PARLOR, bibi: BIBI_PARLOR, kakeha_ruina: RUINA_PARLOR };
+// 凌雲＝戦果を「沈まずに守り切った証」として喜ぶ。bigWin×絆は“積んだ点棒＝守り抜いた証”の眺め。
+const KUIDOSHI_PARLOR = [
+  P("bigWin", {}, "おかえり。……ずいぶん、稼いできたね。ふふ、いい引きだ。"),
+  P("bigWin", { bondMin: 4 }, "山みたいな点棒……。守り切って、勝ち切った証だね。……うん、いい眺めだ。"),
+  P("win", {}, "おかえり。勝ち越し、だね。……沈まずに、ちゃんと積んできた。えらい。"),
+  P("win", {}, "いい打ち方だった。……僕の目に、狂いはないね。"),
+  P("rough", {}, "おかえり。……渋い顔だ。だいじょうぶ、減ったぶんは、また受けて取り返せる。"),
+  P("rough", {}, "そういう日も、ある。……負けた卓のことは、二人で、覚えておこう。"),
+];
+const EXPLICIT_PARLOR = { shiyue: SHIYUE_PARLOR, bibi: BIBI_PARLOR, kakeha_ruina: RUINA_PARLOR, kuidoshi: KUIDOSHI_PARLOR };
 
-const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET };
-const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST };
-const EXPLICIT_PRAISE = { shiyue: SHIYUE_PRAISE, bibi: BIBI_PRAISE, kakeha_ruina: RUINA_PRAISE };
+// ── 凌雲（リン・ユン）── 型D＝さわやかな静。一人称『僕』・穏やかな常体・口癖なし。
+// 不動／受け／沈ませない／（覇道編）相手を知る→自分を知る→なりたい自分。素性（恩師・受けに徹した理由）は
+// 絆が深いほど滲み、最高絆で口調が崩れ故郷訛り（ネ/ヨ）が一粒戻る。afterChoice は REST/敗北2択の memory と対応。
+const KUIDOSHI_GREET = [
+  G({}, "今月は、どうしようか。……焦らなくていい。沈まなければ、道は続くよ。"),
+  G({}, "さ、稽古をしようか。君の背中は、僕が見てる。"),
+  G({ time: "asa" }, "新しい月だね。今月も、一歩ずつ。——派手じゃなくて、いい。"),
+  G({ time: "hiru" }, "まだ動けそうだね。無理のない範囲で、もう一打、どう?"),
+  G({ time: "yoru" }, "今月も、そろそろ終わりだ。……最後に一つだけ。沈まない一打を、置いていこうか。"),
+  G({ condTier: "vgood" }, "いい目をしてる。……攻めても、沈まない。今月の君なら、そう思えるよ。"),
+  G({ condTier: "good" }, "うん、落ち着いてる。その不動が、いちばんの武器だよ。"),
+  G({ condTier: "bad" }, "少し、重そうだね。……いいんだ。受けて、しのげば、また流れは来る。"),
+  G({ condTier: "vbad" }, "顔色が、よくないね。今月は、守りの月。休むのも——立派な一手だよ。"),
+  G({ lastOutcome: "daiseikou" }, "この前の、見てたよ。……うん。あれは、見事だった。"),
+  G({ lastOutcome: "shippai" }, "うまくいかない月も、ある。……でも、君は沈んでない。それで、十分だよ。"),
+  G({ afterChoice: "endure" }, "この前『まだ耐えられる』って言ってたね。……無理は、しないで。倒れる前に、僕に言うこと。"),
+  G({ afterChoice: "lean" }, "前は、頼ってくれたね。……うん。その距離で、いい。背中は、預けて。"),
+  G({ afterChoice: "attack" }, "攻めたい、って顔だ。……いいよ。受けは僕が持つ。思い切り、前に出てごらん。"),
+  G({ afterChoice: "again" }, "この前『すぐ立ち上がる』って言ってたね。……その目だ。今月も、いこう。"),
+  G({ afterChoice: "rest" }, "負けた夜は、ちゃんと休めた? ……強がらない君を、僕は信じてるよ。"),
+  G({ bondMin: 3 }, "……君が卓にいると、僕も、もう少し前に出てみようと思えるんだ。"),
+  G({ bondMin: 6 }, "……あのね。僕が受けに徹するのは、昔、護れなかったことがあるからなんだ。……いつか、ちゃんと話すよ。"),
+  // 覇道編
+  G({ phase: "hadou" }, "ここから先は、覇道だ。外の卓は、痛みも大きい。……でも、君となら、受け切れる。"),
+  G({ phase: "hadou" }, "強い相手ほど、こちらをよく見てくる。……だからこそ、まず“自分を知る”ことだよ。"),
+  G({ phase: "hadou", time: "asa" }, "覇道の、月初め。……今月も、なりたい自分を、思い描いていこうか。"),
+  G({ phase: "hadou", condTier: "vbad" }, "覇道は、長い。沈む月も、ある。……何度でも、立ち上がればいい。僕らは、そういうトリオだろう?"),
+  G({ phase: "hadou", bondMin: 4 }, "……君と打っていると、盾の向こうに、攻めの景色が見える気がするんだネ。……ふふ、独り言だよ。"),
+  G({ phase: "hadou", bondMin: 8 }, "“相手を知る”ばかりで、僕は、自分を知るのを忘れていた。……それに気づけたのは、君のおかげだネ。"),
+  // 絆最高（口調が崩れ、故郷訛りが戻る特別報酬）
+  G({ bondMin: 10 }, "……なあ。僕の“沈ませない”は、半分、自分への誓いなんだ。……君には、言えるけどネ。"),
+  G({ bondMin: 10 }, "……僕の師匠も、よくこうやって隣で見ていた。……いまは僕が、その席にいる。不思議なものだネ。"),
+  // クリア後
+  G({ cleared: true }, "九つの宝、ぜんぶ獲ったね。……でも、僕らの卓は、まだ続く。今日は、何をしようか。"),
+  G({ cleared: true, bondMin: 12 }, "……全部終わっても、まだ来てくれるんだネ。……ありがとう。君と打った分だけ、僕は、前に出られるようになった。"),
+];
+const KUIDOSHI_REST = [
+  RT({}, "少し、話そうか。……つらいとき、ひとりで抱えてない?", [
+    { key: "lean", label: "頼っていい?", reply: "……もちろん。背中は、僕が受ける。遠慮は、いらないよ。", memory: "lean" },
+    { key: "endure", label: "まだ耐えられる", reply: "……うん。でも、倒れる前に、言うこと。約束だよ。", memory: "endure" },
+  ]),
+  RT({}, "君は——攻めと守り、どっちが、好き?", [
+    { key: "attack", label: "攻めるほう", reply: "ふふ。……いいよ。沈んだら、僕が受ける。だから、思い切り。", memory: "attack" },
+    { key: "guard", label: "守るほう", reply: "……似たもの同士だね。沈まなければ、勝ちは、近い。", memory: "guard" },
+  ]),
+  RT({ bondMin: 3 }, "大きい手を受けるの、こわい?", [
+    { key: "scared", label: "正直、こわい", reply: "……うん。こわくて、いい。痛みを知るから、受け切れるんだ。", memory: "scared" },
+    { key: "used", label: "慣れてきた", reply: "頼もしいね。……でも、慣れすぎないで。痛みは、知っておくものだよ。", memory: "used" },
+  ]),
+  RT({ phase: "hadou" }, "ね。……君は、どんなふうに、勝ちたい?", [
+    { key: "with", label: "誰かと、一緒に", reply: "……うん。麻雀は、ひとりで勝つものじゃない。僕も、そう思うよ。", memory: "with" },
+    { key: "become", label: "なりたい自分に", reply: "いい答えだ。……相手を知って、自分を知る。その先に、なりたい自分がいる。", memory: "become" },
+  ]),
+];
+const KUIDOSHI_PRAISE = [
+  G({}, "……っ、今の。見事だったよ。……ふふ、僕まで、背筋が伸びた。"),
+  G({}, "見てたよ、ぜんぶ。……うん。誰にも、文句は言わせない一打だ。"),
+  G({ bondMin: 3 }, "……君の伸びは、まぶしいね。僕も、うかうかしていられない。"),
+];
+const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET, kuidoshi: KUIDOSHI_GREET };
+const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST, kuidoshi: KUIDOSHI_REST };
+const EXPLICIT_PRAISE = { shiyue: SHIYUE_PRAISE, bibi: BIBI_PRAISE, kakeha_ruina: RUINA_PRAISE, kuidoshi: KUIDOSHI_PRAISE };
 const nameOf = (id) => CHARACTER_MASTER.find((c) => c.id === id)?.name || id;
 
 export const MENTOR_GREETINGS = Object.fromEntries(
