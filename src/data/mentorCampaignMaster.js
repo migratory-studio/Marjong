@@ -93,7 +93,8 @@ export const MENTOR_PHASES = {
 export const MENTOR_FINALE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-12", // 12話「ツモれば、ふたりの勝ち」＝師弟編フィナーレ
   bibi: "mentor-bibi-bond-12",     // 12話＝団体戦優勝。守りに閉じたビビが初めて「信じて攻めを託す」転回点（design/bibi.json）
-  kakeha_ruina: "mentor-kakeha_ruina-bond-12", // 12話「ひとりで、いい」＝無双冠(国士無双)で師弟が決勝対峙。賭ける様の白熱の頂点（design/ruina.json）
+  kakeha_ruina: "mentor-kakeha_ruina-bond-12", // 12話「ひとりで、いい」＝無双冠(国士無双)で師弟が決勝対峙（design/ruina.json）
+  kuidoshi: "mentor-kuidoshi-bond-12", // 12話「泥仕合」＝門前開鍵で師弟編フィナーレ（読了で覇道編へ）
 };
 
 // エピローグ章（最終大会＝九蓮宝燈の優勝後に解禁・読了でスタッフロール）。
@@ -102,7 +103,8 @@ export const MENTOR_FINALE_SCENARIO = {
 export const MENTOR_EPILOGUE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-20",
   bibi: "mentor-bibi-bond-20", // 20話＝弟子の個人戦単独優勝を見届け、手を放して見送る。ビビ自身も道へ（殻破り完成）
-  kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝九蓮宝燈を弟子の大捲りで制覇。ルイナは弟子に賭ける（いい目だ→いい目に、する）＋後日譚
+  kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝九蓮宝燈を弟子の大捲りで制覇＋後日譚（design/ruina.json）
+  kuidoshi: "mentor-kuidoshi-bond-20", // 20話エピローグ＝2人で九蓮宝士・不屈の後日譚（読了でスタッフロール）
 };
 export function isMentorEpilogue(scenarioId) {
   return Object.values(MENTOR_EPILOGUE_SCENARIO).includes(scenarioId);
@@ -148,6 +150,15 @@ export const MENTOR_SKILL_TRACK = {
     { scenarioId: "mentor-kakeha_ruina-bond-18", level: 8 },  // 見えてきたかい＝同じ景色へ近づく
     { scenarioId: "mentor-kakeha_ruina-bond-19", level: 9 },  // あんたに、張る＝運命を託す
     { scenarioId: "mentor-kakeha_ruina-bond-20", level: 10 }, // いい目に、する＝運命を手なずける極み
+  ],
+  // 凌雲＝超越帯（lv-amber-shield Lv6〜10）＝盾の純化（受け切る盾→勝ち切る盾／2枚目＝Lv8）。
+  // 覇道編で“自分を知る”を経て、ep19で2枚目の盾が3倍満を0に＝進化、ep20で天衣無縫が完成（弟子Lv10と同時期）。
+  kuidoshi: [
+    { scenarioId: "mentor-kuidoshi-bond-15", level: 6 },  // 盾の純化を決意（自分を知る）
+    { scenarioId: "mentor-kuidoshi-bond-17", level: 7 },  // 円陣＝前に出る一歩
+    { scenarioId: "mentor-kuidoshi-bond-18", level: 8 },  // 特訓で2枚目の盾を掴みかける
+    { scenarioId: "mentor-kuidoshi-bond-19", level: 9 },  // 決勝＝2枚目の盾が3倍満を0に（進化）
+    { scenarioId: "mentor-kuidoshi-bond-20", level: 10 }, // 天衣無縫＝守りと攻めに継ぎ目なし
   ],
 };
 export function mentorSkillLevel(profile, mentorId) {
