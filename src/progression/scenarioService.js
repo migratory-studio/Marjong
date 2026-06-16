@@ -57,12 +57,18 @@ export function markScenarioRead(profile, scenario) {
 // アクティブ師匠の bond 章のうち「解禁済みなのに未読」のもの（sortOrder 順）。
 // 前話読了が条件に入っているため、通常は高々1件（イベント章は対象外）。
 export function unlockedUnreadScenarios(profile) {
+  return unlockedScenarios(profile).filter((s) => !isScenarioRead(profile, s.scenarioId));
+}
+
+// アクティブ師匠の bond 章のうち「解禁済み」のもの（既読・未読を問わない／sortOrder 順）。
+// 解禁通知（モーダル）は既読でも一度は出したいので、未読フィルタを外したこちらを土台にする。
+export function unlockedScenarios(profile) {
   const av = activeAvatar(profile);
   if (!av) return [];
   const ctx = buildUnlockContext(profile);
   return SCENARIO_MASTER
     .filter((s) => s.isEnabled && s.scenarioType === "bond" && s.mentorCharacterId === av.mentorCharacterId)
-    .filter((s) => !isScenarioRead(profile, s.scenarioId) && evaluateUnlock(s, ctx).unlocked)
+    .filter((s) => evaluateUnlock(s, ctx).unlocked)
     .sort((a, b) => a.sortOrder - b.sortOrder);
 }
 
@@ -87,9 +93,10 @@ export function tournamentStoryGate(profile, nextStep = null) {
 }
 
 // 解禁通知（モーダル）をまだ出していない章。出したら markUnlockNotified で記録する。
+// 既読・未読は問わない＝デバッグや先行視聴で既読化した章も、解禁の瞬間に一度だけ告げる。
 export function unnotifiedUnlocks(profile) {
   const seen = new Set(profile?.scenarioUnlockNotified || []);
-  return unlockedUnreadScenarios(profile).filter((s) => !seen.has(s.scenarioId));
+  return unlockedScenarios(profile).filter((s) => !seen.has(s.scenarioId));
 }
 
 export function markUnlockNotified(profile, scenarioIds) {
