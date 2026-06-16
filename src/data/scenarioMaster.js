@@ -122,6 +122,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-01"
+      },
+      {
+        "type": "bond_level",
+        "value": 2
       }
     ],
     "firstReadReward": {
@@ -223,6 +227,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-02"
+      },
+      {
+        "type": "avatar_level",
+        "value": 4
       }
     ],
     "firstReadReward": {
@@ -307,6 +315,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-03"
+      },
+      {
+        "type": "bond_level",
+        "value": 4
       }
     ],
     "firstReadReward": {
@@ -391,6 +403,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-04"
+      },
+      {
+        "type": "avatar_level",
+        "value": 6
       }
     ],
     "firstReadReward": {
@@ -563,6 +579,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-06"
+      },
+      {
+        "type": "skill_level",
+        "value": 3
       }
     ],
     "firstReadReward": {
@@ -647,6 +667,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-07"
+      },
+      {
+        "type": "bond_level",
+        "value": 6
       }
     ],
     "firstReadReward": {
@@ -731,6 +755,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-08"
+      },
+      {
+        "type": "skill_level",
+        "value": 4
       }
     ],
     "firstReadReward": {
@@ -815,6 +843,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-09"
+      },
+      {
+        "type": "avatar_level",
+        "value": 8
       }
     ],
     "firstReadReward": {
@@ -899,6 +931,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-10"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
       }
     ],
     "firstReadReward": {
@@ -1069,8 +1105,12 @@ export const SCENARIO_MASTER = [
     "scenarioType": "bond",
     "unlockConditions": [
       {
-        "type": "scenario_read",
+        "type": "scenario_read_prev_month",
         "value": "mentor-kuidoshi-bond-12"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
       }
     ],
     "firstReadReward": {
@@ -1155,6 +1195,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-13"
+      },
+      {
+        "type": "tournament_won",
+        "value": 3
       }
     ],
     "firstReadReward": {
@@ -1239,6 +1283,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-14"
+      },
+      {
+        "type": "tournament_won",
+        "value": 3
       }
     ],
     "firstReadReward": {
@@ -1323,6 +1371,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-15"
+      },
+      {
+        "type": "tournament_won",
+        "value": 4
       }
     ],
     "firstReadReward": {
@@ -1407,6 +1459,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-16"
+      },
+      {
+        "type": "tournament_won",
+        "value": 5
       }
     ],
     "firstReadReward": {
@@ -1491,6 +1547,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-17"
+      },
+      {
+        "type": "tournament_won",
+        "value": 6
       }
     ],
     "firstReadReward": {
@@ -1575,6 +1635,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "scenario_read",
         "value": "mentor-kuidoshi-bond-18"
+      },
+      {
+        "type": "tournament_won",
+        "value": 7
       }
     ],
     "firstReadReward": {

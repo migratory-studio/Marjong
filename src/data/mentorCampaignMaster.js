@@ -67,7 +67,8 @@ export const MENTOR_CAMPAIGN = {
   // 凌雲（リン・ユン／守り・盾）：師弟編=個人戦で「不動の受け」を磨く→覇道編=ペア（弟子と二人）＋
   //   団体（弟子＋凌雲＋詩玥）→最終はペア（弟子＋凌雲の二人で九蓮宝士）。宝順は design/ryuuun.json と同期：
   //     ep6=chin-iki（清一器・won1）／ep12=menzen-kaiken（門前開鍵・won2＝師弟編フィナーレ「泥仕合」）。
-  //   ※覇道編(ep13-20)は未執筆のため、3つ目以降は ep13 読了ゲートで停止する（覇道編 emit 後に解禁）。
+  //   覇道編(ep13-20)は実装済み。3つ目以降(ji-peeko=won3)は ep13 読了で解禁され、以降は宝優勝(won)に
+  //   同期して章が段階解禁する（scenarioのunlockConditions側＝詩玥階段に倣った成長/won ゲート）。
   //     daisanken は ep17「トリオ結成」読了で挑める（弟子＋凌雲＋詩玥）。
   kuidoshi: [
     { id: "chin-iki",         oppLv: 3 },                                          // 個人・ep6（won1）
