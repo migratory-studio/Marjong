@@ -64,6 +64,22 @@ export const MENTOR_CAMPAIGN = {
     { id: "tenankou",         oppLv: 9 },                        // 団体
     { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ルイナ＋ドラニエルのトリオで九蓮宝士
   ],
+  // 凌雲（リン・ユン／守り・盾）：師弟編=個人戦で「不動の受け」を磨く→覇道編=ペア（弟子と二人）＋
+  //   団体（弟子＋凌雲＋詩玥）→最終はペア（弟子＋凌雲の二人で九蓮宝士）。宝順は design/ryuuun.json と同期：
+  //     ep6=chin-iki（清一器・won1）／ep12=menzen-kaiken（門前開鍵・won2＝師弟編フィナーレ「泥仕合」）。
+  //   ※覇道編(ep13-20)は未執筆のため、3つ目以降は ep13 読了ゲートで停止する（覇道編 emit 後に解禁）。
+  //     daisanken は ep17「トリオ結成」読了で挑める（弟子＋凌雲＋詩玥）。
+  kuidoshi: [
+    { id: "chin-iki",         oppLv: 3 },                                          // 個人・ep6（won1）
+    { id: "menzen-kaiken",    oppLv: 4, requireScenario: "mentor-kuidoshi-bond-11" }, // 個人・ep12フィナーレ（won2）
+    { id: "ji-peeko",         oppLv: 5, requireScenario: "mentor-kuidoshi-bond-13" }, // ペア（弟子＋凌雲）※覇道編ゲート
+    { id: "kyou-sharin",      oppLv: 6 },                                          // ペア
+    { id: "musou-kan",        oppLv: 7 },                                          // 個人
+    { id: "daisanken",        oppLv: 7, requireScenario: "mentor-kuidoshi-bond-17" }, // 団体（弟子＋凌雲＋詩玥）ep17トリオ
+    { id: "tenankou",         oppLv: 9 },                                          // 団体
+    { id: "tenchi-shingyoku", oppLv: 9 },                                          // ペア
+    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "pair" },                    // 弟子＋凌雲の二人で九蓮宝士
+  ],
 };
 
 // ------------------------------------------------- 育成フェーズ（章立て）：師弟編 → 覇道編

@@ -123,7 +123,7 @@ export const SKILL_TEMPLATE_MASTER = [
 
 // 初期師匠候補（major_update_specification.md §9.3：攻撃 / 守備 / ギャンブルの3系統）。
 // 既存キャラ(characterMaster)の id を指す。Phase 2A のマイキャラ作成で師匠選択に使う。
-export const INITIAL_MENTOR_IDS = ["shiyue", "bibi", "kakeha_ruina"];
+export const INITIAL_MENTOR_IDS = ["shiyue", "bibi", "kakeha_ruina", "kuidoshi"];
 
 export function templatesForMentor(mentorCharacterId) {
   return SKILL_TEMPLATE_MASTER.filter(

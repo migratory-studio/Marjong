@@ -43,6 +43,7 @@ export const BACKGROUND_MASTER = {
   "bg-city":           { label: "都会の街中",     gradient: "linear-gradient(160deg,#3a4150 0%,#525a6c 55%,#21262f 100%)", img: "graphic/bg/sc/bg-city.jpg" },
   "bg-station":        { label: "駅前",           gradient: "linear-gradient(160deg,#3d4453 0%,#565d70 55%,#23272f 100%)", img: "graphic/bg/sc/bg-station.jpg" },
   "bg-cafe":           { label: "喫茶店",         gradient: "linear-gradient(160deg,#6b4f38 0%,#4e3a29 55%,#2c2017 100%)", img: "graphic/bg/sc/bg-cafe.jpg" },
+  "bg-restaurant":     { label: "レストラン",     gradient: "linear-gradient(160deg,#7c8b92 0%,#5a666d 55%,#313b42 100%)", img: "graphic/bg/sc/bg-restaurant.jpg" },
   "bg-arcade":         { label: "商店街",         gradient: "linear-gradient(160deg,#5a4f3e 0%,#736550 55%,#352d22 100%)", img: "graphic/bg/sc/bg-arcade.jpg" },
   "bg-convenience":    { label: "コンビニ",       gradient: "linear-gradient(160deg,#9fb4b0 0%,#7c918d 55%,#465552 100%)", img: "graphic/bg/sc/bg-convenience.jpg" },
   "bg-park":           { label: "公園",           gradient: "linear-gradient(160deg,#86a86a 0%,#5f7d4a 55%,#33472a 100%)", img: "graphic/bg/sc/bg-park.jpg" },

@@ -36,6 +36,23 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kuidoshi-bond-01",
+    "mentorCharacterId": "kuidoshi",
+    "title": "虎の檻",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "always"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 100
+    },
+    "sortOrder": 10,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-01",
     "mentorCharacterId": "shiyue",
     "title": "ツモれば勝ち",
@@ -95,6 +112,24 @@ export const SCENARIO_MASTER = [
     "sortOrder": 20,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-02",
+    "mentorCharacterId": "kuidoshi",
+    "title": "不動",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-01"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 120
+    },
+    "sortOrder": 20,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-02",
@@ -180,6 +215,24 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kuidoshi-bond-03",
+    "mentorCharacterId": "kuidoshi",
+    "title": "荒療治",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-02"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 140
+    },
+    "sortOrder": 30,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-03",
     "mentorCharacterId": "shiyue",
     "title": "速さの理由",
@@ -244,6 +297,24 @@ export const SCENARIO_MASTER = [
     "sortOrder": 40,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-04",
+    "mentorCharacterId": "kuidoshi",
+    "title": "沈んだ、その後",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-03"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 160
+    },
+    "sortOrder": 40,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-04",
@@ -312,6 +383,24 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kuidoshi-bond-05",
+    "mentorCharacterId": "kuidoshi",
+    "title": "連れ出し",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-04"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 180
+    },
+    "sortOrder": 50,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-05",
     "mentorCharacterId": "shiyue",
     "title": "降りない約束",
@@ -376,6 +465,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 60,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-06",
+    "mentorCharacterId": "kuidoshi",
+    "title": "受け切る",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-05"
+      },
+      {
+        "type": "tournament_won",
+        "value": 1
+      }
+    ],
+    "firstReadReward": {
+      "soul": 220
+    },
+    "sortOrder": 60,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
@@ -444,6 +555,24 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kuidoshi-bond-07",
+    "mentorCharacterId": "kuidoshi",
+    "title": "動じない、を超えて",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-06"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 200
+    },
+    "sortOrder": 70,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-07",
     "mentorCharacterId": "shiyue",
     "title": "正しい降り",
@@ -508,6 +637,24 @@ export const SCENARIO_MASTER = [
     "sortOrder": 80,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-08",
+    "mentorCharacterId": "kuidoshi",
+    "title": "元・同門",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-07"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 240
+    },
+    "sortOrder": 80,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
@@ -576,6 +723,24 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kuidoshi-bond-09",
+    "mentorCharacterId": "kuidoshi",
+    "title": "登ってきた、あいつ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-08"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 220
+    },
+    "sortOrder": 90,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-09",
     "mentorCharacterId": "shiyue",
     "title": "冷たい声",
@@ -640,6 +805,24 @@ export const SCENARIO_MASTER = [
     "sortOrder": 100,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-10",
+    "mentorCharacterId": "kuidoshi",
+    "title": "知る、ということ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-09"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 240
+    },
+    "sortOrder": 100,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-10",
@@ -708,6 +891,24 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-kuidoshi-bond-11",
+    "mentorCharacterId": "kuidoshi",
+    "title": "いけそうなとき",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-10"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 260
+    },
+    "sortOrder": 110,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-shiyue-bond-11",
     "mentorCharacterId": "shiyue",
     "title": "二人の九蓮",
@@ -772,6 +973,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 120,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-12",
+    "mentorCharacterId": "kuidoshi",
+    "title": "泥仕合",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-kuidoshi-bond-11"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 450
+    },
+    "sortOrder": 120,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
