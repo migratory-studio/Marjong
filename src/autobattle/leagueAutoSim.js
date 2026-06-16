@@ -12,14 +12,28 @@
 //     （パラメータ負けでも手動で覆せる、の逆＝オートでも全敗はしない）。
 //   - 決定論: rng 注入式。回帰は test/leaguesim.mjs。
 export const LEAGUE_SIM = {
-  weightBase: 20,          // 局取り重みの下駄（運の床）
-  weightPerStrength: 0.35, // 強度1あたりの重み（差は出るが支配しない）
+  weightBase: 6,           // 局取り重みの下駄（運の床。下げると実力差が順位に効きやすくなる）
+  weightPerStrength: 0.85, // 強度1あたりの重み（実力差＝傾斜。育てた弟子が壁を越えると明確に勝てる）
   tsumoRate: 0.45,         // ツモ和了の割合（残りはロン）
-  drawRate: 0.08,          // 流局率（テンポ用・点移動なし）
+  drawRate: 0.06,          // 流局率（テンポ用・点移動なし）
+  // 別卓（不在ユニット）の擬似加算の効き。卓平均との強度差を順位点へ写像（main.simAbsentLeaguePt）。
+  // 強さ連動を強め・ノイズを抑えるほど「強い弟子が運だけで抜かれにくい」＝育成が報われる。
+  absentEdge: 0.85,        // 強度差→順位点の効き（ウマ幅に対する係数）
+  absentNoise: 0.12,       // 別卓のゆらぎ（ウマ幅に対する係数）
+  absentSpread: 28,        // 強度差を ±1 に正規化する幅（小さいほど差が鋭く出る）
   valueMin: 1000,
   valueMax: 12000,
   bigWin: 8000,            // これ以上は「大物手」（観戦演出・師匠相槌のフック）
 };
+
+// 卓に居ないユニットの「1節ぶん」擬似ポイント（別卓の結果）。
+// 強さ連動：卓平均より強いユニットほど上振れ、弱いほど下振れ（運だけで格上を抜かせない）。
+// これが無いと弱モブが擬似ブレで偶発トップし、育て切った弟子の優勝を攫う＝育成が報われない。
+export function simAbsentLeaguePt(uma, strength, fieldAvg, rng = Math.random) {
+  const span = (uma[0] ?? 0) - (uma[uma.length - 1] ?? 0); // ウマの振れ幅
+  const edge = Math.max(-1, Math.min(1, (strength - fieldAvg) / LEAGUE_SIM.absentSpread));
+  return Math.round(edge * span * LEAGUE_SIM.absentEdge + (rng() * 2 - 1) * span * LEAGUE_SIM.absentNoise);
+}
 
 // units: [{ id, name, color, isHuman, start, strength }]
 // seats: 卓の席数（局ラベル用。東1〜東seats → 南1…）。hands: 総局数（東風=seats×rounds）。

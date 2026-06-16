@@ -30,10 +30,17 @@ export const TREASURE_TOURNAMENTS = [
 // 実際の相手 Lv はキャラ進捗で上書きする（無ければこの既定値）。順位点（ウマ）は M リーグ準拠。
 // ティアは「節数・順位点・報酬・敵の強さ・ネームド比率」を担当（出場者数は形式で固定＝下記 ENTRANTS_BY_FORMAT）。
 // expByPlace＝順位別の「実戦経験」（6パラメータの伸び総量）。優勝以外でも卓で得たものが残る＝虚無感対策。
+// oppCap＝オート節での相手強度の上限（強さ 0..99 軸）。敵を 99 へ張り付かせず頭打ちにし、
+// 育てた弟子が「壁を頭ひとつ越えたら安定して勝てる」体感を作る。ティアが上がるほど壁を高くし、
+// 要求評価ランク（statSystem.RANK_BANDS）の到達で“安定勝利（≒7割）”になるよう実測校正：
+//   T1=16 → 評価C(51)で約70% / T2=28 → B(64)で約70% / T3=61 → A(77)で約70%・S(90)で約87%。
+//   要求ランク未満は明確に苦戦（＝難易度の傾斜）。なお T3 は rounds=2 のタイマン気味で実力が出やすく、
+//   A→S が自然に ~15pt 開く（A=70%/S=80% の同時両立は不可。A 基準で校正＝S は超過報酬として伸びる）。
+//   実測ハーネス＝test/leaguebalance.mjs（ティア別の勝率回帰）。重み式は leagueAutoSim.LEAGUE_SIM。
 export const TOURNAMENT_TIER = {
-  1: { matches: 3, rounds: 1, uma: [50, 10, -10, -30], soulClear: 500,  metaByPlace: [3, 2, 1, 1], expByPlace: [6, 5, 4, 3],  defaultOppLv: 2 }, // 東風戦×3節
-  2: { matches: 4, rounds: 1, uma: [50, 10, -10, -30], soulClear: 900,  metaByPlace: [6, 4, 2, 1], expByPlace: [8, 6, 5, 4],  defaultOppLv: 5 }, // 東風戦×4節（半荘×4は体感が長すぎた）
-  3: { matches: 5, rounds: 2, uma: [50, 10, -10, -30], soulClear: 1500, metaByPlace: [9, 6, 3, 2], expByPlace: [10, 8, 6, 5], defaultOppLv: 8 },
+  1: { matches: 3, rounds: 1, uma: [50, 10, -10, -30], soulClear: 500,  metaByPlace: [3, 2, 1, 1], expByPlace: [6, 5, 4, 3],  defaultOppLv: 2, oppCap: 16 }, // 東風戦×3節・登竜門級（要求C）
+  2: { matches: 4, rounds: 1, uma: [50, 10, -10, -30], soulClear: 900,  metaByPlace: [6, 4, 2, 1], expByPlace: [8, 6, 5, 4],  defaultOppLv: 5, oppCap: 28 }, // 東風戦×4節（半荘×4は体感が長すぎた）・役満級（要求B）
+  3: { matches: 5, rounds: 2, uma: [50, 10, -10, -30], soulClear: 1500, metaByPlace: [9, 6, 3, 2], expByPlace: [10, 8, 6, 5], defaultOppLv: 8, oppCap: 61 }, // 神域級（要求A〜S）
 };
 
 // 出場者（エントリー）総数を形式で固定（Mリーグ＝8基準）。弟子を含む人数。
@@ -131,6 +138,6 @@ export function tournamentRunConfig(id, opts = {}) {
     unitSize, unitCount, unitsAtTable, base,
     matches: tc.matches, rounds: tc.rounds, uma,
     soulClear: tc.soulClear, metaByPlace: tc.metaByPlace, expByPlace: tc.expByPlace, rankByPlace: PLACE_RANKS,
-    gateOppLv: oppLv, rivalLv: oppLv,
+    gateOppLv: oppLv, rivalLv: oppLv, oppCap: tc.oppCap ?? 99,
   };
 }

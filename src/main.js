@@ -58,7 +58,7 @@ import { shanten } from "./core/rules/shanten.js";
 import { pickVoiceLine } from "./data/voiceLines.js";
 import { makeMobRoster, mobSilhouettePaths } from "./data/mobMaster.js";
 import { rivalUnits, rivalIntroLineFor } from "./data/tournamentRivalMaster.js";
-import { simulateLeagueSection } from "./autobattle/leagueAutoSim.js";
+import { simulateLeagueSection, simAbsentLeaguePt } from "./autobattle/leagueAutoSim.js";
 import { paramsFromLv, PARAM_KEYS } from "./autobattle/autoBattle.js";
 import { pickMentorBigMatchLine, pickMentorBattleQuip } from "./data/mentorVoiceMaster.js";
 import { isDebugMode } from "./app/debug.js";
@@ -1119,7 +1119,7 @@ async function launchHonestMatch(config) {
 // 大会（M リーグ制）。リーグは常に「8ユニット」で競う：個人=8人 / ペア=8ペア(16人) / 団体=8チーム(24人)。
 // 毎節は卓に unitsAtTable ユニットが着き（弟子は必ず参加）、残りは別卓扱い（擬似結果）で累積に反映。
 // 全 N 節の累積ポイント1位（ユニット単位）で優勝＝宝獲得。
-let tournamentRun = null; // { t, matchIndex, units, totals, names, deshiUnitId, seatedUnitIds }
+let tournamentRun = null; // { t, matchIndex, units, totals, names, deshiUnitId, seatedUnitIds, strengthById, fieldAvgStrength }
 
 // 団体戦の弟子チームの“仲間”（師匠以外の3人目）。正典準拠（ビビ＝焔）＋他は妥当な補完。
 const ALLY_BY_MENTOR = { bibi: "homura", shiyue: "mamori", kakeha_ruina: "doranie" };
@@ -1167,13 +1167,6 @@ function seatUnitsFor(units, matchIndex, count) {
   else { pick = []; for (let k = 0; k < need; k++) pick.push(others[(matchIndex * need + k) % others.length]); }
   return [deshi, ...pick];
 }
-// 卓に居ないユニットの「1節ぶん」擬似ポイント（別卓の結果）。実リーグの分布に寄せ、ネームドは少し強気。
-function simAbsentLeaguePt(uma, isNamed, rng = Math.random) {
-  const base = uma[Math.floor(rng() * uma.length)] ?? 0; // ランダム着順のウマ
-  const soten = Math.round((rng() * 2 - 1) * 16);        // 素点ゆらぎ ±16
-  return base + soten + (isNamed ? 4 : 0);
-}
-
 const UNIT_WORD = { solo4: "人", solo3: "人", pair: "ペア", team: "チーム", final: "人" };
 
 async function openTournament() {
@@ -1214,7 +1207,11 @@ async function openTournament() {
     // 「これは2人組/チームの成績」だと一目で分かる）。個人戦は素の名前のまま。
     const unitSuffix = { pair: "ペア", team: "チーム" }[t.format] || "";
     for (const u of units) { totals[u.id] = 0; names[u.id] = u.name + unitSuffix; }
-    tournamentRun = { t, matchIndex: 0, units, totals, names, deshiUnitId: deshiUnit.id, unitStart };
+    // 各ユニットの強度を開幕時に一度だけ確定（ラン中は不変＝節シミュと別卓の擬似加算で共用）。
+    const strengthById = {};
+    for (const u of units) strengthById[u.id] = unitStrengthFor(u, t, profile, av);
+    const fieldAvgStrength = Object.values(strengthById).reduce((a, b) => a + b, 0) / (units.length || 1);
+    tournamentRun = { t, matchIndex: 0, units, totals, names, deshiUnitId: deshiUnit.id, unitStart, strengthById, fieldAvgStrength };
     playTournamentMatch();
   }, () => openMentorHome());
 }
@@ -1340,18 +1337,24 @@ async function launchManualSection(run, t, seated) {
 }
 
 // オート節のユニット強度。弟子=育成6パラメータ平均（ペア/団体は師匠の技Lv・修行Lvを上乗せ＝
-// 「師匠も伸びる」がオート節の勝率に直結する）。相手=oppLv 由来（ネームドは少し強気）。
+// 「師匠も伸びる」がオート節の勝率に効く）。相手=oppLv 由来をティア上限(oppCap)で頭打ち
+// ＝育てた弟子が壁を越えられる余地を残す（要求評価ランクで安定勝利になるよう校正・tournamentMaster）。
+// 師匠の担ぎ(carry)は控えめに圧縮：効きすぎると弟子自身の評価ランクが勝敗のゲートでなくなるため、
+// 技Lv＝1段/Lv・修行Lv＝0.5段/Lv（最大 ≒+9.5）。covenant期(T3=ペア/団体)でも“弟子のランク”が主役。
 function unitStrengthFor(u, t, profile, av) {
   const avg = (p) => PARAM_KEYS.reduce((a, k) => a + (p[k] || 0), 0) / PARAM_KEYS.length;
   if (u.isDeshi) {
     let s = avg(avatarParams6(av));
     if (t.unitSize >= 2) {
-      s += (mentorSkillLevel(profile, av.mentorCharacterId) - 5) * 2;
-      s += mentorGrowthFor(profile, av.mentorCharacterId).level - 1;
+      s += (mentorSkillLevel(profile, av.mentorCharacterId) - 5) * 1;
+      s += (mentorGrowthFor(profile, av.mentorCharacterId).level - 1) * 0.5;
     }
     return s;
   }
-  return avg(paramsFromLv(t.gateOppLv ?? t.rivalLv ?? 2, "league:" + u.id)) + (u.isRival ? 3 : 0);
+  // 敵の素強度を oppLv から生成し、ティア上限で頭打ち。ネームドの +3 は上限の「外側」に乗せる＝
+  // ライバルだけ壁を少し超える「強気」演出（意図的。この挙動込みで勝率を校正＝test/leaguebalance）。
+  const raw = avg(paramsFromLv(t.gateOppLv ?? t.rivalLv ?? 2, "league:" + u.id));
+  return Math.min(raw, t.oppCap ?? 99) + (u.isRival ? 3 : 0);
 }
 
 // オート節シミュレータへの入力（観戦・一気進行が共通で使う卓組み）。
@@ -1362,7 +1365,7 @@ function simSectionInput(run, t, seated, profile, av) {
     id: u.id, name: run.names?.[u.id] || u.name, // ペア/団体は「◯◯ペア/チーム」表記
     color: u.color || (u.isDeshi ? "#f6b352" : "#8a96a8"),
     isHuman: !!u.isDeshi, start: run.unitStart?.[u.id] ?? t.base,
-    strength: unitStrengthFor(u, t, profile, av),
+    strength: run.strengthById?.[u.id] ?? unitStrengthFor(u, t, profile, av),
   }));
   return { units, seats, hands };
 }
@@ -1579,7 +1582,7 @@ function applySectionResult(run, t, result) {
   const seatedSet = new Set(run.seatedUnitIds || []);
   for (const u of run.units) {
     if (seatedSet.has(u.id)) continue;
-    const pt = simAbsentLeaguePt(t.uma, !!u.isRival);
+    const pt = simAbsentLeaguePt(t.uma, run.strengthById?.[u.id] ?? 0, run.fieldAvgStrength ?? 0);
     run.totals[u.id] = (run.totals[u.id] || 0) + pt;
     deltaById[u.id] = pt;
   }
