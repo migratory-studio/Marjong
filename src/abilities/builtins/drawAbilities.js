@@ -389,7 +389,7 @@ export class DoraPullAbility extends Ability {
 // 広いテンパイを好む。
 // ※旧実装は14枚 counts に waits() を直接当てていたが、waits は「あと1枚」前提
 //   なので14枚では常に空＝全候補同点＝先頭固定（実質no-op）だった。
-function handPotential(counts, numMelds) {
+export function handPotential(counts, numMelds) {
   const s = shanten(counts, numMelds);
   let breadth = 0;
   if (s === 0) {

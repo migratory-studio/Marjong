@@ -105,7 +105,7 @@ export function mentorPhase(profile, mentorId) {
 // 師匠の技 Lv は基準 5（§10.5「師匠の初期スキル Lv = 5」）から、覇道編の節目の読了で超越帯へ。
 // 詩玥＝「封印した読みを取り戻す」アークと同期し、ep20（神算鬼謀）で Lv10
 // ＝弟子の Lv10 と同時期に揃う（系譜の完成）。ビビも ep15〜20 で超越帯（焔の火が宿る）へ。
-// トラック未定義の師匠（ルイナ）は 5 のまま（スキルテーブル未設計＝表示のみ。足せば自動で効く）。
+// 賭羽ルイナ＝超越帯（lv-gamble-bet Lv6〜10）＝「運命を手繰る」ツモ偏重が宿る（詩玥のlucky-drawメカ流用・覇道編で力が極まる）。
 export const MENTOR_SKILL_BASE = 5;
 export const MENTOR_SKILL_TRACK = {
   shiyue: [
@@ -123,6 +123,15 @@ export const MENTOR_SKILL_TRACK = {
     { scenarioId: "mentor-bibi-bond-18", level: 8 },  // あなたなら＝手を放し、信じて託す
     { scenarioId: "mentor-bibi-bond-19", level: 9 },  // お守りのラビちゃん＝相棒と自分の足で
     { scenarioId: "mentor-bibi-bond-20", level: 10 }, // いってきます＝殻破り完成・身代わりの火（焔1.5倍に並ぶ）
+  ],
+  // 賭羽ルイナ＝超越帯（lv-gamble-bet Lv6〜10）＝大博打に「運命を手繰る」ツモ偏重が宿る。
+  // 覇道編で“いい目だと言えばそうなる”力が段階的に極まる（弟子のLv10と同時期に揃う）。
+  kakeha_ruina: [
+    { scenarioId: "mentor-kakeha_ruina-bond-15", level: 6 },  // 賭ける羽＝留まる兆し・運命との間合い
+    { scenarioId: "mentor-kakeha_ruina-bond-16", level: 7 },  // いい目に、なってきたね＝力の芽吹き
+    { scenarioId: "mentor-kakeha_ruina-bond-18", level: 8 },  // 見えてきたかい＝同じ景色へ近づく
+    { scenarioId: "mentor-kakeha_ruina-bond-19", level: 9 },  // あんたに、張る＝運命を託す
+    { scenarioId: "mentor-kakeha_ruina-bond-20", level: 10 }, // いい目に、する＝運命を手なずける極み
   ],
 };
 export function mentorSkillLevel(profile, mentorId) {

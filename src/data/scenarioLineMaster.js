@@ -19608,7 +19608,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "会場は、満員。固唾を呑む視線が、卓に突き刺さる。——なのに、この二人ときたら。",
+    "text": "会場は、満員。これまでのどの卓より、空気が重い。固唾を呑む視線が、針のように突き刺さる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -19702,7 +19702,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "三人の、いつもの掛け合い。——けれど、卓は甘くない。強敵の前に、点棒はじりじりと削られ、流れは、向こうへ。",
+    "text": "だが——卓は、甘くない。相手は、九蓮宝士の座を争うだけの、本物の強豪揃いだ。半荘が進むごとに、点棒は、じりじりと削られていく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -19725,7 +19725,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "オーラス。万事休すか——そう思えた、その時だった。ルイナとドラニエルが、ふと顔を見合わせ、にやりと笑う。",
+    "text": "そして、オーラス。トップとの差は、絶望的。並の手では、まるで届かない。三人の持ち点を合わせても、もう、後がなかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -19733,6 +19733,29 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
     "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "万事休す。会場の誰もが、そう思った。——その時。ルイナとドラニエルが、ふと顔を見合わせ、にやりと笑ったのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 9,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -19755,7 +19778,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 9,
+    "lineNo": 10,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -19779,29 +19802,6 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 10,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kakeha_ruina",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "doranie",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "二人の視線が、こちらに集まる。——その通りだ。この劣勢を前に、降りる気など、これっぽっちも、湧いてこない。むしろ、胸が、躍っている。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-kakeha_ruina-bond-20",
     "lineNo": 11,
     "backgroundId": "bg-hall",
     "standings": [
@@ -19818,11 +19818,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "あの人に、賭ける価値があると認められた目で。あの人から、運命ごと預けられた手で。——ここから、ひっくり返す。",
+    "text": "二人の視線が、こちらに集まる。——その通りだ。この絶望的な卓を前に、降りる気など、これっぽっちも、湧いてこない。むしろ、胸が、躍っている。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-heartbeat"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
@@ -19842,7 +19841,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ありえない大博打へ、踏み込む。絶望的な配牌。だが、もう、怯まない。——胸の中で、はっきりと、唱える。これは、いい目だ。",
+    "text": "配られた手牌に、目を落とす。——清一色。九蓮宝燈の、芽。ありえない。狙えば、まず実らない、伝説の役。だが、いまの自分には、見える。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -19865,11 +19864,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "一巡。応えるように、牌が来る。二巡、三巡。——いつか、あの人が見せた光景が、今、自分の手の中で、起きはじめている。",
+    "text": "震える指で、点棒を押し出す。——大博打。あの人に教わった、生き方ごと張る一手を、いま、この大一番で。胸の中で、はっきりと唱える。これは、いい目だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "seId": "se-tile"
+    "seId": "se-heartbeat"
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
@@ -19889,10 +19888,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詰んでいたはずの手が、ありえない速さで、形になっていく。会場のどよめきが、遠く聞こえる。運命が——確かに、こちらを向いていた。",
+    "text": "一巡目。引いた牌が、清一色の形へ、すっと収まる。二巡目。また、一枚。——運命が、こちらへ顔を向けはじめた手応え。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-tile"
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
@@ -19912,7 +19912,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そのとき、隣のルイナが——いつものように、チップを宙へ放ろうとして。ふと、その手を止めた。",
+    "text": "だが——下家(しもちゃ)が、リーチ。鋭い、本物のリーチだ。場が、ぴんと凍りつく。次の自分のツモは、危険牌かもしれない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -19920,6 +19920,171 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
     "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "普通なら、降りる。降りるべきだ。——けれど、ここで手を緩めたら、九蓮宝燈は、永遠に逃げる。額に、汗がにじむ。一秒が、ひどく長い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——押す。いい目だと、信じて。河に牌を置く手は、もう、震えていなかった。下家の当たり牌では、ない。通った。場が、どっとどよめく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三巡、四巡。引く牌、引く牌が、面白いように噛み合っていく。一色に、染まっていく手牌。観客のどよめきが、波のように、大きくなる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "……お、おい。これは……まさか。九蓮宝燈の、テンパイか……!? わらわの目でも、信じられん引きじゃ……!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "shock"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天使が、声を震わせる。——そう。手牌は、九蓮宝燈の待ち。あとは、最後の一枚を、引き寄せるだけ。けれど、山は、もう残りわずか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次のツモで、引けるか。引けなければ——終わり。会場が、しんと静まり返る。自分の心臓の音だけが、やけに大きく聞こえた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのとき、隣のルイナが——いつものように、チップを宙へ放ろうとして。ふと、その手を、止めた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 23,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -19942,7 +20107,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 17,
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -19965,7 +20130,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 18,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -19981,14 +20146,37 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "握りしめたチップに、二人ぶんの想いが乗る。運命に委ねるのでなく、自らの手で——いい目に、する。その後押しを受けて、最後の一手へ。",
+    "text": "握りしめられたチップに、二人ぶんの想いが、確かに乗る。運命に委ねるのではない。——自らの手で、いい目に、する。山へ、指を伸ばす。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 19,
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指先が、一枚を、つまむ。——時が、止まったようだった。ゆっくりと、手牌へ、引き寄せる。その牌は。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 27,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -20007,13 +20195,13 @@ export const SCENARIO_LINE_MASTER = [
     "text": "——ツモ。九蓮宝燈。最後の宝が、ど派手な大捲りとともに、灯った。",
     "characterEffect": "none",
     "screenEffect": "flash",
-    "effectDurationMs": 500,
+    "effectDurationMs": 600,
     "seId": "se-tsumo",
     "bgmId": "bgm-victory"
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 20,
+    "lineNo": 28,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -20029,14 +20217,38 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "九つの宝が、すべて揃った。会場が、地鳴りのように沸き返る。——弟子と、ルイナと、ドラニエル。三人で、九蓮宝士の頂に立った。",
+    "text": "会場が、地鳴りのように沸き返る。絶望のオーラスから、伝説の役での、逆転。——誰も、信じられないという顔で、この卓を見ていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 21,
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つの宝が、すべて揃った。——弟子と、ルイナと、ドラニエル。三人で、九蓮宝士の頂に立ったのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-20",
+    "lineNo": 30,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -20055,12 +20267,11 @@ export const SCENARIO_LINE_MASTER = [
     "text": "誰も勝てなかった、賭羽ルイナ。その隣で、同じ頂を、自分の『いい目』で掴んだ。——ついに、並んだのだ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-warm"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 22,
+    "lineNo": 31,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -20083,7 +20294,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 23,
+    "lineNo": 32,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -20106,7 +20317,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 24,
+    "lineNo": 33,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -20129,7 +20340,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 25,
+    "lineNo": 34,
     "backgroundId": "bg-bar",
     "standings": [],
     "speakerCharacterId": null,
@@ -20142,7 +20353,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 26,
+    "lineNo": 35,
     "backgroundId": "bg-bar",
     "standings": [],
     "speakerCharacterId": null,
@@ -20154,7 +20365,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 27,
+    "lineNo": 36,
     "backgroundId": "bg-bar",
     "standings": [],
     "speakerCharacterId": null,
@@ -20167,7 +20378,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 28,
+    "lineNo": 37,
     "backgroundId": "bg-bar",
     "standings": [
       {
@@ -20185,7 +20396,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 29,
+    "lineNo": 38,
     "backgroundId": "bg-bar",
     "standings": [
       {
@@ -20203,7 +20414,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 30,
+    "lineNo": 39,
     "backgroundId": "bg-bar",
     "standings": [
       {
@@ -20222,25 +20433,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 31,
-    "backgroundId": "bg-bar",
-    "standings": [
-      {
-        "characterId": "kakeha_ruina",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "新しい誰かに向けられる、あの日と同じ言葉。——底の知れない伝説は、今日も、誰かの運命を、妖しく手招きする。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-kakeha_ruina-bond-20",
-    "lineNo": 32,
+    "lineNo": 40,
     "backgroundId": "bg-bar",
     "standings": [
       {

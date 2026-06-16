@@ -18,6 +18,7 @@ import {
   tournamentGate, applyLeagueResult,
 } from "../src/progression/progressionService.js";
 import { templatesForMentor } from "../src/data/skillTemplateMaster.js";
+import { skillRuntimeAbilityParams } from "../src/data/skillLevelMaster.js";
 import { SCENARIO_MASTER } from "../src/data/scenarioMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../src/scenario/unlockEvaluator.js";
 import { markScenarioRead, tournamentStoryGate } from "../src/progression/scenarioService.js";
@@ -296,6 +297,16 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
   ok("ルイナ: ep13 はフィナーレ翌月解禁（一気読み防止＝scenario_read_prev_month）", hasType(13, "scenario_read_prev_month"));
   ok("ルイナ: won階段 ep12=2 / ep17=5 / ep19=7 / ep20=8",
     wonVal(12) === 2 && wonVal(17) === 5 && wonVal(19) === 7 && wonVal(20) === 8);
+
+  // 技Lv＝超越帯（lv-gamble-bet）＝「運命を手繰る」ツモ偏重が宿る（詩玥のlucky-drawメカ流用）
+  const rprof = (...ids) => ({ scenarioProgress: ids.map((id) => ({ scenarioId: id })) });
+  ok("ルイナ: 何も読んでいなければ基準 Lv5", mentorSkillLevel(rprof(), "kakeha_ruina") === MENTOR_SKILL_BASE);
+  ok("ルイナ: ep15読了で技 Lv6（運命を手繰る超越帯入り）", mentorSkillLevel(rprof("mentor-kakeha_ruina-bond-15"), "kakeha_ruina") === 6);
+  ok("ルイナ: ep20読了で技 Lv10（運命を手なずける極み）", mentorSkillLevel(rprof("mentor-kakeha_ruina-bond-20"), "kakeha_ruina") === 10);
+  ok("ルイナ: 基準帯(Lv5)はツモ偏重なし・超越帯(Lv6)で drawBias が宿る",
+    skillRuntimeAbilityParams("lv-gamble-bet", 5).drawBias === false && skillRuntimeAbilityParams("lv-gamble-bet", 6).drawBias === true);
+  ok("ルイナ: 技Lv10でツモ偏重が最大（先読み8・ドラ寄せ）",
+    skillRuntimeAbilityParams("lv-gamble-bet", 10).lookaheadDepth === 8 && skillRuntimeAbilityParams("lv-gamble-bet", 10).doraPreference === true);
 }
 
 console.log(fails ? `\n${fails} FAILED` : "\nALL PASS");

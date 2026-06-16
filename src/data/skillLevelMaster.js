@@ -75,6 +75,49 @@ const LUCKY_DRAW_LEVELS = [
     unlockDescription: "神算鬼謀。読みは三段階の完全域——読めるし、引ける。系譜の完成形。" },
 ];
 
+// 大博打（賭羽ルイナ・lv-gamble-bet）— 賭けの本設計テーブル（基準帯 Lv1〜5＋超越帯 Lv6〜10）。
+// 基準帯＝「大博打」: 1巡目に点棒を賭けて和了点1.5〜2倍（Lv5＝フリー対戦のルイナ＝KakehaBetAbility 既定値）。
+// 超越帯 Lv6〜10 ＝「運命を手繰る」: ツモが有利牌へ寄る引き寄せ（＝詩玥のツモ偏重メカ lucky-draw を流用）が
+// 段階的に宿る。ルイナの新像「いい目だと言えば、そうなる／運命を手なずける」がメカとして顕現する超越。
+// 物語（覇道編 ep11「運命を手なずける」/ep16/ep19）とシンクロ。dangerTier（マモリの危険感知）は入れない
+// ＝ルイナは守りでなく"運命を手繰る攻め"だから。
+// runtimeParams の契約（KakehaBetAbility のコンストラクタと対応）:
+//   drawBias       … 超越帯の常時ツモ偏重を有効化（Lv6+）。点棒の賭け（apply/MODIFY_SCORE）は常に機能。
+//   lookaheadDepth … ツモ偏重の走査窓（候補窓 peekLive(8) が天井＝8で最大）
+//   doraPreference … 伸びが同点ならドラ/赤5を引き寄せる（Lv9+）
+const GAMBLE_BET_LEVELS = [
+  { skillLevel: 1,  soulCost: 0,    runtimeParams: { drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打：1巡目に点棒を賭け、和了点を1.5〜2倍へ。外せば賭け金は丸損。",
+    unlockDescription: "習得。点棒を賭け金にして、和了点を膨らませる博打。" },
+  { skillLevel: 2,  soulCost: 400,  runtimeParams: { drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打：点棒を賭けて打点1.5〜2倍。賭けどころの勘所が掴めてくる。",
+    unlockDescription: "賭けどころの見極めが、少しずつ冴えてくる。" },
+  { skillLevel: 3,  soulCost: 800,  runtimeParams: { drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打：点棒を賭けて打点1.5〜2倍。押し引きが安定する。",
+    unlockDescription: "ここぞの押し引きが、ぶれなくなる。" },
+  { skillLevel: 4,  soulCost: 1400, runtimeParams: { drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打：点棒を賭けて打点1.5〜2倍。大勝負の度胸が据わる。",
+    unlockDescription: "大きく賭ける度胸が、いよいよ据わる。" },
+  { skillLevel: 5,  soulCost: 2200, runtimeParams: { drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打・完成。点棒を賭けて打点1.5〜2倍（フリー対戦のルイナと同等）。",
+    unlockDescription: "完成基準。賭ける様の極み——師匠・賭羽ルイナと同等の大博打。" },
+  { skillLevel: 6,  soulCost: 2800, runtimeParams: { drawBias: true, lookaheadDepth: 2, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打に加え、常時ツモが有利牌へ寄る（運命を手繰る・先読み2候補）。",
+    unlockDescription: "超越域へ。運命を手繰りはじめ、ツモが有利牌へ寄る——『いい目だ』が形になる。" },
+  { skillLevel: 7,  soulCost: 3600, runtimeParams: { drawBias: true, lookaheadDepth: 4, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打＋常時ツモ偏重（運命を手繰る・先読み4候補）。",
+    unlockDescription: "先読みが4候補に。運命の引き寄せが、より強くなる。" },
+  { skillLevel: 8,  soulCost: 4600, runtimeParams: { drawBias: true, lookaheadDepth: 6, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打＋常時ツモ偏重（運命を手繰る・先読み6候補）。",
+    unlockDescription: "先読みが6候補に。引きの再現性が増す。" },
+  { skillLevel: 9,  soulCost: 5800, runtimeParams: { drawBias: true, lookaheadDepth: 8, doraPreference: true },  maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打＋常時ツモ偏重（先読み8候補・同点ならドラ/赤5を引き寄せる）。",
+    unlockDescription: "同じ伸びなら、ドラ・赤5まで手繰る。打点ごと、運命を呼ぶ。" },
+  { skillLevel: 10, soulCost: 7200, runtimeParams: { drawBias: true, lookaheadDepth: 8, doraPreference: true },  maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "大博打＋運命を完全に手なずける（先読み8候補・ドラ/赤5優先）——いい目だと言えば、そうなる。",
+    unlockDescription: "極み。運命を手なずける伝説の域——『いい目だ』が、そのまま現実になる。" },
+];
+
 // 琥珀の盾（凌雲・lv-amber-shield）— 守備特化の本結線テーブル（基準帯 Lv1〜5＋超越帯 Lv6〜10）。
 // 基準帯＝「受けの完成」: 受け切る閾値が 倍満→満貫 へ下がり、被ツモもカバーするようになる
 // （Lv5＝フリー対戦の凌雲＝AmberShieldAbility 既定値と完全一致：盾1・満貫閾値・被ツモ可・軽減0・補充なし）。
@@ -158,6 +201,7 @@ const IRON_GUARD_LEVELS = [
 
 export const SKILL_LEVEL_MASTER = {
   "lv-lucky-draw": LUCKY_DRAW_LEVELS,
+  "lv-gamble-bet": GAMBLE_BET_LEVELS,
   "lv-amber-shield": AMBER_SHIELD_LEVELS,
   "lv-iron-guard": IRON_GUARD_LEVELS,
   "lv-chunchan": buildTable([
@@ -183,18 +227,6 @@ export const SKILL_LEVEL_MASTER = {
     "複数リーチでも精度を保つ。",
     "放銃をほぼ回避する。",
     "育成の極致。場のすべてが見える。",
-  ]),
-  "lv-gamble-bet": buildTable([
-    "点棒の賭けが発動する基礎。",
-    "賭け倍率が安定する。",
-    "賭け金の選択肢が広がる。",
-    "失敗時の損失が緩和される。",
-    "師匠相当。博打が完成する。",
-    "超越域へ。賭け倍率の上限が上がる。",
-    "賭け金の選択肢がさらに広がる。",
-    "失敗時の損失が大きく緩和される。",
-    "高倍率でも安定して通る。",
-    "育成の極致。博打が必殺になる。",
   ]),
   "lv-dora-pull": buildTable([
     "ドラ手繰りの基礎。",
