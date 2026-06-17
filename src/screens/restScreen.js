@@ -70,8 +70,9 @@ export async function showRest(container, { repository, onBack } = {}) {
       try {
         const res = rest(profile);
         await repository.saveProfile(res.profile);
-        const parts = [`HP +${res.healed} 回復`, `ソウル +${res.soul}`, `絆 +${res.bondExp}`];
-        if (res.bondUp) parts.push(`絆 Lv ${res.bondLevel} に上昇！`);
+        // 絆は数値で見せない（CLAUDE.md ピラー1）。上昇は質的な一言で滲ませる。
+        const parts = [`HP +${res.healed} 回復`, `ソウル +${res.soul}`];
+        if (res.bondUp) parts.push("師匠との距離が、少し縮まった気がする");
         // 反映後の状態で描き直し（ボタンは休憩済みで無効になる）。
         await render();
         const m = container.querySelector(".rest-result");

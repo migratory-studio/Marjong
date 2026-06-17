@@ -563,7 +563,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       ${action}
     `;
     let done = false;
-    const { card } = openModal(container, html, () => { if (done) refresh(); });
+    const { card, close } = openModal(container, html, () => { if (done) refresh(); });
     card.querySelectorAll(".mhx-tr-go").forEach((btn) => btn.addEventListener("click", async () => {
       if (done) return;
       const key = btn.getAttribute("data-key");
@@ -607,12 +607,15 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
             : `${esc(mentor?.name || "師匠")}も伸びた　<b>修行 +${res.mentor.gained}</b>`;
           mw.hidden = false;
         }
-        // 実行後は全部の型ボタンを畳む（押した型だけ「完了」表示）。
+        // 実行後は他の型を畳み、押した札は「完了（閉じる）」の有効ボタンにして明示的に閉じられるようにする。
+        // （旧実装は disabled の「完了」で✕からしか閉じられず、初見が手詰まりに見えた）
         card.querySelectorAll(".mhx-tr-go").forEach((b) => {
-          b.disabled = true;
-          if (b !== btn) b.hidden = true;
+          if (b !== btn) { b.disabled = true; b.hidden = true; }
         });
-        btn.innerHTML = "完了";
+        btn.innerHTML = "完了（閉じる）";
+        btn.classList.add("mhx-tr-done");
+        // 既存のクリックハンドラは done=true で即 return するため、閉じる挙動をここで足す。
+        btn.addEventListener("click", () => close());
       } catch (e) {
         const r = card.querySelector(".mhx-md-result");
         r.textContent = e?.message || "失敗しました。"; r.hidden = false;
@@ -1018,11 +1021,20 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   }
   // 出場ゲート不合格（大劣勢＝門前払い）。
   function openTournamentGateModal(g, onDone) {
+    // 「何が足りないか」を明示する：出場ライン・あと一歩かどうか・鍛えどころ（弱点2つ）。
+    const passLabel = g.passLabel || "劣勢";
+    const weak = (g.weakLabels || []).filter(Boolean);
+    const gapLine = g.close
+      ? `評価が「${esc(passLabel)}」以上になれば出場できる。——<b>あと一歩</b>だ。`
+      : `評価が「${esc(passLabel)}」以上で、ようやくこの卓に立てる。`;
+    const trainLine = weak.length
+      ? `鍛えどころは <b>${esc(weak.join("・"))}</b>。鍛錬や対局で伸ばせば、評価は上がる。`
+      : `鍛錬や対局で力を上げれば、評価は上がる。`;
     const html = `
       <div class="mhx-pr">
         <div class="mhx-pr-ttl">門前払い</div>
         <div class="mhx-pr-head"><span class="mhx-cond tone-vbad">相手評価：${esc(g.tierLabel || "大劣勢")}</span></div>
-        <p class="mhx-pr-sub">今のお前では、この卓には立てん。<br>もっと腕を磨いてから出直せ。</p>
+        <p class="mhx-pr-sub">今のお前では、この卓には立てん。<br>${gapLine}<br>${trainLine}</p>
         <button type="button" class="mhx-md-btn mhx-pr-btn">わかった</button>
       </div>`;
     const { card, close } = openModal(container, html, onDone);

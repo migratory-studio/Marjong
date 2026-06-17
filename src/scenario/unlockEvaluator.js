@@ -37,7 +37,11 @@ export function buildUnlockContext(profile) {
 // 条件型 → 表示ラベル（未達条件の説明に使う）。
 const LABELS = {
   always: () => "",
-  bond_level: (v) => `親密度 Lv${v} 以上`,
+  // 絆は数値で見せない（CLAUDE.md ピラー1）。代わりに「何をすれば縮まるか（レバー）」を質的に示す。
+  // 必要 Lv で深さの度合いだけ言い換える（数値は出さない）。
+  bond_level: (v) => (v >= 5 ? "師匠と深く打ち解ける（休憩・二人打ちで）"
+    : v >= 3 ? "師匠とさらに打ち解ける（休憩・二人打ちで）"
+    : "師匠と打ち解ける（休憩・二人打ちで）"),
   avatar_level: (v) => `キャラ Lv${v} 以上`,
   skill_level: (v) => `スキル Lv${v} 以上`,
   ability_changed_count: (v) => `能力変更 ${v} 回以上`,

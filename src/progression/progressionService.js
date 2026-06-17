@@ -15,7 +15,7 @@ import { nextSkillLevel, skillLevelEntry } from "../data/skillLevelMaster.js";
 import { abilityChangeCost } from "../data/abilityChangeCostMaster.js";
 import { rollDailyParlors } from "../data/parlorMaster.js";
 import { TRAIT_CFG } from "../data/parlorTraitMaster.js";
-import { evaluateTier, paramsFromLv } from "../autobattle/autoBattle.js";
+import { evaluateTier, paramsFromLv, TIERS, PARAM_KEYS, PARAM_LABELS, paramTotal } from "../autobattle/autoBattle.js";
 import { mentorPhase } from "../data/mentorCampaignMaster.js";
 
 // 育成の調整値（バランス調整で動かす単一の出どころ）。
@@ -68,6 +68,17 @@ export function gainBond(avatar, amount) {
     bondLevel += 1;
   }
   return { bondLevel, bondExp, bondUp: bondLevel > (avatar?.bondLevel ?? 1) };
+}
+
+// 絆 Lv → 質的な「間柄」ラベル（数値を見せないピラー1）。詩玥の「相棒」呼びの段階と揃える。
+// 数値の代わりに、プレイヤーが自分の言葉で関係を捉えられる帯名で見せる。
+export function bondBandLabel(level = 1) {
+  const lv = level ?? 1;
+  if (lv >= 8) return "無二の相棒";
+  if (lv >= 6) return "相棒";
+  if (lv >= 4) return "気を許す仲";
+  if (lv >= 2) return "打ち解け始め";
+  return "出会ったばかり";
 }
 
 // ---------------------------------------------------- 月次ループ／調子（§4.5.3）
@@ -401,12 +412,22 @@ export function trainParam(profile, key, rng = Math.random) {
 
 // ------------------------------------------------- 大会（M リーグ制）（Phase 4B・§4.6.10 / §4.5.2）
 // 出場ゲート：相手評価が「大劣勢」だと門前払い（§4.6.2）。
+// 不合格時に「何が必要か」を伝えるため、出場ライン・あと一歩か・鍛えどころ(弱点2つ)も返す。
+// ゲート自体は不可侵（物語内の宝カウント同期）。ここで足すのは“伝達”だけ。
 export function tournamentGate(profile, t) {
   const av = activeAvatar(profile);
   const self = avatarParams6(av);
   const opp = paramsFromLv(t.gateOppLv ?? t.rivalLv ?? 2, "tourney:" + t.id);
-  const { tier } = evaluateTier(self, opp);
-  return { ok: tier.id !== "dai_ressei", tier };
+  const { tier, ratio } = evaluateTier(self, opp);
+  const ok = tier.id !== "dai_ressei";
+  // 出場ライン＝「劣勢」帯の下限（dai_ressei を抜ける比）。TIERS を真実として参照（ハードコード回避）。
+  const passMin = (TIERS.find((x) => x.id === "ressei")?.min) ?? 0.62;
+  const passLabel = TIERS.find((x) => x.id === "ressei")?.label || "劣勢";
+  // いちばん低い2パラメータ＝鍛えると評価が上がりやすい「鍛えどころ」。
+  const weakLabels = [...PARAM_KEYS].sort((a, b) => (self[a] || 0) - (self[b] || 0)).slice(0, 2).map((k) => PARAM_LABELS[k]);
+  // あと一歩か（出場ラインの85%まで来ていれば「もう少し」）。数値は出さず手応えだけ伝える。
+  const close = ratio >= passMin * 0.85;
+  return { ok, tier, ratio, passLabel, weakLabels, close };
 }
 
 // その節（半荘）の各ユニットのポイント＝素点((最終−基準)/1000)＋ウマ。

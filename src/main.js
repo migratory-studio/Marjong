@@ -1190,7 +1190,7 @@ async function openTournament() {
   }
   const t = tournamentRunConfig(step.id, { oppLv: step.oppLv, finalFormat: step.finalFormat });
   const gate = tournamentGate(profile, t);
-  if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label } }); return; }
+  if (!gate.ok) { openMentorHome({ tournamentGate: { name: t.name, tierLabel: gate.tier.label, passLabel: gate.passLabel, weakLabels: gate.weakLabels, close: gate.close } }); return; }
   // 弟子ユニット＝育成HP / ライバルユニット＝oppLv連動HP（難易度）。計 unitCount＝8。
   const deshiUnit = buildDeshiUnit(av, av.mentorCharacterId, t.format, t.unitSize, profile);
   const oppHp = oppHpForLv(t.gateOppLv ?? t.rivalLv ?? 2);

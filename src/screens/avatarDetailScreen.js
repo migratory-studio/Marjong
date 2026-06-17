@@ -9,6 +9,7 @@ import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
+import { bondBandLabel } from "../progression/progressionService.js";
 import { statViews, rankCells } from "../autobattle/statSystem.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
@@ -70,7 +71,7 @@ export function showAvatarDetail(container, { profile, onBack } = {}) {
     ["能力種類", tmpl ? `${tmpl.name}（${tmpl.rarity}）` : avatar.skillTemplateId],
     ["スキル Lv", `Lv ${avatar.skillLevel}`],
     ["キャラ Lv", `Lv ${avatar.avatarLevel}`],
-    ["絆 Lv", `Lv ${avatar.bondLevel}`],
+    ["師匠との間柄", bondBandLabel(avatar.bondLevel)],
     ["ソウル", `${profile.wallet?.soul ?? 0}`],
   ];
   for (const [k, v] of rows) {
