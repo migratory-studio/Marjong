@@ -169,6 +169,7 @@ let humanCallResolver = null;  // 解決値: { action, meta }
 const SWITCH_TO_AI = Symbol("switch-to-ai"); // オート観戦に切替＝AI に手を委ねる合図
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 let riichiMode = false;
+let selectedTileId = null; // 2タップ打牌: 1タップ目で選んだ手牌id（2タップ目の同牌で打牌確定）。null=未選択。
 let recallMode = false; // リコール・ディール: 自分の河の牌を選択中
 let janeDoeMode = false; // 強制ツモ切り: 対象の相手を選択中
 let kakehaMode = false; // 大博打: 賭け金（5000/10000）を選択中
@@ -967,6 +968,11 @@ async function logoutThenReopenMentor() {
   }
   openMentorMode();
 }
+
+// 初回の打牌だけ、手牌を指すコーチマークを出すためのフラグ。一度でも切れば二度と出さない。
+const HAND_HINT_KEY = "mahjong-rpg.handHintShown";
+function handHintShown() { try { return !!localStorage.getItem(HAND_HINT_KEY); } catch { return true; } }
+function markHandHintShown() { try { localStorage.setItem(HAND_HINT_KEY, "1"); } catch {} }
 
 // 初回起動時の認証おすすめモーダル。未ログイン かつ 一度も「このまま遊ぶ」を選んでいない時だけ出す。
 const AUTH_PROMPT_KEY = "mahjong-rpg.authPromptDismissed";
@@ -2688,7 +2694,13 @@ function beginGame(seated, dealerIndex, opts = {}) {
   updateTournamentHud(); // 大会中なら左上に「大会名／節／累積順位」バッジを出す（#2）
   el("table").addEventListener("click", onCanvasClick);
   el("table").addEventListener("mousemove", onCanvasHover);
-  el("table").addEventListener("mouseleave", () => { renderer.setHover(null); render(); });
+  el("table").addEventListener("mouseleave", () => {
+    el("table").style.cursor = "";
+    lastHoverKey = null;
+    renderer.hoverTileId = null;
+    renderer.setHover(null);
+    render();
+  });
   initSettingsUI(audio); // gear icon + volume panel (idempotent against re-init)
   initNoNakiToggle();
   autoPlay = honestAutoPlay; // 通常は OFF。本気タイマンの「オート」起動時のみ ON で開始。
@@ -2820,6 +2832,7 @@ function waitHumanTurn(seat) {
   return new Promise((resolve) => {
     humanTurnResolver = resolve;
     showHumanActions();
+    render(); // 手番開始時に即再描画。showHumanActions が立てた手牌コーチ等を次イベント待ちにせず反映する。
   });
 }
 // 人間の手番決定を、決定 → Intent へ変換（オンライン時に権威へ送る）。
@@ -2920,24 +2933,57 @@ function onCanvasClick(ev) {
   for (const hb of renderer.handHitboxes) {
     if (!hb.enabled) continue;
     if (x >= hb.x && x <= hb.x + hb.w && y >= hb.y && y <= hb.y + hb.h) {
-      const wasRiichi = riichiMode;
-      riichiMode = false;
-      resolveHumanTurn({ type: "discard", tileId: hb.tileId, riichi: wasRiichi });
+      // 一度でも牌に触れた＝コーチマークの役目は終わり。以後は二度と出さない。
+      if (!handHintShown()) { markHandHintShown(); renderer.showHandCoach = false; }
+      if (selectedTileId === hb.tileId) {
+        // 2タップ目（同じ牌）＝打牌確定。
+        const wasRiichi = riichiMode;
+        riichiMode = false;
+        setSelectedTile(null);
+        resolveHumanTurn({ type: "discard", tileId: hb.tileId, riichi: wasRiichi });
+      } else {
+        // 1タップ目（または別の牌）＝選択（浮かせる）。もう一度同じ牌をタップで打牌。
+        setSelectedTile(hb.tileId);
+        render();
+      }
       return;
     }
   }
+  // 手牌の外をタップ＝選択解除（誤タップのキャンセル）。
+  if (selectedTileId !== null) { setSelectedTile(null); render(); }
+}
+
+// 2タップ打牌の選択状態を更新（描画用に renderer へミラーし、ヒント文言も同期）。
+function setSelectedTile(tileId) {
+  selectedTileId = tileId;
+  if (renderer) renderer.selectedTileId = tileId;
+  updateDiscardHint();
+}
+
+// 打牌ヒントの文言（選択前/選択後・リーチ宣言牌選択中・リコール中で出し分け）。
+function discardHintText() {
+  if (recallMode) return "河から手牌へ戻す牌を選んでください（ツモ牌は河へ・ロン不可）";
+  if (selectedTileId !== null) return riichiMode ? "もう一度タップでリーチ宣言（別の牌で選び直し）" : "もう一度タップで打牌（別の牌で選び直し）";
+  return riichiMode ? "リーチ宣言牌をタップ → もう一度で確定" : "牌をタップして選択 → もう一度で打牌";
+}
+
+// action-bar のヒント span（あれば）を現在の選択状態に合わせて差し替える。
+function updateDiscardHint() {
+  const h = document.getElementById("discard-hint");
+  if (h) h.textContent = discardHintText();
 }
 
 // Hovering one of YOUR OWN hand tiles previews the wait: if discarding that
 // tile leaves the hand tenpai, show which tiles it would then wait on.
 let lastHoverKey = null;
 function onCanvasHover(ev) {
+  const c = el("table");
   // only meaningful on the human's own turn to discard
   if (game.phase !== Phase.AWAIT_DISCARD || !game.players[game.turn].isHuman) {
-    if (lastHoverKey !== null) { lastHoverKey = null; renderer.setHover(null); render(); }
+    c.style.cursor = "";
+    if (lastHoverKey !== null) { lastHoverKey = null; renderer.hoverTileId = null; renderer.setHover(null); render(); }
     return;
   }
-  const c = el("table");
   const rect = c.getBoundingClientRect();
   const f = clientToLocalFrac(rect, ev.clientX, ev.clientY); // handles 90° rotation
   const x = f.fx * c.width;
@@ -2947,9 +2993,13 @@ function onCanvasHover(ev) {
   for (const hb of renderer.handHitboxes) {
     if (x >= hb.x && x <= hb.x + hb.w && y >= hb.y && y <= hb.y + hb.h) { hit = hb; break; }
   }
+  // 押せる牌の上では「クリックできる」とわかるよう指カーソルに。
+  c.style.cursor = hit && hit.enabled ? "pointer" : "";
   const key = hit ? hit.tileId : null;
   if (key === lastHoverKey) return; // avoid re-rendering every pixel
   lastHoverKey = key;
+  // ホバー中の押せる牌をさらに持ち上げて選択候補を明示（描画は _drawHumanHand）。
+  renderer.hoverTileId = hit && hit.enabled ? hit.tileId : null;
 
   if (!hit) { renderer.setHover(null); render(); return; }
 
@@ -2993,6 +3043,13 @@ function showHumanActions() {
 
   // danger marking (defensive ability) -> renderer highlights
   refreshHighlights();
+
+  // アクションUIを組み直すたびに2タップの選択はリセット（前の手番/モードの選択を持ち越さない）。
+  setSelectedTile(null);
+
+  // 初回オンボーディング: まだ一度も自力で打牌していない人にだけ、手牌を指すコーチマークを出す。
+  // リーチ宣言牌選択中・リコール選択中・オート中は邪魔なので出さない（描画は次の render() で反映）。
+  renderer.showHandCoach = !handHintShown() && !recallMode && !riichiMode && !autoPlay;
 
   const bar = el("action-bar");
   if (opts.tsumo) bar.appendChild(mkBtn("ツモ和了", "btn-tsumo", () => resolveHumanTurn({ type: "tsumo" })));
@@ -3092,10 +3149,9 @@ function showHumanActions() {
   }
 
   const hint = document.createElement("span");
+  hint.id = "discard-hint";
   hint.style.cssText = "align-self:center;color:#cfe0d6;font-size:13px;margin-left:8px;";
-  hint.textContent = recallMode
-    ? "河から手牌へ戻す牌を選んでください（ツモ牌は河へ・ロン不可）"
-    : riichiMode ? "リーチ宣言牌を選んで切ってください" : "手牌をクリックして打牌";
+  hint.textContent = discardHintText();
   bar.appendChild(hint);
 
   // ゼロ・リサーチがグレーアウト中なら「山に残っていない＝読みの材料」ヒントを添える。

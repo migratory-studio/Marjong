@@ -11,6 +11,11 @@ const SMALL = 0.62;
 // スマホでもタップしやすいよう大きめに。門前14牌でも横幅は卓内(≈900/960px)に収まる上限。
 const HAND_SCALE = 1.5;
 
+// 自分の手番(打牌待ち)で「押せる牌」を一段持ち上げて受け皿の光を敷く量。
+// 「今ここを押す」という手がかりを、打てない局面との見た目差で作る（当たり判定も同量ずらす）。
+const PICK_LIFT = 8;        // 打てる牌の通常リフト
+const PICK_HOVER_LIFT = 16; // ホバー中の牌はさらに持ち上げて選択候補を明示
+
 const SUIT_COLOR = {
   [SUITS.MAN]: "#b5341f",
   [SUITS.PIN]: "#1f5fb5",
@@ -37,6 +42,10 @@ export class CanvasRenderer {
     this.handHitboxes = []; // [{tileId, kind, x,y,w,h, enabled}]
     this.riverHitboxes = []; // [{tileId, x,y,w,h}] — the human's OWN river (for リコール選択)
     this.hover = null; // {x, y, waits:[kind...]} for the wait tooltip
+    this.hoverTileId = null; // 自分の手牌でホバー中の牌id（リフト強調用）。null=なし。
+    this.selectedTileId = null; // 2タップ打牌で選択中(浮かせている)の牌id。null=未選択。
+    this.showHandCoach = false; // 初回オンボーディング: 手牌を指すコーチマークを出すか。
+    this._humanHandBox = null; // 直近に描いた自分の手牌の外接矩形（コーチマークの矢印位置に使う）。
     this.thinkingSeat = null; // 通信対戦: 長考中の席（「⏳ 長考中」バッジ対象）。null=なし。
     this.W = canvas.width;
     this.H = canvas.height;
@@ -70,7 +79,44 @@ export class CanvasRenderer {
       this._drawPlayer(pIndex, seat);
       this._drawRiver(pIndex, seat);
     }
+    this._drawHandCoach();
     this._drawWaitTooltip();
+  }
+
+  // 初回オンボーディング: 自分の打牌待ちのとき、手牌を指す一回限りのコーチマーク。
+  // canvas 座標で描くのでステージ縮小・回転に追従し、手牌と必ず一致する。
+  _drawHandCoach() {
+    if (!this.showHandCoach) return;
+    if (this.game.phase !== Phase.AWAIT_DISCARD || this.game.turn !== this.humanIndex) return;
+    const box = this._humanHandBox;
+    if (!box) return;
+    const ctx = this.ctx;
+    const cx = box.x + box.w / 2;
+    const label = "牌をタップ → もう一度で打牌";
+    ctx.save();
+    ctx.font = "bold 16px sans-serif";
+    const tw = ctx.measureText(label).width;
+    const pad = 14, boxW = tw + pad * 2, boxH = 32;
+    let bx = cx - boxW / 2;
+    bx = Math.max(8, Math.min(this.W - boxW - 8, bx));
+    const by = box.y - boxH - 26; // 手牌の少し上に浮かせる
+    // ピル
+    ctx.fillStyle = "rgba(20,32,25,0.96)";
+    ctx.strokeStyle = "#f6b352"; ctx.lineWidth = 2;
+    roundRect(ctx, bx, by, boxW, boxH, 16); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#ffe9b8";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(label, bx + boxW / 2, by + boxH / 2 + 1);
+    // 手牌を指す下向き矢印
+    const ax = Math.max(bx + 16, Math.min(bx + boxW - 16, cx));
+    ctx.fillStyle = "#f6b352";
+    ctx.beginPath();
+    ctx.moveTo(ax - 9, by + boxH);
+    ctx.lineTo(ax + 9, by + boxH);
+    ctx.lineTo(ax, by + boxH + 13);
+    ctx.closePath(); ctx.fill();
+    ctx.textBaseline = "alphabetic";
+    ctx.restore();
   }
 
   // Show the waiting tiles for a hovered discard (caller supplies waits via
@@ -323,13 +369,16 @@ export class CanvasRenderer {
     const tiles = drawn ? [...hand, "gap", drawn] : hand;
     const count = hand.length + (drawn ? 1 : 0);
     const totalW = count * (tw + gap) + (drawn ? drawnGap : 0);
-    let x = this.W / 2 - totalW / 2;
+    const startX = this.W / 2 - totalW / 2;
+    let x = startX;
     // 拡大した牌が画面下にはみ出さないよう、下端から積み上げて上端 y を決める。
+    // 打てる牌はここから PICK_LIFT 持ち上げるので、その分の余白も下端に残してある。
     const y = this.H - 8 - th;
 
     // dora kinds (incl. red fives) get a small ★ above the tile in your own hand
     const doraKinds = new Set(this.game.wall.doraKinds());
 
+    let anyPickable = false;
     for (const t of tiles) {
       if (t === "gap") { x += drawnGap; continue; }
       const dangerLevel = this.danger ? this.danger.get(t.kind) : 0;
@@ -338,11 +387,48 @@ export class CanvasRenderer {
         this.game.turn === p.index &&
         (!this.riichiMode || (this.riichiKinds && this.riichiKinds.includes(t.kind)));
       const dim = this.riichiMode && this.riichiKinds && !this.riichiKinds.includes(t.kind);
-      this._tile(x, y, t.kind, { red: t.red, danger: dangerLevel, dim, scale: s });
-      if (doraKinds.has(t.kind) || t.red) this._doraStar(x, y, tw, dim);
-      this.handHitboxes.push({ tileId: t.id, kind: t.kind, x, y, w: tw, h: th, enabled: canPick });
+      // 押せる牌は一段持ち上げ、ホバー中／2タップ選択中の牌はさらに上げる。
+      // 当たり判定(ty)も同じだけずらして見た目と一致させる。
+      const hovered = canPick && this.hoverTileId === t.id;
+      const selected = canPick && this.selectedTileId === t.id;
+      const lift = canPick ? ((hovered || selected) ? PICK_HOVER_LIFT : PICK_LIFT) : 0;
+      const ty = y - lift;
+      if (canPick) { anyPickable = true; this._pickGlow(x, ty, tw, th, hovered || selected); }
+      this._tile(x, ty, t.kind, { red: t.red, danger: dangerLevel, dim, scale: s });
+      if (doraKinds.has(t.kind) || t.red) this._doraStar(x, ty, tw, dim);
+      if (selected) this._selectOutline(x, ty, tw, th); // 「次のタップで切る」武装中の牌を縁取り
+      this.handHitboxes.push({ tileId: t.id, kind: t.kind, x, y: ty, w: tw, h: th, enabled: canPick });
       x += tw + gap;
     }
+    // コーチマークの矢印位置に使う外接矩形（押せる局面のときだけ更新）。
+    // 上端はホバー時の最大リフト(PICK_HOVER_LIFT)基準にして、牌が浮いてもピル/矢印が被らないようにする。
+    this._humanHandBox = anyPickable ? { x: startX, y: y - PICK_HOVER_LIFT, w: totalW, h: th } : null;
+  }
+
+  // 押せる手牌の下に敷く温色の受け皿光。「ここはクリックできる」という手がかり。
+  _pickGlow(x, y, w, h, hovered) {
+    const ctx = this.ctx;
+    const cx = x + w / 2;
+    const baseY = y + h + 2;
+    const r = w * 0.95;
+    const grad = ctx.createRadialGradient(cx, baseY, 2, cx, baseY, r);
+    grad.addColorStop(0, hovered ? "rgba(246,210,74,0.55)" : "rgba(246,210,74,0.28)");
+    grad.addColorStop(1, "rgba(246,210,74,0)");
+    ctx.save();
+    ctx.fillStyle = grad;
+    ctx.fillRect(x - w * 0.45, y, w * 1.9, h + 16);
+    ctx.restore();
+  }
+
+  // 2タップ選択中の牌を縁取りして「次のタップで打牌される牌」を明示する。
+  _selectOutline(x, y, w, h) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.strokeStyle = "#f6b352";
+    ctx.lineWidth = 3;
+    roundRect(ctx, x - 1.5, y - 1.5, w + 3, h + 3, 6);
+    ctx.stroke();
+    ctx.restore();
   }
 
   // Small ★ marker drawn just above a tile to flag it as dora (or a red five).
