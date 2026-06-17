@@ -465,7 +465,12 @@ export function applyLeagueResult(profile, t, finalRank = 3, retreated = false) 
     p = withActiveAvatar(p, (a) => ({ ...a, bondLevel: g.bondLevel, bondExp: g.bondExp }));
     bond = { gained: amount, bondLevel: g.bondLevel, bondUp: g.bondUp };
   }
-  return { profile: p, finalRank: place, won, rank, meta, soul, retreated, exp: exp.total > 0 ? exp : null, bond };
+  // 大会出場＝1行動を消費する（仕様 §4.5.3 の複数日消費は 1 ターンへ単純化）。
+  // 完走・途中退場のどちらも「卓に着いた」ので消費。優勝なら調子↑。日が満ちれば
+  // dayAdvanced=true となり、ホーム再入場時に ensureDay が月替わり演出を出す。
+  const ended = endAction(p, won ? 1 : 0, { type: "league", label: "大会出場", won });
+  p = ended.profile;
+  return { profile: p, finalRank: place, won, rank, meta, soul, retreated, exp: exp.total > 0 ? exp : null, bond, dayAdvanced: ended.dayAdvanced };
 }
 
 // ネームドライバルとの因縁を記録する（蓄積：相手も「あなた」を覚えている）。
