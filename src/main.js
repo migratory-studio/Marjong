@@ -197,8 +197,10 @@ const THINK_BADGE_DELAY = 3000; // ms。これ以上手番が続いたら「長�
 const ACK_WAIT_DELAY = 3000;    // ms。ack 後これ以上次局が来なければ「通信待機中…」を出す。
 let meldCalledFlag = false; // set by MELD_CALLED listener during a resolveCalls
 let abilityCutInFlag = false; // set by ABILITY_USED listener; CPU loop waits on it
+let riichiCutInFlag = false; // set by RIICHI_DECLARED listener; CPU loop waits one turn so the cut-in reads
 const NAKI_WAIT = 1100; // ms pause to show the naki call banner
 const ABILITY_CUTIN_WAIT = 1700; // ms pause so the ability cut-in plays out
+const RIICHI_CUTIN_WAIT = 1400; // ms pause after a riichi declaration so the cut-in plays out
 
 // ----------------------------------------------------------------- select UI
 // Build a character icon element. Uses the master's declared icon path directly
@@ -2663,8 +2665,13 @@ function beginGame(seated, dealerIndex, opts = {}) {
     // 得点推移の記録：各局のはじまり＝直前までの持ち点スナップショット（全員ぶん）。
     scoreHistory.push({ label: game.roundLabel(), points: game.players.map((p) => p.points) });
   });
-  // Riichi declaration chime
-  game.bus.on(Events.RIICHI_DECLARED, ({ player }) => audio.playVoice(player.character.id, "riichi"));
+  // Riichi declaration: chime/voice + a cut-in over the table (リーチカットイン).
+  // The flag extends the *next* CPU turn by RIICHI_CUTIN_WAIT so the cut-in reads.
+  game.bus.on(Events.RIICHI_DECLARED, ({ player }) => {
+    riichiCutInFlag = true;
+    audio.playVoice(player.character.id, "riichi");
+    showRiichiCutIn(player);
+  });
   // Naki call: shared SE + big banner over the caller's seat (win SE / point
   // popups are handled in the result-overlay flow, not here).
   game.bus.on(Events.MELD_CALLED, ({ player, type }) => {
@@ -2762,6 +2769,9 @@ const LocalController = {
   // CPU/オート席=AI(演出ウェイト込み)。オートへの切替時は SWITCH_TO_AI がそのまま返る。
   async decideTurn(game, seat) {
     const actor = game.players[seat];
+    // 直前の手番でリーチが宣言されていたら、この手番を一拍ぶん遅らせて
+    // リーチカットインを読ませる（一度きり消費）。
+    const riichiBeat = riichiCutInFlag; riichiCutInFlag = false;
     if (actor.isHuman && !autoPlay) {
       // After own riichi: auto-tsumogiri the drawn tile (unless tsumo is available).
       const opts = game.actionOptions(seat);
@@ -2773,7 +2783,8 @@ const LocalController = {
     // CPU 席、またはオート観戦 ON で AI に委ねた人間席。どちらも同じ判断ルート。
     clearActions();
     // A fired ability sets abilityCutInFlag (ON_... listener) and extends the pause so it reads.
-    const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : CPU_DELAY;
+    // 直前のリーチ宣言も同様に間を取る（能力カットインを優先）。
+    const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : riichiBeat ? RIICHI_CUTIN_WAIT : CPU_DELAY;
     await delay(wait);
     return decideDiscard(game, seat);
   },
@@ -3290,7 +3301,20 @@ function render() {
 
 // ----------------------------------------------------------------- results
 let winRevealTimer = null;
-const WIN_CALL_WAIT = 1200; // ms to show the ロン/ツモ banner on the table first
+// 和了演出は打点tierで3段階に出し分ける。テーブル上の前演出(バナー/カットイン)を
+// 見せてから中央の結果画面を開くまでの待ち時間も、tierごとに延ばす。
+const WIN_CALL_WAIT = { normal: 1200, mangan: 1700, yakuman: 2400 };
+
+// 打点tier: 役満 / 満貫〜(満貫・跳満・倍満・三倍満) / それ未満。和了画面とテーブル前演出で共用。
+function winTierOf(res) {
+  if (res.isYakuman || /役満/.test(res.rank || "")) return "yakuman";
+  return res.rank ? "mangan" : "normal";
+}
+// カットインの副題に出す打点名（満貫/跳満/役満…）。安手は空。
+function winRankLabel(res) {
+  if (res.isYakuman) return res.rank || "役満";
+  return res.rank || "";
+}
 
 function showHandResult() {
   clearActions();
@@ -3310,16 +3334,29 @@ function showHandResult() {
     return;
   }
 
-  // Win: first show a big ロン/ツモ banner over the winner's seat (like a naki
-  // call), wait, then open the centered result screen. No dedicated ron/tsumo
-  // voice in the asset pack, so reuse the shared naki call SE here.
-  audio.playNaki();
-  showWinCallFx(r.winner, r.tsumo ? "tsumo" : "ron");
+  // Win: first show a big ロン/ツモ flourish over the winner's seat, scaled to the
+  // hand's value, then open the centered result screen.
+  //   normal  … テロップ（ポン/カンと同系の席バナー）＋ naki SE
+  //   mangan〜 … 立ち絵カットイン（能力カットイン流用）＋ naki SE
+  //   yakuman … 全画面フラッシュ＋豪華カットイン＋ファンファーレ
+  const tier = winTierOf(r.result);
+  const callType = r.tsumo ? "tsumo" : "ron";
+  if (tier === "yakuman") {
+    audio.playFanfare();
+    showWinFlash();
+    showWinCutIn(r.winner, callType, "yakuman", winRankLabel(r.result));
+  } else if (tier === "mangan") {
+    audio.playNaki();
+    showWinCutIn(r.winner, callType, "mangan", winRankLabel(r.result));
+  } else {
+    audio.playNaki();
+    showWinCallFx(r.winner, callType);
+  }
   setTimeout(() => {
     const overlay = el("win-overlay");
     overlay.classList.remove("hidden");
     showWinResult(overlay, r);
-  }, WIN_CALL_WAIT);
+  }, WIN_CALL_WAIT[tier] || WIN_CALL_WAIT.normal);
 }
 
 // Build the winning hand row for the result screen: concealed tiles (sorted),
@@ -3400,8 +3437,7 @@ function showWinResult(overlay, r) {
   }
 
   // 中央のドンと出る大ランク（役満／満貫／跳満…）。安手は飜数を出す。
-  const rankTier = (res.isYakuman || /役満/.test(res.rank || "")) ? "yakuman"
-    : res.rank ? "mangan" : "normal";
+  const rankTier = winTierOf(res);
   const bigRank = res.isYakuman ? (res.rank || "役満")
     : res.rank ? res.rank : `${res.totalHan || 0}飜`;
 
@@ -4173,32 +4209,69 @@ function showFlyingCutIn(flyEvents, onDone) {
   const t = setTimeout(finish, 2600);
 }
 
-// Ability cut-in: a diagonal band sweeps across with the character's bust-up and
-// the skill name in big text, holds briefly (ウェイト), then sweeps off. The band's
-// CSS animation runs for ABILITY_CUTIN_WAIT; we just clean up afterward.
-let abilityCutInTimer = null;
-function showAbilityCutIn(player, name) {
+// Diagonal cut-in band: the character's bust-up sweeps in with a big label, holds
+// (ウェイト), then sweeps off. Shared by ability発動 / リーチ宣言 / 大物手の和了。
+//   kind  … "" (ability) | "riichi" | "win"  → CSS data-kind for tinting
+//   grade … "" | "mangan" | "yakuman"         → CSS data-grade for grandeur
+// All three reuse the single #ability-cutin host; only one shows at a time. The
+// teardown timer is stored on the host so a later cut-in cleanly supersedes it.
+function playCutIn(character, { charLabel, bigLabel, subLabel = "", kind = "", grade = "", dur }) {
   const host = el("ability-cutin");
-  const c = player.character;
+  const c = character;
   const portraitUrl = charImages.url(c, "portrait");
   const art = portraitUrl
     ? `<img class="cutin-portrait" src="${portraitUrl}" alt="${c.name}">`
     : `<div class="cutin-portrait cutin-portrait-fallback" style="--char-color:${c.color}">${[...c.name][0] || "?"}</div>`;
-  clearTimeout(abilityCutInTimer);
+  clearTimeout(host._cutinTimer);
   host.innerHTML = `
-    <div class="cutin-band" style="--char-color:${c.color}">
+    <div class="cutin-band" data-kind="${kind}" data-grade="${grade}" style="--char-color:${c.color}; --cut-dur:${dur}ms">
+      <div class="cutin-bandbg"></div>
       ${art}
       <div class="cutin-text">
-        <div class="cutin-char" style="color:${c.color}">${c.name}</div>
-        <div class="cutin-name">${name}</div>
+        <div class="cutin-char" style="color:${c.color}">${charLabel}</div>
+        <div class="cutin-name">${bigLabel}</div>
+        ${subLabel ? `<div class="cutin-sub">${subLabel}</div>` : ""}
       </div>
     </div>`;
   host.classList.remove("hidden");
-  abilityCutInTimer = setTimeout(() => {
+  host._cutinTimer = setTimeout(() => {
     host.classList.add("hidden");
     host.innerHTML = "";
-    abilityCutInTimer = null;
-  }, ABILITY_CUTIN_WAIT);
+    host._cutinTimer = null;
+  }, dur);
+}
+
+// Ability cut-in: 名前＋技名。CSS animation runs for ABILITY_CUTIN_WAIT.
+function showAbilityCutIn(player, name) {
+  playCutIn(player.character, { charLabel: player.character.name, bigLabel: name, dur: ABILITY_CUTIN_WAIT });
+}
+
+// リーチカットイン: 立ち絵＋「リーチ」の大書き。音だけだった宣言を一枚絵で見せる。
+function showRiichiCutIn(player) {
+  playCutIn(player.character, { charLabel: player.character.name, bigLabel: "リーチ", kind: "riichi", dur: RIICHI_CUTIN_WAIT });
+}
+
+// 大物手の和了カットイン（満貫〜／役満）。立ち絵＋「ロン/ツモ」＋打点名。
+function showWinCutIn(playerIndex, type, grade, rankLabel) {
+  const c = game.players[playerIndex].character;
+  playCutIn(c, {
+    charLabel: c.name,
+    bigLabel: type === "tsumo" ? "ツモ" : "ロン",
+    subLabel: rankLabel,
+    kind: "win",
+    grade,
+    dur: (WIN_CALL_WAIT[grade] || WIN_CALL_WAIT.mangan) - 100,
+  });
+}
+
+// 役満の全画面フラッシュ（豪華演出）。テーブルFX層に白い閃光を一瞬。
+function showWinFlash() {
+  const host = el("naki-fx");
+  if (!host) return;
+  const e = document.createElement("div");
+  e.className = "win-flash";
+  host.appendChild(e);
+  setTimeout(() => e.remove(), 1000);
 }
 
 // Seat-relative positions (0=self bottom,1=right,2=top,3=left) as % of table.

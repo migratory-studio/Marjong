@@ -368,6 +368,29 @@ export class AudioManager {
     } catch { /* ignore */ }
   }
 
+  // 役満などの「豪華演出」用ファンファーレ。サンプル不要の WebAudio 合成
+  // （C5→E5→G5→C6 を駆け上がる上昇アルペジオ）。SE 音量に追従。
+  playFanfare() {
+    if (!this.enabled) return;
+    try {
+      if (!this._actx) this._actx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = this._actx;
+      if (ctx.state === "suspended") ctx.resume();
+      const now = ctx.currentTime;
+      const peak = this.seVolume * 0.32;
+      [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "triangle"; o.frequency.value = freq;
+        const t0 = now + i * 0.08;
+        g.gain.setValueAtTime(0, t0);
+        g.gain.linearRampToValueAtTime(peak, t0 + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.9);
+        o.connect(g).connect(ctx.destination);
+        o.start(t0); o.stop(t0 + 0.95);
+      });
+    } catch { /* ignore */ }
+  }
+
   _playFromPool(pool) {
     if (!this.enabled || !pool || pool.length === 0) return;
     const slot = pool[(Math.random() * pool.length) | 0];
