@@ -391,6 +391,39 @@ export class AudioManager {
     } catch { /* ignore */ }
   }
 
+  // 満貫以上の和了カットイン用「おっ、決まった！」の一撃。明るいメジャーコードを
+  // 同時に鳴らす打点感のあるスタブ＋上へ抜けるキラッ。サンプル不要の WebAudio 合成。
+  playWinHit() {
+    if (!this.enabled) return;
+    try {
+      if (!this._actx) this._actx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = this._actx;
+      if (ctx.state === "suspended") ctx.resume();
+      const now = ctx.currentTime;
+      const peak = this.seVolume * 0.3;
+      // メジャーコードの一撃（C5 E5 G5 C6 を同時に）＝「決まった！」の打点感。
+      [523.25, 659.25, 783.99, 1046.5].forEach((freq) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "triangle"; o.frequency.value = freq;
+        g.gain.setValueAtTime(0, now);
+        g.gain.linearRampToValueAtTime(peak, now + 0.012);
+        g.gain.exponentialRampToValueAtTime(0.0008, now + 0.5);
+        o.connect(g).connect(ctx.destination);
+        o.start(now); o.stop(now + 0.55);
+      });
+      // 上へ抜ける一瞬のキラッ（G6→C7）。
+      const o2 = ctx.createOscillator(), g2 = ctx.createGain();
+      o2.type = "triangle";
+      o2.frequency.setValueAtTime(1568, now + 0.04);
+      o2.frequency.exponentialRampToValueAtTime(2093, now + 0.16);
+      g2.gain.setValueAtTime(0, now + 0.04);
+      g2.gain.linearRampToValueAtTime(peak * 0.5, now + 0.06);
+      g2.gain.exponentialRampToValueAtTime(0.0006, now + 0.28);
+      o2.connect(g2).connect(ctx.destination);
+      o2.start(now + 0.04); o2.stop(now + 0.32);
+    } catch { /* ignore */ }
+  }
+
   _playFromPool(pool) {
     if (!this.enabled || !pool || pool.length === 0) return;
     const slot = pool[(Math.random() * pool.length) | 0];

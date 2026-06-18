@@ -3343,7 +3343,7 @@ function showHandResult() {
   // Win: first show a flourish over the winner's seat, scaled to the hand's value,
   // then open the centered result screen.
   //   normal  … テロップ（ポン/カンと同系の席バナー）＋ naki SE
-  //   mangan〜 … 旧カットイン（横帯＋バストアップ「ロン/ツモ」）＋ naki SE
+  //   mangan〜 … 旧カットイン（横帯＋バストアップ「ロン/ツモ」）＋「決まった！」SE
   //   yakuman … 専用の特別演出（長尺・新演出）＋ファンファーレ
   const tier = winTierOf(r.result);
   const callType = r.tsumo ? "tsumo" : "ron";
@@ -3353,8 +3353,8 @@ function showHandResult() {
     const ymName = (res.yakuman && res.yakuman.length) ? res.yakuman.map((y) => y.name).join("・") : "";
     showYakumanCutIn(r.winner, callType, { title: winRankLabel(res) || "役満", name: ymName });
   } else if (tier === "mangan") {
-    audio.playNaki();
-    showWinCutIn(r.winner, callType, winRankLabel(r.result));
+    audio.playWinHit();
+    showWinCutIn(r.winner, callType);
   } else {
     audio.playNaki();
     showWinCallFx(r.winner, callType);
@@ -4260,13 +4260,13 @@ function showRiichiFx(playerIndex) {
   showSeatCall(playerIndex, "リーチ", "naki-call riichi-call");
 }
 
-// 満貫以上の和了カットイン（旧カットイン＝横帯＋バストアップ）。立ち絵＋「ロン/ツモ」＋打点名。
-function showWinCutIn(playerIndex, type, rankLabel) {
+// 満貫以上の和了カットイン（旧カットイン＝横帯＋バストアップ）。立ち絵＋「ロン/ツモ」。
+// 打点名（満貫〜三倍満）の表記は出さない方針。
+function showWinCutIn(playerIndex, type) {
   const c = game.players[playerIndex].character;
   playCutIn(c, {
     charLabel: c.name,
     bigLabel: type === "tsumo" ? "ツモ" : "ロン",
-    subLabel: rankLabel,
     kind: "win",
     variant: "band",
     dur: WIN_CALL_WAIT.mangan - 100,
@@ -4309,7 +4309,6 @@ function showYakumanCutIn(playerIndex, type, data) {
 // ?debug=tsumoreba 時にホーム左下の 🐛 から開ける。各演出を指定キャラで再生して確認する。
 // 演出ビルダー（playCutIn / renderYakumanInto / spawnCall）を専用の FX host に向けて
 // 呼ぶだけ＝ゲーム本体と同じ描画パスを通すので、見た目は実機と一致する。
-const DBG_DAKAN = ["満貫", "跳満", "倍満", "三倍満"];
 const DBG_YAKUMAN = ["国士無双", "天和", "大三元", "四暗刻", "字一色", "緑一色", "清老頭", "九蓮宝燈", "四槓子", "国士無双十三面待ち"];
 const DBG_YM_TITLE = ["役満", "ダブル役満", "数え役満"];
 
@@ -4333,7 +4332,7 @@ function showDebugMenu() {
         <button type="button" class="dbg-btn" data-fx="chi">チー</button>
         <button type="button" class="dbg-btn" data-fx="kan">カン</button>
       </div>
-      <div class="dbg-row"><label>満貫カットイン</label><select class="dbg-dakan">${opts(DBG_DAKAN)}</select>
+      <div class="dbg-row"><label>満貫カットイン</label>
         <button type="button" class="dbg-btn dbg-mini" data-fx="mangan-ron">ロン</button>
         <button type="button" class="dbg-btn dbg-mini" data-fx="mangan-tsumo">ツモ</button></div>
       <div class="dbg-row"><label>役満 特別演出</label><select class="dbg-ymtitle">${opts(DBG_YM_TITLE)}</select><select class="dbg-ym">${opts(DBG_YAKUMAN)}</select>
@@ -4346,7 +4345,6 @@ function showDebugMenu() {
   (el("app") || document.body).appendChild(ov);
 
   const charSel = ov.querySelector(".dbg-char");
-  const dakanSel = ov.querySelector(".dbg-dakan");
   const ymSel = ov.querySelector(".dbg-ym");
   const ymTitleSel = ov.querySelector(".dbg-ymtitle");
   const cutinHost = ov.querySelector("#dbg-cutin-host");
@@ -4371,8 +4369,8 @@ function showDebugMenu() {
       audio.playVoice(ch.id, fx);
       spawnCall(nakiHost, CENTER, { pon: "ポン", chi: "チー", kan: "カン" }[fx], "naki-call");
     } else if (fx.startsWith("mangan")) {
-      audio.playNaki();
-      playCutIn(ch, { charLabel: ch.name, bigLabel: type === "tsumo" ? "ツモ" : "ロン", subLabel: dakanSel.value, kind: "win", variant: "band", dur: WIN_CALL_WAIT.mangan - 100, host: cutinHost });
+      audio.playWinHit();
+      playCutIn(ch, { charLabel: ch.name, bigLabel: type === "tsumo" ? "ツモ" : "ロン", kind: "win", variant: "band", dur: WIN_CALL_WAIT.mangan - 100, host: cutinHost });
     } else if (fx.startsWith("yakuman")) {
       audio.playFanfare();
       renderYakumanInto(cutinHost, ch, type, { title: ymTitleSel.value, name: ymSel.value }, WIN_CALL_WAIT.yakuman - 100);
