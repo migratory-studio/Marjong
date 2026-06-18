@@ -2463,6 +2463,43 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 @keyframes ymFade { to { opacity: 1; } }
 @keyframes ymSlideIn { to { opacity: 1; transform: translateX(0); } }
 
+/* ---- DEBUG: ホームの 🐛 ボタン＋演出プレビューメニュー（?debug=tsumoreba 時のみ） ---- */
+.debug-fab {
+  position: absolute; left: 14px; bottom: 14px; z-index: 30;
+  background: #3a1d2b; color: #ffd9a0; border: 1px solid #7a3f55; border-radius: 10px;
+  padding: 8px 12px; font-size: 13px; font-weight: 800; cursor: pointer;
+}
+.debug-fab:hover { background: #4a2536; }
+.dbg-overlay {
+  position: absolute; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center; background: rgba(6,10,8,.72);
+}
+.dbg-panel {
+  position: relative; z-index: 2; width: 560px; max-width: 92%; max-height: 88%; overflow: auto;
+  background: #16241cf2; border: 2px solid var(--accent); border-radius: 14px; padding: 18px 20px;
+  color: var(--ink); box-shadow: 0 20px 60px #000a; backdrop-filter: blur(3px);
+}
+.dbg-head { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 18px; color: var(--accent); margin-bottom: 12px; }
+.dbg-close { background: none; border: none; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; }
+.dbg-close:hover { color: var(--ink); }
+.dbg-sec { font-size: 13px; color: var(--muted); margin: 14px 0 8px; border-bottom: 1px solid #ffffff14; padding-bottom: 4px; }
+.dbg-row { display: flex; align-items: center; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+.dbg-row label { font-size: 13px; color: var(--muted); min-width: 92px; }
+.dbg-overlay select {
+  background: #0e1a14; color: var(--ink); border: 1px solid var(--accent);
+  border-radius: 7px; padding: 6px 8px; font-size: 13px; cursor: pointer;
+}
+.dbg-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.dbg-btn {
+  background: #244b39; color: #eaf3ee; border: 1px solid #3c6b50; border-radius: 8px;
+  padding: 9px 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.dbg-btn:hover { background: #2f6049; }
+.dbg-mini { padding: 7px 14px; }
+.dbg-note { font-size: 11px; color: var(--muted); margin-top: 14px; }
+/* 演出 FX host はパネルの上・全画面。立ち絵カットイン/席バナーをそのまま再生する。 */
+.dbg-overlay > .naki-fx, .dbg-overlay > .ability-cutin { position: absolute; inset: 0; }
+
 /* ---- settings (gear icon + volume panel) ---- */
 .settings-btn {
   position: absolute; top: 14px; right: 14px;

@@ -1963,6 +1963,12 @@ function bootHome() {
   for (const btn of document.querySelectorAll("[data-nav]")) {
     btn.addEventListener("click", () => { audio.playClick?.(); navigate(btn.dataset.nav); });
   }
+  // DEBUG: ?debug=tsumoreba 起動時だけホームに 🐛 を出し、演出プレビュー等のメニューを開く。
+  if (isDebugMode()) {
+    const dbgBtn = el("debug-menu-btn");
+    dbgBtn?.classList.remove("hidden");
+    dbgBtn?.addEventListener("click", () => { audio.playClick?.(); showDebugMenu(); });
+  }
   // 通信対戦（テスト中）の入口: モード選択 → ロビー。
   el("online-room-btn")?.addEventListener("click", () => { audio.playClick?.(); openOnlineLobby("room"); });
   el("online-join-btn")?.addEventListener("click", () => {
@@ -4297,6 +4303,83 @@ function renderYakumanInto(host, character, type, { title, name }, dur) {
 }
 function showYakumanCutIn(playerIndex, type, data) {
   renderYakumanInto(el("ability-cutin"), game.players[playerIndex].character, type, data, WIN_CALL_WAIT.yakuman - 100);
+}
+
+// ---------------------------------------------------------------- DEBUG menu
+// ?debug=tsumoreba 時にホーム左下の 🐛 から開ける。各演出を指定キャラで再生して確認する。
+// 演出ビルダー（playCutIn / renderYakumanInto / spawnCall）を専用の FX host に向けて
+// 呼ぶだけ＝ゲーム本体と同じ描画パスを通すので、見た目は実機と一致する。
+const DBG_DAKAN = ["満貫", "跳満", "倍満", "三倍満"];
+const DBG_YAKUMAN = ["国士無双", "天和", "大三元", "四暗刻", "字一色", "緑一色", "清老頭", "九蓮宝燈", "四槓子", "国士無双十三面待ち"];
+const DBG_YM_TITLE = ["役満", "ダブル役満", "数え役満"];
+
+function showDebugMenu() {
+  document.getElementById("debug-menu")?.remove();
+  const ov = document.createElement("div");
+  ov.id = "debug-menu";
+  ov.className = "dbg-overlay";
+  const opts = (arr, val = (x) => x, label = (x) => x) => arr.map((x) => `<option value="${val(x)}">${label(x)}</option>`).join("");
+  ov.innerHTML = `
+    <div class="dbg-panel">
+      <div class="dbg-head"><span>🐛 DEBUG メニュー</span><button type="button" class="dbg-close" title="閉じる">✕</button></div>
+      <div class="dbg-row"><label>キャラ</label><select class="dbg-char">${opts(CHARACTER_MASTER, (c) => c.id, (c) => c.name)}</select></div>
+      <div class="dbg-sec">演出プレビュー</div>
+      <div class="dbg-grid">
+        <button type="button" class="dbg-btn" data-fx="ability">能力発動カットイン</button>
+        <button type="button" class="dbg-btn" data-fx="riichi">リーチ（テロップ）</button>
+        <button type="button" class="dbg-btn" data-fx="ron">ロン（テロップ）</button>
+        <button type="button" class="dbg-btn" data-fx="tsumo">ツモ（テロップ）</button>
+        <button type="button" class="dbg-btn" data-fx="pon">ポン</button>
+        <button type="button" class="dbg-btn" data-fx="chi">チー</button>
+        <button type="button" class="dbg-btn" data-fx="kan">カン</button>
+      </div>
+      <div class="dbg-row"><label>満貫カットイン</label><select class="dbg-dakan">${opts(DBG_DAKAN)}</select>
+        <button type="button" class="dbg-btn dbg-mini" data-fx="mangan-ron">ロン</button>
+        <button type="button" class="dbg-btn dbg-mini" data-fx="mangan-tsumo">ツモ</button></div>
+      <div class="dbg-row"><label>役満 特別演出</label><select class="dbg-ymtitle">${opts(DBG_YM_TITLE)}</select><select class="dbg-ym">${opts(DBG_YAKUMAN)}</select>
+        <button type="button" class="dbg-btn dbg-mini" data-fx="yakuman-ron">ロン</button>
+        <button type="button" class="dbg-btn dbg-mini" data-fx="yakuman-tsumo">ツモ</button></div>
+      <div class="dbg-note">※ ?debug=tsumoreba 起動時のみ表示</div>
+    </div>
+    <div class="naki-fx" id="dbg-naki-host"></div>
+    <div class="ability-cutin hidden" id="dbg-cutin-host"></div>`;
+  (el("app") || document.body).appendChild(ov);
+
+  const charSel = ov.querySelector(".dbg-char");
+  const dakanSel = ov.querySelector(".dbg-dakan");
+  const ymSel = ov.querySelector(".dbg-ym");
+  const ymTitleSel = ov.querySelector(".dbg-ymtitle");
+  const cutinHost = ov.querySelector("#dbg-cutin-host");
+  const nakiHost = ov.querySelector("#dbg-naki-host");
+  const CENTER = { left: "50%", top: "50%" };
+  const curChar = () => CHARACTER_MASTER.find((c) => c.id === charSel.value) || CHARACTER_MASTER[0];
+
+  const play = (fx) => {
+    const ch = curChar();
+    const type = fx.endsWith("tsumo") ? "tsumo" : "ron";
+    if (fx === "ability") {
+      const ab = ch.abilities?.[0]?.abilityId;
+      audio.playVoice(ch.id, "ability");
+      playCutIn(ch, { charLabel: ch.name, bigLabel: (ab && abilityDef(ab)?.name) || "能力発動", variant: "bold", dur: ABILITY_CUTIN_WAIT, host: cutinHost });
+    } else if (fx === "riichi") {
+      audio.playVoice(ch.id, "riichi");
+      spawnCall(nakiHost, CENTER, "リーチ", "naki-call riichi-call");
+    } else if (fx === "ron" || fx === "tsumo") {
+      audio.playNaki();
+      spawnCall(nakiHost, CENTER, fx === "tsumo" ? "ツモ" : "ロン", "naki-call win-call");
+    } else if (fx === "pon" || fx === "chi" || fx === "kan") {
+      audio.playVoice(ch.id, fx);
+      spawnCall(nakiHost, CENTER, { pon: "ポン", chi: "チー", kan: "カン" }[fx], "naki-call");
+    } else if (fx.startsWith("mangan")) {
+      audio.playNaki();
+      playCutIn(ch, { charLabel: ch.name, bigLabel: type === "tsumo" ? "ツモ" : "ロン", subLabel: dakanSel.value, kind: "win", variant: "band", dur: WIN_CALL_WAIT.mangan - 100, host: cutinHost });
+    } else if (fx.startsWith("yakuman")) {
+      audio.playFanfare();
+      renderYakumanInto(cutinHost, ch, type, { title: ymTitleSel.value, name: ymSel.value }, WIN_CALL_WAIT.yakuman - 100);
+    }
+  };
+  ov.querySelectorAll(".dbg-btn").forEach((b) => b.addEventListener("click", () => { audio.playClick?.(); play(b.dataset.fx); }));
+  ov.querySelector(".dbg-close").addEventListener("click", () => { audio.playClick?.(); ov.remove(); });
 }
 
 // Seat-relative positions (0=self bottom,1=right,2=top,3=left) as % of table.
