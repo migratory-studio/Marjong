@@ -264,6 +264,9 @@ export class Game {
         canActivate: ab.canActivate(api),
         visible: ui ? ui.visible : true,
         candidates: ui ? ui.candidates : null,
+        // 常設バッジ/パネル用の任意フィールド（持たない能力は null）。
+        meter: ui ? ui.meter ?? null : null,
+        status: ui ? ui.status ?? null : null,
       };
     });
   }

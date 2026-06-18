@@ -2850,6 +2850,7 @@ function waitHumanTurn(seat) {
     humanTurnResolver = resolve;
     showHumanActions();
     render(); // 手番開始時に即再描画。showHumanActions が立てた手牌コーチ等を次イベント待ちにせず反映する。
+    maybePlayLuckyTsumoFx(); // 発動中なら、このツモが特別ツモであることを小演出で示す
   });
 }
 // 人間の手番決定を、決定 → Intent へ変換（オンライン時に権威へ送る）。
@@ -2884,6 +2885,7 @@ async function autoTsumogiri(actor, hintText = "リーチ中（自動ツモ切�
   // re-render to refresh highlights / hand display
   refreshHighlights();
   render();
+  maybePlayLuckyTsumoFx(); // リーチ中/強制ツモ切り中でも、発動中の特別ツモは見せる
   await delay(AUTO_TSUMOGIRI_DELAY);
   clearActions();
   // 決定を返すだけ（適用は pump の applyTurnDecision）。drawnTileId は待ち明けに確定。
@@ -3042,6 +3044,7 @@ function fireAbility(idx, abilityId, params = {}) {
   game.activateAbility(idx, abilityId, params);
   showHumanActions();
   render();
+  maybePlayLuckyTsumoFx(); // 「幸運のツモ」発動の瞬間、いまのツモ牌に特別演出
 }
 
 function showHumanActions() {
@@ -3105,7 +3108,9 @@ function showHumanActions() {
     // visible===false の能力はボタン自体を描画しない（zero-search の1シャンテン外など）。
     if (a.visible === false) continue;
     if (a.activation === "passive") {
-      abilityBar.appendChild(mkChip(`常時: ${a.name}`, "ability-chip passive"));
+      const chip = mkPassiveIndicator(a);
+      chip.classList.add("ability-chip", "passive");
+      abilityBar.appendChild(chip);
     } else if (a.active) {
       abilityBar.appendChild(mkChip(`発動中: ${a.name}`, "ability-chip active"));
     } else {
@@ -4255,6 +4260,41 @@ function showAbilityCutIn(player, name) {
   playCutIn(player.character, { charLabel: player.character.name, bigLabel: name, variant: "bold", dur: ABILITY_CUTIN_WAIT });
 }
 
+// 「幸運のツモ」（詩玥）発動中の特別ツモ演出。自分のツモ牌に金色のリングが
+// シュンッと収束する小エフェクト（自分視点専用）。位置は手牌ヒットボックス→画面座標へ変換。
+function playLuckyTsumoFx(tileId) {
+  if (!renderer || !game) return;
+  const cv = el("table");
+  const hb = (renderer.handHitboxes || []).find((h) => h.tileId === tileId);
+  if (!cv || !hb) return;
+  const r = cv.getBoundingClientRect();
+  const sx = r.width / cv.width, sy = r.height / cv.height;
+  const fx = document.createElement("div");
+  fx.className = "tsumo-fx";
+  fx.style.left = `${r.left + (hb.x + hb.w / 2) * sx}px`;
+  fx.style.top = `${r.top + (hb.y + hb.h / 2) * sy}px`;
+  fx.style.setProperty("--w", `${hb.w * sx}px`);
+  fx.style.setProperty("--h", `${hb.h * sy}px`);
+  fx.innerHTML = `<span class="tsumo-fx-glow"></span><span class="tsumo-fx-ring"></span><span class="tsumo-fx-spark">✦</span>`;
+  document.body.appendChild(fx);
+  requestAnimationFrame(() => fx.classList.add("go"));
+  setTimeout(() => fx.remove(), 700);
+}
+
+let lastLuckyFxTileId = null;
+// 自分(人間)が「幸運のツモ」発動中なら、いまのツモ牌に特別ツモ演出を一度だけ出す。
+// 発動時＋発動中の各ツモで呼ぶ。同じツモ牌では二重発火しない。オンラインはローカル
+// 描画座標を持たないので対象外（自分視点のオフライン演出）。
+function maybePlayLuckyTsumoFx() {
+  if (online || !game) return;
+  const p = game.players[humanIndex];
+  if (!p || p.drawnTileId == null) return;
+  if (!(p.abilities || []).some((a) => a.id === "lucky-draw" && a.isActive)) return;
+  if (p.drawnTileId === lastLuckyFxTileId) return;
+  lastLuckyFxTileId = p.drawnTileId;
+  playLuckyTsumoFx(p.drawnTileId);
+}
+
 // リーチ宣言: ポン/カンと同じ席テロップ。宣言後の間は riichiWaitFlag が次手番で取る。
 function showRiichiFx(playerIndex) {
   showSeatCall(playerIndex, "リーチ", "naki-call riichi-call");
@@ -4942,6 +4982,54 @@ function mkChip(label, cls) {
   s.className = cls;
   return s;
 }
+// 能力のメーター表示（凌雲の盾など）。残数を ●(残り)/○(消費) のピップで描く。
+// 枚数が多い(7以上)ときだけ「N/M」表記にフォールバック。status で色を変える。
+function mkAbilityMeter(meter, status) {
+  const m = document.createElement("span");
+  m.className = "ability-meter" + (status ? " " + status : "");
+  const { on = 0, max = 0, label = "" } = meter || {};
+  let body;
+  if (max > 0 && max <= 6) {
+    body = "●".repeat(Math.max(0, on)) + "○".repeat(Math.max(0, max - on));
+  } else {
+    body = `${on}/${max}`;
+  }
+  m.textContent = label ? `${label} ${body}` : body;
+  return m;
+}
+// 常時(パッシブ)能力の表示ノード。「常時」バッジ＋能力名＋（あれば）メーター。
+// 能力パネルと自分立ち絵の常設バッジで共用する（cls で見た目を切り替え）。
+function mkPassiveIndicator(a, cls = "") {
+  const wrap = document.createElement("span");
+  wrap.className = "passive-ind" + (cls ? " " + cls : "");
+  const tag = document.createElement("span");
+  tag.className = "passive-tag";
+  tag.textContent = "常時";
+  wrap.appendChild(tag);
+  const name = document.createElement("span");
+  name.className = "passive-name";
+  name.textContent = a.name;
+  wrap.appendChild(name);
+  if (a.meter) wrap.appendChild(mkAbilityMeter(a.meter, a.status));
+  return wrap;
+}
+// プレイヤー idx のパッシブ(常時)能力バッジを host に流し込む（既存内容はクリア）。
+// 個人戦の立ち絵・団体/ペアの自ブロックで共用。cls でバッジの見た目を切り替える。
+function renderPassiveBadges(host, idx, cls = "self-ability") {
+  if (!host || !game) return;
+  host.innerHTML = "";
+  const list = online ? (online.opts?.abilityStatus || []) : game.abilityStatus(idx);
+  for (const a of list) {
+    if (a.visible === false) continue;
+    if (a.activation !== "passive") continue;
+    host.appendChild(mkPassiveIndicator(a, cls));
+  }
+}
+// 自分立ち絵の上の「常設バッジ」を、人間プレイヤーのパッシブ能力で更新する。
+// updateHpBoard から毎イベント呼ばれるので、盾の残数はリアルタイムに追従する。
+function updateSelfAbilities() {
+  renderPassiveBadges(el("self-abilities"), humanIndex);
+}
 function clearActions() {
   el("action-bar").innerHTML = "";
   const ab = el("ability-bar");
@@ -5157,6 +5245,13 @@ function buildTeamBattleHpBoard(board) {
     activeVal.className = "tb-hp";
     activeRow.appendChild(activeVal);
     block.appendChild(activeRow);
+    // 常時(パッシブ)能力の常設バッジ（自チームのみ／出場中メンバーの盾などを表示）。
+    let passives = null;
+    if (isMyTeam) {
+      passives = document.createElement("div");
+      passives.className = "tb-passives";
+      block.appendChild(passives);
+    }
     // セリフ吹き出し（自チームのみ）
     let talkBubble = null;
     if (isMyTeam) {
@@ -5195,7 +5290,7 @@ function buildTeamBattleHpBoard(board) {
     }
     block.appendChild(benchRow);
     board.appendChild(block);
-    teamHpCells[pi] = { block, rankEl, totalEl, deltaEl, activeRow, activeFill, activeVal, talkBubble, benchRefs };
+    teamHpCells[pi] = { block, rankEl, totalEl, deltaEl, activeRow, activeFill, activeVal, talkBubble, benchRefs, passives };
   }
   updateTeamBattleHpBoard(true); // 初期構築時はFLIPアニメ無しで順位配置だけ反映
 }
@@ -5246,6 +5341,8 @@ function updateTeamBattleHpBoard(skipAnim = false) {
     refs.activeFill.className = "hp-fill " + (pct <= 25 ? "low" : pct <= 50 ? "mid" : "high");
     refs.activeVal.textContent = activeHp.toLocaleString();
     refs.activeRow.classList.toggle("is-turn", game.turn === pi && game.phase !== Phase.HAND_OVER);
+    // 自チームの常設バッジ（出場中メンバー＝人間プレイヤーの常時能力・盾の残数）を同期。
+    if (refs.passives) renderPassiveBadges(refs.passives, humanIndex, "tb-passive");
     // 待機
     for (const bench of refs.benchRefs) {
       const bhp = team.hps[bench.memberIdx];
@@ -5332,6 +5429,13 @@ function buildPairBattleHpBoard(board) {
       memberRefs.push({ seat, row, fill: info.querySelector(".hp-fill"), val });
     }
     block.appendChild(membersWrap);
+    // 常時(パッシブ)能力の常設バッジ（自ペアのみ／自席の盾などを表示）。
+    let passives = null;
+    if (isMine) {
+      passives = document.createElement("div");
+      passives.className = "tb-passives";
+      block.appendChild(passives);
+    }
     // セリフ吹き出し（自ペアのみ・Phase3で発火）
     let talkBubble = null;
     if (isMine) {
@@ -5340,7 +5444,7 @@ function buildPairBattleHpBoard(board) {
       block.appendChild(talkBubble);
     }
     board.appendChild(block);
-    pairHpCells[pid] = { block, rankEl, totalEl, deltaEl, memberRefs, talkBubble };
+    pairHpCells[pid] = { block, rankEl, totalEl, deltaEl, memberRefs, talkBubble, passives };
   }
   updatePairBattleHpBoard(true); // 初期はFLIPなしで配置のみ
 }
@@ -5376,6 +5480,8 @@ function updatePairBattleHpBoard(skipAnim = false) {
     refs.block.style.order = rank;
     refs.rankEl.textContent = rank + 1;
     refs.rankEl.className = "tb-rank m" + (rank + 1);
+    // 自ペアの常設バッジ（自席＝人間プレイヤーの常時能力・盾の残数）を同期。
+    if (refs.passives) renderPassiveBadges(refs.passives, humanIndex, "tb-passive");
     // ブロック内の2人は HP 降順（高い方を上）。flex order で並べ替え。
     [...refs.memberRefs]
       .sort((a, b) => pairBattleData.hp[b.seat] - pairBattleData.hp[a.seat])
@@ -5555,6 +5661,7 @@ function updateHpBoard() {
   if (teamBattleData) { updateTeamBattleHpBoard(); return; }
   if (pairBattleData) { updatePairBattleHpBoard(); return; }
   if (!hpCells || !game) return;
+  updateSelfAbilities(); // 自分立ち絵の常設バッジ（常時能力・盾の残数）も同期
   // 持ち点降順の順位（同点は players 配列の並びで安定。0=1位）。
   const rankByIndex = {};
   [...game.players.keys()]

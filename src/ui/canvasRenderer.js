@@ -253,6 +253,19 @@ export class CanvasRenderer {
     // 通信対戦: この席が長考中（手番開始から一定時間動きなし）なら「⏳ 長考中」をプレート上に出す。
     // 能力発動中バッジとは排他（同じ位置）。動き出し（打牌）でホスト側がクリアする。
     else if (this.thinkingSeat === p.index) this._thinkingBadge(x, y - 18 - 8);
+    // 常時(パッシブ)能力は全席のプレート上に「常時 能力名」を出す（全体出し）。
+    // 盾系（uiState の meter）はここで残数 ●○ も描き、卓全体で盾の有無が読める。
+    else {
+      const passive = (p.abilities || []).find((a) => a.activation === "passive");
+      if (passive) {
+        let meter = null, statusKind = null;
+        try {
+          const ui = typeof passive.uiState === "function" ? passive.uiState() : null;
+          if (ui && ui.meter) { meter = ui.meter; statusKind = ui.status; }
+        } catch { /* uiState が api 必須なら表示なしで握りつぶす */ }
+        this._passiveBadge(x, y - 18 - 8, passive.name, meter, statusKind);
+      }
+    }
 
     // Character icon just left of the plate (real art if present, else a colored disc).
     this._seatIcon(p, x - 90 - 22, y, 18, isTurn);
@@ -322,6 +335,55 @@ export class CanvasRenderer {
     ctx.textBaseline = "middle";
     ctx.fillText(label, cx, by + h / 2 + 0.5);
     ctx.textBaseline = "alphabetic";
+    ctx.restore();
+  }
+
+  // 常時(パッシブ)能力バッジ。ネームプレート上に「[常時] 能力名 (盾 ●○)」を出す。
+  // 手動発動の ⚡バッジ（紫）と区別するため緑系。meter があれば盾の残数ピップを添える
+  // （armed=金 / broken=赤）。卓上の全席に出して「誰が何の常時能力／盾を持つか」を可視化する。
+  _passiveBadge(cx, bottomY, name, meter, statusKind) {
+    const ctx = this.ctx;
+    const TAG = "常時", ACCENT = "#86e0b0";
+    ctx.save();
+    ctx.font = "bold 11px sans-serif";
+    const tagW = ctx.measureText(TAG).width;
+    const nameW = ctx.measureText(name).width;
+    // 盾などの残数メーター（"盾 ●○"）。7枚以上は N/M にフォールバック。
+    let pips = "", pipColor = statusKind === "broken" ? "#ff9a9a" : "#ffd98a";
+    if (meter) {
+      const on = Math.max(0, meter.on || 0), max = Math.max(0, meter.max || 0);
+      const body = (max > 0 && max <= 6) ? "●".repeat(on) + "○".repeat(Math.max(0, max - on)) : `${on}/${max}`;
+      pips = meter.label ? `${meter.label} ${body}` : body;
+    }
+    const pipsW = pips ? ctx.measureText(pips).width : 0;
+    const padX = 8, gap = 6, tagPad = 5, h = 19, tagH = 15;
+    const tagPillW = tagW + tagPad * 2;
+    const w = padX + tagPillW + gap + nameW + (pips ? gap + pipsW : 0) + padX;
+    const bx = cx - w / 2, by = bottomY - h;
+    // 外枠ピル
+    ctx.fillStyle = "#102019ee";
+    roundRect(ctx, bx, by, w, h, h / 2); ctx.fill();
+    ctx.strokeStyle = ACCENT; ctx.lineWidth = 1.3;
+    roundRect(ctx, bx, by, w, h, h / 2); ctx.stroke();
+    ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    // 「常時」タグ（塗りピル）
+    let px = bx + padX;
+    ctx.fillStyle = ACCENT;
+    roundRect(ctx, px, by + (h - tagH) / 2, tagPillW, tagH, tagH / 2); ctx.fill();
+    ctx.fillStyle = "#0e1813";
+    ctx.fillText(TAG, px + tagPad, by + h / 2 + 0.5);
+    px += tagPillW + gap;
+    // 能力名
+    ctx.fillStyle = "#dff3e8";
+    ctx.fillText(name, px, by + h / 2 + 0.5);
+    px += nameW;
+    // 残数ピップ
+    if (pips) {
+      px += gap;
+      ctx.fillStyle = pipColor;
+      ctx.fillText(pips, px, by + h / 2 + 0.5);
+    }
+    ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
     ctx.restore();
   }
 

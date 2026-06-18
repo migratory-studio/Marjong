@@ -2030,6 +2030,30 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 .ability-chip.active { background: #6b4caa; color: #fff; border-color: #c9a0ff; }
 .ability-chip.passive { background: #233b30; color: #bfe0cf; }
 
+/* 常時(パッシブ)能力インジケータ: 「常時」バッジ＋能力名＋（あれば）メーター。
+   能力パネルのチップと、自分立ち絵の常設バッジ(.self-ability)で共用する。 */
+.passive-ind { display: inline-flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+.passive-tag {
+  flex: 0 0 auto; font-size: 11px; font-weight: 800; letter-spacing: .04em;
+  padding: 2px 7px; border-radius: 999px; background: var(--accent); color: #20140a;
+}
+.passive-name { font-weight: 700; }
+/* 残数メーター（盾の ●○）。armed=黄で点灯／broken=赤で「破れ」を示す。 */
+.ability-meter { font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #ffd98a; white-space: nowrap; }
+.ability-meter.armed { color: #ffd98a; }
+.ability-meter.broken { color: #ff9a9a; }
+
+/* 団体戦・ペア戦ボードの自ブロックに出す常設バッジ（コンパクト版）。空なら畳む。 */
+.tb-passives { display: flex; flex-wrap: wrap; gap: 4px; margin: 2px 0 1px; }
+.tb-passives:empty { display: none; }
+.tb-passive {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #0b1410cc; border: 1px solid color-mix(in srgb, var(--accent) 28%, #2f4a3b);
+  border-radius: 8px; padding: 2px 7px; font-size: 11px; color: #eef3ef;
+}
+.tb-passive .passive-tag { font-size: 10px; padding: 1px 6px; }
+.tb-passive .ability-meter { font-size: 12px; }
+
 /* 鳴きなし toggle (top-left of the table) */
 .nonaki-btn {
   position: absolute; top: 14px; left: 14px; z-index: 20;
@@ -2215,6 +2239,53 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   transition: opacity .2s ease, transform .2s ease, visibility .2s;
 }
 .self-talk.show { opacity: 1; visibility: visible; transform: translateY(0); }
+
+/* 「幸運のツモ」発動中の特別ツモ演出（自分のツモ牌に金リングがシュンッと収束）。
+   位置は JS が #table の手牌ヒットボックスから画面座標へ変換して left/top に当てる。 */
+.tsumo-fx { position: fixed; z-index: 45; pointer-events: none; }
+.tsumo-fx > span { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); }
+.tsumo-fx-ring {
+  width: var(--w); height: var(--h); border-radius: 8px;
+  border: 2.5px solid #ffe08a; box-shadow: 0 0 14px #ffd86a, inset 0 0 8px #ffd86a; opacity: 0;
+}
+.tsumo-fx-glow {
+  width: calc(var(--w) * 1.7); height: calc(var(--h) * 1.5);
+  background: radial-gradient(closest-side, rgba(255, 224, 138, .55), rgba(255, 210, 90, 0)); opacity: 0;
+}
+.tsumo-fx-spark { font-size: calc(var(--h) * 0.5); color: #fff3c4; text-shadow: 0 0 10px #ffd86a; opacity: 0; }
+.tsumo-fx.go .tsumo-fx-ring { animation: tsumoRing .55s cubic-bezier(.2, .7, .2, 1) both; }
+.tsumo-fx.go .tsumo-fx-glow { animation: tsumoGlow .6s ease-out both; }
+.tsumo-fx.go .tsumo-fx-spark { animation: tsumoSpark .6s ease-out both; }
+@keyframes tsumoRing {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(1.9); }
+  40%  { opacity: 1; }
+  70%  { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(.97); }
+}
+@keyframes tsumoGlow {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(1.4); }
+  35%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(.8); }
+}
+@keyframes tsumoSpark {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(.2) rotate(-30deg); }
+  45%  { opacity: 1; transform: translate(-50%, -50%) scale(1.25) rotate(8deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(.9) rotate(0deg); }
+}
+
+/* 常時能力の常設バッジ: 立ち絵の左上に重ね、手番に関係なく見せる。空なら畳む。 */
+.self-abilities {
+  position: absolute; left: 8px; top: 8px; right: 8px; z-index: 3;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  pointer-events: none;
+}
+.self-abilities:empty { display: none; }
+.self-ability {
+  max-width: 100%;
+  background: #0b1410e0; border: 1px solid color-mix(in srgb, var(--accent) 30%, #2f4a3b);
+  border-radius: 9px; padding: 4px 8px; box-shadow: 0 4px 12px #0008;
+  font-size: 12px; color: #eef3ef; backdrop-filter: blur(2px);
+}
 
 /* ---- win screen: centered overlay + sequential yaku reveal ---- */
 .win-overlay {

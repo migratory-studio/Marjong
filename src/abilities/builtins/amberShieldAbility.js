@@ -49,6 +49,16 @@ export class AmberShieldAbility extends Ability {
     this.shields = this.maxShields;
   }
 
+  // UI へ盾の残数・状態を渡す（main.js の常設バッジ＋能力パネルが読む）。
+  // meter … 盾の残数メーター（●○ で枚数を描く）。status … armed=盾あり / broken=盾なし。
+  uiState(_api) {
+    return {
+      visible: true,
+      meter: { on: this.shields, max: this.maxShields, label: "盾" },
+      status: this.shields > 0 ? "armed" : "broken",
+    };
+  }
+
   // 局をまたいでも盾は持続する＝resetForHand では shields を触らない（super のみ）。
   resetForHand() {
     super.resetForHand();
