@@ -36,6 +36,24 @@ export function buildSeatedGame(charIds) {
   return { game, roster: chars.map((c) => c.id) };
 }
 
+// 待合室スロット（human/cpu/open 混在・長さ CAPACITY）から卓を組む。**スロット順＝席順**を保つので、
+// 待合室の見た目と対局の席順が一致する。human はその charId、cpu/open は人間と重複しない CPU を補填。
+export function buildSeatedGameFromSlots(slots) {
+  const resolve = (id) => CHARACTERS.find((c) => c.id === id) || CHARACTERS[0];
+  const used = new Set();
+  for (const s of slots) if (s.type === "human") used.add(resolve(s.charId).id);
+  const cpuPool = shuffled(CHARACTERS.filter((c) => !used.has(c.id)));
+  const chars = slots.map((s, i) => {
+    if (s.type === "human") return resolve(s.charId);
+    const c = cpuPool.shift() || CHARACTERS[i % CHARACTERS.length];
+    used.add(c.id);
+    return c;
+  });
+  const seated = chars.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
+  const game = new Game(seated, /*human seat*/ 0, undefined, { maxRounds: 1 });
+  return { game, roster: chars.map((c) => c.id) };
+}
+
 // 1卓を起動して接続を席0に紐づける（単一接続版）。netws テスト等、待機を挟まず即開始する経路で使う。
 // opts.token は再接続用、その他は AuthorityRoom へ（timeout/pacing）。
 export function serveRoom(connection, game, roster, { seat = 0, token = null, ...roomOpts } = {}) {
@@ -59,6 +77,7 @@ export class RoomHost {
     this.timer = null;         // マッチング締切タイマー（バッチごと）
     this.opts = null;          // AuthorityRoom へ渡す pacing/timeout/matchWaitMs
     this.tokenSeat = {};       // token -> { room, seat }（全アクティブ卓ぶんの rejoin 照合）
+    this.slots = null;         // ルーム対戦の待合室スロット [CAPACITY]（lobby時のみ生成・人間ゼロで null）
   }
 
   handle(connection, opts = {}) {
@@ -66,7 +85,10 @@ export class RoomHost {
       if (!msg) return;
       if (msg.type === "intent.join") {
         // charId=使用キャラ / name=ユーザー名 / dan=段位 / oshi=推しキャラID（表示用。欠落しうる）。
-        this._enqueue(connection, { charId: msg.charId, name: msg.name, dan: msg.dan, oshi: msg.oshi }, opts);
+        const info = { charId: msg.charId, name: msg.name, dan: msg.dan, oshi: msg.oshi };
+        // lobby=true（ルーム対戦）はホスト主導の待合室へ。未指定（マッチング対戦）は従来の自動待機列へ。
+        if (msg.lobby) this._lobbyJoin(connection, info, opts);
+        else this._enqueue(connection, info, opts);
       } else if (msg.type === "intent.rejoin") {
         const e = (msg.token != null) ? this.tokenSeat[msg.token] : undefined;
         if (e) {
@@ -75,8 +97,108 @@ export class RoomHost {
           connection.send({ type: "evt.rejoinFailed", reason: "対局が見つかりません" });
           connection.close?.();
         }
+      } else if (msg.type === "intent.lobbySetChar") {
+        this._lobbySetChar(connection, msg.charId);
+      } else if (msg.type === "intent.lobbySlot") {
+        this._lobbySlot(connection, msg.slot, msg.state); // ホスト限定（_lobbySlot 内で検証）
+      } else if (msg.type === "intent.lobbyStart") {
+        this._lobbyStart(connection);                     // ホスト限定（_lobbyStart 内で検証）
       }
     });
+  }
+
+  // --- ルーム対戦の待合室（ホスト主導・自動タイマーなし） -------------------------------
+  // ホスト＝最小 index の human スロット（離脱で次の人間へ繰り上がり）。
+  _hostSeat() { return this.slots ? this.slots.findIndex((s) => s.type === "human") : -1; }
+  _isHost(connection) {
+    const h = this._hostSeat();
+    return h >= 0 && this.slots[h].conn === connection;
+  }
+
+  // 入室＝最初の open スロットを human で埋める。満席なら evt.lobbyFull で弾く。
+  _lobbyJoin(connection, info, opts) {
+    this.opts = opts;
+    if (!this.slots) this.slots = Array.from({ length: CAPACITY }, () => ({ type: "open" }));
+    const idx = this.slots.findIndex((s) => s.type === "open");
+    if (idx < 0) { connection.send({ type: "evt.lobbyFull" }); connection.close?.(); return; }
+    this.slots[idx] = {
+      type: "human", conn: connection,
+      charId: info.charId, name: info.name ?? null, dan: info.dan ?? null, oshi: info.oshi ?? null,
+    };
+    // 待合室中の離脱のみ面倒を見る（開始後は AuthorityRoom.dropSeat が担当・slots=null で no-op）。
+    connection.onClose?.(() => this._lobbyLeave(connection));
+    this._broadcastLobby();
+  }
+
+  _lobbyLeave(connection) {
+    if (!this.slots) return; // 既に開始済み（slots=null）
+    const idx = this.slots.findIndex((s) => s.type === "human" && s.conn === connection);
+    if (idx < 0) return;
+    this.slots[idx] = { type: "open" };
+    if (!this.slots.some((s) => s.type === "human")) { this.slots = null; return; } // 全員退室＝部屋リセット
+    this._broadcastLobby();
+  }
+
+  // 待合室で雀士を変更（本人スロットのみ）。
+  _lobbySetChar(connection, charId) {
+    if (!this.slots || !charId) return;
+    const slot = this.slots.find((s) => s.type === "human" && s.conn === connection);
+    if (!slot) return;
+    slot.charId = charId;
+    this._broadcastLobby();
+  }
+
+  // 空き枠の CPU 確定 / 解除（ホスト限定）。state="cpu"|"open"。
+  _lobbySlot(connection, slot, state) {
+    if (!this.slots || !this._isHost(connection)) return;
+    if (typeof slot !== "number" || slot < 0 || slot >= CAPACITY) return;
+    const cur = this.slots[slot];
+    if (state === "cpu" && cur.type === "open") this.slots[slot] = { type: "cpu" };
+    else if (state === "open" && cur.type === "cpu") this.slots[slot] = { type: "open" };
+    else return;
+    this._broadcastLobby();
+  }
+
+  // 待合室の現況を全 human 接続へ配信。各接続に自席 yourSeat を含める（自分が最上＝視点別）。
+  _broadcastLobby() {
+    if (!this.slots) return;
+    const members = this.slots.map((s, i) => {
+      if (s.type === "human") return { seat: i, kind: "human", name: s.name, dan: s.dan, charId: s.charId, oshi: s.oshi };
+      if (s.type === "cpu") return { seat: i, kind: "cpu" };
+      return { seat: i, kind: "open" };
+    });
+    const hostSeat = this._hostSeat();
+    this.slots.forEach((s, i) => {
+      if (s.type === "human") s.conn.send({ type: "evt.lobby", members, hostSeat, capacity: CAPACITY, yourSeat: i });
+    });
+  }
+
+  // ホストの開始：残り open を CPU 化して卓を確定（_start と同形。token/welcome/rejoin 照合も同じ）。
+  _lobbyStart(connection) {
+    if (!this.slots || !this._isHost(connection)) return;
+    const slots = this.slots.map((s) => (s.type === "open" ? { type: "cpu" } : s));
+    const { game, roster } = buildSeatedGameFromSlots(slots);
+    const playersInfo = roster.map((charId, seat) => {
+      const s = slots[seat];
+      return s.type === "human" ? { charId, name: s.name, dan: s.dan, oshi: s.oshi } : { charId, cpu: true };
+    });
+    const connections = {};
+    slots.forEach((s, seat) => { if (s.type === "human") connections[seat] = s.conn; });
+    const room = new AuthorityRoom(game, connections, this.opts || {});
+    room.roster = roster;
+    room.players = playersInfo;
+    room.seatTokens = {};
+    slots.forEach((s, seat) => {
+      if (s.type !== "human") return;
+      const token = randomToken();
+      room.seatTokens[seat] = token;
+      this.tokenSeat[token] = { room, seat };
+      s.conn.send({ type: "welcome", seat, roster, players: playersInfo, token, rules: { players: game.numPlayers } });
+      s.conn.onClose?.(() => room.dropSeat(seat));
+    });
+    this.room = room;
+    this.slots = null; // 待合室を消費（以後の join は新バッチ＝新ホスト扱い）
+    room.run().catch((e) => console.error("room.run crashed", e));
   }
 
   // 待機バッチへ着席。満席＝即開始 / 待機時間ゼロ＝即開始 / それ以外は締切タイマーで人間を待つ。

@@ -10,7 +10,7 @@
 //   onBack() … 通信対戦の入口（モード選択）へ戻る
 
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // 紛らわしい 0/O・1/I を除外
-function makeCode(n = 4) {
+export function makeCode(n = 4) {
   // UI 表示用の合言葉。決定論は不要（牌山seed等とは無関係）。
   let s = "";
   for (let i = 0; i < n; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)];
@@ -187,4 +187,114 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
     root._cleanup();
     onStart({ charId: pickedId, mode, code });
   };
+}
+
+// ルーム対戦の「リアルタイム待合室」。入室と同時にWS接続し、サーバの evt.lobby で 4 枠を随時更新する。
+// 席0（最上）=自分、以下=入室順。ホスト（最小indexの人間）だけが空き枠の CPU 化／対局開始を操作できる。
+// 戻り値 { update(lobbyState) } を main 側が evt.lobby のたびに呼ぶ。
+//   showRoomLobby(root, { code, isJoin, characters, audio, onSetChar, onSlot, onStart, onBack })
+//     onSetChar(charId) … 待合室で雀士を変更（サーバへ intent.lobbySetChar）
+//     onSlot(seat, "cpu"|"open") … 空き枠を CPU 化／解除（ホストのみ・intent.lobbySlot）
+//     onStart() … 残り空き枠を CPU 補填して開始（ホストのみ・intent.lobbyStart）
+export function showRoomLobby(root, { code, isJoin, characters, audio, onSetChar, onSlot, onStart, onBack }) {
+  root.innerHTML = "";
+
+  const head = elt("header", "online-head");
+  head.innerHTML =
+    `<button type="button" class="ghost-back online-back">← 戻る</button>` +
+    `<h1>通信対戦 <span class="test-badge">テスト中</span></h1>` +
+    `<div class="online-mode-label">${isJoin ? "合言葉で参加" : "ルーム対戦"}</div>`;
+  root.appendChild(head);
+  head.querySelector(".online-back").onclick = () => { audio?.playClick?.(); onBack(); };
+
+  const note = elt("p", "online-note");
+  note.textContent = "※ 同じあいことばの相手が入室すると下に表示されます。ホストが「対局開始」を押すと、空き枠は CPU で埋めて始まります。";
+  root.appendChild(note);
+
+  const body = elt("div", "online-body");
+  root.appendChild(body);
+
+  // 左: 合言葉＋4枠（人間/CPU/空き）。
+  const left = elt("div", "online-col online-col-left");
+  body.appendChild(left);
+  const codeBox = elt("div", "online-codebox");
+  codeBox.innerHTML =
+    `<div class="online-codebox-k">あいことば</div>` +
+    `<div class="online-code">${code}</div>` +
+    `<div class="online-codebox-sub">${isJoin ? "このルームに入りました" : "この合言葉を相手に伝えて招待（同じ合言葉で同卓）"}</div>`;
+  left.appendChild(codeBox);
+  left.appendChild(elt("div", "online-table-head", { textContent: "卓（4人）" }));
+  const seatList = elt("div", "online-seats");
+  left.appendChild(seatList);
+
+  // 右: 自分の雀士を選ぶ（待合室中はいつでも変更可・選択は随時共有）。
+  const right = elt("div", "online-col online-col-right");
+  body.appendChild(right);
+  right.appendChild(elt("div", "online-pick-head", { textContent: "あなたの雀士を選ぶ" }));
+  const grid = elt("div", "online-char-grid");
+  right.appendChild(grid);
+  const cardById = new Map();
+  for (const c of characters) {
+    const card = elt("button", "olc-card", { type: "button" });
+    card.style.setProperty("--role", c.color || "#f6b352");
+    card.appendChild(makeIcon(c));
+    card.appendChild(elt("span", "olc-name", { textContent: c.name }));
+    card.onclick = () => { audio?.playClick?.(); onSetChar(c.id); };
+    cardById.set(c.id, card);
+    grid.appendChild(card);
+  }
+
+  // フッタ: ホスト=対局開始 / 非ホスト=開始待ち。
+  const footer = elt("div", "online-foot");
+  const waitLabel = elt("div", "online-wait-label", { textContent: "ホストの開始を待っています…" });
+  const startBtn = elt("button", "primary online-start", { type: "button", textContent: "対局開始" });
+  footer.append(waitLabel, startBtn);
+  root.appendChild(footer);
+  startBtn.onclick = () => { audio?.playClick?.(); onStart(); };
+
+  const charName = (id) => { const c = characters.find((x) => x.id === id); return c ? c.name : "（選択中）"; };
+
+  function renderSlots(state) {
+    const { members = [], hostSeat = -1, yourSeat = -1 } = state || {};
+    const isHost = yourSeat >= 0 && yourSeat === hostSeat;
+    seatList.innerHTML = "";
+    for (const m of members) {
+      const row = elt("div", "online-seat");
+      const who = elt("span", "online-seat-who");
+      const st = elt("span", "online-seat-state");
+      if (m.kind === "human") {
+        const you = m.seat === yourSeat;
+        who.textContent = `${m.name || "名無し"}${you ? "（あなた）" : ""}${m.seat === hostSeat ? " ★ホスト" : ""}`;
+        st.textContent = charName(m.charId);
+        if (you) st.classList.add("is-you");
+      } else if (m.kind === "cpu") {
+        who.textContent = "CPU";
+        if (isHost) {
+          const b = elt("button", "online-slot-btn", { type: "button", textContent: "空ける" });
+          b.onclick = () => { audio?.playClick?.(); onSlot(m.seat, "open"); };
+          st.appendChild(b);
+        } else { st.textContent = "コンピュータ"; }
+      } else { // open
+        who.textContent = "空き";
+        if (isHost) {
+          const b = elt("button", "online-slot-btn", { type: "button", textContent: "CPUにする" });
+          b.onclick = () => { audio?.playClick?.(); onSlot(m.seat, "cpu"); };
+          st.appendChild(b);
+        } else { st.textContent = "入室待ち"; }
+      }
+      row.append(who, st);
+      seatList.appendChild(row);
+    }
+    waitLabel.style.display = isHost ? "none" : "";
+    startBtn.style.display = isHost ? "" : "none";
+    const myChar = (members.find((m) => m.seat === yourSeat) || {}).charId;
+    for (const [id, card] of cardById) card.classList.toggle("is-picked", id === myChar);
+  }
+
+  // 初期は接続中（evt.lobby 未着）。
+  seatList.appendChild(elt("div", "online-seat online-seat-connecting", { textContent: "接続中…" }));
+  waitLabel.style.display = "";
+  startBtn.style.display = "none";
+
+  return { update: (state) => renderSlots(state) };
 }

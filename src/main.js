@@ -33,7 +33,7 @@ import { showAbilityChange } from "./screens/abilityChangeScreen.js";
 import { showScenarioList, scenariosForMentor } from "./screens/scenarioListScreen.js";
 import { markScenarioRead, tournamentStoryGate, episodeNumberOf } from "./progression/scenarioService.js";
 import { showMatchIntro } from "./screens/matchIntroScreen.js";
-import { showOnlineLobby } from "./screens/onlineLobbyScreen.js";
+import { showOnlineLobby, showRoomLobby, makeCode } from "./screens/onlineLobbyScreen.js";
 import { showRoomCodeModal } from "./screens/roomCodeModal.js";
 import { createLoopback } from "./net/transport.js";
 import { AuthorityRoom } from "./net/authorityRoom.js";
@@ -186,6 +186,7 @@ let onlineToken = null; // 再接続用トークン（welcome で受領）。同
 let reconnecting = false; // 再接続シーケンス中フラグ
 let reconnectTimer = null;
 let matchmaking = null; // マッチング探索中の状態 { base, room, mode, charId, name, dan, attempt }（welcome で解除）
+let roomLobby = null; // ルーム対戦の待合室中の状態 { ep, code, api, myCharId }（welcome で解除）
 let matchCountdownTimer = null; // 探索オーバーレイの「あとX秒」カウントダウン
 let onlineSeatInfo = null; // 通信対戦の席ごと表示情報 [{charId,name,dan}|{charId,cpu}]（welcome で受領）
 // 通信対戦の手番/待機 UI 状態。
@@ -2045,6 +2046,8 @@ const ONLINE_WS_URL = "wss://mahjong-online.nogi-kaiyu.workers.dev/ws";
 // 通信対戦（テスト中）: ロビーを開く。mode = "room" | "match"。
 // opts.joinCode があれば「合言葉で参加」モード（その合言葉のルームへ入る）。
 async function openOnlineLobby(mode, opts = {}) {
+  // ルーム対戦は「リアルタイム待合室」へ（入室と同時にWS接続・ホスト主導で開始）。
+  if (mode === "room") { enterRoomLobby(opts); return; }
   showScreen("online-lobby-screen");
   // マッチング対戦のロビー左側は戦績を見せる（卓表示だと「ここでマッチング中」と誤解されるため）。
   // 戦績は「オンライン対戦だけ」の集計（online_results）。プロフィールは段位/名前/推し用。
@@ -2070,6 +2073,70 @@ async function openOnlineLobby(mode, opts = {}) {
       startMatchmaking(charId, base, room, mode);
     },
   });
+}
+
+// ルーム対戦の待合室へ入る：画面を出してから即WS接続し intent.join{lobby:true} を送る。
+// 以降の evt.lobby で 4 枠を随時更新し、ホストの「対局開始」(intent.lobbyStart)で welcome→対局へ。
+// welcome 後は onlineWsEp 等の既存WS経路（client化・再接続）にそのまま乗る（connectMatchmaking と同型）。
+async function enterRoomLobby(opts = {}) {
+  const isJoin = !!opts.joinCode;
+  const code = opts.joinCode || makeCode(4);
+  humanIndex = 0;
+  teamBattleData = null; pairBattleData = null;
+  selectedTeamBattle = false; selectedPairBattle = false;
+  selectedPlayers = 4; selectedRounds = 1; // テスト中は4人東風固定
+
+  // 自分の表示情報（ユーザー名/段位/推し）を join に同梱（startMatchmaking と同じ取得）。
+  let name = null, dan = 1, oshi = null;
+  try {
+    const p = await profileRepo.loadProfile();
+    name = normalizeUsername(p?.profile?.displayName || "") || null;
+    dan = describeRank(p?.onlineRank || defaultRankState()).dan;
+    oshi = topCompanionId(p?.companionBonds);
+  } catch { /* 未ログイン等は名無しで参加 */ }
+
+  let myCharId = (CHARACTERS[0] && CHARACTERS[0].id) || null; // 既定キャラ（待合室で変更可）
+  const ov = (typeof window !== "undefined") ? window.__ONLINE_WS_URL : undefined;
+  if (ov === "loopback") { startOnlineMatch(myCharId); return; } // 開発: サーバ無しは従来の即CPU
+  const base = (ov && ov !== "loopback") ? ov : ONLINE_WS_URL;
+
+  showScreen("online-lobby-screen");
+  const api = showRoomLobby(el("online-lobby-screen"), {
+    code, isJoin, characters: CHARACTERS, audio,
+    onSetChar: (id) => { myCharId = id; sendLobbySetChar(id); },
+    onSlot: (seat, state) => sendLobbySlot(seat, state),
+    onStart: () => sendLobbyStart(),
+    onBack: () => { leaveRoomLobby(); goScreen("online-screen"); },
+  });
+  roomLobby = { ep: null, code, api, myCharId: () => myCharId }; // 待合室入室の印（接続中・ep は接続後に差す）
+
+  const url = `${base}?room=room-${encodeURIComponent(code)}`;
+  let ep;
+  try { ep = await connectWebSocket(url); }
+  catch (e) {
+    console.error("WS接続失敗", e);
+    if (roomLobby) { roomLobby = null; alert("オンラインサーバに接続できませんでした：" + url); goScreen("online-screen"); }
+    return;
+  }
+  if (!roomLobby) { ep.close?.(); return; } // 接続待ちの間に「戻る」で離脱した
+  // welcome 以降の client 化・再接続が使う既存WS状態を確立（connectMatchmaking と揃える）。
+  onlineWsEp = ep; onlineWsUrl = url; onlineToken = null; reconnecting = false;
+  roomLobby.ep = ep;
+  if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ: 強制切断テスト用
+  ep.onMessage(onlineClientMessage); // evt.lobby→待合室更新 / welcome→対局へ
+  ep.onClose?.(() => handleWsClose(ep)); // 切断時は既存の再接続/終了ハンドラへ委譲（待合室中は online=null で no-op）
+  ep.send({ type: "intent.join", charId: myCharId, name, dan, oshi, lobby: true });
+}
+
+// 待合室の操作を権威へ送る（待合室中のみ。roomLobby が無ければ no-op）。
+function sendLobbySetChar(charId) { roomLobby?.ep.send({ type: "intent.lobbySetChar", charId }); }
+function sendLobbySlot(seat, state) { roomLobby?.ep.send({ type: "intent.lobbySlot", slot: seat, state }); }
+function sendLobbyStart() { roomLobby?.ep.send({ type: "intent.lobbyStart" }); }
+// 待合室から手動で抜ける（戻るボタン）。接続を閉じて状態を消す。
+function leaveRoomLobby() {
+  const ep = roomLobby?.ep;
+  roomLobby = null;
+  if (ep) { ep === onlineWsEp && (onlineWsEp = null); try { ep.close?.(); } catch { /* already closed */ } }
 }
 
 // 通信対戦の対局を開始（テスト中＝4人東風固定・自席以外は CPU 補填）。startGame と同じ
@@ -2354,8 +2421,11 @@ function onlineClientMessage(msg) {
   // 探索中（welcome 前）のマッチング進捗。game/online がまだ無い段階で届くため最初に処理する。
   if (msg.type === "evt.matchWaiting") { updateMatchSearchOverlay(msg); return; }
   if (msg.type === "evt.matchClosed") { retryMatchmaking(); return; }
+  // ルーム対戦の待合室（welcome 前）。members の人数/顔ぶれ・ホストUIを随時更新する。
+  if (msg.type === "evt.lobby") { roomLobby?.api?.update(msg); return; }
+  if (msg.type === "evt.lobbyFull") { leaveRoomLobby(); alert("この部屋は満員です。"); goScreen("online-screen"); return; }
   if (msg.type === "welcome") {
-    hideMatchSearchOverlay(); matchmaking = null; // 探索終了 → 対局へ
+    hideMatchSearchOverlay(); matchmaking = null; roomLobby = null; // 探索/待合室 終了 → 対局へ
     if (msg.token) onlineToken = msg.token; // 再接続トークンを保持
     onlineSeatInfo = Array.isArray(msg.players) ? msg.players : null; // 席ごとの名前/段位（卓上＆開始画面用）
     if (msg.rejoined) { reconnectSuccess(); return; } // 再接続: 既存の対局へ復帰（snapshot が続く）

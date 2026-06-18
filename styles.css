@@ -4361,6 +4361,16 @@ button.primary.danger:hover { color: #ffbcbc; }
 .online-seat-who { font-weight: 700; color: var(--ink); }
 .online-seat-state { color: var(--muted); font-size: 13px; display: flex; align-items: center; gap: 8px; }
 .online-seat-state.is-you { color: var(--accent); font-weight: 800; }
+.online-seat-connecting { justify-content: center; color: var(--muted); }
+/* 待合室: 空き枠の CPU 化／解除ボタン（ホストのみ表示）。 */
+.online-slot-btn {
+  font-size: 12px; font-weight: 700; color: var(--ink);
+  background: #244b39cc; border: 1px solid #2a3f34; border-radius: 8px;
+  padding: 4px 12px; cursor: pointer;
+}
+.online-slot-btn:hover { background: var(--accent); color: #20140a; border-color: var(--accent); }
+/* 待合室フッタ: 非ホストの「ホストの開始を待っています…」。 */
+.online-wait-label { color: var(--muted); font-size: 14px; align-self: center; }
 .online-spinner {
   width: 13px; height: 13px; border-radius: 50%;
   border: 2px solid #2a3f34; border-top-color: var(--accent);
