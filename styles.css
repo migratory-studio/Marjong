@@ -2290,40 +2290,40 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   position: absolute; inset: 0; z-index: 28; pointer-events: none; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
 }
-/* インゲームのカットインは、雀荘の能力発動カットインと同じ「大きな立ち絵＋斜めウォッシュ」
-   の大胆な見せ方に統一する。立ち絵は画面の高さいっぱい・右下アンカーでドンと出す。
-   入場→ホールド→退場の3拍を --cut-dur（JS が渡す表示時間）にぴったり合わせる。 */
-.cutin-band { position: absolute; inset: 0; overflow: hidden; }
-.cutin-bandbg {
+/* ===== 能力発動カットイン（variant="bold"）: 雀荘の能力発動と同じ「大きな立ち絵＋斜め
+   ウォッシュ」。立ち絵は画面の高さいっぱい・右下アンカーでドンと出す。入場→ホールド→退場の
+   3拍を --cut-dur（JS が渡す表示時間）にぴったり合わせる。 ===== */
+.cutin-band[data-variant="bold"] { position: absolute; inset: 0; overflow: hidden; }
+.cutin-band[data-variant="bold"] .cutin-bandbg {
   position: absolute; inset: -2% -4%;
   background: linear-gradient(115deg, transparent 0%, rgba(11,21,16,.82) 34%,
     color-mix(in srgb, var(--char-color) 55%, #0b1510) 50%, rgba(11,21,16,.82) 66%, transparent 100%);
   transform: translateX(-30%) skewX(-8deg);
   animation: cutinBand var(--cut-dur, 1.6s) cubic-bezier(.2,.7,.2,1) forwards;
 }
-.cutin-portrait {
+.cutin-band[data-variant="bold"] .cutin-portrait {
   position: absolute; right: 6%; bottom: 0; height: 100%; max-width: 50%;
   width: auto; object-fit: contain; object-position: bottom;
   filter: drop-shadow(0 0 28px color-mix(in srgb, var(--char-color) 55%, transparent)) drop-shadow(0 10px 22px #000d);
   animation: cutinImg var(--cut-dur, 1.6s) cubic-bezier(.18,.8,.2,1) forwards;
 }
-.cutin-portrait-fallback {
+.cutin-band[data-variant="bold"] .cutin-portrait-fallback {
   display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
   height: 86%; width: 32%; max-width: 360px; border-radius: 16px 16px 0 0;
   font-size: 160px; font-weight: 800; color: #0c150f; line-height: 1.2;
   background: linear-gradient(160deg, var(--char-color), #0c150f); border: 3px solid #ffffffcc; border-bottom: none;
 }
-.cutin-text {
+.cutin-band[data-variant="bold"] .cutin-text {
   position: absolute; left: 7%; top: 50%; transform: translateY(-50%);
   text-align: left; color: #fff; text-shadow: 0 3px 12px rgba(0,0,0,.85);
   animation: cutinTxt var(--cut-dur, 1.6s) cubic-bezier(.18,.8,.2,1) forwards;
 }
-.cutin-char { font-size: 28px; font-weight: 800; letter-spacing: .12em; text-shadow: 0 2px 8px #000c; }
-.cutin-name {
+.cutin-band[data-variant="bold"] .cutin-char { font-size: 28px; font-weight: 800; letter-spacing: .12em; text-shadow: 0 2px 8px #000c; }
+.cutin-band[data-variant="bold"] .cutin-name {
   font-size: 76px; font-weight: 900; letter-spacing: 2px; line-height: 1.02; color: #fff;
   text-shadow: 0 0 16px #000, 0 4px 12px #000; -webkit-text-stroke: 2px #0009;
 }
-.cutin-sub {
+.cutin-band[data-variant="bold"] .cutin-sub {
   font-size: 36px; font-weight: 900; letter-spacing: 5px; margin-top: 6px;
   color: #ffe9a8; text-shadow: 0 0 12px #000, 0 3px 8px #000;
 }
@@ -2345,28 +2345,123 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   82%  { transform: translateY(-50%) translateX(0); opacity: 1; }
   100% { transform: translateY(-50%) translateX(-28px); opacity: 0; }
 }
-/* リーチ宣言: 金赤のウォッシュ。 */
-.cutin-band[data-kind="riichi"] .cutin-bandbg {
-  background: linear-gradient(115deg, transparent 0%, rgba(22,13,4,.84) 34%,
-    color-mix(in srgb, var(--char-color) 55%, #d4a017) 50%, rgba(22,13,4,.84) 66%, transparent 100%);
+
+/* ===== 満貫以上の和了カットイン（variant="band"）: 旧カットイン＝横帯＋バストアップ ===== */
+.cutin-band[data-variant="band"] {
+  display: flex; align-items: center; gap: 28px;
+  width: 130%; padding: 16px 48px; transform: skewX(-8deg);
+  background: linear-gradient(100deg, #0b1510f2 0%, #0b1510cc 30%,
+    color-mix(in srgb, var(--char-color) 55%, #0b1510) 50%, #0b1510cc 70%, #0b1510f2 100%);
+  border-top: 3px solid #ffffffcc; border-bottom: 3px solid #ffffffcc;
+  box-shadow: 0 18px 60px #000c, 0 0 40px var(--char-color);
+  animation: cutinSweep var(--cut-dur, 1.7s) cubic-bezier(.2,.8,.2,1) forwards;
 }
-/* 役満: 金のウォッシュ＋大書きを金光らせ＋立ち絵をさらに豪華に（持続は --cut-dur が長い＝堂々）。 */
-.cutin-band[data-grade="yakuman"] .cutin-bandbg {
-  background: linear-gradient(115deg, transparent 0%, rgba(26,15,0,.86) 32%,
-    color-mix(in srgb, var(--char-color) 50%, #b8860b) 50%, rgba(26,15,0,.86) 68%, transparent 100%);
+.cutin-band[data-variant="band"] .cutin-bandbg { display: none; }
+.cutin-band[data-variant="band"] .cutin-portrait {
+  transform: skewX(8deg);
+  height: 210px; width: auto; max-width: 220px; object-fit: contain; object-position: bottom;
+  filter: drop-shadow(0 8px 18px #000c);
 }
-.cutin-band[data-grade="yakuman"] .cutin-portrait { filter: drop-shadow(0 0 40px #ffcf5e) drop-shadow(0 10px 22px #000d); }
-.cutin-band[data-grade="yakuman"] .cutin-name { text-shadow: 0 0 22px #ffcf5e, 0 0 14px #000, 0 4px 12px #000; }
-.cutin-band[data-grade="yakuman"] .cutin-sub { font-size: 44px; letter-spacing: 7px; color: #fff2c0; }
-/* 役満の全画面フラッシュ（豪華演出）。 */
-.win-flash {
-  position: absolute; inset: 0; pointer-events: none; z-index: 26;
-  background: radial-gradient(circle at 50% 45%, #fff 0%, #fff8e0 28%, transparent 72%);
-  opacity: 0; animation: winFlash .9s ease-out forwards;
+.cutin-band[data-variant="band"] .cutin-portrait-fallback {
+  transform: skewX(8deg);
+  width: 160px; height: 200px; display: flex; align-items: center; justify-content: center;
+  font-size: 104px; font-weight: 800; color: #0c150f; border-radius: 14px;
+  background: linear-gradient(160deg, var(--char-color), #0c150f); border: 3px solid #ffffffcc;
 }
-@keyframes winFlash {
-  0% { opacity: 0; } 12% { opacity: 1; } 100% { opacity: 0; }
+.cutin-band[data-variant="band"] .cutin-text { transform: skewX(8deg); text-align: left; color: #fff; }
+.cutin-band[data-variant="band"] .cutin-char { font-size: 24px; font-weight: 800; text-shadow: 0 2px 8px #000c; }
+.cutin-band[data-variant="band"] .cutin-name {
+  font-size: 60px; font-weight: 900; letter-spacing: 2px; line-height: 1.05; color: #fff;
+  text-shadow: 0 0 14px #000, 0 4px 10px #000; -webkit-text-stroke: 2px #0009;
 }
+.cutin-band[data-variant="band"] .cutin-sub {
+  font-size: 30px; font-weight: 900; letter-spacing: 4px; margin-top: 2px;
+  color: #ffe9a8; text-shadow: 0 0 10px #000, 0 3px 8px #000;
+}
+@keyframes cutinSweep {
+  0%   { transform: translateX(115%) skewX(-8deg); opacity: 0; }
+  14%  { transform: translateX(0) skewX(-8deg); opacity: 1; }
+  82%  { transform: translateX(0) skewX(-8deg); opacity: 1; }
+  100% { transform: translateX(-125%) skewX(-8deg); opacity: 0; }
+}
+
+/* リーチ宣言テロップ（ポン/カンと同系、金赤）。 */
+.naki-call.riichi-call {
+  font-size: 60px; -webkit-text-stroke: 3px #b8860b;
+  color: #fff3d0; text-shadow: 0 0 14px #000, 0 4px 8px #000, 0 0 28px #ffd34d;
+}
+
+/* ===== 役満 専用の特別演出（長尺・新演出） =====
+   回転する金光のレイ → 開幕の白フラッシュ → 立ち絵が下からせり上がり金のオーラ →
+   「役満」の大書きがスラム → 役名 → 勝者名。最後に全体をフェードアウト。 */
+.yakuman-fx { position: absolute; inset: 0; overflow: hidden; animation: ymOut .5s ease-in 3.3s forwards; }
+@keyframes ymOut { to { opacity: 0; } }
+.yakuman-fx .ym-rays {
+  position: absolute; left: 50%; top: 52%; width: 220vmax; height: 220vmax; transform: translate(-50%,-50%);
+  background: repeating-conic-gradient(from 0deg,
+    rgba(255,207,94,0) 0deg, rgba(255,207,94,.22) 4deg, rgba(255,207,94,0) 8deg);
+  opacity: 0; animation: ymRays 3.8s linear forwards;
+}
+@keyframes ymRays {
+  0%   { opacity: 0; transform: translate(-50%,-50%) rotate(0deg); }
+  14%  { opacity: 1; }
+  100% { opacity: 1; transform: translate(-50%,-50%) rotate(50deg); }
+}
+.yakuman-fx .ym-flash {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 46%, #fff 0%, #fff6d8 26%, transparent 70%);
+  opacity: 0; animation: ymFlash 1s ease-out forwards;
+}
+@keyframes ymFlash { 0% { opacity: 0; } 8% { opacity: 1; } 100% { opacity: 0; } }
+.yakuman-fx .ym-portrait {
+  position: absolute; right: 7%; bottom: 0; height: 102%; max-width: 52%;
+  width: auto; object-fit: contain; object-position: bottom;
+  filter: drop-shadow(0 0 48px #ffcf5e) drop-shadow(0 10px 26px #000d);
+  opacity: 0; animation: ymPortrait 3.8s cubic-bezier(.16,.8,.2,1) forwards;
+}
+.yakuman-fx .ym-portrait-fallback {
+  display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+  height: 88%; width: 34%; max-width: 380px; border-radius: 16px 16px 0 0;
+  font-size: 170px; font-weight: 800; color: #0c150f; line-height: 1.2;
+  background: linear-gradient(160deg, var(--char-color), #0c150f); border: 3px solid #ffd86b; border-bottom: none;
+}
+@keyframes ymPortrait {
+  0%   { opacity: 0; transform: translate(8%,16%) scale(1.08); }
+  14%  { opacity: 1; transform: translate(0,0) scale(1); }
+  100% { opacity: 1; transform: translate(0,0) scale(1); }
+}
+.yakuman-fx .ym-center {
+  position: absolute; left: 8%; top: 50%; transform: translateY(-50%);
+  max-width: 48%; text-align: left; text-shadow: 0 3px 14px rgba(0,0,0,.9);
+}
+.yakuman-fx .ym-how {
+  font-size: 30px; font-weight: 800; letter-spacing: .2em; color: #ffe9a8;
+  opacity: 0; animation: ymFade .5s ease-out .35s forwards;
+}
+.yakuman-fx .ym-title {
+  font-size: 108px; font-weight: 900; letter-spacing: 6px; line-height: 1; margin: 2px 0; white-space: nowrap;
+  background: linear-gradient(180deg, #fff6cf 0%, #ffd770 48%, #b8860b 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: #fff6d0;
+  filter: drop-shadow(0 0 18px #ffcf5e) drop-shadow(0 4px 10px #000);
+  opacity: 0; transform: scale(2.2); transform-origin: left center;
+  animation: ymSlam .6s cubic-bezier(.2,1.3,.3,1) .7s forwards;
+}
+@keyframes ymSlam {
+  0%   { opacity: 0; transform: scale(2.2); }
+  60%  { opacity: 1; transform: scale(.94); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.yakuman-fx .ym-name {
+  font-size: 50px; font-weight: 900; letter-spacing: 4px; color: #fff; line-height: 1.1;
+  text-shadow: 0 0 14px #000, 0 4px 10px #000; -webkit-text-stroke: 1.5px #0009;
+  opacity: 0; transform: translateX(-30px); animation: ymSlideIn .6s cubic-bezier(.18,.8,.2,1) 1.3s forwards;
+}
+.yakuman-fx .ym-who {
+  font-size: 26px; font-weight: 800; letter-spacing: .14em; margin-top: 8px;
+  opacity: 0; animation: ymFade .5s ease-out 1.7s forwards;
+}
+@keyframes ymFade { to { opacity: 1; } }
+@keyframes ymSlideIn { to { opacity: 1; transform: translateX(0); } }
 
 /* ---- settings (gear icon + volume panel) ---- */
 .settings-btn {

@@ -197,10 +197,10 @@ const THINK_BADGE_DELAY = 3000; // ms。これ以上手番が続いたら「長�
 const ACK_WAIT_DELAY = 3000;    // ms。ack 後これ以上次局が来なければ「通信待機中…」を出す。
 let meldCalledFlag = false; // set by MELD_CALLED listener during a resolveCalls
 let abilityCutInFlag = false; // set by ABILITY_USED listener; CPU loop waits on it
-let riichiCutInFlag = false; // set by RIICHI_DECLARED listener; CPU loop waits one turn so the cut-in reads
+let riichiWaitFlag = false; // set by RIICHI_DECLARED listener; CPU loop waits one turn so the リーチ banner reads
 const NAKI_WAIT = 1100; // ms pause to show the naki call banner
 const ABILITY_CUTIN_WAIT = 1700; // ms pause so the ability cut-in plays out
-const RIICHI_CUTIN_WAIT = 1400; // ms pause after a riichi declaration so the cut-in plays out
+const RIICHI_WAIT = 1400; // ms pause after a riichi declaration（ポン/カンと同様にテロップの間を取る）
 
 // ----------------------------------------------------------------- select UI
 // Build a character icon element. Uses the master's declared icon path directly
@@ -2665,12 +2665,12 @@ function beginGame(seated, dealerIndex, opts = {}) {
     // 得点推移の記録：各局のはじまり＝直前までの持ち点スナップショット（全員ぶん）。
     scoreHistory.push({ label: game.roundLabel(), points: game.players.map((p) => p.points) });
   });
-  // Riichi declaration: chime/voice + a cut-in over the table (リーチカットイン).
-  // The flag extends the *next* CPU turn by RIICHI_CUTIN_WAIT so the cut-in reads.
+  // Riichi declaration: chime/voice + a seat テロップ (ポン/カンと同系). The flag
+  // extends the *next* CPU turn by RIICHI_WAIT so the banner reads (宣言後ウェイト).
   game.bus.on(Events.RIICHI_DECLARED, ({ player }) => {
-    riichiCutInFlag = true;
+    riichiWaitFlag = true;
     audio.playVoice(player.character.id, "riichi");
-    showRiichiCutIn(player);
+    showRiichiFx(player.index);
   });
   // Naki call: shared SE + big banner over the caller's seat (win SE / point
   // popups are handled in the result-overlay flow, not here).
@@ -2770,8 +2770,8 @@ const LocalController = {
   async decideTurn(game, seat) {
     const actor = game.players[seat];
     // 直前の手番でリーチが宣言されていたら、この手番を一拍ぶん遅らせて
-    // リーチカットインを読ませる（一度きり消費）。
-    const riichiBeat = riichiCutInFlag; riichiCutInFlag = false;
+    // リーチのテロップを読ませる（一度きり消費）。
+    const riichiBeat = riichiWaitFlag; riichiWaitFlag = false;
     if (actor.isHuman && !autoPlay) {
       // After own riichi: auto-tsumogiri the drawn tile (unless tsumo is available).
       const opts = game.actionOptions(seat);
@@ -2784,7 +2784,7 @@ const LocalController = {
     clearActions();
     // A fired ability sets abilityCutInFlag (ON_... listener) and extends the pause so it reads.
     // 直前のリーチ宣言も同様に間を取る（能力カットインを優先）。
-    const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : riichiBeat ? RIICHI_CUTIN_WAIT : CPU_DELAY;
+    const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : riichiBeat ? RIICHI_WAIT : CPU_DELAY;
     await delay(wait);
     return decideDiscard(game, seat);
   },
@@ -3303,7 +3303,7 @@ function render() {
 let winRevealTimer = null;
 // 和了演出は打点tierで3段階に出し分ける。テーブル上の前演出(バナー/カットイン)を
 // 見せてから中央の結果画面を開くまでの待ち時間も、tierごとに延ばす。
-const WIN_CALL_WAIT = { normal: 1200, mangan: 1700, yakuman: 2400 };
+const WIN_CALL_WAIT = { normal: 1200, mangan: 1700, yakuman: 3900 };
 
 // 打点tier: 役満 / 満貫〜(満貫・跳満・倍満・三倍満) / それ未満。和了画面とテーブル前演出で共用。
 function winTierOf(res) {
@@ -3334,20 +3334,21 @@ function showHandResult() {
     return;
   }
 
-  // Win: first show a big ロン/ツモ flourish over the winner's seat, scaled to the
-  // hand's value, then open the centered result screen.
+  // Win: first show a flourish over the winner's seat, scaled to the hand's value,
+  // then open the centered result screen.
   //   normal  … テロップ（ポン/カンと同系の席バナー）＋ naki SE
-  //   mangan〜 … 立ち絵カットイン（能力カットイン流用）＋ naki SE
-  //   yakuman … 全画面フラッシュ＋豪華カットイン＋ファンファーレ
+  //   mangan〜 … 旧カットイン（横帯＋バストアップ「ロン/ツモ」）＋ naki SE
+  //   yakuman … 専用の特別演出（長尺・新演出）＋ファンファーレ
   const tier = winTierOf(r.result);
   const callType = r.tsumo ? "tsumo" : "ron";
   if (tier === "yakuman") {
     audio.playFanfare();
-    showWinFlash();
-    showWinCutIn(r.winner, callType, "yakuman", winRankLabel(r.result));
+    const res = r.result;
+    const ymName = (res.yakuman && res.yakuman.length) ? res.yakuman.map((y) => y.name).join("・") : "";
+    showYakumanCutIn(r.winner, callType, { title: winRankLabel(res) || "役満", name: ymName });
   } else if (tier === "mangan") {
     audio.playNaki();
-    showWinCutIn(r.winner, callType, "mangan", winRankLabel(r.result));
+    showWinCutIn(r.winner, callType, winRankLabel(r.result));
   } else {
     audio.playNaki();
     showWinCallFx(r.winner, callType);
@@ -3582,17 +3583,21 @@ function visualSeat(playerIndex) {
   return slots[offset];
 }
 
-function showSeatCall(playerIndex, text, className) {
-  const seat = visualSeat(playerIndex);
-  const pos = SEAT_FX_POS[seat];
+// 席バナー1枚を host に出す（pos は画面上の left/top）。ゲームの席演出と
+// デバッグプレビューの両方で使う。
+function spawnCall(host, pos, text, className, ttl = 1400) {
+  if (!host) return;
   const e = document.createElement("div");
   e.className = className;
   e.textContent = text;
   e.style.left = pos.left;
   e.style.top = pos.top;
-  el("naki-fx").appendChild(e);
+  host.appendChild(e);
   requestAnimationFrame(() => e.classList.add("show"));
-  setTimeout(() => e.remove(), 1400);
+  setTimeout(() => e.remove(), ttl);
+}
+function showSeatCall(playerIndex, text, className) {
+  spawnCall(el("naki-fx"), SEAT_FX_POS[visualSeat(playerIndex)], text, className);
 }
 
 // Floating +N / -N point deltas near each seat.
@@ -4209,14 +4214,12 @@ function showFlyingCutIn(flyEvents, onDone) {
   const t = setTimeout(finish, 2600);
 }
 
-// Diagonal cut-in band: the character's bust-up sweeps in with a big label, holds
-// (ウェイト), then sweeps off. Shared by ability発動 / リーチ宣言 / 大物手の和了。
-//   kind  … "" (ability) | "riichi" | "win"  → CSS data-kind for tinting
-//   grade … "" | "mangan" | "yakuman"         → CSS data-grade for grandeur
-// All three reuse the single #ability-cutin host; only one shows at a time. The
-// teardown timer is stored on the host so a later cut-in cleanly supersedes it.
-function playCutIn(character, { charLabel, bigLabel, subLabel = "", kind = "", grade = "", dur }) {
-  const host = el("ability-cutin");
+// Diagonal cut-in band. Two visual variants share the single #ability-cutin host:
+//   variant "bold" … 能力発動。画面いっぱいの立ち絵＋斜めウォッシュ（大胆）。
+//   variant "band" … 満貫以上の和了。横帯にバストアップ（旧カットイン）。
+// 役満は別物の特別演出（showYakumanCutIn）。teardown timer は host に持たせ、後続の
+// カットインがきれいに上書きできるようにする。
+function playCutIn(character, { charLabel, bigLabel, subLabel = "", kind = "", variant = "bold", dur, host = el("ability-cutin") }) {
   const c = character;
   const portraitUrl = charImages.url(c, "portrait");
   const art = portraitUrl
@@ -4224,7 +4227,7 @@ function playCutIn(character, { charLabel, bigLabel, subLabel = "", kind = "", g
     : `<div class="cutin-portrait cutin-portrait-fallback" style="--char-color:${c.color}">${[...c.name][0] || "?"}</div>`;
   clearTimeout(host._cutinTimer);
   host.innerHTML = `
-    <div class="cutin-band" data-kind="${kind}" data-grade="${grade}" style="--char-color:${c.color}; --cut-dur:${dur}ms">
+    <div class="cutin-band" data-kind="${kind}" data-variant="${variant}" style="--char-color:${c.color}; --cut-dur:${dur}ms">
       <div class="cutin-bandbg"></div>
       ${art}
       <div class="cutin-text">
@@ -4241,37 +4244,59 @@ function playCutIn(character, { charLabel, bigLabel, subLabel = "", kind = "", g
   }, dur);
 }
 
-// Ability cut-in: 名前＋技名。CSS animation runs for ABILITY_CUTIN_WAIT.
+// 能力発動カットイン（大胆な全身立ち絵）。CSS animation runs for ABILITY_CUTIN_WAIT.
 function showAbilityCutIn(player, name) {
-  playCutIn(player.character, { charLabel: player.character.name, bigLabel: name, dur: ABILITY_CUTIN_WAIT });
+  playCutIn(player.character, { charLabel: player.character.name, bigLabel: name, variant: "bold", dur: ABILITY_CUTIN_WAIT });
 }
 
-// リーチカットイン: 立ち絵＋「リーチ」の大書き。音だけだった宣言を一枚絵で見せる。
-function showRiichiCutIn(player) {
-  playCutIn(player.character, { charLabel: player.character.name, bigLabel: "リーチ", kind: "riichi", dur: RIICHI_CUTIN_WAIT });
+// リーチ宣言: ポン/カンと同じ席テロップ。宣言後の間は riichiWaitFlag が次手番で取る。
+function showRiichiFx(playerIndex) {
+  showSeatCall(playerIndex, "リーチ", "naki-call riichi-call");
 }
 
-// 大物手の和了カットイン（満貫〜／役満）。立ち絵＋「ロン/ツモ」＋打点名。
-function showWinCutIn(playerIndex, type, grade, rankLabel) {
+// 満貫以上の和了カットイン（旧カットイン＝横帯＋バストアップ）。立ち絵＋「ロン/ツモ」＋打点名。
+function showWinCutIn(playerIndex, type, rankLabel) {
   const c = game.players[playerIndex].character;
   playCutIn(c, {
     charLabel: c.name,
     bigLabel: type === "tsumo" ? "ツモ" : "ロン",
     subLabel: rankLabel,
     kind: "win",
-    grade,
-    dur: (WIN_CALL_WAIT[grade] || WIN_CALL_WAIT.mangan) - 100,
+    variant: "band",
+    dur: WIN_CALL_WAIT.mangan - 100,
   });
 }
 
-// 役満の全画面フラッシュ（豪華演出）。テーブルFX層に白い閃光を一瞬。
-function showWinFlash() {
-  const host = el("naki-fx");
-  if (!host) return;
-  const e = document.createElement("div");
-  e.className = "win-flash";
-  host.appendChild(e);
-  setTimeout(() => e.remove(), 1000);
+// 役満専用の特別演出（長尺・新演出）。回転する金光・立ち絵の立ち上がり・「役満」の
+// 大書き・役名を段階的に見せる。host を専有し、dur 後に片付ける。
+function renderYakumanInto(host, character, type, { title, name }, dur) {
+  const c = character;
+  const portraitUrl = charImages.url(c, "portrait");
+  const art = portraitUrl
+    ? `<img class="ym-portrait" src="${portraitUrl}" alt="${c.name}">`
+    : `<div class="ym-portrait ym-portrait-fallback" style="--char-color:${c.color}">${[...c.name][0] || "?"}</div>`;
+  clearTimeout(host._cutinTimer);
+  host.innerHTML = `
+    <div class="yakuman-fx" style="--char-color:${c.color}">
+      <div class="ym-rays"></div>
+      <div class="ym-flash"></div>
+      ${art}
+      <div class="ym-center">
+        <div class="ym-how">${type === "tsumo" ? "ツモ" : "ロン"}</div>
+        <div class="ym-title">${title}</div>
+        ${name ? `<div class="ym-name">${name}</div>` : ""}
+        <div class="ym-who" style="color:${c.color}">${c.name}</div>
+      </div>
+    </div>`;
+  host.classList.remove("hidden");
+  host._cutinTimer = setTimeout(() => {
+    host.classList.add("hidden");
+    host.innerHTML = "";
+    host._cutinTimer = null;
+  }, dur);
+}
+function showYakumanCutIn(playerIndex, type, data) {
+  renderYakumanInto(el("ability-cutin"), game.players[playerIndex].character, type, data, WIN_CALL_WAIT.yakuman - 100);
 }
 
 // Seat-relative positions (0=self bottom,1=right,2=top,3=left) as % of table.
