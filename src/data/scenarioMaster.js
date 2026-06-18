@@ -50,7 +50,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 10,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-01",
@@ -133,7 +133,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 20,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-02",
@@ -238,7 +238,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 30,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-03",
@@ -326,7 +326,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 40,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-04",
@@ -414,7 +414,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 50,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
@@ -502,7 +502,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 60,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
@@ -590,7 +590,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 70,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-07",
@@ -678,7 +678,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 80,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
@@ -766,7 +766,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 90,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
@@ -854,7 +854,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 100,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-10",
@@ -942,7 +942,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 110,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-11",
@@ -1030,7 +1030,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 120,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
@@ -1118,7 +1118,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 130,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-shiyue-bond-13",
@@ -1206,7 +1206,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 140,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
@@ -1294,7 +1294,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 150,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
@@ -1382,7 +1382,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 160,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 4
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
@@ -1470,7 +1470,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 170,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -1558,7 +1558,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 180,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -1646,7 +1646,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 190,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
@@ -1734,7 +1734,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 200,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",

@@ -20456,7 +20456,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ソウルをぶつけ合い、異能で牌を打つ。いまや観客が武道よりも沸くという、公に開かれた競技だ。",
+    "text": "ソウルをぶつけ合い異能で牌を打つ。いまや観客が武道よりも沸くという、公に開かれた競技だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -20469,7 +20469,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その頂に立つ者の名は、九蓮宝士。九つの宝をすべて集めた者だけが、名乗ることを許される。",
+    "text": "その頂に立つ者の名は九蓮宝士。九つの宝をすべて集めた者だけが名乗ることを許される。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20481,7 +20481,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その座に焦がれて、今日、噂の打ち手に弟子入りを願いに来た。約束の雀荘の、戸を叩く。",
+    "text": "その座に焦がれて、今日、噂の打ち手に弟子入りを願いに来た。約束の雀荘の戸を叩く。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -20494,7 +20494,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "けれど、刻限を過ぎても、それらしい人は現れない。どんな顔の打ち手なのかも、知らないままに。",
+    "text": "けれど刻限を過ぎても、それらしい人は現れない。どんな顔の打ち手なのかも知らないままに。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20506,7 +20506,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "手持ち無沙汰に、ふと、空いたフリー卓へ目が向く。腰を下ろして、すぐに気づいた。",
+    "text": "手持ち無沙汰に、ふと空いたフリー卓へ目が向く。腰を下ろしてすぐに気づいた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20518,7 +20518,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ここは、虎の檻だ。一打ごとに、肌がひりつく。卓を囲むのは、名うての打ち手ばかり。",
+    "text": "ここは虎の檻だ。一打ごとに肌がひりつく。卓を囲むのは名うての打ち手ばかり。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -20531,7 +20531,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それでも、学校を首席で出た身。背には、後に続く生徒たちの威信がある。やすやすと、引けるものか。",
+    "text": "それでも学校を首席で出た身。背には後に続く生徒たちの威信がある。やすやすと引けるものか。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20543,7 +20543,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "局が進み、手が伸びていく。育って、育って——倍満。文句なしの、特大の手が決まった。",
+    "text": "局が進み、手が伸びていく。育って育って——倍満。文句なしの特大の手が決まった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20555,7 +20555,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "対面の打ち手が、危険牌を、まるで他人事のように切る。この手を、逃すものか。",
+    "text": "対面の打ち手が危険牌を、まるで他人事のように切る。この手を逃すものか。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20595,7 +20595,7 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "text": "異能麻雀では、和了が決まれば、点棒はひとりでに動く。上がった手に応じて、卓上をやり取りされる。",
+    "text": "異能麻雀では、和了が決まれば点棒はひとりでに動く。上がった手に応じて卓上をやり取りされる。",
     "lineNo": 12
   },
   {
@@ -20607,7 +20607,7 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "text": "なのに——ピクリとも、しない。こんなことは、初めてだ。",
+    "text": "なのに——ピクリともしない。こんなことは初めてだ。",
     "seId": "se-heartbeat",
     "emoteId": "question",
     "lineNo": 13
@@ -20621,7 +20621,7 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "text": "倍満ぶんの失点が、対面から動いてこない。こちらの点棒も、増えない。場が、しんと静まる。",
+    "text": "倍満ぶんの失点が対面から動いてこない。こちらの点棒も増えない。場がしんと静まる。",
     "lineNo": 14
   },
   {
@@ -20631,7 +20631,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "顔を上げると、対面の青年が、穏やかに笑っていた。",
+    "text": "顔を上げると、対面の青年が穏やかに笑っていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20667,7 +20667,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "線の細い、涼しげな目をした青年。刺すような圧は、どこにもない。",
+    "text": "線の細い、涼しげな目をした青年。刺すような圧はどこにもない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20679,7 +20679,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "なのに、卓を沈めるはずだった一撃が、その前で、すっと溶けて消えていた。",
+    "text": "なのに、卓を沈めるはずだった一撃が、その前ですっと溶けて消えていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20691,7 +20691,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "卓を割るほどの大物手だけを受け止め、なかったことにする。それが、噂に聞いた琥珀の盾だった。",
+    "text": "卓を割るほどの大物手だけを受け止め、なかったことにする。それが噂に聞いた琥珀の盾だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20728,7 +20728,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "素の打ち筋が見たくてさ。黙って、フリー卓に座ってたんだ。——ごめんね。",
+    "text": "素の打ち筋が見たくてさ。黙ってフリー卓に座ってたんだ。——ごめんね。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20746,7 +20746,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "待ち人は、初めから、目の前にいた。さわやかに、それでいて、底の見えない静けさで。",
+    "text": "待ち人は初めから目の前にいた。さわやかに、それでいて底の見えない静けさで。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20764,7 +20764,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "この人が、凌雲。九蓮宝士への道を託そうと、戸を叩いた、その人だった。",
+    "text": "この人が凌雲。九蓮宝士への道を託そうと戸を叩いた、その人だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20800,7 +20800,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "胸の奥の願いを口にすると、青年は、笑いも、否定もしなかった。ただ、静かに頷く。",
+    "text": "胸の奥の願いを口にすると、青年は笑いも否定もしなかった。ただ静かに頷く。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20836,7 +20836,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "派手に勝つより、ずっと地味だよ。退屈に思える日も、きっとある。",
+    "text": "派手に勝つより、ずっと地味だよ。退屈に思える日もきっとある。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20854,7 +20854,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "それでも、沈まない打ち手は、最後まで卓に残れる。……勝ちは、そこからだ。",
+    "text": "それでも、沈まない打ち手は最後まで卓に残れる。……勝ちは、そこからだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20872,7 +20872,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "倍満を張ってこそ強者だと、信じてきた。受けの修行なんて、考えたこともない。",
+    "text": "倍満を張ってこそ強者だと信じてきた。受けの修行なんて考えたこともない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20890,7 +20890,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "戸惑いはある。けれど、動かなかったあの点棒の異様さが、まだ目の裏に焼きついていた。",
+    "text": "戸惑いはある。けれど、動かなかったあの点棒の異様さがまだ目の裏に焼きついていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20908,7 +20908,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "焦らなくていい。——君の背中は、僕が護るよ。ゆっくり、覚えていこう。",
+    "text": "焦らなくていい。——君の背中は、僕が護るよ。ゆっくり覚えていこう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -20945,7 +20945,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "虎の檻でただ一人、何があっても動じなかった人。その隣で、最初の一歩が、静かに始まる。",
+    "text": "虎の檻でただ一人、何があっても動じなかった人。その隣で、最初の一歩が静かに始まる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -20957,7 +20957,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "弟子入りが、許された。凌雲の稽古場は、弓道場のように静かで、張り詰めた気配が、ふしぎと背筋を伸ばさせる。",
+    "text": "弟子入りが許された。凌雲の稽古場は弓道場のように静かで、張り詰めた気配がふしぎと背筋を伸ばさせる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -20970,7 +20970,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "卓に着くなり、凌雲は、温かい茶をすすめてくれた。どこまでも、自然体だ。",
+    "text": "卓に着くなり、凌雲は温かい茶をすすめてくれた。どこまでも自然体だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21006,7 +21006,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "九蓮宝士への、華々しい必勝法。そんなものを、勝手に思い描いていた。",
+    "text": "九蓮宝士への華々しい必勝法。そんなものを勝手に思い描いていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21060,7 +21060,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "麻雀は、攻めて獲るもの。そう教わってきたんだろう? ……その顔は、そう言ってるね。",
+    "text": "麻雀は攻めて獲るもの。そう教わってきたんだろう? ……その顔は、そう言ってるね。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21079,7 +21079,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "相手がどんな大物手を張っても、動じず、受け止める。心を、揺らさない。それだけだよ。",
+    "text": "相手がどんな大物手を張っても、動じず受け止める。心を揺らさない。それだけだよ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21097,7 +21097,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "大きく失点さえしなければ、勝ちは、自然と近くなる。……地味、だろう?",
+    "text": "大きく失点さえしなければ、勝ちは自然と近くなる。……地味、だろう?",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21115,7 +21115,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "地味、どころではない。倍満を張ってこそ強者だと、ずっと信じてきた。まるで、逆の教えだ。",
+    "text": "地味、どころではない。倍満を張ってこそ強者だとずっと信じてきた。まるで逆の教えだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21152,7 +21152,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ある人、と口にしたとき。凌雲の声が、ほんの少しだけ、やわらかくなった。",
+    "text": "ある人、と口にしたとき。凌雲の声が、ほんの少しだけやわらかくなった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21170,7 +21170,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "誰のことか、訊いていいものか。迷っているうちに、その横顔は、もう静けさに戻っていた。",
+    "text": "誰のことか、訊いていいものか。迷っているうちに、その横顔はもう静けさに戻っていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21206,7 +21206,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "半信半疑だった。それでも、この人の言葉には、軽々しく聞き流せない重みがある。",
+    "text": "半信半疑だった。それでも、この人の言葉には軽々しく聞き流せない重みがある。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21224,7 +21224,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "大丈夫。君の筋なら、きっと飲み込めるよ。——焦らず、いこう。",
+    "text": "大丈夫。君の筋ならきっと飲み込めるよ。——焦らず、いこう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21242,7 +21242,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "静かな稽古場に、最初の教えが、ぽつりと落ちる。『不動』。その本当の意味を、このときはまだ、何も知らない。",
+    "text": "静かな稽古場に、最初の教えがぽつりと落ちる。『不動』。その本当の意味を、このときはまだ何も知らない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21254,7 +21254,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "翌日から、修行が始まった。けれど、その中身は——想像とは、まるで違っていた。",
+    "text": "翌日から修行が始まった。けれど、その中身は——想像とはまるで違っていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21273,7 +21273,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "今日から、君には。——大物手を、たくさん受けてもらう。",
+    "text": "今日から、君には。——大物手をたくさん受けてもらう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21309,7 +21309,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "そう。わざと大きく沈んで、それを、何度も繰り返すんだ。",
+    "text": "そう。わざと大きく沈んで、それを何度も繰り返すんだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21327,7 +21327,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "言葉どおりだった。対局のたび、受けに回る。返し技も、逃げ場も、与えられない。",
+    "text": "言葉どおりだった。対局のたび受けに回る。返し技も逃げ場も、与えられない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21346,7 +21346,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "倍満。跳満。容赦のない大物手が、次々と突き刺さる。点棒が、みるみる削れていく。",
+    "text": "倍満。跳満。容赦のない大物手が次々と突き刺さる。点棒がみるみる削れていく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21365,7 +21365,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "痛い。点棒が減る、ただそれだけのことが、こんなにも——身を削られるように、痛い。",
+    "text": "痛い。点棒が減る、ただそれだけのことがこんなにも——身を削られるように、痛い。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21421,7 +21421,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "でも。その痛みから、目を逸らさないで。——しっかり、見ているんだ。",
+    "text": "でも。その痛みから目を逸らさないで。——しっかり、見ているんだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21439,7 +21439,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "なぜ、こんなことを。問いかけた声は、自分でも情けないほど、掠れていた。",
+    "text": "なぜ、こんなことを。問いかけた声は、自分でも情けないほど掠れていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21475,7 +21475,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "穏やかな声に、突き放す響きはない。なのに、一歩も引かない強さが、そこにあった。",
+    "text": "穏やかな声に突き放す響きはない。なのに、一歩も引かない強さがそこにあった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21493,7 +21493,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "また、大物手が飛んでくる。受ける。沈む。痛い。——その繰り返しの底に、何が沈んでいるのか。",
+    "text": "また大物手が飛んでくる。受ける。沈む。痛い。——その繰り返しの底に、何が沈んでいるのか。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21511,7 +21511,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "このときはまだ、何ひとつ、見えていなかった。",
+    "text": "このときはまだ、何ひとつ見えていなかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21523,7 +21523,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "幾日も、沈み続けた。勝った記憶より、削られた点棒の感触ばかりが、指先に残る。",
+    "text": "幾日も沈み続けた。勝った記憶より、削られた点棒の感触ばかりが指先に残る。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21536,7 +21536,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "うつむいたまま、牌を握る手に、力が入らない。",
+    "text": "うつむいたまま、牌を握る手に力が入らない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21572,7 +21572,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "首を振る。情けないところを、見せたくなかった。けれど、声が、続かない。",
+    "text": "首を振る。情けないところを見せたくなかった。けれど、声が続かない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21590,7 +21590,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "勘違いしないでほしいんだ。これはね、無鉄砲とは、違うよ。",
+    "text": "勘違いしないでほしいんだ。これはね、無鉄砲とは違うよ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21608,7 +21608,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "大事なのは、沈んだ“その後”。そこから、どう立て直すか。それを、常に見据えること。",
+    "text": "大事なのは、沈んだ“その後”。そこからどう立て直すか。それを常に見据えること。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21626,7 +21626,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "立て直す。沈むことばかりに気を取られて、その先を、考えてもいなかった。",
+    "text": "立て直す。沈むことばかりに気を取られて、その先を考えてもいなかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21644,7 +21644,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "……実はね。僕も昔、同じ修行で、潰れかけたことがあるんだ。",
+    "text": "……実はね。僕も昔、同じ修行で潰れかけたことがあるんだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21681,7 +21681,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲が、ぽつぽつと語る。まだ若かった頃の、自分。来る日も来る日も、ただ受けて、沈んで。",
+    "text": "凌雲がぽつぽつと語る。まだ若かった頃の自分。来る日も来る日も、ただ受けて、沈んで。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21717,7 +21717,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そう言って、苦笑いしながら。その人は、凌雲のやり方を、否定しなかった。ただ、見守ってくれた。",
+    "text": "そう言って苦笑いしながら。その人は凌雲のやり方を否定しなかった。ただ、見守ってくれた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21735,7 +21735,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "語る横顔に、いつもの静けさとは違う温度が、ふと、よぎる。",
+    "text": "語る横顔に、いつもの静けさとは違う温度が、ふとよぎる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21789,7 +21789,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "沈むことの怖さが、ほんの少しだけ、ほどけた気がした。",
+    "text": "沈むことの怖さが、ほんの少しだけほどけた気がした。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21807,7 +21807,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "師匠にも、師匠がいた。あたりまえのことが、なぜだか、胸に沁みる。",
+    "text": "師匠にも、師匠がいた。あたりまえのことが、なぜだか胸に沁みる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21819,7 +21819,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "根を詰めすぎた、と思われたのだろうか。ある日、凌雲は、ふらりと弟子を連れ出した。",
+    "text": "根を詰めすぎた、と思われたのだろうか。ある日、凌雲はふらりと弟子を連れ出した。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21874,7 +21874,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "街を、並んで歩く。卓の上では寡黙なこの人が、外では、思いのほか、よく喋る。",
+    "text": "街を並んで歩く。卓の上では寡黙なこの人が、外では思いのほかよく喋る。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21910,7 +21910,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "……君、甘いもの好きだろう? この前、稽古帰りに、団子屋を、じっと見てたから。",
+    "text": "……君、甘いもの好きだろう? この前、稽古帰りに団子屋をじっと見てたから。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21947,7 +21947,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "ふふ。……いいんだよ。好きなものくらい、堂々と、好きで。",
+    "text": "ふふ。……いいんだよ。好きなものくらい、堂々と好きで。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -21965,7 +21965,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "他愛もない話を、いくつも交わす。麻雀のことは、ひとつも、出てこない。",
+    "text": "他愛もない話をいくつも交わす。麻雀のことは、ひとつも出てこない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -21984,7 +21984,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それでも——いや、だからこそ。この人の素顔が、少しずつ、見えてくる気がした。",
+    "text": "それでも——いや、だからこそ。この人の素顔が、少しずつ見えてくる気がした。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22002,7 +22002,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "不器用で、静かで。けれど、芯のところが、とても温かい。",
+    "text": "不器用で、静かで。けれど、芯のところがとても温かい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22038,7 +22038,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ぽつりと漏れた声が、いつもより、やわらかい。",
+    "text": "ぽつりと漏れた声が、いつもよりやわらかい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22056,7 +22056,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "“この人と、もっと、こうしていたい。”——気づけば、そんなことを、思っていた。",
+    "text": "“この人と、もっとこうしていたい。”——気づけば、そんなことを思っていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22074,7 +22074,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "卓を離れても、相棒のように、隣にいてくれる。そんな師匠なのだと、知る。",
+    "text": "卓を離れても、相棒のように隣にいてくれる。そんな師匠なのだと、知る。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22086,7 +22086,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "初めての、公式戦。清一器——清一色を極めた者に贈られる宝が、かかっている。",
+    "text": "初めての公式戦。清一器——清一色を極めた者に贈られる宝がかかっている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -22099,7 +22099,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "会場は、大勢の視線で、ぱんと張り詰めている。膝の上で、指先が、かすかに冷えた。",
+    "text": "会場は大勢の視線でぱんと張り詰めている。膝の上で指先がかすかに冷えた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22111,7 +22111,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "場は、荒れた。半荘の終盤、卓上を、大物手が次々と飛び交う。",
+    "text": "場は荒れた。半荘の終盤、卓上を大物手が次々と飛び交う。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -22136,7 +22136,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "けれど。ふっと、あの言葉が、胸に降りてくる。——『不動』。",
+    "text": "けれど。ふっと、あの言葉が胸に降りてくる。——『不動』。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22148,7 +22148,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "受ける。動じない。心を、揺らさない。危険牌を、丁寧に、丁寧に、抑えていく。",
+    "text": "受ける。動じない。心を揺らさない。危険牌を丁寧に、丁寧に抑えていく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -22173,7 +22173,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そうして、最後に。卓上に、いちばん多くの点棒を残していたのは。",
+    "text": "そうして、最後に。卓上にいちばん多くの点棒を残していたのは。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22199,7 +22199,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "勝った。攻めずに、勝った。受け切った、その先に。初めての宝が、確かに、残っていた。",
+    "text": "勝った。攻めずに、勝った。受け切ったその先に。初めての宝が確かに残っていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22236,7 +22236,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "気づけば、客席に、凌雲がいた。いつもの、静かな笑み。",
+    "text": "気づけば客席に凌雲がいた。いつもの静かな笑み。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22272,7 +22272,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "頭で覚えただけの教えが、初めて、体の芯で、腑に落ちる。",
+    "text": "頭で覚えただけの教えが、初めて体の芯で腑に落ちる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22290,7 +22290,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "胸の奥が、じんと、熱い。この熱を、もっと——この人に、見せたいと思った。",
+    "text": "胸の奥が、じんと熱い。この熱をもっと——この人に見せたいと思った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22302,7 +22302,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "受けることに、ずいぶん慣れた。大物手が飛んできても、もう、心は揺れない。",
+    "text": "受けることにずいぶん慣れた。大物手が飛んできても、もう心は揺れない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -22315,7 +22315,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "けれど。慣れた頃に、ふと、別の声が、胸の奥で、疼き始める。",
+    "text": "けれど。慣れた頃に、ふと別の声が胸の奥で疼き始める。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22340,7 +22340,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "守り抜いても、最後のひと押しが、足りない。あと一歩で、勝ちが、するりと逃げる。",
+    "text": "守り抜いても、最後のひと押しが足りない。あと一歩で勝ちがするりと逃げる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22352,7 +22352,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "夜の稽古場。思い切って、訊いてみた。受けるだけで、本当に勝てるのか、と。",
+    "text": "夜の稽古場。思い切って訊いてみた。受けるだけで本当に勝てるのか、と。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22370,7 +22370,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "……まずは、不動を。体に、しみ込ませることだよ。",
+    "text": "……まずは、不動を。体にしみ込ませることだよ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22388,7 +22388,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それ以上は、語られない。いつもの、静かな声。",
+    "text": "それ以上は語られない。いつもの静かな声。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22424,7 +22424,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "見透かされていた。けれど、答えだけは、まだ、手渡してもらえない。",
+    "text": "見透かされていた。けれど、答えだけはまだ手渡してもらえない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22460,7 +22460,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "抑え込んできた、攻めの血。教わった、守りの心。二つが、夜の静けさの中で、そっと、すれ違う。",
+    "text": "抑え込んできた攻めの血。教わった守りの心。二つが夜の静けさの中で、そっとすれ違う。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22478,7 +22478,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲の背中を、見つめる。その向こうに、まだ見せてもらっていない景色が、ある気がして。",
+    "text": "凌雲の背中を見つめる。その向こうに、まだ見せてもらっていない景色がある気がして。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22496,7 +22496,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その日の帰り道。凌雲の足が、ふと、一軒の雀荘で止まった。",
+    "text": "その日の帰り道。凌雲の足が、ふと一軒の雀荘で止まった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -22533,7 +22533,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲の視線の先。一人の打ち手が、卓を、完全に支配していた。",
+    "text": "凌雲の視線の先。一人の打ち手が卓を完全に支配していた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22556,7 +22556,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "振り込みなど、まるで恐れない。痛みごと呑み込んで、ただ、ツモへと向かっていく。攻めの、極み。",
+    "text": "振り込みなど、まるで恐れない。痛みごと呑み込んで、ただツモへと向かっていく。攻めの極み。",
     "characterEffect": "fade_in",
     "screenEffect": "none",
     "effectDurationMs": 600,
@@ -22603,7 +22603,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲が、その卓の正面に、腰を下ろす。弟子も、おずおずと、隣に。",
+    "text": "凌雲がその卓の正面に腰を下ろす。弟子も、おずおずと隣に。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22649,7 +22649,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥の手が、ぴたりと止まる。顔を上げて、目を、すっと細めた。",
+    "text": "詩玥の手が、ぴたりと止まる。顔を上げて、目をすっと細めた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22718,7 +22718,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ネ、と。——ふだんの凌雲には、ない響きだった。あれ、と、小さく引っかかる。",
+    "text": "ネ、と。——ふだんの凌雲にはない響きだった。あれ、と小さく引っかかる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22787,7 +22787,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ほんの少し、空気が張り詰める。攻めと、護り。同じ痛みから、これほど逆の答えが、生まれるのか。",
+    "text": "ほんの少し、空気が張り詰める。攻めと、護り。同じ痛みから、これほど逆の答えが生まれるのか。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22858,7 +22858,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "張り詰めていた空気が、ぱっと、弾けた。さっきまでの剣呑さは、どこへやら。",
+    "text": "張り詰めていた空気が、ぱっと弾けた。さっきまでの剣呑さは、どこへやら。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22904,7 +22904,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "袖を引かれ、ぐいぐい距離を詰められ、たじろぐ。麻雀の話さえしなければ、こんなにも、人懐っこい人なのか。",
+    "text": "袖を引かれ、ぐいぐい距離を詰められ、たじろぐ。麻雀の話さえしなければ、こんなにも人懐っこい人なのか。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22973,7 +22973,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それからの卓は、二人の、独壇場だった。凌雲の堅牢な守りと、詩玥の、異常な引き。",
+    "text": "それからの卓は、二人の独壇場だった。凌雲の堅牢な守りと、詩玥の異常な引き。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -22996,7 +22996,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ついていこうと、必死に食らいつく。けれど、届かない。背中は、あまりにも、遠い。",
+    "text": "ついていこうと、必死に食らいつく。けれど、届かない。背中は、あまりにも遠い。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23019,7 +23019,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "攻めの極みと、護りの極み。その狭間で——自分は、いったい、どこへ行けばいいのだろう。",
+    "text": "攻めの極みと、護りの極み。その狭間で——自分は、いったいどこへ行けばいいのだろう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23065,7 +23065,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "隔たりの大きさに、胸の奥が、しんと、重い。それでも。",
+    "text": "隔たりの大きさに、胸の奥が、しんと重い。それでも。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23088,7 +23088,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "この二人の打つ景色を、もっと、見ていたいと——そう、思ってしまった。",
+    "text": "この二人の打つ景色を、もっと見ていたいと——そう、思ってしまった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23100,7 +23100,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "次の大会の、出場者表。その名前を見つけた瞬間、指が、止まった。",
+    "text": "次の大会の出場者表。その名前を見つけた瞬間、指が止まった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -23125,7 +23125,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "学生時代。首席を張っていた自分が、ただ一人、一度も勝てなかった、相手。",
+    "text": "学生時代。首席を張っていた自分が、ただ一人、一度も勝てなかった相手。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23149,7 +23149,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "録画を、何度も見返す。想定の卓を、何度も並べる。けれど——勝てる画が、まるで、浮かばない。",
+    "text": "録画を何度も見返す。想定の卓を何度も並べる。けれど——勝てる画が、まるで浮かばない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -23162,7 +23162,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "攻めとも、守りとも、つかない。のらりくらりと、掴みどころのない、打ち回し。",
+    "text": "攻めとも、守りともつかない。のらりくらりと、掴みどころのない打ち回し。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23174,7 +23174,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "同い年のはずなのに、その打ち筋は、ひどく老獪で。糸口が、どこにも、見つからない。",
+    "text": "同い年のはずなのに、その打ち筋はひどく老獪で。糸口が、どこにも見つからない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23186,7 +23186,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "気づけば、夜が更けていた。卓に牌を並べたまま、ため息ばかりが、こぼれる。",
+    "text": "気づけば、夜が更けていた。卓に牌を並べたまま、ため息ばかりがこぼれる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23222,7 +23222,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "いつのまにか、凌雲が、隣に、腰を下ろしていた。",
+    "text": "いつのまにか、凌雲が隣に腰を下ろしていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23294,7 +23294,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "沼田蓮。その名を口に出すだけで、胸の奥が、ざわりと、重くなる。",
+    "text": "沼田蓮。その名を口に出すだけで、胸の奥が、ざわりと重くなる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23312,7 +23312,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "勝ちたい。どうしても、勝ちたい。——なのに、勝てる気が、まるで、しない。",
+    "text": "勝ちたい。どうしても、勝ちたい。——なのに、勝てる気が、まるでしない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23330,7 +23330,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲は、急かさなかった。ただ、静かに、隣にいてくれた。それだけで、少しだけ、息ができた。",
+    "text": "凌雲は急かさなかった。ただ、静かに隣にいてくれた。それだけで、少しだけ息ができた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -23349,7 +23349,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "和室に、二人。湯気の立つ茶を挟んで、凌雲は、いつもより少しだけ、口を開いた。",
+    "text": "和室に、二人。湯気の立つ茶を挟んで、凌雲はいつもより少しだけ口を開いた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -23404,7 +23404,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲は、すぐには答えなかった。茶碗を、そっと両手で包んで。やがて、二つだけ、と前置きした。",
+    "text": "凌雲は、すぐには答えなかった。茶碗をそっと両手で包んで。やがて、二つだけ、と前置きした。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23495,7 +23495,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "痛みを、知る。痛みに、寄り添う。そうして初めて——人は、それを、乗り越えられる。",
+    "text": "痛みを、知る。痛みに、寄り添う。そうして初めて——人は、それを乗り越えられる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23513,7 +23513,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "痛みを、知る。——その言葉が、すとんと、胸に落ちた。",
+    "text": "痛みを、知る。——その言葉が、すとんと胸に落ちた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23550,7 +23550,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "“勝つ”ことばかりに、執着していた。相手を“知る”という視点が、すっぽりと、抜け落ちていた。",
+    "text": "“勝つ”ことばかりに執着していた。相手を“知る”という視点が、すっぽりと抜け落ちていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23568,7 +23568,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "沼田蓮に、勝てなかった理由。その輪郭が、ようやく——うっすらと、見え始める。",
+    "text": "沼田蓮に勝てなかった理由。その輪郭が、ようやく——うっすらと見え始める。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23604,7 +23604,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "茶は、すっかり冷めていた。それでも、胸の奥は、なぜだか、温かい。",
+    "text": "茶は、すっかり冷めていた。それでも、胸の奥は、なぜだか温かい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23622,7 +23622,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "翌日。凌雲のもとへ、まっすぐに向かった。膝に手をついて、頭を、下げる。",
+    "text": "翌日。凌雲のもとへまっすぐに向かった。膝に手をついて頭を下げる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -23641,7 +23641,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——どうしても、勝ちたい相手がいる。一緒に研究して、あいつを“知る”のを。どうか、手伝ってほしい。",
+    "text": "——どうしても勝ちたい相手がいる。一緒に研究して、あいつを“知る”のを。どうか手伝ってほしい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23659,7 +23659,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "顔を上げると、凌雲は、もう、黒板の前に立っていた。",
+    "text": "顔を上げると、凌雲はもう黒板の前に立っていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23695,7 +23695,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "沼田の録画を、二人で、何度も巻き戻す。一打ごとに、止めて、考える。",
+    "text": "沼田の録画を二人で何度も巻き戻す。一打ごとに止めて考える。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23713,7 +23713,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "……見えてきた。彼の押し引きはね、シャンテン数でも、点棒の状況でも、決まっていない。",
+    "text": "……見えてきた。彼の押し引きはね、シャンテン数でも点棒の状況でも決まっていない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23749,7 +23749,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "強いて言うなら——“いけそうなとき”。本人にも、たぶん、理屈のない、感覚なんだ。",
+    "text": "強いて言うなら——“いけそうなとき”。本人にも、たぶん理屈のない感覚なんだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23767,7 +23767,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "いけそうなとき。あまりに、つかみどころのない、言葉。",
+    "text": "いけそうなとき。あまりにつかみどころのない言葉。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23785,7 +23785,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "でもね。その感覚にも、必ず、癖がある。場のどんな形が、彼に“いける”と思わせるのか。",
+    "text": "でもね。その感覚にも必ず癖がある。場のどんな形が彼に“いける”と思わせるのか。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -23804,7 +23804,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "二人で、その曖昧な感覚を、ひとつずつ、言葉にしていく。仮説を立て、録画で、確かめて。",
+    "text": "二人でその曖昧な感覚を、ひとつずつ言葉にしていく。仮説を立て、録画で確かめて。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23822,7 +23822,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "夜が更けるのも忘れて、黒板は、見立てで、埋まっていった。",
+    "text": "夜が更けるのも忘れて、黒板は見立てで埋まっていった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23840,7 +23840,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そうして——ひとつの、結論に、辿り着く。",
+    "text": "そうして——ひとつの結論に辿り着く。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23858,7 +23858,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それが何かは、まだ、口にしない。凌雲と、目を見交わして、静かに、頷き合った。",
+    "text": "それが何かは、まだ口にしない。凌雲と目を見交わして、静かに頷き合った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23876,7 +23876,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "……あとは、君が、どう打つかだ。",
+    "text": "……あとは、君がどう打つかだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23894,7 +23894,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "胸の奥に、これまでなかった種類の、静かな構えが、生まれていた。",
+    "text": "胸の奥に、これまでなかった種類の静かな構えが生まれていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23919,7 +23919,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "道中の卓を、勝ち上がっていく。そして——あの男も、順当に、勝ち残っていた。沼田 蓮。",
+    "text": "道中の卓を勝ち上がっていく。そして——あの男も順当に勝ち残っていた。沼田 蓮。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23931,7 +23931,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "決勝。同じ卓に、向かい合って、座る。学生時代から、何度も見た、あの、のっぺりとした横顔。",
+    "text": "決勝。同じ卓に向かい合って座る。学生時代から何度も見た、あののっぺりとした横顔。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23954,7 +23954,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "観戦席に、凌雲。そして、なぜか——詩玥まで、その隣に座っている。",
+    "text": "観戦席に、凌雲。そしてなぜか——詩玥までその隣に座っている。",
     "characterEffect": "fade_in",
     "screenEffect": "none",
     "effectDurationMs": 600
@@ -24024,7 +24024,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "対局、開始。——その瞬間。会場が、どよめいた。",
+    "text": "対局、開始。——その瞬間。会場がどよめいた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -24048,7 +24048,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "弟子の打ち筋が、おかしい。驚くほど、防御的。安牌ばかりを切り、和了る素振りすら、見せない。",
+    "text": "弟子の打ち筋がおかしい。驚くほど防御的。安牌ばかりを切り、和了る素振りすら見せない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24071,7 +24071,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "これまでの自分は、“重鎧の戦士”だった。大物手を当てられても、涼しい顔で、点を稼ぐ。",
+    "text": "これまでの自分は“重鎧の戦士”だった。大物手を当てられても、涼しい顔で点を稼ぐ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24094,7 +24094,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その鎧が、今日は——ぴくりとも、動かない。ただ、ひたすらに、ベタオリ。",
+    "text": "その鎧が、今日は——ぴくりとも動かない。ただひたすらにベタオリ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24164,7 +24164,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲の声に、いつもの、すました響きはなかった。ただ、確信だけが、そこにあった。",
+    "text": "凌雲の声に、いつものすました響きはなかった。ただ確信だけが、そこにあった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24187,7 +24187,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——思い出す。あいつの、学生時代を。",
+    "text": "——思い出す。あいつの学生時代を。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -24211,7 +24211,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "地味で、内気で。自分のことを、卑屈なくらい、低く、見ていた。",
+    "text": "地味で、内気で。自分のことを、卑屈なくらい低く見ていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24234,7 +24234,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "でも。そのネガティブさを、まるごと受け入れているような。そんな、得体の知れない凄みが、あった。",
+    "text": "でも。そのネガティブさを、まるごと受け入れているような。そんな得体の知れない凄みがあった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24257,7 +24257,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "あいつが思い描く勝ち方は、きっと、こうだ。——格好悪い自分が、格好悪いまま、泥臭く、勝つ。",
+    "text": "あいつが思い描く勝ち方は、きっとこうだ。——格好悪い自分が、格好悪いまま、泥臭く勝つ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24280,7 +24280,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そうして。同じように、不器用に生きる、誰かに。希望を、見せる。",
+    "text": "そうして。同じように不器用に生きる誰かに。希望を見せる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24303,7 +24303,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——気づいて、しまった。自分とあいつは、同じ結論に、辿り着いていたのだと。",
+    "text": "——気づいてしまった。自分とあいつは、同じ結論に辿り着いていたのだと。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -24327,7 +24327,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ならば。あいつは、兎と亀の、兎を見ている。華やかに勝ちにいく、こちらを。",
+    "text": "ならば。あいつは、兎と亀の兎を見ている。華やかに勝ちにいくこちらを。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24350,7 +24350,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それを、執拗にマークして。じりじりと、亀のように、差を詰める自分を、思い描いている。",
+    "text": "それを執拗にマークして。じりじりと、亀のように差を詰める自分を思い描いている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24373,7 +24373,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——だったら。同じ、泥沼に、降りてやる。",
+    "text": "——だったら。同じ泥沼に降りてやる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24396,7 +24396,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "流局。また、流局。誰も和了らない。誰も、沈まない。ノーテン罰符だけが、細かく、行き交う。",
+    "text": "流局。また、流局。誰も和了らない。誰も沈まない。ノーテン罰符だけが、細かく行き交う。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -24420,7 +24420,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "南場が終わり、西入。会場から、不満の声が、漏れ始める。退屈な、泥仕合だ、と。",
+    "text": "南場が終わり、西入。会場から不満の声が漏れ始める。退屈な泥仕合だ、と。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24466,7 +24466,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "それでいい。——あの子は今、いちばん格好悪い場所で、勝とうとしてる。",
+    "text": "それでいい。——あの子は今、いちばん格好悪い場所で勝とうとしてる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24489,7 +24489,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "西オーラス。親は、沼田。最後の、ほんのわずかな、差。",
+    "text": "西オーラス。親は、沼田。最後の、ほんのわずかな差。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -24514,7 +24514,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そして——ツモ。500、300。たった、それだけの、手。",
+    "text": "そして——ツモ。500、300。たった、それだけの手。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -24538,7 +24538,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "けれど、その細やかな一打で。200点の差が、ひっくり返る。——捲った。",
+    "text": "けれど、その細やかな一打で。200点の差がひっくり返る。——捲った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -24563,7 +24563,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "なんて、泥臭い、終わり方だろう。派手さなんて、かけらも、ない。",
+    "text": "なんて泥臭い終わり方だろう。派手さなんて、かけらもない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24586,7 +24586,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それでも。あいつの土俵に、あえて降りて。数えきれない“痛い目を見た”記憶を、糧にして。",
+    "text": "それでも。あいつの土俵にあえて降りて。数えきれない“痛い目を見た”記憶を糧にして。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24609,7 +24609,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "我慢に、我慢を、重ねて——勝ち、切った。",
+    "text": "我慢に我慢を重ねて——勝ち切った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -24633,7 +24633,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "会場の、微妙な空気。それでも——。",
+    "text": "会場の微妙な空気。それでも——。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24680,7 +24680,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥が、ぎゅうっと、抱きついてきた。振りほどく、間もない。",
+    "text": "詩玥が、ぎゅうっと抱きついてきた。振りほどく間もない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24703,7 +24703,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "……お見事。超えるために、相手を知る。——大事な、哲学だろう、ネ?",
+    "text": "……お見事。超えるために、相手を知る。——大事な哲学だろう、ネ?",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24726,7 +24726,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ネ、と。今度の響きは、隠す気も、なく。ただ、温かかった。",
+    "text": "ネ、と。今度の響きは、隠す気もなく。ただ、温かかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24749,7 +24749,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "勝った。けれど、手にしたのは、宝だけじゃない。それ以上に、大きな何かを——確かに、掴んでいた。",
+    "text": "勝った。けれど、手にしたのは宝だけじゃない。それ以上に大きな何かを——確かに、掴んでいた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24796,7 +24796,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "実力は、ある。場も、沸かせる。だが——いつも、いいところで、勝ち切れない。",
+    "text": "実力はある。場も沸かせる。だが——いつも、いいところで勝ち切れない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24819,7 +24819,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "決勝の壁。あと一歩というところで、勝ちが、するりと逃げていく。",
+    "text": "決勝の壁。あと一歩というところで、勝ちがするりと逃げていく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24866,7 +24866,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "九蓮宝士に届くほどの実力で、無冠。なんとも、皮肉な二つ名だ。",
+    "text": "九蓮宝士に届くほどの実力で、無冠。なんとも皮肉な二つ名だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -24874,6 +24874,30 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
     "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "また一つ、決勝で零れた夜。卓の片づく音だけが、やけに大きい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 7,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24896,7 +24920,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
-    "lineNo": 7,
+    "lineNo": 8,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24919,7 +24943,77 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
-    "lineNo": 8,
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "それに——強いのは、本当だ。あと半歩。そこに、何かがある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "半歩。その半歩が、どうしても越えられない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……その半歩、見つけてやるヨ。我ら三人なら、ネ!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flare"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 12,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24943,7 +25037,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
-    "lineNo": 9,
+    "lineNo": 13,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24959,14 +25053,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "負けるたびに、相手を研究して、また立ち上がる。それを、何度も、何度も。",
+    "text": "負けるたびに相手を研究して、また立ち上がる。それを、何度も、何度も。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
-    "lineNo": 10,
+    "lineNo": 14,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24982,7 +25076,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "無冠でも。何度でも。——不屈の、良いトリオだった。",
+    "text": "無冠でも。何度でも。——不屈の良いトリオだった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25005,7 +25099,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "相手は、誰よりも研究した。録画を擦り切れるほど見て、癖を、すべて洗い出した。",
+    "text": "相手は、誰よりも研究した。録画を擦り切れるほど見て、癖をすべて洗い出した。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -25029,7 +25123,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "なのに、勝ち切れない。何かが、決定的に、足りない。",
+    "text": "なのに、勝ち切れない。何かが決定的に足りない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25052,7 +25146,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "煮詰まった夜。三人で、黒板の前に、座り込む。",
+    "text": "煮詰まった夜。三人で黒板の前に座り込む。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25075,11 +25169,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ふと、気づいた。——自分たちは、相手のことばかり、調べていた。",
+    "text": "書きつけた相手の癖が、黒板を埋め尽くしている。それでも、答えはない。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-mystery"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-14",
@@ -25097,12 +25190,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "kuidoshi",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……そうか。僕らは、“相手を知る”ことに、こだわりすぎたのかもしれない。",
+    "text": "ふと、気づいた。——自分たちは、相手のことばかり調べていた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-14",
@@ -25112,7 +25206,54 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
         "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "チョークを持つ凌雲の手が、止まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-14",
+    "lineNo": 7,
+    "backgroundId": "bg-blackboard",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……そうか。僕らは、“相手を知る”ことにこだわりすぎたのかもしれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-14",
+    "lineNo": 8,
+    "backgroundId": "bg-blackboard",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
       },
       {
         "characterId": "shiyue",
@@ -25129,13 +25270,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-14",
-    "lineNo": 7,
+    "lineNo": 9,
     "backgroundId": "bg-blackboard",
     "standings": [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
         "characterId": "shiyue",
@@ -25153,7 +25294,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-14",
-    "lineNo": 8,
+    "lineNo": 10,
     "backgroundId": "bg-blackboard",
     "standings": [
       {
@@ -25169,14 +25310,60 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "ふふ。……そういう話じゃ、ないよ。自分は、どう勝ちたいのか。何が、最初に浮かぶのか。",
+    "text": "ふふ。……そういう話じゃないよ。自分は、どう勝ちたいのか。何が最初に浮かぶのか。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-14",
-    "lineNo": 9,
+    "lineNo": 11,
+    "backgroundId": "bg-blackboard",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "相手をぜんぶ読んでも。最後に牌を置くのは、自分だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-14",
+    "lineNo": 12,
+    "backgroundId": "bg-blackboard",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "その自分が、何を信じて打つのか。……僕らは、それを知らない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-14",
+    "lineNo": 13,
     "backgroundId": "bg-blackboard",
     "standings": [
       {
@@ -25192,7 +25379,55 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その問いが、三人の胸に、静かに、落ちていった。",
+    "text": "しん、と。黒板の前に、沈黙が降りる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-14",
+    "lineNo": 14,
+    "backgroundId": "bg-blackboard",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その問いが、三人の胸に静かに落ちていった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-14",
+    "lineNo": 15,
+    "backgroundId": "bg-blackboard",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……まずは、僕から。自分に、訊いてみるよ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25247,7 +25482,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "茶を、ゆっくりと、口に運ぶ。やがて、ぽつり、ぽつりと。",
+    "text": "茶をゆっくりと口に運ぶ。湯気が、ほどけて消えていく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25263,12 +25498,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "kuidoshi",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "相手の大物手を抑えて、自分のペースで勝つ。相手のいいところを、潰して、勝ち切る。",
+    "text": "数拍。やがて、ぽつりぽつりと。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "silence"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-15",
@@ -25283,7 +25519,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "……ずっと、それに、美学を感じていたんだ。",
+    "text": "相手の大物手を抑える。自分のペースに引き込む。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25299,9 +25535,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "攻め型に、なろうとしていた。でも——違った。",
+    "text": "相手のいいところを、ひとつ残らず潰して——勝ち切る。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25314,12 +25550,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "center",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "僕の答えは。攻めを覚えることじゃ、ない。——盾を、もっと極めることだ。",
+    "text": "……ずっと、そこに美学を感じていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25332,15 +25568,16 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "center",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "盾を極めた者だけが、安心して、前に出られる。それが、凌雲の見つけた“自分”だった。",
+    "text": "そこで、言葉が途切れた。茶碗の中で、湯気だけが揺れている。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-15",
@@ -25350,12 +25587,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "center",
-        "standingId": "serious"
+        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "kuidoshi",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……やっと、自分が分かった気がするネ。",
+    "text": "攻め型になろうとしていた。詩玥のように、前へ。——でも。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25371,9 +25608,154 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "serious"
       }
     ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……違う。僕は攻めになりたいわけじゃ、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-15",
+    "lineNo": 11,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "不動雲嵐。その称号の、さらに先へ。静かに、一歩を、踏み出す。",
+    "text": "伏せていた半眼が、ふっと上がる。迷いの晴れた静かな目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-15",
+    "lineNo": 12,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "僕の答えは——盾をもっと極めることだ。受け切るんじゃ、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-15",
+    "lineNo": 13,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "盾のまま、勝ち切る。それが、僕の前への出かただ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-15",
+    "lineNo": 14,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "盾を極めた者だけが、安心して前に出られる。攻めぬ攻め。それが、凌雲の見つけた“自分”だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-15",
+    "lineNo": 15,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "相手のことばかり見ていた。いちばん近くの自分を、置き去りにしたまま、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-15",
+    "lineNo": 16,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "こぼれた「ネ」に自分で気づいて。ふっ、と肩の力が抜ける。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-15",
+    "lineNo": 17,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……やっと、自分が分かった気がするヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-15",
+    "lineNo": 18,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "不動雲嵐。その称号のさらに先へ。静かに、一歩を踏み出す。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -25397,7 +25779,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥と二人、あの雀荘で。向かい合って、腰を下ろす。",
+    "text": "詩玥と二人、あの雀荘で。向かい合って腰を下ろす。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -25465,12 +25847,13 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "kuidoshi",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ずっと、どっちかが間違ってる気がしてた。……でも。",
+    "text": "湯呑みを回す詩玥の指が、ふと止まる。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "silence"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-16",
@@ -25490,7 +25873,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "どっちも、自分を知った末の、答えだったんだね。",
+    "text": "ずっと、どっちかが間違ってる気がしてた。……でも。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25511,9 +25894,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "詩玥が、めずらしく、素の声で、こぼす。",
+    "text": "どっちも、自分を知った末の答えだったんだね。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25526,7 +25909,7 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
         "characterId": "shiyue",
@@ -25534,9 +25917,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "……そうネ。我は我の、あんたはあんたの。それで、いいんだと思うヨ。",
+    "text": "先生は、どっちも否定しなかった。……今なら、その意味がわかる気がするよ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25559,10 +25942,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ep8のあの日、張り詰めていた隔たりが。すっと、ほどけていく。",
+    "text": "先生、と。——その響きに、懐かしい沈黙が流れた。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-16",
@@ -25573,6 +25957,99 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "kuidoshi",
         "position": "left",
         "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……あの人なら。「ふたつとも正解だヨ」って、笑うネ。きっと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-16",
+    "lineNo": 10,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥がめずらしく、素の声でこぼす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-16",
+    "lineNo": 11,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……そうネ。我は我の、あんたはあんたの。それで、いいんだと思うヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-16",
+    "lineNo": 12,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの日、二人のあいだに張り詰めていた隔たりが。すっとほどけていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-16",
+    "lineNo": 13,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
       },
       {
         "characterId": "shiyue",
@@ -25590,13 +26067,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-16",
-    "lineNo": 10,
+    "lineNo": 14,
     "backgroundId": "bg-restaurant",
     "standings": [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "shiyue",
@@ -25606,7 +26083,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "同郷の二人が、ようやく、並んで、笑った。",
+    "text": "同郷の二人が、ようやく並んで笑った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25629,7 +26106,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "トリオで挑む、T2の大会。役満級の宝が、かかっている。",
+    "text": "トリオで挑む、T2の大会。役満級の宝がかかっている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -25653,7 +26130,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ふと、観客席に、見覚えのある顔を見つけた。——沼田蓮。",
+    "text": "ふと観客席に、見覚えのある顔を見つけた。——沼田蓮。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25676,7 +26153,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "明らかに、こちらを、見ている。応援に、来てくれていたのだ。ふと、嬉しくなる。",
+    "text": "明らかにこちらを見ている。応援に来てくれたらしい。知らず、口元がゆるむ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -25700,7 +26177,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "と同時に。いつか彼が、そっと言った言葉が、よぎった。",
+    "text": "と同時に。いつか彼がそっと言った言葉が、よぎる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25723,7 +26200,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": "沼田蓮",
-    "text": "……いつも、なりたい自分を、イメージして打ってるんだ。",
+    "text": "……いつも、なりたい自分をイメージして打ってるんだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25746,10 +26223,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "煮詰まった、局の合間。三人で、ぽつぽつと、言葉を交わす。",
+    "text": "その意味が、今ならわかる気がした。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "silence"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
@@ -25769,7 +26247,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そのとき、弟子の口から、自然と、こぼれていた。",
+    "text": "煮詰まった局の合間。三人でぽつぽつと言葉を交わす。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25782,7 +26260,76 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
         "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……ここが正念場だね。抜けないと、決勝の壁は、また同じだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "わかってるヨ。でも……どう抜くカ、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのとき、弟子の口から自然とこぼれていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
       },
       {
         "characterId": "shiyue",
@@ -25799,13 +26346,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 9,
+    "lineNo": 12,
     "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
         "characterId": "shiyue",
@@ -25815,14 +26362,38 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "この局面に、その言葉が出るか。——凌雲が、低く、唸った。",
+    "text": "卓上が、しんと静まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "この局面に、その言葉が出るか。——凌雲が低く唸る。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 10,
+    "lineNo": 14,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -25845,7 +26416,54 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 11,
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "僕らが探し回った答えを。君はこんな土壇場で、さらりと言う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……いい覚悟だ。その目で、打ち抜こう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "idea"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 17,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -25861,14 +26479,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "柄にもなく、気の詰まっていた詩玥も。たはは、と、笑う。",
+    "text": "柄にもなく気の詰まっていた詩玥も。たはは、と笑う。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 12,
+    "lineNo": 18,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -25892,13 +26510,36 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 13,
+    "lineNo": 19,
     "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "ああ。……僕の、自慢の弟子だよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
       },
       {
         "characterId": "shiyue",
@@ -25908,7 +26549,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そうして——初めて。三人の手が、自然と、重なった。小さな、円陣。",
+    "text": "そうして——初めて。三人の手が自然と重なった。小さな円陣。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -25916,7 +26557,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 14,
+    "lineNo": 21,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -25930,22 +26571,22 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "smile"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "そっと、観客席の沼田へ、視線を送る。ありがとう、の意を、込めて。",
+    "text": "——いくよ。なりたい自分に、なりに。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 15,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "shiyue",
@@ -25955,7 +26596,30 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その大会で、二人——いや、三人は。確かに、ひとつ、宝を掴んだ。",
+    "text": "そっと観客席の沼田へ視線を送る。ありがとう、の意を込めて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その大会で、二人——いや、三人は。確かにひとつ、宝を掴んだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -25973,7 +26637,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——後になって、知ったことだ。あの休日、凌雲が、一人で、あの雀荘にいたことを。",
+    "text": "——後になって知ったことだ。あの休日、凌雲が一人であの雀荘にいたことを。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -25992,7 +26656,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "弟子と出会った、虎の檻。常連の猛者たちは、あの日のまま、卓を囲んでいたという。",
+    "text": "弟子と出会った、虎の檻。常連の猛者たちは、あの日のまま卓を囲んでいたという。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26005,12 +26669,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "center",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "凌雲は、これでもかと、突っ張ったらしい。何度も、思い切り、点棒を失いながら。",
+    "text": "——もう一局。お願いします。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26024,12 +26688,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "center",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": "kuidoshi",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……いつも、なりたい自分を、イメージするんだ。",
+    "text": "凌雲はこれでもかと突っ張ったらしい。何度も思い切り、点棒を失いながら。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26045,13 +26709,12 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "いちど剥がれた盾に、大物手が、刺さる。そのたびに、トぶ。",
+    "text": "……いつも、なりたい自分をイメージするんだ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-impact"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
@@ -26064,9 +26727,65 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "受け切るだけの盾は、もう卒業だ。盾のまま、前に出る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-18",
+    "lineNo": 7,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そのたびに、激しい悔しさが、湧いてくる。何度負けても、そうだ。今もずっと、苦しい。",
+    "text": "いちど剥がれた盾に、大物手が刺さる。そのたびに、トぶ。",
+    "characterEffect": "shake",
+    "screenEffect": "shake",
+    "effectDurationMs": 300,
+    "seId": "se-impact"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-18",
+    "lineNo": 8,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "倍満。跳満。容赦のない一撃が続けざまに突き刺さる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-impact"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-18",
+    "lineNo": 9,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのたびに奥歯を噛む。何度負けても、慣れることはない。今もずっと苦しい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26074,7 +26793,26 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 7,
+    "lineNo": 10,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "沈むのは、怖い。今でも、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-18",
+    "lineNo": 11,
     "backgroundId": "bg-restaurant",
     "standings": [
       {
@@ -26092,25 +26830,43 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 8,
+    "lineNo": 12,
     "backgroundId": "bg-restaurant",
     "standings": [
       {
         "characterId": "kuidoshi",
         "position": "center",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "その日、雀荘に、大きな歓声が、響き渡ったという。何を掴んだのかは——まだ、誰も知らない。",
+    "text": "それでも、立つ。——何度でも。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 9,
+    "lineNo": 13,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その日、雀荘に大きな歓声が響き渡ったという。何を掴んだのかは——まだ、誰も知らない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-18",
+    "lineNo": 14,
     "backgroundId": "bg-hall",
     "standings": [],
     "speakerCharacterId": null,
@@ -26123,31 +26879,31 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 10,
+    "lineNo": 15,
     "backgroundId": "bg-hall",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "いよいよ、九蓮宝士の、段位認定。その発表を、受ける。",
+    "text": "いよいよ、九蓮宝士の段位認定。その発表を受ける。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 11,
+    "lineNo": 16,
     "backgroundId": "bg-hall",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "この年は……ペア戦。新たに生まれる九蓮宝士は、二人、だった。",
+    "text": "この年は……ペア戦。新たに生まれる九蓮宝士は、二人だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 12,
+    "lineNo": 17,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -26163,14 +26919,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥が、そっと、一歩、下がった。",
+    "text": "詩玥がそっと、一歩下がった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 13,
+    "lineNo": 18,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -26193,7 +26949,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 14,
+    "lineNo": 19,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -26217,7 +26973,30 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 15,
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……ああ。約束する。必ず、ネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-18",
+    "lineNo": 21,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -26233,14 +27012,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "大きく、二人の背を、叩く。悔しくない、はずが、ない。だけど、それをぐっとのんで、師弟を、送り出したのだ。",
+    "text": "大きく二人の背を叩く。悔しくないはずがない。だけど、それをぐっとのんで、師弟を送り出したのだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 16,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -26256,20 +27035,44 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "思い切り、背を叩かれる。相変わらず、激しいスキンシップだ。だけど——勇気づけられた、気がした。",
+    "text": "思い切り背を叩かれる。相変わらず激しいスキンシップだ。だけど——勇気づけられた気がした。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-18",
-    "lineNo": 17,
+    "lineNo": 23,
     "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……さあ。行こうか、相棒。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-18",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
       },
       {
         "characterId": "shiyue",
@@ -26316,7 +27119,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "大会前のインタビュー。マイクを向けられ、まっすぐに、答える。",
+    "text": "大会前のインタビュー。マイクを向けられ、まっすぐに答える。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26328,7 +27131,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "「——自分たちの、なりたい姿を。見せに、来ました」。",
+    "text": "「——自分たちの、なりたい姿を。見せに来ました」。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26340,7 +27143,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "決勝戦。ギリギリの順位で、勝ち上がった、二人。",
+    "text": "決勝戦。ギリギリの順位で勝ち上がった、二人。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26352,7 +27155,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "相手のオーラが、尋常ではない。それぞれが、卓の動かし方を、知り尽くしている。まるで、台風の中だ。",
+    "text": "相手のオーラが尋常ではない。それぞれが卓の動かし方を知り尽くしている。まるで台風の中だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26365,7 +27168,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "1局目。いきなり、安手で和了られる。親が、あっけなく、流れた。",
+    "text": "1局目。いきなり安手で和了られる。親が、あっけなく流れた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26377,7 +27180,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——と、同時に。凌雲の盾が、はじけ飛んだ。もう、大物手を受ける盾は、ない。",
+    "text": "——と、同時に。凌雲の盾がはじけ飛んだ。もう、大物手を受ける盾はない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26391,7 +27194,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "緊張が、走る。この展開は……あまりにも、痛い。",
+    "text": "緊張が走る。この展開は……あまりにも、痛い。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26427,7 +27230,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲は、冷静だった。トップを狙う手を、諦めない。一点ずつ、取りにいく。",
+    "text": "凌雲は冷静だった。トップを狙う手を諦めない。一点ずつ取りにいく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26445,7 +27248,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "だが、相手の手も、伸びる。そして——。",
+    "text": "だが、相手の手も伸びる。そして——。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26501,7 +27304,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "絶望的な、コールだった。ここまで来た二人に待っていたのは、あまりに残酷な、数字。",
+    "text": "絶望的なコールだった。ここまで来た二人に待っていたのは、あまりに残酷な数字。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26520,7 +27323,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "観客席の詩玥から、思わず、涙がこぼれる。弟子も、奥歯を、かみしめた。",
+    "text": "観客席の詩玥から、思わず涙がこぼれる。弟子も奥歯をかみしめた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26593,7 +27396,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "2枚目。——2枚目の盾が。3倍満を、0点に、変えたのだ。",
+    "text": "2枚目。——2枚目の盾が。3倍満を、0点に変えたのだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26613,7 +27416,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "琥珀の盾が、一段階、進化していた。あの休日、雀荘で掴みかけたものが——今、ここで、花開いた。",
+    "text": "琥珀の盾が一段階、進化していた。あの休日、雀荘で掴みかけたものが——今、ここで花開いた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26632,7 +27435,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "会場が、地鳴りのように、湧いた。この数の、この観衆の、ただ中で。彼は、成し遂げたのだ。",
+    "text": "会場が地鳴りのように湧いた。この数の、この観衆のただ中で。彼は成し遂げたのだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26722,7 +27525,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ほんの、2000点差。すでに九蓮宝士となっていたペアたちを、押しのけて。二人は、ついに掴んだ。",
+    "text": "ほんの2000点差。すでに九蓮宝士となっていたペアたちを押しのけて。二人は、ついに掴んだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26741,7 +27544,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "大きな歓声とともに。本当に、長い、長い、長い拍手が、降り注いだ。",
+    "text": "大きな歓声とともに。本当に、長い、長い、長い拍手が降り注いだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26759,7 +27562,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "観客たちは、知っていたのだ。この大会に出る前から——何度も負け、何度も立ち上がり、軌道修正してきた、その姿を。",
+    "text": "観客たちは知っていたのだ。この大会に出る前から——何度も負け、何度も立ち上がり、軌道修正してきた、その姿を。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26777,7 +27580,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "弟子は、とっさに、四方へ、礼をする。そして、凌雲のほうを、振り向くと。",
+    "text": "弟子はとっさに、四方へ礼をする。そして、凌雲のほうを振り向くと。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26795,7 +27598,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——その場に、立ち尽くしていた。初めて、腕で、目元を、隠して。",
+    "text": "——その場に立ち尽くしていた。初めて、腕で目元を隠して。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26813,7 +27616,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "初めてあふれ出した、その感情を見て。そっと、背中に、手を添える。拍手が、ぐっと、また強くなった。",
+    "text": "初めてあふれ出した、その感情を見て。そっと背中に手を添える。拍手がぐっと、また強くなった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26849,7 +27652,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そう、ひとこと、呟いた。",
+    "text": "そう、ひとこと呟いた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26872,7 +27675,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "控室に戻ると。インタビューを押しのけて、詩玥が、二人に思い切り、抱きついてきた。",
+    "text": "控室に戻ると。インタビューを押しのけて、詩玥が二人に思い切り抱きついてきた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26919,7 +27722,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "こうして、二人の、九蓮宝士が、誕生した。",
+    "text": "こうして、二人の九蓮宝士が誕生した。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -26943,7 +27746,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥は——いつのまにか、自分の弟子をとって。その子と二人で、九蓮宝士を、追って取ったらしい。",
+    "text": "詩玥は——いつのまにか、自分の弟子をとって。その子と二人で、九蓮宝士を追って取ったらしい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -26990,7 +27793,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ちゃっかりしているな、と思う。でも——彼女らしいな、とも、思った。",
+    "text": "ちゃっかりしているな、と思う。でも——彼女らしいな、とも思った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -27020,7 +27823,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲のもとには、門下生の希望が、続出した。",
+    "text": "凌雲のもとには、門下生の希望が続出した。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -27038,7 +27841,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そして、冗談でもなく。彼は、こう言うらしい。",
+    "text": "そして、冗談でもなく。彼はこう言うらしい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -27056,7 +27859,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "——1000回、大負けする覚悟が、できてから、おいで。",
+    "text": "——1000回、大負けする覚悟ができてから、おいで。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -27074,7 +27877,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "泥臭さを。負けの味を。守る強さを。そして、イメージする“なりたい自分”を——彼らは、知っている。",
+    "text": "泥臭さを。負けの味を。守る強さを。そして、イメージする“なりたい自分”を——彼らは知っている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -27092,7 +27895,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それはきっと、これからもずっと。彼らの、座右の銘で、あり続けるのだろう。",
+    "text": "それはきっと、これからもずっと。彼らの座右の銘で、あり続けるのだろう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -27110,7 +27913,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "さあ。——次は、君が、誰かの“なりたい姿”になる番だ。いってらっしゃい、ネ。",
+    "text": "さあ。——次は、君が誰かの“なりたい姿”になる番だ。いってらっしゃい、ネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -27128,7 +27931,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "穏やかな声が、そっと、背中を押す。長い長い道のりの先で。二人は確かに、なりたい姿に、なっていた。",
+    "text": "穏やかな声が、そっと背中を押す。長い長い道のりの先で。二人は確かに、なりたい姿になっていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
