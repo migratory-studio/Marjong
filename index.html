@@ -112,41 +112,54 @@
       <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
     </section>
 
-    <!-- Character select (3-step wizard: ①卓 → ②キャラ → ③ルール＆開始) -->
+    <!-- Character select (4-step wizard: ①形式 → ②卓 → ③キャラ → ④ルール＆開始) -->
     <section id="select-screen" class="screen hidden">
       <header class="select-head">
         <button type="button" class="ghost-back select-back" data-nav="free-battle">← 戻る</button>
         <h1>フリー対戦</h1>
         <ol class="wiz-steps" id="wiz-steps">
-          <li class="wiz-step active" data-step="1"><span class="wiz-step-no">①</span>卓</li>
-          <li class="wiz-step" data-step="2"><span class="wiz-step-no">②</span>キャラ</li>
-          <li class="wiz-step" data-step="3"><span class="wiz-step-no">③</span>ルール＆開始</li>
+          <li class="wiz-step active" data-step="1"><span class="wiz-step-no">①</span>形式</li>
+          <li class="wiz-step" data-step="2"><span class="wiz-step-no">②</span>卓</li>
+          <li class="wiz-step" data-step="3"><span class="wiz-step-no">③</span>キャラ</li>
+          <li class="wiz-step" data-step="4"><span class="wiz-step-no">④</span>ルール＆開始</li>
         </ol>
         <button type="button" id="scenario-demo-btn" class="select-scenario">シナリオ（サンプル）</button>
       </header>
 
       <div class="wiz-body">
-        <!-- ① 卓: 対戦形式（通常 / 団体戦）と卓人数を選ぶ。 -->
+        <!-- ① 形式: 通常 / ペア / 団体 を大きなワイドボタンで選ぶ。 -->
         <div class="wiz-pane" data-pane="1">
-          <h2 class="wiz-title">対戦形式</h2>
-          <div class="mode-toggle" id="battle-mode-toggle">
-            <button type="button" class="mode-btn selected" data-battle="normal">
-              <span class="choice-main">通常対戦</span>
-              <span class="choice-sub">個人で対局</span>
+          <h2 class="wiz-title">対戦形式を選ぶ</h2>
+          <div class="battle-mode-grid" id="battle-mode-toggle">
+            <button type="button" class="mode-btn battle-card selected" data-battle="normal">
+              <span class="battle-card-icon">🀄</span>
+              <span class="battle-card-text">
+                <span class="battle-card-title">通常対戦</span>
+                <span class="battle-card-sub">個人戦。最大4人で順位を競う基本ルール。</span>
+              </span>
             </button>
-            <button type="button" class="mode-btn" data-battle="pair">
-              <span class="choice-main">ペア戦</span>
-              <span class="choice-sub">2人ペアで共闘</span>
+            <button type="button" class="mode-btn battle-card" data-battle="pair">
+              <span class="battle-card-icon">🤝</span>
+              <span class="battle-card-text">
+                <span class="battle-card-title">ペア戦</span>
+                <span class="battle-card-sub">2対2の共闘。相方との合計点で勝負する。</span>
+              </span>
             </button>
-            <button type="button" class="mode-btn" data-battle="team">
-              <span class="choice-main">団体戦</span>
-              <span class="choice-sub">3人チームで挑む</span>
+            <button type="button" class="mode-btn battle-card" data-battle="team">
+              <span class="battle-card-icon">🚩</span>
+              <span class="battle-card-text">
+                <span class="battle-card-title">団体戦</span>
+                <span class="battle-card-sub">3人チームで挑む総力戦。</span>
+              </span>
             </button>
           </div>
+        </div>
 
+        <!-- ② 卓: 形式に応じて人数 / チーム数を決める。 -->
+        <div class="wiz-pane hidden" data-pane="2">
           <!-- 通常: 人数 + 席プレビュー -->
-          <div id="normal-table-opts">
-            <h2 class="wiz-title wiz-sub-title">何人で打つ？</h2>
+          <div id="normal-table-opts" class="table-opts">
+            <h2 class="wiz-title">何人で打つ？</h2>
             <div class="mode-toggle wiz-players" id="players-toggle">
               <button type="button" class="mode-btn selected" data-players="4">
                 <span class="choice-main">4人</span>
@@ -169,16 +182,16 @@
           </div>
 
           <!-- ペア戦: 2対2の共闘。相方は次ステップで指名（おまかせ可） -->
-          <div id="pair-table-opts" class="hidden">
-            <h2 class="wiz-title wiz-sub-title">2対2の共闘</h2>
+          <div id="pair-table-opts" class="table-opts hidden">
+            <h2 class="wiz-title">2対2の共闘</h2>
             <p class="wiz-note">4席を2ペアで分け合います。席は<b>対面どうしが相方</b>。2人の<b>合計点</b>で勝負し、片方が飛んでも<b>相方が単騎で続行</b>します。</p>
             <p class="wiz-note">※ 次のステップで<b>あなた</b>と<b>相方1人</b>を選んでください（相方はおまかせ可）。相手ペアはランダムで決まります。</p>
           </div>
 
           <!-- 団体戦: チーム数 -->
-          <div id="team-table-opts" class="hidden">
-            <h2 class="wiz-title wiz-sub-title">チーム数</h2>
-            <div class="mode-toggle" id="team-count-toggle">
+          <div id="team-table-opts" class="table-opts hidden">
+            <h2 class="wiz-title">チーム数</h2>
+            <div class="mode-toggle wiz-players" id="team-count-toggle">
               <button type="button" class="mode-btn selected" data-teams="4">
                 <span class="choice-main">4チーム</span>
                 <span class="choice-sub">四人麻雀形式</span>
@@ -192,8 +205,8 @@
           </div>
         </div>
 
-        <!-- ② キャラ: ロスターから自分を選択。席を押せばCPUも指名できる。 -->
-        <div class="wiz-pane hidden" data-pane="2">
+        <!-- ③ キャラ: ロスターから自分を選択。席を押せばCPUも指名できる。 -->
+        <div class="wiz-pane hidden" data-pane="3">
           <div class="seat-bar" id="seat-bar"></div>
           <div class="select-layout">
             <div id="char-list" class="char-list"></div>
@@ -201,8 +214,8 @@
           </div>
         </div>
 
-        <!-- ③ ルール＆開始: 対局方式を選び、確認して開始。 -->
-        <div class="wiz-pane hidden" data-pane="3">
+        <!-- ④ ルール＆開始: 対局方式を選び、確認して開始。 -->
+        <div class="wiz-pane hidden" data-pane="4">
           <h2 class="wiz-title">対局方式</h2>
           <div class="mode-toggle wiz-rounds" id="mode-toggle">
             <button type="button" class="mode-btn selected" data-rounds="1">

@@ -196,16 +196,31 @@ body {
 }
 .avatar-head h1 { font-size: 30px; margin: 2px 0 4px; }
 
+/* 弟子作成・師匠選択で共通のグリッド土台。実際のカラム構成は画面ごとの修飾子で与え、
+   片側の空カラムによる左右の偏りを避ける（弟子作成=3カラム / 師匠選択=2カラム）。 */
 .avatar-create-layout {
   display: grid; width: 100%;
-  grid-template-columns: 1fr 1fr 250px;
-  grid-template-areas: "identity center preview" "footer footer footer";
-  gap: 14px 22px; align-items: start;
+  gap: 16px 30px; align-items: start;
 }
-.av-col-identity { grid-area: identity; }
-.av-col-center { grid-area: center; display: flex; flex-direction: column; gap: 14px; }
 .avatar-create-layout .avatar-preview { grid-area: preview; }
 .av-footer { grid-area: footer; }
+
+/* 弟子作成: 名前/プロフィール ｜ 見た目 ｜ プレビュー の3カラムで均等に埋める。 */
+.avatar-create-layout--create {
+  grid-template-columns: 1fr 1fr 300px;
+  grid-template-areas: "identity look preview" "footer footer footer";
+}
+.av-col-identity { grid-area: identity; }
+.av-col-look { grid-area: look; }
+
+/* 師匠選択: 師匠/能力 ｜ プレビュー の2カラム。固定幅を中央寄せにして左右の偏りを解消
+   しつつ、内容（立ち絵プレビュー＋初期パラメータ）が 720px に収まる高さに抑える。 */
+.avatar-create-layout--mentor {
+  grid-template-columns: minmax(0, 540px) 240px;
+  grid-template-areas: "center preview" "footer footer";
+  justify-content: center;
+}
+.av-col-center { grid-area: center; display: flex; flex-direction: column; gap: 14px; }
 
 .av-col { display: flex; flex-direction: column; gap: 14px; }
 .av-field { display: flex; flex-direction: column; gap: 6px; }
@@ -310,7 +325,7 @@ body {
 .av-footer { display: flex; align-items: center; gap: 14px; margin-top: 4px; }
 .av-error { color: var(--danger); font-size: 14px; margin: 0; flex: 1; }
 .av-footer .ghost-back { margin-left: auto; }
-.av-footer .primary { min-width: 200px; }
+.av-footer .primary { min-width: 200px; margin-top: 0; } /* フッターは独立行なので primary の上マージンを消す */
 
 /* preview / portrait card (shared by create & detail) */
 .avatar-preview { display: flex; flex-direction: column; align-items: center; gap: 8px; }
@@ -1699,13 +1714,42 @@ body {
 .wiz-body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .wiz-pane { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .wiz-pane.hidden { display: none; }
-/* ①卓・③ルールは内容が少ないので、要素を大きめにして縦いっぱいに広げる（小ぢんまり
-   防止）。space-evenly で見出し/選択/プレビューを画面全体へ均等配置。②キャラは上詰め。 */
-.wiz-pane[data-pane="1"], .wiz-pane[data-pane="3"] {
+/* ①形式・②卓・④ルールは内容が少ないので、要素を大きめにして縦いっぱいに広げる（小ぢ
+   んまり防止）。space-evenly で見出し/選択/プレビューを画面全体へ均等配置。③キャラは上詰め。 */
+.wiz-pane[data-pane="1"], .wiz-pane[data-pane="2"], .wiz-pane[data-pane="4"] {
   align-items: center; justify-content: space-evenly; gap: 16px; text-align: center;
   padding: 8px 0 4px;
 }
 .wiz-title { font-size: 30px; font-weight: 800; margin: 0; color: var(--ink); letter-spacing: .04em; }
+
+/* ① 形式: 3つのワイドボタンを縦に積んで画面幅をしっかり使う。 */
+.battle-mode-grid {
+  display: flex; flex-direction: column; gap: 18px;
+  width: 100%; max-width: 820px;
+}
+.battle-mode-grid .mode-btn.battle-card {
+  display: flex; align-items: center; gap: 26px; text-align: left;
+  width: 100%; padding: 24px 36px; border: 2px solid #2a3f34; border-radius: 18px;
+  background: #1c2c24; color: var(--ink);
+}
+.battle-mode-grid .mode-btn.battle-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.battle-mode-grid .mode-btn.battle-card.selected {
+  background: #1c2c24; border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 32%, transparent);
+}
+.battle-card-icon { font-size: 46px; line-height: 1; flex: none; width: 56px; text-align: center; }
+.battle-card-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.battle-card-title { font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+.battle-card.selected .battle-card-title { color: var(--accent); }
+.battle-card-sub { font-size: 15px; font-weight: 600; color: var(--muted); letter-spacing: .02em; }
+
+/* ② 卓: 形式ごとの設定ブロック。表示中の1つが縦いっぱいに均等配置される。 */
+.wiz-pane[data-pane="2"] .table-opts {
+  flex: 1; min-height: 0; width: 100%;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: space-evenly; gap: 16px; text-align: center;
+}
+.table-opts.hidden { display: none; }
 
 /* 大型の選択カード（4人/3人・東風/半荘）。サブラベルで内容を補足。 */
 .wiz-players, .wiz-rounds { gap: 36px; }

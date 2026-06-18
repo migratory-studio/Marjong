@@ -37,8 +37,11 @@ function ensureStyle() {
   const st = document.createElement("style");
   st.id = "mentor-select-style";
   st.textContent = `
-    .ms-preview-params { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; width: 100%; }
-    .ms-preview-params .ac-cf-stat { display: flex; align-items: center; gap: 6px; }
+    .ms-preview-params { display: flex; flex-direction: column; gap: 2px; margin-top: 6px; width: 100%; }
+    .ms-preview-params .ac-cf-stat { display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 1.2; padding: 0; border: none; }
+    .ms-preview-params .ac-cf-slab { flex: 1; }
+    .ms-preview-params .ac-cf-rank { font-size: 11px; }
+    .ms-preview-params .ac-cf-sval { font-size: 12px; min-width: 18px; text-align: right; }
   `;
   document.head.appendChild(st);
 }
@@ -60,10 +63,10 @@ export async function showMentorSelect(container, { repository, draft, onBack, o
   head.appendChild(elt("h1", null, { textContent: "師匠を選ぶ" }));
   container.appendChild(head);
 
-  const layout = elt("div", "avatar-create-layout");
+  const layout = elt("div", "avatar-create-layout avatar-create-layout--mentor");
   container.appendChild(layout);
 
-  // ===== 中央カラム: 師匠 / 初期能力種類 =====
+  // ===== 左カラム: 師匠 / 初期能力種類 =====
   const center = elt("div", "av-col av-col-center");
   layout.appendChild(center);
 

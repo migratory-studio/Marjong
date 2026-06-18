@@ -43,12 +43,15 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
   head.appendChild(elt("h1", null, { textContent: "マイキャラ作成" }));
   container.appendChild(head);
 
-  const layout = elt("div", "avatar-create-layout");
+  const layout = elt("div", "avatar-create-layout avatar-create-layout--create");
   container.appendChild(layout);
 
-  // ===== 左カラム: 識別情報（名前 / プロフィール / 見た目） =====
+  // ===== 左カラム: 識別情報（名前 / プロフィール） =====
   const identity = elt("div", "av-col av-col-identity");
   layout.appendChild(identity);
+  // ===== 中央カラム: 見た目（弟子グラフィック / 背景・枠） =====
+  const look = elt("div", "av-col av-col-look");
+  layout.appendChild(look);
 
   const nameField = elt("div", "av-field");
   nameField.appendChild(elt("label", "av-label", { textContent: "名前", htmlFor: "av-name" }));
@@ -80,7 +83,7 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
 
   const lookGrid = elt("div", "av-look-grid");
   lookField.appendChild(lookGrid);
-  identity.appendChild(lookField);
+  look.appendChild(lookField);
 
   // 弟子グラフィックのサムネ選択。クリックで icon/standing を一括設定する。
   function renderDeshi() {

@@ -564,12 +564,12 @@ function buildSelectScreen() {
   }
 
   // --------------------------------------------------------------- wizard nav
-  // ①卓 → ②キャラ → ③ルール＆開始 の3ステップ。進行はパネルの出し分け＋下部ナビで
-  // 制御する。②から③へ進むには自分（あなた席）の選択が必須。
+  // ①形式 → ②卓 → ③キャラ → ④ルール＆開始 の4ステップ。進行はパネルの出し分け＋
+  // 下部ナビで制御する。③から④へ進むには自分（あなた席）の選択が必須。
   let wizStep = 1;
   const teamSlotsFilled = () => !!(selectedCharId && cpuPicks[0] && cpuPicks[1]);
   const canReach = (step) => {
-    if (step <= 2) return true;
+    if (step <= 3) return true;
     return selectedTeamBattle ? teamSlotsFilled() : !!selectedCharId;
   };
 
@@ -578,12 +578,12 @@ function buildSelectScreen() {
     const back = el("wiz-back"), next = el("wiz-next"), start = el("start-btn");
     if (!back || !next || !start) return;
     back.classList.toggle("hidden", wizStep === 1);
-    next.classList.toggle("hidden", wizStep === 3);
-    start.classList.toggle("hidden", wizStep !== 3);
-    next.disabled = wizStep === 2 && !canReach(3);
-    // デバッグボタンは step3 かつデバッグモードのときだけ（start と並べる）。
+    next.classList.toggle("hidden", wizStep === 4);
+    start.classList.toggle("hidden", wizStep !== 4);
+    next.disabled = wizStep === 3 && !canReach(4);
+    // デバッグボタンは step4 かつデバッグモードのときだけ（start と並べる）。
     const dbg = el("debug-mob-btn");
-    if (dbg) dbg.classList.toggle("hidden", !(wizStep === 3 && isDebugMode()));
+    if (dbg) dbg.classList.toggle("hidden", !(wizStep === 4 && isDebugMode()));
   }
 
   // ③の確認リスト（人数＋各席の指名/おまかせ）。
@@ -636,9 +636,9 @@ function buildSelectScreen() {
   function gotoStep(step) {
     if (!canReach(step)) return;
     wizStep = step;
-    // ②キャラに入る時、自分が未選択ならアクティブ席を「あなた」に。最初のクリックが
+    // ③キャラに入る時、自分が未選択ならアクティブ席を「あなた」に。最初のクリックが
     // 必ず自分の選択になり、CPU席へ誤爆して自分の指名を外す事故を防ぐ。
-    if (step === 2 && !selectedCharId) activeSeat = 0;
+    if (step === 3 && !selectedCharId) activeSeat = 0;
     for (const pane of document.querySelectorAll("#select-screen .wiz-pane")) {
       pane.classList.toggle("hidden", Number(pane.dataset.pane) !== step);
     }
@@ -647,8 +647,8 @@ function buildSelectScreen() {
       li.classList.toggle("active", n === step);
       li.classList.toggle("done", n < step);
     }
-    if (step === 1) renderSeats();   // プレビューを最新の席割りで
-    if (step === 3) renderSummary();
+    if (step === 2) renderSeats();   // ②卓の席プレビューを最新の席割りで
+    if (step === 4) renderSummary();
     updateWizNav();
   }
 
