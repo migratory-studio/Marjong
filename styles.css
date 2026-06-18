@@ -4383,16 +4383,7 @@ button.primary.danger:hover { color: #ffbcbc; }
 .takeover-title { font-weight: 800; color: #f3b13a; font-size: 18px; letter-spacing: .04em; }
 .takeover-sub { margin-top: 10px; color: var(--ink); font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-/* 局間「通信待機中…」トースト（画面下中央に控えめに出す） */
-.online-wait-toast {
-  position: absolute; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 60;
-  display: flex; align-items: center; gap: 8px;
-  padding: 8px 16px; border-radius: 999px;
-  background: rgba(16,26,21,.92); border: 1px solid #2a3f34;
-  color: var(--ink); font-size: 13px; font-weight: 700;
-  box-shadow: 0 6px 18px rgba(0,0,0,.4);
-  animation: sc-fade-in .2s ease;
-}
+/* 局間「通信待機中…」は再接続/探索と同じ中央モーダル（.reconnect-overlay/.reconnect-card）を流用。 */
 
 .online-cpu-badge {
   padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 800;

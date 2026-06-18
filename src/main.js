@@ -2547,11 +2547,12 @@ function exitAutoTakeover() {
   el("takeover-overlay")?.remove();
 }
 
-// 局間「通信待機中…」トースト：自分は次局へ進む準備ができたが、他家の足並みを待っている間に出す。
+// 局間「通信待機中…」：自分は次局へ進む準備ができたが、他家の足並みを待っている間に出す。
+// 再接続/マッチング探索と同じ中央モーダル（reconnect-overlay）の見た目に揃える。
 function showOnlineWaitToast() {
   let ov = el("online-wait-toast");
-  if (!ov) { ov = document.createElement("div"); ov.id = "online-wait-toast"; ov.className = "online-wait-toast"; (el("app") || document.body).appendChild(ov); }
-  ov.innerHTML = `<span class="online-spinner"></span><span>通信待機中<span class="online-dots"></span></span>`;
+  if (!ov) { ov = document.createElement("div"); ov.id = "online-wait-toast"; ov.className = "reconnect-overlay"; (el("app") || document.body).appendChild(ov); }
+  ov.innerHTML = `<div class="reconnect-card"><span class="online-spinner"></span><span class="reconnect-msg">通信待機中<span class="online-dots"></span></span></div>`;
 }
 function hideOnlineWaitToast() {
   clearTimeout(ackWaitTimer); ackWaitTimer = null;
