@@ -122,6 +122,31 @@ export class AbilityManager {
     return this.modifyForPlayer(Hooks.MODIFY_SCORE, winner, ctx, result);
   }
 
+  // modifyScore と同じ改変を行いつつ、能力ごとの「合計点(total)の増減」を順に記録する。
+  // 和了画面で「素点 → 増加!/減少! → 改変後」の演出を出すための材料。
+  // 返り値: { result(改変後), baseTotal(素点), steps:[{ abilityId, from, to, dir:'up'|'down' }] }。
+  // 現状は勝者の能力は1つなので steps は長さ0か1だが、複数能力が乗る将来でも
+  // そのまま「増加→減少…」の多段演出になるよう、各ステップを配列で持つ。
+  modifyScoreTraced(winner, result) {
+    const api = new AbilityApi(this.game, winner);
+    const ctx = { winner, result };
+    const baseTotal = result && typeof result.total === "number" ? result.total : 0;
+    const steps = [];
+    let value = result;
+    for (const ab of this._abilitiesOf(winner)) {
+      const fn = ab[Hooks.MODIFY_SCORE];
+      if (typeof fn !== "function") continue;
+      const before = value;
+      const out = fn.call(ab, ctx, api, value);
+      if (out === undefined || out === before) continue;
+      const from = before && typeof before.total === "number" ? before.total : baseTotal;
+      const to = out && typeof out.total === "number" ? out.total : from;
+      if (to !== from) steps.push({ abilityId: ab.id ?? null, from, to, dir: to > from ? "up" : "down" });
+      value = out;
+    }
+    return { result: value ?? result, baseTotal, steps };
+  }
+
   // May this player declare a win (和了) right now? Abilities may veto by
   // returning false from MODIFY_CAN_WIN. Default: allowed.
   canWin(player, kind, tsumo) {

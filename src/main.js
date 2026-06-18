@@ -2657,7 +2657,7 @@ function beginGame(seated, dealerIndex, opts = {}) {
   renderer.seatLabels = (opts.online && onlineSeatInfo)
     ? onlineSeatInfo.map((p) => (p && !p.cpu ? (p.name || "名無し") : null))
     : null;
-  if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__pairBattleData = pairBattleData; window.__tbFx = showTeamBattleDamageFx; window.__showGameOver = showGameOver; window.__activeVoiceSet = activeVoiceSet; } // debug handle
+  if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__pairBattleData = pairBattleData; window.__tbFx = showTeamBattleDamageFx; window.__showGameOver = showGameOver; window.__showHandResult = showHandResult; window.__activeVoiceSet = activeVoiceSet; } // debug handle
 
   game.bus.on(Events.STATE_CHANGED, () => render());
   // SE: random dahai sound whenever anyone discards (incl. the human)
@@ -3458,6 +3458,10 @@ function showWinResult(overlay, r) {
   const winnerGain = (r.deltas && r.deltas[r.winner]) || res.total;
   const subText = winnerGain && winnerGain !== res.total ? `(${winnerGain})` : "";
 
+  // 能力で和了点が増減したとき: 先に素点を出し、増加!/減少! を挟んで改変後へ動かす。
+  const scoreFx = r.scoreFx && r.scoreFx.steps && r.scoreFx.steps.length ? r.scoreFx : null;
+  const initialScore = scoreFx ? scoreFx.baseTotal : res.total;
+
   const portraitUrl = charImages.url(winner.character, "portrait");
   const portraitHtml = portraitUrl
     ? `<img class="win-portrait" src="${portraitUrl}" alt="${winner.character.name}">`
@@ -3487,7 +3491,8 @@ function showWinResult(overlay, r) {
           <div class="win-rank hidden" id="win-rank">${bigRank}</div>
           <div class="win-scorebox">
             ${detailText ? `<div class="win-detail">${detailText}</div>` : ""}
-            <div class="win-score hidden" id="win-score">${res.total}<span class="win-pt">点</span></div>
+            <div class="win-score hidden" id="win-score">${initialScore}<span class="win-pt">点</span></div>
+            <div class="win-score-fx hidden" id="win-score-fx"></div>
             ${subText ? `<div class="win-score-sub hidden" id="win-score-sub">${subText}</div>` : ""}
           </div>
         </div>
@@ -3510,6 +3515,56 @@ function showWinResult(overlay, r) {
     winRevealTimer = setTimeout(revealed < items.length ? revealOne : finishReveal, 520);
   };
 
+  // 増加!/減少! を順に再生してから sub と次へボタンを出す。
+  const revealSub = () => {
+    const sub = el("win-score-sub");
+    if (sub) { sub.classList.remove("hidden"); sub.classList.add("pop"); }
+  };
+
+  const playScoreFx = (steps, done) => {
+    const fxEl = el("win-score-fx");
+    const scoreEl = el("win-score");
+    let i = 0;
+    let doneCalled = false;
+    const complete = () => {
+      if (doneCalled) return;
+      doneCalled = true;
+      clearTimeout(winRevealTimer); winRevealTimer = null;
+      // 最終値とラベルは出したまま残す（増加!/減少! の余韻＝報酬感）。スキップで途中から
+      // 飛んでもここで最後のステップを焼き付ける。
+      const last = steps[steps.length - 1];
+      if (scoreEl && last) scoreEl.innerHTML = `${last.to}<span class="win-pt">点</span>`;
+      if (fxEl && last) {
+        const up = last.dir === "up";
+        fxEl.textContent = up ? "増加！" : "減少！";
+        fxEl.className = `win-score-fx ${up ? "up" : "down"} show`;
+      }
+      done();
+    };
+    const stepOne = () => {
+      if (i >= steps.length) { complete(); return; }
+      const s = steps[i++];
+      const up = s.dir === "up";
+      if (scoreEl) {
+        scoreEl.innerHTML = `${s.to}<span class="win-pt">点</span>`;
+        scoreEl.classList.remove("pop"); void scoreEl.offsetWidth; scoreEl.classList.add("pop");
+      }
+      if (fxEl) {
+        fxEl.textContent = up ? "増加！" : "減少！";
+        fxEl.className = `win-score-fx ${up ? "up" : "down"}`;
+        void fxEl.offsetWidth; fxEl.classList.add("show");
+      }
+      audio.playPip?.(up ? 2600 : 360, up ? 0.45 : 0.5);
+      winRevealTimer = setTimeout(stepOne, 1150);
+    };
+    // 素点が出てひと呼吸おいてから増減を見せる。スキップで即・最終値へ。
+    btnBox.innerHTML = "";
+    const fxSkip = mkBtn("スキップ", "btn-skip", complete);
+    fxSkip.classList.add("skip-reveal");
+    btnBox.appendChild(fxSkip);
+    winRevealTimer = setTimeout(stepOne, 650);
+  };
+
   const finishReveal = () => {
     clearTimeout(winRevealTimer); winRevealTimer = null;
     for (; revealed < items.length; revealed++) {
@@ -3519,14 +3574,21 @@ function showWinResult(overlay, r) {
       li.innerHTML = `<span class="yaku-name">${it.name}</span><span class="yaku-han">${it.val}</span>`;
       listEl.appendChild(li);
     }
-    for (const id of ["win-rank", "win-score", "win-score-sub"]) {
+    // 役満／満貫ランクと「素点」をドンと出す（scoreFx 時は素点、無ければ最終点）。
+    for (const id of ["win-rank", "win-score"]) {
       const node = el(id);
       if (node) { node.classList.remove("hidden"); node.classList.add("pop"); }
     }
     // Winner's tsumo/ron voice (falls back to the 金額表示 SE when no clip).
     audio.playVoice(winner.character.id, r.tsumo ? "tsumo" : "ron");
     btnBox.innerHTML = "";
-    appendNextButton(btnBox, r);
+    if (scoreFx) {
+      // 素点 → 増加!/減少! → 改変後。演出後に sub と次へボタン。
+      playScoreFx(scoreFx.steps, () => { revealSub(); appendNextButton(btnBox, r); });
+    } else {
+      revealSub();
+      appendNextButton(btnBox, r);
+    }
   };
 
   const skipBtn = mkBtn("スキップ", "btn-skip", finishReveal);

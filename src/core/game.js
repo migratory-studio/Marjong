@@ -721,8 +721,9 @@ export class Game {
     const ctx = this._winContext(p, this._lastDraw.kind, true);
     let res = scoreHand(counts, p.melds, ctx);
     if (!res.valid) return;
-    res = this.abilities.modifyScore(p, res) || res;
-    this._applyTsumo(p, res);
+    const traced = this.abilities.modifyScoreTraced(p, res);
+    res = traced.result;
+    this._applyTsumo(p, res, traced);
   }
 
   _doRon(winnerIndices, fromIndex, kind) {
@@ -737,8 +738,9 @@ export class Game {
     const ctx = this._winContext(p, kind, false);
     let res = scoreHand(counts, p.melds, ctx);
     if (!res.valid) { this.pendingCalls = null; this._afterDiscardNoCalls(); return; }
-    res = this.abilities.modifyScore(p, res) || res;
-    this._applyRon(p, this.players[fromIndex], res, kind);
+    const traced = this.abilities.modifyScoreTraced(p, res);
+    res = traced.result;
+    this._applyRon(p, this.players[fromIndex], res, kind, traced);
   }
 
   _winContext(p, winningTileKind, tsumo) {
@@ -827,7 +829,7 @@ export class Game {
     for (let i = 0; i < N; i++) this.players[i].points += adjusted[i];
   }
 
-  _applyTsumo(p, res) {
+  _applyTsumo(p, res, scoreFx) {
     const before = this.players.map((q) => q.points);
     const raw = Array(this.numPlayers).fill(0);
     if (p.isDealer) {
@@ -851,17 +853,17 @@ export class Game {
     raw[p.index] += collected + this.kyotaku;
     this.kyotaku = 0;
     this._settle(raw, { reason: "tsumo", winnerIndex: p.index, rank: res.rank, isYakuman: !!res.isYakuman });
-    this._finishWin(p, res, null, before, this._lastDraw.kind);
+    this._finishWin(p, res, null, before, this._lastDraw.kind, scoreFx);
   }
 
-  _applyRon(p, loser, res, kind) {
+  _applyRon(p, loser, res, kind, scoreFx) {
     const before = this.players.map((q) => q.points);
     const raw = Array(this.numPlayers).fill(0);
     raw[loser.index] -= res.ron;
     raw[p.index] += res.ron + this.kyotaku;
     this.kyotaku = 0;
     this._settle(raw, { reason: "ron", winnerIndex: p.index, rank: res.rank, isYakuman: !!res.isYakuman });
-    this._finishWin(p, res, loser, before, kind);
+    this._finishWin(p, res, loser, before, kind, scoreFx);
   }
 
   // Snapshot the winning hand for the result screen. `hand` is the concealed
@@ -874,7 +876,7 @@ export class Game {
     };
   }
 
-  _finishWin(winner, res, loser, before, winningTile) {
+  _finishWin(winner, res, loser, before, winningTile, scoreFx) {
     this.phase = Phase.HAND_OVER;
     this._chankanActive = false;
     this.pendingCalls = null;
@@ -887,6 +889,11 @@ export class Game {
       winningTile,
       winningHand: this._handSnapshot(winner),
       deltas: this.players.map((q, i) => q.points - before[i]),
+      // 能力で和了点が増減したとき、和了画面で「素点 → 増加!/減少! → 改変後」を出す材料。
+      // 変化が無ければ null（演出も出さない）。オンラインのレプリカ側は未設定＝演出なし。
+      scoreFx: scoreFx && scoreFx.steps && scoreFx.steps.length
+        ? { baseTotal: scoreFx.baseTotal, steps: scoreFx.steps }
+        : null,
     };
     this.bus.emit(Events.HAND_WON, this.lastResult);
     const dealerWon = winner.isDealer;
