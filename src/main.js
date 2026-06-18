@@ -2411,8 +2411,20 @@ function onlineClientMessage(msg) {
   }
   if (msg.type === "evt.awaitCalls" && msg.seat === humanIndex) {
     game.phase = Phase.AWAIT_CALLS; // 鳴き窓中は打牌ガードを効かせる
-    online.callOpts = msg.options;
-    showCallActions({ index: humanIndex, options: msg.options });
+    let options = msg.options;
+    // 鳴きなし: オフライン(LocalController.decideCalls)と同じ扱いをオンラインでも適用する。
+    // ポン/チー/カンは伏せ、ロン(鳴きではない)だけ残す。残る選択肢が無ければ自動でパスを権威へ返す。
+    // ※ 鳴き決定はサーバ(AuthorityRoom)発の evt.awaitCalls で来るため、ここで間引かないと無視される。
+    if (noNaki) {
+      if (options && options.ron) {
+        options = { ron: true, pon: false, kan: false, chi: [] };
+      } else {
+        online.send({ type: "intent.call", action: "pass" });
+        return;
+      }
+    }
+    online.callOpts = options;
+    showCallActions({ index: humanIndex, options });
     render();
   }
 }
