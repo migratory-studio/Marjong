@@ -258,9 +258,13 @@ body {
 .bh-amb-modal .bh-picker-card { width: min(560px, 92%); gap: 10px; }
 .bh-amb-sec { display: flex; flex-direction: column; gap: 8px; }
 .bh-amb-sec-h { font-size: 13px; color: var(--accent); letter-spacing: .04em; }
-.bh-amb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+/* 背景は横スクロールの帯（増えても1行で右に流れる。今の3枚はそのまま収まる）。
+   マウスはドラッグ、タッチはネイティブ・スワイプでスクロール（attachDragScroll）。 */
+.bh-amb-grid { display: flex; gap: 10px; overflow-x: auto; overflow-y: hidden; padding-bottom: 4px; cursor: grab; touch-action: pan-x; scroll-behavior: smooth; }
+.bh-amb-grid.is-dragging { cursor: grabbing; scroll-behavior: auto; user-select: none; }
+.bh-amb-grid.is-dragging .bh-amb-tile { pointer-events: none; }
 .bh-amb-tile {
-  position: relative; aspect-ratio: 16/9; background-size: cover; background-position: center;
+  flex: 0 0 150px; position: relative; aspect-ratio: 16/9; background-size: cover; background-position: center;
   border: 9px solid transparent; border-image: url("graphic/ui/sc/btn.png") 11 15 / 8px 11px / 0 stretch; border-radius: 0;
   cursor: pointer; transition: .12s; overflow: hidden;
 }
@@ -270,7 +274,10 @@ body {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 6px; font-size: 12px; color: #fff;
   background: rgba(0,0,0,.55); text-align: center;
 }
-.bh-amb-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow: auto; }
+/* BGMは縦リスト。マウスはドラッグ、タッチはネイティブ・スワイプで縦スクロール。 */
+.bh-amb-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow-y: auto; overflow-x: hidden; cursor: grab; touch-action: pan-y; scroll-behavior: smooth; }
+.bh-amb-list.is-dragging { cursor: grabbing; scroll-behavior: auto; user-select: none; }
+.bh-amb-list.is-dragging .bh-amb-row { pointer-events: none; }
 .bh-amb-row {
   display: flex; align-items: center; justify-content: space-between; color: var(--ink); background: none;
   border: 10px solid transparent; border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 8px 13px / 0 stretch; border-radius: 0;

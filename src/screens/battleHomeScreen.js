@@ -334,4 +334,37 @@ function openAmbiance(container, { profile, bgKey, bgmKey, onPickBg, onPickBgm }
   for (const b of ov.querySelectorAll(".bh-amb-list [data-key]")) {
     b.addEventListener("click", () => { curBgm = b.dataset.key; reselect(".bh-amb-list [data-key]", curBgm); onPickBgm?.(curBgm); });
   }
+  attachDragScroll(ov.querySelector(".bh-amb-grid"), "x"); // 背景=横スクロール
+  attachDragScroll(ov.querySelector(".bh-amb-list"), "y"); // BGM=縦スクロール
+}
+
+// ドラッグ/スワイプ・スクロール（axis="x"|"y"）。タッチは overflow のネイティブ挙動に任せ（二重移動を
+// 避ける）、マウスのみ手動ドラッグ。ドラッグ中（移動量がしきい値超）は子要素のクリック選択を握りつぶす。
+function attachDragScroll(strip, axis = "x") {
+  if (!strip) return;
+  const vert = axis === "y";
+  const posOf = (e) => (vert ? e.clientY : e.clientX);
+  const scrollProp = vert ? "scrollTop" : "scrollLeft";
+  let down = false, start = 0, startScroll = 0, moved = 0;
+  strip.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "touch") return; // タッチはネイティブ・スワイプ
+    down = true; start = posOf(e); startScroll = strip[scrollProp]; moved = 0;
+    strip.classList.add("is-dragging");
+    try { strip.setPointerCapture(e.pointerId); } catch { /* 合成/無効ポインタは無視 */ }
+  });
+  strip.addEventListener("pointermove", (e) => {
+    if (!down) return;
+    const d = posOf(e) - start;
+    moved = Math.max(moved, Math.abs(d));
+    strip[scrollProp] = startScroll - d;
+  });
+  const end = (e) => {
+    if (!down) return;
+    down = false; strip.classList.remove("is-dragging");
+    try { strip.releasePointerCapture(e.pointerId); } catch { /* 同上 */ }
+  };
+  strip.addEventListener("pointerup", end);
+  strip.addEventListener("pointercancel", end);
+  // ドラッグ直後の click（選択）を抑止。タップ（移動小）は通す。
+  strip.addEventListener("click", (e) => { if (moved > 6) { e.stopPropagation(); e.preventDefault(); } }, true);
 }
