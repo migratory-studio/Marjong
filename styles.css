@@ -187,6 +187,137 @@ body {
 }
 .select-back { position: absolute; left: 0; top: 4px; }
 
+/* ---- 対戦ホーム (battle-home) — 案2「左主役＋右ミニ枠」 ---- */
+/* 立ち絵を左に拡大して主役に。情報・導線は右の細い枠へ退ける。1280x720固定・内部スクロール禁止。
+   こぱんだ屋UIで和風スキン: talk=メッセージ枠 / card=金縁パネル / 見出し=プレート。 */
+.battle-home { height: 100%; display: flex; align-items: stretch; gap: 16px; }
+/* 左ステージ＝立ち絵をバストアップ級に拡大（下半身をクロップ）。セリフ枠は下部にVN風オーバーレイ。 */
+.bh-stage { position: relative; flex: 1 1 auto; min-width: 0; overflow: hidden; }
+.bh-portrait-wrap {
+  position: absolute; inset: 0; overflow: hidden; cursor: pointer;
+  display: flex; justify-content: center; align-items: flex-start; /* 上揃え＝頭から見せる */
+}
+.bh-portrait {
+  /* 高さ基準クロップ：立ち絵は縦長(600x1800)なので height で引き量を制御。
+     310%＝画面に上から約32%ぶん＝頭〜胸元全体が入るバストアップ。値を下げるほど更に引く。 */
+  height: 310%; width: auto; max-width: none; max-height: none; object-position: top center;
+  filter: drop-shadow(0 10px 26px rgba(0,0,0,.5)); transition: transform .18s ease;
+}
+.bh-portrait-wrap:hover .bh-portrait { transform: translateY(-4px); }
+.bh-portrait-fallback {
+  width: 100%; height: 100%; align-items: center; justify-content: center;
+  font-size: 140px; font-weight: 800; color: rgba(255,255,255,.85);
+}
+.bh-talk {
+  position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 1;
+  background: url("graphic/ui/sc/msgwin.png") no-repeat center / 100% 100%;
+  padding: 22px 30px; font-size: 18px; line-height: 1.6;
+  min-height: 84px; display: flex; align-items: center;
+}
+.bh-change {
+  position: absolute; top: 10px; left: 10px; z-index: 2; color: var(--muted); background: none;
+  border: 10px solid transparent;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 10px 14px / 0 stretch;
+  padding: 4px 18px; font-size: 13px; cursor: pointer; transition: .12s;
+}
+.bh-change:hover { color: var(--accent); border-image-source: url("graphic/ui/sc/btn_hover.png"); }
+
+/* 右カラム: 情報カード / 導線 / 戻る を縦に積む（スリム＝立ち絵を邪魔しない） */
+.bh-side { flex: 0 0 332px; max-width: 332px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.bh-card {
+  border: 14px solid transparent;
+  border-image: url("graphic/ui/sc/panel.png") 18 / 14px / 0 stretch; border-radius: 0;
+  background: rgba(20,32,26,.90); padding: 2px 14px 12px;
+}
+.bh-title {
+  border: solid transparent; border-width: 10px 14px;
+  border-image: url("graphic/ui/sc/plate.png") 14 18 fill / 10px 14px / 0 stretch;
+  margin: -2px 0 10px; padding: 2px 8px; font-size: 22px; text-align: center; letter-spacing: .04em;
+}
+.bh-info { display: flex; flex-direction: column; gap: 8px; }
+.bh-info-row { display: flex; align-items: baseline; gap: 12px; font-size: 15px; }
+.bh-info-row[hidden] { display: none; } /* hidden属性を .bh-info-row の display:flex に勝たせる */
+.bh-info-k { flex: 0 0 76px; color: var(--muted); font-size: 13px; }
+.bh-info-v { color: var(--ink); font-weight: 600; }
+.bh-info-v.bh-bond { color: var(--accent); }
+.bh-info-v.bh-streak { color: var(--danger); }
+/* 背景・BGM（カード下部に現在値＋「変更」ボタン。変更で一覧モーダル） */
+.bh-amb { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.12); }
+.bh-amb-cur { flex: 1 1 0; min-width: 0; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bh-amb-cur span { color: var(--ink); }
+.bh-amb-dot { color: var(--muted) !important; margin: 0 4px; }
+.bh-amb-btn {
+  flex: 0 0 auto; font-size: 12px; color: var(--muted); background: none; text-align: center;
+  border: 9px solid transparent; border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 8px 12px / 0 stretch;
+  border-radius: 0; padding: 3px 12px; cursor: pointer; transition: .12s; white-space: nowrap;
+}
+.bh-amb-btn:hover { color: var(--accent); border-image-source: url("graphic/ui/sc/btn_hover.png"); }
+
+/* 背景・BGM 設定モーダル（picker の金縁パネルを流用）。背景プレビューを見せたいのでスクリムは薄め。 */
+.bh-amb-modal .bh-picker-scrim { background: rgba(0,0,0,.38); }
+.bh-amb-modal .bh-picker-card { width: min(560px, 92%); gap: 10px; }
+.bh-amb-sec { display: flex; flex-direction: column; gap: 8px; }
+.bh-amb-sec-h { font-size: 13px; color: var(--accent); letter-spacing: .04em; }
+.bh-amb-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.bh-amb-tile {
+  position: relative; aspect-ratio: 16/9; background-size: cover; background-position: center;
+  border: 9px solid transparent; border-image: url("graphic/ui/sc/btn.png") 11 15 / 8px 11px / 0 stretch; border-radius: 0;
+  cursor: pointer; transition: .12s; overflow: hidden;
+}
+.bh-amb-tile:hover { transform: translateY(-2px); }
+.bh-amb-tile.is-selected { border-image-source: url("graphic/ui/sc/btn_hover.png"); box-shadow: 0 0 0 2px var(--accent) inset; }
+.bh-amb-tile-label {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 3px 6px; font-size: 12px; color: #fff;
+  background: rgba(0,0,0,.55); text-align: center;
+}
+.bh-amb-list { display: flex; flex-direction: column; gap: 8px; max-height: 200px; overflow: auto; }
+.bh-amb-row {
+  display: flex; align-items: center; justify-content: space-between; color: var(--ink); background: none;
+  border: 10px solid transparent; border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 8px 13px / 0 stretch; border-radius: 0;
+  padding: 4px 4px; cursor: pointer; transition: .12s; font-size: 14px;
+}
+.bh-amb-row:hover { border-image-source: url("graphic/ui/sc/btn_hover.png"); }
+.bh-amb-row.is-selected { border-image-source: url("graphic/ui/sc/btn_hover.png"); box-shadow: 0 0 0 2px var(--accent) inset; }
+.bh-amb-row.is-selected .bh-amb-row-name { color: var(--accent); }
+.bh-amb-row-cue { color: var(--muted); font-size: 11px; }
+.bh-amb-tile.is-locked, .bh-amb-row.is-locked { opacity: .4; cursor: default; filter: grayscale(.7); }
+.bh-amb-tile.is-locked:hover, .bh-amb-row.is-locked:hover { transform: none; border-image-source: url("graphic/ui/sc/btn.png"); }
+.bh-routes { display: flex; flex-direction: column; gap: 12px; }
+.bh-back { align-self: center; }
+
+/* お気に入りキャラ選択モーダル（金縁パネルで統一） */
+.bh-picker { position: absolute; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; }
+.bh-picker-scrim { position: absolute; inset: 0; background: rgba(0,0,0,.55); }
+.bh-picker-card {
+  position: relative; background: rgba(20,32,26,.97);
+  border: 18px solid transparent; border-image: url("graphic/ui/sc/panel.png") 18 / 18px / 0 stretch; border-radius: 0;
+  padding: 18px 22px; width: min(880px, 92%); max-height: 84%; display: flex; flex-direction: column; gap: 14px;
+}
+.bh-picker-title { margin: 0; font-size: 22px; text-align: center; }
+.bh-picker-x {
+  position: absolute; top: 8px; right: 12px; background: transparent; color: var(--muted);
+  border: none; font-size: 20px; cursor: pointer; z-index: 1;
+}
+.bh-picker-x:hover { color: var(--ink); }
+.bh-pick-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px;
+  overflow: auto; padding: 4px;
+}
+.bh-pick {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--ink);
+  background: none; border: 11px solid transparent;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 10px 13px / 0 stretch; border-radius: 0;
+  padding: 8px 4px; cursor: pointer; transition: .12s;
+}
+.bh-pick:hover { border-image-source: url("graphic/ui/sc/btn_hover.png"); transform: translateY(-2px); }
+.bh-pick.is-active { border-image-source: url("graphic/ui/sc/btn_hover.png"); box-shadow: 0 0 0 2px var(--accent) inset; }
+.bh-pick-face {
+  width: 60px; height: 60px; border-radius: 50%; object-fit: cover;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 800; color: rgba(255,255,255,.9);
+}
+.bh-pick-name { font-size: 12px; color: var(--ink); text-align: center; }
+
 /* ---- mentor mode: avatar create / detail (Phase 2A) ---- */
 /* All UI must fit inside the fixed 1280x720 stage with NO internal scroll.
    Avatar screens use the full width as 3 columns + a full-width footer so the

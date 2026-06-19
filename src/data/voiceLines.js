@@ -17,6 +17,7 @@
 //   { lastHandResult }       matchTalk.lastHandResult（"agari"|"dealIn"|"tsumoLoss"|"draw"|null）
 //                            → cond.lastHandResult で前の局の結果参照
 //   { playStyleTag }         topPlayStyle(playerHistory) → cond.playStyleTag で多用打ち筋参照
+//   { firstMeet }            まだ一度も一緒に打っていない（totalMatches===0） → cond.firstMeet で初対面の出迎え
 //
 import { CHARACTER_VOICE_MASTER } from "./characterVoiceMaster.js";
 
@@ -61,6 +62,8 @@ function condMatches(cond, ctx) {
   if (cond.lastHandResult && cond.lastHandResult !== ctx.lastHandResult) return false;
   // playStyleTag: 多用する打ち筋タグ（"riichi"|"meld"|"aggressive"|"defensive"）。未供給は不一致扱い。
   if (cond.playStyleTag   && cond.playStyleTag   !== ctx.playStyleTag)   return false;
+  // firstMeet: 初対面か（対戦ホームの出迎え用）。true/false を ctx.firstMeet と厳密一致で評価。
+  if (cond.firstMeet != null && Boolean(ctx.firstMeet) !== cond.firstMeet) return false;
   return true;
 }
 

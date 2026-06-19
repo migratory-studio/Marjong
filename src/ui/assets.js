@@ -147,6 +147,14 @@ const BGM_TOURNEY = {
   2: enc("sound/bgm/PerituneMaterial_EpicBattle_J.mp3"), // https://peritune.com/blog/2021/09/16/epicbattle_j/
   3: enc("sound/bgm/PerituneMaterial_Amenoshita3.mp3"),  // 既存流用（天ノ下 / character select と同曲）
 };
+// 対戦ホームで手動切替できるBGM。key は profile.homeBgm に保存。既定=花どき（home と同曲）。
+export const HOME_BGM_CHOICES = [
+  { key: "hanadoki",   label: "花どき",   src: BGM_HOME },
+  { key: "amenoshita", label: "天ノ下",   src: BGM_SELECT },
+  { key: "otogi",      label: "おとぎ",   src: BGM_MENTOR },
+  { key: "kengeki",    label: "剣戟",     src: BGM_TOURNEY[1] },
+  { key: "epic",       label: "勇壮",     src: BGM_TOURNEY[2] },
+];
 const SE_DAHAI = ["１", "２", "３", "４"].map((n) => enc(`sound/se/dahai/牌を置く・その${n}.mp3`));
 const SE_SHUFFLE = enc("sound/se/麻雀牌をまぜる.mp3"); // start of hand (deal)
 const SE_KINGAKU = enc("sound/se/shakiin2.mp3");     // on win (score reveal)
@@ -250,6 +258,12 @@ export class AudioManager {
   playTournamentBgm(tier) {
     const src = BGM_TOURNEY[tier] || BGM_TRACKS[0];
     this.playBgm(src);
+  }
+
+  // 対戦ホームのBGM（key 指定。未知/未指定は既定の花どき）。HOME_BGM_CHOICES と対。
+  playHomeBgmByKey(key) {
+    const c = HOME_BGM_CHOICES.find((x) => x.key === key) || HOME_BGM_CHOICES[0];
+    this.playBgm(c.src);
   }
 
   // Title / home and character-select screen BGM.

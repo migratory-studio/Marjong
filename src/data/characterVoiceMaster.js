@@ -28,6 +28,14 @@
 //   "allyStuck"        ペア戦・味方が手詰まり
 //   "allyLast"         ペア戦・流局間際（一緒に粘る）
 //
+// ── 対戦ホーム（対局の外でお気に入りキャラが出迎える。愛着＝固有性×双方向の置き場） ──
+//   発火は src/screens/battleHomeScreen.js。立ち絵常駐＋セリフ枠。
+//   "home"      出迎えの一言（固有性）。cond で履歴を参照＝「あなたを覚えている」。
+//               cond例: firstMeet / winStreakMin / loseStreakMin / companionBondMin / playStyleTag。
+//               ※ home は必ず cond を付ける（固有性専用）。状況不問の雑談は homeChat へ。
+//   "homeChat"  状況不問の雑談ストック（cond: なし）。home が無いとき／一定確率で出る息継ぎ。
+//   "homeTap"   立ち絵をタップしたときの追加の一言（スキンシップ＝双方向の入口）。cond: なし可。
+//
 // ── 将来の拡張条件（任意。あれば評価し、無ければ無視）───────────────────
 //   cond.skillLevelMin: N  … そのキャラのスキルLvが N 以上のときだけ候補になる（追々ctxに供給）。
 //   ※ 条件キーを増やすときは voiceLines.js の condMatches に1行足すだけで拡張できる。
@@ -77,6 +85,8 @@ function templateLines(name) {
     L("allyTenpai", {}, t("相方相槌・味方が聴牌")),
     L("allyStuck", {}, t("相方相槌・味方が手詰まり")),
     L("allyLast", {}, t("相方相槌・流局間際")),
+    // ※ 対戦ホーム(home/homeChat/homeTap)はテンプレに含めない。未実装キャラには
+    //   下の GENERIC_HOME（実際に使える中立の一言）を補い、画面に［テンプレ］を出さない。
   ];
 }
 
@@ -182,6 +192,40 @@ const SHIYUE = [
   L("tenpai", { voiceSet: "shugyo" }, "聴牌。……手の内、ぜんぶ見透かされてる気がするネ。それでも、いくヨ。"),
   L("matchEnd", { rankTier: "top", voiceSet: "shugyo" }, "我の勝ち、ネ。……ねえ、今の打ち方……ちょっとは、誇ってもいい?"),
   L("matchEnd", { rankTier: "bottom", voiceSet: "shugyo" }, "……負けたヨ。でも、逃げなかった。それだけは——数えてほしいんダ。"),
+
+  // ── 対戦ホームの出迎え（home＝固有性／homeChat＝雑談／homeTap＝タップ反応） ──
+  // home（固有性）: 必ず cond を付けて「あなたを覚えている」を出す。
+  // 初対面（まだ一度も一緒に打っていない）
+  L("home", { firstMeet: true }, "へえ、キミが我（ウォ）の相棒? ……ふふっ、いい目してるネ。さ、ツモりにいこ。"),
+  L("home", { firstMeet: true }, "はじめましてダヨ。我のツモ、すぐ手放せなくなるからネ——覚悟しといて?"),
+  // 連勝中（乗ってる）
+  L("home", { winStreakMin: 2 }, "キミ、いま乗ってるネ? 怖いくらいダヨ。……この波、我と一緒に乗っちゃお。"),
+  L("home", { winStreakMin: 3 }, "連勝、止まらないネ! ……ねえ、こういうキミ、我はけっこう好きダヨ。"),
+  // 連敗中（気にかける＝素のやさしさ）
+  L("home", { loseStreakMin: 2 }, "……ちょっと続かないネ、最近。だいじょぶ、ツモれば全部チャラだヨ。我がついてる。"),
+  L("home", { loseStreakMin: 3 }, "ねえ、無理してない? ……勝てない日が悪いだけ。キミが弱いんじゃないヨ、ほんとに。"),
+  // 打ち筋を見ている（固有性の真骨頂）
+  L("home", { playStyleTag: "riichi" }, "キミ、リーチ好きだろ? ……まっすぐで、我は嫌いじゃないヨ、そういうの。"),
+  L("home", { playStyleTag: "aggressive" }, "攻めの手ばっかり選ぶネ、キミは。……ふふ、似た者同士ダヨ、我たち。"),
+  L("home", { playStyleTag: "defensive" }, "キミ、よく見てるよネ。守るとこ、ちゃんと守る。……ほんとは、それが一番むずかしいんダ。"),
+  L("home", { playStyleTag: "meld" }, "鳴いて手を作るの、上手くなったネ。……我は引き専門だけど、キミのそれ、嫌いじゃないヨ。"),
+  // 絆段階（言い方が砕けていく＝蓄積の可視化を数値レスで）
+  L("home", { companionBondMin: 3 }, "あ、来た来た。……なんか、キミが卓に座ってないと調子出ないんだよネ、最近。"),
+  L("home", { companionBondMin: 5 }, "おかえりネ、相棒。……ふふ、待ってたヨ。我とキミなら、どこまでも行けるネ?"),
+
+  // homeChat（雑談ストック・状況不問）: 息継ぎ。軽口の楽天。
+  L("homeChat", {}, "ひまだヨ～。ねえ、一局いこ? ツモれば勝ち、でしょ?"),
+  L("homeChat", {}, "我のツモ、今日もキレてるヨ。……ためしてみたくない?"),
+  L("homeChat", {}, "卓の前に座ると、なんだか落ち着くんだよネ。……不思議?"),
+  L("homeChat", {}, "ねえ、どの卓いく? 我はどこでもツモるからサ、おまかせダヨ♪"),
+  L("homeChat", {}, "ふぁ……ちょっと眠いカモ。でも牌握ったら、ぱっちりだヨ?"),
+
+  // homeTap（タップ反応・双方向の入口）: 触れられたときの反応。絆で砕ける。
+  L("homeTap", {}, "わっ、なに? ……もう、くすぐったいヨ、ふふっ。"),
+  L("homeTap", {}, "ん? 我の顔、そんなに見たい? ……照れるからやめてヨ～。"),
+  L("homeTap", {}, "かまってほしいの? しょーがないネ、相棒なんだから。"),
+  L("homeTap", { companionBondMin: 3 }, "……ふふ、その手つき、慣れてきたネ。我も、慣れちゃったかも。"),
+  L("homeTap", { companionBondMin: 5 }, "……ん。キミにだけは、こうされるの、わりと嫌いじゃないんダ。ナイショだヨ?"),
 ];
 
 // ── 賭羽ルイナ（カケハ・ルイナ）──────────────────────────────────────
@@ -385,7 +429,25 @@ const EXPLICIT = {
   kuidoshi: KUIDOSHI,
 };
 
+// 対戦ホームの汎用出迎え（中立・温かめ）。固有の home を持たないキャラに補い、対局外でも
+// 相棒が“無言”にならないようにする。各キャラの本実装が進めば、その子の home が優先される
+// （詩玥が先例）。固有性を出すには各キャラに L("home", {cond...}, ...) を足すだけ。
+const GENERIC_HOME = [
+  L("homeChat", {}, "やあ。……また会えてうれしいよ。さ、一局いこうか。"),
+  L("homeChat", {}, "今日はどの対戦にする? ……ゆっくり選んでいい。"),
+  L("homeChat", {}, "準備はいい? 焦らなくていいよ、君のペースでいこう。"),
+  L("homeTap", {}, "おっと。……どうかした?"),
+  L("homeTap", {}, "ふふ、なんだい? ……呼んだ?"),
+  L("homeTap", {}, "ん、こっちを見てるね。……何かあった?"),
+];
+
+// 対戦ホームの出迎え(home/homeChat/homeTap)を1つも持たないキャラには GENERIC_HOME を補う。
+function withHome(lines) {
+  const hasHome = lines.some((e) => e.event === "home" || e.event === "homeChat" || e.event === "homeTap");
+  return hasHome ? lines : [...lines, ...GENERIC_HOME];
+}
+
 // 全キャラぶんを id キーで用意（名前はマスタと自動同期）。
 export const CHARACTER_VOICE_MASTER = Object.fromEntries(
-  CHARACTER_MASTER.map((c) => [c.id, EXPLICIT[c.id] || templateLines(c.name)])
+  CHARACTER_MASTER.map((c) => [c.id, withHome(EXPLICIT[c.id] || templateLines(c.name))])
 );

@@ -18,6 +18,9 @@ export function createDefaultProfile() {
     profile: {},
     wallet: { soul: 0 },
     activeAvatarId: null,
+    favoriteCharId: null, // 対戦ホームに常駐させる「お気に入りキャラ」。未選択は絆最上位→既定で補う。
+    homeBg: null,         // 対戦ホームの背景キー（"washi"|"dojo"|"street"）。null=既定(washi)。
+    homeBgm: null,        // 対戦ホームのBGMキー（HOME_BGM_CHOICES）。null=既定(hanadoki)。
     avatars: [],
     inventory: [],
     scenarioProgress: [],

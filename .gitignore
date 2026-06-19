@@ -11,13 +11,14 @@ Thumbs.db
 background/
 # 立ち絵グリッド等の作業用一時ファイル
 tmp/
+# Playwright MCP の作業成果物（スナップショット/スクショ）
+.playwright-mcp/
 # デバッグ用スクラッチ出力
 _*.txt
 
 # コンテンツ生成プロジェクト（master駆動・別管理）。正典の reference のみ参照し本体では追跡しない。
 scenario-forge/
 
-# 購入UIセット(こぱんだ屋)の生パック（原本・編集用PSD含む）は再配布防止のため追跡しない。
-# ゲームで実際に使う分だけ graphic/ui/sc/ に厳選配置して追跡する。
-graphic/ui/gameUIset_19_v100/
-graphic/ui/gameUIset_19_append_v104/
+# 素材置き場（原本ストック）。購入素材の生パック（PSD・利用規約含む）は再配布防止のため追跡しない。
+# ポリシー: ここは「未使用の原本」。実際に使う素材だけ graphic/（追跡対象）へ移動/コピーして使う。
+_assets-stock/

@@ -18,20 +18,16 @@
     <section id="home-screen" class="screen menu-screen">
       <header class="menu-head">
         <h1>麻雀RPG <small>プロトタイプ</small></h1>
-        <p class="lead">能力で戦う麻雀。まずはフリー対戦から。</p>
+        <p class="lead">相棒と打つ麻雀。まずは対戦ホームへ。</p>
       </header>
       <nav class="menu-list">
-        <button type="button" class="menu-btn" data-nav="free-battle">
-          <span class="menu-btn-title">フリー対戦</span>
-          <span class="menu-btn-sub">既存キャラで CPU 対局</span>
+        <button type="button" class="menu-btn" data-nav="battle-home">
+          <span class="menu-btn-title">対戦ホーム</span>
+          <span class="menu-btn-sub">フリー対戦 / オンライン対戦</span>
         </button>
         <button type="button" class="menu-btn" data-nav="mentor">
           <span class="menu-btn-title">師弟モード</span>
           <span class="menu-btn-sub">マイキャラを作って育てる</span>
-        </button>
-        <button type="button" class="menu-btn" data-nav="online">
-          <span class="menu-btn-title">通信対戦</span>
-          <span class="menu-btn-sub">Coming Soon</span>
         </button>
         <button type="button" class="menu-btn" data-nav="settings">
           <span class="menu-btn-title">設定</span>
@@ -41,6 +37,9 @@
       <!-- DEBUG: ?debug=tsumoreba 起動時のみ表示（bootHome で出し分け） -->
       <button type="button" id="debug-menu-btn" class="debug-fab hidden">🐛 DEBUG</button>
     </section>
+
+    <!-- Battle home (JS-rendered: お気に入りキャラ立ち絵＋出迎え＋フリー/オンライン導線) -->
+    <section id="battle-home-screen" class="screen hidden"></section>
 
     <!-- Free battle menu -->
     <section id="free-battle-screen" class="screen menu-screen hidden">
@@ -55,7 +54,7 @@
           <span class="menu-btn-sub">準備中（Phase 7）</span>
         </button>
       </nav>
-      <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
+      <button type="button" class="ghost-back" data-nav="battle-home">← 対戦ホームへ</button>
     </section>
 
     <!-- Online (テスト中): mode select -->
@@ -83,7 +82,7 @@
           <span class="menu-btn-sub">今シーズンの段位ランキング</span>
         </button>
       </nav>
-      <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
+      <button type="button" class="ghost-back" data-nav="battle-home">← 対戦ホームへ</button>
     </section>
 
     <!-- Online lobby (JS-rendered: room/matchmaking + char pick) -->

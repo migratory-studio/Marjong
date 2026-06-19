@@ -496,6 +496,144 @@ export const VOICE_LINE_MASTER = {
       "event": "lastTiles",
       "cond": {},
       "text": "ラスト数枚……引くなら、今ダヨ。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "firstMeet": true
+      },
+      "text": "へえ、キミが我（ウォ）の相棒? ……ふふっ、いい目してるネ。さ、ツモりにいこ。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "firstMeet": true
+      },
+      "text": "はじめましてダヨ。我のツモ、すぐ手放せなくなるからネ——覚悟しといて?"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "winStreakMin": 2
+      },
+      "text": "キミ、いま乗ってるネ? 怖いくらいダヨ。……この波、我と一緒に乗っちゃお。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "winStreakMin": 3
+      },
+      "text": "連勝、止まらないネ! ……ねえ、こういうキミ、我はけっこう好きダヨ。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "loseStreakMin": 2
+      },
+      "text": "……ちょっと続かないネ、最近。だいじょぶ、ツモれば全部チャラだヨ。我がついてる。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "loseStreakMin": 3
+      },
+      "text": "ねえ、無理してない? ……勝てない日が悪いだけ。キミが弱いんじゃないヨ、ほんとに。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "playStyleTag": "riichi"
+      },
+      "text": "キミ、リーチ好きだろ? ……まっすぐで、我は嫌いじゃないヨ、そういうの。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "playStyleTag": "aggressive"
+      },
+      "text": "攻めの手ばっかり選ぶネ、キミは。……ふふ、似た者同士ダヨ、我たち。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "playStyleTag": "defensive"
+      },
+      "text": "キミ、よく見てるよネ。守るとこ、ちゃんと守る。……ほんとは、それが一番むずかしいんダ。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "playStyleTag": "meld"
+      },
+      "text": "鳴いて手を作るの、上手くなったネ。……我は引き専門だけど、キミのそれ、嫌いじゃないヨ。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "companionBondMin": 3
+      },
+      "text": "あ、来た来た。……なんか、キミが卓に座ってないと調子出ないんだよネ、最近。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "companionBondMin": 5
+      },
+      "text": "おかえりネ、相棒。……ふふ、待ってたヨ。我とキミなら、どこまでも行けるネ?"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "ひまだヨ～。ねえ、一局いこ? ツモれば勝ち、でしょ?"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "我のツモ、今日もキレてるヨ。……ためしてみたくない?"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "卓の前に座ると、なんだか落ち着くんだよネ。……不思議?"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "ねえ、どの卓いく? 我はどこでもツモるからサ、おまかせダヨ♪"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "ふぁ……ちょっと眠いカモ。でも牌握ったら、ぱっちりだヨ?"
+    },
+    {
+      "event": "homeTap",
+      "cond": {},
+      "text": "わっ、なに? ……もう、くすぐったいヨ、ふふっ。"
+    },
+    {
+      "event": "homeTap",
+      "cond": {},
+      "text": "ん? 我の顔、そんなに見たい? ……照れるからやめてヨ～。"
+    },
+    {
+      "event": "homeTap",
+      "cond": {},
+      "text": "かまってほしいの? しょーがないネ、相棒なんだから。"
+    },
+    {
+      "event": "homeTap",
+      "cond": {
+        "companionBondMin": 3
+      },
+      "text": "……ふふ、その手つき、慣れてきたネ。我も、慣れちゃったかも。"
+    },
+    {
+      "event": "homeTap",
+      "cond": {
+        "companionBondMin": 5
+      },
+      "text": "……ん。キミにだけは、こうされるの、わりと嫌いじゃないんダ。ナイショだヨ?"
     }
   ]
 };

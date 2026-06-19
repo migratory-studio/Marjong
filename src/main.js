@@ -27,6 +27,7 @@ import { showSyncConflict } from "./screens/syncConflictModal.js";
 import { showAccount } from "./screens/accountScreen.js";
 import { buildPrologueLines } from "./data/prologueScenario.js";
 import { showMentorHome } from "./screens/mentorHomeScreen.js";
+import { showBattleHome } from "./screens/battleHomeScreen.js";
 import { showRest } from "./screens/restScreen.js";
 import { showGrowth } from "./screens/growthScreen.js";
 import { showAbilityChange } from "./screens/abilityChangeScreen.js";
@@ -738,6 +739,7 @@ let resetSelectWizard = () => {};
 let resyncHomeSettings = () => {};
 const NAV_TARGETS = {
   home: "home-screen",
+  "battle-home": "battle-home-screen",
   "free-battle": "free-battle-screen",
   online: "online-screen",
   settings: "settings-screen",
@@ -756,6 +758,21 @@ function goScreen(id) {
   SCREEN_BGM[id]?.();
   if (id === "select-screen") resetSelectWizard(); // 開くたびにウィザードを①卓へ
   if (id === "online-screen") renderOnlineProfile(); // プロフィール帯を最新の名前/相棒/段位で更新
+  if (id === "battle-home-screen") renderBattleHome(); // お気に入りキャラ＋出迎えセリフを毎回更新
+}
+
+// 対戦ホーム: お気に入りキャラの立ち絵＋出迎えセリフを描く。開くたびに最新プロフィールで再描画。
+// 導線＝フリー対戦／オンライン対戦（オンラインは enterOnline のログイン/名前ゲートを通す）。
+function renderBattleHome() {
+  const host = el("battle-home-screen");
+  if (!host) return;
+  showBattleHome(host, {
+    repository: profileRepo,
+    audio,
+    onFree: () => { audio.playClick?.(); goScreen("free-battle-screen"); },
+    onOnline: () => { audio.playClick?.(); enterOnline(); },
+    onBack: () => { audio.playClick?.(); goScreen("home-screen"); },
+  });
 }
 
 // 通信対戦メニューのプロフィール帯：ユーザー名 / よく使う相棒 / 段位・RP。online-screen を開くたびに更新。
