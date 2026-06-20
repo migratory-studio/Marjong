@@ -245,6 +245,144 @@ export const VOICE_LINE_MASTER = {
       "event": "lastTiles",
       "cond": {},
       "text": "ラスト数枚。…だいじょうぶ、ビビは沈まないから。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "firstMeet": true
+      },
+      "text": "わぁ、君がビビの相棒? ……ふふ、よろしくね。ビビ、君のこと沈ませないから。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "firstMeet": true
+      },
+      "text": "はじめまして、なの。ビビはね、守りの子だよ。……君のこと、まもってあげる。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "winStreakMin": 2
+      },
+      "text": "君、勝ってるね! ……すごい。ビビ、その波、いっしょに守るからね。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "winStreakMin": 3
+      },
+      "text": "れんしょう、止まらないね……! ふふ、ビビ、ちょっと自慢したくなっちゃう。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "loseStreakMin": 2
+      },
+      "text": "……最近、ちょっと続かないね。だいじょうぶ、ビビがいるから。沈ませないもん。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "loseStreakMin": 3
+      },
+      "text": "ねえ、無理してない? ……負けちゃう日は、ビビにくっついてていいよ。まもってあげる。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "playStyleTag": "riichi"
+      },
+      "text": "君、リーチ好きだね。……まっすぐで、ビビ、いいと思うな。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "playStyleTag": "aggressive"
+      },
+      "text": "君、攻めるの好きでしょ? ……ビビが後ろで守るから、いっぱい攻めていいよ。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "playStyleTag": "defensive"
+      },
+      "text": "君、ちゃんと守るんだね。……えらい。沈まないの、いちばんむずかしいのに。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "playStyleTag": "meld"
+      },
+      "text": "鳴いて手を作るの、上手になったね。……ビビ、ちゃんと見てるよ。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "companionBondMin": 3
+      },
+      "text": "あ、来てくれた! ……ふふ、君が来ないと、ビビ、ちょっとさみしいの。"
+    },
+    {
+      "event": "home",
+      "cond": {
+        "companionBondMin": 5
+      },
+      "text": "おかえり……! ビビ、ずっと待ってたの。君のこと、だれにも、ぜったい奪わせないから。"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "ねえねえ、一局しよ? ……ビビ、君と打ちたいな。"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "ビビの守り、今日もばっちりだよ。……見ててね?"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "どの卓いく? ……ビビ、君の隣ならどこでもいいの。"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "ふぁ……ちょっとねむい、かも。でも牌持ったら、しゃきっとするもん。"
+    },
+    {
+      "event": "homeChat",
+      "cond": {},
+      "text": "君がいると、ビビ、安心するんだ。……えへへ。"
+    },
+    {
+      "event": "homeTap",
+      "cond": {},
+      "text": "わっ、なぁに? ……くすぐったいよぉ。"
+    },
+    {
+      "event": "homeTap",
+      "cond": {},
+      "text": "ふふ、ビビにかまってくれるの? ……うれしいな。"
+    },
+    {
+      "event": "homeTap",
+      "cond": {},
+      "text": "なでなで? ……もう、しょうがないなあ。"
+    },
+    {
+      "event": "homeTap",
+      "cond": {
+        "companionBondMin": 3
+      },
+      "text": "……えへへ。君の手、あったかいね。ビビ、好き。"
+    },
+    {
+      "event": "homeTap",
+      "cond": {
+        "companionBondMin": 5
+      },
+      "text": "……ね、君にだけは、甘えてもいい? ……ナイショだよ。ビビの、特別。"
     }
   ],
   "shiyue": [

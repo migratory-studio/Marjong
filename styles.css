@@ -199,11 +199,16 @@ body {
 }
 .bh-portrait {
   /* 高さ基準クロップ：立ち絵は縦長(600x1800)なので height で引き量を制御。
-     310%＝画面に上から約32%ぶん＝頭〜胸元全体が入るバストアップ。値を下げるほど更に引く。 */
-  height: 310%; width: auto; max-width: none; max-height: none; object-position: top center;
+     310%＝画面に上から約32%ぶん＝頭〜胸元全体が入るバストアップ。値を下げるほど更に引く。
+     キャラ別の寄せ/拡大は JS が --bh-x/--bh-y/--bh-zoom を差し込む（HOME_PORTRAIT_TUNE）。 */
+  height: 310%; width: auto; max-width: none; max-height: none;
+  transform: translate(var(--bh-x, 0), var(--bh-y, 0)) scale(var(--bh-zoom, 1)); transform-origin: top center;
   filter: drop-shadow(0 10px 26px rgba(0,0,0,.5)); transition: transform .18s ease;
 }
-.bh-portrait-wrap:hover .bh-portrait { transform: translateY(-4px); }
+/* ホバーの -4px リフト。--bh-y のフォールバックは calc 用に必ず単位付き(0px)にする
+   （単位なし 0 だと calc(0 - 4px) が無効になり、var()入りの transform 全体が none にリセットされて
+     キャラ別 offset が消える＝ホバーで元位置に戻るバグになる）。 */
+.bh-portrait-wrap:hover .bh-portrait { transform: translate(var(--bh-x, 0px), calc(var(--bh-y, 0px) - 4px)) scale(var(--bh-zoom, 1)); }
 .bh-portrait-fallback {
   width: 100%; height: 100%; align-items: center; justify-content: center;
   font-size: 140px; font-weight: 800; color: rgba(255,255,255,.85);

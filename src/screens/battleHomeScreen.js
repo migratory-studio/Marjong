@@ -75,6 +75,19 @@ function esc(s) {
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+// 対戦ホームの立ち絵フレーミングのキャラ別微調整（バストアップ時に人物が中心からズレる子を寄せる）。
+//   x: 横方向の translate（自身サイズ比%。＋で右へ） / y: 縦方向（＋で下へ） / zoom: 拡大率。未指定=無補正。
+//   ここに1行足す/数値を変えるだけで各キャラの収まりを調整できる（立ち絵を差し替えても安全）。
+const HOME_PORTRAIT_TUNE = {
+  bibi: { x: "12%" }, // 人物が左に寄っているため右へ寄せる
+};
+function applyPortraitTune(img, id) {
+  const t = HOME_PORTRAIT_TUNE[id] || {};
+  if (t.x) img.style.setProperty("--bh-x", t.x);
+  if (t.y) img.style.setProperty("--bh-y", t.y);
+  if (t.zoom) img.style.setProperty("--bh-zoom", String(t.zoom));
+}
+
 // 立ち絵 <img>（宣言パス→失敗時は単色＋頭文字のフォールバック）。makeCharPortrait と同方針。
 function portraitNode(c) {
   const path = c?.assets?.portrait;
@@ -83,7 +96,7 @@ function portraitNode(c) {
     img.className = "bh-portrait";
     img.src = path;
     img.alt = c.name || "";
-    if (c.portraitPos) img.style.objectPosition = c.portraitPos;
+    applyPortraitTune(img, c?.id); // キャラ別フレーミング微調整（offset/zoom）
     img.onerror = () => {
       const fb = document.createElement("div");
       fb.className = "bh-portrait bh-portrait-fallback";
