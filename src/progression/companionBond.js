@@ -28,6 +28,13 @@ export function companionLevelFromExp(totalExp) {
   return { level, exp };
 }
 
+// 次Lvまでの進捗 0..1（保存の exp は現Lv内の残りなので exp / (base * level)）。
+// 数値は見せず細ゲージで“次の絆までの進捗”だけ伝える用途（ピラー1の範囲内の手ごたえ）。
+export function bondProgressFrac({ level = 1, exp = 0 } = {}) {
+  const need = GROWTH_TUNING.bondExpPerLevel * Math.max(1, level);
+  return need > 0 ? Math.max(0, Math.min(1, exp / need)) : 0;
+}
+
 // ── 対局結果を profile に反映（イミュータブル） ─────────────────────────────
 //
 // 引数:

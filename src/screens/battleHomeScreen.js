@@ -17,7 +17,7 @@
 //    固有性を主軸に約7割で優先し、無ければ雑談へフォールバック（両軸：固有性＋雑談ストック）。
 import { CHARACTERS } from "../characters/characters.js";
 import { pickVoiceLine } from "../data/voiceLines.js";
-import { topPlayStyle } from "../progression/companionBond.js";
+import { topPlayStyle, bondProgressFrac } from "../progression/companionBond.js";
 import { bondBandLabel } from "../progression/progressionService.js";
 import { HOME_BGM_CHOICES } from "../ui/assets.js";
 
@@ -149,7 +149,7 @@ export async function showBattleHome(container, opts = {}) {
           <div class="bh-info">
             <div class="bh-info-row"><span class="bh-info-k">プレイヤー</span><span class="bh-info-v" id="bh-name"></span></div>
             <div class="bh-info-row"><span class="bh-info-k">相棒</span><span class="bh-info-v" id="bh-partner"></span></div>
-            <div class="bh-info-row"><span class="bh-info-k">絆</span><span class="bh-info-v bh-bond" id="bh-bond"></span></div>
+            <div class="bh-info-row bh-info-row--bond"><span class="bh-info-k">絆</span><div class="bh-bond-col"><span class="bh-info-v bh-bond" id="bh-bond"></span><div class="bh-bond-gauge" id="bh-bond-gauge" hidden><div class="bh-bond-fill" id="bh-bond-fill"></div></div></div></div>
             <div class="bh-info-row"><span class="bh-info-k">一緒に</span><span class="bh-info-v" id="bh-together"></span></div>
             <div class="bh-info-row" id="bh-streak-row" hidden><span class="bh-info-k">連勝中</span><span class="bh-info-v bh-streak" id="bh-streak"></span></div>
           </div>
@@ -176,6 +176,8 @@ export async function showBattleHome(container, opts = {}) {
   const wrap = container.querySelector("#bh-portrait-wrap");
   const partnerEl = container.querySelector("#bh-partner");
   const bondEl = container.querySelector("#bh-bond");
+  const bondGaugeEl = container.querySelector("#bh-bond-gauge");
+  const bondFillEl = container.querySelector("#bh-bond-fill");
   const togetherEl = container.querySelector("#bh-together");
   const setTalk = (t) => { if (talkEl) talkEl.textContent = t || "……。"; };
 
@@ -229,6 +231,11 @@ export async function showBattleHome(container, opts = {}) {
     const b = profile?.companionBonds?.[current.id];
     if (togetherEl) togetherEl.textContent = loggedIn ? `${b?.matches ?? 0} 局` : "—";
     if (bondEl) bondEl.textContent = loggedIn ? bondBandLabel(b?.level ?? 1) : "—";
+    // 数値なしの細ゲージ＝次の絆までの進捗（連携時のみ。未連携は隠す）。
+    if (bondGaugeEl && bondFillEl) {
+      bondGaugeEl.hidden = !loggedIn;
+      if (loggedIn) bondFillEl.style.width = `${Math.round(bondProgressFrac(b || {}) * 100)}%`;
+    }
     setTalk(pickHomeGreeting(current.id, buildHomeCtx(profile, current.id)));
   }
   paint();

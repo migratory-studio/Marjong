@@ -262,6 +262,12 @@ body {
 .bh-info-k { flex: 0 0 76px; color: var(--muted); font-size: 13px; }
 .bh-info-v { color: var(--ink); font-weight: 600; }
 .bh-info-v.bh-bond { color: var(--accent); }
+/* 絆の下に「次の絆までの進捗」を数値なしで見せる細ゲージ（ピラー1＝数値は出さない）。 */
+.bh-info-row--bond { align-items: center; }
+.bh-bond-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.bh-bond-gauge { height: 4px; border-radius: 2px; background: rgba(255,255,255,.13); overflow: hidden; }
+.bh-bond-gauge[hidden] { display: none; }
+.bh-bond-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width .35s ease; }
 .bh-info-v.bh-streak { color: var(--danger); }
 /* 背景・BGM（カード下部に現在値＋「変更」ボタン。変更で一覧モーダル） */
 .bh-amb { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.12); }
