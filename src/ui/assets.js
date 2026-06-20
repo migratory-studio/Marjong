@@ -51,7 +51,7 @@ export class TileImages {
     const jobs = [...paths].map((p) => this._loadOne(p));
     let done = 0; const total = jobs.length;
     onProgress?.(0, total);
-    jobs.forEach((j) => j.then(() => onProgress?.(++done, total)));
+    jobs.forEach((j) => j.finally(() => onProgress?.(++done, total)));
     return Promise.allSettled(jobs).then(() => { this.ready = true; });
   }
 
@@ -106,7 +106,7 @@ export class CharacterImages {
     const jobs = [...urls].map((u) => this._loadOne(u));
     let done = 0; const total = jobs.length;
     onProgress?.(0, total);
-    jobs.forEach((j) => j.then(() => onProgress?.(++done, total)));
+    jobs.forEach((j) => j.finally(() => onProgress?.(++done, total)));
     return Promise.allSettled(jobs).then(() => this);
   }
 

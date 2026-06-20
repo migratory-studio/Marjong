@@ -188,7 +188,7 @@ body {
 .select-back { position: absolute; left: 0; top: 4px; }
 
 /* ---- ロード画面（起動時にリソース先読み・下部ゲージ） ---- */
-#loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0; }
+#loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0; overflow: hidden; }
 .load-stage { flex: 1 1 auto; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
 .load-logo { font-size: 44px; margin: 0; letter-spacing: .03em; }
 .load-logo small { color: var(--accent); font-size: 18px; }
@@ -207,6 +207,8 @@ body {
 /* ---- 対戦ホーム (battle-home) — 案2「左主役＋右ミニ枠」 ---- */
 /* 立ち絵を左に拡大して主役に。情報・導線は右の細い枠へ退ける。1280x720固定・内部スクロール禁止。
    こぱんだ屋UIで和風スキン: talk=メッセージ枠 / card=金縁パネル / 見出し=プレート。 */
+/* 固定ステージ・内部スクロール禁止に揃える（.screen の overflow:auto を明示的に打ち消す）。 */
+#battle-home-screen { overflow: hidden; }
 .battle-home { height: 100%; display: flex; align-items: stretch; gap: 16px; }
 /* 左ステージ＝立ち絵をバストアップ級に拡大（下半身をクロップ）。セリフ枠は下部にVN風オーバーレイ。 */
 .bh-stage { position: relative; flex: 1 1 auto; min-width: 0; overflow: hidden; }
