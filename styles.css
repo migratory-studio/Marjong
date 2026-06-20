@@ -4661,3 +4661,27 @@ button.primary.danger:hover { color: #ffbcbc; }
 .tmenu-eval.ng { color: #f0a6a6; }
 .tmenu-empty { grid-column: 1 / -1; text-align: center; color: #9fb6a6; padding: 30px; }
 .tmenu-btns { display: flex; justify-content: center; }
+
+/* ── F3: シナリオ解禁ゲート（弟子─ゲージ─師匠＋解禁演出）──────────── */
+.scgate { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; }
+.scgate.is-open { opacity: 1; }
+.scgate-scrim { position: absolute; inset: 0; background: rgba(8, 12, 10, .78); }
+.scgate-card { position: relative; width: min(440px, 92vw); background: linear-gradient(180deg, #22332a, #1a2620); border: 2px solid #3a5446; border-radius: 16px; padding: 26px 28px; text-align: center; box-shadow: 0 18px 50px rgba(0, 0, 0, .5); }
+.scgate-card.is-unlocked { border-color: #e8b04a; }
+.scgate-ttl { font-size: 20px; font-weight: 800; color: #f3ead2; margin-bottom: 20px; }
+.scgate-card.is-unlocked .scgate-ttl { color: #f6d27a; }
+.scgate-rail { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+.scgate-ava, .scgate-mentor { width: 52px; height: 52px; flex: 0 0 52px; border-radius: 50%; overflow: hidden; background: #2c4034; border: 2px solid #4a6a56; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #9fb6a6; }
+.scgate-ava img, .scgate-mentor img { width: 100%; height: 100%; object-fit: cover; }
+.scgate-mentor.is-shine { border-color: #f6d27a; box-shadow: 0 0 16px 4px rgba(246, 210, 122, .7); animation: scgate-pop .5s ease; }
+@keyframes scgate-pop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.scgate-bar { flex: 1; height: 12px; border-radius: 999px; background: rgba(0, 0, 0, .35); overflow: hidden; border: 1px solid #3a5446; }
+.scgate-fill { height: 100%; width: 0; border-radius: 999px; background: linear-gradient(90deg, #caa64a, #f6d27a); transition: width 1s cubic-bezier(.2, .8, .2, 1); }
+.scgate-msg { color: #cdddd0; font-size: 13px; margin-bottom: 18px; }
+.scgate-cond-h { color: #9fb6a6; font-size: 12px; margin-bottom: 6px; }
+.scgate-cond { color: #f3ead2; font-size: 14px; line-height: 1.7; margin-bottom: 18px; }
+.scgate-btns { display: flex; justify-content: center; }
+.scgate-go, .scgate-close { padding: 8px 28px; border-radius: 10px; font-weight: 800; font-size: 15px; cursor: pointer; border: none; }
+.scgate-go { background: linear-gradient(135deg, #caa64a, #8a6f2a); color: #1a2620; }
+.scgate-close { background: #2c4034; color: #cdddd0; border: 1px solid #4a6a56; }
+.sclist-row.is-gate { cursor: pointer; opacity: .82; }

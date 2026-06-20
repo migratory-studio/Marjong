@@ -13,6 +13,7 @@ import { activeAvatar } from "../progression/avatarFactory.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead, markScenarioRead } from "../progression/scenarioService.js";
 import { isMentorEpilogue } from "../data/mentorCampaignMaster.js";
+import { presetById } from "../data/avatarPresetMaster.js";
 import { isDebugMode } from "../app/debug.js";
 
 const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
@@ -23,6 +24,12 @@ function elt(tag, cls, props = {}) {
   if (cls) e.className = cls;
   Object.assign(e, props);
   return e;
+}
+
+// 動的値の最小エスケープ（シナリオ題・条件文の差し込み）。
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
 // この師匠に属する有効シナリオを表示順で取得。
@@ -52,6 +59,44 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
     }
 
     const mentor = charById(avatar.mentorCharacterId);
+    // 解禁ゲート演出用のアイコン（左＝弟子／右＝師匠）。
+    const mentorIconSc = mentor?.assets?.icon || mentor?.assets?.portrait || "";
+    const discipleIconSc = presetById(avatar.presetIds?.icon)?.assetPath || "";
+
+    // 「次の物語まで」ゲートモーダル：弟子─細ゲージ─師匠。達成済みは 0→100% アニメ＋師匠が光る。
+    // docs/shitei-calendar-and-roguelite.md「シナリオ解禁モーダル＋ゲージ演出」。
+    function openGateModal(s, ev, unlocked, playFn) {
+      const conds = s.unlockConditions?.length ? s.unlockConditions : [{ type: "always" }];
+      const done = conds.length - ev.unmet.length;
+      const pct = conds.length ? Math.round((done / conds.length) * 100) : 100;
+      const ov = elt("div", "scgate");
+      ov.innerHTML = `
+        <div class="scgate-scrim"></div>
+        <div class="scgate-card${unlocked ? " is-unlocked" : ""}">
+          <div class="scgate-ttl">${unlocked ? "シナリオ解禁！" : "次の物語まで"}</div>
+          <div class="scgate-rail">
+            <div class="scgate-ava">${discipleIconSc ? `<img src="${esc(discipleIconSc)}" alt="">` : "弟子"}</div>
+            <div class="scgate-bar"><div class="scgate-fill" style="width:${unlocked ? 0 : pct}%"></div></div>
+            <div class="scgate-mentor">${mentorIconSc ? `<img src="${esc(mentorIconSc)}" alt="">` : "師匠"}</div>
+          </div>
+          ${unlocked
+            ? `<p class="scgate-msg">「${esc(s.title)}」が読めるようになった。</p><div class="scgate-btns"><button type="button" class="scgate-go">読む</button></div>`
+            : `<p class="scgate-cond-h">解禁の条件</p><p class="scgate-cond">${ev.unmet.map((u) => `・${esc(u)}`).join("<br>")}</p><div class="scgate-btns"><button type="button" class="scgate-close">閉じる</button></div>`}
+        </div>`;
+      container.appendChild(ov);
+      const close = () => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 200); };
+      requestAnimationFrame(() => {
+        ov.classList.add("is-open");
+        if (unlocked) {
+          const fill = ov.querySelector(".scgate-fill");
+          requestAnimationFrame(() => { if (fill) fill.style.width = "100%"; });
+          setTimeout(() => ov.querySelector(".scgate-mentor")?.classList.add("is-shine"), 650);
+        }
+      });
+      ov.querySelector(".scgate-scrim")?.addEventListener("click", close);
+      ov.querySelector(".scgate-close")?.addEventListener("click", close);
+      ov.querySelector(".scgate-go")?.addEventListener("click", () => { close(); playFn?.(); });
+    }
 
     // 上段: ソウル + 師匠名
     const topbar = elt("div", "mh-topbar");
@@ -108,19 +153,26 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
         }
         row.appendChild(status);
 
-        if (unlocked) {
-          row.onclick = () => {
-            onPlay?.(s.scenarioId, async () => {
-              const fresh = await repository.loadProfile();
-              const res = markScenarioRead(fresh, s);
-              if (res.firstRead) await repository.saveProfile(res.profile);
-              // 絆は数値で見せない（CLAUDE.md ピラー1）。Lv 上昇は質的な一言で滲ませる。
-              const bondNote = res.bondUp ? "　…師匠との距離が、少し縮まった気がする。" : "";
-              await render(res.soul ? `「${s.title}」を読了！　ソウル +${res.soul}${bondNote}` : null);
-            });
-          };
+        // 読了処理（再生→既読化→一覧再描画）。
+        const playFn = () => onPlay?.(s.scenarioId, async () => {
+          const fresh = await repository.loadProfile();
+          const res = markScenarioRead(fresh, s);
+          if (res.firstRead) await repository.saveProfile(res.profile);
+          // 絆は数値で見せない（CLAUDE.md ピラー1）。Lv 上昇は質的な一言で滲ませる。
+          const bondNote = res.bondUp ? "　…師匠との距離が、少し縮まった気がする。" : "";
+          await render(res.soul ? `「${s.title}」を読了！　ソウル +${res.soul}${bondNote}` : null);
+        });
+        if (unlocked && read) {
+          row.onclick = playFn; // 既読は直接読み返す
+        } else if (unlocked) {
+          // 初解禁（NEW）＝解禁ゲート演出（ゲージ0→100＋師匠が光る）→読む。
+          row.onclick = () => openGateModal(s, ev, true, playFn);
         } else {
+          // ロック：解禁条件モーダル（弟子─ゲージ─師匠＋未達条件）。クリック可にして開く。
+          row.disabled = false;
+          row.classList.add("is-gate");
           row.title = `解放条件：${ev.unmet.join(" / ")}`;
+          row.onclick = () => openGateModal(s, ev, false, playFn);
         }
         wrap.appendChild(row);
       });
