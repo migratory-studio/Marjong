@@ -4685,3 +4685,21 @@ button.primary.danger:hover { color: #ffbcbc; }
 .scgate-go { background: linear-gradient(135deg, #caa64a, #8a6f2a); color: #1a2620; }
 .scgate-close { background: #2c4034; color: #cdddd0; border: 1px solid #4a6a56; }
 .sclist-row.is-gate { cursor: pointer; opacity: .82; }
+
+/* ── F4: 修行成果（エピローグ後の評価・タイプ確定）─────────────── */
+.succ-result { position: fixed; inset: 0; z-index: 75; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .25s; }
+.succ-result.is-open { opacity: 1; }
+.succ-result .ts-scrim { position: absolute; inset: 0; background: rgba(8, 12, 10, .82); }
+.succ-card { position: relative; width: min(460px, 92vw); background: linear-gradient(180deg, #26382d, #19241e); border: 2px solid #caa64a; border-radius: 18px; padding: 28px 30px; text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, .55); }
+.succ-ttl { font-size: 15px; letter-spacing: .3em; color: #f6d27a; font-weight: 800; }
+.succ-name { font-size: 22px; font-weight: 800; color: #f3ead2; margin: 6px 0 14px; }
+.succ-rank { font-size: 16px; color: #cdddd0; margin-bottom: 16px; }
+.succ-rank b { font-size: 26px; color: #f6d27a; margin-left: 6px; }
+.succ-grid { display: flex; gap: 8px; margin-bottom: 16px; }
+.succ-cell { flex: 1; background: rgba(0, 0, 0, .25); border-radius: 10px; padding: 10px 4px; }
+.succ-cell span { display: block; font-size: 11px; color: #9fb6a6; margin-bottom: 4px; }
+.succ-cell b { font-size: 16px; color: #f3ead2; }
+.succ-role { font-size: 15px; color: #cdddd0; margin-bottom: 14px; }
+.succ-role b { font-size: 18px; }
+.succ-note { font-size: 12px; color: #9fb6a6; line-height: 1.6; margin-bottom: 18px; }
+.succ-go { padding: 9px 32px; border-radius: 10px; border: none; font-weight: 800; font-size: 15px; cursor: pointer; background: linear-gradient(135deg, #caa64a, #8a6f2a); color: #1a2620; }

@@ -53,6 +53,7 @@ import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS 
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
+import { evaluateSuccession } from "./progression/successionResult.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -1033,7 +1034,36 @@ async function rollCreditsIfEpilogue(scenarioId, next) {
   if (!isMentorEpilogue(scenarioId)) { next(); return; }
   const p = await profileRepo.loadProfile();
   const av = activeAvatar(p);
-  showCreditsRoll(el("app") || document.body, { deshiName: av?.name || "", mentorId: av?.mentorCharacterId || null, onDone: next });
+  // エンドロール → 修行成果（評価・タイプ確定）→ next。
+  showCreditsRoll(el("app") || document.body, {
+    deshiName: av?.name || "", mentorId: av?.mentorCharacterId || null,
+    onDone: () => showSuccessionResult(el("app") || document.body, av, evaluateSuccession(p, av), next),
+  });
+}
+
+// 修行成果（エピローグ後）。クリア評価・集めた宝・弟子のタイプ確定を見せて締める（F4）。
+function showSuccessionResult(host, av, result, onDone) {
+  const ov = document.createElement("div");
+  ov.className = "succ-result";
+  ov.innerHTML = `
+    <div class="ts-scrim"></div>
+    <div class="succ-card">
+      <div class="succ-ttl">修 行 成 果</div>
+      <div class="succ-name">${esc(av?.name || "弟子")}</div>
+      <div class="succ-rank">評価　<b>${esc(result.rank)}</b></div>
+      <div class="succ-grid">
+        <div class="succ-cell"><span>修行期間</span><b>${result.months} ヶ月</b></div>
+        <div class="succ-cell"><span>大会優勝</span><b>${result.wins} 回</b></div>
+        <div class="succ-cell"><span>集めた宝</span><b>${result.treasures} / 9</b></div>
+      </div>
+      <div class="succ-role">タイプ確定 ―― <b style="color:${result.roleColor}">${esc(result.roleLabel)}</b></div>
+      <p class="succ-note">${esc(av?.name || "弟子")}は、独り立ちした。<br>この姿が「修行完了データ」として残り、対戦で連れ歩けるようになる。</p>
+      <button type="button" class="succ-go">よし</button>
+    </div>`;
+  host.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const close = () => { ov.classList.remove("is-open"); setTimeout(() => { ov.remove(); onDone?.(); }, 220); };
+  ov.querySelector(".succ-go")?.addEventListener("click", close);
 }
 
 // マイキャラ作成直後、その師匠の第1章（sortOrder 先頭・unlock=always）を自動再生する。
