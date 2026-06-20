@@ -86,8 +86,8 @@ export const CHARACTER_MASTER = [
   },
   {
     id: "mamori",
-    name: "マモリ",
-    reading: "",
+    name: "真守 由紀",
+    reading: "まもり ゆうき",
     color: "#7bb274",
     role: "blocker",
     bio: "危険牌を見抜く守備型。持ち点は低いが放銃しにくい。",
