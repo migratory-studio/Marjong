@@ -354,32 +354,39 @@ function openAmbiance(container, { profile, bgKey, bgmKey, onPickBg, onPickBgm }
 }
 
 // ドラッグ/スワイプ・スクロール（axis="x"|"y"）。タッチは overflow のネイティブ挙動に任せ（二重移動を
-// 避ける）、マウスのみ手動ドラッグ。ドラッグ中（移動量がしきい値超）は子要素のクリック選択を握りつぶす。
+// 避ける）、マウスのみ手動ドラッグ。
+// ★重要: pointerdown では何もしない。閾値(THRESH)を超えて初めて「ドラッグ」と判定し、その時だけ
+//   setPointerCapture＋スクロール＋直後の click 抑止を行う。pointerdown で即キャプチャすると、純粋な
+//   クリックでも pointer がストリップに捕捉され、子（タイル/行）の click＝選択が発火しなくなる（既出バグ）。
 function attachDragScroll(strip, axis = "x") {
   if (!strip) return;
   const vert = axis === "y";
   const posOf = (e) => (vert ? e.clientY : e.clientX);
   const scrollProp = vert ? "scrollTop" : "scrollLeft";
-  let down = false, start = 0, startScroll = 0, moved = 0;
+  const THRESH = 6;
+  let down = false, dragging = false, start = 0, startScroll = 0, pid = null;
   strip.addEventListener("pointerdown", (e) => {
-    if (e.pointerType === "touch") return; // タッチはネイティブ・スワイプ
-    down = true; start = posOf(e); startScroll = strip[scrollProp]; moved = 0;
-    strip.classList.add("is-dragging");
-    try { strip.setPointerCapture(e.pointerId); } catch { /* 合成/無効ポインタは無視 */ }
+    dragging = false;                                  // 開始時に必ずリセット（純クリック/タップを妨げない）
+    if (e.pointerType === "touch") { down = false; return; } // タッチはネイティブ・スワイプ
+    down = true; start = posOf(e); startScroll = strip[scrollProp]; pid = e.pointerId;
   });
   strip.addEventListener("pointermove", (e) => {
     if (!down) return;
     const d = posOf(e) - start;
-    moved = Math.max(moved, Math.abs(d));
+    if (!dragging) {
+      if (Math.abs(d) < THRESH) return;                // 閾値未満＝クリック扱い。キャプチャしない
+      dragging = true; strip.classList.add("is-dragging");
+      try { strip.setPointerCapture(pid); } catch { /* noop */ }
+    }
     strip[scrollProp] = startScroll - d;
   });
-  const end = (e) => {
+  const end = () => {
     if (!down) return;
-    down = false; strip.classList.remove("is-dragging");
-    try { strip.releasePointerCapture(e.pointerId); } catch { /* 同上 */ }
+    down = false;
+    if (dragging) { strip.classList.remove("is-dragging"); try { strip.releasePointerCapture(pid); } catch { /* noop */ } }
   };
   strip.addEventListener("pointerup", end);
   strip.addEventListener("pointercancel", end);
-  // ドラッグ直後の click（選択）を抑止。タップ（移動小）は通す。
-  strip.addEventListener("click", (e) => { if (moved > 6) { e.stopPropagation(); e.preventDefault(); } }, true);
+  // 実ドラッグの直後だけ click（選択）を握りつぶす。純粋なクリック/タップは通す。
+  strip.addEventListener("click", (e) => { if (dragging) { e.stopPropagation(); e.preventDefault(); } }, true);
 }
