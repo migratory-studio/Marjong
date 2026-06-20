@@ -4595,3 +4595,69 @@ button.primary.danger:hover { color: #ffbcbc; }
 .reconnect-card .online-spinner { width: 22px; height: 22px; }
 .reconnect-msg { color: var(--ink); font-weight: 700; font-size: 16px; }
 .reconnect-btns { display: flex; gap: 12px; align-items: center; }
+
+/* ── サクセス暦化（F1）: 年月表示・次の大会カウントダウン ─────────────
+   docs/shitei-calendar-and-roguelite.md「A. 師弟＝サクセス暦化」。styles.css 末尾追記（後勝ち）。 */
+.mhx-cal {
+  font-size: 11px; font-weight: 700; letter-spacing: .04em; line-height: 1.1;
+  color: var(--ink, #e8eef0); opacity: .92; text-align: right; margin-bottom: 1px;
+}
+.mhx-cal b { font-size: 13px; }
+.mhx-cal .mhx-cal-s {
+  margin-left: 4px; padding: 0 5px; border-radius: 6px;
+  background: rgba(255, 255, 255, .12); font-size: 10px;
+}
+.mhx-cal.is-milestone { color: #f6d27a; }
+.mhx-cal.is-milestone .mhx-cal-s { background: rgba(246, 210, 122, .2); }
+
+.mhx-cd {
+  display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 700;
+  background: rgba(255, 255, 255, .1); color: var(--ink, #e8eef0);
+}
+.mhx-cd b { font-size: 13px; color: #f6d27a; }
+.mhx-cd.is-open { background: rgba(120, 210, 140, .22); color: #bdf0c6; }
+
+.mhx-next.is-waiting { opacity: .6; cursor: default; filter: grayscale(.35); }
+.mhx-next.is-waiting:hover { transform: none; }
+.mhx-goal-mk { margin-left: 6px; font-size: 11px; color: #f6d27a; font-weight: 700; }
+
+/* ── F2: 大会メニュー（当月開催から選ぶ＋九宝コレクション）───────────── */
+.tourney-menu { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .18s; }
+.tourney-menu.is-open { opacity: 1; }
+.tourney-menu .ts-scrim { position: absolute; inset: 0; background: rgba(8, 12, 10, .74); }
+.tmenu-wrap {
+  position: relative; width: min(960px, 94vw); max-height: 92vh;
+  background: linear-gradient(180deg, #22332a, #1a2620); border: 2px solid #3a5446; border-radius: 16px;
+  padding: 18px 22px; box-shadow: 0 18px 50px rgba(0, 0, 0, .5);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.tmenu-head { display: flex; justify-content: space-between; align-items: flex-end; }
+.tmenu-h-ttl { font-size: 22px; font-weight: 800; color: #f3ead2; }
+.tmenu-h-sub { font-size: 12px; color: #9fb6a6; }
+.tmenu-rank { text-align: right; color: #f6d27a; font-size: 13px; font-weight: 700; }
+.tmenu-rank small { display: block; color: #9fb6a6; font-weight: 600; }
+.tmc-collection { display: flex; gap: 6px; padding: 8px; background: rgba(0, 0, 0, .22); border-radius: 10px; }
+.tmc-gem { flex: 1; text-align: center; padding: 6px 2px; border-radius: 8px; background: rgba(255, 255, 255, .04); border: 1px solid transparent; opacity: .5; }
+.tmc-gem.is-owned { opacity: 1; background: rgba(246, 210, 122, .16); border-color: rgba(246, 210, 122, .45); }
+.tmc-gem.is-goal { border-color: #e8b04a; opacity: 1; }
+.tmc-gem-mk { display: block; font-size: 14px; font-weight: 800; color: #f6d27a; }
+.tmc-gem-nm { display: block; font-size: 9px; color: #cdddd0; margin-top: 2px; line-height: 1.1; }
+.tmenu-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; overflow: auto; }
+.tmenu-card { display: flex; gap: 10px; text-align: left; padding: 12px; border-radius: 12px; background: #243a2f; border: 2px solid #335041; cursor: pointer; transition: transform .1s, border-color .1s; }
+.tmenu-card:hover { transform: translateY(-2px); border-color: #5b8e72; }
+.tmenu-card.is-goal { border-color: #e8b04a; box-shadow: 0 0 0 1px rgba(232, 176, 74, .3) inset; }
+.tmenu-badge { width: 40px; height: 40px; flex: 0 0 40px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: linear-gradient(135deg, #caa64a, #8a6f2a); color: #1a2620; font-weight: 800; font-size: 11px; }
+.tmenu-name { font-size: 16px; font-weight: 800; color: #f3ead2; }
+.tmenu-tre { font-size: 12px; color: #cdddd0; }
+.tmenu-tre small { color: #9fb6a6; margin-left: 4px; }
+.tmenu-meta { font-size: 11px; color: #9fb6a6; margin-top: 3px; }
+.tmenu-tags { display: flex; gap: 4px; margin-bottom: 2px; min-height: 14px; }
+.tmenu-tag { font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px; }
+.tmenu-tag.is-goal { background: rgba(232, 176, 74, .22); color: #f6d27a; }
+.tmenu-tag.is-owned { background: rgba(120, 210, 140, .2); color: #bdf0c6; }
+.tmenu-tag.is-story { background: rgba(120, 160, 230, .2); color: #bcd0f5; }
+.tmenu-eval.ok { color: #bdf0c6; }
+.tmenu-eval.ng { color: #f0a6a6; }
+.tmenu-empty { grid-column: 1 / -1; text-align: center; color: #9fb6a6; padding: 30px; }
+.tmenu-btns { display: flex; justify-content: center; }

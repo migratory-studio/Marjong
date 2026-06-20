@@ -15,14 +15,14 @@
 // tableUnits: 毎節の着卓ユニット数の個別上書き（大三剣杯＝3チーム卓→三人打ち。席数はユニット数で決まる）。
 // tier:   1 登竜門級 / 2 役満級 / 3 神域級
 export const TREASURE_TOURNAMENTS = [
-  { id: "menzen-kaiken",    name: "門前開鍵杯", treasure: { name: "門前開鍵", reading: "メンゼンカイケン", baseYaku: "門前清自摸和", symbol: "孤独な試練を独力で開くマスターキー" }, format: "solo4", tier: 1 },
-  { id: "chin-iki",         name: "清一器杯",   treasure: { name: "清一器",   reading: "チンイッキ",       baseYaku: "清一色",        symbol: "一色に研ぎ澄ました純粋の器" },     format: "solo3", tier: 1 }, // 三人打ち（一色＝研ぎ澄まし、の少数卓）
-  { id: "ji-peeko",         name: "至盃口杯",   treasure: { name: "至盃口",   reading: "ジーペーコー",     baseYaku: "二盃口",        symbol: "1対1の美学を極めた聖杯" },         format: "pair",  tier: 1 },
-  { id: "musou-kan",        name: "無双冠杯",   treasure: { name: "無双冠",   reading: "ムソウカン",       baseYaku: "国士無双",      symbol: "孤高の王が戴く王冠" },             format: "solo3", tier: 2 }, // 三人打ち（孤高＝少数の卓）
-  { id: "kyou-sharin",      name: "鏡車輪杯",   treasure: { name: "鏡車輪",   reading: "キョウシャリン",   baseYaku: "大車輪",        symbol: "「もう一人の自分」を映す円鏡" },   format: "pair",  tier: 2 },
-  { id: "daisanken",        name: "大三剣杯",   treasure: { name: "大三剣",   reading: "ダイサンケン",     baseYaku: "大三元",        symbol: "戦場を支配する一振りの剣" },       format: "team",  tier: 2, tableUnits: 3 }, // 「三」の宝＝三人打ち卓（毎節3チーム着卓・三麻）
-  { id: "tenankou",         name: "天暗刻杯",   treasure: { name: "天暗刻",   reading: "テンアンコウ",     baseYaku: "四暗刻",        symbol: "天から与えられた意思を封じた球体" }, format: "team",  tier: 2 },
-  { id: "tenchi-shingyoku", name: "天地神玉杯", treasure: { name: "天地神玉", reading: "テンチシンギョク", baseYaku: "天和・地和",    symbol: "確率を捻じ曲げる神がかった運の水晶玉" }, format: "pair", tier: 3 },
+  { id: "menzen-kaiken",    name: "門前開鍵杯", treasure: { name: "門前開鍵", reading: "メンゼンカイケン", baseYaku: "門前清自摸和", symbol: "孤独な試練を独力で開くマスターキー" }, format: "solo4", tier: 1, openBaseMonth: 4 }, // 半年周期＝4月・10月
+  { id: "chin-iki",         name: "清一器杯",   treasure: { name: "清一器",   reading: "チンイッキ",       baseYaku: "清一色",        symbol: "一色に研ぎ澄ました純粋の器" },     format: "solo3", tier: 1, openBaseMonth: 5 }, // 三人打ち（一色＝研ぎ澄まし、の少数卓）
+  { id: "ji-peeko",         name: "至盃口杯",   treasure: { name: "至盃口",   reading: "ジーペーコー",     baseYaku: "二盃口",        symbol: "1対1の美学を極めた聖杯" },         format: "pair",  tier: 1, openBaseMonth: 6 },
+  { id: "musou-kan",        name: "無双冠杯",   treasure: { name: "無双冠",   reading: "ムソウカン",       baseYaku: "国士無双",      symbol: "孤高の王が戴く王冠" },             format: "solo3", tier: 2, openBaseMonth: 7 }, // 三人打ち（孤高＝少数の卓）
+  { id: "kyou-sharin",      name: "鏡車輪杯",   treasure: { name: "鏡車輪",   reading: "キョウシャリン",   baseYaku: "大車輪",        symbol: "「もう一人の自分」を映す円鏡" },   format: "pair",  tier: 2, openBaseMonth: 8 },
+  { id: "daisanken",        name: "大三剣杯",   treasure: { name: "大三剣",   reading: "ダイサンケン",     baseYaku: "大三元",        symbol: "戦場を支配する一振りの剣" },       format: "team",  tier: 2, tableUnits: 3, openBaseMonth: 9 }, // 「三」の宝＝三人打ち卓（毎節3チーム着卓・三麻）
+  { id: "tenankou",         name: "天暗刻杯",   treasure: { name: "天暗刻",   reading: "テンアンコウ",     baseYaku: "四暗刻",        symbol: "天から与えられた意思を封じた球体" }, format: "team",  tier: 2, openBaseMonth: 10 },
+  { id: "tenchi-shingyoku", name: "天地神玉杯", treasure: { name: "天地神玉", reading: "テンチシンギョク", baseYaku: "天和・地和",    symbol: "確率を捻じ曲げる神がかった運の水晶玉" }, format: "pair", tier: 3, openBaseMonth: 11 },
   { id: "kyuuren-houtou",   name: "九蓮宝燈杯", treasure: { name: "九蓮宝燈", reading: "チューレンポウトウ", baseYaku: "九蓮宝燈",      symbol: "九つの宝を繋ぎ伝説の紋章を灯す、最後の燈火／最終ピース" }, format: "final", tier: 3, isFinal: true },
 ];
 

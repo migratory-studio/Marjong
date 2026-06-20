@@ -49,8 +49,9 @@ import { skillTemplateById, templateForAbility } from "./data/skillTemplateMaste
 import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
-import { tournamentRunConfig, oppHpForLv, treasureRankFor } from "./data/tournamentMaster.js";
-import { nextTreasureStep, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
+import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
+import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
+import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
@@ -1213,14 +1214,95 @@ function seatUnitsFor(units, matchIndex, count) {
 }
 const UNIT_WORD = { solo4: "人", solo3: "人", pair: "ペア", team: "チーム", final: "人" };
 
+// 大会の入口＝「大会メニュー」（その月に開催中の卓から選ぶ）。
+// docs/shitei-calendar-and-roguelite.md「九宝コレクション表示／大会メニュー」。
 async function openTournament() {
   const profile = await profileRepo.loadProfile();
   const av = activeAvatar(profile);
-  // キャンペーン順で「次に挑む宝」を決める（記録済みの宝はスキップ）。
-  const step = nextTreasureStep(av?.mentorCharacterId, profile.records?.treasures || []);
+  if (!av) { openMentorHome(); return; }
+  showTournamentMenu(profile, av);
+}
+
+// 大会メニュー：当月開催（半年周期）の大会から自由選択。既得は再挑戦可・目標にマーク・
+// 九宝コレクション付き。実力不足は選んでも openTournamentForStep の門前払いで弾かれる。
+function showTournamentMenu(profile, av) {
+  const host = el("app") || document.body;
+  const mentorId = av.mentorCharacterId;
+  const won = profile.records?.treasures || [];
+  const day = profile.dayCount ?? 1;
+  const nextStep = nextTreasureStep(mentorId, won);
+  const campaign = campaignFor(mentorId);
+  const FMT = { solo4: "個人・四麻", solo3: "個人・三麻", pair: "ペア", team: "団体", final: "最終決戦" };
+
+  // 当月開催の大会＋各種判定（目標／既得／物語ゲート／相手評価）。
+  const cards = tournamentsOpenAt(day, won).map((t) => {
+    const step = campaign.find((s) => s.id === t.id) || { id: t.id };
+    const cfg = tournamentRunConfig(t.id, { oppLv: step.oppLv, finalFormat: step.finalFormat });
+    const gate = tournamentGate(profile, cfg);
+    const story = tournamentStoryGate(profile, step);
+    return { t, step, owned: won.includes(t.id), isGoal: nextStep?.id === t.id, gate, story };
+  });
+
+  // 九宝コレクション（定義順9枠・既得点灯・目標マーク）＋異能段位。
+  const collection = TREASURE_TOURNAMENTS.map((t) => {
+    const owned = won.includes(t.id);
+    const goal = nextStep?.id === t.id;
+    return `<div class="tmc-gem${owned ? " is-owned" : ""}${goal ? " is-goal" : ""}" title="${esc(t.treasure?.name || t.name)}${owned ? "（制覇）" : goal ? "（目標）" : ""}">
+      <span class="tmc-gem-mk">${owned ? "宝" : goal ? "★" : "・"}</span><span class="tmc-gem-nm">${esc(t.treasure?.name || "")}</span></div>`;
+  }).join("");
+  const rank = treasureRankFor(won.length);
+
+  const cardHtml = cards.length ? cards.map((c, i) => {
+    const tags = [];
+    if (c.isGoal) tags.push(`<span class="tmenu-tag is-goal">★ 目標</span>`);
+    if (c.owned) tags.push(`<span class="tmenu-tag is-owned">制覇済</span>`);
+    if (c.story) tags.push(`<span class="tmenu-tag is-story">物語が先</span>`);
+    const ev = c.gate.ok
+      ? `<span class="tmenu-eval ok">挑める（${esc(c.gate.tier?.label || "互角")}）</span>`
+      : `<span class="tmenu-eval ng">門前払い必至（${esc(c.gate.tier?.label || "大劣勢")}）</span>`;
+    return `<button type="button" class="tmenu-card${c.isGoal ? " is-goal" : ""}" data-i="${i}">
+      <div class="tmenu-badge"><span>CUP</span></div>
+      <div class="tmenu-body">
+        <div class="tmenu-tags">${tags.join("")}</div>
+        <div class="tmenu-name">${esc(c.t.name)}</div>
+        <div class="tmenu-tre">宝『${esc(c.t.treasure?.name || "")}』<small>${esc(c.t.treasure?.reading || "")}</small></div>
+        <div class="tmenu-meta">${esc(FMT[c.t.format] || "")}　・　T${c.t.tier}　・　${ev}</div>
+      </div>
+    </button>`;
+  }).join("") : `<div class="tmenu-empty">今月（${esc(calendarLabel(day))}）は開催中の大会がありません。<br>育成して次の開催を待とう。</div>`;
+
+  const ov = document.createElement("div");
+  ov.className = "tourney-menu";
+  ov.innerHTML = `
+    <div class="ts-scrim"></div>
+    <div class="tmenu-wrap">
+      <div class="tmenu-head">
+        <div class="tmenu-h-l"><div class="tmenu-h-ttl">大会に挑む</div><div class="tmenu-h-sub">${esc(calendarLabel(day))}　開催中の卓から選ぶ</div></div>
+        <div class="tmenu-rank">${rank ? `異能段位 <b>${esc(rank.name)}</b>` : "<b>無段</b>"}<small>宝 ${won.length} / 9</small></div>
+      </div>
+      <div class="tmc-collection">${collection}</div>
+      <div class="tmenu-list">${cardHtml}</div>
+      <div class="tmenu-btns"></div>
+    </div>`;
+  host.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const close = () => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); };
+  ov.querySelectorAll(".tmenu-card").forEach((b) => b.addEventListener("click", () => {
+    const c = cards[Number(b.getAttribute("data-i"))];
+    close();
+    openTournamentForStep(c.step);
+  }));
+  ov.querySelector(".ts-scrim")?.addEventListener("click", () => { close(); openMentorHome(); });
+  const btns = ov.querySelector(".tmenu-btns");
+  btns.appendChild(mkBtn("やめておく", "btn-ron", () => { close(); openMentorHome(); }));
+}
+
+// 選ばれた大会（step）で従来の大会フローを起動（物語ゲート→門前払い→要項→開幕）。
+async function openTournamentForStep(step) {
+  const profile = await profileRepo.loadProfile();
+  const av = activeAvatar(profile);
   if (!step) { openMentorHome({ tournamentGate: { name: "九蓮宝士", tierLabel: "九つの宝、すべて制覇！" } }); return; }
-  // ストーリーゲート：物語が先。前の大会で解禁された章／この大会の前提章（仲間の加入など）が
-  // 未読なら、読むまで次の宝には挑めない（step を渡して requireScenario も判定）。
+  // ストーリーゲート：物語が先。前提章（仲間の加入など）が未読なら読むまで挑めない。
   const storyPending = tournamentStoryGate(profile, step);
   if (storyPending) {
     openMentorHome({ storyGate: { scenarioId: storyPending.scenarioId, title: storyPending.title, episode: episodeNumberOf(profile, storyPending.scenarioId), locked: !!storyPending.locked } });
@@ -1247,17 +1329,14 @@ async function openTournament() {
   // 開幕前に大会要項（ルール・優勝条件・ライバル紹介）の専用画面をはさむ（じっくり演出・#2）。
   showTournamentBriefing(t, rUnits, () => {
     const totals = {}; const names = {};
-    // ペア/団体はユニット名を「◯◯ペア／◯◯チーム」表記に統一（順位表・観戦・結果の至る所で
-    // 「これは2人組/チームの成績」だと一目で分かる）。個人戦は素の名前のまま。
     const unitSuffix = { pair: "ペア", team: "チーム" }[t.format] || "";
     for (const u of units) { totals[u.id] = 0; names[u.id] = u.name + unitSuffix; }
-    // 各ユニットの強度を開幕時に一度だけ確定（ラン中は不変＝節シミュと別卓の擬似加算で共用）。
     const strengthById = {};
     for (const u of units) strengthById[u.id] = unitStrengthFor(u, t, profile, av);
     const fieldAvgStrength = Object.values(strengthById).reduce((a, b) => a + b, 0) / (units.length || 1);
     tournamentRun = { t, matchIndex: 0, units, totals, names, deshiUnitId: deshiUnit.id, unitStart, strengthById, fieldAvgStrength };
     playTournamentMatch();
-  }, () => openMentorHome());
+  }, () => showTournamentMenu(profile, av));
 }
 
 // 大会 要項画面（開幕前）。ルール・優勝条件・ライバル紹介を“じっくり”見せてから挑む（#2）。

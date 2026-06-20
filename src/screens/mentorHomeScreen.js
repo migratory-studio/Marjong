@@ -22,8 +22,9 @@ import { rest, trainParam, TRAIN_TUNING, trainOptionsFor, ensureDay, dayInfo, CO
 import { pickMentorGreeting, pickRestTalk, pickMentorPraise, pickMentorRankUpLine, pickMentorParlorComment, pickLeagueLossTalk, pickMentorDuoInvite, DUO_INVITE_FALLBACK } from "../data/mentorVoiceMaster.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
-import { nextTreasureInfo, mentorSkillLevel, isMentorEpilogue } from "../data/mentorCampaignMaster.js";
+import { mentorSkillLevel, isMentorEpilogue } from "../data/mentorCampaignMaster.js";
 import { treasureRankFor, mentorRankFor } from "../data/tournamentMaster.js";
+import { monthInfo, calendarLabel, nextTournamentSchedule } from "../data/calendarMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead, unnotifiedUnlocks, markUnlockNotified, episodeNumberOf, mentorPhase } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
@@ -168,7 +169,10 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // ---- 表示値の解決（未実装ぶんは仮値）----
   const soul = profile.wallet?.soul ?? 0;
   const meta = profile.wallet?.meta ?? 0;            // 継承（メタ通貨・未実装→0）
-  const day = di.day;                                 // ○日目
+  const day = di.day;                                 // ○ヶ月目（dayCount＝ゲーム内ひと月）
+  // 暦（4月始まり）＝既存 dayCount に被せる表示レイヤー。次の宝の開催スケジュールも引く（calendarMaster）。
+  const calInfo = monthInfo(day);
+  const tourSched = nextTournamentSchedule(avatar.mentorCharacterId, profile.records?.treasures || [], day);
   // 育成フェーズ（師弟編→覇道編）。覇道編はホーム全体の空気を変える（is-hadou テーマ＋章名＋一言）。
   const phase = mentorPhase(profile, avatar.mentorCharacterId);
   const isHadou = phase.id === "hadou";
@@ -245,7 +249,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
           <div class="mhx-cur mhx-soul" title="ソウル（育成通貨）"><div class="mhx-coin">魂</div><div class="mhx-val">${esc(soul.toLocaleString())}</div><div class="mhx-cur-lab">ソウル</div></div>
           <div class="mhx-cur mhx-kei" title="継承（メタ通貨）"><div class="mhx-coin">継</div><div class="mhx-val">${esc(meta)}</div><div class="mhx-cur-lab">継承</div></div>
         </div>
-        <div class="mhx-dayinfo" title="修行 ${esc(monthLabel(day))}・ひと月に3回まで行動できる">
+        <div class="mhx-dayinfo" title="修行 ${esc(monthLabel(day))}（${esc(calendarLabel(day))}）・ひと月に3回まで行動できる">
+          <div class="mhx-cal${calInfo.isMilestone ? " is-milestone" : ""}"><b>${esc(calInfo.year)}</b>年目 <b>${esc(calInfo.gameMonth)}</b>月<span class="mhx-cal-s">${esc(calInfo.seasonLabel)}</span></div>
           <div class="mhx-day"><b>${day == null ? "—" : esc(day)}</b><span class="mhx-day-u">ヶ月目</span><span class="mhx-time">${esc(timeLabel)}</span></div>
           <div class="mhx-acts">行動 <b>${actionsLeft}</b><small>/${ACTIONS_PER_DAY}</small></div>
         </div>
@@ -341,20 +346,24 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     </div>
 
     ${(() => {
-      const nx = nextTreasureInfo(avatar.mentorCharacterId, profile.records?.treasures || []);
       const FMT = { solo4: "個人・四麻", solo3: "個人・三麻", pair: "ペア", team: "団体", final: "最終" };
-      if (!nx) return `
+      if (!tourSched) return `
         <button type="button" class="mhx-next mhx-next-off" disabled title="九蓮宝士">
           <div class="mhx-badge"><span class="mhx-b1">宝</span><span class="mhx-b2">九</span></div>
           <div class="mhx-txt"><div class="mhx-s">九 蓮 宝 士</div><div class="mhx-m">九つの宝、すべて制覇</div></div>
           <div class="mhx-na">達成</div>
         </button>`;
+      const nx = tourSched.info;
+      // 「大会へ」＝当月開催から選ぶメニューの入口（常に有効）。目標宝の開催状況をひと言添える。
+      const cd = tourSched.openNow
+        ? `<span class="mhx-cd is-open">目標を含む大会、開催中</span>`
+        : `<span class="mhx-cd">目標は ${tourSched.openMonth.gameMonth}月（あと <b>${tourSched.monthsLeft}</b> ヶ月）</span>`;
       return `
-        <button type="button" class="mhx-next" data-tournament="1" title="${esc(nx.name)}に挑戦">
+        <button type="button" class="mhx-next" data-tournament="1" title="大会メニューを開く">
           <div class="mhx-badge"><span class="mhx-b1">CUP</span><span class="mhx-b2">杯</span></div>
           <div class="mhx-txt">
-            <div class="mhx-s">次の大会へ</div>
-            <div class="mhx-m">${esc(nx.name)}</div>
+            <div class="mhx-s">大会へ　${cd}</div>
+            <div class="mhx-m">${esc(nx.name)}<span class="mhx-goal-mk">★目標</span></div>
             <div class="mhx-tre">宝『<b>${esc(nx.treasure.name)}</b>』<small>${esc(nx.treasure.reading || "")}</small></div>
           </div>
           <div class="mhx-na"><span class="mhx-na-fmt">${esc(FMT[nx.format] || "")}</span><span class="mhx-na-tier">T${nx.tier}</span></div>
