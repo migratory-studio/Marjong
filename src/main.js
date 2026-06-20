@@ -54,6 +54,7 @@ import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } fro
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
 import { evaluateSuccession } from "./progression/successionResult.js";
+import { buildCompletedAvatar, addCompletedAvatar, markGraduated } from "./progression/completedAvatar.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -1063,7 +1064,46 @@ function showSuccessionResult(host, av, result, onDone) {
   host.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("is-open"));
   const close = () => { ov.classList.remove("is-open"); setTimeout(() => { ov.remove(); onDone?.(); }, 220); };
-  ov.querySelector(".succ-go")?.addEventListener("click", close);
+  // 「よし」で修行完了データとして記録（5枠満杯なら入替先を選ぶ）→アーカイブ→保存→次へ。
+  ov.querySelector(".succ-go")?.addEventListener("click", async () => {
+    const p = await profileRepo.loadProfile();
+    const ca = buildCompletedAvatar(av, result, new Date().toISOString());
+    const r = addCompletedAvatar(p, ca);
+    if (r.needsReplace) { showCompletedReplaceModal(host, p, ca, av, close); return; }
+    await profileRepo.saveProfile(markGraduated(r.profile, av.avatarId));
+    close();
+  });
+}
+
+// 修行完了データが5枠埋まっているとき、新しい卒業生とどの枠を入れ替えるか選ぶ。
+function showCompletedReplaceModal(host, profile, ca, av, done) {
+  const ov = document.createElement("div");
+  ov.className = "succ-result";
+  const cards = (profile.completedAvatars || []).map((c) => `
+    <button type="button" class="succ-rep-card" data-id="${esc(c.completedAvatarId)}">
+      <b>${esc(c.name)}</b><span>${esc(c.roleLabel || c.role || "")}　・　${esc(c.result?.rank || "")}</span>
+    </button>`).join("");
+  ov.innerHTML = `
+    <div class="ts-scrim"></div>
+    <div class="succ-card">
+      <div class="succ-ttl">修行完了データが いっぱい</div>
+      <p class="succ-note">保存枠は5つまで。<b>${esc(ca.name)}</b> を記録するには、どれか1人と入れ替える。</p>
+      <div class="succ-rep-list">${cards}</div>
+      <button type="button" class="succ-rep-cancel">入れ替えずに進む</button>
+    </div>`;
+  host.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const close = () => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 200); };
+  ov.querySelectorAll(".succ-rep-card").forEach((b) => b.addEventListener("click", async () => {
+    const r = addCompletedAvatar(profile, ca, b.getAttribute("data-id"));
+    await profileRepo.saveProfile(markGraduated(r.profile, av.avatarId));
+    close(); done?.();
+  }));
+  ov.querySelector(".succ-rep-cancel").addEventListener("click", async () => {
+    // 入替しない＝記録は見送り、卒業（アーカイブ）だけして進む。
+    await profileRepo.saveProfile(markGraduated(profile, av.avatarId));
+    close(); done?.();
+  });
 }
 
 // マイキャラ作成直後、その師匠の第1章（sortOrder 先頭・unlock=always）を自動再生する。

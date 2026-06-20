@@ -22,6 +22,7 @@ export function createDefaultProfile() {
     homeBg: null,         // 対戦ホームの背景キー（"washi"|"dojo"|"street"）。null=既定(washi)。
     homeBgm: null,        // 対戦ホームのBGMキー（HOME_BGM_CHOICES）。null=既定(hanadoki)。
     avatars: [],
+    completedAvatars: [], // 修行完了データ（卒業した弟子のスナップショット・最大5枠）。対戦/ローグライトで使用。misc(jsonb)に保存される
     inventory: [],
     scenarioProgress: [],
     tournamentRuns: [],
@@ -65,6 +66,7 @@ export class ProfileRepository {
     if (!merged.companionBonds || typeof merged.companionBonds !== "object") {
       merged.companionBonds = {};
     }
+    if (!Array.isArray(merged.completedAvatars)) merged.completedAvatars = [];
     if (!merged.playerHistory || typeof merged.playerHistory !== "object") {
       merged.playerHistory = { ...base.playerHistory };
     } else {
