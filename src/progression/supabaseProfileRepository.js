@@ -33,11 +33,21 @@ export class SupabaseProfileRepository extends ProfileRepository {
       .eq("user_id", uid);
     if (aErr) throw aErr;
 
+    // 相棒絆は専用テーブル companion_bonds から読む（旧 profiles.misc.companionBonds とマージ＝移行）。
+    const { data: bondRows, error: bErr } = await supabase
+      .from("companion_bonds")
+      .select("char_id, level, exp, matches")
+      .eq("user_id", uid);
+    if (bErr) throw bErr;
+
     // 行が無い（＝このユーザーは初回）の場合は空プロフィールを返す。最初の saveProfile で行ができる。
-    if (!row && (!avatarRows || avatarRows.length === 0)) return createDefaultProfile();
+    if (!row && (!avatarRows || avatarRows.length === 0) && (!bondRows || bondRows.length === 0)) return createDefaultProfile();
 
     const base = createDefaultProfile();
     const misc = row?.misc || {};
+    // テーブル優先・旧 misc をフォールバック（未移行ユーザーの絆を拾い、次の save で当テーブルへ移送）。
+    const tableBonds = {};
+    for (const r of bondRows || []) tableBonds[r.char_id] = { level: r.level, exp: r.exp, matches: r.matches };
     const assembled = {
       ...base,
       ...misc, // profile / inventory / scenarioProgress / tournamentRuns / records / daily / unlockedPresetIds / rewardLedger / mentorGrowth
@@ -45,6 +55,7 @@ export class SupabaseProfileRepository extends ProfileRepository {
       wallet: row?.wallet ?? base.wallet,
       activeAvatarId: row?.active_avatar_id ?? null,
       avatars: (avatarRows || []).map((r) => r.state),
+      companionBonds: { ...(misc.companionBonds || {}), ...tableBonds },
     };
     // 欠損キー補完・スキーマ移行は共通ロジックに通す。
     return this.migrateProfile(assembled);
@@ -54,8 +65,8 @@ export class SupabaseProfileRepository extends ProfileRepository {
     const uid = await this.#requireUserId();
     const now = new Date().toISOString();
 
-    // 弟子(avatars)・専用列(wallet/activeAvatarId/schemaVersion)以外をまとめて misc へ。
-    const { schemaVersion, wallet, activeAvatarId, avatars, ...misc } = profile;
+    // 弟子(avatars)・専用列(wallet/activeAvatarId/schemaVersion)・専用テーブル(companionBonds)以外を misc へ。
+    const { schemaVersion, wallet, activeAvatarId, avatars, companionBonds, ...misc } = profile;
     const avatarList = avatars || [];
 
     const { error: pErr } = await supabase.from("profiles").upsert(
@@ -86,6 +97,20 @@ export class SupabaseProfileRepository extends ProfileRepository {
       if (upErr) throw upErr;
     }
 
+    // 相棒絆を専用テーブルへ upsert（キャラ1体＝1行）。絆は増える一方なので delete はしない。
+    const bondRows = Object.entries(companionBonds || {}).map(([char_id, b]) => ({
+      user_id: uid,
+      char_id,
+      level: b?.level ?? 1,
+      exp: b?.exp ?? 0,
+      matches: b?.matches ?? 0,
+      updated_at: now,
+    }));
+    if (bondRows.length) {
+      const { error: bErr } = await supabase.from("companion_bonds").upsert(bondRows, { onConflict: "user_id,char_id" });
+      if (bErr) throw bErr;
+    }
+
     // ローカルで消えた弟子はリモートからも削除（現存 id に無いものを消す）。
     const keepIds = avatarList.map((a) => a.avatarId);
     const { data: existing, error: exErr } = await supabase
@@ -112,6 +137,8 @@ export class SupabaseProfileRepository extends ProfileRepository {
     const uid = await this.#requireUserId();
     const av = await supabase.from("user_avatars").delete().eq("user_id", uid);
     if (av.error) throw av.error;
+    const cb = await supabase.from("companion_bonds").delete().eq("user_id", uid);
+    if (cb.error) throw cb.error;
     const pr = await supabase.from("profiles").delete().eq("id", uid);
     if (pr.error) throw pr.error;
   }
