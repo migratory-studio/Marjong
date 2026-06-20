@@ -19,6 +19,10 @@
 | 師弟ホーム | `sound/bgm/PerituneMaterial_Otogi4.mp3` | PeriTune「Otogi（御伽）」 |
 | 大会 T1（登竜門級） | `sound/bgm/PerituneMaterial_Kengeki.mp3` | PeriTune「剣戟（Kengeki）」https://peritune.com/blog/2021/08/17/kengeki/ |
 | 大会 T2（役満級） | `sound/bgm/PerituneMaterial_EpicBattle_J.mp3` | PeriTune「EpicBattle」https://peritune.com/blog/2021/09/16/epicbattle_j/ |
+| 対戦ホーム（既定） | `sound/bgm/PerituneMaterial_Awayuki.mp3` | PeriTune「淡雪（Awayuki）」 |
+| 対戦ホーム（選択） | `sound/bgm/PerituneMaterial_Hanagoyomi2.mp3` | PeriTune「花暦2（Hanagoyomi2）」 |
+| 対戦ホーム（選択） | `sound/bgm/PerituneMaterial_Michikusa3.mp3` | PeriTune「道草3（Michikusa3）」 |
+| 対戦ホーム（選択） | `sound/bgm/PerituneMaterial_Sakuya3.mp3` | PeriTune「朔夜（Sakuya3）」 |
 
 ### 要確認（出所未記入）
 | 用途 | ファイル | 出典 |

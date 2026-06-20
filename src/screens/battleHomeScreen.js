@@ -114,7 +114,7 @@ function portraitNode(c) {
 }
 
 export async function showBattleHome(container, opts = {}) {
-  const { repository, audio, onFree, onOnline, onBack } = opts;
+  const { repository, audio, loggedIn = false, onFree, onOnline, onBack } = opts;
   if (!container) return;
 
   let profile = null;
@@ -131,10 +131,9 @@ export async function showBattleHome(container, opts = {}) {
     CHARACTERS[0]?.id;
   let current = charById(favId) || selectableChars()[0] || CHARACTERS[0];
 
-  // 情報パネル用のプレイヤー横断データ（キャラ非依存。絆帯だけ current 依存で paint 時に更新）。
+  // 情報パネル用のデータ。「一緒に」/絆は current 依存＝paint 時に更新。プレイヤー名/連勝は横断。
   const hist = profile?.playerHistory || {};
   const displayName = String(profile?.profile?.displayName || "").trim() || "あなた";
-  const together = hist.totalMatches ?? 0;       // 一緒に打った局数＝蓄積（履歴がある）
   const winStreak = hist.winStreak ?? 0;
 
   container.innerHTML = `
@@ -177,6 +176,7 @@ export async function showBattleHome(container, opts = {}) {
   const wrap = container.querySelector("#bh-portrait-wrap");
   const partnerEl = container.querySelector("#bh-partner");
   const bondEl = container.querySelector("#bh-bond");
+  const togetherEl = container.querySelector("#bh-together");
   const setTalk = (t) => { if (talkEl) talkEl.textContent = t || "……。"; };
 
   const bgNameEl = container.querySelector("#bh-bg-name");
@@ -184,7 +184,6 @@ export async function showBattleHome(container, opts = {}) {
 
   // キャラ非依存の情報は一度だけ。
   container.querySelector("#bh-name").textContent = displayName;
-  container.querySelector("#bh-together").textContent = `${together} 局`;
   if (winStreak > 0) {
     container.querySelector("#bh-streak-row").hidden = false;
     container.querySelector("#bh-streak").textContent = `${winStreak} 連勝`;
@@ -226,7 +225,10 @@ export async function showBattleHome(container, opts = {}) {
     wrap.innerHTML = "";
     wrap.appendChild(portraitNode(current));
     if (partnerEl) partnerEl.textContent = current?.name || "—";
-    if (bondEl) bondEl.textContent = bondBandLabel(profile?.companionBonds?.[current.id]?.level ?? 1);
+    // 「一緒に」(キャラ別局数)・絆は連携時のみ。未連携は「—」（計上もしない方針 [[companion-bond-system]]）。
+    const b = profile?.companionBonds?.[current.id];
+    if (togetherEl) togetherEl.textContent = loggedIn ? `${b?.matches ?? 0} 局` : "—";
+    if (bondEl) bondEl.textContent = loggedIn ? bondBandLabel(b?.level ?? 1) : "—";
     setTalk(pickHomeGreeting(current.id, buildHomeCtx(profile, current.id)));
   }
   paint();

@@ -63,7 +63,8 @@ export function applyMatchToCompanion(
   const newTotalExp = prevTotalExp + expGain;
   const { level: newLevel, exp: newExp } = companionLevelFromExp(newTotalExp);
 
-  bonds[companionId] = { level: newLevel, exp: newExp };
+  // matches＝そのキャラと一緒に打った局数（対戦ホーム「一緒に」表示用。キャラ別カウント）。
+  bonds[companionId] = { level: newLevel, exp: newExp, matches: (current.matches ?? 0) + 1 };
 
   // ---- 2. playerHistory 更新 ----
   const hist = { ...(profile.playerHistory ?? defaultPlayerHistory()) };

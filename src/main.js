@@ -105,8 +105,11 @@ function matchVoiceCtxFor(charId) {
 }
 
 // フリー対戦（個人）の終局で相棒（＝操作キャラ）との絆・履歴を更新（本気/大会は結果反映側で加算）。
+// アカウント連携時のみ計上する方針（未連携は「一緒に」カウントも絆も記録しない＝対戦ホームでは「—」表示）。
 async function applyFreeMatchToCompanion({ companionId, placement, numPlayers, styleTags }) {
   if (!companionId) return;
+  const user = await getUser().catch(() => null);
+  if (!user) return; // 未連携は記録しない
   try {
     const p = await profileRepo.loadProfile();
     await profileRepo.saveProfile(applyMatchToCompanion(p, { companionId, placement, numPlayers, styleTags }));
@@ -144,10 +147,23 @@ let hpCells = null; // 相棒ボード（右側HP表示）の playerIndex -> セ
 const tileImages = new TileImages();
 const charImages = new CharacterImages();
 const audio = new AudioManager();
-tileImages.load(); // preload in background; renderer falls back until ready
-charImages.load(CHARACTERS); // icons/portraits; null fallback until present
-// モブのシルエット10枚も先読み（CHARACTERS には入れないので別途プリロード）。
-charImages.load(mobSilhouettePaths().map((p) => ({ assets: { icon: p, portrait: p } })));
+// 起動時のリソース先読み（ロード画面の進捗バーへ 0..1 を報告）。各ローダの (done,total) を集約。
+// renderer/UI は未ready時はフォールバック描画なので、ここで待ってから本編を見せる。
+function preloadAssets(onProgress) {
+  const prog = {}; // loaderキー -> { d, t }
+  const report = () => {
+    let d = 0, t = 0;
+    for (const k in prog) { d += prog[k].d; t += prog[k].t; }
+    onProgress?.(t ? d / t : 0);
+  };
+  const mk = (k) => (d, t) => { prog[k] = { d, t }; report(); };
+  const mobs = mobSilhouettePaths().map((p) => ({ assets: { icon: p, portrait: p } }));
+  return Promise.all([
+    tileImages.load(mk("tiles")),
+    charImages.load(CHARACTERS, mk("chars")),
+    charImages.load(mobs, mk("mobs")),
+  ]);
+}
 let selectedCharId = null;
 let selectedRounds = 1; // 1 = 東風戦, 2 = 半荘戦
 let selectedPlayers = 4; // 4 = 四人麻雀, 3 = 三人麻雀(三麻)
@@ -763,12 +779,14 @@ function goScreen(id) {
 
 // 対戦ホーム: お気に入りキャラの立ち絵＋出迎えセリフを描く。開くたびに最新プロフィールで再描画。
 // 導線＝フリー対戦／オンライン対戦（オンラインは enterOnline のログイン/名前ゲートを通す）。
-function renderBattleHome() {
+async function renderBattleHome() {
   const host = el("battle-home-screen");
   if (!host) return;
+  const user = await getUser().catch(() => null); // 連携時のみ「一緒に」/絆を表示・計上
   showBattleHome(host, {
     repository: profileRepo,
     audio,
+    loggedIn: !!user,
     onFree: () => { audio.playClick?.(); goScreen("free-battle-screen"); },
     onOnline: () => { audio.playClick?.(); enterOnline(); },
     onBack: () => { audio.playClick?.(); goScreen("home-screen"); },
@@ -2003,8 +2021,20 @@ function bootHome() {
     bgm: "home-bgm-volume", bgmVal: "home-bgm-volume-val",
     se: "home-se-volume", seVal: "home-se-volume-val",
   });
-  goScreen("home-screen");
-  maybeShowAuthPrompt(); // 初回起動時に認証をおすすめ（未ログイン＆未提示のときだけ）
+  // ロード画面でリソースを先読みしてからホームへ。ゲージは下部(load-fill)を伸ばす。
+  goScreen("loading-screen");
+  const fill = el("load-fill");
+  const tip = el("loading-screen")?.querySelector(".load-tip");
+  preloadAssets((f) => { if (fill) fill.style.width = `${Math.round(f * 100)}%`; })
+    .finally(() => {
+      if (fill) fill.style.width = "100%";
+      if (tip) tip.textContent = "ようこそ";
+      // ほんの一拍 100% を見せてからホームへ（一瞬で消えてチラつくのを防ぐ）。
+      setTimeout(() => {
+        goScreen("home-screen");
+        maybeShowAuthPrompt(); // 初回起動時に認証をおすすめ（未ログイン＆未提示のときだけ）
+      }, 240);
+    });
   // Browsers block audio before the first user gesture, so the home BGM may not
   // start at boot. Retry once on the first interaction (playHomeBgm no-ops if it
   // already started).

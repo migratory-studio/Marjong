@@ -14,8 +14,19 @@
        uniformly scaled to fit the window (see src/app/stage.js). -->
   <div id="stage-viewport">
   <div id="app">
-    <!-- Home: top-level mode entry -->
-    <section id="home-screen" class="screen menu-screen">
+    <!-- Loading: 起動時にリソースを先読みしてから各画面を出す。下部にロードゲージ。 -->
+    <section id="loading-screen" class="screen">
+      <div class="load-stage">
+        <h1 class="load-logo">麻雀RPG <small>プロトタイプ</small></h1>
+        <p class="load-tip">読み込み中…</p>
+      </div>
+      <div class="load-bar" role="progressbar" aria-label="読み込み">
+        <div class="load-fill" id="load-fill"></div>
+      </div>
+    </section>
+
+    <!-- Home: top-level mode entry（初期はロード画面を見せるため hidden） -->
+    <section id="home-screen" class="screen menu-screen hidden">
       <header class="menu-head">
         <h1>麻雀RPG <small>プロトタイプ</small></h1>
         <p class="lead">相棒と打つ麻雀。まずは対戦ホームへ。</p>

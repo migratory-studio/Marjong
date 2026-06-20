@@ -39,7 +39,8 @@ export class TileImages {
   }
 
   // Preload every tile face. Resolves once all attempts settle (loaded or failed).
-  load() {
+  // onProgress(done, total) はロード画面の進捗バー用（即時に (0,total)、各画像 settle ごとに加算）。
+  load(onProgress) {
     const paths = new Set();
     for (let kind = 0; kind < 34; kind++) {
       paths.add(tilePath(kind, false));
@@ -48,6 +49,9 @@ export class TileImages {
     paths.add(BACK_PATH); // 裏牌
     paths.add(FRONT_PATH); // 牌の白い下地
     const jobs = [...paths].map((p) => this._loadOne(p));
+    let done = 0; const total = jobs.length;
+    onProgress?.(0, total);
+    jobs.forEach((j) => j.then(() => onProgress?.(++done, total)));
     return Promise.allSettled(jobs).then(() => { this.ready = true; });
   }
 
@@ -92,13 +96,17 @@ export class CharacterImages {
   }
 
   // `characters` = the character master array (each has .id and .assets.{icon,portrait}).
-  load(characters) {
+  // onProgress(done, total) はロード画面の進捗バー用。
+  load(characters, onProgress) {
     const urls = new Set();
     for (const c of characters) {
       if (c.assets?.icon) urls.add(c.assets.icon);
       if (c.assets?.portrait) urls.add(c.assets.portrait);
     }
     const jobs = [...urls].map((u) => this._loadOne(u));
+    let done = 0; const total = jobs.length;
+    onProgress?.(0, total);
+    jobs.forEach((j) => j.then(() => onProgress?.(++done, total)));
     return Promise.allSettled(jobs).then(() => this);
   }
 
@@ -147,13 +155,25 @@ const BGM_TOURNEY = {
   2: enc("sound/bgm/PerituneMaterial_EpicBattle_J.mp3"), // https://peritune.com/blog/2021/09/16/epicbattle_j/
   3: enc("sound/bgm/PerituneMaterial_Amenoshita3.mp3"),  // 既存流用（天ノ下 / character select と同曲）
 };
-// 対戦ホームで手動切替できるBGM。key は profile.homeBgm に保存。既定=花どき（home と同曲）。
+// PeriTune 追加トラック（要クレジット表記）。実ファイルは sound/bgm/ に配置済み。
+//   Awayuki=淡雪 / Hanagoyomi2=花暦 / Michikusa3=道草 / Sakuya3=朔夜。
+const BGM_AWAYUKI     = enc("sound/bgm/PerituneMaterial_Awayuki.mp3");
+const BGM_HANAGOYOMI2 = enc("sound/bgm/PerituneMaterial_Hanagoyomi2.mp3");
+const BGM_MICHIKUSA3  = enc("sound/bgm/PerituneMaterial_Michikusa3.mp3");
+const BGM_SAKUYA3     = enc("sound/bgm/PerituneMaterial_Sakuya3.mp3");
+
+// 対戦ホームで手動切替できるBGM。key は profile.homeBgm に保存。既定＝先頭（淡雪 / Awayuki）。
+// ファイル未配置のものは playBgm が失敗して無音になるだけ（クラッシュしない）。
 export const HOME_BGM_CHOICES = [
-  { key: "hanadoki",   label: "花どき",   src: BGM_HOME },
-  { key: "amenoshita", label: "天ノ下",   src: BGM_SELECT },
-  { key: "otogi",      label: "おとぎ",   src: BGM_MENTOR },
-  { key: "kengeki",    label: "剣戟",     src: BGM_TOURNEY[1] },
-  { key: "epic",       label: "勇壮",     src: BGM_TOURNEY[2] },
+  { key: "awayuki",     label: "淡雪",     src: BGM_AWAYUKI },     // 既定
+  { key: "hanagoyomi2", label: "花暦",     src: BGM_HANAGOYOMI2 },
+  { key: "michikusa3",  label: "道草",     src: BGM_MICHIKUSA3 },
+  { key: "sakuya3",     label: "朔夜",     src: BGM_SAKUYA3 },
+  { key: "hanadoki",    label: "花どき",   src: BGM_HOME },
+  { key: "amenoshita",  label: "天ノ下",   src: BGM_SELECT },
+  { key: "otogi4",      label: "おとぎ4",  src: BGM_MENTOR },
+  { key: "kengeki",     label: "剣戟",     src: BGM_TOURNEY[1] },
+  { key: "epic",        label: "勇壮",     src: BGM_TOURNEY[2] },
 ];
 const SE_DAHAI = ["１", "２", "３", "４"].map((n) => enc(`sound/se/dahai/牌を置く・その${n}.mp3`));
 const SE_SHUFFLE = enc("sound/se/麻雀牌をまぜる.mp3"); // start of hand (deal)
