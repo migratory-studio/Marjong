@@ -1366,7 +1366,7 @@ async function openTournamentForStep(step) {
     const fieldAvgStrength = Object.values(strengthById).reduce((a, b) => a + b, 0) / (units.length || 1);
     tournamentRun = { t, matchIndex: 0, units, totals, names, deshiUnitId: deshiUnit.id, unitStart, strengthById, fieldAvgStrength };
     playTournamentMatch();
-  }, () => showTournamentMenu(profile, av));
+  }, () => openTournament()); // キャンセル→大会メニューを再フェッチで開き直す（古い profile を再表示しない）
 }
 
 // 大会 要項画面（開幕前）。ルール・優勝条件・ライバル紹介を“じっくり”見せてから挑む（#2）。

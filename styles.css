@@ -4627,7 +4627,7 @@ button.primary.danger:hover { color: #ffbcbc; }
 .tourney-menu.is-open { opacity: 1; }
 .tourney-menu .ts-scrim { position: absolute; inset: 0; background: rgba(8, 12, 10, .74); }
 .tmenu-wrap {
-  position: relative; width: min(960px, 94vw); max-height: 92vh;
+  position: relative; width: min(960px, 94%); max-height: calc(var(--stage-h) - 40px);
   background: linear-gradient(180deg, #22332a, #1a2620); border: 2px solid #3a5446; border-radius: 16px;
   padding: 18px 22px; box-shadow: 0 18px 50px rgba(0, 0, 0, .5);
   display: flex; flex-direction: column; gap: 12px;
@@ -4643,7 +4643,7 @@ button.primary.danger:hover { color: #ffbcbc; }
 .tmc-gem.is-goal { border-color: #e8b04a; opacity: 1; }
 .tmc-gem-mk { display: block; font-size: 14px; font-weight: 800; color: #f6d27a; }
 .tmc-gem-nm { display: block; font-size: 9px; color: #cdddd0; margin-top: 2px; line-height: 1.1; }
-.tmenu-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; overflow: auto; }
+.tmenu-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; min-height: 0; overflow-y: auto; overflow-x: hidden; }
 .tmenu-card { display: flex; gap: 10px; text-align: left; padding: 12px; border-radius: 12px; background: #243a2f; border: 2px solid #335041; cursor: pointer; transition: transform .1s, border-color .1s; }
 .tmenu-card:hover { transform: translateY(-2px); border-color: #5b8e72; }
 .tmenu-card.is-goal { border-color: #e8b04a; box-shadow: 0 0 0 1px rgba(232, 176, 74, .3) inset; }
@@ -4666,7 +4666,7 @@ button.primary.danger:hover { color: #ffbcbc; }
 .scgate { position: fixed; inset: 0; z-index: 70; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .2s; }
 .scgate.is-open { opacity: 1; }
 .scgate-scrim { position: absolute; inset: 0; background: rgba(8, 12, 10, .78); }
-.scgate-card { position: relative; width: min(440px, 92vw); background: linear-gradient(180deg, #22332a, #1a2620); border: 2px solid #3a5446; border-radius: 16px; padding: 26px 28px; text-align: center; box-shadow: 0 18px 50px rgba(0, 0, 0, .5); }
+.scgate-card { position: relative; width: min(440px, 92%); background: linear-gradient(180deg, #22332a, #1a2620); border: 2px solid #3a5446; border-radius: 16px; padding: 26px 28px; text-align: center; box-shadow: 0 18px 50px rgba(0, 0, 0, .5); }
 .scgate-card.is-unlocked { border-color: #e8b04a; }
 .scgate-ttl { font-size: 20px; font-weight: 800; color: #f3ead2; margin-bottom: 20px; }
 .scgate-card.is-unlocked .scgate-ttl { color: #f6d27a; }
@@ -4690,7 +4690,7 @@ button.primary.danger:hover { color: #ffbcbc; }
 .succ-result { position: fixed; inset: 0; z-index: 75; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity .25s; }
 .succ-result.is-open { opacity: 1; }
 .succ-result .ts-scrim { position: absolute; inset: 0; background: rgba(8, 12, 10, .82); }
-.succ-card { position: relative; width: min(460px, 92vw); background: linear-gradient(180deg, #26382d, #19241e); border: 2px solid #caa64a; border-radius: 18px; padding: 28px 30px; text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, .55); }
+.succ-card { position: relative; width: min(460px, 92%); background: linear-gradient(180deg, #26382d, #19241e); border: 2px solid #caa64a; border-radius: 18px; padding: 28px 30px; text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, .55); }
 .succ-ttl { font-size: 15px; letter-spacing: .3em; color: #f6d27a; font-weight: 800; }
 .succ-name { font-size: 22px; font-weight: 800; color: #f3ead2; margin: 6px 0 14px; }
 .succ-rank { font-size: 16px; color: #cdddd0; margin-bottom: 16px; }
