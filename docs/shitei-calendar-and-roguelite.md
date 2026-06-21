@@ -248,6 +248,9 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
   - **実バグ修正**：`showGameOver` のローグライト分岐が旧条件「全員トビ(`seatedPairDown && !benchAlive`)」で banner/ボタンを出していた（3人で着卓2人ダウン＋控え生存だと「耐え抜いた／次の階へ」表示→直後に没収、の矛盾）。`runWiped`（生存1人以下）と一致する `totalSurvivors<=1`（ソロは0）へ修正。
   - **文言整合**：編成リード文／休息・宴会の「全員トビ・全員回復」→「戦える味方が1人以下／生存している味方」。ダメージカード注記も同様。
   - 和了トグルの排他を双方向に。`#roguelite-screen` に `overflow:hidden`（固定ステージ保険・実機で scrollOverflow=0 確認）。
+- ✅ **和了トグルの意味を正す（実装済み）**：「自分からあがらない」の旧実装＝**ツモ封印**は誤り（リーチ一発ツモまで潰れていた）。正しくは **「相棒の捨て牌をロンしない＝味方から点を奪わない」**（敵ロン・自分のツモは可）。
+  - エンジン：`noTsumoSeats`(Set) を廃し **`noRonFromSeats`(Map: 席→ロンしない相手席集合)** を新設。`_collectCallers`/`_collectChankanCallers` で `_friendlyRonBlocked(winnerSeat, fromSeat)` を判定。`_canTsumo` は `noWin` のみで弾く（自分からあがらないはツモを止めない）。
+  - main：`pairWinPolicy.noTsumo`→`noAllyRon`。`applyPairWinPolicy` が自陣他席を `noRonFromSeats` に登録。「和了しない」(完全防御)は据置。回帰 `test/riichicost.mjs`（相棒ロン禁止/敵ロン可）。
 - ✅ **セリフ照合・相棒・反転の磨き込み（実装済み）**：
   - **満貫帯の scoreTier 分離**：`scoreTierOf` に `mid`(5200〜9999)を新設＝満貫(8000)が「地味」低点数セリフにならない。詩玥/凌雲に mid 和了セリフ追加・templateも追従（`voiceLines`/`characterVoiceMaster`）。
   - **相棒(席2)の和了発火**：ペア戦で相方が自分で和了したら相棒ボードの吹き出しで一言（`showPairBattleDamageFx`＋既存 `showPartnerTalk`）。編成＝相棒選びの意味づけに。

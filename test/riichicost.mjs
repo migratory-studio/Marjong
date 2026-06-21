@@ -75,11 +75,15 @@ function setTenpai(g, points) {
   ok("5%以上あればリーチ可（供託0＝実消費はUI側で5%）", g.actionOptions(0).riichi === true);
 }
 
-// 和了抑止フラグ：noWinSeats/noTsumoSeats は既定で空集合。
+// 和了抑止フラグ：noWinSeats(Set)/noRonFromSeats(Map) は既定で空。
 {
   const g = mkGame({});
   ok("noWinSeats は Set・既定空", g.noWinSeats instanceof Set && g.noWinSeats.size === 0);
-  ok("noTsumoSeats は Set・既定空", g.noTsumoSeats instanceof Set && g.noTsumoSeats.size === 0);
+  ok("noRonFromSeats は Map・既定空", g.noRonFromSeats instanceof Map && g.noRonFromSeats.size === 0);
+  // 相棒ロン禁止：_friendlyRonBlocked が席→相手席で効く
+  g.noRonFromSeats.set(0, new Set([2]));
+  ok("自分からあがらない：席0は席2の捨て牌をロンしない", g._friendlyRonBlocked(0, 2) === true);
+  ok("自分からあがらない：席0は敵席1の捨て牌はロン可", g._friendlyRonBlocked(0, 1) === false);
 }
 
 console.log(fails === 0 ? "ALL PASS" : `${fails} FAILED`);

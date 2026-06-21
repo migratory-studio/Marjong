@@ -85,10 +85,11 @@ export class Game {
     // 指定時は供託(riichiCost)とは別に、宣言可否の閾値だけをこの割合で判定する（実HP消費はUI側で反映）。
     this.riichiCostFrac = typeof options.riichiCostFrac === "number" && options.riichiCostFrac > 0 ? options.riichiCostFrac : null;
     // 和了抑止の方針（席ごと）。ペア戦の味方相互の自摸（味方への被弾）を避ける等の戦術用。
-    //   noWinSeats   … その席は一切和了しない（ロンもツモも不可）
-    //   noTsumoSeats … その席はツモらない（ロンは可）
+    //   noWinSeats     … その席は一切和了しない（ロンもツモも不可＝完全防御）
+    //   noRonFromSeats … 席→「その捨て牌をロンしない相手席の集合」（味方の捨て牌は撃たない＝
+    //                    味方から点を奪わない。敵へのロン・自分のツモは可）
     this.noWinSeats = new Set();
-    this.noTsumoSeats = new Set();
+    this.noRonFromSeats = new Map();
     this.roundWind = 27; // 27=東, 28=南
     this.kyoku = 1; // hand number WITHIN the current round (1..4)
     // 起家（最初の親）。対局開始演出の親決めで決まった席を注入できる。
@@ -292,8 +293,8 @@ export class Game {
   }
 
   _canTsumo(p) {
-    // 和了抑止（味方への被弾回避などの戦術トグル）。ツモは noWin/noTsumo の両方で禁止。
-    if (this.noWinSeats.has(p.index) || this.noTsumoSeats.has(p.index)) return false;
+    // 「和了しない」(完全防御)の席はツモ不可。「自分からあがらない」(相棒ロン禁止)はツモを止めない。
+    if (this.noWinSeats.has(p.index)) return false;
     const counts = p.counts();
     if (!isAgari(counts, p.numMeldSets())) return false;
     const ctx = this._winContext(p, this._lastDraw.kind, /*tsumo*/ true);
@@ -410,7 +411,7 @@ export class Game {
       const p = this.players[i];
       const counts = p.counts();
       // ron
-      if (this._canRon(p, tile.kind)) elig.ron.add(i);
+      if (this._canRon(p, tile.kind) && !this._friendlyRonBlocked(i, fromPlayer)) elig.ron.add(i);
       // pon (any player, needs 2). 二人麻雀は鳴き禁止（暗槓のみ）。
       if (counts[tile.kind] >= 2 && !p.riichi && !this.futari) elig.pon.add(i);
       // kan (open, needs 3). 二人麻雀は明槓も不可。
@@ -439,8 +440,13 @@ export class Game {
     return callers;
   }
 
+  // 「自分からあがらない」：winnerSeat は fromSeat の捨て牌をロンしない（味方を撃たない）。
+  _friendlyRonBlocked(winnerSeat, fromSeat) {
+    return this.noRonFromSeats.get(winnerSeat)?.has(fromSeat) || false;
+  }
+
   _canRon(p, kind) {
-    // 和了抑止トグル：ロンは noWin のときだけ禁止（noTsumo はツモのみ）。
+    // 「和了しない」(完全防御)の席はロン不可。相棒ロン禁止は _friendlyRonBlocked で別途判定。
     if (this.noWinSeats.has(p.index)) return false;
     // furiten: cannot ron if the winning kind is in own discards
     if (p.discards.some((t) => t.kind === kind)) return false;
@@ -711,7 +717,7 @@ export class Game {
     const callers = [];
     for (let i = 0; i < this.numPlayers; i++) {
       if (i === kannerIndex) continue;
-      if (this._canRon(this.players[i], kind)) {
+      if (this._canRon(this.players[i], kind) && !this._friendlyRonBlocked(i, kannerIndex)) {
         callers.push({ index: i, options: { ron: true, pon: false, kan: false, chi: [] } });
       }
     }

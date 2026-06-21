@@ -158,8 +158,8 @@ let game, renderer, humanIndex = 0;
 let hpCells = null; // 相棒ボード（右側HP表示）の playerIndex -> セル参照マップ
 // ペア戦の味方相互の被弾を避ける戦術トグル（右サイドメニュー）。自陣（人間と同ペア）に適用。
 //   noWin   … 自陣は一切和了しない（ロンもツモも不可）
-//   noTsumo … 自陣はツモらない（ロンは可）＝味方への自摸被弾を避ける
-const pairWinPolicy = { noWin: false, noTsumo: false };
+//   noAllyRon … 相棒の捨て牌をロンしない（味方から点を奪わない。敵ロン・自分のツモは可）
+const pairWinPolicy = { noWin: false, noAllyRon: false };
 const tileImages = new TileImages();
 const charImages = new CharacterImages();
 const audio = new AudioManager();
@@ -6360,8 +6360,8 @@ function buildPairWinPolicyToggles() {
     b.addEventListener("click", () => {
       pairWinPolicy[key] = !pairWinPolicy[key];
       // 2つは排他（完全防御 と ロンのみ）。一方をONにしたら他方はOFFに整える。
-      if (key === "noWin" && pairWinPolicy.noWin) pairWinPolicy.noTsumo = false;
-      if (key === "noTsumo" && pairWinPolicy.noTsumo) pairWinPolicy.noWin = false;
+      if (key === "noWin" && pairWinPolicy.noWin) pairWinPolicy.noAllyRon = false;
+      if (key === "noAllyRon" && pairWinPolicy.noAllyRon) pairWinPolicy.noWin = false;
       b.classList.toggle("on", pairWinPolicy[key]);
       b.setAttribute("aria-pressed", String(!!pairWinPolicy[key]));
       applyPairWinPolicy();
@@ -6377,10 +6377,10 @@ function buildPairWinPolicyToggles() {
   const toggles = document.createElement("div");
   toggles.className = "pb-wp-body";
   toggles.appendChild(mk("noWin", "和了しない", "自陣は一切和了しない（ロンもツモも控える＝完全防御）"));
-  toggles.appendChild(mk("noTsumo", "自分からあがらない", "自陣はツモらない（ロンのみ＝味方への自摸被弾を避ける）"));
+  toggles.appendChild(mk("noAllyRon", "自分からあがらない", "相棒の捨て牌ではロンしない（味方から点を奪わない）。敵へのロン・自分のツモは可。"));
   // 上級者向けの戦術トグルは既定で折りたたむ（初心者が「なぜ和了しない？」と混乱しないように）。
   // 何か有効なら開いた状態で出す（設定中だと一目で分かる）。
-  const open = pairWinPolicy.noWin || pairWinPolicy.noTsumo;
+  const open = pairWinPolicy.noWin || pairWinPolicy.noAllyRon;
   const head = document.createElement("button");
   head.type = "button";
   head.className = "pb-wp-head" + (open ? " open" : "");
@@ -6397,13 +6397,14 @@ function buildPairWinPolicyToggles() {
 function applyPairWinPolicy() {
   if (!game) return;
   game.noWinSeats.clear();
-  game.noTsumoSeats.clear();
+  game.noRonFromSeats.clear();
   if (!pairBattleData) return; // ペア戦/楼光の館のみ
   const myPair = pairBattleData.pairOf[humanIndex];
   const allySeats = pairBattleData.pairOf.map((p, i) => (p === myPair ? i : -1)).filter((i) => i >= 0);
   for (const s of allySeats) {
     if (pairWinPolicy.noWin) game.noWinSeats.add(s);
-    if (pairWinPolicy.noTsumo) game.noTsumoSeats.add(s);
+    // 自分からあがらない＝自陣の他席（相棒）の捨て牌はロンしない。
+    if (pairWinPolicy.noAllyRon) game.noRonFromSeats.set(s, new Set(allySeats.filter((x) => x !== s)));
   }
 }
 
