@@ -490,6 +490,36 @@ export function showRogueliteEvent(container, opts = {}) {
   });
 }
 
+// ---- ダメージ計算の内訳（和了/被弾の「素点→ダメージ」を一拍見せる演出） ----
+// host は #damage-overlay（対局オーバーレイ）。rows=[{name,color,kind:'deal'|'take',steps,final,capped}]
+export function showRogueliteDamageBreakdown(container, opts = {}) {
+  const { rows = [], tsumo = false, score = 0, onDone } = opts;
+  if (!container || !rows.length) { onDone?.(); return; }
+  const fmt = (v) => Math.abs(v).toLocaleString();
+  const rowHtml = (rrow) => {
+    const isDeal = rrow.kind === "deal";
+    const pills = rrow.steps.map((s, k) => {
+      const last = k === rrow.steps.length - 1;
+      return `<span class="rl-calc-step${last ? " final" : ""}" style="--d:${k * 90}ms">${s.k}${last ? "" : `<b>${fmt(s.v)}</b>`}</span>`;
+    }).join('<span class="rl-calc-arrow">→</span>');
+    return `<div class="rl-calc-row ${isDeal ? "deal" : "take"}">
+      <div class="rl-calc-head"><span class="rl-calc-kind">${isDeal ? "与ダメージ" : "被ダメージ"}</span><span class="rl-calc-name" style="color:${rrow.color}">${rrow.name}</span></div>
+      <div class="rl-calc-chain">${pills}</div>
+      <div class="rl-calc-result ${isDeal ? "deal" : "take"}">${isDeal ? "" : "−"}${fmt(rrow.final)}<small>${isDeal ? "ダメージ" : "HP"}</small>${rrow.capped ? '<span class="rl-calc-cap">上限で軽減！</span>' : ""}</div>
+    </div>`;
+  };
+  container.innerHTML = `
+    <div class="dmg-card rl-calc-card">
+      <div class="dmg-head">ダメージ計算　<small>${tsumo ? "ツモ" : "ロン"} ${score ? score.toLocaleString() + "点" : ""}</small></div>
+      <div class="rl-calc-rows">${rows.map(rowHtml).join("")}</div>
+      <p class="tb-note">素点を ×0.04 でHPに換算し、攻撃/防御バフ・階層の深度・上限を経て最終ダメージが決まる。</p>
+      <button class="btn tb-next-btn" id="rl-calc-next">次へ</button>
+    </div>`;
+  container.classList.remove("hidden");
+  requestAnimationFrame(() => { container.classList.add("show"); container.querySelectorAll(".rl-calc-step").forEach((s) => s.classList.add("in")); });
+  container.querySelector("#rl-calc-next").onclick = () => onDone?.();
+}
+
 // ---- 必殺枠の忘却（ポケモン式：枠超過＝どれか1つ手放す） ----
 export function showRogueliteForget(container, opts = {}) {
   const { abilities = [], newId = null, cap = 2, onForget } = opts;

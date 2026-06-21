@@ -51,14 +51,14 @@ import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
-import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, benchAbilityIds, rogueliteDamageDeltas, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers } from "./roguelite/run.js";
+import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, benchAbilityIds, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers } from "./roguelite/run.js";
 import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
 import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -4949,8 +4949,13 @@ function applyPairDrawSettlement(deltas) {
 function showPairBattleDamageFx(r, onDone) {
   const host = el("damage-overlay");
   // ローグライト：素点差分を独自HPスケール（与ダメ倍率・被ダメ軽減のmod込み）へ写してから反映。
+  const rlHpMax = pairBattleData?.isRoguelite ? pairBattleData.chars.map((c) => c.stats?.startingPoints || 0) : null;
+  // 内訳（演出用）は deltas を確定（＝お守り消費）する前に取る＝この局のお守り状態を正しく映す。
+  const rlBreakdown = (pairBattleData?.isRoguelite && rogueliteState)
+    ? explainRogueliteDamage(rogueliteState.run, { deltas: r.deltas || [], roles: pairBattleData.seatRoles, winnerSeat: r.winner, hpMax: rlHpMax })
+    : null;
   const deltas = (pairBattleData?.isRoguelite && rogueliteState)
-    ? rogueliteDamageDeltas(rogueliteState.run, { deltas: r.deltas || [], roles: pairBattleData.seatRoles, winnerSeat: r.winner })
+    ? rogueliteDamageDeltas(rogueliteState.run, { deltas: r.deltas || [], roles: pairBattleData.seatRoles, winnerSeat: r.winner, hpMax: rlHpMax })
     : (r.deltas || []);
 
   // 個人HPとペア点数を別管理で反映。HP=被弾のみ(0床)、pairScore=増減そのまま。
@@ -5074,11 +5079,31 @@ function showPairBattleDamageFx(r, onDone) {
   }
 
   el("pb-next-btn").onclick = () => {
-    host.classList.remove("show", "has-speaker", "ko");
-    host.classList.add("hidden");
-    host.innerHTML = "";
-    onDone();
+    const finish = () => { host.classList.remove("show", "has-speaker", "ko"); host.classList.add("hidden"); host.innerHTML = ""; onDone(); };
+    // ローグライト：和了/被弾の「素点→ダメージ」内訳を一拍見せてから次へ（理解の間）。
+    const rows = rlBreakdown ? rogueliteBreakdownRows(rlBreakdown, r) : [];
+    if (rows.length) {
+      host.classList.remove("has-speaker", "ko");
+      showRogueliteDamageBreakdown(host, { rows, tsumo: r.tsumo, score: r.result?.total || 0, onDone: finish });
+    } else finish();
   };
+}
+
+// 内訳トレースを演出用の行（敵への与ダメ＋味方の被弾）に整える。winner席の攻撃を主役に。
+function rogueliteBreakdownRows(breakdown, r) {
+  const roles = pairBattleData?.seatRoles || [];
+  const chars = pairBattleData?.chars || [];
+  const rows = [];
+  for (const b of breakdown) {
+    if (!b.steps?.length || b.value === 0 && b.role === "enemy") continue;
+    const c = chars[b.seat];
+    if (!c) continue;
+    const kind = b.role === "enemy" ? "deal" : "take"; // 敵への与ダメ / 味方の被弾
+    rows.push({ name: c.name, color: c.color, kind, steps: b.steps, final: b.value, capped: !!b.capped });
+  }
+  // 与ダメ（敵）を先頭、被弾（味方）を後に。
+  rows.sort((a, b) => (a.kind === "deal" ? 0 : 1) - (b.kind === "deal" ? 0 : 1));
+  return rows;
 }
 
 // 団体戦・飛びカットイン。撃沈したメンバーを大きく見せ、続けて親満（FLYING_PENALTY）

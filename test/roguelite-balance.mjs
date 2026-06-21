@@ -27,6 +27,9 @@ if (process.env.DEALCAP) RL_TUNE.dealCap = Number(process.env.DEALCAP);
 if (process.env.TAKEFLOOR) RL_TUNE.takeFloor = Number(process.env.TAKEFLOOR);
 if (process.env.FRIENDLY) RL_TUNE.friendlyMul = Number(process.env.FRIENDLY);
 if (process.env.DEALSLOPE) RL_TUNE.dealDepthSlope = Number(process.env.DEALSLOPE);
+if (process.env.CAPBASE) RL_TUNE.lethalCapBase = Number(process.env.CAPBASE);
+if (process.env.CAPFADE) RL_TUNE.lethalCapFadeStart = Number(process.env.CAPFADE);
+if (process.env.CAPSLOPE) RL_TUNE.lethalCapFadeSlope = Number(process.env.CAPSLOPE);
 const TUNE = {
   regenFrac: RL_TUNE.regenFrac,
   enemyLvSlope: Number(process.env.LVSLOPE ?? 0.6), // 敵Lvの階層あたり傾き（敵強度モデル＝シム専用）
@@ -117,7 +120,7 @@ function simBattle(run, rng, floorType, pursue = false) {
       const v = pick(w);
       deltas[v] = -value; deltas[w] = value;
     }
-    const hpd = rogueliteDamageDeltas(run, { deltas, roles, winnerSeat: w }); // 深度倍率/上限は本体側で適用済み
+    const hpd = rogueliteDamageDeltas(run, { deltas, roles, winnerSeat: w, hpMax }); // 深度倍率/一撃死上限を本体側で適用
     for (let i = 0; i < 4; i++) hp[i] = Math.max(0, hp[i] + hpd[i]);
   }
   // 結果反映：味方HPを run へ戻す（回復しない＝消耗が累積する）。

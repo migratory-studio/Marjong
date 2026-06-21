@@ -60,15 +60,16 @@ export const ROGUELITE_FLOOR_MASTER = [
 ];
 
 // 鍛冶屋：スキルレベル+1の費用（光貨）。レベルが上がるほど高くなる。上限Lv10。
+// 序盤から手が届くよう低め（旧 20+lv*12 は高すぎてスキル経済が死んでいた）。
 export const SKILL_LEVEL_CAP = 10;
 export function forgeCost(skillLevel = 1) {
-  return 20 + skillLevel * 12;
+  return 10 + skillLevel * 6;
 }
 
 // ラン内通貨「光貨」の経済（第2弾）。
 // 1戦踏破で得る光貨（深いほど・強敵/ボス/撃破/追撃で増す）。
 export function coinsForClear({ floor = 1, kind = "mob", ko = false, pursue = false } = {}) {
-  let c = 6 + Math.floor(floor / 2);
+  let c = 10 + Math.floor(floor * 0.7); // 収入を底上げ（鍛冶/ショップを実用域に）
   if (kind === "boss") c *= 3; else if (kind === "named") c = Math.round(c * 1.6);
   if (ko) c += 4;
   if (pursue) c = Math.round(c * 1.3);

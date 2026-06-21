@@ -4982,3 +4982,25 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-buff-totals { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
 .rl-buff-stat.skl b { color: #8fc1ff; }
 .rl-shop-toprow { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 2px; }
+
+/* 楼光の館：ダメージ計算の内訳演出 */
+.rl-calc-card { max-width: 600px; }
+.rl-calc-card .dmg-head small { font-size: 12px; color: var(--muted, #9aa3b2); font-weight: 400; }
+.rl-calc-rows { display: flex; flex-direction: column; gap: 12px; margin: 10px 0 6px; }
+.rl-calc-row { border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 9px 12px; background: rgba(255,255,255,0.03); }
+.rl-calc-row.deal { border-left: 3px solid #ff8f6b; }
+.rl-calc-row.take { border-left: 3px solid #6fb6ff; }
+.rl-calc-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+.rl-calc-kind { font-size: 11px; font-weight: 700; color: #9aa3b2; }
+.rl-calc-name { font-size: 14px; font-weight: 700; }
+.rl-calc-chain { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.rl-calc-step { font-size: 11px; padding: 2px 8px; border-radius: 6px; background: rgba(0,0,0,0.28); border: 1px solid rgba(255,255,255,0.12); color: #cdd3da; opacity: 0; transform: translateY(4px); transition: opacity .22s ease var(--d,0ms), transform .22s ease var(--d,0ms); white-space: nowrap; }
+.rl-calc-step.in { opacity: 1; transform: none; }
+.rl-calc-step b { margin-left: 5px; color: var(--ink, #fff); }
+.rl-calc-step.final { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+.rl-calc-arrow { color: #6b727e; font-size: 11px; }
+.rl-calc-result { margin-top: 6px; font-size: 20px; font-weight: 800; text-align: right; }
+.rl-calc-result.deal { color: #ff8f6b; }
+.rl-calc-result.take { color: #6fb6ff; }
+.rl-calc-result small { font-size: 11px; font-weight: 600; color: #9aa3b2; margin-left: 4px; }
+.rl-calc-cap { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 700; color: #6fe08a; background: rgba(111,224,138,0.14); border-radius: 6px; padding: 1px 8px; }

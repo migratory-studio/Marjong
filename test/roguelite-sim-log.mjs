@@ -83,7 +83,8 @@ function simBattle(run, rng, floorType, pursue, label) {
     const deltas = [0, 0, 0, 0];
     if (tsumo) { const share = Math.max(100, Math.round(value / 3 / 100) * 100); for (let i = 0; i < 4; i++) if (i !== w) deltas[i] = -share; deltas[w] = share * 3; }
     else { const v = pick(w); deltas[v] = -value; deltas[w] = value; }
-    const hpd = rogueliteDamageDeltas(run, { deltas, roles, winnerSeat: w });
+    const hpMax = [allies[0].hpMax, 0, allies[1].hpMax, 0]; // 一撃死上限（味方席のみ・敵は無関係）
+    const hpd = rogueliteDamageDeltas(run, { deltas, roles, winnerSeat: w, hpMax });
     const before = [...hp];
     for (let i = 0; i < 4; i++) hp[i] = Math.max(0, hp[i] + hpd[i]);
     // ログ：誰が和了→誰のHPがいくら減ったか

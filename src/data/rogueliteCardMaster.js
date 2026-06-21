@@ -39,7 +39,7 @@ export const ROGUELITE_CARD_MASTER = [
     rarity: "common",
     effect: { kind: "dealMul", mul: 1.1 },
     stackable: true,
-    maxStacks: 5,
+    maxStacks: 4,
   },
   {
     id: "take-down-common",

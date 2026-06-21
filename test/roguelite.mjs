@@ -8,7 +8,7 @@ import {
 import { applyEffect, applyCard, freshMods } from "../src/roguelite/cardEffects.js";
 import {
   newRun, allyScaledHp, floorEnemyHp, handsForType, isBossFloor,
-  enemyUnitForFloor, rogueliteDamageDeltas, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, DAMAGE_SCALE,
+  enemyUnitForFloor, rogueliteDamageDeltas, explainRogueliteDamage, lethalCapFrac, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, DAMAGE_SCALE,
   carrySlotsFor, excludedCardIds, rollDraft, allPartyDown, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers,
 } from "../src/roguelite/run.js";
@@ -332,6 +332,37 @@ eq(dd[2], Math.round(-2000 * DAMAGE_SCALE * 0.9 * 0.3), "同士討ちは被ダ�
 // 敵が和了したら dealMul は掛からない（味方失点には軽減のみ・floor1はfdm=1）
 dd = rogueliteDamageDeltas(run, { deltas: [-3000, 0, 0, 0], roles, winnerSeat: 1 });
 eq(dd[0], Math.round(-3000 * DAMAGE_SCALE * 0.9), "敵和了時は味方失点に軽減のみ（floor1）");
+
+// ---------- 一撃死上限（hpMax を渡すと最大HP比で被ダメをクランプ） ----------
+{
+  const r = newRun(party, "cap"); r.floor = 6; // 深度浅め＝cap基準
+  const hpMax = [1000, 0, 1000, 0];
+  // 敵の特大ツモを席0が受ける（fdm込みでも cap=lethalCapFrac(6)*1000 を超えない）
+  const dCap = rogueliteDamageDeltas(r, { deltas: [-99999, 0, 0, 0], roles, winnerSeat: 1, hpMax });
+  const cap = Math.round(1000 * lethalCapFrac(6));
+  eq(dCap[0], -cap, "1ハンドの被ダメは最大HP比の上限でクランプ");
+  ok(lethalCapFrac(1) < lethalCapFrac(30), "上限は深層ほど緩む（一撃死が戻る）");
+  eq(lethalCapFrac(40), 1, "十分深ければ上限なし（=1.0）");
+  // hpMax を渡さなければクランプしない（後方互換）
+  const dNoCap = rogueliteDamageDeltas(r, { deltas: [-99999, 0, 0, 0], roles, winnerSeat: 1 });
+  ok(dNoCap[0] < -cap, "hpMax 無しは従来どおり上限なし");
+}
+
+// ---------- ダメージ内訳（explainRogueliteDamage：素点→各段→最終） ----------
+{
+  const r = newRun(party, "explain");
+  applyCard(r, cardById("deal-up-rare")); // dealMul ×1.25
+  const ex = explainRogueliteDamage(r, { deltas: [0, -8000, 0, 0], roles, winnerSeat: 0, hpMax: [1000, 0, 1000, 0] });
+  const enemyRow = ex[1];
+  eq(enemyRow.steps[0].k, "素点", "内訳の先頭は素点");
+  eq(enemyRow.steps[0].v, -8000, "素点は元の点");
+  ok(enemyRow.value < 0, "内訳の最終値（与ダメ）が出る");
+  ok(enemyRow.steps.some((s) => /攻撃/.test(s.k)), "攻撃バフの段が出る");
+  // 説明はお守りを消費しない
+  const r2 = newRun(party, "explain2"); applyCard(r2, cardById("ally-tsumo-ward"));
+  explainRogueliteDamage(r2, { deltas: [0, 0, -2000, 0], roles, winnerSeat: 0, hpMax: [1000, 0, 1000, 0] });
+  eq(r2.mods.friendlyGuard, 1, "内訳表示ではお守りを消費しない");
+}
 
 // ---------- バランス調整：深度倍率は敵の攻撃だけ・与ダメは深度ボーナス・お守り ----------
 {
