@@ -5039,3 +5039,18 @@ button.primary.danger:hover { color: #ffbcbc; }
 .tb-calc-link:hover { border-color: var(--accent,#e8c45d); color: var(--ink,#fff); }
 .rl-calc-skip { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; font-size: 11px; color: #9aa3b2; cursor: pointer; }
 .rl-calc-skip input { cursor: pointer; }
+
+/* 楼光の館：道具パネル */
+.rl-items-modal { max-width: 560px; }
+.rl-item-list { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 12px; }
+.rl-item-slot { border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 9px 12px; background: rgba(255,255,255,0.04); }
+.rl-item-slot.empty { display: flex; align-items: center; justify-content: center; color: #6b727e; font-size: 12px; border-style: dashed; }
+.rl-item-head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.rl-item-kind { font-size: 10px; font-weight: 700; color: var(--cat, #ccc); border: 1px solid var(--cat, #ccc); border-radius: 5px; padding: 1px 6px; }
+.rl-item-name { font-size: 14px; font-weight: 700; color: var(--ink, #fff); }
+.rl-item-desc { font-size: 12px; color: #aeb6c2; line-height: 1.4; }
+.rl-item-use { margin-top: 6px; padding: 4px 16px; border: 1px solid var(--accent, #e8c45d); border-radius: 7px; background: rgba(232,196,93,0.16); color: var(--ink, #fff); font-size: 13px; cursor: pointer; }
+.rl-item-use:hover { background: rgba(232,196,93,0.3); }
+.rl-item-passive { margin-top: 4px; font-size: 11px; color: #6fb6ff; }
+.rl-route-btns { display: flex; flex-direction: column; gap: 4px; align-self: center; }
+.tb-dmg-stamp.endure { background: #6fe08a; color: #07270f; }

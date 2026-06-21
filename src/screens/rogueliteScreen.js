@@ -10,6 +10,7 @@
 // 1280×720 ノースクロール方針：ロスターのみ内部スクロールに逃がす（F6 と同様の扱い）。
 
 import { RARITY_META, CARD_CATEGORY, cardCategory } from "../data/rogueliteCardMaster.js";
+import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 
 const MAX_PARTY = 3;
@@ -292,14 +293,15 @@ export function buffTotalsHtml(run) {
   const skillRow = skills.length
     ? skills.map((n) => `<span class="rl-inv-chip skill">${n}</span>`).join("")
     : `<span class="rl-inv-empty">なし</span>`;
-  // 道具
+  // 道具（スロットの中身＋庇いの守りチャージ）
   const items = [];
+  for (const id of run?.items || []) { const it = itemById(id); if (it) items.push(`<span class="rl-inv-chip item">◆ ${it.name}</span>`); }
   if ((m.friendlyGuard || 0) > 0) items.push(`<span class="rl-inv-chip item">◆ 庇いの守り ×${m.friendlyGuard}</span>`);
   const groupHead = (cat, extra = "") => `<span class="rl-inv-head" style="--cat:${C[cat].color}">${C[cat].mark} ${C[cat].label}${extra}</span>`;
   return `<div class="rl-inv">
     <div class="rl-inv-row">${groupHead("buff")}<div class="rl-buff-totals">${buffRow}</div></div>
     <div class="rl-inv-row">${groupHead("skill", ` <small>${skills.length}/2</small>`)}<div class="rl-inv-chips">${skillRow}</div></div>
-    ${items.length ? `<div class="rl-inv-row">${groupHead("item")}<div class="rl-inv-chips">${items.join("")}</div></div>` : ""}
+    ${items.length ? `<div class="rl-inv-row">${groupHead("item", run?.items ? ` <small>${(run.items || []).length}/${ITEM_SLOTS}</small>` : "")}<div class="rl-inv-chips">${items.join("")}</div></div>` : ""}
   </div>`;
 }
 
@@ -324,7 +326,7 @@ export function showRogueliteSpeak(container, { char, charImages, line } = {}) {
 
 // ---- 進路選択（次フロアを2〜3択／ボス階は強制）＋撤退 ----
 export function showRogueliteRoute(container, opts = {}) {
-  const { floor = 1, choices = [], boss = false, coins = 0, skillLevel = 0, held = [], run = null, charImages = null, onPick, onRetreat, onSwap } = opts;
+  const { floor = 1, choices = [], boss = false, coins = 0, skillLevel = 0, held = [], run = null, charImages = null, onPick, onRetreat, onSwap, onItems } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-route";
@@ -346,7 +348,7 @@ export function showRogueliteRoute(container, opts = {}) {
     <div class="rl-modal rl-route-modal">
       <div class="rl-modal-head">第 ${floor} 階へ — 進路を選ぶ ${coinBadge(coins)}${skillBadge(skillLevel)}</div>
       <p class="rl-route-hint">光貨は戦闘を踏破するほど貯まり、<b>ショップ</b>で回復やバフに使える。10階ごとに<b>ボス</b>。</p>
-      ${run ? `<div class="rl-route-party"><div class="rl-hp-list">${partyHpRows(run, charImages)}</div>${onSwap ? `<button type="button" class="rl-swap-open" id="rl-route-swap">編成</button>` : ""}</div>` : ""}
+      ${run ? `<div class="rl-route-party"><div class="rl-hp-list">${partyHpRows(run, charImages)}</div><div class="rl-route-btns">${onSwap ? `<button type="button" class="rl-swap-open" id="rl-route-swap">編成</button>` : ""}${onItems ? `<button type="button" class="rl-swap-open" id="rl-route-items">道具 ${(run.items || []).length}/${ITEM_SLOTS}</button>` : ""}</div></div>` : ""}
       ${run ? buffTotalsHtml(run) : ""}
       ${body}
       <button type="button" class="rl-retreat" id="rl-route-retreat">ここで撤退する（記録を確保）</button>
@@ -358,6 +360,7 @@ export function showRogueliteRoute(container, opts = {}) {
   });
   ov.querySelector("#rl-route-retreat")?.addEventListener("click", () => { ov.remove(); onRetreat?.(); });
   ov.querySelector("#rl-route-swap")?.addEventListener("click", () => { ov.remove(); onSwap?.(); });
+  ov.querySelector("#rl-route-items")?.addEventListener("click", () => { ov.remove(); onItems?.(); });
 }
 
 // ---- 編成（任意のタイミングでメンバー入れ替え） ----
@@ -449,19 +452,21 @@ export function showRoguelitePursue(container, opts = {}) {
 
 // ---- 休息 / 宴会（回復演出） ----
 export function showRogueliteRest(container, opts = {}) {
-  const { kind = "rest", floor = 1, run, charImages = null, hungover = [], onDone } = opts;
+  const { kind = "rest", floor = 1, run, charImages = null, hungover = [], soberUsed = false, onDone } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-rest";
   const isBanquet = kind === "banquet";
   const head = isBanquet ? "宴会フロア — 大盤振る舞い！" : "休息フロア — ひと息つく";
   const note = isBanquet ? "生存している味方のHPが全回復した。" : "生存している味方のHPが回復した。";
+  const soberNote = soberUsed ? `<p class="rl-rest-hung" style="color:#6fe08a">◆ 酔い止めが割れて、二日酔いを防いだ。</p>` : "";
   const hungNote = hungover.length ? `<p class="rl-rest-hung">🍶 ${hungover.join("・")} は酔ってしまった……次の1戦は能力が使えない。</p>` : "";
   ov.innerHTML = `
     <div class="rl-modal">
       <div class="rl-modal-head">${head}${coinBadge(run?.coins || 0)}</div>
       <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
       <p class="rl-continue-note">${note}</p>
+      ${soberNote}
       ${hungNote}
       <button type="button" class="rl-start" id="rl-rest-go">先へ進む</button>
     </div>`;
@@ -545,6 +550,68 @@ export function showRogueliteDamageBreakdown(container, opts = {}) {
     if (container.querySelector("#rl-calc-skip")?.checked) onSkip?.();
     onDone?.();
   };
+}
+
+// ---- 道具パネル（フロア選択時に使う・最大3スロット） ----
+export function showRogueliteItems(container, opts = {}) {
+  const { run, onUse, onClose } = opts;
+  if (!container || !run) { onClose?.(); return; }
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-items";
+  const slotHtml = (id, i) => {
+    if (!id) return `<div class="rl-item-slot empty"><span>空きスロット ${i + 1}</span></div>`;
+    const it = itemById(id); if (!it) return "";
+    const km = ITEM_KIND_META[it.kind] || {};
+    const usable = it.kind === "active";
+    return `<div class="rl-item-slot" data-id="${id}">
+      <div class="rl-item-head"><span class="rl-item-kind" style="--cat:${km.color}">${km.mark} ${km.label}</span><span class="rl-item-name">${it.name}</span></div>
+      <div class="rl-item-desc">${it.desc}</div>
+      ${usable ? `<button type="button" class="rl-item-use" data-use="${id}">使う</button>` : `<div class="rl-item-passive">${it.kind === "passive" ? "持っている間ずっと有効" : "条件で自動発動"}</div>`}
+    </div>`;
+  };
+  const render = () => {
+    const list = ov.querySelector("#rl-item-list");
+    const ids = run.items || [];
+    list.innerHTML = Array.from({ length: ITEM_SLOTS }, (_, i) => slotHtml(ids[i], i)).join("");
+    list.querySelectorAll(".rl-item-use").forEach((b) => b.addEventListener("click", () => onUse?.(b.dataset.use)));
+  };
+  ov.innerHTML = `
+    <div class="rl-modal rl-items-modal">
+      <div class="rl-modal-head">道具（${(run.items || []).length}/${ITEM_SLOTS}）</div>
+      <p class="rl-route-hint">消費は<b>このフロア選択のタイミング</b>で使う。常設は持っている間ずっと、自動は条件で勝手に発動する。</p>
+      <div class="rl-item-list" id="rl-item-list"></div>
+      <button type="button" class="rl-start" id="rl-items-close">閉じる</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  render();
+  ov.querySelector("#rl-items-close")?.addEventListener("click", () => { ov.remove(); onClose?.(); });
+}
+
+// ---- 道具の入れ替え（スロット満杯で新規入手時） ----
+export function showRogueliteItemSwap(container, opts = {}) {
+  const { current = [], incoming, slots = 3, onResolve } = opts;
+  if (!container || !incoming) { onResolve?.(null); return; }
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-forget";
+  const km = (it) => ITEM_KIND_META[it?.kind] || {};
+  const rows = current.map((it) => `
+    <button type="button" class="rl-forget-row" data-id="${it.id}">
+      <div class="rl-forget-info"><div class="rl-forget-name"><span class="rl-item-kind" style="--cat:${km(it).color}">${km(it).mark}</span> ${it.name}</div>
+        <div class="rl-forget-desc">${it.desc || ""}</div></div>
+      <div class="rl-forget-x">これと入替</div>
+    </button>`).join("");
+  ov.innerHTML = `
+    <div class="rl-modal rl-forget-modal">
+      <div class="rl-modal-head">道具は最大 ${slots} つ — 入れ替える</div>
+      <p class="rl-route-hint">新しい道具「<b style="color:${km(incoming).color}">${incoming.name}</b>」を手に入れた。<br><span class="rl-forget-desc">${incoming.desc || ""}</span><br>どれと入れ替える？</p>
+      <div class="rl-forget-list">${rows}</div>
+      <button type="button" class="rl-retreat" id="rl-itemswap-skip">今の道具のままにする（新しいのを諦める）</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  ov.querySelectorAll(".rl-forget-row").forEach((b) => b.addEventListener("click", () => { ov.remove(); onResolve?.(b.dataset.id); }));
+  ov.querySelector("#rl-itemswap-skip")?.addEventListener("click", () => { ov.remove(); onResolve?.(null); });
 }
 
 // ---- 必殺枠の忘却（ポケモン式：枠超過＝どれか1つ手放す） ----

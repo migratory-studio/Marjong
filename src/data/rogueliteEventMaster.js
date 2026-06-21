@@ -26,8 +26,8 @@ export const ROGUELITE_EVENT_MASTER = [
     choices: [
       {
         label: "肩を貸す（HPを少し分けてやる）",
-        reply: "「恩に着る……この盾、持っていけ」",
-        outcome: { hurtFrac: 0.15, effect: { kind: "takeReduce", rate: 0.2 } },
+        reply: "「恩に着る……この盾（鉄壁の陣）、持っていけ」",
+        outcome: { hurtFrac: 0.15, item: "iron-wall" },
       },
       {
         label: "見なかったことにする",

@@ -15,6 +15,8 @@ import { paramsFromLv, makeRng } from "../autobattle/autoBattle.js";
 import { freshMods, applyCard } from "./cardEffects.js";
 import { ROGUELITE_CARD_MASTER, drawCards, cardById } from "../data/rogueliteCardMaster.js";
 import { SHOP_PRICE, SHOP_HEAL_PRICE, SHOP_MAXHP_PRICE } from "../data/rogueliteFloorMaster.js";
+import { itemMods } from "./itemEffects.js";
+import { drawItems } from "../data/rogueliteItemMaster.js";
 
 // 点棒→HP の写像係数（25000点 → 1000HP）。味方HP・与被ダメ双方に一貫適用。
 export const DAMAGE_SCALE = 1000 / 25000; // = 0.04
@@ -123,6 +125,9 @@ export function newRun(party, seed) {
     cleared: 0, // 撃破した戦数
     coins: 0,   // ラン内通貨「光貨」（ショップ/鍛冶屋）
     skillLevel: 1, // パーティ共通のスキルレベル（全員Lv1スタート・バフ/鍛冶屋でUP・能力が強化）
+    items: [],     // 道具スロット（最大3。active=フロア選択で使う / passive=常設 / trigger=自動）
+    nextBattle: {}, // 「次の1戦だけ」効果（道具で仕込む。launch で消費）
+    routeReroll: 0, // 地図の写しで進路を引き直した回数（seedずらし用）
     visited: [], // 通過したフロアid（進路の被り回避・来歴）
     alive: true,
   };
@@ -130,10 +135,11 @@ export function newRun(party, seed) {
 
 export { applyCard };
 
-// パーティの「生存メンバー」を最大比 frac で回復（休息/宴会/ショップ）。
+// パーティの「生存メンバー」を最大比 frac で回復（休息/宴会/ショップ）。「癒しの香炉」で回復量↑。
 // トんだ(hp<=0)メンバーは回復しない＝一度トベば復活しない（ランを通して脱落）。
 export function healParty(run, frac) {
-  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * frac));
+  const f = frac * itemMods(run).healMul;
+  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * f));
 }
 
 // 二日酔い抽選（宴会）。各メンバー独立に chance で hungover を立てる。決定論 rng。
@@ -143,18 +149,26 @@ export function rollHangover(run, chance, rng) {
 
 // ---- ショップ（第2弾・光貨） ----
 
-// ショップ在庫を決定論生成：バフ3種（取得済み除外）＋全回復＋HP最大+。価格はレア度/固定。
+// ショップ在庫を決定論生成：バフ2種＋道具1種（取得済み除外）＋全回復＋HP最大+。価格はレア度/固定。
 export function shopStock(run, rng) {
-  const cards = drawCards(rng, { count: 3, exclude: excludedCardIds(run) });
-  const items = cards.map((c) => ({ type: "card", card: c, price: SHOP_PRICE[c.rarity] || 20, name: c.name, desc: c.desc, rarity: c.rarity }));
-  items.push({ type: "heal", price: SHOP_HEAL_PRICE, name: "気付け薬", desc: "パーティ全員のHPを50%回復する。", rarity: "common" });
-  items.push({ type: "maxhp", price: SHOP_MAXHP_PRICE, name: "厚みの護符", desc: "HP最大値が20%増える（現在HPも底上げ）。", rarity: "rare" });
-  return items;
+  const cards = drawCards(rng, { count: 2, exclude: excludedCardIds(run) });
+  const stock = cards.map((c) => ({ type: "card", card: c, price: SHOP_PRICE[c.rarity] || 20, name: c.name, desc: c.desc, rarity: c.rarity }));
+  // 道具1種（未所持から）。
+  const it = drawItems(rng, { count: 1, exclude: run.items })[0];
+  if (it) stock.push({ type: "item", item: it, price: it.cost, name: it.name, desc: it.desc, rarity: "rare" });
+  stock.push({ type: "heal", price: SHOP_HEAL_PRICE, name: "気付け薬", desc: "パーティ全員のHPを50%回復する。", rarity: "common" });
+  stock.push({ type: "maxhp", price: SHOP_MAXHP_PRICE, name: "厚みの護符", desc: "HP最大値が20%増える（現在HPも底上げ）。", rarity: "rare" });
+  return stock;
 }
 
 // 購入：光貨が足りれば支払って効果適用。戻り値 true=購入成立。
 export function buyShopItem(run, item) {
   if (!item || (run.coins || 0) < item.price) return false;
+  // 道具は枠(3)が空いているときだけ（入れ替えはUIが要るので main 側が先取りする。ここはハーネス用）。
+  if (item.type === "item") {
+    if ((run.items || []).length >= 3) return false;
+    run.coins -= item.price; run.items.push(item.item.id); return true;
+  }
   run.coins -= item.price;
   if (item.type === "card") applyCard(run, item.card);
   else if (item.type === "heal") healParty(run, 0.5);
@@ -288,13 +302,17 @@ export function enemyUnitForFloor(run, floorType = null, salt = "") {
 // 戻り値: 席ごとのHP差分（負数・整数）。呼び出し側が hp[i]=max(0,hp[i]+d) で反映する。
 // 味方の失点には「深度被ダメ倍率（run.floor）」も乗る＝深いほど痛い（エンドレスの難度ランプ）。
 // 計算文脈（mod・深度倍率・上限）をまとめる。deltas/breakdown が共有＝二重実装を避ける。
-function damageContext(run, roles, winnerSeat, hpMax) {
+function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}) {
   const m = run.mods;
+  const im = itemMods(run); // 常設道具（光貨/回復/レア度/深度緩和）の集計
+  // 深度被ダメ倍率は「軽身の符」等で緩和（1.0 を割らないよう (fdm-1) 部分にだけ係数）。
+  const baseFdm = floorDamageMul(run.floor || 1);
+  const fdm = 1 + Math.max(0, baseFdm - 1) * (1 - im.fdmReduceFrac);
   return {
     winnerIsAlly: winnerSeat != null && roles[winnerSeat] === "ally",
-    dealMul: Math.min(RL_TUNE.dealCap, m.dealMul),
-    takeMul: Math.max(RL_TUNE.takeFloor, m.takeMul),
-    fdm: floorDamageMul(run.floor || 1),
+    dealMul: Math.min(RL_TUNE.dealCap, m.dealMul * (battleMods.dealMul || 1)),   // 鼓舞=次戦攻撃↑
+    takeMul: Math.max(RL_TUNE.takeFloor, m.takeMul * (battleMods.takeMul || 1)), // 鉄壁=次戦被ダメ↓
+    fdm,
     deal: dealDepthMul(run.floor || 1),
     friendlyMul: RL_TUNE.friendlyMul,
     lethalCapFrac: lethalCapFrac(run.floor || 1),
@@ -334,8 +352,9 @@ function seatDamage(d, role, i, ctx, guardRef) {
 
 // 対局の素点差分(deltas)を独自HPスケールへ写す（与ダメ倍率・被ダメ軽減・深度・一撃死上限・お守り込み）。
 //   hpMax … 席ごとの最大HP（任意）。渡すと1ハンドの被ダメに最大HP比の上限を掛ける（満タン即死を防ぐ）。
-export function rogueliteDamageDeltas(run, { deltas, roles, winnerSeat, hpMax }) {
-  const ctx = damageContext(run, roles, winnerSeat, hpMax);
+//   battleMods … 「次の1戦だけ」効果（道具）。{ dealMul, takeMul } を一時的に上乗せする。
+export function rogueliteDamageDeltas(run, { deltas, roles, winnerSeat, hpMax, battleMods }) {
+  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods);
   const guardRef = { n: run.mods.friendlyGuard || 0 };
   const out = deltas.map((d, i) => seatDamage(d, roles[i], i, ctx, guardRef).value);
   if (guardRef.n !== (run.mods.friendlyGuard || 0)) run.mods.friendlyGuard = guardRef.n; // 消費を反映
@@ -343,8 +362,8 @@ export function rogueliteDamageDeltas(run, { deltas, roles, winnerSeat, hpMax })
 }
 
 // ダメージの内訳（演出用）。各席の計算過程 steps を返す。お守りは消費しない（表示のみ・コピーで判定）。
-export function explainRogueliteDamage(run, { deltas, roles, winnerSeat, hpMax }) {
-  const ctx = damageContext(run, roles, winnerSeat, hpMax);
+export function explainRogueliteDamage(run, { deltas, roles, winnerSeat, hpMax, battleMods }) {
+  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods);
   const guardRef = { n: run.mods.friendlyGuard || 0 };
   return deltas.map((d, i) => ({ seat: i, role: roles[i], ...seatDamage(d, roles[i], i, ctx, guardRef) }));
 }
@@ -370,7 +389,8 @@ export function excludedCardIds(run) {
 // HPがほぼ満タンなら純回復カード（kind:"heal"）は無駄なので候補から外す（偏り/死に札の解消）。
 export function rollDraft(run, perf = {}) {
   const rng = makeRng(`${run.seed}:draft:${run.floor}:${run.cleared}`);
-  const rarityBias = perf.bias != null ? perf.bias : rarityBiasFor({ ...perf, floor: run.floor });
+  const base = perf.bias != null ? perf.bias : rarityBiasFor({ ...perf, floor: run.floor });
+  const rarityBias = Math.max(0, Math.min(1, base + itemMods(run).draftRarityBonus)); // 強運の根付で底上げ
   const exclude = excludedCardIds(run);
   const minFrac = Math.min(...run.party.map((m) => m.hp / (m.hpMax || 1)));
   if (minFrac > 0.85) {

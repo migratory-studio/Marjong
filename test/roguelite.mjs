@@ -13,6 +13,8 @@ import {
   shopStock, buyShopItem, shrineOffers,
 } from "../src/roguelite/run.js";
 import { ROGUELITE_FLOOR_MASTER, floorTypeById, drawFloorChoices, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "../src/data/rogueliteFloorMaster.js";
+import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "../src/data/rogueliteItemMaster.js";
+import { useItem, itemMods, consumeBanquetCharm, takeNextBattle } from "../src/roguelite/itemEffects.js";
 import { ROGUELITE_EVENT_MASTER, pickEvent } from "../src/data/rogueliteEventMaster.js";
 import { makeRng } from "../src/autobattle/autoBattle.js";
 import { abilityDef } from "../src/data/abilityMaster.js";
@@ -434,5 +436,63 @@ ok(run.cards.includes("deal-up-rare"), "引き継ぎも取得履歴に乗る（�
 // rarityBiasFor の単調性
 ok(rarityBiasFor({ ko: true, hpRatio: 1, floor: 10 }) > rarityBiasFor({ ko: false, hpRatio: 0.3, floor: 1 }), "好成績ほど高バイアス");
 ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) <= 1, "バイアスは0..1");
+
+// ---------- 道具（B案：3スロット・消費/常設/自動） ----------
+{
+  // マスタ整合
+  for (const it of ROGUELITE_ITEM_MASTER) {
+    ok(it.id && it.name && it.desc, `道具に文言: ${it.id}`);
+    ok(ITEM_KIND_META[it.kind], `道具の種別が妥当: ${it.id}=${it.kind}`);
+  }
+  const r = newRun(party, "items");
+  eq(r.items.length, 0, "道具は0スロットスタート");
+  // 消費：治癒の霊薬＝生存メンバー回復
+  r.party[0].hp = 100; r.items = ["heal-potion"];
+  const res = useItem(r, "heal-potion");
+  ok(res.ok && r.items.length === 0, "治癒の霊薬は使うと消費される");
+  ok(r.party[0].hp > 100, "治癒の霊薬で回復した");
+  // 次戦効果：弱体の札→run.nextBattle.enemyHpMul、takeNextBattleで取り出しクリア
+  r.items = ["weaken-talisman"]; useItem(r, "weaken-talisman");
+  eq(r.nextBattle.enemyHpMul, 0.75, "弱体の札で次戦の敵HP係数");
+  const nb = takeNextBattle(r);
+  eq(nb.enemyHpMul, 0.75, "takeNextBattle で取り出せる");
+  eq(Object.keys(r.nextBattle).length, 0, "取り出したらクリア");
+  // 地図の写し＝reroll（routeReroll++）
+  r.items = ["map-copy"]; const rr = useItem(r, "map-copy");
+  eq(rr.action, "reroll", "地図の写しは reroll を返す");
+  eq(r.routeReroll, 1, "routeReroll が増える");
+  // 鍛えの一服＝スキルLv+1
+  r.items = ["forge-tea"]; useItem(r, "forge-tea");
+  eq(r.skillLevel, 2, "鍛えの一服でスキルLv+1");
+  // 常設：商人の天秤=光貨×1.3 / 強運=レア度+ / 軽身=fdm緩和 / 癒し=回復×1.5
+  const rp = newRun(party, "passive");
+  rp.items = ["merchant-scale", "lucky-charm", "light-body", "healing-censer"];
+  const im = itemMods(rp);
+  ok(Math.abs(im.coinMul - 1.3) < 1e-9, "商人の天秤 coinMul=1.3");
+  ok(im.draftRarityBonus >= 0.2, "強運の根付 draftRarityBonus");
+  ok(im.fdmReduceFrac >= 0.2, "軽身の符 fdmReduce");
+  ok(Math.abs(im.healMul - 1.5) < 1e-9, "癒しの香炉 healMul=1.5");
+  // 自動：酔い止め＝宴会で消費
+  const rt = newRun(party, "trigger"); rt.items = ["sober-charm"];
+  ok(consumeBanquetCharm(rt) && rt.items.length === 0, "酔い止めは宴会で消費される");
+  ok(!consumeBanquetCharm(newRun(party, "none")), "酔い止め未所持なら何もしない");
+  // drawItems は未所持から
+  const drawn = drawItems(makeRng("it"), { count: 2, exclude: ["heal-potion"] });
+  ok(drawn.every((x) => x.id !== "heal-potion"), "drawItems は exclude を避ける");
+  eq(ITEM_SLOTS, 3, "スロットは3");
+}
+
+// 一撃死緩和＋次戦バフが rogueliteDamageDeltas に効く（battleMods）
+{
+  const r = newRun(party, "bmods"); r.floor = 6;
+  const base = rogueliteDamageDeltas(r, { deltas: [0, -8000, 0, 0], roles, winnerSeat: 0 })[1];
+  const drum = rogueliteDamageDeltas(r, { deltas: [0, -8000, 0, 0], roles, winnerSeat: 0, battleMods: { dealMul: 1.3 } })[1];
+  ok(Math.abs(drum) > Math.abs(base), "鼓舞の陣太鼓（battleMods.dealMul）で与ダメ増");
+  // 軽身の符（passive fdm緩和）：被ダメが軽くなる
+  const enemyHit = rogueliteDamageDeltas(r, { deltas: [-3000, 0, 0, 0], roles, winnerSeat: 1, hpMax: [1000, 0, 1000, 0] })[0];
+  const rl = newRun(party, "bmods2"); rl.floor = 6; rl.items = ["light-body"];
+  const enemyHitLight = rogueliteDamageDeltas(rl, { deltas: [-3000, 0, 0, 0], roles, winnerSeat: 1, hpMax: [1000, 0, 1000, 0] })[0];
+  ok(Math.abs(enemyHitLight) < Math.abs(enemyHit), "軽身の符で深層被ダメが軽くなる");
+}
 
 console.log(`roguelite.mjs: ${n} checks passed`);

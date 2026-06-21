@@ -251,6 +251,12 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
 - ✅ **和了トグルの意味を正す（実装済み）**：「自分からあがらない」の旧実装＝**ツモ封印**は誤り（リーチ一発ツモまで潰れていた）。正しくは **「相棒の捨て牌をロンしない＝味方から点を奪わない」**（敵ロン・自分のツモは可）。
   - エンジン：`noTsumoSeats`(Set) を廃し **`noRonFromSeats`(Map: 席→ロンしない相手席集合)** を新設。`_collectCallers`/`_collectChankanCallers` で `_friendlyRonBlocked(winnerSeat, fromSeat)` を判定。`_canTsumo` は `noWin` のみで弾く（自分からあがらないはツモを止めない）。
   - main：`pairWinPolicy.noTsumo`→`noAllyRon`。`applyPairWinPolicy` が自陣他席を `noRonFromSeats` に登録。「和了しない」(完全防御)は据置。回帰 `test/riichicost.mjs`（相棒ロン禁止/敵ロン可）。
+- ✅ **道具（アイテム）システム＝B案（実装済み）**：バフ/必殺技と別軸の「道具」。**3スロット・満杯なら入れ替え・使用はフロア選択時・パッシブ/インゲーム連動あり**。
+  - マスタ＝`rogueliteItemMaster.js`（13種）／効果＝`itemEffects.js`（leaf）。`run.items`(最大3)・`run.nextBattle`(次戦効果)・`run.routeReroll`。
+  - 種別：**消費**(治癒の霊薬/不屈のお守り/地図の写し/弱体の札/鼓舞の陣太鼓/鉄壁の陣/不抜のリーチ/鍛えの一服)・**自動**(酔い止め＝宴会で消費)・**常設**(商人の天秤=光貨+30%/強運の根付=レア度↑/軽身の符=深度被ダメ緩和/癒しの香炉=回復+50%)。
+  - インゲーム連動：`battleMods`(次戦の攻撃/防御/敵HP/無償リーチ/不屈)を `launchRogueliteBattle` で適用→戦後クリア。被ダメ計算(`rogueliteDamageDeltas`)へ `battleMods`＋常設(`itemMods`)を合流。不屈＝致命被弾でHP1踏みとどまり(席ごと1回)。
+  - 入手元：**ショップ**(道具枠)・**宝箱**(50%で道具)・**イベント**(`outcome.item`／「行き倒れ＝鉄壁の陣」)。満杯時は `showRogueliteItemSwap`。進路に「道具 N/3」ボタン→`showRogueliteItems`。所持パネルの道具グループに名称表示。
+  - 回帰 `test/roguelite.mjs`(417)＋`--assert`(7)。実機で道具パネル/使用/入れ替え/進路ボタンを確認。
 - ✅ **セリフ照合・相棒・反転の磨き込み（実装済み）**：
   - **満貫帯の scoreTier 分離**：`scoreTierOf` に `mid`(5200〜9999)を新設＝満貫(8000)が「地味」低点数セリフにならない。詩玥/凌雲に mid 和了セリフ追加・templateも追従（`voiceLines`/`characterVoiceMaster`）。
   - **相棒(席2)の和了発火**：ペア戦で相方が自分で和了したら相棒ボードの吹き出しで一言（`showPairBattleDamageFx`＋既存 `showPartnerTalk`）。編成＝相棒選びの意味づけに。
