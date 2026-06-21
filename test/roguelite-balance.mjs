@@ -15,7 +15,7 @@ import {
 import { applyCard, applyEffect } from "../src/roguelite/cardEffects.js";
 import { shopStock, buyShopItem, shrineOffers } from "../src/roguelite/run.js";
 import { ROGUELITE_CARD_MASTER, RARITY_WEIGHTS, drawCards, cardById } from "../src/data/rogueliteCardMaster.js";
-import { floorTypeById, drawFloorChoices, coinsForClear } from "../src/data/rogueliteFloorMaster.js";
+import { floorTypeById, drawFloorChoices, coinsForClear, forgeCost } from "../src/data/rogueliteFloorMaster.js";
 
 const ASSERT = process.argv.includes("--assert");
 
@@ -40,7 +40,7 @@ function routePick(rng, run, policy) {
   const choices = drawFloorChoices(rng, { count: 3 });
   const minFrac = Math.min(...run.party.map((m) => m.hp / m.hpMax));
   if (minFrac < 0.4) { const heal = choices.find((c) => c.kind === "rest" || c.kind === "banquet"); if (heal) return heal; }
-  const pref = ["shop", "treasure", "elite", "event", "shrine", "gamble", "normal", "rest", "banquet"];
+  const pref = ["forge", "shop", "treasure", "elite", "event", "shrine", "gamble", "normal", "rest", "banquet"];
   for (const k of pref) { const f = choices.find((c) => c.id === k || c.kind === k); if (f) return f; }
   return choices[0];
 }
@@ -53,6 +53,7 @@ function resolveSpecial(run, floorType, rng, policy) {
     case "treasure": if (policy === "greedy") { const c = PICKERS.greedy(rollDraft(run, { hpRatio: 1 })); if (c) applyCard(run, c); } break;
     case "event": { healParty(run, 0.2); if (policy === "greedy") { const c = cardById("deal-up-common"); if (c) applyCard(run, c); } break; } // 近似：小回復＋小バフ
     case "shop": if (policy === "greedy") { for (const it of shopStock(run, rng)) { if ((run.coins || 0) >= it.price) buyShopItem(run, it); } } break; // 買えるだけ買う
+    case "forge": if (policy === "greedy") { let c = forgeCost(run.skillLevel); while ((run.coins || 0) >= c && run.skillLevel < 10) { run.coins -= c; run.skillLevel += 1; c = forgeCost(run.skillLevel); } } break; // 鍛冶：払える限りLvを上げる
     case "shrine": if (policy === "greedy" && Math.min(...run.party.map((m) => m.hp / m.hpMax)) > 0.5) { const o = shrineOffers(run)[0]; for (const m of run.party) m.hp = Math.max(1, m.hp - Math.round(m.hpMax * (o.outcome.hurtFrac || 0))); if (o.outcome.effect) applyEffect(run, o.outcome.effect); } break;
     default: break;
   }
@@ -65,6 +66,7 @@ const GRANT_STRENGTH = 8;
 function allyStrengthOf(run, member) {
   let s = member.baseStrength;
   s += run.mods.grantedAbilityIds.length * GRANT_STRENGTH;
+  s += Math.max(0, (run.skillLevel || 1) - 1) * 4; // スキルLvで能力が強化＝実効プレイ強度UPの近似
   return s;
 }
 function enemyStrengthOf(floor, seed) {

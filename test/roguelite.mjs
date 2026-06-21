@@ -11,7 +11,7 @@ import {
   carrySlotsFor, excludedCardIds, rollDraft, allPartyDown, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers,
 } from "../src/roguelite/run.js";
-import { ROGUELITE_FLOOR_MASTER, floorTypeById, drawFloorChoices, coinsForClear } from "../src/data/rogueliteFloorMaster.js";
+import { ROGUELITE_FLOOR_MASTER, floorTypeById, drawFloorChoices, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "../src/data/rogueliteFloorMaster.js";
 import { ROGUELITE_EVENT_MASTER, pickEvent } from "../src/data/rogueliteEventMaster.js";
 import { makeRng } from "../src/autobattle/autoBattle.js";
 import { abilityDef } from "../src/data/abilityMaster.js";
@@ -55,7 +55,7 @@ eq(handsForType(floorTypeById("boss")), 2, "ボス=2局");
 ok(isBossFloor(10) && !isBossFloor(3), "ボスは10階ごと");
 
 // ---- フロア種別マスタ ----
-const KNOWN_FLOOR_KINDS = new Set(["battle", "rest", "banquet", "treasure", "event", "shop", "gamble", "shrine"]);
+const KNOWN_FLOOR_KINDS = new Set(["battle", "rest", "banquet", "treasure", "event", "shop", "gamble", "shrine", "forge"]);
 const fids = new Set();
 for (const f of ROGUELITE_FLOOR_MASTER) {
   ok(f.id && !fids.has(f.id), `floor id 一意: ${f.id}`); fids.add(f.id);
@@ -235,6 +235,19 @@ eq(run.mods.grantedAbilityIds.filter((x) => x === "lucky-draw").length, 1, "付�
 run = newRun(party, "s");
 applyCard(run, cardById("add-bench"));
 eq(run.mods.benchSlots, 1, "控え枠+1");
+
+// ---------- スキルレベル（全員Lv1スタート→バフ/鍛冶屋でUP） ----------
+{
+  const r = newRun(party, "skill");
+  eq(r.skillLevel, 1, "スキルLvは1スタート");
+  applyCard(r, cardById("skill-up"));
+  eq(r.skillLevel, 2, "秘伝の伝授で+1");
+  for (let k = 0; k < 20; k++) applyCard(r, cardById("skill-up"));
+  eq(r.skillLevel, SKILL_LEVEL_CAP, `スキルLvは上限${SKILL_LEVEL_CAP}で頭打ち`);
+  ok(forgeCost(5) > forgeCost(1), "鍛冶費用はLvが上がるほど高い");
+  ok(forgeCost(1) > 0, "鍛冶費用は正");
+  eq(floorTypeById("forge").kind, "forge", "鍛冶屋フロアあり");
+}
 
 // skillLevelUp / paramBoost は v1 ではカード化していないが、リゾルバの kind は将来用に維持。
 run = newRun(party, "s");

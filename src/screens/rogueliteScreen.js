@@ -232,6 +232,10 @@ const FLOOR_KIND_META = {
   treasure: { mark: "🎁", color: "#56a8ff" },
   event: { mark: "✦", color: "#c06bff" },
   boss: { mark: "☠", color: "#ff5470" },
+  shop: { mark: "🛒", color: "#56a8ff" },
+  gamble: { mark: "🎲", color: "#e8734d" },
+  shrine: { mark: "⛩", color: "#c06bff" },
+  forge: { mark: "🔨", color: "#e8c45d" },
 };
 
 function partyHpRows(run) {
@@ -243,6 +247,7 @@ function partyHpRows(run) {
 }
 
 const coinBadge = (coins) => `<div class="rl-coins">光貨 <b>${coins | 0}</b></div>`;
+const skillBadge = (lv) => (lv ? `<div class="rl-skill">スキルLv <b>${lv}</b></div>` : "");
 
 // 意思決定の瞬間に、先頭キャラが一言「返す」小トースト（立ち絵＋吹き出し）。
 // 愛着×双方向＝選んだことが手触りとして返ってくる。数秒で自動的に消える。
@@ -265,7 +270,7 @@ export function showRogueliteSpeak(container, { char, charImages, line } = {}) {
 
 // ---- 進路選択（次フロアを2〜3択／ボス階は強制）＋撤退 ----
 export function showRogueliteRoute(container, opts = {}) {
-  const { floor = 1, choices = [], boss = false, coins = 0, held = [], onPick, onRetreat } = opts;
+  const { floor = 1, choices = [], boss = false, coins = 0, skillLevel = 0, held = [], onPick, onRetreat } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-route";
@@ -285,7 +290,7 @@ export function showRogueliteRoute(container, opts = {}) {
   }
   ov.innerHTML = `
     <div class="rl-modal rl-route-modal">
-      <div class="rl-modal-head">第 ${floor} 階へ — 進路を選ぶ ${coinBadge(coins)}</div>
+      <div class="rl-modal-head">第 ${floor} 階へ — 進路を選ぶ ${coinBadge(coins)}${skillBadge(skillLevel)}</div>
       <p class="rl-route-hint">光貨は戦闘を踏破するほど貯まり、<b>ショップ</b>で回復やバフに使える。10階ごとに<b>ボス</b>。</p>
       ${body}
       ${held.length ? `<div class="rl-held"><span class="rl-held-label">所持バフ</span>${held.map((b) => {
@@ -391,6 +396,42 @@ export function showRogueliteEvent(container, opts = {}) {
       go.addEventListener("click", () => { ov.remove(); onDone?.(); }, { once: true });
     });
   });
+}
+
+// ---- 鍛冶屋（光貨でスキルレベルを鍛える。打つたびLv/残高を更新） ----
+export function showRogueliteForge(container, opts = {}) {
+  const { floor = 1, run, cap = 10, costOf, onForge, onLeave } = opts;
+  if (!container) return;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-forge";
+  const render = () => {
+    const lv = run?.skillLevel || 1;
+    const cost = costOf ? costOf(lv) : 40;
+    const maxed = lv >= cap;
+    const afford = (run?.coins || 0) >= cost;
+    ov.querySelector("#rl-forge-lv").textContent = lv;
+    ov.querySelector("#rl-forge-coins").textContent = run?.coins | 0;
+    const btn = ov.querySelector("#rl-forge-do");
+    btn.disabled = maxed || !afford;
+    btn.textContent = maxed ? "これ以上は鍛えられない（Lv上限）" : `鍛える（光貨 ${cost}）→ Lv${lv + 1}`;
+    ov.querySelector("#rl-forge-note").textContent = maxed
+      ? "パーティのスキルは極まっている。"
+      : afford ? "スキルレベルが上がると、全員の能力そのものが強くなる。" : "光貨が足りない。戦って稼ごう。";
+  };
+  ov.innerHTML = `
+    <div class="rl-modal">
+      <div class="rl-modal-head">第 ${floor} 階・鍛冶屋 — スキルLv <b id="rl-forge-lv">1</b>　／　光貨 <b id="rl-forge-coins">0</b></div>
+      <p class="rl-continue-note" id="rl-forge-note"></p>
+      <div class="rl-continue-btns">
+        <button type="button" class="rl-start" id="rl-forge-do"></button>
+        <button type="button" class="rl-retreat" id="rl-forge-leave">店を出る</button>
+      </div>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  render();
+  ov.querySelector("#rl-forge-do")?.addEventListener("click", () => { if (onForge?.()) render(); });
+  ov.querySelector("#rl-forge-leave")?.addEventListener("click", () => { ov.remove(); onLeave?.(); });
 }
 
 // ---- ショップ（光貨で購入。買うたび在庫/残高を更新） ----

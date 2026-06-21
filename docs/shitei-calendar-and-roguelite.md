@@ -202,6 +202,9 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
   - **②遭遇イベントの早期確定**：未体験なら2〜5階の進路に遭遇を1回必ず出す（`drawFloorChoices` の `force` 枠＋`run.eventSeen`）。story-reader の「物語の場に出会えず離脱」を解消。
   - **③所持バフの可視化**：進路画面に取得バフ一覧（枚数まとめ）を常時表示（蓄積の可視化＝ディレクション方針）。
   - 回帰＝`test/roguelite.mjs`（255・強制枠/buffFamily台詞）＋`voicesheet`。実機で全3点確認（攻撃系バフ→「火力マシマシ」、追撃→「まだヤれるヨ」、撤退→「撤収ーっ」、floor2進路に遭遇強制）。
+- ✅ **スキルレベル＝ラン成長軸（実装済み）**：パーティ共通の `run.skillLevel`（全員Lv1スタート・上限10）。着卓時、各メンバーの自能力＋付与能力を **`skillRuntimeAbilityParams(levelTableId, skillLevel)` で生成**＝レベルテーブルを持つ能力（lucky-draw 等）がLvで強化（先読み数・回数 等）。
+  - **上げ方**：バフ「秘伝の伝授」(epic・skillLevelUp+1)／**鍛冶屋フロア**（`forge`・10階種別に追加）で**光貨を払ってLv+1**（`forgeCost`＝Lvが上がるほど高い・`showRogueliteForge`）。進路画面に**スキルLvバッジ**表示。
+  - 校正：harness にスキルLv強さ寄与＋鍛冶屋を反映、`--assert`(7) 維持。回帰＝`test/roguelite.mjs`（270）。プレイログ `test/roguelite-sim-log.mjs` もスキルLv/鍛冶屋を表示。実機で鍛冶屋UI（Lv1→2で光貨32消費・費用上昇）と能力強化（lucky-draw Lv1先読み2→Lv5先読み8）を確認。
   - 残（次以降）：楼光の館→師弟シナリオ導線、音声404の切り分け。
 - ✅ **セリフ照合・相棒・反転の磨き込み（実装済み）**：
   - **満貫帯の scoreTier 分離**：`scoreTierOf` に `mid`(5200〜9999)を新設＝満貫(8000)が「地味」低点数セリフにならない。詩玥/凌雲に mid 和了セリフ追加・templateも追従（`voiceLines`/`characterVoiceMaster`）。

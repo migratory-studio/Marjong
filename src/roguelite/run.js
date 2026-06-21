@@ -101,7 +101,8 @@ export function newRun(party, seed) {
     cards: [], // 取得カードid（履歴）
     mods: freshMods(),
     cleared: 0, // 撃破した戦数
-    coins: 0,   // ラン内通貨「光貨」（第2弾ショップ用・予約）
+    coins: 0,   // ラン内通貨「光貨」（ショップ/鍛冶屋）
+    skillLevel: 1, // パーティ共通のスキルレベル（全員Lv1スタート・バフ/鍛冶屋でUP・能力が強化）
     visited: [], // 通過したフロアid（進路の被り回避・来歴）
     alive: true,
   };

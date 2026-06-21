@@ -170,6 +170,15 @@ export const ROGUELITE_CARD_MASTER = [
     maxStacks: 2,
   },
   {
+    id: "skill-up",
+    name: "秘伝の伝授",
+    desc: "パーティのスキルレベルが1上がる（全員の能力が強化される）。",
+    rarity: "epic",
+    effect: { kind: "skillLevelUp", delta: 1 },
+    stackable: true,
+    maxStacks: 9,
+  },
+  {
     id: "add-bench",
     name: "新たな相棒",
     desc: "控え枠が1つ増える。次の編成から控えを追加できる。",

@@ -46,7 +46,7 @@ import { defaultRankState, applyMatchToRank, describeRank, seasonIdFromDate } fr
 import { pushRanking, fetchLeaderboard, fetchMyStanding } from "./progression/onlineRankRepo.js";
 import { showOnlineLeaderboard } from "./screens/onlineLeaderboardScreen.js";
 import { skillTemplateById, templateForAbility } from "./data/skillTemplateMaster.js";
-import { skillRuntimeAbilityParams } from "./data/skillLevelMaster.js";
+import { skillRuntimeAbilityParams, maxSkillLevel } from "./data/skillLevelMaster.js";
 import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
@@ -54,10 +54,10 @@ import { createAbility } from "./abilities/registry.js";
 import { newRun, enemyUnitForFloor, seatedAllies, allPartyDown, benchAbilityIds, rogueliteDamageDeltas, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers } from "./roguelite/run.js";
 import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById } from "./data/rogueliteCardMaster.js";
-import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear } from "./data/rogueliteFloorMaster.js";
+import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -1889,6 +1889,21 @@ function rogueliteSpeak(event, ctx = {}) {
   const line = vline(lead.id, event, ctx);
   if (line) showRogueliteSpeak(el("roguelite-screen"), { char: lead, charImages, line });
 }
+// 能力をスキルレベルで生成する。レベルテーブルを持つ能力は run.skillLevel の params で強化、
+// 持たない能力は baseParams のまま。レベルは各能力テーブルの上限でクランプ。
+function skilledAbility(abilityId, baseParams, skillLevel) {
+  try {
+    const tmpl = templateForAbility(abilityId);
+    if (tmpl?.levelTableId) {
+      const max = maxSkillLevel(tmpl.levelTableId) || 1;
+      const lv = Math.max(1, Math.min(max, skillLevel || 1));
+      const p = skillRuntimeAbilityParams(tmpl.levelTableId, lv);
+      if (p && Object.keys(p).length) return createAbility(abilityId, p);
+    }
+    return createAbility(abilityId, baseParams || {});
+  } catch { return null; } // 未知能力は無視
+}
+
 // 所持バフ一覧（重複は枚数でまとめる・蓄積の可視化）。
 function heldBuffs(run) {
   const count = {};
@@ -1957,6 +1972,18 @@ function enterFloor(run, floorType) {
       });
       break;
     }
+    case "forge":
+      // 鍛冶屋：光貨を払ってパーティのスキルレベルを+1（能力強化）。上限Lv10。
+      showRogueliteForge(host, {
+        floor: run.floor, run, cap: SKILL_LEVEL_CAP, costOf: forgeCost,
+        onForge: () => {
+          const cost = forgeCost(run.skillLevel);
+          if ((run.coins || 0) >= cost && run.skillLevel < SKILL_LEVEL_CAP) { run.coins -= cost; run.skillLevel += 1; return true; }
+          return false;
+        },
+        onLeave: () => advanceRoguelite(run),
+      });
+      break;
     default:
       advanceRoguelite(run); // 未知種別は素通り（保険）
   }
@@ -1983,7 +2010,7 @@ function advanceRoguelite(run) {
   goScreen("roguelite-screen");
   const held = heldBuffs(run); // 所持バフ一覧（蓄積の可視化）
   if (run.floor % 10 === 0) { // 10階ごとにボス（強制）
-    showRogueliteRoute(host, { boss: true, floor: run.floor, coins: run.coins || 0, held, onPick: () => enterFloor(run, BOSS_FLOOR), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
+    showRogueliteRoute(host, { boss: true, floor: run.floor, coins: run.coins || 0, skillLevel: run.skillLevel, held, onPick: () => enterFloor(run, BOSS_FLOOR), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
     return;
   }
   const rng = makeRng(`${run.seed}:route:${run.floor}`);
@@ -1991,7 +2018,7 @@ function advanceRoguelite(run) {
   const force = (!run.eventSeen && run.floor >= 2 && run.floor <= 5) ? ["event"] : [];
   const choices = drawFloorChoices(rng, { count: run.floor <= 2 ? 2 : 3, exclude: rogueliteState.lastFloorId ? [rogueliteState.lastFloorId] : [], force });
   showRogueliteRoute(host, {
-    floor: run.floor, choices, coins: run.coins || 0, held,
+    floor: run.floor, choices, coins: run.coins || 0, skillLevel: run.skillLevel, held,
     onPick: (ft) => { rogueliteState.lastFloorId = ft.id; enterFloor(run, ft); },
     onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }),
   });
@@ -2017,15 +2044,17 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
   // 席: 0=あなた / 1=敵A / 2=相棒 / 3=敵B。
   await charImages.load(order.filter((c) => !c.isMob));
   const seated = order.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
-  // 味方席（0,2）へ取得済みカードの付与能力＋控えのパッシブ能力を相乗り。
-  // ただし着卓メンバーが二日酔いなら付与をスキップ＝この1戦は能力使用不可（戦後に解除）。
+  // 味方席（0,2）の能力をスキルレベル反映で組み直す：自分の能力＋取得カードの付与能力＋控えのパッシブを
+  // すべて run.skillLevel で生成（レベルテーブルを持つ能力は params が強化される）。
+  // 二日酔いなら能力は封印（空＝この1戦は能力使用不可・戦後に解除）。
   const grantIds = [...run.mods.grantedAbilityIds, ...benchAbilityIds(run)];
   [allies[0], allies[1]].forEach((m, i) => {
     const seatIdx = i === 0 ? 0 : 2;
     if (m.hungover) { seated[seatIdx].abilities = []; return; } // 二日酔い＝能力封印
-    for (const abId of grantIds) {
-      try { seated[seatIdx].abilities.push(createAbility(abId, {})); } catch { /* 未知能力は無視 */ }
-    }
+    const abilities = [];
+    for (const a of (m.char.abilities || [])) { const ab = skilledAbility(a.abilityId, a.params, run.skillLevel); if (ab) abilities.push(ab); }
+    for (const abId of grantIds) { const ab = skilledAbility(abId, {}, run.skillLevel); if (ab) abilities.push(ab); }
+    seated[seatIdx].abilities = abilities;
   });
   for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
   const hp = [allies[0].hp, enemy.members[0].stats.startingPoints, allies[1].hp, enemy.members[1].stats.startingPoints];

@@ -4898,3 +4898,8 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-held { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 4px 0 12px; max-height: 64px; overflow-y: auto; }
 .rl-held-label { font-size: 11px; color: var(--muted); margin-right: 2px; }
 .rl-held-chip { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--rarity, #888); color: var(--ink); background: rgba(0,0,0,.25); }
+
+/* 楼光の館：スキルレベル表示・鍛冶屋 */
+.rl-skill { display: inline-block; margin-left: 8px; font-size: 13px; color: #8fc1ff; vertical-align: middle; }
+.rl-skill b { font-size: 16px; color: var(--ink); }
+.rl-forge .rl-modal { text-align: center; }

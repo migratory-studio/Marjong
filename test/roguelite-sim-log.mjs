@@ -18,7 +18,7 @@ import {
 } from "../src/roguelite/run.js";
 import { applyCard, applyEffect } from "../src/roguelite/cardEffects.js";
 import { cardById } from "../src/data/rogueliteCardMaster.js";
-import { floorTypeById, drawFloorChoices, coinsForClear } from "../src/data/rogueliteFloorMaster.js";
+import { floorTypeById, drawFloorChoices, coinsForClear, forgeCost } from "../src/data/rogueliteFloorMaster.js";
 import { pickEvent } from "../src/data/rogueliteEventMaster.js";
 
 const RUNS = Number(process.env.RUNS || 3);
@@ -57,10 +57,11 @@ function simBattle(run, rng, floorType, pursue, label) {
   const roles = ["ally", "enemy", "ally", "enemy"];
   const names = [allies[0].char.name, enemy.members[0].name, (allies[1].char.name) + (allies[1] === allies[0] ? "(影)" : ""), enemy.members[1].name];
   const hp = [allies[0].hp, enemy.members[0].stats.startingPoints, allies[1].hp, enemy.members[1].stats.startingPoints];
+  const sk = Math.max(0, (run.skillLevel || 1) - 1) * 4; // スキルLvの強さ寄与
   const strength = [
-    allies[0].baseStrength + run.mods.grantedAbilityIds.length * 8 * (allies[0].hungover ? 0 : 1),
+    allies[0].baseStrength + sk + run.mods.grantedAbilityIds.length * 8 * (allies[0].hungover ? 0 : 1),
     enemyStrength(run.floor, `${run.seed}:e0:${run.floor}`, floorType.enemy),
-    allies[1].baseStrength + run.mods.grantedAbilityIds.length * 8 * (allies[1].hungover ? 0 : 1),
+    allies[1].baseStrength + sk + run.mods.grantedAbilityIds.length * 8 * (allies[1].hungover ? 0 : 1),
     enemyStrength(run.floor, `${run.seed}:e1:${run.floor}`, floorType.enemy),
   ];
   const weights = strength.map((s) => LEAGUE_SIM.weightBase + Math.max(0, s) * LEAGUE_SIM.weightPerStrength);
@@ -69,7 +70,7 @@ function simBattle(run, rng, floorType, pursue, label) {
   const enemyDownNow = () => hp[1] <= 0 && hp[3] <= 0;
   const hands = pursue ? 1 : handsForType(floorType);
   const winds = ["東", "南", "西", "北"];
-  log(`    ${label}  局数=${hands}  深度被ダメ倍率=${floorDamageMul(run.floor).toFixed(2)}x`);
+  log(`    ${label}  局数=${hands}  深度被ダメ倍率=${floorDamageMul(run.floor).toFixed(2)}x  スキルLv${run.skillLevel}`);
   log(`      HP  ${names[0]}:${fmt(hp[0])}  ${names[2]}:${fmt(hp[2])}  ／ 敵 ${names[1]}:${fmt(hp[1])}  ${names[3]}:${fmt(hp[3])}`);
   for (let h = 0; h < hands; h++) {
     if (allyDownNow() || enemyDownNow()) break;
@@ -119,7 +120,7 @@ function routePick(rng, run) {
   const choices = drawFloorChoices(rng, { count: 3, force: (!run.eventSeen && run.floor >= 2 && run.floor <= 5) ? ["event"] : [] });
   const minFrac = Math.min(...run.party.map((m) => m.hp / m.hpMax));
   if (minFrac < 0.4) { const heal = choices.find((c) => c.kind === "rest" || c.kind === "banquet"); if (heal) return heal; }
-  const pref = ["shop", "event", "treasure", "elite", "shrine", "gamble", "normal", "rest", "banquet"];
+  const pref = ["forge", "shop", "event", "treasure", "elite", "shrine", "gamble", "normal", "rest", "banquet"];
   for (const k of pref) { const f = choices.find((c) => c.id === k || c.kind === k); if (f) return f; }
   return choices[0];
 }
@@ -131,7 +132,7 @@ function simRun(idx) {
   for (const m of run.party) m.baseStrength = strengthOf(m.char); // newRun は強さを引き継がないので再付与
   const rng = makeRng(`${seed}:b`);
   log(`\n════════ ラン ${idx + 1} ════════`);
-  log(`パーティ:`);
+  log(`パーティ（全員スキルLv${run.skillLevel}スタート）:`);
   for (const m of run.party) log(`  ${m.char.name}  HP ${fmt(m.hpMax)}（実点棒${fmt(m.char.stats?.startingPoints ?? 0)}→×${DAMAGE_SCALE}）  強さ≈${m.baseStrength}  役割:${m.char.role}  能力:${(m.char.abilities || []).map((a) => a.abilityId).join(",") || "なし"}`);
   let guard = 0;
   while (guard++ < 60) {
@@ -147,6 +148,7 @@ function simRun(idx) {
       else if (ft.kind === "event") { run.eventSeen = true; const ev = pickEvent(makeRng(`${seed}:ev:${run.floor}`)); const ch = ev.choices[0]; applyOutcome(run, ch.outcome); log(`  遭遇「${ev.title}」→「${ch.label}」 ${ch.reply}`); }
       else if (ft.kind === "shop") { const stock = shopStock(run, rng); let bought = []; for (const it of stock) { if ((run.coins || 0) >= it.price) { if (buyShopItem(run, it)) bought.push(`${it.name}(${it.price})`); } } log(`  ショップ：光貨${fmt(run.coins)} 残／購入: ${bought.join(", ") || "なし"}`); }
       else if (ft.kind === "shrine") { const o = shrineOffers(run)[0]; applyOutcome(run, o.outcome); log(`  祠：「${o.label}」 ${o.reply}`); }
+      else if (ft.kind === "forge") { let c = forgeCost(run.skillLevel); let n = 0; while ((run.coins || 0) >= c && run.skillLevel < 10) { run.coins -= c; run.skillLevel += 1; n++; c = forgeCost(run.skillLevel); } log(`  鍛冶屋：光貨で鍛錬 ×${n} → スキルLv${run.skillLevel}（光貨残${run.coins}）`); }
       run.floor += 1;
       continue;
     }

@@ -56,7 +56,14 @@ export const ROGUELITE_FLOOR_MASTER = [
   { id: "shop", name: "ショップ", kind: "shop", weight: 8, blurb: "光貨で強化を買い求める。回復やバフを品定め。" },
   { id: "gamble", name: "賭場", kind: "gamble", enemy: "named", baseHands: 1, weight: 6, blurb: "一局の大勝負。勝てば高レアと光貨が倍。負ければ手痛い。" },
   { id: "shrine", name: "祠", kind: "shrine", weight: 5, blurb: "供物を捧げ、力を請う。痛みと引き換えの強大な恩恵。" },
+  { id: "forge", name: "鍛冶屋", kind: "forge", weight: 7, blurb: "光貨を払い、パーティのスキルレベルを鍛える。能力そのものが強くなる。" },
 ];
+
+// 鍛冶屋：スキルレベル+1の費用（光貨）。レベルが上がるほど高くなる。上限Lv10。
+export const SKILL_LEVEL_CAP = 10;
+export function forgeCost(skillLevel = 1) {
+  return 20 + skillLevel * 12;
+}
 
 // ラン内通貨「光貨」の経済（第2弾）。
 // 1戦踏破で得る光貨（深いほど・強敵/ボス/撃破/追撃で増す）。

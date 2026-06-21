@@ -37,7 +37,8 @@ export function applyEffect(run, effect) {
       m.takeMul *= 1 - (effect.rate ?? 0); // 軽減は乗算で重ねる（1-r の積＝重ね取りが逓減）
       break;
     case "skillLevelUp":
-      m.skillLevelDelta += effect.delta ?? 0;
+      m.skillLevelDelta += effect.delta ?? 0; // 後方互換（集計）
+      if (run.skillLevel != null) run.skillLevel = Math.min(10, run.skillLevel + (effect.delta ?? 0)); // パーティのスキルLvを上げる（能力強化）
       break;
     case "paramBoost": {
       const k = effect.param;
