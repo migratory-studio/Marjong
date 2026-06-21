@@ -158,7 +158,8 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
 ## 確定済み（このメモで決着）
 
 - ✅ **開催月テーブル＆大会メニュー（F1+F2 実装済み）**：八宝は**半年周期（年2回）**＝`tournamentMaster.openBaseMonth`＋6ヶ月（基準月＝門前4・清一5・至盃6・無双7・鏡8・大三剣9・天暗10・天地11）。当月開催を `calendarMaster.tournamentsOpenAt` で出し、**大会メニュー**（九宝コレクション＋目標★＋制覇済＋門前払い予告）から自由選択。**九蓮だけ3年目4月（`dayCount` 25）・八宝制覇後**アンカー。7/10/1は本大会（節目）。回帰＝`test/calendar.mjs`。
-- ✅ **修行完了DB（F5 実装済み）**：`completedAvatar.js`＝CompletedAvatar生成／5枠手動入替／`markGraduated`。能力凍結・タイプ=ロール。`profile.completedAvatars[]`（misc jsonb保存・専用テーブル不要）。F4「よし」で卒業確定。回帰＝`test/completedAvatar.mjs`（24 checks）。
+- ✅ **修行完了DB（F5 実装済み）**：`completedAvatar.js`＝CompletedAvatar生成／5枠手動入替／`markGraduated`。能力凍結・タイプ=ロール。`profile.completedAvatars[]`（misc jsonb保存・専用テーブル不要）。F4「よし」で卒業確定。回帰＝`test/completedAvatar.mjs`。
+- ✅ **修行完了弟子をフリー対戦へ（F6 実装済み）**：選択画面に「あなたの弟子」セクションを足し、`completedAvatars` を**席0=あなた専用**で選べる（育てたステ/能力/HPで打つ＝育成⇔対戦の接続）。変換は `completedAvatar.js` の純関数 `deshiCharFrom`（弟子→CHARACTER互換の単一情報源）＋ `completedAvatarToChar`、`main.js` の `avatarToCharacter` は委譲。`charById`（CHARACTERS∪弟子）/ `loadCompletedRoster`（select開時に読込・画像/ボイス登録）。弟子は**団体/ペアには出さない**（切替時に指名解除）。**絆は計上しない＝案A**（`isCompletedAvatar`）。弟子5枠でも固定720を割らないよう `char-list` を `max-height+overflow-y:auto` で内部スクロールに逃がす。回帰＝`test/completedAvatar.mjs`（39 checks）。
 - ✅ **ローグライト骨格**：ペア戦流用の共闘卓／3人目控え／エンドレス／継続 or 撤退／ローグライク引継ぎ（進度依存枠・終了時選択・**累積しない**）。
 
 ## 残：実装時チューニング（ハーネスで合わせる／素案では未決でOK）
