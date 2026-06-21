@@ -1,7 +1,7 @@
 // 修行完了データの回帰 — src/progression/completedAvatar.js。
 //   node test/completedAvatar.mjs
 import assert from "node:assert";
-import { buildCompletedAvatar, addCompletedAvatar, markGraduated, MAX_COMPLETED_AVATARS } from "../src/progression/completedAvatar.js";
+import { buildCompletedAvatar, addCompletedAvatar, markGraduated, MAX_COMPLETED_AVATARS, deshiCharFrom, completedAvatarToChar } from "../src/progression/completedAvatar.js";
 
 let n = 0;
 const eq = (a, b, m) => { assert.deepStrictEqual(a, b, m); n++; };
@@ -55,5 +55,35 @@ eq(re.profile.completedAvatars.find((c) => c.sourceAvatarId === "a2").result.ran
 const gp = markGraduated({ avatars: [{ avatarId: "a1" }, { avatarId: "a2" }] }, "a1");
 ok(gp.avatars.find((a) => a.avatarId === "a1").graduated, "a1卒業フラグ");
 ok(!gp.avatars.find((a) => a.avatarId === "a2").graduated, "a2は据置");
+
+// --- completedAvatarToChar / deshiCharFrom（F6・対局キャラ変換）---
+// 実在マスタ参照：tmpl-lucky-draw→ability "lucky-draw" / icon-shiyue→画像パス。
+const ca2 = buildCompletedAvatar({
+  avatarId: "z1", name: "弟子Z", profileText: "プロフ",
+  mentorCharacterId: "shiyue", skillTemplateId: "tmpl-lucky-draw", skillLevel: 4,
+  params6: {}, avatarLevel: 7, avatarHpMax: 30000, bondLevel: 5,
+  presetIds: { icon: "icon-shiyue", standing: "standing-shiyue" },
+}, { role: "gambler", roleLabel: "ギャンブラー", rank: "倍満級", rankIdx: 2, months: 18, treasures: 5, wins: 6 }, "");
+const ch = completedAvatarToChar(ca2);
+eq(ch.id, "completed-z1", "char id=completedAvatarId");
+eq(ch.name, "弟子Z", "char name");
+eq(ch.role, "gambler", "char role=確定型");
+ok(ch.isCompletedAvatar, "isCompletedAvatar フラグ");
+eq(ch.stats.startingPoints, 30000, "既定持ち点=avatarHpMax");
+eq(ch.profile, "プロフ", "profile 引継ぎ");
+eq(ch.abilities[0]?.abilityId, "lucky-draw", "能力=skillTemplate由来");
+ok(ch.abilities[0]?.params && typeof ch.abilities[0].params === "object", "能力paramsオブジェクト");
+eq(ch.assets.icon, "graphic/chars/shiyue/icon.png", "アイコン=preset由来");
+eq(ch.assets.portrait, "graphic/chars/shiyue/portrait.png", "立ち絵=preset由来");
+
+// startPoints 明示は avatarHpMax より優先（大会の持ち越し等）。
+eq(completedAvatarToChar(ca2, 12000).stats.startingPoints, 12000, "startPoints明示が優先");
+
+// 未知テンプレ→能力なし、role/color 省略時の既定。
+const bare = deshiCharFrom({ id: "x", name: "X", skillTemplateId: "nope" });
+eq(bare.abilities.length, 0, "未知テンプレ=能力なし");
+eq(bare.role, "attacker", "role既定=attacker");
+eq(bare.color, "#e0b85a", "color既定=金");
+eq(bare.stats.startingPoints, 25000, "startPoints既定=25000");
 
 console.log(`completedAvatar.mjs OK — ${n} checks passed`);

@@ -4708,3 +4708,13 @@ button.primary.danger:hover { color: #ffbcbc; }
 .succ-rep-card:hover { border-color: #caa64a; }
 .succ-rep-card span { font-size: 12px; color: #9fb6a6; }
 .succ-rep-cancel { padding: 7px 22px; border-radius: 9px; border: 1px solid #4a6a56; background: #2c4034; color: #cdddd0; cursor: pointer; }
+
+/* F6: フリー対戦の「あなたの弟子」セクション（修行完了弟子＝席0専用）。role-group を流用し、
+   育てた弟子だと一目で分かる金のアクセントだけ足す（数値は見せない方針は不変）。 */
+.role-group.deshi-group { --role: #e0b85a; }
+.role-group.deshi-group .role-name::before { content: "🎓 "; }
+.role-group.deshi-group .role-name { color: #e0b85a; letter-spacing: .04em; }
+/* 弟子セクションぶんロスターが伸びても固定ステージ(720)を割らないよう、③のロスター列だけ
+   上限を設けて内部スクロールに逃がす（vh/vw 不使用＝stage基準の固定値。不変条件の許容パターン）。
+   弟子0〜数枠なら上限未満で従来どおりスクロールは出ない。 */
+#select-screen .wiz-pane[data-pane="3"] .char-list { max-height: 590px; min-height: 0; overflow-y: auto; padding-right: 4px; }

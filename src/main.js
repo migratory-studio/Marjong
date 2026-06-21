@@ -54,7 +54,7 @@ import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } fro
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
 import { evaluateSuccession } from "./progression/successionResult.js";
-import { buildCompletedAvatar, addCompletedAvatar, markGraduated } from "./progression/completedAvatar.js";
+import { buildCompletedAvatar, addCompletedAvatar, markGraduated, deshiCharFrom, completedAvatarToChar } from "./progression/completedAvatar.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -168,6 +168,12 @@ function preloadAssets(onProgress) {
   ]);
 }
 let selectedCharId = null;
+// フリー対戦で席0（あなた）に選べる「修行完了弟子」（completedAvatarToChar 済みの CHARACTER 互換）。
+// select-screen を開くたびにプロフィールから読み直す（F6）。CPU 席には出さない＝席0専用。
+let completedRoster = [];
+// キャラ ID 解決：通常ロスター（CHARACTERS）＋修行完了弟子（completedRoster）を一つの窓口で引く。
+// 弟子 ID（completed-*）は CHARACTERS に無いので、これを通すことで席割り/開始/確認が弟子も扱える。
+const charById = (id) => CHARACTERS.find((c) => c.id === id) || completedRoster.find((c) => c.id === id) || null;
 let selectedRounds = 1; // 1 = 東風戦, 2 = 半荘戦
 let selectedPlayers = 4; // 4 = 四人麻雀, 3 = 三人麻雀(三麻)
 // CPU相手の指名。席オフセット(0=CPU①…2=CPU③)ごとのキャラID。null は「おまかせ
@@ -383,7 +389,7 @@ const TEAM_MARKS = ["①", "②", "③"]; // 団体戦メンバー番号
 function buildSelectScreen() {
   const list = el("char-list");
   list.innerHTML = "";
-  const selectedChar = () => CHARACTERS.find((c) => c.id === selectedCharId) || null;
+  const selectedChar = () => charById(selectedCharId);
   // ロスターのカードをキャラID で引けるようにして、席割りの選択ハイライトを更新できる。
   const cardById = new Map();
 
@@ -434,7 +440,12 @@ function buildSelectScreen() {
   }
 
   // アクティブ席にキャラを着席させる。同キャラが他席にいれば自動で外す（重複防止）。
+  // 修行完了弟子（completed-*）は「あなた席（席0）」専用＝CPU/相方/チームには出さない（F6）。
   function assignToActiveSeat(c) {
+    if (c.isCompletedAvatar) {
+      if (selectedTeamBattle || selectedPairBattle) return; // 弟子は通常フリー対戦の席0だけ
+      activeSeat = 0;
+    }
     if (activeSeat !== 0 && selectedCharId === c.id) selectedCharId = null;
     for (let i = 0; i < cpuPicks.length; i++) {
       if (cpuPicks[i] === c.id && i !== activeSeat - 1) cpuPicks[i] = null;
@@ -452,7 +463,7 @@ function buildSelectScreen() {
     const isTeamMode = selectedTeamBattle;
     const isHuman = isTeamMode ? true : s === 0; // 団体戦はすべて自チームスロット
     const charId = s === 0 ? selectedCharId : cpuPicks[s - 1];
-    const ch = charId ? CHARACTERS.find((c) => c.id === charId) : null;
+    const ch = charId ? charById(charId) : null; // 席0は弟子（completed-*）も解決
     const chip = document.createElement(interactive ? "button" : "div");
     if (interactive) chip.type = "button";
     chip.className = "seat-chip" + (interactive && s === activeSeat ? " active" : "") + (interactive ? "" : " static");
@@ -555,9 +566,40 @@ function buildSelectScreen() {
     group.appendChild(cards);
     list.appendChild(group);
   }
+  // 修行完了弟子（completedRoster）のセクション。育てた弟子を「あなたの弟子」として
+  // ロスター先頭に出す＝育成⇔対戦の接続を体験で完成させる（F6）。席0専用は assignToActiveSeat 側で担保。
+  // select-screen を開くたびに refreshDeshiRoster() で作り直す（completedAvatars は増減する）。
+  let deshiGroupEl = null;
+  let deshiCardIds = []; // 実際に登録した弟子カードの id（再描画時の cardById 掃除用）
+  function renderDeshiSection() {
+    if (deshiGroupEl) { // 旧セクション分の card 登録を解除してから作り直す
+      for (const id of deshiCardIds) cardById.delete(id);
+      deshiGroupEl.remove();
+      deshiGroupEl = null;
+      deshiCardIds = [];
+    }
+    if (!completedRoster.length) { refreshCards(); return; }
+    const group = document.createElement("div");
+    group.className = "role-group deshi-group";
+    group.style.setProperty("--role", "#e0b85a");
+    const head = document.createElement("div");
+    head.className = "role-header";
+    head.innerHTML = `<span class="role-name">あなたの弟子</span><span class="role-line"></span>`;
+    group.appendChild(head);
+    const cards = document.createElement("div");
+    cards.className = "role-cards";
+    for (const c of completedRoster) { cards.appendChild(makeCard(c)); deshiCardIds.push(c.id); }
+    group.appendChild(cards);
+    list.prepend(group);
+    deshiGroupEl = group;
+    refreshCards(); // 弟子カードのハイライト＋席バッジを現在の席割りに同期
+  }
+  refreshDeshiRoster = renderDeshiSection;
+
   // Leaving the roster restores the selected character's detail (or the prompt).
   list.onmouseleave = () => renderCharDetail(selectedChar());
   renderCharDetail(null);
+  renderDeshiSection();
   renderSeats();
 
   // 人数 (4人 / 3人) toggle
@@ -695,6 +737,11 @@ function buildSelectScreen() {
       el("normal-table-opts").classList.toggle("hidden", selectedTeamBattle || selectedPairBattle);
       el("pair-table-opts").classList.toggle("hidden", !selectedPairBattle);
       el("team-table-opts").classList.toggle("hidden", !selectedTeamBattle);
+      // 修行完了弟子は通常フリー対戦の席0専用。団体/ペアへ切り替えたら弟子の指名は外す
+      // （これらの開始経路は CHARACTERS 前提のため、弟子 ID が残ると未解決でクラッシュする）。
+      if ((selectedTeamBattle || selectedPairBattle) && selectedCharId && !CHARACTERS.find((c) => c.id === selectedCharId)) {
+        selectedCharId = null;
+      }
       if (selectedTeamBattle) {
         selectedPlayers = selectedTeamCount;
         // 団体戦では cpuPicks[0,1] を自チームメンバー枠として使う。既存CPU指名はクリア。
@@ -751,6 +798,8 @@ function buildSelectScreen() {
 }
 // select-screen の再表示時にウィザードを①へリセットするフック（buildSelectScreen が設定）。
 let resetSelectWizard = () => {};
+// 修行完了弟子セクションを最新の completedRoster で描き直すフック（buildSelectScreen が設定）。
+let refreshDeshiRoster = () => {};
 
 // ----------------------------------------------------------------- navigation
 // Wire every [data-nav] control to a screen. Home is the boot screen; the
@@ -775,9 +824,25 @@ const SCREEN_BGM = {
 function goScreen(id) {
   showScreen(id);
   SCREEN_BGM[id]?.();
-  if (id === "select-screen") resetSelectWizard(); // 開くたびにウィザードを①卓へ
+  if (id === "select-screen") { resetSelectWizard(); loadCompletedRoster(); } // ①卓へ＋弟子ロスター更新
   if (id === "online-screen") renderOnlineProfile(); // プロフィール帯を最新の名前/相棒/段位で更新
   if (id === "battle-home-screen") renderBattleHome(); // お気に入りキャラ＋出迎えセリフを毎回更新
+}
+
+// フリー対戦 select-screen 用：プロフィールの修行完了弟子（completedAvatars）を読み、席0で
+// 選べるよう CHARACTER 互換へ変換してロスターへ反映する（F6）。立ち絵/アイコンも描画キャッシュへ。
+// goScreen("select-screen") から毎回（非同期・fire-and-forget）。完了データ無しなら弟子セクションは出ない。
+async function loadCompletedRoster() {
+  let profile = null;
+  try { profile = await profileRepo.loadProfile(); } catch { /* 未ログイン/読込失敗は弟子なし */ }
+  completedRoster = (profile?.completedAvatars || []).map((ca) => completedAvatarToChar(ca));
+  // 選択中の弟子が（入替などで）消えていたら選択解除＝stale な selectedCharId を残さない。
+  if (selectedCharId && !charById(selectedCharId)) selectedCharId = null;
+  if (completedRoster.length) {
+    try { await charImages.load(completedRoster); } catch { /* 画像なしはフォールバック描画 */ }
+    for (const c of completedRoster) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
+  }
+  refreshDeshiRoster();
 }
 
 // 対戦ホーム: お気に入りキャラの立ち絵＋出迎えセリフを描く。開くたびに最新プロフィールで再描画。
@@ -1173,25 +1238,17 @@ function launchAutoBattle(profile, { oppLv, oppHpMax, maxMatches, seed = Date.no
 let honestCtx = null; // 本気対局中の文脈（{ onResult } 等）。null＝通常（フリー対戦）。
 let honestAutoPlay = false; // 本気タイマンを「オート（AI自動打ち）」で始めるか。beginGame が消費。
 // マイキャラを対局エンジン用の character へ変換（立ち絵/能力を載せる）。
+// 育成中アバター → 対局キャラ。変換ロジックは deshiCharFrom（completedAvatar.js）に集約。
+// startPoints＝単発 25000／大会＝runHp 持ち越し（§4.6.9/§14.3）。
 function avatarToCharacter(avatar, startPoints = 25000) {
-  const icon = presetById(avatar?.presetIds?.icon)?.assetPath || "";
-  const portrait = presetById(avatar?.presetIds?.standing)?.assetPath || "";
-  const tmpl = skillTemplateById(avatar?.skillTemplateId);
-  const abilityId = tmpl?.runtimeAbilityId;
-  // スキルLv→対局反映（Phase 7・§10.5）: Lv エントリの runtimeParams＋回数上書きを
-  // 能力 params として渡す。params 対応済みの能力（幸運のツモ）だけが解釈する。
-  const params = tmpl
-    ? skillRuntimeAbilityParams(tmpl.levelTableId, avatar?.skillLevel ?? tmpl.initialSkillLevel ?? 1)
-    : {};
-  return {
-    id: avatar?.avatarId || "deshi",
-    name: avatar?.name || "弟子",
-    reading: "", color: "#e0b85a", role: "attacker", bio: "",
-    profile: avatar?.profileText || "",
-    stats: { startingPoints: startPoints }, // 単発＝25000／大会＝runHp 持ち越し（§4.6.9/§14.3）
-    assets: { icon, portrait, voices: {} },
-    abilities: abilityId ? [{ abilityId, params }] : [],
-  };
+  return deshiCharFrom({
+    id: avatar?.avatarId,
+    name: avatar?.name,
+    profileText: avatar?.profileText,
+    presetIds: avatar?.presetIds,
+    skillTemplateId: avatar?.skillTemplateId,
+    skillLevel: avatar?.skillLevel,
+  }, startPoints);
 }
 // 師匠タイマン（二人打ち）の師匠 HP。師匠は格上：フリー対戦のHP（キャラ既定 startingPoints）を初期値に、
 // 師弟シナリオの進み具合（既読話数）で強化していく。弟子は自分の HP を賭けるので最初は大きな格差になる。
@@ -2203,7 +2260,9 @@ async function startGame() {
   // (cpuPicks) or left as "おまかせ" — empty seats are filled at random with no
   // duplicates against the human or any explicit pick. Seat count depends on the
   // chosen mode: 4 players (四人) or 3 players (三麻).
-  const human = CHARACTERS.find((c) => c.id === selectedCharId);
+  // 席0（あなた）は通常キャラまたは修行完了弟子（completed-*）。CPU 席は CHARACTERS のみ。
+  const human = charById(selectedCharId);
+  if (!human) return; // 弟子ロスター読込前の競合等で未解決なら開始しない（クラッシュ防止）
   const picks = cpuPicks.slice(0, selectedPlayers - 1);
   const usedIds = new Set([human.id, ...picks.filter(Boolean)]);
   const randomPool = shuffled(CHARACTERS.filter((c) => !usedIds.has(c.id)));
@@ -2215,6 +2274,8 @@ async function startGame() {
     character: c,
     abilities: instantiateAbilities(c),
   }));
+  // 弟子の立ち絵/アイコンは起動時プリロード対象外なので念のため確保（通常は select 開時にロード済み）。
+  if (human.isCompletedAvatar) { try { await charImages.load([human]); } catch { /* フォールバック描画 */ } }
   // Per-character voices (pon/chi/kan/riichi/tsumo/ron). Missing files fall back
   // to the shared SE inside AudioManager.playVoice().
   for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
@@ -4867,7 +4928,8 @@ function showGameOver() {
   overlay.querySelector(".go-buttons").appendChild(mkBtn("📈 得点推移", "btn-tsumo go-graph-btn", () => showScoreGraph(graphSnapshot, graphPlayers)));
 
   // フリー対戦（個人）：相棒（＝操作キャラ）との絆・履歴を更新（本気/大会は結果反映側で加算）。
-  if (!honestCtx) {
+  // 操作キャラが修行完了弟子のときは絆を計上しない（弟子は相棒キャラではない＝案A・F6）。
+  if (!honestCtx && !human.character.isCompletedAvatar) {
     applyFreeMatchToCompanion({ companionId: human.character.id, placement: hRank, numPlayers: N, styleTags: detectPlayStyle(human, game.lastResult) });
   }
 

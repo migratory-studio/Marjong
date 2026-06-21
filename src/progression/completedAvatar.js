@@ -5,9 +5,54 @@
 // 保存は profile.completedAvatars[]（最大5枠）。profile 丸ごと保存に乗るので専用テーブルは不要
 // （saveProfile の分解で misc(jsonb) に入る）。5枠が埋まったら手動で1枠を選んで入替。
 //
-// すべて純関数・イミュータブル（UI/保存/通信に非依存）。
+// すべて純関数・イミュータブル（UI/保存/通信に非依存）。データマスタ参照のみ（純データ）。
+
+import { presetById } from "../data/avatarPresetMaster.js";
+import { skillTemplateById } from "../data/skillTemplateMaster.js";
+import { skillRuntimeAbilityParams } from "../data/skillLevelMaster.js";
 
 export const MAX_COMPLETED_AVATARS = 5;
+
+// 弟子（育成中アバター／修行完了データ）→ 対局キャラ（CHARACTER 互換）への共通変換。
+//   presetIds → 立ち絵/アイコン、skillTemplateId + skillLevel → 能力（params 付き）。
+//   role/color は省略時 attacker/金（マイキャラの既定色）。startPoints＝HP。
+// 育成中アバターの avatarToCharacter（main.js）もこれを使う＝変換ロジックの単一情報源。
+export function deshiCharFrom(src = {}, startPoints = 25000) {
+  const { id, name, profileText, presetIds, skillTemplateId, skillLevel, role, color } = src;
+  const icon = presetById(presetIds?.icon)?.assetPath || "";
+  const portrait = presetById(presetIds?.standing)?.assetPath || "";
+  const tmpl = skillTemplateById(skillTemplateId);
+  const abilityId = tmpl?.runtimeAbilityId;
+  // スキル Lv → 対局反映（§10.5）: Lv エントリの runtimeParams＋回数上書きを能力 params に。
+  const params = tmpl
+    ? skillRuntimeAbilityParams(tmpl.levelTableId, skillLevel ?? tmpl.initialSkillLevel ?? 1)
+    : {};
+  return {
+    id: id || "deshi",
+    name: name || "弟子",
+    reading: "", color: color || "#e0b85a", role: role || "attacker", bio: "",
+    profile: profileText || "",
+    stats: { startingPoints: startPoints },
+    assets: { icon, portrait, voices: {} },
+    abilities: abilityId ? [{ abilityId, params }] : [],
+  };
+}
+
+// 修行完了データ → 対局キャラ。id＝completedAvatarId（CHARACTERS と衝突しない）、ロール＝
+// 修行成果で確定した型、既定持ち点＝育てた最大 HP（avatarHpMax）。isCompletedAvatar フラグで
+// 「弟子で打っている」ことを識別する（フリー対戦の相棒絆計上スキップ＝案A 等に使う）。
+export function completedAvatarToChar(ca, startPoints) {
+  const c = deshiCharFrom({
+    id: ca?.completedAvatarId,
+    name: ca?.name,
+    profileText: ca?.profileText,
+    presetIds: ca?.presetIds,
+    skillTemplateId: ca?.skillTemplateId,
+    skillLevel: ca?.skillLevel,
+    role: ca?.role,
+  }, startPoints ?? ca?.avatarHpMax ?? 25000);
+  return { ...c, isCompletedAvatar: true };
+}
 
 // アクティブ弟子＋修行成果から卒業スナップショットを作る。
 //   result＝evaluateSuccession(profile, av) の戻り（rank/role/months/wins/treasures）。
