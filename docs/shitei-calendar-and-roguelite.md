@@ -237,6 +237,7 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
   - **dealMul偏重の是正**：`dealCap` 3.0→**2.4**、`鋭い打点` maxStacks 5→4。攻め一辺倒を緩め防御/道具/必殺技に選択理由。
   - **ダメージ計算の内訳演出**：和了/被弾後に **`showRogueliteDamageBreakdown`** モーダルで「素点→×0.04→攻撃/防御×→深度×→上限→最終」を一拍見せる（`explainRogueliteDamage` のトレース・お守りは表示で消費しない）。
   - 校正：`--assert`(7) 維持・回帰 `test/roguelite.mjs`(332)。深度キャップ知見＝[[mahjong-roguelite-mode]]。
+  - **ボス前の整え枠**：ボス直前（`floor%10===9`＝F9/19/29…）の進路に**休息かショップを必ず1枠**（`drawFloorChoices` の force）。初ボスの「回復を引けず瀕死突入」運ゲーを緩和（初ボス通過率 ~95%→~97%）。ハーネス/sim の routePick もボス前healを取るよう更新。回帰 `test/roguelite.mjs`(372)。
 - ✅ **セリフ照合・相棒・反転の磨き込み（実装済み）**：
   - **満貫帯の scoreTier 分離**：`scoreTierOf` に `mid`(5200〜9999)を新設＝満貫(8000)が「地味」低点数セリフにならない。詩玥/凌雲に mid 和了セリフ追加・templateも追従（`voiceLines`/`characterVoiceMaster`）。
   - **相棒(席2)の和了発火**：ペア戦で相方が自分で和了したら相棒ボードの吹き出しで一言（`showPairBattleDamageFx`＋既存 `showPartnerTalk`）。編成＝相棒選びの意味づけに。

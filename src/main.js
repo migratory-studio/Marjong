@@ -2086,6 +2086,9 @@ function renderRoute(run) {
   const rng = makeRng(`${run.seed}:route:${run.floor}`);
   // 序盤（2〜5階）にまだ遭遇イベントを引いていなければ、進路に1回確定で出す（物語の場を必ず体験させる）。
   const force = (!run.eventSeen && run.floor >= 2 && run.floor <= 5) ? ["event"] : [];
+  // ボス直前（次が10階ごとのボス＝floor%10===9）は、休息かショップを必ず1枠出す＝整える余地を保証
+  // （初ボスの「回復を引けず瀕死突入」運ゲーを緩和）。
+  if (run.floor % 10 === 9) force.push(rng() < 0.5 ? "rest" : "shop");
   const choices = drawFloorChoices(rng, { count: run.floor <= 2 ? 2 : 3, exclude: rogueliteState.lastFloorId ? [rogueliteState.lastFloorId] : [], force });
   showRogueliteRoute(host, {
     floor: run.floor, choices, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, onSwap,

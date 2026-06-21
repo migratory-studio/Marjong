@@ -87,6 +87,13 @@ eq(floorTypeById("boss").weight, 0, "ボスは抽選プール外（強制配置�
     const ch = drawFloorChoices(makeRng(`force-${i}`), { count: 3, force: ["event"] });
     ok(ch.some((c) => c.id === "event"), `force=event で必ず遭遇が出る (#${i})`);
   }
+  // ボス直前の整え枠：force=rest/shop で必ず回復系が1枠出る
+  for (let i = 0; i < 20; i++) {
+    const ch = drawFloorChoices(makeRng(`preboss-${i}`), { count: 3, force: ["rest"] });
+    ok(ch.some((c) => c.id === "rest"), `force=rest で必ず休息が出る (#${i})`);
+    const ch2 = drawFloorChoices(makeRng(`preboss2-${i}`), { count: 3, force: ["shop"] });
+    ok(ch2.some((c) => c.id === "shop"), `force=shop で必ずショップが出る (#${i})`);
+  }
 }
 
 // ---- 遭遇イベントマスタ ----

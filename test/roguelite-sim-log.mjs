@@ -117,10 +117,15 @@ function regen(run, res) {
 }
 
 function routePick(rng, run) {
-  if (POLICY === "none") return FT.normal;
-  const choices = drawFloorChoices(rng, { count: 3, force: (!run.eventSeen && run.floor >= 2 && run.floor <= 5) ? ["event"] : [] });
+  const force = (!run.eventSeen && run.floor >= 2 && run.floor <= 5) ? ["event"] : [];
+  if (run.floor % 10 === 9) force.push(rng() < 0.5 ? "rest" : "shop"); // ボス直前は整え枠
+  if (POLICY === "none") {
+    if (run.floor % 10 === 9 && Math.min(...run.party.map((m) => m.hp / m.hpMax)) < 0.6) return floorTypeById("rest");
+    return FT.normal;
+  }
+  const choices = drawFloorChoices(rng, { count: 3, force });
   const minFrac = Math.min(...run.party.map((m) => m.hp / m.hpMax));
-  if (minFrac < 0.4) { const heal = choices.find((c) => c.kind === "rest" || c.kind === "banquet"); if (heal) return heal; }
+  if (minFrac < 0.45 || run.floor % 10 === 9) { const heal = choices.find((c) => c.kind === "rest" || c.kind === "banquet" || c.kind === "shop"); if (heal) return heal; }
   const pref = ["forge", "shop", "event", "treasure", "elite", "shrine", "gamble", "normal", "rest", "banquet"];
   for (const k of pref) { const f = choices.find((c) => c.id === k || c.kind === k); if (f) return f; }
   return choices[0];

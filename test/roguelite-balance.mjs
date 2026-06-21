@@ -41,10 +41,16 @@ const FT = { normal: floorTypeById("normal"), elite: floorTypeById("elite"), bos
 //   none   … バフを取らない素の踏破力を測る（常に通常戦闘）。
 //   greedy … HP低下時は回復フロアを取り、平時は宝箱/強敵でリターンを狙う。
 function routePick(rng, run, policy) {
-  if (policy === "none") return FT.normal;
-  const choices = drawFloorChoices(rng, { count: 3 });
+  // ボス直前（floor%10===9）は休息/ショップを必ず1枠（本体と同じ＝整える余地を保証）。
+  const force = run.floor % 10 === 9 ? [rng() < 0.5 ? "rest" : "shop"] : [];
+  if (policy === "none") {
+    // 無策でもボス前の回復だけは取る（瀕死ボス突入の運ゲーを緩和＝本体の挙動に寄せる）。
+    if (force.length && Math.min(...run.party.map((m) => m.hp / m.hpMax)) < 0.6) return floorTypeById("rest");
+    return FT.normal;
+  }
+  const choices = drawFloorChoices(rng, { count: 3, force });
   const minFrac = Math.min(...run.party.map((m) => m.hp / m.hpMax));
-  if (minFrac < 0.4) { const heal = choices.find((c) => c.kind === "rest" || c.kind === "banquet"); if (heal) return heal; }
+  if (minFrac < 0.45 || run.floor % 10 === 9) { const heal = choices.find((c) => c.kind === "rest" || c.kind === "banquet" || c.kind === "shop"); if (heal) return heal; }
   const pref = ["forge", "shop", "treasure", "elite", "event", "shrine", "gamble", "normal", "rest", "banquet"];
   for (const k of pref) { const f = choices.find((c) => c.id === k || c.kind === k); if (f) return f; }
   return choices[0];
