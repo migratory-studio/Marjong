@@ -96,7 +96,16 @@ for (const fam of ["attack", "defense", "sustain", "ability"]) {
 }
 ok(pickVoiceLine("shiyue", "rlPursue", {}), "追撃セリフ");
 ok(pickVoiceLine("shiyue", "rlRetreat", {}), "撤退セリフ");
-ok(/点棒|盾|嫌い/.test(pickVoiceLine("shiyue", "rlBuff", { buffFamily: "sustain" }) || ""), "HP/点棒系バフは点棒嫌いに触れる（固有性）");
+// 満貫帯(8000)は「mid」＝地味な低点数セリフにならない（scoreTier 照合ズレの修正）
+{
+  const mid = new Set();
+  for (let i = 0; i < 30; i++) mid.add(pickVoiceLine("shiyue", "agari", { isYakuman: false, score: 8000 }));
+  ok(![...mid].some((l) => /地味/.test(l || "")), "満貫(8000)で“地味”セリフが出ない");
+  ok([...mid].some((l) => /満貫|決める|仕上げ/.test(l || "")), "満貫帯の手応えセリフが出る");
+  ok(pickVoiceLine("shiyue", "agari", { score: 1000 }) && /地味|小さく/.test([...Array(20)].map(() => pickVoiceLine("shiyue", "agari", { score: 1000 })).join("")), "小場(1000)は小場セリフ");
+}
+// HP/点棒系バフでは点棒嫌いに触れる固有セリフが出る（汎用フォールバックも混じるので複数試行で確認）。
+ok([...Array(20)].map(() => pickVoiceLine("shiyue", "rlBuff", { buffFamily: "sustain" })).some((l) => /点棒|盾|嫌い/.test(l || "")), "HP/点棒系バフは点棒嫌いに触れる（固有性）");
 
 // エンジンの maxHands（定められた局数で打ち切り）。連荘も1局＝handNumber で数える。
 {

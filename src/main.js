@@ -4792,6 +4792,16 @@ function showTeamBattleDamageFx(r, onDone) {
     const sp = mountSpeaker(host, human.character, spEvent, spCtx, "left");
     if (sp) host.classList.add("has-speaker");
   }
+  // ペア戦：相方（自ペアの非人間席）が自分で和了したら、相棒ボードの吹き出しで一言。
+  // 相棒の存在感＝「一緒に戦っている」手触り（楼光の館の編成＝相棒選びの意味づけ）。
+  if (pairBattleData) {
+    const myPair = pairBattleData.pairOf[humanIndex];
+    const partnerSeat = pairBattleData.pairs[myPair].seats.find((s) => s !== humanIndex);
+    if (partnerSeat != null && r.winner === partnerSeat) {
+      const pline = vline(pairBattleData.chars[partnerSeat].id, "agari", { isYakuman: !!r.result.isYakuman, score: r.result.total });
+      if (pline && !pline.startsWith("［テンプレ］")) setTimeout(() => showPartnerTalk(pline), 650);
+    }
+  }
   }; // showCard
 
   // 飛びが発生したら専用カットイン（撃沈＋親満払い）を先に見せ、終わってからダメージカードへ。

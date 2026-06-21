@@ -6,7 +6,7 @@
 //
 // ── イベント(event) と 条件(cond) の語彙 ──────────────────────────────
 //   "matchStart"  対局開始        cond: なし
-//   "agari"       和了            cond.scoreTier: "yakuman"(役満) | "high"(10000以上) | "low"(10000未満)
+//   "agari"       和了            cond.scoreTier: "yakuman"(役満) | "high"(10000以上) | "mid"(満貫帯5200〜9999) | "low"(5200未満)
 //   "damage"      被ダメージ      cond.dmgTier:  "pinch"(残りわずか) | "big"(大/8000以上) | "mid"(中/3900以上) | "small"(小)
 //   "matchEnd"    対局終了        cond.rankTier: "top"(1位) | "upper"(上位) | "lower"(下位) | "bottom"(最下位)
 //
@@ -60,7 +60,8 @@ function templateLines(name) {
     L("matchStart", {}, t("対局開始")),
     L("agari", { scoreTier: "yakuman" }, t("和了・役満")),
     L("agari", { scoreTier: "high" }, t("和了・高得点(10000以上)")),
-    L("agari", { scoreTier: "low" }, t("和了・通常(10000未満)")),
+    L("agari", { scoreTier: "mid" }, t("和了・満貫帯(5200〜9999)")),
+    L("agari", { scoreTier: "low" }, t("和了・小場(5200未満)")),
     L("damage", { dmgTier: "small" }, t("被ダメージ・小")),
     L("damage", { dmgTier: "mid" }, t("被ダメージ・中")),
     L("damage", { dmgTier: "big" }, t("被ダメージ・大")),
@@ -106,7 +107,10 @@ const SHIYUE = [
   // 和了・高得点(10000以上)
   L("agari", { scoreTier: "high" }, "ツモッ! このくらい、軽い軽いヨ～♪"),
   L("agari", { scoreTier: "high" }, "ね、言ったダロ？　我の引きはホンモノだヨ。"),
-  // 和了・通常(10000未満)
+  // 和了・満貫帯(5200〜9999)＝手応えのある一打
+  L("agari", { scoreTier: "mid" }, "満貫、いただきっ! ……ふふ、ちゃんと仕上げたダロ？"),
+  L("agari", { scoreTier: "mid" }, "ツモッ! このくらいの手、ちゃんと決めるのが我なんだヨ?"),
+  // 和了・小場(5200未満)
   L("agari", { scoreTier: "low" }, "とりあえずツモ、っと。小さくても勝ちは勝ちダヨ？"),
   L("agari", { scoreTier: "low" }, "ま、地味なのもたまにはネ。ツモれば勝ち、ダロ？"),
 
@@ -132,9 +136,13 @@ const SHIYUE = [
   // 対局終了・下位
   L("matchEnd", { rankTier: "lower" }, "あれー……引き、渋かったネ。こういう日もあるヨ、うん。"),
   L("matchEnd", { rankTier: "lower" }, "むー、攻めすぎたカナ。……でも、降りるのは性じゃないダロ。"),
-  // 対局終了・最下位（素が少し滲む）
+  L("matchEnd", { rankTier: "lower" }, "んー、噛み合わなかったネ。次は——ぜったい、ツモれば勝ち、にするヨ。"),
+  // 対局終了・最下位（素が少し滲む＝反転の燃料）
   L("matchEnd", { rankTier: "bottom" }, "うぅ、ビリ……点棒なんて、ホント数えたくないヨ……。"),
   L("matchEnd", { rankTier: "bottom" }, "……ツモれない日は、ちょっとだけ昔を思い出すネ。次は、勝つダヨ。"),
+  L("matchEnd", { rankTier: "bottom" }, "また、減ってる……。数えるたび、胸がチクッてするヨ。……でも、やめないけどネ。"),
+  L("matchEnd", { rankTier: "bottom" }, "ビリかぁ……。ねえ、こういう時こそ「ツモれば勝ち」ダロ? ……自分に、言い聞かせてるんだケドさ。"),
+  L("matchEnd", { rankTier: "bottom" }, "……負けは嫌い。点棒が減るのは、もっと嫌い。だから——次はぜったい、取り返すダヨ。"),
 
   // ── 楼光の館（ローグライト）の意思決定セリフ。蓄積×固有性×双方向＝“選んだ瞬間に返ってくる” ──
   // バフ選択（系統別）。点棒嫌い（=HP/点棒）はあえて言葉にして反転の燃料に。
@@ -385,6 +393,9 @@ const KUIDOSHI = [
   // 和了・高得点
   L("agari", { scoreTier: "high" }, "うん、いい手だった。攻めることも、護りのうちだよ。"),
   L("agari", { scoreTier: "high", companionBondMin: 5 }, "獲ったよ。……ね、攻めも悪くないネ。君が隣だと、そう思える。"),
+  // 和了・満貫帯(5200〜9999)
+  L("agari", { scoreTier: "mid" }, "満貫、か。……攻めにも、ちゃんと芯は通せる。"),
+  L("agari", { scoreTier: "mid" }, "うん、過不足ない手だった。これが、いちばん崩れない勝ち方だよ。"),
   // 和了・通常
   L("agari", { scoreTier: "low" }, "小さくても、確かな一手。……こういうのが、いちばん沈まない。"),
 
@@ -413,6 +424,7 @@ const KUIDOSHI = [
   // 対局終了・下位
   L("matchEnd", { rankTier: "lower" }, "……押し負けたか。攻めの呼吸は、まだ僕の課題だね。"),
   L("matchEnd", { rankTier: "lower" }, "渋い結果だね。でも、放銃で崩れたわけじゃない。芯は残ってる。"),
+  L("matchEnd", { rankTier: "lower" }, "……盾は保った。あとは、ここから攻めに転じる呼吸だね。次は、見せるよ。"),
   // 対局終了・最下位（弟子を矢面に立たせなかった、という護りの矜持）
   L("matchEnd", { rankTier: "bottom" }, "沈んだね。……でも、君を矢面には立たせなかった。それだけは。"),
   L("matchEnd", { rankTier: "bottom", companionBondMin: 5 }, "負けたヨ。……でも、君と打てる今日があるだけで、昔の僕には充分すぎるネ。"),

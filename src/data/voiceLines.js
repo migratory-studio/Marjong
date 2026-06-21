@@ -24,7 +24,9 @@ import { CHARACTER_VOICE_MASTER } from "./characterVoiceMaster.js";
 // ── 条件の“段階(tier)”を ctx の生値から導出する。マスタの cond と同じ語彙を返す。──
 export function scoreTierOf({ isYakuman = false, score = 0 } = {}) {
   if (isYakuman) return "yakuman";
-  return score >= 10000 ? "high" : "low";
+  if (score >= 10000) return "high";   // 跳満以上の大物手
+  if (score >= 5200) return "mid";     // 満貫帯(8000)含む、手応えのある和了
+  return "low";                        // 食い仕掛け/リーチのみ等の小場
 }
 export function dmgTierOf({ dmgAmount = 0, hpFrac = 1 } = {}) {
   if (hpFrac <= 0.2) return "pinch"; // 残りわずか（被弾サイズより優先）
