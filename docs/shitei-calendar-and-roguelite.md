@@ -228,6 +228,9 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
   - **追加必殺枠は最大2（ポケモン式忘却）**：付与能力(`grantedAbilityIds`)が3つ目になると `enforceGrantCap`→`showRogueliteForget` で1つ手放す（手放した付与カードは `run.cards` から戻し再ドラフト可）。draft/宝箱/ショップ/イベントの全付与経路に適用。
   - **専用バックグラウンド＋BGM**：ラン開始でキャラ選択UIを片付け、背景を `bg-ruins`（廃墟）＋探索BGM `朔夜(Sakuya3)` に切替（`enterRogueliteAmbience`／対局から戻るたび復帰・離脱で `exitRogueliteAmbience`）。
   - 校正：ハーネス/sim-log を3人パーティ・復活なし・`runWiped` 終了に更新し `--assert`(7) 維持。回帰＝`test/roguelite.mjs`(293)。
+- ✅ **カードの概念3分類（A案・実装済み）**：カードを **バフ／必殺技／道具** に分類（`cardCategory`／`CARD_CATEGORY`・effect.kind から導出、`card.category` で上書き可）。
+  - **バフ**＝恒常強化（攻/防/HP%・スキルLv）／**必殺技**＝付与能力（技スロット最大2）／**道具**＝消費・お守り（回復・庇いの守り）。
+  - 表示：ドラフト/ショップのカードに種別バッジ。進路/編成の「所持」を3グループに再構成（バフ%帯／必殺技 N/2／道具 個数）。旧「所持バフ」チップ帯は廃止（重複解消）。回帰＝`test/roguelite.mjs`(323)。
 - ✅ **セリフ照合・相棒・反転の磨き込み（実装済み）**：
   - **満貫帯の scoreTier 分離**：`scoreTierOf` に `mid`(5200〜9999)を新設＝満貫(8000)が「地味」低点数セリフにならない。詩玥/凌雲に mid 和了セリフ追加・templateも追従（`voiceLines`/`characterVoiceMaster`）。
   - **相棒(席2)の和了発火**：ペア戦で相方が自分で和了したら相棒ボードの吹き出しで一言（`showPairBattleDamageFx`＋既存 `showPartnerTalk`）。編成＝相棒選びの意味づけに。

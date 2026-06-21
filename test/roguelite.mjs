@@ -3,6 +3,7 @@
 import assert from "node:assert";
 import {
   ROGUELITE_CARD_MASTER, RARITY_WEIGHTS, RARITY_META, cardById, drawCards, isGrantCard,
+  cardCategory, CARD_CATEGORY,
 } from "../src/data/rogueliteCardMaster.js";
 import { applyEffect, applyCard, freshMods } from "../src/roguelite/cardEffects.js";
 import {
@@ -42,6 +43,18 @@ ok(RARITY_WEIGHTS.legendary < RARITY_WEIGHTS.common, "レジェンダリは最�
 eq(cardById("heal-small")?.id, "heal-small", "cardById 解決");
 eq(cardById("nope"), null, "cardById 未知=null");
 ok(isGrantCard(cardById("grant-lucky-draw")), "grant 判定");
+
+// 分類（A案：バフ/必殺技/道具）
+{
+  eq(cardCategory(cardById("deal-up-common")), "buff", "dealMul=バフ");
+  eq(cardCategory(cardById("maxhp-up-common")), "buff", "maxHpUp=バフ");
+  eq(cardCategory(cardById("skill-up")), "buff", "skillLevelUp=バフ");
+  eq(cardCategory(cardById("grant-lucky-draw")), "skill", "grantAbility=必殺技");
+  eq(cardCategory(cardById("heal-small")), "item", "heal=道具");
+  eq(cardCategory(cardById("ally-tsumo-ward")), "item", "庇いの守り=道具");
+  eq(cardCategory({ category: "skill", effect: { kind: "heal" } }), "skill", "card.category で上書きできる");
+  for (const c of ROGUELITE_CARD_MASTER) ok(CARD_CATEGORY[cardCategory(c)], `全カードに妥当な分類: ${c.id}`);
+}
 ok(!isGrantCard(cardById("heal-small")), "非grant 判定");
 
 // ---------- HP スケール ----------

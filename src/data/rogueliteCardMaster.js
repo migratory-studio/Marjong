@@ -255,6 +255,24 @@ export function isGrantCard(card) {
   return card?.effect?.kind === "grantAbility";
 }
 
+// カードの「概念分類」（A案）。恒常バフ／必殺技／道具 の3軸でプレイヤーのビルドを legible に。
+//   buff  … 恒常強化（攻/防/HP/スキルLv等。%が積み上がり常時ON）
+//   skill … 必殺技（付与能力。技スロット最大2・ポケモン式忘却）
+//   item  … 道具（即時回復・お守り等。個数/チャージで持つ・使い切り）
+// effect.kind から導出。card.category があればそれを優先（将来の例外用 override）。
+export const CARD_CATEGORY = {
+  buff:  { label: "バフ",   color: "#6fe08a", mark: "▲" },
+  skill: { label: "必殺技", color: "#ff8f6b", mark: "★" },
+  item:  { label: "道具",   color: "#e8c45d", mark: "◆" },
+};
+export function cardCategory(card) {
+  if (card?.category && CARD_CATEGORY[card.category]) return card.category;
+  const k = card?.effect?.kind;
+  if (k === "grantAbility") return "skill";
+  if (k === "heal" || k === "friendlyGuard") return "item";
+  return "buff"; // dealMul/takeReduce/maxHpUp/skillLevelUp/paramBoost/addBench/compound
+}
+
 // rarityBias（0..1）でレア以上に重みを寄せたコピーを返す。飛ばし/点差/階層で上振れさせる燃料。
 function biasedWeights(bias = 0) {
   const b = Math.max(0, Math.min(1, bias));

@@ -9,7 +9,7 @@
 // 立ち絵/アイコンは charImages（呼び出し側が渡す）から引く。無ければ頭文字フォールバック。
 // 1280×720 ノースクロール方針：ロスターのみ内部スクロールに逃がす（F6 と同様の扱い）。
 
-import { RARITY_META } from "../data/rogueliteCardMaster.js";
+import { RARITY_META, CARD_CATEGORY, cardCategory } from "../data/rogueliteCardMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 
 const MAX_PARTY = 3;
@@ -169,9 +169,10 @@ export function showRogueliteDraft(container, opts = {}) {
   ov.className = "rl-overlay rl-draft";
   const cardHtml = cards.map((c, i) => {
     const meta = RARITY_META[c.rarity] || { label: c.rarity, color: "#999" };
+    const cat = CARD_CATEGORY[cardCategory(c)];
     return `
       <button type="button" class="rl-card r-${c.rarity}" data-i="${i}" style="--rarity:${meta.color}">
-        <div class="rl-card-rarity">${meta.label}</div>
+        <div class="rl-card-tags"><span class="rl-card-cat" style="--cat:${cat.color}">${cat.mark} ${cat.label}</span><span class="rl-card-rarity">${meta.label}</span></div>
         <div class="rl-card-name">${c.name}</div>
         <div class="rl-card-desc">${c.desc}</div>
       </button>`;
@@ -249,21 +250,33 @@ function partyHpRows(run) {
 const coinBadge = (coins) => `<div class="rl-coins">光貨 <b>${coins | 0}</b></div>`;
 const skillBadge = (lv) => (lv ? `<div class="rl-skill">スキルLv <b>${lv}</b></div>` : "");
 
-// バフ合計（HP/攻撃/防御）の可視化。run.mods から集計＝蓄積の見える化。
-//   HP   … maxHpUp の累積倍率（hpMul）→ +X%
-//   攻撃 … dealMul → +X%（与ダメ増）
-//   防御 … takeMul → 軽減率 (1-takeMul) → +X%（被ダメ減）
-// お守り（味方ツモ無効）の残数も併記。
+// 所持の可視化（A案：バフ／必殺技／道具の3分類で蓄積を legible に）。run.mods から集計。
+//   バフ   … HP(hpMul)/攻(dealMul)/防(takeMul軽減) の累積% ＋ スキルLv
+//   必殺技 … 付与能力（grantedAbilityIds・最大2）。技スロットとして名前で表示
+//   道具   … お守り等の所持（friendlyGuard＝庇い×N）。個数で持つ使い切り
 export function buffTotalsHtml(run) {
   const m = run?.mods; if (!m) return "";
+  const C = CARD_CATEGORY;
+  // バフ
   const hpPct = Math.round(((m.hpMul || 1) - 1) * 100);
   const atkPct = Math.round(((m.dealMul || 1) - 1) * 100);
   const defPct = Math.round((1 - (m.takeMul || 1)) * 100);
-  const guard = m.friendlyGuard || 0;
   const stat = (label, val, cls) => `<span class="rl-buff-stat ${cls}"><span class="rl-buff-k">${label}</span><b>${val >= 0 ? "+" : ""}${val}%</b></span>`;
-  return `<div class="rl-buff-totals">
-    ${stat("HP", hpPct, "hp")}${stat("攻", atkPct, "atk")}${stat("防", defPct, "def")}
-    ${guard > 0 ? `<span class="rl-buff-stat ward"><span class="rl-buff-k">庇い</span><b>×${guard}</b></span>` : ""}
+  const lv = run?.skillLevel || 1;
+  const buffRow = `${stat("HP", hpPct, "hp")}${stat("攻", atkPct, "atk")}${stat("防", defPct, "def")}${lv > 1 ? `<span class="rl-buff-stat skl"><span class="rl-buff-k">技Lv</span><b>${lv}</b></span>` : ""}`;
+  // 必殺技（技スロット）
+  const skills = (m.grantedAbilityIds || []).map((id) => abilityDef(id)?.name || id);
+  const skillRow = skills.length
+    ? skills.map((n) => `<span class="rl-inv-chip skill">${n}</span>`).join("")
+    : `<span class="rl-inv-empty">なし</span>`;
+  // 道具
+  const items = [];
+  if ((m.friendlyGuard || 0) > 0) items.push(`<span class="rl-inv-chip item">◆ 庇いの守り ×${m.friendlyGuard}</span>`);
+  const groupHead = (cat, extra = "") => `<span class="rl-inv-head" style="--cat:${C[cat].color}">${C[cat].mark} ${C[cat].label}${extra}</span>`;
+  return `<div class="rl-inv">
+    <div class="rl-inv-row">${groupHead("buff")}<div class="rl-buff-totals">${buffRow}</div></div>
+    <div class="rl-inv-row">${groupHead("skill", ` <small>${skills.length}/2</small>`)}<div class="rl-inv-chips">${skillRow}</div></div>
+    ${items.length ? `<div class="rl-inv-row">${groupHead("item")}<div class="rl-inv-chips">${items.join("")}</div></div>` : ""}
   </div>`;
 }
 
@@ -313,10 +326,6 @@ export function showRogueliteRoute(container, opts = {}) {
       ${run ? `<div class="rl-route-party"><div class="rl-hp-list">${partyHpRows(run)}</div>${onSwap ? `<button type="button" class="rl-swap-open" id="rl-route-swap">編成</button>` : ""}</div>` : ""}
       ${run ? buffTotalsHtml(run) : ""}
       ${body}
-      ${held.length ? `<div class="rl-held"><span class="rl-held-label">所持バフ</span>${held.map((b) => {
-        const m = RARITY_META[b.rarity] || { color: "#9aa3b2" };
-        return `<span class="rl-held-chip" style="--rarity:${m.color}" title="${b.desc || ""}">${b.name}${b.count > 1 ? `×${b.count}` : ""}</span>`;
-      }).join("")}</div>` : ""}
       <button type="button" class="rl-retreat" id="rl-route-retreat">ここで撤退する（記録を確保）</button>
     </div>`;
   container.appendChild(ov);
@@ -550,11 +559,13 @@ export function showRogueliteShop(container, opts = {}) {
   const render = () => {
     const items = stock.map((it, i) => {
       const meta = RARITY_META[it.rarity] || { color: "#9aa3b2" };
+      const catKey = it.type === "card" ? cardCategory(it.card) : it.type === "heal" ? "item" : "buff";
+      const cat = CARD_CATEGORY[catKey];
       const isSold = sold.has(i);
       const afford = (run?.coins || 0) >= it.price;
       const cls = "rl-shop-item" + (isSold ? " sold" : "") + (!afford && !isSold ? " poor" : "");
       return `<button type="button" class="${cls}" data-i="${i}" style="--rarity:${meta.color}" ${isSold || !afford ? "disabled" : ""}>
-        <div class="rl-shop-price">光貨 ${it.price}</div>
+        <div class="rl-shop-toprow"><span class="rl-card-cat" style="--cat:${cat.color}">${cat.mark} ${cat.label}</span><span class="rl-shop-price">光貨 ${it.price}</span></div>
         <div class="rl-shop-name">${it.name}</div>
         <div class="rl-shop-desc">${it.desc}</div>
         <div class="rl-shop-tag">${isSold ? "売約済" : afford ? "購入" : "光貨不足"}</div>

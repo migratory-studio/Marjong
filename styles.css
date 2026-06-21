@@ -4964,3 +4964,21 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-forget-tag { font-size: 10px; background: #6fb6ff; color: #062035; border-radius: 5px; padding: 1px 5px; vertical-align: middle; }
 .rl-forget-desc { font-size: 11px; color: #9aa3b2; margin-top: 2px; }
 .rl-forget-x { flex: none; font-size: 12px; color: #ff8f7a; border: 1px solid rgba(255,92,80,0.5); border-radius: 7px; padding: 4px 10px; }
+
+/* 楼光の館：カードの分類バッジ（バフ/必殺技/道具） */
+.rl-card-tags { display: flex; gap: 6px; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.rl-card-cat { font-size: 10px; font-weight: 700; color: var(--cat, #ccc); border: 1px solid var(--cat, #ccc); border-radius: 5px; padding: 1px 6px; }
+
+/* 楼光の館：所持パネル（3分類） */
+.rl-inv { display: flex; flex-direction: column; gap: 5px; margin: 6px 0 8px; }
+.rl-inv-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rl-inv-head { flex: none; font-size: 11px; font-weight: 700; color: var(--cat, #ccc); min-width: 64px; }
+.rl-inv-head small { font-weight: 400; color: #9aa3b2; }
+.rl-inv-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.rl-inv-chip { font-size: 12px; padding: 2px 9px; border-radius: 7px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); }
+.rl-inv-chip.skill { color: #ffcdb8; border-color: rgba(255,143,107,0.5); background: rgba(255,143,107,0.12); }
+.rl-inv-chip.item { color: #f3e3a8; border-color: rgba(232,196,93,0.5); background: rgba(232,196,93,0.12); }
+.rl-inv-empty { font-size: 12px; color: #6b727e; }
+.rl-buff-totals { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.rl-buff-stat.skl b { color: #8fc1ff; }
+.rl-shop-toprow { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 2px; }
