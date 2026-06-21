@@ -7,7 +7,7 @@ import {
 import { applyEffect, applyCard, freshMods } from "../src/roguelite/cardEffects.js";
 import {
   newRun, allyScaledHp, floorEnemyHp, handsForType, isBossFloor,
-  enemyUnitForFloor, rogueliteDamageDeltas, rarityBiasFor, seatedAllies, benchAbilityIds, DAMAGE_SCALE,
+  enemyUnitForFloor, rogueliteDamageDeltas, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, DAMAGE_SCALE,
   carrySlotsFor, excludedCardIds, rollDraft, allPartyDown, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers,
 } from "../src/roguelite/run.js";
@@ -179,6 +179,26 @@ ok(enemyUnitForFloor(run, NORMAL, ":p1").members[0].name !== undefined, "salt付
   ok(!allPartyDown(r), "生存中は allPartyDown=false");
   r.party.forEach((m) => (m.hp = 0));
   ok(allPartyDown(r), "全員0で allPartyDown=true");
+  // トんだメンバーは回復しない＝復活しない
+  const r3 = newRun([
+    { id: "you", char: { id: "you", abilities: [] }, avatarHpMax: 25000 },
+    { id: "p2", char: { id: "p2", abilities: [] }, avatarHpMax: 25000 },
+    { id: "p3", char: { id: "p3", abilities: [] }, avatarHpMax: 25000 },
+  ], "revive");
+  r3.party[2].hp = 0; r3.party[0].hp = 300;
+  healParty(r3, 1.0); // 全回復でも…
+  eq(r3.party[2].hp, 0, "トんだメンバーは回復しない（復活しない）");
+  eq(r3.party[0].hp, 1000, "生存メンバーは満タンまで回復");
+  // ゲームオーバー＝生存1人以下（runWiped）
+  ok(!runWiped(r3), "生存2人なら継続（runWiped=false）");
+  r3.party[1].hp = 0;
+  ok(runWiped(r3), "生存1人で runWiped=true（着卓できない）");
+  eq(survivorCount(r3), 1, "生存者数=1");
+  // ソロランは1人でも全滅まで続行
+  const solo = newRun([{ id: "s", char: { id: "s", abilities: [] }, avatarHpMax: 25000 }], "solo");
+  ok(!runWiped(solo), "ソロランは1人でも継続");
+  solo.party[0].hp = 0;
+  ok(runWiped(solo), "ソロランも全滅で終了");
   const r2 = newRun(party, "hang");
   rollHangover(r2, 1, makeRng("x")); // chance=1 で必ず二日酔い
   ok(r2.party.every((m) => m.hungover), "宴会chance=1で全員二日酔い");

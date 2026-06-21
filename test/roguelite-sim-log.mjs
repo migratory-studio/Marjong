@@ -12,7 +12,7 @@ import { makeRng, paramsFromLv, PARAM_KEYS } from "../src/autobattle/autoBattle.
 import { LEAGUE_SIM } from "../src/autobattle/leagueAutoSim.js";
 import { CHARACTERS } from "../src/characters/characters.js";
 import {
-  newRun, enemyUnitForFloor, seatedAllies, allPartyDown, handsForType,
+  newRun, enemyUnitForFloor, seatedAllies, runWiped, handsForType,
   rogueliteDamageDeltas, rollDraft, floorDamageMul, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers, allyScaledHp, DAMAGE_SCALE, REGEN_FRAC,
 } from "../src/roguelite/run.js";
@@ -111,7 +111,7 @@ function pickGreedy(cards) {
 
 function regen(run, res) {
   const perf = Math.max(0.25, Math.min(1.3, 0.25 + (res.hpRatio ?? 0.5) * 0.85 + (res.koAny ? 0.25 : 0)));
-  for (const m of run.party) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * REGEN_FRAC * perf));
+  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * REGEN_FRAC * perf)); // トんだメンバーは回復しない
   return perf;
 }
 
@@ -155,7 +155,7 @@ function simRun(idx) {
     // 戦闘
     let res = simBattle(run, rng, ft, false, `戦闘`);
     const seated = seatedAllies(run); seated[0].hungover = false; if (seated[1] !== seated[0]) seated[1].hungover = false;
-    if (!res.cleared) { endRun(run, false); return run.floor; }
+    if (runWiped(run)) { endRun(run, false); return run.floor; } // 生存1人以下＝ゲームオーバー（復活なし）
     run.cleared += 1;
     const perf = regen(run, res);
     const earned = coinsForClear({ floor: run.floor, kind: ft.enemy, ko: res.koAny }) * (ft.kind === "gamble" ? 2 : 1);
@@ -169,7 +169,7 @@ function simRun(idx) {
     while (POLICY === "greedy" && remaining > 0 && Math.min(...run.party.map((m) => m.hp / m.hpMax)) > 0.55) {
       log(`    ＞ 追撃（残${remaining}）`);
       const pr = simBattle(run, rng, ft, true, `追撃戦`);
-      if (!pr.cleared) { endRun(run, false); return run.floor; }
+      if (runWiped(run)) { endRun(run, false); return run.floor; } // 生存1人以下＝没収
       run.cleared += 1; regen(run, pr);
       const c2 = pickGreedy(rollDraft(run, { ko: true, hpRatio: pr.hpRatio })); if (c2) { applyCard(run, c2); log(`      追撃バフ: 「${c2.name}」`); }
       remaining -= 1;

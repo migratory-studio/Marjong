@@ -222,6 +222,12 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
     - `--assert`(7) 維持（中堅greedy median 19・無策 12）。sim-log で「自分のツモ→相棒ほぼ無傷／アガリで敵HP約2割／深層の敵ツモは致命」を確認。
   - **新アイテム「庇いの守り」(`friendlyGuard`)**：味方のツモで受けるダメージを1回無効化（受けたら消費・最大5重ね）。`rogueliteDamageDeltas` が消費。
   - **バフ合計UI**：進路/編成に「HP +X% / 攻 +Y% / 防 +Z%」＋お守り残数を表示（`buffTotalsHtml`／`mods.hpMul`・`dealMul`・`takeMul`・`friendlyGuard` から集計）。
+- ✅ **テストプレイ反映バッチ3（実装済み）**：
+  - **トんだら復活しない**：`healParty`/踏破回復/供物(hurtFrac) は **生存メンバー(hp>0)のみ**対象＝一度トベば脱落はラン継続（宴会全回復でも戻らない）。
+  - **ゲームオーバー＝生存1人以下**（`runWiped`＝`survivorCount<=1`）。2対2の卓を味方2人で組めない＝終了。3人パーティは1人脱落しても続行できる粘り。ソロランのみ全滅まで続行。
+  - **追加必殺枠は最大2（ポケモン式忘却）**：付与能力(`grantedAbilityIds`)が3つ目になると `enforceGrantCap`→`showRogueliteForget` で1つ手放す（手放した付与カードは `run.cards` から戻し再ドラフト可）。draft/宝箱/ショップ/イベントの全付与経路に適用。
+  - **専用バックグラウンド＋BGM**：ラン開始でキャラ選択UIを片付け、背景を `bg-ruins`（廃墟）＋探索BGM `朔夜(Sakuya3)` に切替（`enterRogueliteAmbience`／対局から戻るたび復帰・離脱で `exitRogueliteAmbience`）。
+  - 校正：ハーネス/sim-log を3人パーティ・復活なし・`runWiped` 終了に更新し `--assert`(7) 維持。回帰＝`test/roguelite.mjs`(293)。
 - ✅ **セリフ照合・相棒・反転の磨き込み（実装済み）**：
   - **満貫帯の scoreTier 分離**：`scoreTierOf` に `mid`(5200〜9999)を新設＝満貫(8000)が「地味」低点数セリフにならない。詩玥/凌雲に mid 和了セリフ追加・templateも追従（`voiceLines`/`characterVoiceMaster`）。
   - **相棒(席2)の和了発火**：ペア戦で相方が自分で和了したら相棒ボードの吹き出しで一言（`showPairBattleDamageFx`＋既存 `showPartnerTalk`）。編成＝相棒選びの意味づけに。

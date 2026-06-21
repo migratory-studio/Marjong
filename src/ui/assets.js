@@ -286,6 +286,10 @@ export class AudioManager {
     this.playBgm(c.src);
   }
 
+  // 楼光の館（ローグライト）の探索BGM＝朔夜（Sakuya3・静かで張り詰めた夜）。
+  // 対局中は playRandomBgm が上書きするので、ナビ画面へ戻るたびに呼び直して復帰させる。
+  playRogueliteBgm() { this.playBgm(BGM_SAKUYA3); }
+
   // Title / home and character-select screen BGM.
   playHomeBgm() { this.playBgm(BGM_HOME); }
   playSelectBgm() { this.playBgm(BGM_SELECT); }

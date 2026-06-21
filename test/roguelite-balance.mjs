@@ -10,7 +10,7 @@ import { makeRng, paramsFromLv, PARAM_KEYS } from "../src/autobattle/autoBattle.
 import { LEAGUE_SIM } from "../src/autobattle/leagueAutoSim.js";
 import {
   newRun, enemyUnitForFloor, seatedAllies, floorEnemyHp, healParty, rollHangover,
-  rogueliteDamageDeltas, rollDraft, carrySlotsFor, allyScaledHp, RL_TUNE, floorDamageMul,
+  rogueliteDamageDeltas, rollDraft, carrySlotsFor, allyScaledHp, RL_TUNE, floorDamageMul, runWiped,
 } from "../src/roguelite/run.js";
 import { applyCard, applyEffect } from "../src/roguelite/cardEffects.js";
 import { shopStock, buyShopItem, shrineOffers } from "../src/roguelite/run.js";
@@ -154,7 +154,7 @@ const PICKERS = {
 // 戦いの質でスケールした回復（本番 onRogueliteBattleEnd と同じ式）。
 const regenAll = (run, res = {}) => {
   const perf = Math.max(0.25, Math.min(1.3, 0.25 + (res.hpRatio ?? 0.5) * 0.85 + (res.koAny ? 0.25 : 0)));
-  for (const m of run.party) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * TUNE.regenFrac * perf));
+  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * TUNE.regenFrac * perf)); // トんだメンバーは回復しない
 };
 
 // 1フロアを処理。戻り値 false=全滅（ラン終了）。floorWins に踏破した戦闘階を記録。
@@ -167,7 +167,7 @@ function stepFloor(run, rng, policy, floorWins = null) {
   if (floorWins && res.cleared) floorWins[run.floor] = (floorWins[run.floor] || 0) + 1;
   // 着卓した2人の二日酔いは消費
   const seated = seatedAllies(run); seated[0].hungover = false; if (seated[1] !== seated[0]) seated[1].hungover = false;
-  if (!res.cleared) return false;
+  if (runWiped(run)) return false; // ゲームオーバー＝生存1人以下（復活なし）
   run.cleared += 1; regenAll(run, res);
   run.coins = (run.coins || 0) + coinsForClear({ floor: run.floor, kind: floorType.enemy || "mob", ko: res.koAny }) * (floorType.kind === "gamble" ? 2 : 1);
   const pick = PICKERS[policy];
@@ -176,7 +176,7 @@ function stepFloor(run, rng, policy, floorWins = null) {
   let remaining = floorType.pursueMax || 0;
   while (policy === "greedy" && remaining > 0 && Math.min(...run.party.map((m) => m.hp / m.hpMax)) > 0.55) {
     const pr = simBattle(run, rng, floorType, true);
-    if (!pr.cleared) return false; // 追撃中の全滅＝没収
+    if (runWiped(run)) return false; // 追撃中の全滅（生存1人以下）＝没収
     run.cleared += 1; regenAll(run, pr);
     c = pick(rollDraft(run, { ko: true, hpRatio: pr.hpRatio })); if (c) applyCard(run, c);
     remaining -= 1;
@@ -186,9 +186,11 @@ function stepFloor(run, rng, policy, floorWins = null) {
 }
 
 function mkRun({ avatarHpMax, baseStrength, carry = [] }, seed) {
+  // 3人パーティ（典型）。生存1人以下で終了＝1人は脱落しても続行できる粘り。
   const party = [
     { id: "you", char: { id: "you", abilities: [], stats: { startingPoints: avatarHpMax } }, avatarHpMax, baseStrength },
     { id: "pal", char: { id: "pal", abilities: [], stats: { startingPoints: avatarHpMax } }, avatarHpMax, baseStrength },
+    { id: "pal2", char: { id: "pal2", abilities: [], stats: { startingPoints: avatarHpMax } }, avatarHpMax, baseStrength },
   ];
   const run = newRun(party, seed);
   for (const m of run.party) m.baseStrength = baseStrength;

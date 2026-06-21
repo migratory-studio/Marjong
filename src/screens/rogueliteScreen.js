@@ -481,6 +481,29 @@ export function showRogueliteEvent(container, opts = {}) {
   });
 }
 
+// ---- 必殺枠の忘却（ポケモン式：枠超過＝どれか1つ手放す） ----
+export function showRogueliteForget(container, opts = {}) {
+  const { abilities = [], newId = null, cap = 2, onForget } = opts;
+  if (!container || abilities.length === 0) { onForget?.(null); return; }
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-forget";
+  const rows = abilities.map((a) => `
+    <button type="button" class="rl-forget-row${a.id === newId ? " is-new" : ""}" data-id="${a.id}">
+      <div class="rl-forget-info"><div class="rl-forget-name">${a.name}${a.id === newId ? ' <span class="rl-forget-tag">NEW</span>' : ""}</div>
+        <div class="rl-forget-desc">${a.desc || ""}</div></div>
+      <div class="rl-forget-x">手放す</div>
+    </button>`).join("");
+  ov.innerHTML = `
+    <div class="rl-modal rl-forget-modal">
+      <div class="rl-modal-head">追加必殺は最大 ${cap} つ — 1つ手放す</div>
+      <p class="rl-route-hint">覚えられる付与能力は<b>${cap}つまで</b>。新しい力を得るなら、ひとつ手放さなければならない。</p>
+      <div class="rl-forget-list">${rows}</div>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  ov.querySelectorAll(".rl-forget-row").forEach((b) => b.addEventListener("click", () => { ov.remove(); onForget?.(b.dataset.id); }));
+}
+
 // ---- 鍛冶屋（光貨でスキルレベルを鍛える。打つたびLv/残高を更新） ----
 export function showRogueliteForge(container, opts = {}) {
   const { floor = 1, run, cap = 10, costOf, onForge, onLeave } = opts;

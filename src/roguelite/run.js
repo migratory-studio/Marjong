@@ -120,9 +120,10 @@ export function newRun(party, seed) {
 
 export { applyCard };
 
-// パーティ全員を最大比 frac で回復（休息/宴会）。トビ(hp0)も回復＝復帰できる。
+// パーティの「生存メンバー」を最大比 frac で回復（休息/宴会/ショップ）。
+// トんだ(hp<=0)メンバーは回復しない＝一度トベば復活しない（ランを通して脱落）。
 export function healParty(run, frac) {
-  for (const m of run.party) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * frac));
+  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * frac));
 }
 
 // 二日酔い抽選（宴会）。各メンバー独立に chance で hungover を立てる。決定論 rng。
@@ -198,7 +199,20 @@ export function partyOrder(run) {
   return [...run.party];
 }
 
-// ゲームオーバー＝パーティ全員のトビ（着卓中の2人だけでなく控えも全滅）。
+// 生存メンバー数（hp>0）。
+export function survivorCount(run) {
+  return (run.party || []).filter((m) => m.hp > 0).length;
+}
+
+// ゲームオーバー＝生存メンバーが1人以下（2対2の卓を味方2人で成立させられない＝戦えない）。
+// ※ パーティ1人で始めたランは例外で1人でも続行（影武者で卓を成立）。
+export function runWiped(run) {
+  const total = (run.party || []).length;
+  if (total <= 1) return survivorCount(run) === 0; // ソロランは全滅まで続行
+  return survivorCount(run) <= 1;
+}
+
+// 旧API：全員トビ（互換・テスト用）。
 export function allPartyDown(run) {
   return (run.party || []).length > 0 && run.party.every((m) => m.hp <= 0);
 }

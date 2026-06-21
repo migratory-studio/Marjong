@@ -51,13 +51,14 @@ import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
-import { newRun, enemyUnitForFloor, seatedAllies, allPartyDown, benchAbilityIds, rogueliteDamageDeltas, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers } from "./roguelite/run.js";
+import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, benchAbilityIds, rogueliteDamageDeltas, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers } from "./roguelite/run.js";
 import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
-import { cardById } from "./data/rogueliteCardMaster.js";
+import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
+import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -203,6 +204,7 @@ let pairHpCells = null;          // ペア戦HPボードのDOM参照マップ
 let rogueliteState = null;       // ローグライト・ラン進行中の状態（{ run } 等）。null = 非ローグライト（F7）
 let rogueliteHandLimit = null;   // 楼光の館：この1戦の「定められた局数」(maxHands)。null = 非ローグライト
 const ROGUELITE_RIICHI_FRAC = 0.05; // 楼光の館：リーチ宣言で最大HPの5%を消費（緊張感のあるギャンブル）
+const MAX_GRANTED_ABILITIES = 2;    // 追加必殺枠の上限（付与能力）。超えそうなら1つ忘れる（ポケモン式）
 // L1: 非同期ポンプ runHand() 用の状態。人間の手番/鳴きの決定は DOM ハンドラが
 // これらの resolver を解決して返す（CPU/オートは AI 経路、将来のオンラインは別経路）。
 let humanTurnResolver = null;  // 解決値: 打牌/ツモ/カンの決定、または SWITCH_TO_AI
@@ -1833,6 +1835,8 @@ async function launchPairTournamentMatch(deshiUnit, rivalUnit, ctx) {
 // エントリ：パーティ編成画面を開く。修行完了弟子＋通常キャラから1〜3人を選んで出発。
 async function openRoguelite() {
   rogueliteState = null;
+  exitRogueliteAmbience(); // ラン専用背景を片付け、キャラ選択へ
+  audio.playSelectBgm();   // 選択画面のBGMへ戻す
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 未ログインでも遊べる */ }
   const roster = (profile?.completedAvatars || []).map((ca) => completedAvatarToChar(ca));
@@ -1868,7 +1872,29 @@ async function startRogueliteRun(partyChars) {
     if (c) applyCard(run, c);
   }
   rogueliteState = { run };
+  enterRogueliteAmbience(); // 専用バックグラウンド＋探索BGM（キャラ選択の見た目を引きずらない）
   enterFloor(run, floorTypeById("normal")); // 1階は通常戦闘から
+}
+
+// 楼光の館の専用アンビエンス。roguelite-screen の背景を館（廃墟）に差し替え、探索BGMを流す。
+// 進行モーダルはこの背景の上に重なる（キャラ選択のUIが透けない）。対局から戻るたびに呼び直す。
+const ROGUELITE_BG_ID = "bg-ruins"; // 廃墟の部屋＝塔を登るダンジョン感（実リソース）
+function enterRogueliteAmbience() {
+  const host = el("roguelite-screen");
+  if (host) {
+    host.classList.add("rl-in-run");
+    host.querySelector(".rl-screen")?.remove(); // キャラ選択UIを片付ける（背景に引きずらない）
+    let bd = host.querySelector(".rl-run-backdrop");
+    if (!bd) { bd = document.createElement("div"); bd.className = "rl-run-backdrop"; host.insertBefore(bd, host.firstChild); }
+    const img = bgDef(ROGUELITE_BG_ID)?.image;
+    bd.style.backgroundImage = img ? `url('${img}')` : "";
+  }
+  audio.playRogueliteBgm();
+}
+function exitRogueliteAmbience() {
+  const host = el("roguelite-screen");
+  host?.classList.remove("rl-in-run");
+  host?.querySelector(".rl-run-backdrop")?.remove();
 }
 
 // 楼光の館：意思決定の瞬間に先頭キャラが一言「返す」（愛着×双方向）。
@@ -1909,6 +1935,29 @@ function skilledAbility(abilityId, baseParams, skillLevel) {
   } catch { return null; } // 未知能力は無視
 }
 
+// 追加必殺枠（付与能力）の上限管理。カード適用後に枠超過していれば、ポケモン式の忘却モーダルで
+// 1つ手放させる（手放した能力は取得履歴 run.cards からも除いて再ドラフト可能に戻す）。超過なしは即 after()。
+function enforceGrantCap(run, after) {
+  const ids = run.mods.grantedAbilityIds;
+  if (ids.length <= MAX_GRANTED_ABILITIES) { after?.(); return; }
+  const host = el("roguelite-screen");
+  const newId = ids[ids.length - 1]; // 直近に覚えた能力（強調表示用）
+  showRogueliteForget(host, {
+    abilities: ids.map((id) => ({ id, name: abilityDef(id)?.name || id, desc: abilityDef(id)?.desc || "" })),
+    newId, cap: MAX_GRANTED_ABILITIES,
+    onForget: (forgetId) => {
+      run.mods.grantedAbilityIds = ids.filter((id) => id !== forgetId);
+      // 手放した付与カードを履歴から1枚戻す＝再ドラフト可能に（card.effect.abilityId で同定）。
+      const ci = run.cards.findIndex((cid) => {
+        const c = ROGUELITE_CARD_MASTER.find((x) => x.id === cid);
+        return c && c.effect?.kind === "grantAbility" && c.effect.abilityId === forgetId;
+      });
+      if (ci >= 0) run.cards.splice(ci, 1);
+      enforceGrantCap(run, after); // 念のため再判定（多重超過の保険）
+    },
+  });
+}
+
 // 所持バフ一覧（重複は枚数でまとめる・蓄積の可視化）。
 function heldBuffs(run) {
   const count = {};
@@ -1942,7 +1991,10 @@ function enterFloor(run, floorType) {
     case "treasure":
       showRogueliteDraft(host, {
         floor: run.floor, title: "宝箱：力を1つ授かる", cards: rollDraft(run, { hpRatio: 1 }), charImages, coins: run.coins || 0,
-        onPick: (card) => { if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); } advanceRoguelite(run); },
+        onPick: (card) => {
+          if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
+          enforceGrantCap(run, () => advanceRoguelite(run)); // 必殺枠が3つ目なら忘却モーダル
+        },
       });
       break;
     case "event": {
@@ -1959,7 +2011,11 @@ function enterFloor(run, floorType) {
     case "shop":
       showRogueliteShop(host, {
         floor: run.floor, run, stock: shopStock(run, makeRng(`${run.seed}:shop:${run.floor}`)),
-        onBuy: (item) => buyShopItem(run, item), // 戻り値 true=成立（UIが光貨/在庫を更新）
+        onBuy: (item) => {
+          const ok = buyShopItem(run, item); // 戻り値 true=成立（UIが光貨/在庫を更新）
+          if (ok && item?.type === "card" && isGrantCard(item.card)) enforceGrantCap(run, () => {}); // 必殺枠超過なら忘却モーダル
+          return ok;
+        },
         onLeave: () => advanceRoguelite(run),
       });
       break;
@@ -1999,13 +2055,15 @@ function applyEventOutcome(run, outcome) {
   if (!outcome) return;
   if (outcome.coins) run.coins = Math.max(0, (run.coins || 0) + outcome.coins); // 供物/報酬（負=支払い）
   if (outcome.healFrac) healParty(run, outcome.healFrac);
-  if (outcome.hurtFrac) for (const m of run.party) m.hp = Math.max(1, m.hp - Math.round(m.hpMax * outcome.hurtFrac)); // 供物（最低1残す）
+  // 供物（生存メンバーのみ・最低1残す）。トんだメンバーは対象外＝1HPで復活させない。
+  if (outcome.hurtFrac) for (const m of run.party) if (m.hp > 0) m.hp = Math.max(1, m.hp - Math.round(m.hpMax * outcome.hurtFrac));
   if (outcome.effect) applyEffect(run, outcome.effect);
   if (outcome.cardId) { const c = cardById(outcome.cardId); if (c) applyCard(run, c); }
   if (outcome.draft) { // 無料ドラフト（イベント内即時）
     const host = el("roguelite-screen");
-    showRogueliteDraft(host, { floor: run.floor, title: "餞別：1枚選ぶ", cards: rollDraft(run, { hpRatio: 1 }), charImages, onPick: (card) => { if (card) applyCard(run, card); } });
+    showRogueliteDraft(host, { floor: run.floor, title: "餞別：1枚選ぶ", cards: rollDraft(run, { hpRatio: 1 }), charImages, coins: run.coins || 0, onPick: (card) => { if (card) applyCard(run, card); enforceGrantCap(run, () => {}); } });
   }
+  enforceGrantCap(run, () => {}); // effect/cardId 経由で必殺枠が超過したら忘却モーダル
 }
 
 // 1フロア解決後の前進：階層を進め、ボス階は強制ボス、それ以外は進路2-3択（撤退も可）。
@@ -2104,13 +2162,15 @@ function onRogueliteBattleEnd(result) {
   pairBattleData = null; honestCtx = null;
   const host = el("roguelite-screen");
   goScreen("roguelite-screen");
-  // ゲームオーバー＝パーティ全員のトビ。誰か生きていれば踏破（次の階へ）。
-  if (allPartyDown(run)) { finishRogueliteRun(run, { wiped: true }); return; }
+  enterRogueliteAmbience(); // 専用背景＋探索BGMへ復帰（対局中の in-game BGM から戻す）
+  // ゲームオーバー＝生存メンバーが1人以下（2人で着卓できない）。残り2人以上なら踏破（次の階へ）。
+  if (runWiped(run)) { finishRogueliteRun(run, { wiped: true }); return; }
   run.cleared += 1;
   // 踏破で部分回復。回復量は「戦いの質」でスケール＝圧勝/撃破はしっかり回復、辛勝は
   // ほぼ回復せず手負いのまま次へ（survive=前進は維持しつつ、毎戦の出来に緊張感を持たせる）。
+  // トんだ(hp<=0)メンバーは回復しない＝復活させない（脱落はランを通して継続）。
   const perf = Math.max(0.25, Math.min(1.3, 0.25 + (result.hpRatio ?? 0.5) * 0.85 + (result.koAny ? 0.25 : 0)));
-  for (const m of run.party) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * REGEN_FRAC * perf));
+  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * REGEN_FRAC * perf));
   // 光貨を獲得（深いほど・強敵/ボス/撃破/追撃で増す。賭場勝利は2倍）。
   const isGamble = !!rogueliteState.gamble; rogueliteState.gamble = false;
   const pursued = !!rogueliteState.pursuing;
@@ -2125,15 +2185,17 @@ function onRogueliteBattleEnd(result) {
     floor: run.floor, cards, charImages, coins: run.coins || 0,
     onPick: (card) => {
       if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
-      // 追撃の打診（残あり）。なければ前進＝進路選択へ。
-      if ((rogueliteState.pursueRemaining || 0) > 0) {
-        showRoguelitePursue(host, {
-          floor: run.floor, remaining: rogueliteState.pursueRemaining, run, charImages,
-          leadLine: vline(rlLead()?.id, "rlPursue", {}), leadChar: rlLead(),
-          onPursue: () => { rogueliteState.pursueRemaining -= 1; launchRogueliteBattle(run, rogueliteState.floorType, { pursue: true }); },
-          onGo: () => advanceRoguelite(run),
-        });
-      } else advanceRoguelite(run);
+      enforceGrantCap(run, () => {
+        // 追撃の打診（残あり）。なければ前進＝進路選択へ。
+        if ((rogueliteState.pursueRemaining || 0) > 0) {
+          showRoguelitePursue(host, {
+            floor: run.floor, remaining: rogueliteState.pursueRemaining, run, charImages,
+            leadLine: vline(rlLead()?.id, "rlPursue", {}), leadChar: rlLead(),
+            onPursue: () => { rogueliteState.pursueRemaining -= 1; launchRogueliteBattle(run, rogueliteState.floorType, { pursue: true }); },
+            onGo: () => advanceRoguelite(run),
+          });
+        } else advanceRoguelite(run);
+      });
     },
   });
 }

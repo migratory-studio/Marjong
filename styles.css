@@ -4946,3 +4946,21 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-buff-stat.atk b { color: #ff8f6b; }
 .rl-buff-stat.def b { color: #6fb6ff; }
 .rl-buff-stat.ward b { color: #e8c45d; }
+
+/* 楼光の館：ラン専用バックグラウンド（廃墟の館） */
+.rl-run-backdrop { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 0; }
+.rl-run-backdrop::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(20,16,26,0.62) 0%, rgba(12,10,18,0.78) 60%, rgba(6,5,10,0.88) 100%); }
+#roguelite-screen.rl-in-run { background: #0a0810; }
+#roguelite-screen.rl-in-run .rl-overlay { z-index: 2; }
+
+/* 楼光の館：必殺枠の忘却（ポケモン式） */
+.rl-forget-modal { max-width: 560px; }
+.rl-forget-list { display: flex; flex-direction: column; gap: 8px; margin: 8px 0 4px; }
+.rl-forget-row { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid rgba(255,255,255,0.16); border-radius: 10px; background: rgba(255,255,255,0.04); cursor: pointer; text-align: left; transition: background .15s, border-color .15s; }
+.rl-forget-row:hover { background: rgba(255,92,80,0.16); border-color: #ff5470; }
+.rl-forget-row.is-new { border-color: #6fb6ff; background: rgba(86,168,255,0.1); }
+.rl-forget-info { flex: 1; min-width: 0; }
+.rl-forget-name { font-size: 14px; font-weight: 700; color: var(--ink, #fff); }
+.rl-forget-tag { font-size: 10px; background: #6fb6ff; color: #062035; border-radius: 5px; padding: 1px 5px; vertical-align: middle; }
+.rl-forget-desc { font-size: 11px; color: #9aa3b2; margin-top: 2px; }
+.rl-forget-x { flex: none; font-size: 12px; color: #ff8f7a; border: 1px solid rgba(255,92,80,0.5); border-radius: 7px; padding: 4px 10px; }
