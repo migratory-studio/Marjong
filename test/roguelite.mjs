@@ -15,6 +15,7 @@ import { ROGUELITE_FLOOR_MASTER, floorTypeById, drawFloorChoices, coinsForClear 
 import { ROGUELITE_EVENT_MASTER, pickEvent } from "../src/data/rogueliteEventMaster.js";
 import { makeRng } from "../src/autobattle/autoBattle.js";
 import { abilityDef } from "../src/data/abilityMaster.js";
+import { pickVoiceLine } from "../src/data/voiceLines.js";
 import { Game } from "../src/core/game.js";
 import { CHARACTERS, instantiateAbilities } from "../src/characters/characters.js";
 
@@ -68,6 +69,11 @@ eq(floorTypeById("boss").weight, 0, "ボスは抽選プール外（強制配置�
   eq(new Set(choices.map((c) => c.id)).size, 3, "進路は重複なし");
   ok(choices.some((c) => c.kind === "battle"), "進路に必ず戦闘系を含む（手詰まり回避）");
   ok(!choices.some((c) => c.id === "boss"), "進路にボスは出ない");
+  // 強制枠（序盤の遭遇イベント確定）
+  for (let i = 0; i < 20; i++) {
+    const ch = drawFloorChoices(makeRng(`force-${i}`), { count: 3, force: ["event"] });
+    ok(ch.some((c) => c.id === "event"), `force=event で必ず遭遇が出る (#${i})`);
+  }
 }
 
 // ---- 遭遇イベントマスタ ----
@@ -83,6 +89,14 @@ ok(pickEvent(makeRng("e1")), "pickEvent が1件返す");
 for (const c of ROGUELITE_CARD_MASTER) {
   if (c.effect?.kind === "grantAbility") ok(abilityDef(c.effect.abilityId), `付与カードの能力が実在: ${c.id}=${c.effect.abilityId}`);
 }
+
+// 意思決定セリフ（buffFamily 条件・追撃・撤退）が詩玥で解決できる。
+for (const fam of ["attack", "defense", "sustain", "ability"]) {
+  ok(pickVoiceLine("shiyue", "rlBuff", { buffFamily: fam }), `rlBuff/${fam} の詩玥セリフが解決`);
+}
+ok(pickVoiceLine("shiyue", "rlPursue", {}), "追撃セリフ");
+ok(pickVoiceLine("shiyue", "rlRetreat", {}), "撤退セリフ");
+ok(/点棒|盾|嫌い/.test(pickVoiceLine("shiyue", "rlBuff", { buffFamily: "sustain" }) || ""), "HP/点棒系バフは点棒嫌いに触れる（固有性）");
 
 // エンジンの maxHands（定められた局数で打ち切り）。連荘も1局＝handNumber で数える。
 {

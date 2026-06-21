@@ -86,8 +86,9 @@ function routePool() {
 
 // 重み抽選で count 種を選ぶ（重複なし）。exclude（直近フロアidなど）は避ける。
 //   rng … makeRng() の戻り（0..1）
+//   force … 必ず候補に含めたいフロアid配列（例：序盤の遭遇イベント確定枠）。
 // 戦闘が主・特殊は稀。最低1つは戦闘系を含める（手詰まり回避）。
-export function drawFloorChoices(rng, { count = 3, exclude = [] } = {}) {
+export function drawFloorChoices(rng, { count = 3, exclude = [], force = [] } = {}) {
   const ex = new Set(exclude);
   const pool = routePool().filter((f) => !ex.has(f.id));
   const out = [];
@@ -103,6 +104,12 @@ export function drawFloorChoices(rng, { count = 3, exclude = [] } = {}) {
   // 1枠目は必ず戦闘系（normal/elite）から＝進めなくなる事故を防ぐ。
   const battle = pickFrom(pool.filter((f) => f.kind === "battle"));
   if (battle) out.push(battle);
+  // 強制枠（遭遇イベント確定など）を戦闘の次に差し込む。
+  for (const id of force) {
+    if (out.length >= count) break;
+    const f = ROGUELITE_FLOOR_MASTER.find((x) => x.id === id);
+    if (f && !used.has(f.id)) { used.add(f.id); out.push(f); }
+  }
   while (out.length < count) {
     const f = pickFrom(pool);
     if (!f) break;

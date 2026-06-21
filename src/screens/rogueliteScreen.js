@@ -244,9 +244,28 @@ function partyHpRows(run) {
 
 const coinBadge = (coins) => `<div class="rl-coins">光貨 <b>${coins | 0}</b></div>`;
 
+// 意思決定の瞬間に、先頭キャラが一言「返す」小トースト（立ち絵＋吹き出し）。
+// 愛着×双方向＝選んだことが手触りとして返ってくる。数秒で自動的に消える。
+let _speakTimer = null;
+export function showRogueliteSpeak(container, { char, charImages, line } = {}) {
+  if (!container || !char || !line) return;
+  container.querySelector(".rl-speak")?.remove();
+  clearTimeout(_speakTimer);
+  const u = charImages?.url?.(char, "icon") || charImages?.url?.(char, "portrait") || "";
+  const face = u
+    ? `<img class="rl-speak-face" src="${u}" alt="">`
+    : `<div class="rl-speak-face rl-speak-fb" style="--c:${char.color || "#888"}">${[...(char.name || "?")][0] || "?"}</div>`;
+  const el = document.createElement("div");
+  el.className = "rl-speak";
+  el.innerHTML = `${face}<div class="rl-speak-bubble"><div class="rl-speak-name" style="color:${char.color || "var(--accent)"}">${char.name || ""}</div><div class="rl-speak-line">${line}</div></div>`;
+  container.appendChild(el);
+  requestAnimationFrame(() => el.classList.add("show"));
+  _speakTimer = setTimeout(() => { el.classList.remove("show"); setTimeout(() => el.remove(), 250); }, 4200);
+}
+
 // ---- 進路選択（次フロアを2〜3択／ボス階は強制）＋撤退 ----
 export function showRogueliteRoute(container, opts = {}) {
-  const { floor = 1, choices = [], boss = false, coins = 0, onPick, onRetreat } = opts;
+  const { floor = 1, choices = [], boss = false, coins = 0, held = [], onPick, onRetreat } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-route";
@@ -269,6 +288,10 @@ export function showRogueliteRoute(container, opts = {}) {
       <div class="rl-modal-head">第 ${floor} 階へ — 進路を選ぶ ${coinBadge(coins)}</div>
       <p class="rl-route-hint">光貨は戦闘を踏破するほど貯まり、<b>ショップ</b>で回復やバフに使える。10階ごとに<b>ボス</b>。</p>
       ${body}
+      ${held.length ? `<div class="rl-held"><span class="rl-held-label">所持バフ</span>${held.map((b) => {
+        const m = RARITY_META[b.rarity] || { color: "#9aa3b2" };
+        return `<span class="rl-held-chip" style="--rarity:${m.color}" title="${b.desc || ""}">${b.name}${b.count > 1 ? `×${b.count}` : ""}</span>`;
+      }).join("")}</div>` : ""}
       <button type="button" class="rl-retreat" id="rl-route-retreat">ここで撤退する（記録を確保）</button>
     </div>`;
   container.appendChild(ov);
@@ -281,13 +304,16 @@ export function showRogueliteRoute(container, opts = {}) {
 
 // ---- 追撃（push-your-luck）：先に行く / 追撃（残り回数） ----
 export function showRoguelitePursue(container, opts = {}) {
-  const { floor = 1, remaining = 1, run, onPursue, onGo } = opts;
+  const { floor = 1, remaining = 1, run, leadLine, leadChar, onPursue, onGo } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-continue";
+  const speakHtml = (leadLine && leadChar)
+    ? `<div class="rl-modal-speak" style="--c:${leadChar.color || "var(--accent)"}"><b>${leadChar.name}</b>「${leadLine}」</div>` : "";
   ov.innerHTML = `
     <div class="rl-modal">
       <div class="rl-modal-head">第 ${floor} 階・追撃のチャンス（残り ${remaining}）</div>
+      ${speakHtml}
       <div class="rl-hp-list">${partyHpRows(run)}</div>
       <p class="rl-continue-note">追撃すればもう1局戦い、<strong>さらなる戦利品（高レア）</strong>を狙える。だが全滅すれば<strong>すべて没収</strong>。</p>
       <div class="rl-continue-btns">
@@ -410,7 +436,7 @@ export function showRogueliteShop(container, opts = {}) {
 
 // ---- ラン終了（＋引き継ぎバフ選択） ----
 export function showRogueliteGameOver(container, opts = {}) {
-  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], onClose } = opts;
+  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], partingLine, speakerChar, onClose } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-gameover" + (wiped ? " wiped" : " safe");
@@ -436,6 +462,7 @@ export function showRogueliteGameOver(container, opts = {}) {
         <div class="rl-go-stat"><div class="rl-go-k">最深記録</div><div class="rl-go-v">${bestFloor} 階</div></div>
       </div>
       <p class="rl-go-sub">${sub}</p>
+      ${partingLine && speakerChar ? `<div class="rl-modal-speak" style="--c:${speakerChar.color || "var(--accent)"}"><b>${speakerChar.name}</b>「${partingLine}」</div>` : ""}
       ${carryHtml}
       <button type="button" class="rl-start" id="rl-go-close">編成へ戻る</button>
     </div>`;

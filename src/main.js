@@ -57,7 +57,7 @@ import { cardById } from "./data/rogueliteCardMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -1866,6 +1866,36 @@ async function startRogueliteRun(partyChars) {
   enterFloor(run, floorTypeById("normal")); // 1階は通常戦闘から
 }
 
+// 楼光の館：意思決定の瞬間に先頭キャラが一言「返す」（愛着×双方向）。
+const rlLead = () => rogueliteState?.run?.party?.[0]?.char || null;
+function cardFamily(card) {
+  const k = card?.effect?.kind;
+  if (k === "grantAbility") return "ability";
+  if (k === "takeReduce") return "defense";
+  if (k === "heal" || k === "maxHpUp") return "sustain";
+  if (k === "addBench") return "ally";
+  if (k === "dealMul") return "attack";
+  if (k === "compound") {
+    const parts = card.effect.parts || [];
+    if (parts.some((p) => p.kind === "dealMul")) return "attack";
+    if (parts.some((p) => p.kind === "takeReduce")) return "defense";
+    return "sustain";
+  }
+  return "attack";
+}
+function rogueliteSpeak(event, ctx = {}) {
+  const lead = rlLead();
+  if (!lead) return;
+  const line = vline(lead.id, event, ctx);
+  if (line) showRogueliteSpeak(el("roguelite-screen"), { char: lead, charImages, line });
+}
+// 所持バフ一覧（重複は枚数でまとめる・蓄積の可視化）。
+function heldBuffs(run) {
+  const count = {};
+  for (const id of run.cards) count[id] = (count[id] || 0) + 1;
+  return Object.entries(count).map(([id, n]) => { const c = cardById(id); return c ? { name: c.name, rarity: c.rarity, count: n, desc: c.desc } : null; }).filter(Boolean);
+}
+
 // フロア種別ごとのディスパッチ。戦闘以外（休息/宴会/宝箱/遭遇）は即解決して advanceRoguelite へ。
 function enterFloor(run, floorType) {
   rogueliteState.floorType = floorType;
@@ -1892,10 +1922,11 @@ function enterFloor(run, floorType) {
     case "treasure":
       showRogueliteDraft(host, {
         floor: run.floor, title: "宝箱：力を1つ授かる", cards: rollDraft(run, { hpRatio: 1 }), charImages,
-        onPick: (card) => { if (card) applyCard(run, card); advanceRoguelite(run); },
+        onPick: (card) => { if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); } advanceRoguelite(run); },
       });
       break;
     case "event": {
+      run.eventSeen = true; // 遭遇イベントを体験した（序盤確定枠の判定に使う）
       const ev = pickEvent(makeRng(`${run.seed}:event:${run.floor}`), { exclude: rogueliteState.lastEvent ? [rogueliteState.lastEvent] : [] });
       rogueliteState.lastEvent = ev?.id;
       showRogueliteEvent(host, {
@@ -1950,14 +1981,17 @@ function advanceRoguelite(run) {
   run.floor += 1;
   const host = el("roguelite-screen");
   goScreen("roguelite-screen");
+  const held = heldBuffs(run); // 所持バフ一覧（蓄積の可視化）
   if (run.floor % 10 === 0) { // 10階ごとにボス（強制）
-    showRogueliteRoute(host, { boss: true, floor: run.floor, coins: run.coins || 0, onPick: () => enterFloor(run, BOSS_FLOOR), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
+    showRogueliteRoute(host, { boss: true, floor: run.floor, coins: run.coins || 0, held, onPick: () => enterFloor(run, BOSS_FLOOR), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
     return;
   }
   const rng = makeRng(`${run.seed}:route:${run.floor}`);
-  const choices = drawFloorChoices(rng, { count: run.floor <= 2 ? 2 : 3, exclude: rogueliteState.lastFloorId ? [rogueliteState.lastFloorId] : [] });
+  // 序盤（2〜5階）にまだ遭遇イベントを引いていなければ、進路に1回確定で出す（物語の場を必ず体験させる）。
+  const force = (!run.eventSeen && run.floor >= 2 && run.floor <= 5) ? ["event"] : [];
+  const choices = drawFloorChoices(rng, { count: run.floor <= 2 ? 2 : 3, exclude: rogueliteState.lastFloorId ? [rogueliteState.lastFloorId] : [], force });
   showRogueliteRoute(host, {
-    floor: run.floor, choices, coins: run.coins || 0,
+    floor: run.floor, choices, coins: run.coins || 0, held,
     onPick: (ft) => { rogueliteState.lastFloorId = ft.id; enterFloor(run, ft); },
     onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }),
   });
@@ -2049,11 +2083,12 @@ function onRogueliteBattleEnd(result) {
   showRogueliteDraft(host, {
     floor: run.floor, cards, charImages,
     onPick: (card) => {
-      if (card) applyCard(run, card);
+      if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
       // 追撃の打診（残あり）。なければ前進＝進路選択へ。
       if ((rogueliteState.pursueRemaining || 0) > 0) {
         showRoguelitePursue(host, {
           floor: run.floor, remaining: rogueliteState.pursueRemaining, run, charImages,
+          leadLine: vline(rlLead()?.id, "rlPursue", {}), leadChar: rlLead(),
           onPursue: () => { rogueliteState.pursueRemaining -= 1; launchRogueliteBattle(run, rogueliteState.floorType, { pursue: true }); },
           onGo: () => advanceRoguelite(run),
         });
@@ -2066,6 +2101,9 @@ function onRogueliteBattleEnd(result) {
 // 引き継ぎ枠ぶんを選ばせて次ランへ持ち越す（ローグライク・累積しない）。
 // 到達階層＝フロア番号：全滅は死んだ階(run.floor)、撤退は1つ手前(まだ入っていない次の階の手前)。
 async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}) {
+  // 先頭キャラの別れ際の一言（rogueliteState を消す前に解決）。撤退＝引く判断への“返し”。
+  const lead = rlLead();
+  const partingLine = lead ? vline(lead.id, retreated ? "rlRetreat" : "matchEnd", retreated ? {} : { rankIndex: 1, numPlayers: 2 }) : null;
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 保存できなくても結果は見せる */ }
   const prev = profile?.roguelite || { bestFloor: 0, runs: 0, carry: [] };
@@ -2082,7 +2120,7 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}
   const acquired = [...new Set(run.cards)].map((id) => cardById(id)).filter(Boolean);
   showRogueliteGameOver(el("roguelite-screen"), {
     reached, wiped, retreated, bestFloor: best,
-    carrySlots: slots, acquired,
+    carrySlots: slots, acquired, partingLine, speakerChar: lead, charImages,
     onClose: async (selectedIds) => {
       const carry = (selectedIds || []).slice(0, slots);
       try {

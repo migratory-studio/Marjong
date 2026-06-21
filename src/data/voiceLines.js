@@ -64,6 +64,8 @@ function condMatches(cond, ctx) {
   if (cond.playStyleTag   && cond.playStyleTag   !== ctx.playStyleTag)   return false;
   // firstMeet: 初対面か（対戦ホームの出迎え用）。true/false を ctx.firstMeet と厳密一致で評価。
   if (cond.firstMeet != null && Boolean(ctx.firstMeet) !== cond.firstMeet) return false;
+  // buffFamily: 楼光の館のバフ系統（"attack"|"defense"|"sustain"|"ability"|"ally"）。未供給は不一致扱い。
+  if (cond.buffFamily && cond.buffFamily !== ctx.buffFamily) return false;
   return true;
 }
 
