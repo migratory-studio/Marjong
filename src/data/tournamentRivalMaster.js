@@ -99,6 +99,16 @@ function buildRival(id, def, startingPoints) {
   };
 }
 
+// ネームド・ライバルを id 指定で1体組む（ローグライトのボス層など、大会外から指名生成する用）。
+// id は素の id（"shizuka" 等）。未知 id は null。startingPoints で初期点（＝HP）を上書きできる。
+export function buildRivalById(id, startingPoints = 25000) {
+  const def = RIVAL_POOL[id];
+  return def ? buildRival(id, def, startingPoints) : null;
+}
+
+// 全ネームド・ライバルの id 一覧（ローグライトのボス抽選などに使う）。
+export const RIVAL_IDS = Object.keys(RIVAL_POOL);
+
 // 大会の対戦相手一団を作る。先頭からネームド（ティア人数ぶん）→残りはシルエットのモブで充足。
 //   tournamentId / tier … どの大会か（ネームド選定）。
 //   count               … 必要な相手数（卓人数−1）。

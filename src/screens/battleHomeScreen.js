@@ -114,7 +114,7 @@ function portraitNode(c) {
 }
 
 export async function showBattleHome(container, opts = {}) {
-  const { repository, audio, loggedIn = false, onFree, onOnline, onBack } = opts;
+  const { repository, audio, loggedIn = false, onFree, onRoguelite, onBack } = opts;
   if (!container) return;
 
   let profile = null;
@@ -159,13 +159,13 @@ export async function showBattleHome(container, opts = {}) {
           </div>
         </div>
         <nav class="bh-routes">
+          <button type="button" class="menu-btn" id="bh-roguelite">
+            <span class="menu-btn-title">楼光の館</span>
+            <span class="menu-btn-sub">弟子を連れて階層を登る・撤退と継続の冒険</span>
+          </button>
           <button type="button" class="menu-btn" id="bh-free">
             <span class="menu-btn-title">フリー対戦</span>
-            <span class="menu-btn-sub">既存キャラで CPU 対局</span>
-          </button>
-          <button type="button" class="menu-btn" id="bh-online">
-            <span class="menu-btn-title">オンライン対戦</span>
-            <span class="menu-btn-sub">ルームマッチ / オートマッチ</span>
+            <span class="menu-btn-sub">CPU対戦 / オンライン対戦</span>
           </button>
         </nav>
         <button type="button" class="ghost-back bh-back" id="bh-back">← ホームへ</button>
@@ -249,7 +249,7 @@ export async function showBattleHome(container, opts = {}) {
 
   // 導線。
   container.querySelector("#bh-free")?.addEventListener("click", () => onFree?.());
-  container.querySelector("#bh-online")?.addEventListener("click", () => onOnline?.());
+  container.querySelector("#bh-roguelite")?.addEventListener("click", () => onRoguelite?.());
   container.querySelector("#bh-back")?.addEventListener("click", () => onBack?.());
 
   // 背景・BGM の「変更」→ 一覧モーダル（選択中ハイライト／将来は解禁状態も表示）。

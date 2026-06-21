@@ -23,6 +23,7 @@ export function createDefaultProfile() {
     homeBgm: null,        // 対戦ホームのBGMキー（HOME_BGM_CHOICES）。null=既定(hanadoki)。
     avatars: [],
     completedAvatars: [], // 修行完了データ（卒業した弟子のスナップショット・最大5枠）。対戦/ローグライトで使用。misc(jsonb)に保存される
+    roguelite: { bestFloor: 0, runs: 0 }, // ローグライト（F7）：最深到達階層・通算ラン数。misc(jsonb)に保存。専用テーブル不要
     inventory: [],
     scenarioProgress: [],
     tournamentRuns: [],

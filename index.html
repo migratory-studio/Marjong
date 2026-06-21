@@ -57,16 +57,19 @@
       <header class="menu-head"><h1>フリー対戦</h1></header>
       <nav class="menu-list">
         <button type="button" class="menu-btn" data-nav="select">
-          <span class="menu-btn-title">通常フリー対戦</span>
-          <span class="menu-btn-sub">既存キャラの固定性能・報酬なし</span>
+          <span class="menu-btn-title">CPUと対戦</span>
+          <span class="menu-btn-sub">好きなキャラ・弟子で気軽に1局</span>
         </button>
-        <button type="button" class="menu-btn" disabled>
-          <span class="menu-btn-title">育成反映フリー対戦</span>
-          <span class="menu-btn-sub">準備中（Phase 7）</span>
+        <button type="button" class="menu-btn" data-nav="online">
+          <span class="menu-btn-title">オンライン対戦</span>
+          <span class="menu-btn-sub">ルームマッチ / おまかせマッチング</span>
         </button>
       </nav>
       <button type="button" class="ghost-back" data-nav="battle-home">← 対戦ホームへ</button>
     </section>
+
+    <!-- Roguelite (F7): party-select / run HUD / draft (JS-rendered) -->
+    <section id="roguelite-screen" class="screen hidden"></section>
 
     <!-- Online (テスト中): mode select -->
     <section id="online-screen" class="screen menu-screen hidden">
@@ -93,7 +96,7 @@
           <span class="menu-btn-sub">今シーズンの段位ランキング</span>
         </button>
       </nav>
-      <button type="button" class="ghost-back" data-nav="battle-home">← 対戦ホームへ</button>
+      <button type="button" class="ghost-back" data-nav="free-battle">← フリー対戦へ</button>
     </section>
 
     <!-- Online lobby (JS-rendered: room/matchmaking + char pick) -->

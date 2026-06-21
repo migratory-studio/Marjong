@@ -118,6 +118,10 @@
 
 ## B. ローグライト（対戦の新しい遊び方）
 
+> **ゲーム内名称＝「楼光の館」**（“ロー”グ“ライト”からの語呂。内部 id / 機能名は `roguelite` のまま据置）。
+> 導線：対戦ホーム → 「楼光の館」「フリー対戦」／フリー対戦 → 「CPUと対戦」「オンライン対戦」。
+> **ゲームオーバー＝パーティ全員のトビ**（着卓2人だけでなく控えも全滅したら没収。誰か生きていれば踏破して続行）。
+
 麻雀 ＋ ローグライト。点棒＝HP が HP管理・撤退判断・ダメージ計算と地続き。
 
 ### 卓モデル（✅確定）
@@ -161,6 +165,47 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
 - ✅ **修行完了DB（F5 実装済み）**：`completedAvatar.js`＝CompletedAvatar生成／5枠手動入替／`markGraduated`。能力凍結・タイプ=ロール。`profile.completedAvatars[]`（misc jsonb保存・専用テーブル不要）。F4「よし」で卒業確定。回帰＝`test/completedAvatar.mjs`。
 - ✅ **修行完了弟子をフリー対戦へ（F6 実装済み）**：選択画面に「あなたの弟子」セクションを足し、`completedAvatars` を**席0=あなた専用**で選べる（育てたステ/能力/HPで打つ＝育成⇔対戦の接続）。変換は `completedAvatar.js` の純関数 `deshiCharFrom`（弟子→CHARACTER互換の単一情報源）＋ `completedAvatarToChar`、`main.js` の `avatarToCharacter` は委譲。`charById`（CHARACTERS∪弟子）/ `loadCompletedRoster`（select開時に読込・画像/ボイス登録）。弟子は**団体/ペアには出さない**（切替時に指名解除）。**絆は計上しない＝案A**（`isCompletedAvatar`）。弟子5枠でも固定720を割らないよう `char-list` を `max-height+overflow-y:auto` で内部スクロールに逃がす。回帰＝`test/completedAvatar.mjs`（39 checks）。
 - ✅ **ローグライト骨格**：ペア戦流用の共闘卓／3人目控え／エンドレス／継続 or 撤退／ローグライク引継ぎ（進度依存枠・終了時選択・**累積しない**）。
+- ✅ **ローグライト v1（F7 実装済み・遊べる1ラン）**：対戦ホーム→「ローグライト」導線（`battleHomeScreen` ＋ `roguelite-screen`）。パーティ編成（修行完了弟子＋通常キャラ1〜3人・先頭=あなた/3人目=控え）→1戦→勝つ毎にバフ3択ドラフト→継続 or 撤退→全滅で没収。**最深到達（撃破数）を `profile.roguelite.bestFloor` に保存**（misc jsonb・専用テーブル不要）。
+  - **卓＝ペア戦エンジン流用**（`launchRogueliteBattle`・席0/2=味方、1/3=敵）。決着＝敵ペア全滅 or 判定1位で踏破／自ペア全滅で没収。
+  - **HP＝独自スケール**：点棒を `DAMAGE_SCALE`(=0.04) で写像＝敵1階1000・階層で複利増（`src/roguelite/run.js`）。味方chの `stats.startingPoints` に scaled hpMax を複製注入＝相棒ボード描画は無改変で両立。
+  - **カード＝完全マスタドリブン**（`src/data/rogueliteCardMaster.js`）。効果3系統＝即時系(heal/maxHpUp/addBench)＋戦闘数値系(dealMul/takeReduce＝ローグライト独自ダメージ層 `rogueliteDamageDeltas`)＋エンジン介入系(grantAbility＝既存能力フックへ `createAbility` で相乗り)。リゾルバ＝`src/roguelite/cardEffects.js`。
+  - **ボス層**＝3階ごとにネームドライバル（`tournamentRivalMaster.buildRivalById`／`RIVAL_IDS`）。レア度バイアス＝飛ばし/HP残/深層で上振れ（`rarityBiasFor`）。
+  - 回帰＝`test/roguelite.mjs`（マスタ整合・効果リゾルバ・HPスケール・ダメージ変換・ドラフト抽選・引き継ぎ枠）。
+- ✅ **メタ進行＝ローグライク引き継ぎ枠（F7 第2弾 実装済み）**：到達記録（`bestFloor`）が深いほど次ランへ引き継げるバフ枠が増える（`carrySlotsFor`＝常に1以上・3/6/10階で2/3/4枠）。**ラン終了時に獲得バフ（ユニーク）から枠ぶんを選択**→`profile.roguelite.carry` に保存→**次ラン開始時に `applyCard` で適用**（`startRogueliteRun`）。**累積しない**（毎ラン終了時に選び直し＝手持ちは常に次の1ランぶん）。編成画面に「引き継ぎ中のバフ」表示・結果画面に選択UI（上限ガード）。
+  - **第2弾で割愛（さらに次）**：ラン中断セーブ／`skillLevelUp`・`paramBoost`カード（kindはリゾルバに予約済み）。
+- ✅ **踏破条件＝生存＋局数戦（F7 第4弾 実装済み）**：**次フロアへ進む＝「定められた局数を耐え切る」or「どちらかがトビ」**（KO必須をやめサクサク＋耐久＝ブロッカーの価値↑）。局数＝`handsForFloor`：**基本1局戦／ボス層（3階ごと）は3局戦**（長期戦の山場）。※将来：進路選択で「ハードフロア＝2局」等を分岐させる土台（`handsForFloor` 一箇所）。エンジンに `Game` の **`maxHands`** オプション追加（`handNumber>=maxHands` で打ち切り・連荘も1局・他モードは未指定=従来）。`launchRogueliteBattle` が `rogueliteHandLimit` を `beginGame`→`Game` へ。**ゲームオーバー＝パーティ全員のトビ**（`allPartyDown`・着卓2人だけでなく控えも全滅）。着卓は生存メンバーHP上位2人（傷ついた控えは休んで回復）。
+- ✅ **バランス本校正（F7 第3弾→第4弾で再校正済み）**：実麻雀は回さず `leagueAutoSim` の強度モデル＋本番の `rogueliteDamageDeltas` でランを Monte Carlo（`test/roguelite-balance.mjs`）。設計＝**HP累積消耗の生存レース**。
+  - **主レバー＝深度被ダメ倍率**（`floorDamageMul`＝6階目から `+0.95/階`・青天井）。param 上限(敵Lv10)の先でも難度が上がり続け、**最適ビルドでも必ずランが終わる**（不死なし）。
+  - **持続を有界化**：踏破ごと部分回復 `REGEN_FRAC=0.18`／与ダメ上限 `dealCap=3.0`／被ダメ軽減下限 `takeFloor=0.4`（最大60%）。校正値は `run.js` の `RL_TUNE` に集約（テストは env で掃引）。
+  - **実測の到達深度**：第5弾（進路選択）導入で再校正。下記参照。
+- ✅ **進路選択＝フロア種別システム（F7 第5弾 実装済み）**：単線をやめ、**毎ステップ2〜3択で次フロアを選ぶ**（撤退も可）。**ボスは10階ごと強制**。完全マスタ駆動＝`src/data/rogueliteFloorMaster.js`（種別・局数・重み）。
+  - **フロア種別**：通常戦闘(mob/1局)・強敵戦闘(named=名前+能力モブ/2局)・ボス(キャラ/2局・10F)・休息(+30%)・宴会(+100%＋確率で**二日酔い**=次戦の能力封印)・宝箱(無料ドラフト)・**遭遇イベント**(会話＋2択＝愛着×双方向／`rogueliteEventMaster.js`)。第2弾枠＝ショップ/賭場/祠(weight0で予約)。
+  - **追撃（push-your-luck）**：戦闘踏破後「先に行く／追撃」。追撃＝もう1局戦い高レア＋ドラフト追加。全員トビで没収（賭け）。pursueMax＝通常1/強敵・ボス2。
+  - **ディスパッチ**：`enterFloor`（kind分岐）→ `advanceRoguelite`（floor++→ボス強制 or `showRogueliteRoute`）。`maxHands`＝`floorType.baseHands`。敵生成は `enemyUnitForFloor(run, floorType, salt)` で質を分岐（強敵/ボスはHP・Lv上乗せ）。二日酔いは `launchRogueliteBattle` で能力注入をスキップ。
+  - **到達階層＝フロア番号**に統一（`bestFloor`＝最深到達。撤退は手前/全滅は死んだ階）。
+  - **再校正（進路＋回復フロア＋追撃で深くなるため）**：`floorDmgSlope` 0.95→**2.2**。実測＝無策（常に通常戦闘・無バフ）弱10/中11/強12階で**最初のボス(10F)前後が壁**、最適ビルド（進路で回復・宝箱・追撃を活用）弱14/中18/強22階（神ランは~80階）。バフ＋進路の寄与 ×1.6〜1.8。回帰＝`node test/roguelite-balance.mjs --assert`（7アサート・depth=到達フロア）。
+  - 回帰＝`test/roguelite.mjs`（フロア/イベントマスタ整合・敵種別分岐・回復/二日酔い・進路抽選・maxHands）。
+- ✅ **ショップ・賭場・祠＋ラン内通貨「光貨」（F7 第2弾・実装済み）**：
+  - **光貨**：1戦踏破で獲得（深い/強敵/ボス/撃破/追撃で増・`coinsForClear`）。`run.coins`（misc保存なし＝ラン内のみ）。進路画面/ショップに残高表示。
+  - **ショップ**：在庫＝バフ3（取得済み除外）＋気付け薬(50%回復)＋厚みの護符(HP最大+20%)。光貨で購入、買うたび在庫/残高更新（`shopStock`/`buyShopItem`/`showRogueliteShop`）。
+  - **賭場**：強敵相手の1局戦。勝てば**高レア確定気味のドラフト（bias=1）＋光貨2倍**。負け（全滅）は没収＝高リスク高リターン（battle流用・`rogueliteState.gamble`）。
+  - **祠**：供物2択＋去る（`shrineOffers`）。HP30%供物→与ダメ↑＋被ダメ軽減（compound）／光貨40供物→HP最大↑。イベントUI流用・支払い不可は選択肢を無効化。
+  - 再校正：新フロアの回復/購入で深化するため `floorDmgSlope` 2.2 据置で median 健全（無策 弱10/中11/強12・最適 弱13/中17/強22／神ランは長尺）。`test/roguelite-balance.mjs` の harness に shop/gamble/shrine/光貨を反映。回帰＝`test/roguelite.mjs`（196チェック）＋`--assert`（7）。
+- ✅ **UXプレイテスト反映（D1障壁の即修正・実装済み）**：3ペルソナの仮想プレイテスト所見に基づく改善。
+  - 結果画面で**敵への成果を明示**（「敵を撃破！」/「敵に削り込み — 残りHP X/Y　味方N人生存」、banner も撃破/耐え抜いた/全滅へ）。「点棒=HP」の無報酬感を解消。
+  - 「踏破！」→**「次の階へ進む」**（没収時「決着（記録を残す）」）。生存=踏破のラベル混乱を是正。
+  - 進路画面に**光貨ヒント＋残高バッジ**、編成カードに**能力名・HP丈夫さ（堅/並/脆）**＋ツールチップ、編成リードに**2対2ペア戦の事前告知**。
+  - **オート観戦設定を保持**（`localStorage: mahjong-rpg.rogueliteAuto`）＝毎戦ONにし直す手間を解消。`launchRogueliteBattle` が起動時に適用、対局中トグルで保存。編成画面に告知。
+  - 残課題（別途）：音声404（要切り分け）、未実施ペルソナ(light-daily/story-reader)。
+- ✅ **バランス調整（core-gamer指摘・実装済み）**：
+  - **①緊張感**＝踏破時の部分回復を**戦いの質でスケール**（`perf = 0.25 + hpRatio×0.85 + (撃破 ? 0.25)`、0.25〜1.3倍）。survive=前進は維持しつつ、辛勝は手負いのまま次へ＝毎戦の出来が効く（`onRogueliteBattleEnd`／harness同式）。
+  - **②ビルドシナジー**＝付与カードを増設（老頭=么九/染め軸・危険感知=守備軸・牌寄せ=速度軸／能力は builtins 登録済み）。コモンに攻防ハイブリッド2枚（気合の一打/踏ん張り）。カード総数 16→21（コモン6・付与6）。
+  - **③序盤プール偏り**＝コモン増量＋**HPほぼ満タン時は純回復カードをドラフトから除外**（死に札の解消・`rollDraft`）。
+  - 再校正：assert据置で median 健全（無策 弱10/中10/強11・最適 弱12/中16/強19）。回帰＝`test/roguelite.mjs`（**228**・付与能力実在/満タン回復除外を追加）＋`--assert`（7）。
+- ✅ **要切り分け系の対応（実装済み）**：
+  - **①無報酬感の根を修正**：1局ダメージカードがローグライトでも勝者に「点数 +0」を出していた → 味方和了は**「敵に N ダメージ！」**、敵和了の勝者行は「—」、注記も「和了で敵HPを削る／全員トベば没収／HPはフロアで回復」に（`showPairBattleDamageFx`）。ダメージ演出と同時に**相棒ボード（hp-board）も即同期**（`updateHpBoard` 追加）。
+  - **②セリフのラン内重複を抑制**：`pickVoiceLine` に直近1文の重複回避を追加（候補2件以上なら直前と同じ文を避ける・全モード共通）。回帰＝連続重複0を確認。
+  - **③「最深到達」表示**：ライブHUDではなく過去最高記録（編成/リザルトのみ）＝実バグではないため、ラベルを**「これまでの最深到達記録」**に明確化。
 
 ## 残：実装時チューニング（ハーネスで合わせる／素案では未決でOK）
 

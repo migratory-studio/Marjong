@@ -1,0 +1,468 @@
+// ローグライト画面（F7）— docs/shitei-calendar-and-roguelite.md「B. ローグライト」。
+//
+// 4つのビューを提供する純UI（状態は main.js が持ち、コールバックで返す）:
+//   showRoguelite        … エントリ＋パーティ編成（修行完了弟子＋通常キャラから1〜3人）
+//   showRogueliteDraft   … 勝利後のバフカード3択
+//   showRogueliteContinue… 継続 or 撤退
+//   showRogueliteGameOver… ラン終了（撤退で帰還／全滅で没収）
+//
+// 立ち絵/アイコンは charImages（呼び出し側が渡す）から引く。無ければ頭文字フォールバック。
+// 1280×720 ノースクロール方針：ロスターのみ内部スクロールに逃がす（F6 と同様の扱い）。
+
+import { RARITY_META } from "../data/rogueliteCardMaster.js";
+import { abilityDef } from "../data/abilityMaster.js";
+
+const MAX_PARTY = 3;
+
+// 編成カード用：能力名と「丈夫さ」目安（持ち点＝HPの厚み）。
+const ROLE_LABEL = { attacker: "アタッカー", blocker: "ブロッカー", gambler: "ギャンブラー", support: "サポート" };
+function charAbilityName(c) {
+  const id = c?.abilities?.[0]?.abilityId;
+  return id ? (abilityDef(id)?.name || "") : "";
+}
+function charToughness(c) {
+  const hp = c?.stats?.startingPoints || 0;
+  return hp >= 22000 ? "堅" : hp >= 15000 ? "並" : "脆";
+}
+
+function faceNode(charImages, c, cls = "rl-face") {
+  const u = charImages?.url?.(c, "icon") || charImages?.url?.(c, "portrait") || "";
+  if (u && c.isMob) {
+    const d = document.createElement("div");
+    d.className = `${cls} is-mob-face`;
+    d.style.setProperty("--mob-sil", `url('${u}')`);
+    return d;
+  }
+  if (u) {
+    const img = document.createElement("img");
+    img.className = cls; img.src = u; img.alt = c.name || "";
+    return img;
+  }
+  const d = document.createElement("div");
+  d.className = `${cls} rl-face-fb`;
+  d.style.setProperty("--c", c.color || "#888");
+  d.textContent = [...(c.name || "?")][0] || "?";
+  return d;
+}
+
+// ---- パーティ編成 ----
+export function showRoguelite(container, opts = {}) {
+  const { deshiRoster = [], characters = [], charImages, bestFloor = 0, carry = [], onBack, onStart } = opts;
+  if (!container) return;
+  // 候補：修行完了弟子（先頭）＋通常キャラ。id 重複は弟子優先。
+  const seen = new Set();
+  const pool = [];
+  for (const c of [...deshiRoster, ...characters]) {
+    if (!c || seen.has(c.id) || c.isMob) continue;
+    seen.add(c.id); pool.push(c);
+  }
+  const party = []; // 選択順＝席順（先頭=あなた）
+
+  container.innerHTML = `
+    <div class="rl-screen">
+      <header class="rl-head">
+        <h1 class="rl-title">楼光の館</h1>
+        <div class="rl-best">これまでの最深到達記録：<b>${bestFloor}</b> 階</div>
+      </header>
+      <p class="rl-lead">弟子を連れて階層を登る。<b>味方2人が着卓し、敵2人と同卓（2対2）で戦う</b>。勝てばバフを選び、危なくなる前に撤退して記録を持ち帰れ。<b>全員がトベばランは没収</b>だ。</p>
+      <div class="rl-body">
+        <div class="rl-party">
+          <div class="rl-party-head">パーティ（1〜${MAX_PARTY}人・先頭「あなた」＝操作キャラ／3人目は控えで交代）</div>
+          <div class="rl-party-slots" id="rl-party-slots"></div>
+          ${carry.length ? `<div class="rl-carry">
+            <div class="rl-carry-head">引き継ぎ中のバフ</div>
+            <div class="rl-carry-chips">${carry.map((c) => {
+              const meta = RARITY_META[c.rarity] || { color: "#999" };
+              return `<span class="rl-carry-chip" style="--rarity:${meta.color}" title="${c.desc}">${c.name}</span>`;
+            }).join("")}</div>
+          </div>` : ""}
+        </div>
+        <div class="rl-roster">
+          <div class="rl-roster-head">連れて行く打ち手を選ぶ</div>
+          <div class="rl-roster-grid" id="rl-roster-grid"></div>
+        </div>
+      </div>
+      <div class="rl-foot">
+        <button type="button" class="ghost-back" id="rl-back">← 対戦ホームへ</button>
+        <span class="rl-foot-hint">対局は右上の「オート」で観戦に切替可（設定は記憶される）</span>
+        <button type="button" class="rl-start" id="rl-start" disabled>出発する</button>
+      </div>
+    </div>`;
+
+  const slotsEl = container.querySelector("#rl-party-slots");
+  const gridEl = container.querySelector("#rl-roster-grid");
+  const startBtn = container.querySelector("#rl-start");
+
+  const renderParty = () => {
+    slotsEl.innerHTML = "";
+    for (let i = 0; i < MAX_PARTY; i++) {
+      const c = party[i];
+      const slot = document.createElement("div");
+      slot.className = "rl-slot" + (c ? " filled" : "") + (i === 0 ? " you" : "");
+      if (c) {
+        slot.appendChild(faceNode(charImages, c, "rl-slot-face"));
+        const name = document.createElement("div");
+        name.className = "rl-slot-name";
+        name.textContent = c.name || "?";
+        slot.appendChild(name);
+        const tag = document.createElement("div");
+        tag.className = "rl-slot-tag";
+        tag.textContent = i === 0 ? "あなた" : i === MAX_PARTY - 1 ? "控え" : "相棒";
+        slot.appendChild(tag);
+        slot.title = "外す";
+        slot.addEventListener("click", () => { party.splice(i, 1); sync(); });
+      } else {
+        slot.textContent = i === 0 ? "あなた" : "＋";
+      }
+      slotsEl.appendChild(slot);
+    }
+  };
+
+  const renderGrid = () => {
+    gridEl.innerHTML = "";
+    for (const c of pool) {
+      const inParty = party.some((p) => p.id === c.id);
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "rl-cell" + (inParty ? " picked" : "") + (c.isCompletedAvatar ? " deshi" : "");
+      cell.disabled = !inParty && party.length >= MAX_PARTY;
+      cell.appendChild(faceNode(charImages, c, "rl-cell-face"));
+      const nm = document.createElement("div");
+      nm.className = "rl-cell-name";
+      nm.textContent = c.name || "?";
+      cell.appendChild(nm);
+      // 能力名＋丈夫さ目安（誰を選ぶかの判断材料）。
+      const info = document.createElement("div");
+      info.className = "rl-cell-info";
+      const ab = charAbilityName(c);
+      const role = ROLE_LABEL[c.role] || "";
+      info.textContent = `${ab || role || "—"}・HP${charToughness(c)}`;
+      cell.title = `${c.name}｜${role}${ab ? "｜能力：" + ab : ""}｜HPの厚み：${charToughness(c)}`;
+      cell.appendChild(info);
+      if (c.isCompletedAvatar) {
+        const b = document.createElement("span");
+        b.className = "rl-cell-badge"; b.textContent = "弟子";
+        cell.appendChild(b);
+      }
+      cell.addEventListener("click", () => {
+        const idx = party.findIndex((p) => p.id === c.id);
+        if (idx >= 0) party.splice(idx, 1);
+        else if (party.length < MAX_PARTY) party.push(c);
+        sync();
+      });
+      gridEl.appendChild(cell);
+    }
+  };
+
+  const sync = () => { renderParty(); renderGrid(); startBtn.disabled = party.length < 1; };
+  sync();
+
+  container.querySelector("#rl-back")?.addEventListener("click", () => onBack?.());
+  startBtn.addEventListener("click", () => { if (party.length) onStart?.([...party]); });
+}
+
+// ---- バフカード3択 ----
+export function showRogueliteDraft(container, opts = {}) {
+  const { floor = 1, cards = [], onPick, title } = opts;
+  if (!container) return;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-draft";
+  const cardHtml = cards.map((c, i) => {
+    const meta = RARITY_META[c.rarity] || { label: c.rarity, color: "#999" };
+    return `
+      <button type="button" class="rl-card r-${c.rarity}" data-i="${i}" style="--rarity:${meta.color}">
+        <div class="rl-card-rarity">${meta.label}</div>
+        <div class="rl-card-name">${c.name}</div>
+        <div class="rl-card-desc">${c.desc}</div>
+      </button>`;
+  }).join("");
+  ov.innerHTML = `
+    <div class="rl-modal">
+      <div class="rl-modal-head">${title || `第 ${floor} 階 突破！　力を1つ授かる`}</div>
+      <div class="rl-cards">${cardHtml || '<div class="rl-card-empty">授かれる力は出尽くした……</div>'}</div>
+      ${cards.length ? "" : '<button type="button" class="rl-start" id="rl-skip">先へ進む</button>'}
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const close = (card) => { ov.remove(); onPick?.(card || null); };
+  ov.querySelectorAll(".rl-card").forEach((btn) => {
+    btn.addEventListener("click", () => close(cards[+btn.dataset.i]));
+  });
+  ov.querySelector("#rl-skip")?.addEventListener("click", () => close(null));
+}
+
+// ---- 継続 or 撤退 ----
+export function showRogueliteContinue(container, opts = {}) {
+  const { floor = 1, run, charImages, onContinue, onRetreat } = opts;
+  if (!container) return;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-continue";
+  const hpRows = (run?.party || []).map((m) => {
+    const pct = Math.max(0, Math.min(100, (m.hp / (m.hpMax || 1)) * 100));
+    const tier = pct <= 25 ? "low" : pct <= 50 ? "mid" : "high";
+    return `
+      <div class="rl-hp-row">
+        <span class="rl-hp-name">${m.char?.name || "?"}</span>
+        <span class="rl-hp-bar"><span class="rl-hp-fill ${tier}" style="width:${pct}%"></span></span>
+        <span class="rl-hp-val">${Math.max(0, Math.round(m.hp))}/${m.hpMax}</span>
+      </div>`;
+  }).join("");
+  ov.innerHTML = `
+    <div class="rl-modal">
+      <div class="rl-modal-head">第 ${floor} 階を踏破した</div>
+      <div class="rl-hp-list">${hpRows}</div>
+      <p class="rl-continue-note">このまま登れば報酬は増えるが、全滅すれば<strong>すべて没収</strong>。撤退すれば今の記録を持ち帰れる。</p>
+      <div class="rl-continue-btns">
+        <button type="button" class="rl-retreat" id="rl-retreat">撤退する（記録を確保）</button>
+        <button type="button" class="rl-start" id="rl-continue">次の階へ（第 ${floor + 1} 階）</button>
+      </div>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  void charImages;
+  ov.querySelector("#rl-continue")?.addEventListener("click", () => { ov.remove(); onContinue?.(); });
+  ov.querySelector("#rl-retreat")?.addEventListener("click", () => { ov.remove(); onRetreat?.(); });
+}
+
+// フロア種別の表示メタ（アイコン色）。
+const FLOOR_KIND_META = {
+  battle: { mark: "⚔", color: "#e0734d" },
+  rest: { mark: "♨", color: "#5ad17a" },
+  banquet: { mark: "🍶", color: "#e8c45d" },
+  treasure: { mark: "🎁", color: "#56a8ff" },
+  event: { mark: "✦", color: "#c06bff" },
+  boss: { mark: "☠", color: "#ff5470" },
+};
+
+function partyHpRows(run) {
+  return (run?.party || []).map((m) => {
+    const pct = Math.max(0, Math.min(100, (m.hp / (m.hpMax || 1)) * 100));
+    const tier = pct <= 25 ? "low" : pct <= 50 ? "mid" : "high";
+    return `<div class="rl-hp-row"><span class="rl-hp-name">${m.char?.name || "?"}${m.hungover ? " 🍶" : ""}</span><span class="rl-hp-bar"><span class="rl-hp-fill ${tier}" style="width:${pct}%"></span></span><span class="rl-hp-val">${Math.max(0, Math.round(m.hp))}/${m.hpMax}</span></div>`;
+  }).join("");
+}
+
+const coinBadge = (coins) => `<div class="rl-coins">光貨 <b>${coins | 0}</b></div>`;
+
+// ---- 進路選択（次フロアを2〜3択／ボス階は強制）＋撤退 ----
+export function showRogueliteRoute(container, opts = {}) {
+  const { floor = 1, choices = [], boss = false, coins = 0, onPick, onRetreat } = opts;
+  if (!container) return;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-route";
+  let body;
+  if (boss) {
+    const m = FLOOR_KIND_META.boss;
+    body = `<div class="rl-route-cards"><button type="button" class="rl-route-card boss" data-i="0" style="--rarity:${m.color}">
+      <div class="rl-route-mark">${m.mark}</div><div class="rl-route-name">ボスフロア</div>
+      <div class="rl-route-blurb">第 ${floor} 階・館の主が待つ。逃げ場はない。</div></button></div>`;
+  } else {
+    body = `<div class="rl-route-cards">${choices.map((f, i) => {
+      const m = FLOOR_KIND_META[f.kind] || FLOOR_KIND_META.battle;
+      return `<button type="button" class="rl-route-card" data-i="${i}" style="--rarity:${m.color}">
+        <div class="rl-route-mark">${m.mark}</div><div class="rl-route-name">${f.name}</div>
+        <div class="rl-route-blurb">${f.blurb || ""}</div></button>`;
+    }).join("")}</div>`;
+  }
+  ov.innerHTML = `
+    <div class="rl-modal rl-route-modal">
+      <div class="rl-modal-head">第 ${floor} 階へ — 進路を選ぶ ${coinBadge(coins)}</div>
+      <p class="rl-route-hint">光貨は戦闘を踏破するほど貯まり、<b>ショップ</b>で回復やバフに使える。10階ごとに<b>ボス</b>。</p>
+      ${body}
+      <button type="button" class="rl-retreat" id="rl-route-retreat">ここで撤退する（記録を確保）</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  ov.querySelectorAll(".rl-route-card").forEach((btn) => {
+    btn.addEventListener("click", () => { ov.remove(); boss ? onPick?.() : onPick?.(choices[+btn.dataset.i]); });
+  });
+  ov.querySelector("#rl-route-retreat")?.addEventListener("click", () => { ov.remove(); onRetreat?.(); });
+}
+
+// ---- 追撃（push-your-luck）：先に行く / 追撃（残り回数） ----
+export function showRoguelitePursue(container, opts = {}) {
+  const { floor = 1, remaining = 1, run, onPursue, onGo } = opts;
+  if (!container) return;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-continue";
+  ov.innerHTML = `
+    <div class="rl-modal">
+      <div class="rl-modal-head">第 ${floor} 階・追撃のチャンス（残り ${remaining}）</div>
+      <div class="rl-hp-list">${partyHpRows(run)}</div>
+      <p class="rl-continue-note">追撃すればもう1局戦い、<strong>さらなる戦利品（高レア）</strong>を狙える。だが全滅すれば<strong>すべて没収</strong>。</p>
+      <div class="rl-continue-btns">
+        <button type="button" class="rl-start" id="rl-go">先へ進む</button>
+        <button type="button" class="rl-retreat rl-pursue-btn" id="rl-pursue">追撃する</button>
+      </div>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  ov.querySelector("#rl-pursue")?.addEventListener("click", () => { ov.remove(); onPursue?.(); });
+  ov.querySelector("#rl-go")?.addEventListener("click", () => { ov.remove(); onGo?.(); });
+}
+
+// ---- 休息 / 宴会（回復演出） ----
+export function showRogueliteRest(container, opts = {}) {
+  const { kind = "rest", floor = 1, run, hungover = [], onDone } = opts;
+  if (!container) return;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-rest";
+  const isBanquet = kind === "banquet";
+  const head = isBanquet ? "宴会フロア — 大盤振る舞い！" : "休息フロア — ひと息つく";
+  const note = isBanquet ? "パーティ全員のHPが全回復した。" : "パーティ全員のHPが回復した。";
+  const hungNote = hungover.length ? `<p class="rl-rest-hung">🍶 ${hungover.join("・")} は酔ってしまった……次の1戦は能力が使えない。</p>` : "";
+  ov.innerHTML = `
+    <div class="rl-modal">
+      <div class="rl-modal-head">${head}</div>
+      <div class="rl-hp-list">${partyHpRows(run)}</div>
+      <p class="rl-continue-note">${note}</p>
+      ${hungNote}
+      <button type="button" class="rl-start" id="rl-rest-go">先へ進む</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  ov.querySelector("#rl-rest-go")?.addEventListener("click", () => { ov.remove(); onDone?.(); });
+}
+
+// ---- 遭遇イベント（会話＋2択／選んだら短く返す） ----
+export function showRogueliteEvent(container, opts = {}) {
+  const { event, speakerChar, charImages, floor = 1, onChoose, onDone, affordCoins = Infinity } = opts;
+  if (!container || !event) { onDone?.(); return; }
+  const affordable = (c) => !(c.outcome?.coins < 0) || affordCoins >= -c.outcome.coins;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-event";
+  const portrait = speakerChar ? (charImages?.url?.(speakerChar, "portrait") || "") : "";
+  const art = portrait
+    ? `<img class="rl-event-art" src="${portrait}" alt="">`
+    : `<div class="rl-event-art rl-event-art-fb"></div>`;
+  const linesHtml = (event.lines || []).map((l) => `<p>${l}</p>`).join("");
+  ov.innerHTML = `
+    <div class="rl-modal rl-event-modal">
+      <div class="rl-event-row">
+        ${art}
+        <div class="rl-event-body">
+          <div class="rl-event-title">第 ${floor} 階・${event.title || "遭遇"}</div>
+          <div class="rl-event-lines">${linesHtml}</div>
+          <div class="rl-event-choices">${(event.choices || []).map((c, i) => `<button type="button" class="rl-event-choice" data-i="${i}"${affordable(c) ? "" : " disabled"}>${c.label}${affordable(c) ? "" : "（光貨不足）"}</button>`).join("")}</div>
+          <div class="rl-event-reply" id="rl-event-reply" hidden></div>
+          <button type="button" class="rl-start" id="rl-event-go" hidden>先へ進む</button>
+        </div>
+      </div>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  ov.querySelectorAll(".rl-event-choice").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const choice = event.choices[+btn.dataset.i];
+      // 選択後：他の選択肢を消し、キャラが短く「返す」→「先へ進む」。
+      ov.querySelector(".rl-event-choices").remove();
+      const reply = ov.querySelector("#rl-event-reply");
+      reply.hidden = false; reply.textContent = choice.reply || "";
+      // 結果はここで確定（applyEventOutcome）。前進は「先へ進む」で。
+      onChoose?.(choice);
+      const go = ov.querySelector("#rl-event-go");
+      go.hidden = false;
+      go.addEventListener("click", () => { ov.remove(); onDone?.(); }, { once: true });
+    });
+  });
+}
+
+// ---- ショップ（光貨で購入。買うたび在庫/残高を更新） ----
+export function showRogueliteShop(container, opts = {}) {
+  const { floor = 1, run, stock = [], onBuy, onLeave } = opts;
+  if (!container) return;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-shop";
+  const sold = new Set();
+  const render = () => {
+    const items = stock.map((it, i) => {
+      const meta = RARITY_META[it.rarity] || { color: "#9aa3b2" };
+      const isSold = sold.has(i);
+      const afford = (run?.coins || 0) >= it.price;
+      const cls = "rl-shop-item" + (isSold ? " sold" : "") + (!afford && !isSold ? " poor" : "");
+      return `<button type="button" class="${cls}" data-i="${i}" style="--rarity:${meta.color}" ${isSold || !afford ? "disabled" : ""}>
+        <div class="rl-shop-price">光貨 ${it.price}</div>
+        <div class="rl-shop-name">${it.name}</div>
+        <div class="rl-shop-desc">${it.desc}</div>
+        <div class="rl-shop-tag">${isSold ? "売約済" : afford ? "購入" : "光貨不足"}</div>
+      </button>`;
+    }).join("");
+    ov.querySelector(".rl-shop-items").innerHTML = items;
+    ov.querySelector("#rl-shop-coins").textContent = run?.coins | 0;
+    ov.querySelectorAll(".rl-shop-item:not([disabled])").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const i = +btn.dataset.i;
+        if (onBuy?.(stock[i])) { sold.add(i); render(); }
+      });
+    });
+  };
+  ov.innerHTML = `
+    <div class="rl-modal rl-shop-modal">
+      <div class="rl-modal-head">第 ${floor} 階・ショップ — 所持 光貨 <b id="rl-shop-coins">0</b></div>
+      <div class="rl-shop-items"></div>
+      <button type="button" class="rl-start" id="rl-shop-leave">店を出る</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  render();
+  ov.querySelector("#rl-shop-leave")?.addEventListener("click", () => { ov.remove(); onLeave?.(); });
+}
+
+// ---- ラン終了（＋引き継ぎバフ選択） ----
+export function showRogueliteGameOver(container, opts = {}) {
+  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], onClose } = opts;
+  if (!container) return;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-gameover" + (wiped ? " wiped" : " safe");
+  const title = wiped ? "全滅……ランは没収された" : retreated ? "撤退成功・記録を持ち帰った" : "ラン終了";
+  const sub = wiped
+    ? `第 ${reached} 階で力尽きた。到達の記録だけが残る。`
+    : `第 ${reached} 階まで到達した。`;
+  const canCarry = carrySlots > 0 && acquired.length > 0;
+  const carryHtml = canCarry ? `
+    <div class="rl-carry-pick">
+      <div class="rl-carry-pick-head">次のランへ引き継ぐバフを選ぶ（最大 <b id="rl-carry-max">${carrySlots}</b> 枠）</div>
+      <div class="rl-carry-pick-list">${acquired.map((c) => {
+        const meta = RARITY_META[c.rarity] || { color: "#999" };
+        return `<button type="button" class="rl-pick-chip r-${c.rarity}" data-id="${c.id}" style="--rarity:${meta.color}" title="${c.desc}">${c.name}</button>`;
+      }).join("")}</div>
+      <div class="rl-carry-count" id="rl-carry-count">0 / ${carrySlots} 枠</div>
+    </div>` : "";
+  ov.innerHTML = `
+    <div class="rl-modal">
+      <div class="rl-go-banner">${title}</div>
+      <div class="rl-go-stats">
+        <div class="rl-go-stat"><div class="rl-go-k">到達</div><div class="rl-go-v">${reached} 階</div></div>
+        <div class="rl-go-stat"><div class="rl-go-k">最深記録</div><div class="rl-go-v">${bestFloor} 階</div></div>
+      </div>
+      <p class="rl-go-sub">${sub}</p>
+      ${carryHtml}
+      <button type="button" class="rl-start" id="rl-go-close">編成へ戻る</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+
+  // 引き継ぎ選択：最大 carrySlots 枠までトグル。超過時は他を選べない（上限ガード）。
+  const selected = new Set();
+  const countEl = ov.querySelector("#rl-carry-count");
+  const chips = [...ov.querySelectorAll(".rl-pick-chip")];
+  const refresh = () => {
+    if (countEl) countEl.textContent = `${selected.size} / ${carrySlots} 枠`;
+    for (const ch of chips) {
+      const on = selected.has(ch.dataset.id);
+      ch.classList.toggle("picked", on);
+      ch.disabled = !on && selected.size >= carrySlots;
+    }
+  };
+  for (const ch of chips) {
+    ch.addEventListener("click", () => {
+      const id = ch.dataset.id;
+      if (selected.has(id)) selected.delete(id);
+      else if (selected.size < carrySlots) selected.add(id);
+      refresh();
+    });
+  }
+  refresh();
+
+  ov.querySelector("#rl-go-close")?.addEventListener("click", () => { ov.remove(); onClose?.([...selected]); });
+}

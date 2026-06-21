@@ -75,6 +75,9 @@ export class Game {
     // 牌セット: futari は萬子+筒子2-8抜きの少牌80枚。鳴きは暗槓のみ(下記 _collectCallers)。
     this.tileset = this.sanma ? "sanma" : this.futari ? "futari" : "full";
     this.maxRounds = options.maxRounds === 2 ? 2 : 1; // default 東風
+    // 局数で打ち切る上限（任意）。指定すると「定められた N 局を打ち切ったら終了」になる
+    // （maxRounds より先に効く＝短い決着。楼光の館の「1〜3局戦」で使う。連荘も1局と数える）。
+    this.maxHands = Number.isInteger(options.maxHands) && options.maxHands > 0 ? options.maxHands : null;
     this.roundWind = 27; // 27=東, 28=南
     this.kyoku = 1; // hand number WITHIN the current round (1..4)
     // 起家（最初の親）。対局開始演出の親決めで決まった席を注入できる。
@@ -1027,7 +1030,9 @@ export class Game {
     const bust = this.bustCheck(this.players);
     // roundsPlayed: how many full rounds (東=1, 南=2, ...) we've moved past.
     const finishedAllRounds = (this.roundWind - 27) >= this.maxRounds;
-    if (bust || finishedAllRounds) {
+    // 局数上限（任意）。handNumber は startHand ごとに +1（連荘含む）＝打った局数。
+    const finishedHands = this.maxHands != null && this.handNumber >= this.maxHands;
+    if (bust || finishedAllRounds || finishedHands) {
       // Mark terminal but keep phase = HAND_OVER so the win/draw presentation
       // plays first; the UI shows "結果へ" instead of "次の局へ".
       this.gameOver = true;

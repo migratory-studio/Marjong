@@ -67,10 +67,23 @@ function condMatches(cond, ctx) {
   return true;
 }
 
+// 直近に返したセリフ（charId:event ごと）。連続で同一文を返さない＝重複回避（蓄積の手触り）。
+const _recentLine = new Map();
+
 // event と cond に一致するセリフから1つをランダムに返す（無ければ null）。
+// 候補が2つ以上あるときは、直前に返した文を避けて選ぶ（同じセリフの連発を防ぐ）。
 export function pickVoiceLine(charId, event, ctx = {}) {
   const entries = CHARACTER_VOICE_MASTER[charId] || [];
   const matches = entries.filter((e) => e.event === event && condMatches(e.cond, ctx));
   if (!matches.length) return null;
-  return matches[(Math.random() * matches.length) | 0].text;
+  const key = `${charId}:${event}`;
+  const prev = _recentLine.get(key);
+  let pool = matches;
+  if (matches.length > 1 && prev != null) {
+    const filtered = matches.filter((m) => m.text !== prev);
+    if (filtered.length) pool = filtered;
+  }
+  const text = pool[(Math.random() * pool.length) | 0].text;
+  _recentLine.set(key, text);
+  return text;
 }

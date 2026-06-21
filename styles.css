@@ -4718,3 +4718,165 @@ button.primary.danger:hover { color: #ffbcbc; }
    上限を設けて内部スクロールに逃がす（vh/vw 不使用＝stage基準の固定値。不変条件の許容パターン）。
    弟子0〜数枠なら上限未満で従来どおりスクロールは出ない。 */
 #select-screen .wiz-pane[data-pane="3"] .char-list { max-height: 590px; min-height: 0; overflow-y: auto; padding-right: 4px; }
+
+/* ===================================================================== F7 ローグライト
+   対戦ホーム→ローグライト。固定ステージ(1280×720)・ロスターのみ内部スクロールに逃がす。
+   こぱんだ屋UIに馴染むダーク＋金枠トーン。色はレア度で動的(--rarity)。 */
+.rl-screen { position: absolute; inset: 0; display: flex; flex-direction: column; padding: 22px 30px; gap: 12px; }
+.rl-head { display: flex; align-items: baseline; justify-content: space-between; }
+.rl-title { margin: 0; font-size: 28px; color: var(--accent); letter-spacing: .04em; }
+.rl-best { font-size: 15px; color: var(--muted); }
+.rl-best b { color: var(--ink); font-size: 18px; }
+.rl-lead { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.rl-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 300px 1fr; gap: 18px; }
+
+.rl-party { display: flex; flex-direction: column; gap: 10px; }
+.rl-party-head, .rl-roster-head { font-size: 13px; color: var(--muted); }
+.rl-party-slots { display: flex; flex-direction: column; gap: 10px; }
+.rl-slot { display: flex; align-items: center; gap: 12px; min-height: 76px; padding: 8px 12px;
+  border: 2px dashed rgba(246,179,82,.35); border-radius: 12px; color: var(--muted);
+  background: rgba(0,0,0,.18); font-size: 14px; cursor: default; }
+.rl-slot.filled { border-style: solid; border-color: rgba(246,179,82,.6); color: var(--ink); cursor: pointer; }
+.rl-slot.you.filled { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(246,179,82,.3) inset; }
+.rl-slot-face, .rl-cell-face, .rl-slot-face.rl-face-fb { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; object-position: top center; }
+.rl-slot-name { flex: 1; font-size: 16px; font-weight: 700; }
+.rl-slot-tag { font-size: 12px; color: var(--accent); }
+
+.rl-roster { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+.rl-roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(98px, 1fr)); gap: 10px;
+  overflow-y: auto; padding: 4px; align-content: start; min-height: 0; }
+.rl-cell { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 8px 6px; border: 2px solid rgba(255,255,255,.12); border-radius: 12px;
+  background: rgba(0,0,0,.22); color: var(--ink); cursor: pointer; transition: transform .1s, border-color .1s; }
+.rl-cell:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); }
+.rl-cell:disabled { opacity: .4; cursor: default; }
+.rl-cell.picked { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(246,179,82,.35) inset; }
+.rl-cell.deshi { border-color: rgba(224,184,90,.5); }
+.rl-cell-face { width: 64px; height: 64px; }
+.rl-cell-name { font-size: 12px; text-align: center; line-height: 1.2; }
+.rl-cell-badge { position: absolute; top: 4px; right: 4px; font-size: 10px; padding: 1px 5px;
+  background: #e0b85a; color: #2a1f08; border-radius: 6px; font-weight: 700; }
+.rl-face-fb { display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 24px;
+  background: var(--c, #555); color: #fff; }
+.is-mob-face { background-image: var(--mob-sil); background-size: 240%; background-position: top center; background-repeat: no-repeat; }
+
+.rl-foot { display: flex; align-items: center; justify-content: space-between; }
+.rl-start { padding: 10px 26px; font-size: 16px; font-weight: 700; color: #2a1f08; background: var(--accent);
+  border: none; border-radius: 12px; cursor: pointer; }
+.rl-start:disabled { opacity: .4; cursor: default; }
+.rl-start:hover:not(:disabled) { filter: brightness(1.08); }
+.rl-retreat { padding: 10px 22px; font-size: 15px; font-weight: 700; color: var(--ink);
+  background: transparent; border: 2px solid var(--danger); border-radius: 12px; cursor: pointer; }
+.rl-retreat:hover { background: rgba(232,93,117,.15); }
+
+/* オーバーレイ（ドラフト/継続/結果）。ステージ内に被せる。 */
+.rl-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.62); opacity: 0; transition: opacity .18s; z-index: 30; }
+.rl-overlay.is-open { opacity: 1; }
+.rl-modal { width: min(840px, 88%); padding: 26px 30px; border-radius: 16px; text-align: center;
+  background: linear-gradient(160deg, #1c2a22, #141d18); border: 2px solid rgba(246,179,82,.4);
+  box-shadow: 0 18px 48px rgba(0,0,0,.5); }
+.rl-modal-head { font-size: 22px; font-weight: 800; color: var(--accent); margin-bottom: 18px; }
+
+.rl-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.rl-card { display: flex; flex-direction: column; gap: 8px; padding: 16px 14px; min-height: 160px;
+  border: 2px solid var(--rarity, #888); border-radius: 14px; background: rgba(0,0,0,.35);
+  color: var(--ink); cursor: pointer; text-align: left; transition: transform .12s, box-shadow .12s; }
+.rl-card:hover { transform: translateY(-4px); box-shadow: 0 10px 26px rgba(0,0,0,.45), 0 0 0 2px var(--rarity) inset; }
+.rl-card-rarity { align-self: flex-start; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+  color: #11150f; background: var(--rarity, #888); }
+.rl-card-name { font-size: 18px; font-weight: 800; }
+.rl-card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.rl-card-empty { color: var(--muted); padding: 30px; }
+
+.rl-hp-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.rl-hp-row { display: grid; grid-template-columns: 120px 1fr 110px; align-items: center; gap: 10px; }
+.rl-hp-name { text-align: right; font-size: 14px; font-weight: 700; }
+.rl-hp-bar { height: 14px; border-radius: 7px; background: rgba(0,0,0,.4); overflow: hidden; }
+.rl-hp-fill { display: block; height: 100%; transition: width .3s; }
+.rl-hp-fill.high { background: #5ad17a; } .rl-hp-fill.mid { background: #e8c45d; } .rl-hp-fill.low { background: var(--danger); }
+.rl-hp-val { font-size: 12px; color: var(--muted); text-align: left; }
+.rl-continue-note { font-size: 13px; color: var(--muted); line-height: 1.6; margin: 4px 0 20px; }
+.rl-continue-note strong { color: var(--danger); }
+.rl-continue-btns { display: flex; justify-content: center; gap: 16px; }
+
+.rl-go-banner { font-size: 26px; font-weight: 800; margin-bottom: 18px; }
+.rl-gameover.wiped .rl-go-banner { color: var(--danger); }
+.rl-gameover.safe .rl-go-banner { color: var(--accent); }
+.rl-go-stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 14px; }
+.rl-go-k { font-size: 13px; color: var(--muted); }
+.rl-go-v { font-size: 30px; font-weight: 800; color: var(--ink); }
+.rl-go-sub { font-size: 14px; color: var(--muted); margin-bottom: 22px; }
+
+/* F7 メタ進行＝ローグライク引き継ぎ枠 */
+.rl-carry { margin-top: 4px; padding: 10px 12px; border: 1px solid rgba(86,168,255,.4); border-radius: 10px; background: rgba(86,168,255,.08); }
+.rl-carry-head { font-size: 12px; color: #8fc1ff; margin-bottom: 6px; }
+.rl-carry-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.rl-carry-chip { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--rarity, #888);
+  color: var(--ink); background: rgba(0,0,0,.25); }
+.rl-carry-pick { margin: 6px 0 18px; padding: 14px; border-radius: 12px; background: rgba(0,0,0,.28); border: 1px solid rgba(246,179,82,.3); }
+.rl-carry-pick-head { font-size: 14px; color: var(--ink); margin-bottom: 10px; }
+.rl-carry-pick-head b { color: var(--accent); }
+.rl-carry-pick-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.rl-pick-chip { font-size: 13px; padding: 6px 12px; border-radius: 999px; cursor: pointer;
+  border: 2px solid var(--rarity, #888); background: rgba(0,0,0,.3); color: var(--ink); transition: transform .1s; }
+.rl-pick-chip:hover:not(:disabled) { transform: translateY(-2px); }
+.rl-pick-chip.picked { background: var(--rarity, #888); color: #11150f; font-weight: 700; }
+.rl-pick-chip:disabled { opacity: .4; cursor: default; }
+.rl-carry-count { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+/* 楼光の館：進路選択・追撃・休息/宴会・遭遇イベント */
+.rl-route-modal { width: min(880px, 92%); }
+.rl-route-cards { display: flex; gap: 14px; justify-content: center; margin: 8px 0 18px; }
+.rl-route-card { flex: 1; max-width: 240px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  padding: 18px 14px; min-height: 150px; border: 2px solid var(--rarity, #888); border-radius: 14px;
+  background: rgba(0,0,0,.32); color: var(--ink); cursor: pointer; transition: transform .12s, box-shadow .12s; }
+.rl-route-card:hover { transform: translateY(-4px); box-shadow: 0 10px 26px rgba(0,0,0,.45), 0 0 0 2px var(--rarity) inset; }
+.rl-route-card.boss { max-width: 360px; }
+.rl-route-mark { font-size: 34px; line-height: 1; }
+.rl-route-name { font-size: 19px; font-weight: 800; }
+.rl-route-blurb { font-size: 12.5px; color: var(--muted); line-height: 1.5; text-align: center; }
+.rl-pursue-btn { border-color: var(--accent); color: var(--accent); }
+.rl-pursue-btn:hover { background: rgba(246,179,82,.15); }
+.rl-rest-hung { font-size: 13px; color: #e8c45d; margin: 4px 0 16px; }
+
+.rl-event-modal { width: min(840px, 92%); }
+.rl-event-row { display: flex; gap: 18px; align-items: stretch; }
+.rl-event-art { width: 200px; min-height: 260px; max-height: 320px; object-fit: cover; object-position: top center;
+  border-radius: 12px; flex-shrink: 0; background: #0e1512; }
+.rl-event-art-fb { width: 200px; background: linear-gradient(160deg, #2a3a30, #14201a); }
+.rl-event-body { flex: 1; display: flex; flex-direction: column; text-align: left; min-width: 0; }
+.rl-event-title { font-size: 16px; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
+.rl-event-lines p { font-size: 15px; line-height: 1.7; margin: 0 0 6px; }
+.rl-event-choices { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.rl-event-choice { padding: 12px 14px; font-size: 15px; text-align: left; color: var(--ink);
+  border: 2px solid rgba(246,179,82,.5); border-radius: 10px; background: rgba(0,0,0,.25); cursor: pointer; transition: transform .1s, border-color .1s; }
+.rl-event-choice:hover { transform: translateX(3px); border-color: var(--accent); }
+.rl-event-reply { margin-top: 14px; padding: 12px 14px; font-size: 15px; line-height: 1.6;
+  border-left: 3px solid var(--accent); background: rgba(246,179,82,.08); border-radius: 0 8px 8px 0; }
+.rl-event-go, .rl-event-body .rl-start { margin-top: 14px; align-self: flex-start; }
+
+/* 楼光の館 第2弾：光貨・ショップ */
+.rl-coins { display: inline-block; margin-left: 10px; font-size: 13px; color: #e8c45d; vertical-align: middle; }
+.rl-coins b { font-size: 16px; }
+.rl-shop-modal { width: min(880px, 92%); }
+.rl-shop-items { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 10px 0 18px; }
+.rl-shop-item { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 14px 12px; min-height: 130px;
+  border: 2px solid var(--rarity, #888); border-radius: 12px; background: rgba(0,0,0,.32); color: var(--ink); cursor: pointer;
+  text-align: left; transition: transform .1s, box-shadow .1s; }
+.rl-shop-item:not([disabled]):hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,.4), 0 0 0 2px var(--rarity) inset; }
+.rl-shop-item[disabled] { cursor: default; opacity: .5; }
+.rl-shop-item.sold { opacity: .35; }
+.rl-shop-price { align-self: flex-start; font-size: 12px; font-weight: 700; color: #e8c45d; }
+.rl-shop-name { font-size: 16px; font-weight: 800; }
+.rl-shop-desc { font-size: 12px; color: var(--muted); line-height: 1.45; flex: 1; }
+.rl-shop-tag { align-self: flex-end; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--rarity, #888); color: #11150f; }
+.rl-shop-item.poor .rl-shop-tag { background: #6b6f78; color: #ccc; }
+
+/* UXプレイテスト即修正：編成カード情報・進路ヒント */
+.rl-cell-info { font-size: 10px; color: var(--muted); text-align: center; line-height: 1.2; margin-top: 1px; }
+.rl-route-hint { font-size: 12px; color: var(--muted); margin: -2px 0 12px; line-height: 1.5; }
+.rl-route-hint b { color: var(--accent); }
+
+/* 楼光の館：オート観戦の告知（編成画面フッタ） */
+.rl-foot-hint { font-size: 11.5px; color: var(--muted); text-align: center; flex: 1; }
