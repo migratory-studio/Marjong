@@ -209,6 +209,7 @@ body {
    こぱんだ屋UIで和風スキン: talk=メッセージ枠 / card=金縁パネル / 見出し=プレート。 */
 /* 固定ステージ・内部スクロール禁止に揃える（.screen の overflow:auto を明示的に打ち消す）。 */
 #battle-home-screen { overflow: hidden; }
+#roguelite-screen { overflow: hidden; } /* 楼光の館：固定ステージ・内部スクロール禁止（モーダル肥大の保険） */
 .battle-home { height: 100%; display: flex; align-items: stretch; gap: 16px; }
 /* 左ステージ＝立ち絵をバストアップ級に拡大（下半身をクロップ）。セリフ枠は下部にVN風オーバーレイ。 */
 .bh-stage { position: relative; flex: 1 1 auto; min-width: 0; overflow: hidden; }

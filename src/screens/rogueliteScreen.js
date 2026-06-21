@@ -64,7 +64,7 @@ export function showRoguelite(container, opts = {}) {
         <h1 class="rl-title">楼光の館</h1>
         <div class="rl-best">これまでの最深到達記録：<b>${bestFloor}</b> 階</div>
       </header>
-      <p class="rl-lead">弟子を連れて階層を登る。<b>味方2人が着卓し、敵2人と同卓（2対2）で戦う</b>。勝てばバフを選び、危なくなる前に撤退して記録を持ち帰れ。<b>全員がトベばランは没収</b>だ。</p>
+      <p class="rl-lead">弟子を連れて階層を登る。<b>味方2人が着卓し、敵2人と同卓（2対2）で戦う</b>。勝てばバフを選び、危なくなる前に撤退して記録を持ち帰れ。<b>戦える味方が1人以下になればランは没収</b>だ（一度トべば復活しない）。</p>
       <div class="rl-body">
         <div class="rl-party">
           <div class="rl-party-head">パーティ（1〜${MAX_PARTY}人・先頭「あなた」＝操作キャラ／3人目は控えで交代）</div>
@@ -455,7 +455,7 @@ export function showRogueliteRest(container, opts = {}) {
   ov.className = "rl-overlay rl-rest";
   const isBanquet = kind === "banquet";
   const head = isBanquet ? "宴会フロア — 大盤振る舞い！" : "休息フロア — ひと息つく";
-  const note = isBanquet ? "パーティ全員のHPが全回復した。" : "パーティ全員のHPが回復した。";
+  const note = isBanquet ? "生存している味方のHPが全回復した。" : "生存している味方のHPが回復した。";
   const hungNote = hungover.length ? `<p class="rl-rest-hung">🍶 ${hungover.join("・")} は酔ってしまった……次の1戦は能力が使えない。</p>` : "";
   ov.innerHTML = `
     <div class="rl-modal">

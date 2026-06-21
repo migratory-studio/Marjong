@@ -5041,7 +5041,7 @@ function showPairBattleDamageFx(r, onDone) {
       <div class="dmg-head">${r.tsumo ? "ツモ和了" : "ロン和了"} — ダメージ</div>
       <div class="tb-dmg-rows">${rows.map(rowHtml).join("")}</div>
       <div class="tb-totals">${totalHtml}</div>
-      <p class="tb-note">${isRl ? "※ 和了で敵のHPを削る。味方が全員トベば没収。HPは休息/宴会フロア等で回復できる" : "※ ペア戦なので、HPはアイテムでのみ回復できます"}</p>
+      <p class="tb-note">${isRl ? "※ 和了で敵のHPを削る。戦える味方が1人以下になれば没収。HPは休息/宴会フロア等で回復できる" : "※ ペア戦なので、HPはアイテムでのみ回復できます"}</p>
       ${calcRows.length ? `<button class="tb-calc-link" id="pb-calc-btn">🔍 ダメージ計算を見る</button>` : ""}
       <button class="btn tb-next-btn" id="pb-next-btn">次の局へ</button>
     </div>`;
@@ -5897,25 +5897,29 @@ function showPairBattleGameOver() {
     // 楼光の館＝生存レース：パーティ全員がトビでなければ踏破（次の階へ）。控えが居れば全滅しても続行。
     // 撃破（敵ペア全滅）は早期決着＋高レアの燃料（koAny）。最終判定は onRogueliteBattleEnd（HP同期後）。
     const enemyPair = 1 - myPair;
-    const seatedPairDown = pairs[myPair].seats.every((s) => pairBattleData.hp[s] <= 0);
-    const benchAlive = !!rogueliteState?.run?.party?.some((m) => !rogueliteState.seated?.includes(m) && m.hp > 0);
-    const runEnds = seatedPairDown && !benchAlive; // ＝パーティ全員トビ
+    // ゲームオーバー＝生存メンバーが1人以下（runWiped と一致させる）。着卓2人のHPは未同期なので
+    // pairBattleData.hp で、控えは run.party の現HPで数える。ソロランのみ全滅(0)まで続行。
+    const seatedSurvivors = pairs[myPair].seats.filter((s) => pairBattleData.hp[s] > 0).length;
+    const benchAliveCount = rogueliteState?.run?.party?.filter((m) => !rogueliteState.seated?.includes(m) && m.hp > 0).length || 0;
+    const totalSurvivors = seatedSurvivors + benchAliveCount;
+    const partyLen = rogueliteState?.run?.party?.length || 0;
+    const runEnds = partyLen <= 1 ? totalSurvivors === 0 : totalSurvivors <= 1;
     const koAny = pairs[enemyPair].seats.some((s) => pairBattleData.hp[s] <= 0);
     const enemyAllDown = pairs[enemyPair].seats.every((s) => pairBattleData.hp[s] <= 0);
     const allyHp = pairs[myPair].seats.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
     const allyFull = pairs[myPair].seats.reduce((a, s) => a + (pairBattleData.chars[s].stats.startingPoints || MAX_HP), 0);
     const enemyHp = pairs[enemyPair].seats.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
     const enemyFull = pairs[enemyPair].seats.reduce((a, s) => a + (pairBattleData.chars[s].stats.startingPoints || MAX_HP), 0);
-    const survivors = pairs[myPair].seats.filter((s) => pairBattleData.hp[s] > 0).length;
+    const survivors = totalSurvivors; // 表示用＝控えも含めた生存数
     const result = { cleared: !runEnds, koAny, hpRatio: allyFull ? allyHp / allyFull : 0 };
     const ctx = honestCtx; honestCtx = null;
     // ローグライトは「対局終了/優勝ペア」枠より、撃破/生存と敵HPを前面に（無報酬感の解消）。
     const bannerEl = overlay.querySelector(".go-banner");
-    if (bannerEl) bannerEl.textContent = runEnds ? "全滅……" : enemyAllDown ? "敵を撃破！" : "この階を耐え抜いた";
+    if (bannerEl) bannerEl.textContent = runEnds ? "ここで力尽きた……" : enemyAllDown ? "敵を撃破！" : "この階を耐え抜いた";
     const note = document.createElement("div");
     note.className = "go-tourney-note";
     note.textContent = runEnds
-      ? "パーティ全員がトビ。ランは没収される。"
+      ? "戦える味方が1人以下に。ランは没収される。"
       : `${enemyAllDown ? "敵を飛ばした！" : `敵に削り込み — 残りHP ${enemyHp.toLocaleString()} / ${enemyFull.toLocaleString()}`}　味方 ${survivors} 人生存`;
     btnsP.parentElement.insertBefore(note, btnsP);
     btnsP.appendChild(mkBtn(runEnds ? "決着（記録を残す）" : "次の階へ進む", "btn-tsumo", () => { overlay.classList.add("hidden"); ctx.onResult?.(result); }));
@@ -6355,8 +6359,9 @@ function buildPairWinPolicyToggles() {
     b.setAttribute("aria-pressed", String(!!pairWinPolicy[key]));
     b.addEventListener("click", () => {
       pairWinPolicy[key] = !pairWinPolicy[key];
-      // 「和了しない」を入れたら「自分からあがらない」は包含されるので見た目を整える。
+      // 2つは排他（完全防御 と ロンのみ）。一方をONにしたら他方はOFFに整える。
       if (key === "noWin" && pairWinPolicy.noWin) pairWinPolicy.noTsumo = false;
+      if (key === "noTsumo" && pairWinPolicy.noTsumo) pairWinPolicy.noWin = false;
       b.classList.toggle("on", pairWinPolicy[key]);
       b.setAttribute("aria-pressed", String(!!pairWinPolicy[key]));
       applyPairWinPolicy();
