@@ -136,13 +136,27 @@ export function showRoguelite(container, opts = {}) {
       info.className = "rl-cell-info";
       const ab = charAbilityName(c);
       const role = ROLE_LABEL[c.role] || "";
-      info.textContent = `${ab || role || "—"}・HP${charToughness(c)}`;
-      cell.title = `${c.name}｜${role}${ab ? "｜能力：" + ab : ""}｜HPの厚み：${charToughness(c)}`;
+      const tough = charToughness(c);
+      info.textContent = `${ab || role || "—"}・HP${tough}`;
       cell.appendChild(info);
+      // 能力の「効果」までホバーで見せる（一見さんが手探りで選ばないように）。
+      const abId = c?.abilities?.[0]?.abilityId;
+      const def = abId ? abilityDef(abId) : null;
+      const toughLabel = tough === "堅" ? "堅い（高HP）" : tough === "並" ? "並" : "脆い（低HP）";
+      cell.title = `${c.name}｜${role}${def ? `\n能力「${def.name}」：${def.desc}` : ""}\nHPの厚み：${toughLabel}`;
+      const pop = document.createElement("div");
+      pop.className = "rl-cell-pop";
+      pop.innerHTML = `<div class="rl-cell-pop-name">${c.name}<span class="rl-cell-pop-role">${role}・HP${toughLabel}</span></div>${def ? `<div class="rl-cell-pop-ab"><b>${def.name}</b>${def.desc ? `<span>${def.desc}</span>` : ""}</div>` : ""}`;
+      cell.appendChild(pop);
       if (c.isCompletedAvatar) {
         const b = document.createElement("span");
         b.className = "rl-cell-badge"; b.textContent = "弟子";
         cell.appendChild(b);
+      }
+      if (inParty) { // 選択済みの明示（ロスターでも分かるように）
+        const chk = document.createElement("span");
+        chk.className = "rl-cell-check"; chk.textContent = `✓ ${party.findIndex((p) => p.id === c.id) === 0 ? "あなた" : "出陣中"}`;
+        cell.appendChild(chk);
       }
       cell.addEventListener("click", () => {
         const idx = party.findIndex((p) => p.id === c.id);
@@ -239,11 +253,20 @@ const FLOOR_KIND_META = {
   forge: { mark: "🔨", color: "#e8c45d" },
 };
 
-function partyHpRows(run) {
+// HP行/バッジ用の顔アイコン（HTML文字列）。実画像が無ければ頭文字フォールバック。
+function faceImgHtml(charImages, c, cls = "rl-hp-face") {
+  const u = charImages?.url?.(c, "icon") || charImages?.url?.(c, "portrait") || "";
+  if (u && !c?.isMob) return `<img class="${cls}" src="${u}" alt="">`;
+  return `<span class="${cls} rl-face-fb" style="--c:${c?.color || "#888"}">${[...(c?.name || "?")][0] || "?"}</span>`;
+}
+
+function partyHpRows(run, charImages) {
   return (run?.party || []).map((m) => {
     const pct = Math.max(0, Math.min(100, (m.hp / (m.hpMax || 1)) * 100));
     const tier = pct <= 25 ? "low" : pct <= 50 ? "mid" : "high";
-    return `<div class="rl-hp-row"><span class="rl-hp-name">${m.char?.name || "?"}${m.hungover ? " 🍶" : ""}</span><span class="rl-hp-bar"><span class="rl-hp-fill ${tier}" style="width:${pct}%"></span></span><span class="rl-hp-val">${Math.max(0, Math.round(m.hp))}/${m.hpMax}</span></div>`;
+    const down = m.hp <= 0;
+    const face = charImages ? faceImgHtml(charImages, m.char) : "";
+    return `<div class="rl-hp-row${down ? " is-down" : ""}">${face}<span class="rl-hp-name">${m.char?.name || "?"}${m.hungover ? " 🍶" : ""}</span><span class="rl-hp-bar"><span class="rl-hp-fill ${tier}" style="width:${pct}%"></span></span><span class="rl-hp-val">${down ? "ダウン" : `${Math.max(0, Math.round(m.hp))}/${m.hpMax}`}</span></div>`;
   }).join("");
 }
 
@@ -301,7 +324,7 @@ export function showRogueliteSpeak(container, { char, charImages, line } = {}) {
 
 // ---- 進路選択（次フロアを2〜3択／ボス階は強制）＋撤退 ----
 export function showRogueliteRoute(container, opts = {}) {
-  const { floor = 1, choices = [], boss = false, coins = 0, skillLevel = 0, held = [], run = null, onPick, onRetreat, onSwap } = opts;
+  const { floor = 1, choices = [], boss = false, coins = 0, skillLevel = 0, held = [], run = null, charImages = null, onPick, onRetreat, onSwap } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-route";
@@ -323,7 +346,7 @@ export function showRogueliteRoute(container, opts = {}) {
     <div class="rl-modal rl-route-modal">
       <div class="rl-modal-head">第 ${floor} 階へ — 進路を選ぶ ${coinBadge(coins)}${skillBadge(skillLevel)}</div>
       <p class="rl-route-hint">光貨は戦闘を踏破するほど貯まり、<b>ショップ</b>で回復やバフに使える。10階ごとに<b>ボス</b>。</p>
-      ${run ? `<div class="rl-route-party"><div class="rl-hp-list">${partyHpRows(run)}</div>${onSwap ? `<button type="button" class="rl-swap-open" id="rl-route-swap">編成</button>` : ""}</div>` : ""}
+      ${run ? `<div class="rl-route-party"><div class="rl-hp-list">${partyHpRows(run, charImages)}</div>${onSwap ? `<button type="button" class="rl-swap-open" id="rl-route-swap">編成</button>` : ""}</div>` : ""}
       ${run ? buffTotalsHtml(run) : ""}
       ${body}
       <button type="button" class="rl-retreat" id="rl-route-retreat">ここで撤退する（記録を確保）</button>
@@ -401,7 +424,7 @@ export function showRogueliteSwap(container, opts = {}) {
 
 // ---- 追撃（push-your-luck）：先に行く / 追撃（残り回数） ----
 export function showRoguelitePursue(container, opts = {}) {
-  const { floor = 1, remaining = 1, run, leadLine, leadChar, onPursue, onGo } = opts;
+  const { floor = 1, remaining = 1, run, charImages = null, leadLine, leadChar, onPursue, onGo } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-continue";
@@ -411,7 +434,7 @@ export function showRoguelitePursue(container, opts = {}) {
     <div class="rl-modal">
       <div class="rl-modal-head">第 ${floor} 階・追撃のチャンス（残り ${remaining}）${coinBadge(run?.coins || 0)}</div>
       ${speakHtml}
-      <div class="rl-hp-list">${partyHpRows(run)}</div>
+      <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
       <p class="rl-continue-note">追撃すればもう1局戦い、<strong>さらなる戦利品（高レア）</strong>を狙える。だが全滅すれば<strong>すべて没収</strong>。</p>
       <div class="rl-continue-btns">
         <button type="button" class="rl-start" id="rl-go">先へ進む</button>
@@ -426,7 +449,7 @@ export function showRoguelitePursue(container, opts = {}) {
 
 // ---- 休息 / 宴会（回復演出） ----
 export function showRogueliteRest(container, opts = {}) {
-  const { kind = "rest", floor = 1, run, hungover = [], onDone } = opts;
+  const { kind = "rest", floor = 1, run, charImages = null, hungover = [], onDone } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-rest";
@@ -437,7 +460,7 @@ export function showRogueliteRest(container, opts = {}) {
   ov.innerHTML = `
     <div class="rl-modal">
       <div class="rl-modal-head">${head}${coinBadge(run?.coins || 0)}</div>
-      <div class="rl-hp-list">${partyHpRows(run)}</div>
+      <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
       <p class="rl-continue-note">${note}</p>
       ${hungNote}
       <button type="button" class="rl-start" id="rl-rest-go">先へ進む</button>
@@ -493,7 +516,7 @@ export function showRogueliteEvent(container, opts = {}) {
 // ---- ダメージ計算の内訳（和了/被弾の「素点→ダメージ」を一拍見せる演出） ----
 // host は #damage-overlay（対局オーバーレイ）。rows=[{name,color,kind:'deal'|'take',steps,final,capped}]
 export function showRogueliteDamageBreakdown(container, opts = {}) {
-  const { rows = [], tsumo = false, score = 0, onDone } = opts;
+  const { rows = [], tsumo = false, score = 0, showSkip = false, onSkip, onDone } = opts;
   if (!container || !rows.length) { onDone?.(); return; }
   const fmt = (v) => Math.abs(v).toLocaleString();
   const rowHtml = (rrow) => {
@@ -513,11 +536,15 @@ export function showRogueliteDamageBreakdown(container, opts = {}) {
       <div class="dmg-head">ダメージ計算　<small>${tsumo ? "ツモ" : "ロン"} ${score ? score.toLocaleString() + "点" : ""}</small></div>
       <div class="rl-calc-rows">${rows.map(rowHtml).join("")}</div>
       <p class="tb-note">素点を ×0.04 でHPに換算し、攻撃/防御バフ・階層の深度・上限を経て最終ダメージが決まる。</p>
+      ${showSkip ? `<label class="rl-calc-skip"><input type="checkbox" id="rl-calc-skip"> 以後この計算を自動で出さない（ダメージカードの「🔍計算を見る」でいつでも確認できます）</label>` : ""}
       <button class="btn tb-next-btn" id="rl-calc-next">次へ</button>
     </div>`;
   container.classList.remove("hidden");
   requestAnimationFrame(() => { container.classList.add("show"); container.querySelectorAll(".rl-calc-step").forEach((s) => s.classList.add("in")); });
-  container.querySelector("#rl-calc-next").onclick = () => onDone?.();
+  container.querySelector("#rl-calc-next").onclick = () => {
+    if (container.querySelector("#rl-calc-skip")?.checked) onSkip?.();
+    onDone?.();
+  };
 }
 
 // ---- 必殺枠の忘却（ポケモン式：枠超過＝どれか1つ手放す） ----

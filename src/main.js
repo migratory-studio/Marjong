@@ -1114,6 +1114,16 @@ function markHandHintShown() { try { localStorage.setItem(HAND_HINT_KEY, "1"); }
 const RL_AUTO_KEY = "mahjong-rpg.rogueliteAuto";
 function rogueliteAutoPref() { try { return localStorage.getItem(RL_AUTO_KEY) === "1"; } catch { return false; } }
 function setRogueliteAutoPref(on) { try { localStorage.setItem(RL_AUTO_KEY, on ? "1" : "0"); } catch {} }
+// ダメージ内訳モーダルの自動表示：最初の数回は自動で見せて（教える）、以降は「計算を見る」で任意表示。
+// ユーザーが「以後自動で出さない」を選んだら 0 を保存して恒久スキップ。
+const RL_CALC_KEY = "mahjong-rpg.rogueliteCalcShown"; // 自動表示した回数
+const RL_CALC_OFF_KEY = "mahjong-rpg.rogueliteCalcOff"; // 1=自動表示を切る
+const RL_CALC_AUTO_LIMIT = 3; // 最初の3回まで自動表示
+function rlCalcShownCount() { try { return Number(localStorage.getItem(RL_CALC_KEY)) || 0; } catch { return 0; } }
+function bumpRlCalcShown() { try { localStorage.setItem(RL_CALC_KEY, String(rlCalcShownCount() + 1)); } catch {} }
+function rlCalcAutoOff() { try { return localStorage.getItem(RL_CALC_OFF_KEY) === "1"; } catch { return false; } }
+function setRlCalcAutoOff(off) { try { localStorage.setItem(RL_CALC_OFF_KEY, off ? "1" : "0"); } catch {} }
+function rlCalcShouldAuto() { return !rlCalcAutoOff() && rlCalcShownCount() < RL_CALC_AUTO_LIMIT; }
 
 // 初回起動時の認証おすすめモーダル。未ログイン かつ 一度も「このまま遊ぶ」を選んでいない時だけ出す。
 const AUTH_PROMPT_KEY = "mahjong-rpg.authPromptDismissed";
@@ -1978,14 +1988,14 @@ function enterFloor(run, floorType) {
       break;
     case "rest":
       healParty(run, floorType.healFrac ?? 0.3);
-      showRogueliteRest(host, { kind: "rest", floor: run.floor, run, onDone: () => advanceRoguelite(run) });
+      showRogueliteRest(host, { kind: "rest", floor: run.floor, run, charImages, onDone: () => advanceRoguelite(run) });
       break;
     case "banquet": {
       healParty(run, floorType.healFrac ?? 1);
       const rng = makeRng(`${run.seed}:banquet:${run.floor}`);
       rollHangover(run, floorType.hangoverChance ?? 0.35, rng);
       const hung = run.party.filter((m) => m.hungover).map((m) => m.char?.name || "?");
-      showRogueliteRest(host, { kind: "banquet", floor: run.floor, run, hungover: hung, onDone: () => advanceRoguelite(run) });
+      showRogueliteRest(host, { kind: "banquet", floor: run.floor, run, charImages, hungover: hung, onDone: () => advanceRoguelite(run) });
       break;
     }
     case "treasure":
@@ -2080,7 +2090,7 @@ function renderRoute(run) {
   // 編成モーダル：任意のタイミングで出場順を入れ替え→閉じたら同じ進路を再描画。
   const onSwap = () => showRogueliteSwap(host, { run, charImages, onClose: () => renderRoute(run) });
   if (run.floor % 10 === 0) { // 10階ごとにボス（強制）
-    showRogueliteRoute(host, { boss: true, floor: run.floor, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, onSwap, onPick: () => enterFloor(run, BOSS_FLOOR), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
+    showRogueliteRoute(host, { boss: true, floor: run.floor, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, charImages, onSwap, onPick: () => enterFloor(run, BOSS_FLOOR), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
     return;
   }
   const rng = makeRng(`${run.seed}:route:${run.floor}`);
@@ -2091,7 +2101,7 @@ function renderRoute(run) {
   if (run.floor % 10 === 9) force.push(rng() < 0.5 ? "rest" : "shop");
   const choices = drawFloorChoices(rng, { count: run.floor <= 2 ? 2 : 3, exclude: rogueliteState.lastFloorId ? [rogueliteState.lastFloorId] : [], force });
   showRogueliteRoute(host, {
-    floor: run.floor, choices, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, onSwap,
+    floor: run.floor, choices, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, charImages, onSwap,
     onPick: (ft) => { rogueliteState.lastFloorId = ft.id; enterFloor(run, ft); },
     onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }),
   });
@@ -5025,12 +5035,14 @@ function showPairBattleDamageFx(r, onDone) {
 
   const rows = [r.winner, ...game.players.map((_, i) => i).filter((i) => i !== r.winner && deltas[i])];
 
+  const calcRows = rlBreakdown ? rogueliteBreakdownRows(rlBreakdown, r) : [];
   host.innerHTML = `
     <div class="dmg-card tb-dmg-card">
       <div class="dmg-head">${r.tsumo ? "ツモ和了" : "ロン和了"} — ダメージ</div>
       <div class="tb-dmg-rows">${rows.map(rowHtml).join("")}</div>
       <div class="tb-totals">${totalHtml}</div>
       <p class="tb-note">${isRl ? "※ 和了で敵のHPを削る。味方が全員トベば没収。HPは休息/宴会フロア等で回復できる" : "※ ペア戦なので、HPはアイテムでのみ回復できます"}</p>
+      ${calcRows.length ? `<button class="tb-calc-link" id="pb-calc-btn">🔍 ダメージ計算を見る</button>` : ""}
       <button class="btn tb-next-btn" id="pb-next-btn">次の局へ</button>
     </div>`;
   host.classList.remove("hidden");
@@ -5081,14 +5093,19 @@ function showPairBattleDamageFx(r, onDone) {
     if (sp) host.classList.add("has-speaker");
   }
 
+  const finish = () => { host.classList.remove("show", "has-speaker", "ko"); host.classList.add("hidden"); host.innerHTML = ""; onDone(); };
+  // ローグライト：和了/被弾の「素点→ダメージ」内訳。最初の数回だけ自動で見せ（教える）、
+  // 以降は「計算を見る」で任意表示（毎ハンド強制で重くならないように）。
+  const openCalc = (afterClose) => {
+    host.classList.remove("has-speaker", "ko");
+    showRogueliteDamageBreakdown(host, { rows: calcRows, tsumo: r.tsumo, score: r.result?.total || 0, showSkip: rlCalcShouldAuto(), onSkip: () => setRlCalcAutoOff(true), onDone: afterClose });
+  };
+  // 手動で開く（計算を見る）→ 見終えたら次へ進む（デルタは適用済みなので再描画しない）。
+  const calcBtn = el("pb-calc-btn");
+  if (calcBtn) calcBtn.onclick = () => openCalc(finish);
   el("pb-next-btn").onclick = () => {
-    const finish = () => { host.classList.remove("show", "has-speaker", "ko"); host.classList.add("hidden"); host.innerHTML = ""; onDone(); };
-    // ローグライト：和了/被弾の「素点→ダメージ」内訳を一拍見せてから次へ（理解の間）。
-    const rows = rlBreakdown ? rogueliteBreakdownRows(rlBreakdown, r) : [];
-    if (rows.length) {
-      host.classList.remove("has-speaker", "ko");
-      showRogueliteDamageBreakdown(host, { rows, tsumo: r.tsumo, score: r.result?.total || 0, onDone: finish });
-    } else finish();
+    if (calcRows.length && rlCalcShouldAuto()) { bumpRlCalcShown(); openCalc(finish); }
+    else finish();
   };
 }
 
@@ -6352,8 +6369,22 @@ function buildPairWinPolicyToggles() {
     b.dataset.k = key;
     return b;
   };
-  wrap.appendChild(mk("noWin", "和了しない", "自陣は一切和了しない（ロンもツモも控える＝完全防御）"));
-  wrap.appendChild(mk("noTsumo", "自分からあがらない", "自陣はツモらない（ロンのみ＝味方への自摸被弾を避ける）"));
+  const toggles = document.createElement("div");
+  toggles.className = "pb-wp-body";
+  toggles.appendChild(mk("noWin", "和了しない", "自陣は一切和了しない（ロンもツモも控える＝完全防御）"));
+  toggles.appendChild(mk("noTsumo", "自分からあがらない", "自陣はツモらない（ロンのみ＝味方への自摸被弾を避ける）"));
+  // 上級者向けの戦術トグルは既定で折りたたむ（初心者が「なぜ和了しない？」と混乱しないように）。
+  // 何か有効なら開いた状態で出す（設定中だと一目で分かる）。
+  const open = pairWinPolicy.noWin || pairWinPolicy.noTsumo;
+  const head = document.createElement("button");
+  head.type = "button";
+  head.className = "pb-wp-head" + (open ? " open" : "");
+  head.innerHTML = `<span class="pb-wp-caret">▸</span>味方の方針${open ? '<span class="pb-wp-on-dot"></span>' : ""}`;
+  head.title = "味方の和了をあえて控える戦術（味方への自摸被弾を避ける等）。分からなければ触らなくてOK。";
+  toggles.hidden = !open;
+  head.addEventListener("click", () => { const o = toggles.hidden; toggles.hidden = !o; head.classList.toggle("open", o); });
+  wrap.appendChild(head);
+  wrap.appendChild(toggles);
   return wrap;
 }
 

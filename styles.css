@@ -5004,3 +5004,37 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-calc-result.take { color: #6fb6ff; }
 .rl-calc-result small { font-size: 11px; font-weight: 600; color: #9aa3b2; margin-left: 4px; }
 .rl-calc-cap { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 700; color: #6fe08a; background: rgba(111,224,138,0.14); border-radius: 6px; padding: 1px 8px; }
+
+/* 楼光の館：HP行の顔アイコン＋ダウン表示 */
+.rl-hp-row { display: flex; align-items: center; gap: 7px; }
+.rl-hp-face { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; flex: none; }
+.rl-hp-face.rl-face-fb { display: inline-flex; align-items: center; justify-content: center; background: var(--c,#666); color: #fff; font-weight: 700; font-size: 12px; }
+.rl-hp-row.is-down { opacity: 0.5; }
+.rl-hp-row.is-down .rl-hp-val { color: var(--danger,#ff6b6b); font-weight: 700; }
+
+/* 楼光の館：編成セルの選択明示＋能力ホバー */
+.rl-cell { position: relative; }
+.rl-cell.picked { outline: 2px solid var(--accent,#e8c45d); outline-offset: -2px; box-shadow: 0 0 0 3px rgba(232,196,93,0.2); }
+.rl-cell-check { position: absolute; top: 4px; left: 4px; font-size: 10px; font-weight: 700; color: #1a1206; background: var(--accent,#e8c45d); border-radius: 5px; padding: 1px 6px; }
+.rl-cell-pop { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%) translateY(4px); width: 200px; padding: 8px 10px; background: #14110d; border: 1px solid rgba(232,196,93,0.5); border-radius: 9px; box-shadow: 0 6px 18px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; z-index: 20; text-align: left; }
+.rl-cell:hover .rl-cell-pop { opacity: 1; transform: translateX(-50%) translateY(0); }
+.rl-cell-pop-name { font-size: 13px; font-weight: 700; color: var(--ink,#fff); margin-bottom: 4px; }
+.rl-cell-pop-role { font-size: 10px; font-weight: 400; color: #9aa3b2; margin-left: 6px; }
+.rl-cell-pop-ab { font-size: 11px; color: #cdd3da; }
+.rl-cell-pop-ab b { color: var(--accent,#e8c45d); display: block; margin-bottom: 2px; }
+.rl-cell-pop-ab span { color: #aeb6c2; line-height: 1.4; }
+
+/* ペア戦：味方の方針トグルを折りたたみに（初心者の混乱回避） */
+.pb-wp-head { display: flex; align-items: center; gap: 5px; width: 100%; margin-top: 6px; padding: 3px 6px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 6px; background: transparent; color: #9aa3b2; font-size: 11px; cursor: pointer; }
+.pb-wp-head:hover { color: #cdd3da; border-color: rgba(255,255,255,0.35); }
+.pb-wp-caret { transition: transform .15s; display: inline-block; }
+.pb-wp-head.open .pb-wp-caret { transform: rotate(90deg); }
+.pb-wp-on-dot { width: 7px; height: 7px; border-radius: 50%; background: #e8744d; box-shadow: 0 0 5px #e8744d; margin-left: auto; }
+.pb-wp-body[hidden] { display: none; }
+.pb-wp-body { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
+
+/* 楼光の館：ダメージカードの「計算を見る」ボタン */
+.tb-calc-link { margin-top: 6px; background: transparent; border: 1px solid rgba(255,255,255,0.22); color: #cdd3da; border-radius: 7px; padding: 4px 12px; font-size: 12px; cursor: pointer; }
+.tb-calc-link:hover { border-color: var(--accent,#e8c45d); color: var(--ink,#fff); }
+.rl-calc-skip { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 6px; font-size: 11px; color: #9aa3b2; cursor: pointer; }
+.rl-calc-skip input { cursor: pointer; }
