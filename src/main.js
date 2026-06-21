@@ -232,6 +232,28 @@ const RIICHI_WAIT = 1400; // ms pause after a riichi declaration（ポン/カン
 // ----------------------------------------------------------------- select UI
 // Build a character icon element. Uses the master's declared icon path directly
 // (independent of preload state) and degrades to a color block if it fails.
+// 立ち絵/アイコンの <img> に「一時的な読み込み失敗の自己回復」を仕込む。これらは起動時に
+// 先読み済み（＝アセット自体は健全）なので、同時読み込みが混んだ瞬間（例：弟子タブ表示で
+// 弟子の立ち絵をロードした直後）に稀に起きるデコード/取得の取りこぼしは、少し待って貼り直せば
+// たいてい直る。規定回数リトライしても駄目なときだけ色ブロック（c.color）へフォールバックする。
+function wireImgSelfHeal(img, c, fallbackClass, maxRetry = 2) {
+  const base = img.src;
+  let tries = 0;
+  img.onerror = () => {
+    if (tries < maxRetry) {
+      tries++;
+      // 混雑が落ち着く猶予を置いてから貼り直す。同 URL だと再ロードされない環境があるため
+      // クエリを変えて確実に再取得（静的配信なのでクエリは無視される）。
+      setTimeout(() => { img.src = `${base}${base.includes("?") ? "&" : "?"}_r=${tries}`; }, 140 * tries);
+      return;
+    }
+    const fb = document.createElement("div");
+    fb.className = fallbackClass;
+    fb.style.background = c.color;
+    img.replaceWith(fb);
+  };
+}
+
 function makeCharIcon(c) {
   const path = c.assets?.icon;
   // モブは全身シルエットなので、丸アイコンには頭部だけをズームクロップして収める
@@ -247,12 +269,7 @@ function makeCharIcon(c) {
     img.className = "char-icon";
     img.src = path;
     img.alt = c.name;
-    img.onerror = () => {
-      const fb = document.createElement("div");
-      fb.className = "char-icon char-icon-fallback";
-      fb.style.background = c.color;
-      img.replaceWith(fb);
-    };
+    wireImgSelfHeal(img, c, "char-icon char-icon-fallback");
     return img;
   }
   const fb = document.createElement("div");
@@ -280,12 +297,7 @@ function makeCharPortrait(c) {
     img.alt = c.name;
     // Per-character crop focal point (defaults to the CSS "top center").
     if (c.portraitPos) img.style.objectPosition = c.portraitPos;
-    img.onerror = () => {
-      const fb = document.createElement("div");
-      fb.className = "detail-portrait detail-portrait-fallback";
-      fb.style.background = c.color;
-      img.replaceWith(fb);
-    };
+    wireImgSelfHeal(img, c, "detail-portrait detail-portrait-fallback");
     return img;
   }
   const fb = document.createElement("div");
