@@ -18,8 +18,8 @@ import { SHOP_PRICE, SHOP_HEAL_PRICE, SHOP_MAXHP_PRICE } from "../data/roguelite
 
 // 点棒→HP の写像係数（25000点 → 1000HP）。味方HP・与被ダメ双方に一貫適用。
 export const DAMAGE_SCALE = 1000 / 25000; // = 0.04
-export const ROGUELITE_BASE_ENEMY_HP = 1000; // 階層1の敵HP
-const ENEMY_HP_GROWTH = 0.14; // 1階ごとの敵HP増加率（複利）
+export const ROGUELITE_BASE_ENEMY_HP = 700; // 階層1の敵HP。硬すぎ＝アガリ不発の体感を緩和（1000→700。満貫1発で約半分削れ、2発で撃破）。
+const ENEMY_HP_GROWTH = 0.11; // 1階ごとの敵HP増加率（複利）。硬すぎ＝アガリ不発の体感を緩和（0.14→0.11）。
 const ENEMY_HP_CAP_FLOOR = 30; // この階層で頭打ち（青天井回避）
 const BOSS_EVERY = 10; // この階層ごとにボスフロア（10F・進路選択では強制配置）
 
@@ -28,15 +28,25 @@ const BOSS_EVERY = 10; // この階層ごとにボスフロア（10F・進路選
 export const RL_TUNE = {
   regenFrac: 0.18,    // 1階踏破ごとの部分回復（最大HP比）。回復しすぎず消耗を残す。
   floorDmgStart: 5,   // この階から被ダメ深度倍率が立ち上がる（序盤は警戒不要）
-  floorDmgSlope: 2.2, // 深度1階あたりの被ダメ増（青天井＝最適ビルドでも必ず終わる主レバー。進路選択＋回復フロア＋追撃に合わせ再校正）
+  floorDmgSlope: 1.8, // 深度1階あたりの被ダメ増（青天井＝必ず終わる主レバー）。「自分が柔らかすぎる」体感を緩和（2.2→1.8）。
   dealCap: 3.0,       // 与ダメ倍率の実効上限（積み過ぎの無双化を防ぐ）
   takeFloor: 0.4,     // 被ダメ倍率の実効下限＝軽減は最大60%まで（持続を有界にする）
+  friendlyMul: 0.3,   // 味方の和了で味方が払う分（＝主に自摸の同士討ち）を大幅軽減（1.0→0.3）。「味方がトぶ不思議」対策。
+  dealDepthStart: 1,  // 与ダメ深度ボーナスの立ち上がり階
+  dealDepthSlope: 0.04, // 深度1階あたりの与ダメ増。敵HP成長に追従させ「アガっても嬉しくない」を解消。
 };
 export const REGEN_FRAC = RL_TUNE.regenFrac; // 後方互換の別名（参照箇所用）
 
 // 深度被ダメ倍率：param 上限（敵Lv10）の先でも難度が上がり続ける＝エンドレスが必ず終わる。
+// ※ 敵の攻撃で味方が受ける失点にだけ乗る（味方同士の自摸被弾には乗せない＝rogueliteDamageDeltas 参照）。
 export function floorDamageMul(floor = 1) {
   return 1 + Math.max(0, floor - RL_TUNE.floorDmgStart) * RL_TUNE.floorDmgSlope;
+}
+
+// 与ダメ深度ボーナス：階層が深いほど敵HPが増えるので、味方の与ダメも緩やかに伸ばして
+// 「アガリの手応え（敵HPがちゃんと削れる）」を深層まで保つ。
+export function dealDepthMul(floor = 1) {
+  return 1 + Math.max(0, floor - RL_TUNE.dealDepthStart) * RL_TUNE.dealDepthSlope;
 }
 
 // ---- HP スケール ----
@@ -258,14 +268,29 @@ export function rogueliteDamageDeltas(run, { deltas, roles, winnerSeat }) {
   const winnerIsAlly = winnerSeat != null && roles[winnerSeat] === "ally";
   const dealMul = Math.min(RL_TUNE.dealCap, m.dealMul);   // 与ダメは上限でクランプ
   const takeMul = Math.max(RL_TUNE.takeFloor, m.takeMul); // 被ダメ軽減は下限でクランプ（最大60%）
-  const fdm = floorDamageMul(run.floor || 1);
-  return deltas.map((d, i) => {
+  const fdm = floorDamageMul(run.floor || 1);   // 敵の攻撃で味方が受ける深度ペナルティ
+  const deal = dealDepthMul(run.floor || 1);    // 味方の与ダメ深度ボーナス（敵HP成長に追従）
+  let guard = m.friendlyGuard || 0;             // 味方ツモ被弾を無効化するお守り残数（消費する）
+  const out = deltas.map((d, i) => {
     if (!(d < 0)) return 0; // 失点のみHPに効く
     let scaled = d * DAMAGE_SCALE;
-    if (roles[i] === "enemy" && winnerIsAlly) scaled *= dealMul;
-    if (roles[i] === "ally") scaled *= takeMul * fdm; // 被ダメ軽減 × 深度倍率
+    if (roles[i] === "enemy") {
+      if (winnerIsAlly) scaled *= dealMul * deal; // 敵への与ダメ：倍率＋深度ボーナス
+      return Math.round(scaled);
+    }
+    // 味方が払う失点。
+    scaled *= takeMul;
+    if (winnerIsAlly) {
+      // 味方の和了で味方が払う＝同士討ち（主に自摸被弾）。お守りがあれば無効化（1個消費）。
+      if (guard > 0) { guard -= 1; return 0; }
+      scaled *= RL_TUNE.friendlyMul; // 同士討ちは大幅軽減
+    } else {
+      scaled *= fdm; // 敵の攻撃だけ深度ペナルティ
+    }
     return Math.round(scaled);
   });
+  if (guard !== (m.friendlyGuard || 0)) m.friendlyGuard = guard; // 消費を反映
+  return out;
 }
 
 // ---- ドラフト ----

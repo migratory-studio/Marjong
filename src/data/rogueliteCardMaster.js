@@ -106,6 +106,15 @@ export const ROGUELITE_CARD_MASTER = [
     maxStacks: 2,
   },
   {
+    id: "ally-tsumo-ward",
+    name: "庇いの守り",
+    desc: "味方のツモで受けるダメージを1回だけ無効化する（受けたら消える）。重ねるほど回数が増える。",
+    rarity: "rare",
+    effect: { kind: "friendlyGuard", count: 1 },
+    stackable: true,
+    maxStacks: 5,
+  },
+  {
     id: "grant-lucky-draw",
     name: "幸運のツモ（札）",
     desc: "着卓する味方に「ツモ偏重」が宿る。手が早くなる。",

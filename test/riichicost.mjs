@@ -63,6 +63,18 @@ function setTenpai(g, points) {
   ok("リーチ成立（フラグon）", p.riichi === true);
 }
 
+// riichiCostFrac：最大点(startingPoints)比で宣言可否の閾値を決める（楼光の館＝最大HPの5%）。
+{
+  const g = mkGame({ riichiCost: 0, riichiCostFrac: 0.05 });
+  const sp = g.players[0].character.stats.startingPoints;
+  const thresh = Math.round(sp * 0.05);
+  ok("riichiThreshold は最大点の5%", g.riichiThreshold(g.players[0]) === thresh);
+  setTenpai(g, thresh - 1);
+  ok("5%未満ではリーチ不可（瀕死で宣言できない）", g.actionOptions(0).riichi === false);
+  setTenpai(g, thresh + 50);
+  ok("5%以上あればリーチ可（供託0＝実消費はUI側で5%）", g.actionOptions(0).riichi === true);
+}
+
 // 和了抑止フラグ：noWinSeats/noTsumoSeats は既定で空集合。
 {
   const g = mkGame({});

@@ -202,6 +202,7 @@ let pairBattleData = null;       // ペア戦中の状態（独立新モード�
 let pairHpCells = null;          // ペア戦HPボードのDOM参照マップ
 let rogueliteState = null;       // ローグライト・ラン進行中の状態（{ run } 等）。null = 非ローグライト（F7）
 let rogueliteHandLimit = null;   // 楼光の館：この1戦の「定められた局数」(maxHands)。null = 非ローグライト
+const ROGUELITE_RIICHI_FRAC = 0.05; // 楼光の館：リーチ宣言で最大HPの5%を消費（緊張感のあるギャンブル）
 // L1: 非同期ポンプ runHand() 用の状態。人間の手番/鳴きの決定は DOM ハンドラが
 // これらの resolver を解決して返す（CPU/オートは AI 経路、将来のオンラインは別経路）。
 let humanTurnResolver = null;  // 解決値: 打牌/ツモ/カンの決定、または SWITCH_TO_AI
@@ -3377,9 +3378,10 @@ function beginGame(seated, dealerIndex, opts = {}) {
     bustCheck: teamBustCheck || pairBustCheck,
     // 楼光の館：定められた局数で打ち切り（耐え切る or どちらかトビで決着＝サクサク）。
     maxHands: pairBattleData?.isRoguelite ? rogueliteHandLimit : undefined,
-    // 楼光の館は点棒＝HPの独自スケール（~1000）。リーチ棒1000点だと供託でHPを超えて
-    // リーチ自体が宣言不能になるため、リーチ棒を0にする（リーチは純粋に役として使える）。
+    // 楼光の館は点棒＝HPの独自スケール（~1000）。供託(リーチ棒)は0にし、代わりに宣言時へ
+    // 「最大HPの5%消費」を課す（閾値=riichiCostFrac／実消費は RIICHI_DECLARED で pairBattleData.hp を削る）。
     riichiCost: pairBattleData?.isRoguelite ? 0 : undefined,
+    riichiCostFrac: pairBattleData?.isRoguelite ? ROGUELITE_RIICHI_FRAC : undefined,
   });
   // ペア戦の味方相互の被弾を避ける戦術トグル（右サイドメニュー）。自陣（人間と同ペア）の
   // 席へ「和了しない／自分からあがらない」を適用する。
@@ -3409,6 +3411,18 @@ function beginGame(seated, dealerIndex, opts = {}) {
     riichiWaitFlag = true;
     audio.playVoice(player.character.id, "riichi");
     showRiichiFx(player.index);
+    // 楼光の館：リーチ宣言で最大HPの5%を消費（点棒＝HPの独自スケールでは供託0＝ここで実HPを削る）。
+    if (pairBattleData?.isRoguelite) {
+      const seat = player.index;
+      const maxHp = pairBattleData.chars[seat]?.stats?.startingPoints || 0;
+      const cost = Math.round(maxHp * ROGUELITE_RIICHI_FRAC);
+      if (cost > 0) {
+        pairBattleData.hp[seat] = Math.max(1, pairBattleData.hp[seat] - cost); // リーチで自滅はしない（最低1）
+        pairBattleData.pairScore[pairBattleData.pairOf[seat]] = pairBattleData.pairs[pairBattleData.pairOf[seat]].seats.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
+        if (game.players[seat]) game.players[seat].points = pairBattleData.hp[seat]; // 局中表示も整合
+        updateHpBoard();
+      }
+    }
   });
   // Naki call: shared SE + big banner over the caller's seat (win SE / point
   // popups are handled in the result-overlay flow, not here).

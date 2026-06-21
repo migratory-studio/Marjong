@@ -24,6 +24,7 @@ export function applyEffect(run, effect) {
     }
     case "maxHpUp": {
       const mul = effect.mul ?? 1;
+      m.hpMul *= mul; // 累積HP倍率（バフ合計UIの「HP +X%」表示用）
       for (const p of run.party) {
         p.hpMax = Math.round(p.hpMax * mul);
         p.hp = Math.round(p.hp * mul); // 現在HPも同率で底上げ（取得が即得になる）
@@ -35,6 +36,9 @@ export function applyEffect(run, effect) {
       break;
     case "takeReduce":
       m.takeMul *= 1 - (effect.rate ?? 0); // 軽減は乗算で重ねる（1-r の積＝重ね取りが逓減）
+      break;
+    case "friendlyGuard": // 味方のツモで受けるダメージを無効化する“お守り”（受けたら1個消費）
+      m.friendlyGuard = (m.friendlyGuard || 0) + (effect.count ?? 1);
       break;
     case "skillLevelUp":
       m.skillLevelDelta += effect.delta ?? 0; // 後方互換（集計）
@@ -76,6 +80,8 @@ export function freshMods() {
   return {
     dealMul: 1, // 与ダメ倍率（積）
     takeMul: 1, // 被ダメ倍率（積＝1-軽減率の積）
+    hpMul: 1,   // 累積HP倍率（バフ合計UI用・maxHpUpで積む）
+    friendlyGuard: 0, // 味方ツモ被弾を無効化するお守りの残数（アイテム）
     skillLevelDelta: 0, // 能力Lv一時加算
     paramAdd: {}, // params6 加算
     benchSlots: 0, // 控え枠の追加数

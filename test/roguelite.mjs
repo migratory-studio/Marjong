@@ -26,7 +26,7 @@ const eq = (a, b, m) => { assert.strictEqual(a, b, m); n++; };
 // ---------- マスタ整合 ----------
 const KNOWN_KINDS = new Set([
   "heal", "maxHpUp", "skillLevelUp", "paramBoost", "addBench",
-  "dealMul", "takeReduce", "grantAbility", "compound",
+  "dealMul", "takeReduce", "grantAbility", "compound", "friendlyGuard",
 ]);
 const ids = new Set();
 for (const c of ROGUELITE_CARD_MASTER) {
@@ -46,7 +46,7 @@ ok(!isGrantCard(cardById("heal-small")), "非grant 判定");
 
 // ---------- HP スケール ----------
 eq(allyScaledHp(25000), 1000, "25000点→1000HP");
-eq(floorEnemyHp(1), 1000, "階層1の敵HP=1000");
+eq(floorEnemyHp(1), 700, "階層1の敵HP=700（硬すぎ緩和）");
 ok(floorEnemyHp(5) > floorEnemyHp(1), "深い階ほど敵HP増");
 ok(floorEnemyHp(99) === floorEnemyHp(30), "30階で頭打ち（青天井回避）");
 eq(handsForType(floorTypeById("normal")), 1, "通常戦闘=1局");
@@ -281,13 +281,13 @@ applyCard(run, cardById("fortress"));
 ok(Math.abs(run.mods.takeMul - 0.6) < 1e-9, "compound takeReduce 反映");
 eq(run.party[0].hpMax, Math.round(1000 * 1.25), "compound maxHpUp 反映");
 
-// ---------- ダメージ変換 ----------
+// ---------- ダメージ変換（floor1：fdm=1, dealDepth=1, friendlyMul=0.3） ----------
 run = newRun(party, "s");
-// 席0,2=ally / 1,3=enemy。味方が和了(席0)し敵席1へ -8000、味方席3が -2000 被弾。
+// 席0,2=ally / 1,3=enemy。味方が和了(席0)し敵席1へ -8000、味方席3が -2000 被弾（同士討ち）。
 const roles = ["ally", "enemy", "ally", "enemy"];
 let dd = rogueliteDamageDeltas(run, { deltas: [0, -8000, -2000, 0], roles, winnerSeat: 0 });
-eq(dd[1], Math.round(-8000 * DAMAGE_SCALE), "敵失点を等倍スケール（mod無し）");
-eq(dd[2], Math.round(-2000 * DAMAGE_SCALE), "味方失点を等倍スケール（mod無し）");
+eq(dd[1], Math.round(-8000 * DAMAGE_SCALE), "敵失点を等倍スケール（mod無し・floor1）");
+eq(dd[2], Math.round(-2000 * DAMAGE_SCALE * 0.3), "味方の和了で味方が払う＝同士討ちは大幅軽減(×0.3)");
 eq(dd[0], 0, "得点側はHP不変（オーバーヒール無し）");
 
 // dealMul/takeReduce 適用
@@ -295,10 +295,38 @@ applyCard(run, cardById("deal-up-rare")); // dealMul ×1.25
 applyCard(run, cardById("take-down-common")); // takeMul ×0.9
 dd = rogueliteDamageDeltas(run, { deltas: [0, -8000, -2000, 0], roles, winnerSeat: 0 });
 eq(dd[1], Math.round(-8000 * DAMAGE_SCALE * 1.25), "敵失点に与ダメ倍率");
-eq(dd[2], Math.round(-2000 * DAMAGE_SCALE * 0.9), "味方失点に被ダメ軽減");
-// 敵が和了したら dealMul は掛からない
+eq(dd[2], Math.round(-2000 * DAMAGE_SCALE * 0.9 * 0.3), "同士討ちは被ダメ軽減×同士討ち軽減");
+// 敵が和了したら dealMul は掛からない（味方失点には軽減のみ・floor1はfdm=1）
 dd = rogueliteDamageDeltas(run, { deltas: [-3000, 0, 0, 0], roles, winnerSeat: 1 });
-eq(dd[0], Math.round(-3000 * DAMAGE_SCALE * 0.9), "敵和了時は味方失点に軽減のみ");
+eq(dd[0], Math.round(-3000 * DAMAGE_SCALE * 0.9), "敵和了時は味方失点に軽減のみ（floor1）");
+
+// ---------- バランス調整：深度倍率は敵の攻撃だけ・与ダメは深度ボーナス・お守り ----------
+{
+  // 深いフロアで、敵の攻撃（winner=enemy）→味方失点に fdm が乗る。味方の自摸（winner=ally）→乗らない。
+  const r = newRun(party, "depth"); r.floor = 10;
+  const enemyHit = rogueliteDamageDeltas(r, { deltas: [-1000, 0, 0, 0], roles, winnerSeat: 1 });
+  const allyTsumo = rogueliteDamageDeltas(r, { deltas: [0, 0, -1000, 0], roles, winnerSeat: 0 });
+  ok(Math.abs(enemyHit[0]) > Math.abs(allyTsumo[2]) * 3, "敵の攻撃は深度倍率で重い／味方の自摸被弾は軽い");
+  // 与ダメは深度で少し伸びる（floor10 > floor1）
+  const dealF1 = rogueliteDamageDeltas(newRun(party, "d1"), { deltas: [0, -1000, 0, 0], roles, winnerSeat: 0 })[1];
+  const dealF10 = rogueliteDamageDeltas(r, { deltas: [0, -1000, 0, 0], roles, winnerSeat: 0 })[1];
+  ok(Math.abs(dealF10) > Math.abs(dealF1), "与ダメは深層ほど伸びる（アガリの手応え維持）");
+}
+{
+  // お守り（friendlyGuard）：味方ツモ被弾を1回無効化→消費。
+  const r = newRun(party, "ward");
+  applyCard(r, cardById("ally-tsumo-ward"));
+  eq(r.mods.friendlyGuard, 1, "庇いの守りで friendlyGuard=1");
+  const d1 = rogueliteDamageDeltas(r, { deltas: [0, 0, -2000, 0], roles, winnerSeat: 0 });
+  eq(d1[2], 0, "味方ツモ被弾をお守りで無効化");
+  eq(r.mods.friendlyGuard, 0, "お守りは1個消費");
+  const d2 = rogueliteDamageDeltas(r, { deltas: [0, 0, -2000, 0], roles, winnerSeat: 0 });
+  ok(d2[2] < 0, "消費後は通常どおり同士討ち被弾");
+  // 敵の攻撃ではお守りは消費しない
+  const r2 = newRun(party, "ward2"); applyCard(r2, cardById("ally-tsumo-ward"));
+  rogueliteDamageDeltas(r2, { deltas: [-2000, 0, 0, 0], roles, winnerSeat: 1 });
+  eq(r2.mods.friendlyGuard, 1, "敵の攻撃ではお守りを消費しない");
+}
 
 // ---------- ドラフト ----------
 const rng = makeRng("draft-seed");

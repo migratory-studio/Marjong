@@ -25,6 +25,8 @@ if (process.env.DSTART) RL_TUNE.floorDmgStart = Number(process.env.DSTART);
 if (process.env.DSLOPE) RL_TUNE.floorDmgSlope = Number(process.env.DSLOPE);
 if (process.env.DEALCAP) RL_TUNE.dealCap = Number(process.env.DEALCAP);
 if (process.env.TAKEFLOOR) RL_TUNE.takeFloor = Number(process.env.TAKEFLOOR);
+if (process.env.FRIENDLY) RL_TUNE.friendlyMul = Number(process.env.FRIENDLY);
+if (process.env.DEALSLOPE) RL_TUNE.dealDepthSlope = Number(process.env.DEALSLOPE);
 const TUNE = {
   regenFrac: RL_TUNE.regenFrac,
   enemyLvSlope: Number(process.env.LVSLOPE ?? 0.6), // 敵Lvの階層あたり傾き（敵強度モデル＝シム専用）

@@ -81,6 +81,9 @@ export class Game {
     // リーチ棒の点数（既定1000）。点棒＝HPの独自スケール（楼光の館）では小さく/0にして、
     // 高すぎる供託でリーチ自体が宣言不能にならないようにする。
     this.riichiCost = Number.isInteger(options.riichiCost) && options.riichiCost >= 0 ? options.riichiCost : 1000;
+    // リーチ宣言に必要な「最低点（＝HP）」を最大点(startingPoints)比で指定できる（楼光の館用）。
+    // 指定時は供託(riichiCost)とは別に、宣言可否の閾値だけをこの割合で判定する（実HP消費はUI側で反映）。
+    this.riichiCostFrac = typeof options.riichiCostFrac === "number" && options.riichiCostFrac > 0 ? options.riichiCostFrac : null;
     // 和了抑止の方針（席ごと）。ペア戦の味方相互の自摸（味方への被弾）を避ける等の戦術用。
     //   noWinSeats   … その席は一切和了しない（ロンもツモも不可）
     //   noTsumoSeats … その席はツモらない（ロンは可）
@@ -193,7 +196,7 @@ export class Game {
     opts.forcedTsumogiri = p.forcedTsumogiri > 0;
     if (opts.forcedTsumogiri) return opts;
     // riichi? (menzen, tenpai, enough points, wall has draws left)
-    if (!p.riichi && p.menzen && p.points >= this.riichiCost && this.wall.liveRemaining >= 4) {
+    if (!p.riichi && p.menzen && p.points >= this.riichiThreshold(p) && this.wall.liveRemaining >= 4) {
       const disc = this._riichiDiscards(p);
       if (disc.length > 0) { opts.riichi = true; opts.riichiDiscards = disc; }
     }
@@ -280,6 +283,12 @@ export class Game {
         status: ui ? ui.status ?? null : null,
       };
     });
+  }
+
+  // リーチ宣言に必要な最低点（＝HP）。riichiCostFrac 指定時は最大点比、未指定は供託額(riichiCost)。
+  riichiThreshold(p) {
+    if (this.riichiCostFrac != null) return Math.round((p.character?.stats?.startingPoints || 0) * this.riichiCostFrac);
+    return this.riichiCost;
   }
 
   _canTsumo(p) {

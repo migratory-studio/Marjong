@@ -249,6 +249,24 @@ function partyHpRows(run) {
 const coinBadge = (coins) => `<div class="rl-coins">光貨 <b>${coins | 0}</b></div>`;
 const skillBadge = (lv) => (lv ? `<div class="rl-skill">スキルLv <b>${lv}</b></div>` : "");
 
+// バフ合計（HP/攻撃/防御）の可視化。run.mods から集計＝蓄積の見える化。
+//   HP   … maxHpUp の累積倍率（hpMul）→ +X%
+//   攻撃 … dealMul → +X%（与ダメ増）
+//   防御 … takeMul → 軽減率 (1-takeMul) → +X%（被ダメ減）
+// お守り（味方ツモ無効）の残数も併記。
+export function buffTotalsHtml(run) {
+  const m = run?.mods; if (!m) return "";
+  const hpPct = Math.round(((m.hpMul || 1) - 1) * 100);
+  const atkPct = Math.round(((m.dealMul || 1) - 1) * 100);
+  const defPct = Math.round((1 - (m.takeMul || 1)) * 100);
+  const guard = m.friendlyGuard || 0;
+  const stat = (label, val, cls) => `<span class="rl-buff-stat ${cls}"><span class="rl-buff-k">${label}</span><b>${val >= 0 ? "+" : ""}${val}%</b></span>`;
+  return `<div class="rl-buff-totals">
+    ${stat("HP", hpPct, "hp")}${stat("攻", atkPct, "atk")}${stat("防", defPct, "def")}
+    ${guard > 0 ? `<span class="rl-buff-stat ward"><span class="rl-buff-k">庇い</span><b>×${guard}</b></span>` : ""}
+  </div>`;
+}
+
 // 意思決定の瞬間に、先頭キャラが一言「返す」小トースト（立ち絵＋吹き出し）。
 // 愛着×双方向＝選んだことが手触りとして返ってくる。数秒で自動的に消える。
 let _speakTimer = null;
@@ -293,6 +311,7 @@ export function showRogueliteRoute(container, opts = {}) {
       <div class="rl-modal-head">第 ${floor} 階へ — 進路を選ぶ ${coinBadge(coins)}${skillBadge(skillLevel)}</div>
       <p class="rl-route-hint">光貨は戦闘を踏破するほど貯まり、<b>ショップ</b>で回復やバフに使える。10階ごとに<b>ボス</b>。</p>
       ${run ? `<div class="rl-route-party"><div class="rl-hp-list">${partyHpRows(run)}</div>${onSwap ? `<button type="button" class="rl-swap-open" id="rl-route-swap">編成</button>` : ""}</div>` : ""}
+      ${run ? buffTotalsHtml(run) : ""}
       ${body}
       ${held.length ? `<div class="rl-held"><span class="rl-held-label">所持バフ</span>${held.map((b) => {
         const m = RARITY_META[b.rarity] || { color: "#9aa3b2" };
@@ -361,6 +380,7 @@ export function showRogueliteSwap(container, opts = {}) {
     <div class="rl-modal rl-swap-modal">
       <div class="rl-modal-head">編成 — 出場順の入れ替え</div>
       <p class="rl-route-hint">上の<b>2人が着卓</b>して戦う。3人目以降は<b>控え</b>（パッシブ能力でサポート）。▲▼で並べ替え。</p>
+      ${buffTotalsHtml(run)}
       <div class="rl-swap-list" id="rl-swap-list"></div>
       <button type="button" class="rl-start" id="rl-swap-close">この編成で進む</button>
     </div>`;
