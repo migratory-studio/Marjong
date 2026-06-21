@@ -206,6 +206,12 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
   - **上げ方**：バフ「秘伝の伝授」(epic・skillLevelUp+1)／**鍛冶屋フロア**（`forge`・10階種別に追加）で**光貨を払ってLv+1**（`forgeCost`＝Lvが上がるほど高い・`showRogueliteForge`）。進路画面に**スキルLvバッジ**表示。
   - 校正：harness にスキルLv強さ寄与＋鍛冶屋を反映、`--assert`(7) 維持。回帰＝`test/roguelite.mjs`（270）。プレイログ `test/roguelite-sim-log.mjs` もスキルLv/鍛冶屋を表示。実機で鍛冶屋UI（Lv1→2で光貨32消費・費用上昇）と能力強化（lucky-draw Lv1先読み2→Lv5先読み8）を確認。
   - 残（次以降）：楼光の館→師弟シナリオ導線、音声404の切り分け。
+- ✅ **テストプレイ反映バッチ（実装済み）**：
+  - **リーチ修正**：点棒＝HPの独自スケールでリーチ棒1000点がHPを超え宣言不能だったバグを、`Game` の `riichiCost` オプション（楼光の館は0）で解消。回帰＝`test/riichicost.mjs`。
+  - **全員HP可視化**：進路画面に全パーティのHPバーを表示。
+  - **編成モーダル**：任意のタイミングで出場順を入れ替え（`run.lineup`／上位2人着卓・3人目以降控え。`seatedAllies`/`benchAbilityIds` が尊重）。進路の「編成」ボタンから（`showRogueliteSwap`）。
+  - **光貨の常時表示**：進路/ドラフト/休息/追撃/イベントの各画面に光貨バッジ。
+  - **和了抑止トグル（ペア戦共通）**：右サイドに「和了しない／自分からあがらない」。自陣（人間と同ペア席）へ `Game.noWinSeats`/`noTsumoSeats` を適用＝味方への自摸被弾回避などの戦術操作。
 - ✅ **セリフ照合・相棒・反転の磨き込み（実装済み）**：
   - **満貫帯の scoreTier 分離**：`scoreTierOf` に `mid`(5200〜9999)を新設＝満貫(8000)が「地味」低点数セリフにならない。詩玥/凌雲に mid 和了セリフ追加・templateも追従（`voiceLines`/`characterVoiceMaster`）。
   - **相棒(席2)の和了発火**：ペア戦で相方が自分で和了したら相棒ボードの吹き出しで一言（`showPairBattleDamageFx`＋既存 `showPartnerTalk`）。編成＝相棒選びの意味づけに。

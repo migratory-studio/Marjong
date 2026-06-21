@@ -156,7 +156,19 @@ export function shrineOffers(run) {
 // （3人パーティ＝交代でHPを分散・回復できるサステイン）。人間(party[0])が生存し上位2人に入るなら
 // 席0へ固定（操作キャラ）。生存1人なら影武者（同ステの2人目）で卓を成立させる。
 export function seatedAllies(run) {
-  const living = run.party.filter((m) => m.hp > 0).sort((a, b) => b.hp - a.hp);
+  // 出場順の指定（run.lineup＝メンバーid配列）があれば、その順で生存上位2人を着卓させる
+  // ＝プレイヤーが「編成」モーダルで任意に入れ替えた並びを尊重する。未指定なら従来どおり
+  // HP上位2人を自動ローテ（傷ついた控えは休んで回復）。
+  let living;
+  if (Array.isArray(run.lineup) && run.lineup.length) {
+    const byId = new Map(run.party.map((m) => [m.id, m]));
+    const ordered = run.lineup.map((id) => byId.get(id)).filter(Boolean);
+    // lineup に載っていないメンバーは末尾へ（保険）。
+    for (const m of run.party) if (!ordered.includes(m)) ordered.push(m);
+    living = ordered.filter((m) => m.hp > 0);
+  } else {
+    living = run.party.filter((m) => m.hp > 0).sort((a, b) => b.hp - a.hp);
+  }
   if (!living.length) return [run.party[0], run.party[0]]; // 全滅時の保険（通常は allPartyDown で先に終了）
   let fighters = living.slice(0, 2);
   if (fighters.length < 2) fighters = [fighters[0], fighters[0]];
@@ -165,14 +177,25 @@ export function seatedAllies(run) {
   return fighters;
 }
 
+// 控え判定もlineup順に追従させるためのヘルパ（active=着卓2人, bench=残り）。
+export function partyOrder(run) {
+  if (Array.isArray(run.lineup) && run.lineup.length) {
+    const byId = new Map(run.party.map((m) => [m.id, m]));
+    const ordered = run.lineup.map((id) => byId.get(id)).filter(Boolean);
+    for (const m of run.party) if (!ordered.includes(m)) ordered.push(m);
+    return ordered;
+  }
+  return [...run.party];
+}
+
 // ゲームオーバー＝パーティ全員のトビ（着卓中の2人だけでなく控えも全滅）。
 export function allPartyDown(run) {
   return (run.party || []).length > 0 && run.party.every((m) => m.hp <= 0);
 }
 
-// 控えメンバー（3人目以降）。パッシブ能力源として能力idを供出する。
+// 控えメンバー（出場順3人目以降）。パッシブ能力源として能力idを供出する。
 export function benchAbilityIds(run) {
-  return run.party.slice(2).flatMap((m) => (m.char?.abilities || []).map((ab) => ab.abilityId)).filter(Boolean);
+  return partyOrder(run).slice(2).flatMap((m) => (m.char?.abilities || []).map((ab) => ab.abilityId)).filter(Boolean);
 }
 
 // この階層の敵ユニット（2人）をフロア種別に応じて決定論生成。

@@ -57,7 +57,7 @@ import { cardById } from "./data/rogueliteCardMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -155,6 +155,10 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 let scoreHistory = [];
 let game, renderer, humanIndex = 0;
 let hpCells = null; // 相棒ボード（右側HP表示）の playerIndex -> セル参照マップ
+// ペア戦の味方相互の被弾を避ける戦術トグル（右サイドメニュー）。自陣（人間と同ペア）に適用。
+//   noWin   … 自陣は一切和了しない（ロンもツモも不可）
+//   noTsumo … 自陣はツモらない（ロンは可）＝味方への自摸被弾を避ける
+const pairWinPolicy = { noWin: false, noTsumo: false };
 const tileImages = new TileImages();
 const charImages = new CharacterImages();
 const audio = new AudioManager();
@@ -1936,7 +1940,7 @@ function enterFloor(run, floorType) {
     }
     case "treasure":
       showRogueliteDraft(host, {
-        floor: run.floor, title: "宝箱：力を1つ授かる", cards: rollDraft(run, { hpRatio: 1 }), charImages,
+        floor: run.floor, title: "宝箱：力を1つ授かる", cards: rollDraft(run, { hpRatio: 1 }), charImages, coins: run.coins || 0,
         onPick: (card) => { if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); } advanceRoguelite(run); },
       });
       break;
@@ -2006,11 +2010,18 @@ function applyEventOutcome(run, outcome) {
 // 1フロア解決後の前進：階層を進め、ボス階は強制ボス、それ以外は進路2-3択（撤退も可）。
 function advanceRoguelite(run) {
   run.floor += 1;
+  renderRoute(run);
+}
+
+// 進路選択画面を描画（フロアは進めない＝編成モーダルから戻ったときに再描画できる）。
+function renderRoute(run) {
   const host = el("roguelite-screen");
   goScreen("roguelite-screen");
   const held = heldBuffs(run); // 所持バフ一覧（蓄積の可視化）
+  // 編成モーダル：任意のタイミングで出場順を入れ替え→閉じたら同じ進路を再描画。
+  const onSwap = () => showRogueliteSwap(host, { run, charImages, onClose: () => renderRoute(run) });
   if (run.floor % 10 === 0) { // 10階ごとにボス（強制）
-    showRogueliteRoute(host, { boss: true, floor: run.floor, coins: run.coins || 0, skillLevel: run.skillLevel, held, onPick: () => enterFloor(run, BOSS_FLOOR), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
+    showRogueliteRoute(host, { boss: true, floor: run.floor, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, onSwap, onPick: () => enterFloor(run, BOSS_FLOOR), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
     return;
   }
   const rng = makeRng(`${run.seed}:route:${run.floor}`);
@@ -2018,7 +2029,7 @@ function advanceRoguelite(run) {
   const force = (!run.eventSeen && run.floor >= 2 && run.floor <= 5) ? ["event"] : [];
   const choices = drawFloorChoices(rng, { count: run.floor <= 2 ? 2 : 3, exclude: rogueliteState.lastFloorId ? [rogueliteState.lastFloorId] : [], force });
   showRogueliteRoute(host, {
-    floor: run.floor, choices, coins: run.coins || 0, skillLevel: run.skillLevel, held,
+    floor: run.floor, choices, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, onSwap,
     onPick: (ft) => { rogueliteState.lastFloorId = ft.id; enterFloor(run, ft); },
     onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }),
   });
@@ -2110,7 +2121,7 @@ function onRogueliteBattleEnd(result) {
     ? rollDraft(run, { bias: 1, hpRatio: 1 })
     : rollDraft(run, { ko: !!result.koAny || pursued, hpRatio: result.hpRatio ?? 0.5 });
   showRogueliteDraft(host, {
-    floor: run.floor, cards, charImages,
+    floor: run.floor, cards, charImages, coins: run.coins || 0,
     onPick: (card) => {
       if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
       // 追撃の打診（残あり）。なければ前進＝進路選択へ。
@@ -3366,7 +3377,13 @@ function beginGame(seated, dealerIndex, opts = {}) {
     bustCheck: teamBustCheck || pairBustCheck,
     // 楼光の館：定められた局数で打ち切り（耐え切る or どちらかトビで決着＝サクサク）。
     maxHands: pairBattleData?.isRoguelite ? rogueliteHandLimit : undefined,
+    // 楼光の館は点棒＝HPの独自スケール（~1000）。リーチ棒1000点だと供託でHPを超えて
+    // リーチ自体が宣言不能になるため、リーチ棒を0にする（リーチは純粋に役として使える）。
+    riichiCost: pairBattleData?.isRoguelite ? 0 : undefined,
   });
+  // ペア戦の味方相互の被弾を避ける戦術トグル（右サイドメニュー）。自陣（人間と同ペア）の
+  // 席へ「和了しない／自分からあがらない」を適用する。
+  applyPairWinPolicy();
   renderer = new CanvasRenderer(el("table"), game, humanIndex, tileImages, charImages);
   // 通信対戦の卓上ネームプレートはユーザー名で出す（席→名前。CPU/未設定は null＝キャラ名にフォールバック）。
   renderer.seatLabels = (opts.online && onlineSeatInfo)
@@ -6204,6 +6221,52 @@ function updateTeamBattleHpBoard(skipAnim = false) {
 // ---- ペア戦 HP ボード ----
 // 団体戦ボードと同じ「順位ソート＋メダル」方式。2ペアをペア点数の降順で 1位/2位 に並べ、
 // 各ブロック内の2人は HP の高い方を上に並べる（flex order）。着席ダウン(HP0)は .out 表示。
+// 自陣の和了抑止トグル2種（右サイドメニュー）。味方相互の自摸被弾を避ける戦術操作。
+function buildPairWinPolicyToggles() {
+  const wrap = document.createElement("div");
+  wrap.className = "pb-winpolicy";
+  const mk = (key, label, hint) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "pb-wp-toggle" + (pairWinPolicy[key] ? " on" : "");
+    b.innerHTML = `<span class="pb-wp-dot"></span><span class="pb-wp-lbl">${label}</span>`;
+    b.title = hint;
+    b.setAttribute("aria-pressed", String(!!pairWinPolicy[key]));
+    b.addEventListener("click", () => {
+      pairWinPolicy[key] = !pairWinPolicy[key];
+      // 「和了しない」を入れたら「自分からあがらない」は包含されるので見た目を整える。
+      if (key === "noWin" && pairWinPolicy.noWin) pairWinPolicy.noTsumo = false;
+      b.classList.toggle("on", pairWinPolicy[key]);
+      b.setAttribute("aria-pressed", String(!!pairWinPolicy[key]));
+      applyPairWinPolicy();
+      // 自分の手番中なら行動ボタンを即再描画（ツモ/ロン候補の出し分けを反映）。
+      if (game && game.turn === humanIndex && game.phase === "await-discard") showHumanActions();
+      // 表示状態を揃えるため両トグルを描き直す。
+      const sib = wrap.querySelectorAll(".pb-wp-toggle");
+      sib.forEach((el2) => { const k = el2.dataset.k; if (k) { el2.classList.toggle("on", pairWinPolicy[k]); el2.setAttribute("aria-pressed", String(!!pairWinPolicy[k])); } });
+    });
+    b.dataset.k = key;
+    return b;
+  };
+  wrap.appendChild(mk("noWin", "和了しない", "自陣は一切和了しない（ロンもツモも控える＝完全防御）"));
+  wrap.appendChild(mk("noTsumo", "自分からあがらない", "自陣はツモらない（ロンのみ＝味方への自摸被弾を避ける）"));
+  return wrap;
+}
+
+// 和了抑止トグルを現在の game へ反映。自陣（人間と同じペア）の席にだけ適用する。
+function applyPairWinPolicy() {
+  if (!game) return;
+  game.noWinSeats.clear();
+  game.noTsumoSeats.clear();
+  if (!pairBattleData) return; // ペア戦/楼光の館のみ
+  const myPair = pairBattleData.pairOf[humanIndex];
+  const allySeats = pairBattleData.pairOf.map((p, i) => (p === myPair ? i : -1)).filter((i) => i >= 0);
+  for (const s of allySeats) {
+    if (pairWinPolicy.noWin) game.noWinSeats.add(s);
+    if (pairWinPolicy.noTsumo) game.noTsumoSeats.add(s);
+  }
+}
+
 function buildPairBattleHpBoard(board) {
   board.classList.add("team-battle", "pair-battle");
   pairHpCells = {};
@@ -6265,6 +6328,7 @@ function buildPairBattleHpBoard(board) {
       passives = document.createElement("div");
       passives.className = "tb-passives";
       block.appendChild(passives);
+      block.appendChild(buildPairWinPolicyToggles()); // 和了抑止トグル（自陣の被弾回避）
     }
     // セリフ吹き出し（自ペアのみ・Phase3で発火）
     let talkBubble = null;

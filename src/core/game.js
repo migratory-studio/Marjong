@@ -78,6 +78,14 @@ export class Game {
     // 局数で打ち切る上限（任意）。指定すると「定められた N 局を打ち切ったら終了」になる
     // （maxRounds より先に効く＝短い決着。楼光の館の「1〜3局戦」で使う。連荘も1局と数える）。
     this.maxHands = Number.isInteger(options.maxHands) && options.maxHands > 0 ? options.maxHands : null;
+    // リーチ棒の点数（既定1000）。点棒＝HPの独自スケール（楼光の館）では小さく/0にして、
+    // 高すぎる供託でリーチ自体が宣言不能にならないようにする。
+    this.riichiCost = Number.isInteger(options.riichiCost) && options.riichiCost >= 0 ? options.riichiCost : 1000;
+    // 和了抑止の方針（席ごと）。ペア戦の味方相互の自摸（味方への被弾）を避ける等の戦術用。
+    //   noWinSeats   … その席は一切和了しない（ロンもツモも不可）
+    //   noTsumoSeats … その席はツモらない（ロンは可）
+    this.noWinSeats = new Set();
+    this.noTsumoSeats = new Set();
     this.roundWind = 27; // 27=東, 28=南
     this.kyoku = 1; // hand number WITHIN the current round (1..4)
     // 起家（最初の親）。対局開始演出の親決めで決まった席を注入できる。
@@ -185,7 +193,7 @@ export class Game {
     opts.forcedTsumogiri = p.forcedTsumogiri > 0;
     if (opts.forcedTsumogiri) return opts;
     // riichi? (menzen, tenpai, enough points, wall has draws left)
-    if (!p.riichi && p.menzen && p.points >= 1000 && this.wall.liveRemaining >= 4) {
+    if (!p.riichi && p.menzen && p.points >= this.riichiCost && this.wall.liveRemaining >= 4) {
       const disc = this._riichiDiscards(p);
       if (disc.length > 0) { opts.riichi = true; opts.riichiDiscards = disc; }
     }
@@ -275,6 +283,8 @@ export class Game {
   }
 
   _canTsumo(p) {
+    // 和了抑止（味方への被弾回避などの戦術トグル）。ツモは noWin/noTsumo の両方で禁止。
+    if (this.noWinSeats.has(p.index) || this.noTsumoSeats.has(p.index)) return false;
     const counts = p.counts();
     if (!isAgari(counts, p.numMeldSets())) return false;
     const ctx = this._winContext(p, this._lastDraw.kind, /*tsumo*/ true);
@@ -331,8 +341,8 @@ export class Game {
       p.riichi = true;
       p.riichiTurn = p.discards.length;
       p.ippatsu = true;
-      p.points -= 1000;
-      this.kyotaku += 1000;
+      p.points -= this.riichiCost;
+      this.kyotaku += this.riichiCost;
       this.bus.emit(Events.RIICHI_DECLARED, { player: p });
       this.log(`${p.character.name} がリーチ！`);
     }
@@ -421,6 +431,8 @@ export class Game {
   }
 
   _canRon(p, kind) {
+    // 和了抑止トグル：ロンは noWin のときだけ禁止（noTsumo はツモのみ）。
+    if (this.noWinSeats.has(p.index)) return false;
     // furiten: cannot ron if the winning kind is in own discards
     if (p.discards.some((t) => t.kind === kind)) return false;
     // also furiten if any of the current waits is in own river

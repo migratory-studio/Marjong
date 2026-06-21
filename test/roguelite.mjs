@@ -7,7 +7,7 @@ import {
 import { applyEffect, applyCard, freshMods } from "../src/roguelite/cardEffects.js";
 import {
   newRun, allyScaledHp, floorEnemyHp, handsForType, isBossFloor,
-  enemyUnitForFloor, rogueliteDamageDeltas, rarityBiasFor, seatedAllies, DAMAGE_SCALE,
+  enemyUnitForFloor, rogueliteDamageDeltas, rarityBiasFor, seatedAllies, benchAbilityIds, DAMAGE_SCALE,
   carrySlotsFor, excludedCardIds, rollDraft, allPartyDown, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers,
 } from "../src/roguelite/run.js";
@@ -134,6 +134,25 @@ eq(run.mods.dealMul, 1, "初期 dealMul=1");
 
 // 着卓は先頭2人
 eq(seatedAllies(run)[0].id, "you", "席0=あなた");
+
+// 編成（lineup）：出場順を入れ替えると着卓・控えが追従する
+{
+  const p3 = [
+    { id: "you", char: { id: "you", abilities: [{ abilityId: "lucky-draw", params: {} }] }, avatarHpMax: 25000 },
+    { id: "a", char: { id: "a", abilities: [{ abilityId: "chunchan", params: {} }] }, avatarHpMax: 20000 },
+    { id: "b", char: { id: "b", abilities: [{ abilityId: "danger-sense", params: {} }] }, avatarHpMax: 20000 },
+  ];
+  const r3 = newRun(p3, "lineup");
+  // 既定（lineup未設定）：HP上位2人＝you,a or you,b。控え=3人目の能力。
+  ok(benchAbilityIds(r3).length >= 1, "既定で控え能力あり");
+  // lineupで b を2番目に繰り上げ→ you,b が着卓、a が控え。
+  r3.lineup = ["you", "b", "a"];
+  const seats = seatedAllies(r3).map((m) => m.id);
+  eq(seats[0], "you", "lineup: 席0=you");
+  eq(seats[1], "b", "lineup: 席1=b（繰り上げ）");
+  ok(benchAbilityIds(r3).includes("chunchan"), "lineup: a(chunchan)が控え");
+  ok(!benchAbilityIds(r3).includes("danger-sense"), "lineup: b(danger-sense)は着卓で控えに出さない");
+}
 
 // 敵生成は決定論（同seed/同階層/同種別で一致）
 const NORMAL = floorTypeById("normal");
