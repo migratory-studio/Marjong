@@ -5006,10 +5006,13 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-calc-result small { font-size: 11px; font-weight: 600; color: #9aa3b2; margin-left: 4px; }
 .rl-calc-cap { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 700; color: #6fe08a; background: rgba(111,224,138,0.14); border-radius: 6px; padding: 1px 8px; }
 
-/* 楼光の館：HP行の顔アイコン＋ダウン表示 */
-.rl-hp-row { display: flex; align-items: center; gap: 7px; }
+/* 楼光の館：HP行の顔アイコン＋HPゲージ＋ダウン表示（flexで 名前 / ゲージ(伸縮) / 値 を配分） */
+.rl-hp-row { display: flex; align-items: center; gap: 8px; }
 .rl-hp-face { width: 24px; height: 24px; border-radius: 6px; object-fit: cover; flex: none; }
 .rl-hp-face.rl-face-fb { display: inline-flex; align-items: center; justify-content: center; background: var(--c,#666); color: #fff; font-weight: 700; font-size: 12px; }
+.rl-hp-row .rl-hp-name { flex: none; min-width: 80px; max-width: 116px; text-align: left; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rl-hp-row .rl-hp-bar { flex: 1 1 auto; min-width: 56px; height: 11px; }
+.rl-hp-row .rl-hp-val { flex: none; min-width: 72px; text-align: right; }
 .rl-hp-row.is-down { opacity: 0.5; }
 .rl-hp-row.is-down .rl-hp-val { color: var(--danger,#ff6b6b); font-weight: 700; }
 
