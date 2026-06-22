@@ -135,6 +135,41 @@ export function newRun(party, seed) {
 
 export { applyCard };
 
+// ---- 一時セーブ（localStorage）用シリアライズ ----
+// char（CHARACTER全体）は保存せず id だけ持つ。復元時に resolveChar(id) で再解決する。
+const RUN_SAVE_VERSION = 2;
+export function serializeRun(run) {
+  if (!run || !Array.isArray(run.party)) return null;
+  return {
+    v: RUN_SAVE_VERSION,
+    seed: run.seed, floor: run.floor, cleared: run.cleared, coins: run.coins,
+    skillLevel: run.skillLevel, cards: [...(run.cards || [])], items: [...(run.items || [])],
+    mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
+    lineup: run.lineup || null, visited: [...(run.visited || [])], eventSeen: !!run.eventSeen,
+    party: run.party.map((m) => ({ id: m.id, hp: m.hp, hpMax: m.hpMax, hungover: !!m.hungover })),
+  };
+}
+
+// 保存データ→run へ復元。resolveChar(id)→CHARACTER 互換オブジェクト（解決不能は null）。
+// メンバーのどれか1人でも解決できなければ復元失敗（null）＝安全側（再開させない）。
+export function deserializeRun(data, resolveChar) {
+  if (!data || data.v !== RUN_SAVE_VERSION || !Array.isArray(data.party) || !data.party.length) return null;
+  const party = [];
+  for (const m of data.party) {
+    const char = resolveChar?.(m.id);
+    if (!char) return null;
+    party.push({ id: m.id, char, hp: m.hp, hpMax: m.hpMax, hungover: !!m.hungover });
+  }
+  return {
+    seed: String(data.seed), floor: data.floor || 1, party,
+    cards: [...(data.cards || [])], mods: { ...freshMods(), ...(data.mods || {}) },
+    cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1,
+    items: [...(data.items || [])], nextBattle: data.nextBattle || {}, routeReroll: data.routeReroll || 0,
+    lineup: Array.isArray(data.lineup) ? data.lineup : undefined, visited: [...(data.visited || [])],
+    eventSeen: !!data.eventSeen, alive: true,
+  };
+}
+
 // パーティの「生存メンバー」を最大比 frac で回復（休息/宴会/ショップ）。「癒しの香炉」で回復量↑。
 // トんだ(hp<=0)メンバーは回復しない＝一度トベば復活しない（ランを通して脱落）。
 export function healParty(run, frac) {

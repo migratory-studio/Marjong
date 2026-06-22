@@ -8,7 +8,7 @@ import {
 import { applyEffect, applyCard, freshMods } from "../src/roguelite/cardEffects.js";
 import {
   newRun, allyScaledHp, floorEnemyHp, handsForType, isBossFloor,
-  enemyUnitForFloor, rogueliteDamageDeltas, explainRogueliteDamage, lethalCapFrac, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, DAMAGE_SCALE,
+  enemyUnitForFloor, rogueliteDamageDeltas, explainRogueliteDamage, lethalCapFrac, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, serializeRun, deserializeRun, DAMAGE_SCALE,
   carrySlotsFor, excludedCardIds, rollDraft, allPartyDown, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers,
 } from "../src/roguelite/run.js";
@@ -480,6 +480,36 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   const drawn = drawItems(makeRng("it"), { count: 2, exclude: ["heal-potion"] });
   ok(drawn.every((x) => x.id !== "heal-potion"), "drawItems は exclude を避ける");
   eq(ITEM_SLOTS, 3, "スロットは3");
+}
+
+// ---------- 中断ランの一時セーブ（serialize/deserialize 往復） ----------
+{
+  const r = newRun(party, "save");
+  r.floor = 7; r.coins = 88; r.skillLevel = 3; r.cleared = 6;
+  r.items = ["heal-potion", "merchant-scale"]; r.nextBattle = { dealMul: 1.3 }; r.routeReroll = 2;
+  r.lineup = ["pal", "you"]; r.eventSeen = true;
+  applyCard(r, cardById("deal-up-rare")); // dealMul 変化
+  r.party[1].hp = 123; r.party[1].hungover = true;
+  const data = serializeRun(r);
+  ok(!data.party[0].char, "シリアライズは char を保存しない（id のみ）");
+  const resolve = (id) => party.find((p) => p.id === id)?.char || null;
+  const back = deserializeRun(data, resolve);
+  eq(back.floor, 7, "復元: floor");
+  eq(back.coins, 88, "復元: coins");
+  eq(back.skillLevel, 3, "復元: skillLevel");
+  eq(back.items.join(","), "heal-potion,merchant-scale", "復元: items");
+  eq(back.nextBattle.dealMul, 1.3, "復元: nextBattle");
+  eq(back.routeReroll, 2, "復元: routeReroll");
+  eq(back.lineup.join(","), "pal,you", "復元: lineup");
+  ok(back.eventSeen, "復元: eventSeen");
+  ok(Math.abs(back.mods.dealMul - r.mods.dealMul) < 1e-9, "復元: mods.dealMul");
+  eq(back.party[1].hp, 123, "復元: メンバーHP");
+  ok(back.party[1].hungover, "復元: 二日酔い");
+  ok(back.party[0].char === resolve("you"), "復元: char を id から再解決");
+  // バージョン不一致・メンバー解決不能は復元失敗（null＝再開させない）
+  eq(deserializeRun({ ...data, v: 99 }, resolve), null, "バージョン不一致は null");
+  eq(deserializeRun(data, () => null), null, "メンバー解決不能は null");
+  eq(deserializeRun(null, resolve), null, "null データは null");
 }
 
 // 一撃死緩和＋次戦バフが rogueliteDamageDeltas に効く（battleMods）

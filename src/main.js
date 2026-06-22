@@ -51,7 +51,7 @@ import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
-import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, benchAbilityIds, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers } from "./roguelite/run.js";
+import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, benchAbilityIds, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun } from "./roguelite/run.js";
 import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
@@ -60,7 +60,7 @@ import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -206,6 +206,23 @@ let pairHpCells = null;          // ペア戦HPボードのDOM参照マップ
 let rogueliteState = null;       // ローグライト・ラン進行中の状態（{ run } 等）。null = 非ローグライト（F7）
 let rogueliteHandLimit = null;   // 楼光の館：この1戦の「定められた局数」(maxHands)。null = 非ローグライト
 const ROGUELITE_RIICHI_FRAC = 0.05; // 楼光の館：リーチ宣言で最大HPの5%を消費（緊張感のあるギャンブル）
+// 楼光の館：中断したランの一時保存（localStorage）。撤退/全滅で削除。データがあれば再開を問う。
+const RL_RUN_KEY = "mahjong-rpg.rogueliteRun";
+function saveRogueliteRun(run) {
+  try { const d = serializeRun(run); if (d) localStorage.setItem(RL_RUN_KEY, JSON.stringify(d)); } catch { /* 保存不可は無視 */ }
+}
+function loadSavedRogueliteRunData() {
+  try { const s = localStorage.getItem(RL_RUN_KEY); return s ? JSON.parse(s) : null; } catch { return null; }
+}
+function clearSavedRogueliteRun() {
+  try { localStorage.removeItem(RL_RUN_KEY); } catch { /* 無視 */ }
+}
+// 中断ランの char をidから再解決（修行完了弟子＋通常キャラのプール）。
+function makeRogueliteCharResolver(deshiRoster) {
+  const pool = new Map();
+  for (const c of [...(deshiRoster || []), ...CHARACTERS]) if (c && !pool.has(c.id)) pool.set(c.id, c);
+  return (id) => pool.get(id) || null;
+}
 const MAX_GRANTED_ABILITIES = 2;    // 追加必殺枠の上限（付与能力）。超えそうなら1つ忘れる（ポケモン式）
 // L1: 非同期ポンプ runHand() 用の状態。人間の手番/鳴きの決定は DOM ハンドラが
 // これらの resolver を解決して返す（CPU/オートは AI 経路、将来のオンラインは別経路）。
@@ -1859,6 +1876,23 @@ async function openRoguelite() {
   // パーティ候補：修行完了弟子（あれば）＋お気に入り/詩玥などの通常キャラ。
   const best = profile?.roguelite?.bestFloor || 0;
   const carryCards = (profile?.roguelite?.carry || []).map((id) => cardById(id)).filter(Boolean);
+  // 中断したランがあれば「再開しますか？」を先に出す（復元できる場合のみ）。
+  const savedData = loadSavedRogueliteRunData();
+  if (savedData) {
+    const resolver = makeRogueliteCharResolver(roster);
+    const restored = deserializeRun(savedData, resolver);
+    if (restored) {
+      goScreen("roguelite-screen");
+      showRogueliteResume(el("roguelite-screen"), {
+        floor: restored.floor,
+        partyNames: restored.party.map((m) => m.char?.name || "?"),
+        onResume: () => resumeRogueliteRun(restored),
+        onDiscard: () => { clearSavedRogueliteRun(); openRoguelite(); },
+      });
+      return;
+    }
+    clearSavedRogueliteRun(); // 復元不能（メンバー欠落等）は破棄
+  }
   showRoguelite(el("roguelite-screen"), {
     deshiRoster: roster,
     characters: CHARACTERS,
@@ -1884,8 +1918,18 @@ async function startRogueliteRun(partyChars) {
     if (c) applyCard(run, c);
   }
   rogueliteState = { run };
+  saveRogueliteRun(run); // 中断ランの一時保存（floor1 初期状態）
   enterRogueliteAmbience(); // 専用バックグラウンド＋探索BGM（キャラ選択の見た目を引きずらない）
   enterFloor(run, floorTypeById("normal")); // 1階は通常戦闘から
+}
+
+// 中断ランの再開：復元済み run を rogueliteState に据え、進路から再開する。
+async function resumeRogueliteRun(run) {
+  rogueliteState = { run };
+  try { await charImages.load(run.party.map((m) => m.char).filter((c) => c && !c.isMob)); } catch { /* 画像はフォールバック */ }
+  for (const m of run.party) audio.registerCharacterVoices(m.char?.id, m.char?.assets?.voices || {});
+  enterRogueliteAmbience();
+  renderRoute(run); // 現在の階の進路から再開（ルートは決定論なので同じ選択肢）
 }
 
 // 楼光の館の専用アンビエンス。roguelite-screen の背景を館（廃墟）に差し替え、探索BGMを流す。
@@ -2113,6 +2157,7 @@ function advanceRoguelite(run) {
 function renderRoute(run) {
   const host = el("roguelite-screen");
   goScreen("roguelite-screen");
+  saveRogueliteRun(run); // 進路＝安全な再開チェックポイント（中断時はこの階の進路から再開）
   const held = heldBuffs(run); // 所持バフ一覧（蓄積の可視化）
   // 編成モーダル：任意のタイミングで出場順を入れ替え→閉じたら同じ進路を再描画。
   const onSwap = () => showRogueliteSwap(host, { run, charImages, onClose: () => renderRoute(run) });
@@ -2285,6 +2330,7 @@ function onRogueliteBattleEnd(result) {
 // 引き継ぎ枠ぶんを選ばせて次ランへ持ち越す（ローグライク・累積しない）。
 // 到達階層＝フロア番号：全滅は死んだ階(run.floor)、撤退は1つ手前(まだ入っていない次の階の手前)。
 async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}) {
+  clearSavedRogueliteRun(); // 撤退/全滅でラン終了＝一時セーブを削除（再開は出さない）
   // 先頭キャラの別れ際の一言（rogueliteState を消す前に解決）。撤退＝引く判断への“返し”。
   const lead = rlLead();
   const partingLine = lead ? vline(lead.id, retreated ? "rlRetreat" : "matchEnd", retreated ? {} : { rankIndex: 1, numPlayers: 2 }) : null;

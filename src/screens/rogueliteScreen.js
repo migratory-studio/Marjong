@@ -176,6 +176,28 @@ export function showRoguelite(container, opts = {}) {
   startBtn.addEventListener("click", () => { if (party.length) onStart?.([...party]); });
 }
 
+// ---- 中断ランの再開確認 ----
+export function showRogueliteResume(container, opts = {}) {
+  const { floor = 1, partyNames = [], onResume, onDiscard } = opts;
+  if (!container) { onDiscard?.(); return; }
+  container.innerHTML = ""; // キャラ選択の前に出す＝下地は空でよい
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-resume is-open";
+  ov.innerHTML = `
+    <div class="rl-modal">
+      <div class="rl-modal-head">中断したランがあります</div>
+      <p class="rl-continue-note">第 <b>${floor}</b> 階まで進んだランの続きがあります。<br>パーティ：${partyNames.join(" / ") || "?"}</p>
+      <div class="rl-continue-btns">
+        <button type="button" class="rl-start" id="rl-resume-yes">続きから再開する</button>
+        <button type="button" class="rl-retreat" id="rl-resume-no">やめて新しく始める</button>
+      </div>
+      <p class="rl-route-hint">※「新しく始める」を選ぶと、中断したランのデータは破棄されます。</p>
+    </div>`;
+  container.appendChild(ov);
+  ov.querySelector("#rl-resume-yes")?.addEventListener("click", () => { ov.remove(); onResume?.(); });
+  ov.querySelector("#rl-resume-no")?.addEventListener("click", () => { ov.remove(); onDiscard?.(); });
+}
+
 // ---- バフカード3択 ----
 export function showRogueliteDraft(container, opts = {}) {
   const { floor = 1, cards = [], onPick, title, coins = null } = opts;
