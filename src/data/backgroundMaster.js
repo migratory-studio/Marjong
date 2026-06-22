@@ -56,6 +56,8 @@ export const BACKGROUND_MASTER = {
   "bg-hideout":        { label: "アジト",         gradient: "linear-gradient(160deg,#2a2a30 0%,#3a3a44 55%,#141418 100%)", img: "graphic/bg/sc/bg-hideout.jpg" },
   "bg-basement":       { label: "地下室",         gradient: "linear-gradient(160deg,#26262a 0%,#34343c 55%,#121214 100%)", img: "graphic/bg/sc/bg-basement.jpg" },
   "bg-ruins":          { label: "廃墟の部屋",     gradient: "linear-gradient(160deg,#3a3630 0%,#4c463c 55%,#201d18 100%)", img: "graphic/bg/sc/bg-ruins.jpg" },
+  // 暗い地下迷宮（くらげ氏／BOOTH・商用利用許可確認済み）。楼光「奈落」層に使用。
+  "bg-dungeon":        { label: "暗い地下迷宮",   gradient: "linear-gradient(160deg,#1a1620 0%,#241d2e 55%,#0b0910 100%)", img: "graphic/bg/sc/bg-dungeon.jpg" },
 };
 
 const DEFAULT = { label: "(未定義)", gradient: "linear-gradient(160deg,#2a2018,#1c140e)" };

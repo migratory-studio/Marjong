@@ -51,8 +51,8 @@ export const ROGUELITE_BIOME_MASTER = [
     mods: { dmgTakenMul: 0.7, enemyLvAdd: 1 } },
 
   // ── 深層（帯3〜）：影響力の大きい劇物 ──
-  { id: "abyss", name: "奈落", bg: "bg-bar", glyph: "🕯", color: "#8a6fb0", minBand: 3,
-    blurb: "終電は来ない。盃の底に沈む闇——HPの器が半分に削がれる代わり、抜けた者には破格の褒美が待つ。", bgm: "Tatari",
+  { id: "abyss", name: "奈落", bg: "bg-dungeon", glyph: "🕯", color: "#8a6fb0", minBand: 3,
+    blurb: "光ひとつ届かぬ地の底。HPの器が半分に削がれる代わり、抜けた者には破格の褒美が待つ。", bgm: "Tatari",
     mods: { hpMul: 0.5, coinMul: 1.6, draftBias: 0.5 } },
 ];
 
