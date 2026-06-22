@@ -358,32 +358,52 @@ export function showRogueliteRoute(container, opts = {}) {
   const { floor = 1, choices = [], boss = false, coins = 0, skillLevel = 0, held = [], run = null, charImages = null, onPick, onRetreat, onSwap, onItems } = opts;
   if (!container) return;
   const ov = document.createElement("div");
-  ov.className = "rl-overlay rl-route";
-  let body;
-  if (boss) {
-    const m = FLOOR_KIND_META.boss;
-    body = `<div class="rl-route-cards"><button type="button" class="rl-route-card boss" data-i="0" style="--rarity:${m.color}">
-      <div class="rl-route-mark">${m.mark}</div><div class="rl-route-name">ボスフロア</div>
-      <div class="rl-route-blurb">第 ${floor} 階・館の主が待つ。逃げ場はない。</div></button></div>`;
-  } else {
-    body = `<div class="rl-route-cards">${choices.map((f, i) => {
-      const m = FLOOR_KIND_META[f.kind] || FLOOR_KIND_META.battle;
-      return `<button type="button" class="rl-route-card" data-i="${i}" style="--rarity:${m.color}">
-        <div class="rl-route-mark">${m.mark}</div><div class="rl-route-name">${f.name}</div>
-        <div class="rl-route-blurb">${f.blurb || ""}</div></button>`;
-    }).join("")}</div>`;
-  }
+  ov.className = "rl-overlay rl-route rl-hub" + (boss ? " is-boss" : "");
+  // 進路カード（ヒーロー＝大胆さを集中する1点）。ボス階は単一の大カード。
+  const cardEntries = boss
+    ? [{ kind: "boss", name: "館の主との対決", blurb: `第 ${floor} 階・逃げ場はない大一番。`, _boss: true }]
+    : choices.map((f) => ({ kind: f.kind, name: f.name, blurb: f.blurb || "", id: f.id }));
+  const cardsHtml = cardEntries.map((f, i) => {
+    const m = FLOOR_KIND_META[f.kind] || FLOOR_KIND_META.battle;
+    return `<button type="button" class="rl-route-card${f._boss ? " boss" : ""}" data-i="${i}" style="--mark:${m.color}">
+      <span class="rl-route-spark"></span>
+      <span class="rl-route-mark">${m.mark}</span>
+      <span class="rl-route-name">${f.name}</span>
+      <span class="rl-route-blurb">${f.blurb}</span>
+      <span class="rl-route-go">この道へ ›</span>
+    </button>`;
+  }).join("");
+  const partyDock = run ? `
+    <div class="rl-hub-party">
+      <div class="rl-hub-party-head">パーティ</div>
+      <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
+      <div class="rl-hub-actions">
+        ${onSwap ? `<button type="button" class="rl-hub-btn" id="rl-route-swap">編成</button>` : ""}
+        ${onItems ? `<button type="button" class="rl-hub-btn" id="rl-route-items">道具 <b>${(run.items || []).length}/${ITEM_SLOTS}</b></button>` : ""}
+      </div>
+    </div>
+    <div class="rl-hub-build">${buffTotalsHtml(run)}</div>` : "";
   ov.innerHTML = `
-    <div class="rl-modal rl-route-modal">
-      <div class="rl-modal-head">第 ${floor} 階へ — 進路を選ぶ ${coinBadge(coins)}${skillBadge(skillLevel)}</div>
-      <p class="rl-route-hint">光貨は戦闘を踏破するほど貯まり、<b>ショップ</b>で回復やバフに使える。10階ごとに<b>ボス</b>。</p>
-      ${run ? `<div class="rl-route-party"><div class="rl-hp-list">${partyHpRows(run, charImages)}</div><div class="rl-route-btns">${onSwap ? `<button type="button" class="rl-swap-open" id="rl-route-swap">編成</button>` : ""}${onItems ? `<button type="button" class="rl-swap-open" id="rl-route-items">道具 ${(run.items || []).length}/${ITEM_SLOTS}</button>` : ""}</div></div>` : ""}
-      ${run ? buffTotalsHtml(run) : ""}
-      ${body}
-      <button type="button" class="rl-retreat" id="rl-route-retreat">ここで撤退する（記録を確保）</button>
+    <div class="rl-hub-wrap">
+      <header class="rl-hub-top">
+        <div class="rl-hub-floor"><span class="rl-hub-eyebrow">楼光の館</span><span class="rl-hub-floornum">第 <b>${floor}</b> 階</span></div>
+        <div class="rl-hub-res">
+          <span class="rl-hub-res-i"><span class="rl-hub-res-k">光貨</span><b>${coins | 0}</b></span>
+          <span class="rl-hub-res-i"><span class="rl-hub-res-k">スキルLv</span><b>${skillLevel || 1}</b></span>
+        </div>
+      </header>
+      <main class="rl-hub-main">
+        <div class="rl-hub-choose"><span>${boss ? "館の主が待つ" : "進路を選ぶ"}</span></div>
+        <div class="rl-route-cards">${cardsHtml}</div>
+        <p class="rl-hub-hint">${boss ? "10階ごとの大一番。倒せば奥へ続く。" : "光貨は戦うほど貯まり、ショップや鍛冶屋で使える。10階ごとにボス。"}</p>
+      </main>
+      <footer class="rl-hub-dock">
+        ${partyDock}
+        <button type="button" class="rl-hub-retreat" id="rl-route-retreat">撤退する<small>記録を確保して帰る</small></button>
+      </footer>
     </div>`;
   container.appendChild(ov);
-  requestAnimationFrame(() => ov.classList.add("is-open"));
+  requestAnimationFrame(() => { ov.classList.add("is-open"); ov.querySelectorAll(".rl-route-card").forEach((c, i) => c.style.setProperty("--d", `${i * 70}ms`)); });
   ov.querySelectorAll(".rl-route-card").forEach((btn) => {
     btn.addEventListener("click", () => { ov.remove(); boss ? onPick?.() : onPick?.(choices[+btn.dataset.i]); });
   });
