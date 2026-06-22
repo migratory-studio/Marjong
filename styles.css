@@ -5175,3 +5175,13 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-gain-chip:nth-child(4) { animation-delay: .15s; } .rl-gain-chip:nth-child(5) { animation-delay: .21s; }
 @keyframes rlChipPop { from { opacity: 0; transform: scale(.82) translateY(4px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .rl-event-gain.is-in .rl-gain-chip { animation: none; } }
+
+/* 楼光の館：制圧ボーナス帯（自ペア合計HP > 敵ペア合計で決着＝圧勝報酬） */
+.rl-dominate { display: flex; align-items: center; justify-content: center; gap: 10px; margin: -4px 0 14px;
+  padding: 8px 16px; border-radius: 999px; background: linear-gradient(90deg, rgba(232,196,93,.1), rgba(232,196,93,.22), rgba(232,196,93,.1));
+  border: 1px solid rgba(232,196,93,.4); animation: rlDomIn .4s cubic-bezier(.2,.9,.3,1.2) both; }
+.rl-dominate-tag { font-family: var(--font-min, serif); font-weight: 700; font-size: 15px; color: #1a1206;
+  background: linear-gradient(180deg, #f0d98a, #e8c45d); padding: 3px 12px; border-radius: 999px; letter-spacing: .06em; white-space: nowrap; }
+.rl-dominate-note { font-size: 13px; color: #f0d98a; font-weight: 700; }
+@keyframes rlDomIn { from { opacity: 0; transform: scale(.85) translateY(-6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .rl-dominate { animation: none; } }

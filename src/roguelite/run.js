@@ -21,7 +21,8 @@ import { drawItems } from "../data/rogueliteItemMaster.js";
 // 点棒→HP の写像係数（25000点 → 1000HP）。味方HP・与被ダメ双方に一貫適用。
 export const DAMAGE_SCALE = 1000 / 25000; // = 0.04
 export const ROGUELITE_BASE_ENEMY_HP = 700; // 階層1の敵HP。硬すぎ＝アガリ不発の体感を緩和（1000→700。満貫1発で約半分削れ、2発で撃破）。
-const ENEMY_HP_GROWTH = 0.11; // 1階ごとの敵HP増加率（複利）。硬すぎ＝アガリ不発の体感を緩和（0.14→0.11）。
+// 敵HPは「線形」成長（複利の暴騰＝深層で硬すぎる体感を断つ）。1階ごとに BASE のこの割合ずつ増える。
+const ENEMY_HP_SLOPE = 0.08;
 const ENEMY_HP_CAP_FLOOR = 30; // この階層で頭打ち（青天井回避）
 const BOSS_EVERY = 10; // この階層ごとにボスフロア（10F・進路選択では強制配置）
 
@@ -68,10 +69,10 @@ export function allyScaledHp(avatarHpMax = 25000) {
   return Math.max(200, Math.round((avatarHpMax || 25000) * DAMAGE_SCALE));
 }
 
-// 階層→敵1人あたりのHP（複利成長・上限で頭打ち）。
+// 階層→敵1人あたりのHP（線形成長・上限で頭打ち）。複利をやめ、深層でも傾斜がなだらか。
 export function floorEnemyHp(floor = 1) {
   const f = Math.min(floor, ENEMY_HP_CAP_FLOOR);
-  return Math.round(ROGUELITE_BASE_ENEMY_HP * Math.pow(1 + ENEMY_HP_GROWTH, f - 1));
+  return Math.round(ROGUELITE_BASE_ENEMY_HP * (1 + ENEMY_HP_SLOPE * (f - 1)));
 }
 
 // 階層→敵の強さ Lv（paramsFromLv 用・1..10 目安）。深いほど強い。

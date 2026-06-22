@@ -200,7 +200,7 @@ export function showRogueliteResume(container, opts = {}) {
 
 // ---- バフカード3択 ----
 export function showRogueliteDraft(container, opts = {}) {
-  const { floor = 1, cards = [], onPick, title, coins = null } = opts;
+  const { floor = 1, cards = [], onPick, title, coins = null, bonus = null } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-draft";
@@ -218,6 +218,7 @@ export function showRogueliteDraft(container, opts = {}) {
   ov.innerHTML = `
     <div class="rl-modal">
       <div class="rl-modal-head">${title || `第 ${floor} 階 突破！　力を1つ授かる`}${coins != null ? coinBadge(coins) : ""}</div>
+      ${bonus ? `<div class="rl-dominate"><span class="rl-dominate-tag">${bonus.label}</span><span class="rl-dominate-note">${bonus.note}</span></div>` : ""}
       <div class="rl-cards">${cardHtml || '<div class="rl-card-empty">授かれる力は出尽くした……</div>'}</div>
       ${cards.length ? "" : '<button type="button" class="rl-start" id="rl-skip">先へ進む</button>'}
     </div>`;

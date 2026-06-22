@@ -2276,6 +2276,10 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
 // 1戦の決着 → HPを run へ戻し、踏破ならバフドラフト→（追撃 or 前進）。全員トビでラン終了。
 function onRogueliteBattleEnd(result) {
   const run = rogueliteState?.run; if (!run) return;
+  // 制圧判定：決着時に「自ペアの合計HP > 敵ペアの合計HP」だったか（pairBattleData を消す前に確保）。
+  const allyEndHp = (pairBattleData?.hp?.[0] ?? 0) + (pairBattleData?.hp?.[2] ?? 0);
+  const enemyEndHp = (pairBattleData?.hp?.[1] ?? 0) + (pairBattleData?.hp?.[3] ?? 0);
+  const dominated = allyEndHp > enemyEndHp; // 相手のHP合計を上回って決着＝制圧ボーナス
   // 着卓していた2人へHPを戻す（同定）。ソロ(影武者)は2席の低い方をその1人のHPに。
   const seated = rogueliteState?.seated || seatedAllies(run);
   if (seated[1] === seated[0]) {
@@ -2304,14 +2308,17 @@ function onRogueliteBattleEnd(result) {
   const pursued = !!rogueliteState.pursuing;
   let coins = coinsForClear({ floor: run.floor, kind: rogueliteState.floorType?.enemy || "mob", ko: !!result.koAny, pursue: pursued });
   if (isGamble) coins *= 2;
-  coins = Math.round(coins * itemMods(run).coinMul); // 商人の天秤（道具）で光貨↑
+  // 制圧ボーナス：相手のHP合計を上回って決着なら光貨を上乗せ＋ドラフトのレア度UP（圧勝が嬉しい）。
+  const dominateBonus = dominated ? Math.max(4, Math.round(coins * 0.6)) : 0;
+  coins = Math.round((coins + dominateBonus) * itemMods(run).coinMul); // 商人の天秤（道具）で光貨↑
   run.coins = (run.coins || 0) + coins;
-  // 賭場勝利は高レア確定気味のドラフト。通常は ko/HP/追撃でバイアス。
+  // 賭場勝利は高レア確定気味のドラフト。通常は ko/HP/追撃/制圧でバイアス。
   const cards = isGamble
     ? rollDraft(run, { bias: 1, hpRatio: 1 })
-    : rollDraft(run, { ko: !!result.koAny || pursued, hpRatio: result.hpRatio ?? 0.5 });
+    : rollDraft(run, { ko: !!result.koAny || pursued || dominated, hpRatio: result.hpRatio ?? 0.5 });
   showRogueliteDraft(host, {
     floor: run.floor, cards, charImages, coins: run.coins || 0,
+    bonus: dominated ? { label: "制圧ボーナス", note: `相手のHPを上回って決着！ 光貨+${Math.round(dominateBonus * itemMods(run).coinMul)}・レア度UP` } : null,
     onPick: (card) => {
       if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
       enforceGrantCap(run, () => {
