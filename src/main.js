@@ -57,7 +57,7 @@ import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
 import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie } from "./roguelite/itemEffects.js";
-import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear, setRlLogSink, flushRlLog } from "./roguelite/rogueliteLog.js";
+import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear, setRlLogSink, flushRlLog, setRlRunId } from "./roguelite/rogueliteLog.js";
 import { supabase } from "./config/supabase.js";
 import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
@@ -1921,6 +1921,7 @@ async function startRogueliteRun(partyChars) {
     if (c) applyCard(run, c);
   }
   rogueliteState = { run };
+  setRlRunId(run.seed); // このランのイベントを run_id=seed で束ねる
   rlLog("run_start", { seed: run.seed, party: run.party.map((p) => p.id), ...rlBuffSnap(run) });
   saveRogueliteRun(run); // 中断ランの一時保存（floor1 初期状態）
   enterRogueliteAmbience(); // 専用バックグラウンド＋探索BGM（キャラ選択の見た目を引きずらない）
@@ -1930,6 +1931,8 @@ async function startRogueliteRun(partyChars) {
 // 中断ランの再開：復元済み run を rogueliteState に据え、進路から再開する。
 async function resumeRogueliteRun(run) {
   rogueliteState = { run };
+  setRlRunId(run.seed); // 再開＝同じ run_id（seed）でログが繋がる
+  rlLog("run_resume", { seed: run.seed, floor: run.floor, ...rlBuffSnap(run) });
   try { await charImages.load(run.party.map((m) => m.char).filter((c) => c && !c.isMob)); } catch { /* 画像はフォールバック */ }
   for (const m of run.party) audio.registerCharacterVoices(m.char?.id, m.char?.assets?.voices || {});
   enterRogueliteAmbience();

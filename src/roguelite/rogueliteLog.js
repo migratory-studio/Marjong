@@ -26,13 +26,25 @@ let sink = null;          // (rows[]) => Promise … バッチINSERT
 let pending = [];         // 未送信イベント
 const BATCH = 20;         // この件数たまったら送る
 const PENDING_CAP = 400;  // 送信失敗が続いても無制限に貯めない
-let sessionId = null;
-function sid() {
-  if (sessionId) return sessionId;
-  try { sessionId = crypto.randomUUID(); }
-  catch { try { sessionId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`; } catch { sessionId = "session"; } }
-  return sessionId;
+// 識別子3段階：client_id(端末・永続) / session_id(ページ読込ごと) / run_id(ランごと=run.seed)。
+// 「同一か別か」を端末・起動・プレイの各粒度で追える。
+const CLIENT_KEY = "mahjong-rpg.rogueliteClientId";
+function uuid() {
+  try { return crypto.randomUUID(); }
+  catch { try { return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`; } catch { return "id"; } }
 }
+let clientId = null;
+function cid() {
+  if (clientId) return clientId;
+  try { clientId = localStorage.getItem(CLIENT_KEY) || ""; } catch { clientId = ""; }
+  if (!clientId) { clientId = uuid(); try { localStorage.setItem(CLIENT_KEY, clientId); } catch { /* noop */ } }
+  return clientId;
+}
+let sessionId = null;
+function sid() { if (!sessionId) sessionId = uuid(); return sessionId; }
+let currentRunId = null;
+// ラン開始/再開時に run.seed を渡す＝そのラン中のイベントを同一 run_id で束ねる。
+export function setRlRunId(id) { currentRunId = id != null ? String(id) : null; }
 // Supabase への送信口を登録（行＝{session_id, seq, type, floor, biome, data}）。
 export function setRlLogSink(fn) { sink = fn; }
 // 溜まったイベントを送る（失敗分は捨てる＝localStorage が全量を保持）。
@@ -52,7 +64,7 @@ export function rlLog(type, data = {}) {
   persist();
   // Supabase 行（主要列を昇格＋全文を data へ）。シンク未設定なら貯めない。
   if (sink) {
-    pending.push({ session_id: sid(), seq: ev.seq, type, floor: data.floor ?? null, biome: data.biome ?? null, data: ev });
+    pending.push({ client_id: cid(), session_id: sid(), run_id: currentRunId, seq: ev.seq, type, floor: data.floor ?? null, biome: data.biome ?? null, data: ev });
     if (pending.length > PENDING_CAP) pending.splice(0, pending.length - PENDING_CAP);
     // 節目（フロア/踏破/バフ/開始/終了…）は即フラッシュ＝ラン中もSupabaseが追従。
     // 連発する hand だけはバッチ（BATCH件）にまとめて送る。
@@ -60,7 +72,7 @@ export function rlLog(type, data = {}) {
   }
 }
 // 即フラッシュする節目イベント（hand は連発するのでバッチに任せる）。
-const FLUSH_TYPES = new Set(["run_start", "floor", "clear", "buff", "item", "heal", "biome_reroll", "run_end"]);
+const FLUSH_TYPES = new Set(["run_start", "run_resume", "floor", "clear", "buff", "item", "heal", "biome_reroll", "run_end"]);
 
 export function rlLogClear() { buf = []; persist(); }
 export function rlLogAll() { return load().slice(); }

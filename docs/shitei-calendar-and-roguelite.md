@@ -263,7 +263,8 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
 - ✅ **HP成長の上限＋チューニング行動ログ（実装済み）**：
   - **HP青天井の抑制**：攻撃(dealCap2.4)・防御(takeFloor0.4)は天井ありだが、HP最大は無制限で「硬すぎて当分負けない」スポンジ化していた（HP積みビルドは敵HP比 F13=4.3倍→F20=9.9倍）。`cardEffects.BUFF_TUNE.hpMulCap=1.9`（累積HP倍率の上限）を導入→全フロアで自HP/敵HP比 0.45〜1.1 に収束、暴走テール(到達max 201→56)を断つ。中央値は維持(中堅greedy 20)・`--assert` 7/7。
   - **チューニング行動ログ**：`src/roguelite/rogueliteLog.js`。run_start/floor/hand/clear/buff/run_end を記録。各イベントに hpMulEff/dealMul/takeMul/skillLevel/items/HP合計＋hand は与/被ダメ・自/味方/敵HP合計を同梱。
-    - **送り先＝Supabase `public.roguelite_logs`**（節目イベントは即フラッシュ＝ラン中も追従／hand はバッチ20）。列＝session_id/seq/type/floor/biome/data(jsonb全文)、RLS＝anon INSERTのみ・読みは本人分（解析はダッシュボード/service_role）。
+    - **送り先＝Supabase `public.roguelite_logs`**（節目イベントは即フラッシュ＝ラン中も追従／hand はバッチ20）。列＝client_id/session_id/run_id/seq/type/floor/biome/data(jsonb全文)、RLS＝anon INSERTのみ・読みは本人分（解析はダッシュボード/service_role）。
+    - **識別子3段階**：`client_id`（端末・localStorage永続＝同じ人/端末か）／`session_id`（ページ読込ごと＝同じ起動か）／`run_id`（=run.seed・ランごと＝同じプレイか別か。再開は同seed＝繋がる）。これで「同一/別」を端末・起動・プレイの各粒度で追える。
     - **localStorage(8000件)は常時の正本＋オフラインバッファ**（送信失敗しても消えない）。`window.rogueliteTuningLog.download()`(JSONL)・`.download("csv")`・`.flush()`。
     - ⚠️ ラン進捗の中断セーブ（`RL_RUN_KEY`）は別物＝同一端末の一時チェックポイント（localStorageのまま・撤退/全滅で削除）。クロス端末再開が要るなら別途Supabase化。
 - ✅ **役満ご祝儀＋必殺技レア度（実装済み）**：
