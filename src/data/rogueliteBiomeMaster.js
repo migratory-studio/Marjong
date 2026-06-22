@@ -12,6 +12,8 @@
 // 出現制御:
 //   weight  … 抽選の重み（既定1）。minBand … この帯番号以降でしか出ない（影響大の層を深層限定に）。
 //   帯0(F1-10)は必ず中立「平穏の廃墟」。通常(中立)層は帯1以降も確率で当選するが、深いほど出にくい。
+// 任意 bgm … PeriTuneの曲名（例 "Tatari"）。指定すると sound/bgm/PerituneMaterial_<bgm>.mp3 を層BGMに。
+//   未配置/未指定は朔夜(Sakuya3)にフォールバック＝ファイルをDLして bgm を立てるだけで切替（要クレジット表記）。
 
 import { makeRng } from "../autobattle/autoBattle.js";
 

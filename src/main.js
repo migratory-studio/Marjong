@@ -1947,7 +1947,7 @@ function enterRogueliteAmbience() {
     const img = bgDef(bgId)?.image;
     bd.style.backgroundImage = img ? `url('${img}')` : "";
   }
-  audio.playRogueliteBgm();
+  audio.playRogueliteBgm(biomeOf(rogueliteState?.run)?.bgm); // 層のBGM（未指定は朔夜）
 }
 function exitRogueliteAmbience() {
   const host = el("roguelite-screen");
