@@ -5054,3 +5054,4 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-item-passive { margin-top: 4px; font-size: 11px; color: #6fb6ff; }
 .rl-route-btns { display: flex; flex-direction: column; gap: 4px; align-self: center; }
 .tb-dmg-stamp.endure { background: #6fe08a; color: #07270f; }
+.rl-go-bond { color: #6fe08a; font-size: 13px; text-align: center; margin: 4px 0; }

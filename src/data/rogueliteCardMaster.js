@@ -21,6 +21,10 @@
 //
 // rarity: common < rare < epic < legendary（ドラフトの出現重みと色に使う）。
 // stackable: 同カードの重ね取り可否（false は1ラン1枚）。maxStacks 省略は無制限。
+//
+// アイコン画像（任意）：各カードに `icon: "graphic/ui/roguelite/cards/<id>.png"` を足すと、
+// ドラフト/ショップでその画像を表示する（未指定なら分類の絵文字マークでフォールバック）。
+// 推奨サイズ 48×48 程度・正方形・透過。画像が見つからなければ自動で絵文字に戻る。
 
 export const ROGUELITE_CARD_MASTER = [
   // ---------------- common ----------------

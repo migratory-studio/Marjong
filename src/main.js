@@ -77,7 +77,7 @@ import { simulateLeagueSection, simAbsentLeaguePt } from "./autobattle/leagueAut
 import { paramsFromLv, PARAM_KEYS } from "./autobattle/autoBattle.js";
 import { pickMentorBigMatchLine, pickMentorBattleQuip } from "./data/mentorVoiceMaster.js";
 import { isDebugMode } from "./app/debug.js";
-import { applyMatchToCompanion, detectPlayStyle, topPlayStyle } from "./progression/companionBond.js";
+import { applyMatchToCompanion, addCompanionBondExp, detectPlayStyle, topPlayStyle } from "./progression/companionBond.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
 
@@ -2010,7 +2010,7 @@ function enterFloor(run, floorType) {
       if (items.length && trng() < 0.5) {
         const it = items[0];
         showRogueliteDraft(host, {
-          floor: run.floor, title: "宝箱：道具を授かる", cards: [{ id: it.id, name: it.name, desc: it.desc, rarity: "rare", _item: true }], charImages, coins: run.coins || 0,
+          floor: run.floor, title: "宝箱：道具を授かる", cards: [{ id: it.id, name: it.name, desc: it.desc, rarity: "rare", icon: it.icon, _item: true }], charImages, coins: run.coins || 0,
           onPick: () => grantRogueliteItem(run, it.id, () => advanceRoguelite(run)),
         });
       } else {
@@ -2293,9 +2293,13 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}
   const prev = profile?.roguelite || { bestFloor: 0, runs: 0, carry: [] };
   const reached = wiped ? run.floor : Math.max(1, run.floor - 1);
   const best = Math.max(prev.bestFloor || 0, reached);
+  // 共闘ボーナス：楼光の館で一緒に戦った分だけ、パーティ各員と少しだけ絆が深まる。
+  // フリー対戦(1位=12exp/局)より控えめ＝1踏破=2exp・1ラン上限24（連勝/着順履歴には触れない）。
+  const coFightExp = Math.min(24, 2 * (run.cleared || 0));
   // 進捗（到達・通算）は即保存（離脱しても失わない）。引き継ぎは選択後に上書き。
   if (profile) {
-    const next = { ...profile, roguelite: { bestFloor: best, runs: (prev.runs || 0) + 1, carry: prev.carry || [] } };
+    let next = { ...profile, roguelite: { bestFloor: best, runs: (prev.runs || 0) + 1, carry: prev.carry || [] } };
+    if (coFightExp > 0) for (const m of run.party) next = addCompanionBondExp(next, m.char?.id || m.id, coFightExp);
     try { await profileRepo.saveProfile(next); } catch { /* 保存失敗は無視 */ }
   }
   rogueliteState = null;
@@ -2305,6 +2309,8 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}
   showRogueliteGameOver(el("roguelite-screen"), {
     reached, wiped, retreated, bestFloor: best,
     carrySlots: slots, acquired, partingLine, speakerChar: lead, charImages,
+    bondDeepened: coFightExp > 0, // 共闘で絆が少し深まった（数値は見せない）
+    partyChars: run.party.map((m) => m.char).filter(Boolean),
     onClose: async (selectedIds) => {
       const carry = (selectedIds || []).slice(0, slots);
       try {

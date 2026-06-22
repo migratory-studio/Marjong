@@ -8,6 +8,10 @@
 //
 // 効果の当て込みは src/roguelite/itemEffects.js（唯一の場所）。本ファイルは定義データだけ。
 // マスタドリブン：新アイテムはここに1件足す（effect.kind が既知なら配線不要）。
+//
+// アイコン画像（任意）：各エントリに `icon: "graphic/ui/roguelite/items/<id>.png"` を足すと、
+// UIが絵文字マークの代わりにその画像を表示する（未指定なら kind の絵文字でフォールバック）。
+// 推奨サイズ 48×48 程度・正方形・透過PNG/SVG。画像が見つからなければ自動で絵文字に戻る。
 
 export const ITEM_KIND_META = {
   active:  { label: "消費", color: "#ff8f6b", mark: "⚑" },

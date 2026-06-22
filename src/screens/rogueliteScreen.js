@@ -188,6 +188,7 @@ export function showRogueliteDraft(container, opts = {}) {
     return `
       <button type="button" class="rl-card r-${c.rarity}" data-i="${i}" style="--rarity:${meta.color}">
         <div class="rl-card-tags"><span class="rl-card-cat" style="--cat:${cat.color}">${cat.mark} ${cat.label}</span><span class="rl-card-rarity">${meta.label}</span></div>
+        ${c.icon ? `<div class="rl-card-ico-wrap">${rlIcon(c.icon, "rl-card-ico")}</div>` : ""}
         <div class="rl-card-name">${c.name}</div>
         <div class="rl-card-desc">${c.desc}</div>
       </button>`;
@@ -254,6 +255,12 @@ const FLOOR_KIND_META = {
   forge: { mark: "🔨", color: "#e8c45d" },
 };
 
+// カード/道具の任意アイコン画像（HTML文字列）。src 未指定や読込失敗は空（呼び出し側の絵文字へ）。
+// 画像が壊れていたら onerror で自分を消すので、絵文字マーク側が見える。
+function rlIcon(src, cls = "rl-ico") {
+  return src ? `<img class="${cls}" src="${src}" alt="" onerror="this.remove()">` : "";
+}
+
 // HP行/バッジ用の顔アイコン（HTML文字列）。実画像が無ければ頭文字フォールバック。
 function faceImgHtml(charImages, c, cls = "rl-hp-face") {
   const u = charImages?.url?.(c, "icon") || charImages?.url?.(c, "portrait") || "";
@@ -295,7 +302,7 @@ export function buffTotalsHtml(run) {
     : `<span class="rl-inv-empty">なし</span>`;
   // 道具（スロットの中身＋庇いの守りチャージ）
   const items = [];
-  for (const id of run?.items || []) { const it = itemById(id); if (it) items.push(`<span class="rl-inv-chip item">◆ ${it.name}</span>`); }
+  for (const id of run?.items || []) { const it = itemById(id); if (it) items.push(`<span class="rl-inv-chip item">${it.icon ? rlIcon(it.icon, "rl-ico-sm") : "◆"} ${it.name}</span>`); }
   if ((m.friendlyGuard || 0) > 0) items.push(`<span class="rl-inv-chip item">◆ 庇いの守り ×${m.friendlyGuard}</span>`);
   const groupHead = (cat, extra = "") => `<span class="rl-inv-head" style="--cat:${C[cat].color}">${C[cat].mark} ${C[cat].label}${extra}</span>`;
   return `<div class="rl-inv">
@@ -564,7 +571,7 @@ export function showRogueliteItems(container, opts = {}) {
     const km = ITEM_KIND_META[it.kind] || {};
     const usable = it.kind === "active";
     return `<div class="rl-item-slot" data-id="${id}">
-      <div class="rl-item-head"><span class="rl-item-kind" style="--cat:${km.color}">${km.mark} ${km.label}</span><span class="rl-item-name">${it.name}</span></div>
+      <div class="rl-item-head"><span class="rl-item-kind" style="--cat:${km.color}">${it.icon ? rlIcon(it.icon, "rl-ico") : km.mark} ${km.label}</span><span class="rl-item-name">${it.name}</span></div>
       <div class="rl-item-desc">${it.desc}</div>
       ${usable ? `<button type="button" class="rl-item-use" data-use="${id}">使う</button>` : `<div class="rl-item-passive">${it.kind === "passive" ? "持っている間ずっと有効" : "条件で自動発動"}</div>`}
     </div>`;
@@ -597,7 +604,7 @@ export function showRogueliteItemSwap(container, opts = {}) {
   const km = (it) => ITEM_KIND_META[it?.kind] || {};
   const rows = current.map((it) => `
     <button type="button" class="rl-forget-row" data-id="${it.id}">
-      <div class="rl-forget-info"><div class="rl-forget-name"><span class="rl-item-kind" style="--cat:${km(it).color}">${km(it).mark}</span> ${it.name}</div>
+      <div class="rl-forget-info"><div class="rl-forget-name"><span class="rl-item-kind" style="--cat:${km(it).color}">${it.icon ? rlIcon(it.icon, "rl-ico") : km(it).mark}</span> ${it.name}</div>
         <div class="rl-forget-desc">${it.desc || ""}</div></div>
       <div class="rl-forget-x">これと入替</div>
     </button>`).join("");
@@ -685,11 +692,12 @@ export function showRogueliteShop(container, opts = {}) {
       const meta = RARITY_META[it.rarity] || { color: "#9aa3b2" };
       const catKey = it.type === "card" ? cardCategory(it.card) : it.type === "heal" ? "item" : "buff";
       const cat = CARD_CATEGORY[catKey];
+      const ico = it.type === "card" ? it.card?.icon : it.type === "item" ? it.item?.icon : null; // 任意アイコン
       const isSold = sold.has(i);
       const afford = (run?.coins || 0) >= it.price;
       const cls = "rl-shop-item" + (isSold ? " sold" : "") + (!afford && !isSold ? " poor" : "");
       return `<button type="button" class="${cls}" data-i="${i}" style="--rarity:${meta.color}" ${isSold || !afford ? "disabled" : ""}>
-        <div class="rl-shop-toprow"><span class="rl-card-cat" style="--cat:${cat.color}">${cat.mark} ${cat.label}</span><span class="rl-shop-price">光貨 ${it.price}</span></div>
+        <div class="rl-shop-toprow"><span class="rl-card-cat" style="--cat:${cat.color}">${ico ? rlIcon(ico, "rl-ico-sm") : cat.mark} ${cat.label}</span><span class="rl-shop-price">光貨 ${it.price}</span></div>
         <div class="rl-shop-name">${it.name}</div>
         <div class="rl-shop-desc">${it.desc}</div>
         <div class="rl-shop-tag">${isSold ? "売約済" : afford ? "購入" : "光貨不足"}</div>
@@ -718,7 +726,7 @@ export function showRogueliteShop(container, opts = {}) {
 
 // ---- ラン終了（＋引き継ぎバフ選択） ----
 export function showRogueliteGameOver(container, opts = {}) {
-  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], partingLine, speakerChar, onClose } = opts;
+  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], partingLine, speakerChar, bondDeepened = false, partyChars = [], onClose } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-gameover" + (wiped ? " wiped" : " safe");
@@ -744,6 +752,7 @@ export function showRogueliteGameOver(container, opts = {}) {
         <div class="rl-go-stat"><div class="rl-go-k">最深記録</div><div class="rl-go-v">${bestFloor} 階</div></div>
       </div>
       <p class="rl-go-sub">${sub}</p>
+      ${bondDeepened ? `<p class="rl-go-bond">◆ 共に戦い抜き、${partyChars.length > 1 ? "仲間たち" : (partyChars[0]?.name || "相棒")}との絆が少し深まった。</p>` : ""}
       ${partingLine && speakerChar ? `<div class="rl-modal-speak" style="--c:${speakerChar.color || "var(--accent)"}"><b>${speakerChar.name}</b>「${partingLine}」</div>` : ""}
       ${carryHtml}
       <button type="button" class="rl-start" id="rl-go-close">編成へ戻る</button>

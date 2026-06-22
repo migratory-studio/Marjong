@@ -10,6 +10,7 @@
 import {
   companionLevelFromExp,
   applyMatchToCompanion,
+  addCompanionBondExp,
   detectPlayStyle,
   topPlayStyle,
   defaultPlayerHistory,
@@ -149,6 +150,26 @@ const eq = (a, b, msg) => assert(JSON.stringify(a) === JSON.stringify(b), `${msg
   eq(pJumpLast.companionBonds.shiyue.exp, 2, "ラス+九蓮で残exp=2");
 
   console.log("  applyMatchToCompanion (九蓮ジャンプ +120): OK");
+}
+
+// ============================================================
+// 3.5 addCompanionBondExp（楼光の館の共闘ボーナス＝exp専用・履歴に触れない）
+// ============================================================
+{
+  const base = { companionBonds: {}, playerHistory: defaultPlayerHistory() };
+  // exp だけ加算され level/exp に反映（着順/連勝には触れない）
+  const p1 = addCompanionBondExp(base, "shiyue", 24);
+  eq(p1.companionBonds.shiyue.exp, 24, "addCompanionBondExp: exp加算");
+  eq(p1.companionBonds.shiyue.level, 1, "addCompanionBondExp: 24<40 なのでLv1のまま");
+  eq(p1.companionBonds.shiyue.matches ?? 0, 0, "addCompanionBondExp: 既定は matches を増やさない");
+  eq(p1.playerHistory.totalMatches, 0, "addCompanionBondExp: playerHistory は不変");
+  // 既存expに積み増し＝Lvが上がる（40で Lv2）
+  const p2 = addCompanionBondExp(p1, "shiyue", 20);
+  eq(p2.companionBonds.shiyue.level, 2, "addCompanionBondExp: 累積44でLv2");
+  // exp<=0 や id 無しは無変更
+  eq(addCompanionBondExp(base, "shiyue", 0), base, "addCompanionBondExp: exp0は無変更");
+  eq(addCompanionBondExp(base, "", 10), base, "addCompanionBondExp: id無しは無変更");
+  console.log("  addCompanionBondExp (exp専用): OK");
 }
 
 // ============================================================

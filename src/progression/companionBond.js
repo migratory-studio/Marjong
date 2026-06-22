@@ -104,6 +104,25 @@ export function applyMatchToCompanion(
   };
 }
 
+// ── 絆expのみ加算（着順/履歴に触れない軽量版） ─────────────────────────────
+//
+// 楼光の館の「共闘ボーナス」など、通常の対局結果（applyMatchToCompanion）とは別経路で
+// 少量の絆expだけ足したいとき用。playerHistory（連勝/着順）は変えない。
+//   profile      — 現在の profile
+//   companionId  — 絆を上げるキャラ id
+//   expGain      — 加算する絆exp（>0）
+//   countMatch   — true なら「一緒に打った局数(matches)」も+1（既定 false）
+// 戻り値: 新しい profile
+export function addCompanionBondExp(profile, companionId, expGain, { countMatch = false } = {}) {
+  if (!companionId || !(expGain > 0)) return profile;
+  const bonds = { ...(profile.companionBonds ?? {}) };
+  const current = bonds[companionId] ?? { level: 1, exp: 0 };
+  const newTotal = accumulateExp(current.level, current.exp) + Math.floor(expGain);
+  const { level, exp } = companionLevelFromExp(newTotal);
+  bonds[companionId] = { level, exp, matches: (current.matches ?? 0) + (countMatch ? 1 : 0) };
+  return { ...profile, companionBonds: bonds };
+}
+
 // ── 打ち筋タグ検出 ────────────────────────────────────────────────────────
 //
 // 1対局のスナップショットから打ち筋タグを返す（仕様§5）。

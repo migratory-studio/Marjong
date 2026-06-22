@@ -257,6 +257,8 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
   - インゲーム連動：`battleMods`(次戦の攻撃/防御/敵HP/無償リーチ/不屈)を `launchRogueliteBattle` で適用→戦後クリア。被ダメ計算(`rogueliteDamageDeltas`)へ `battleMods`＋常設(`itemMods`)を合流。不屈＝致命被弾でHP1踏みとどまり(席ごと1回)。
   - 入手元：**ショップ**(道具枠)・**宝箱**(50%で道具)・**イベント**(`outcome.item`／「行き倒れ＝鉄壁の陣」)。満杯時は `showRogueliteItemSwap`。進路に「道具 N/3」ボタン→`showRogueliteItems`。所持パネルの道具グループに名称表示。
   - 回帰 `test/roguelite.mjs`(417)＋`--assert`(7)。実機で道具パネル/使用/入れ替え/進路ボタンを確認。
+  - **任意アイコン画像**：カード/道具マスタに `icon: "graphic/ui/roguelite/{cards,items}/<id>.png"`（任意）を足すと、ドラフト/ショップ/道具パネル/入替/所持で画像表示。**未指定は絵文字マークでフォールバック・読込失敗は自動で絵文字に戻る**（`rlIcon` ヘルパ）。画像が無くても崩れない。
+- ✅ **楼光の館の共闘で絆が少し上がる（実装済み）**：ラン終了時、パーティ各員と**共闘ボーナス**の絆exp（**1踏破=2exp・1ラン上限24**＝フリー対戦1位12exp/局より控えめ）。`addCompanionBondExp`（exp専用・連勝/着順履歴に触れない）。ゲームオーバー画面に「絆が少し深まった」一言（数値レス）。回帰 `test/companionbond.mjs`。
 - ✅ **セリフ照合・相棒・反転の磨き込み（実装済み）**：
   - **満貫帯の scoreTier 分離**：`scoreTierOf` に `mid`(5200〜9999)を新設＝満貫(8000)が「地味」低点数セリフにならない。詩玥/凌雲に mid 和了セリフ追加・templateも追従（`voiceLines`/`characterVoiceMaster`）。
   - **相棒(席2)の和了発火**：ペア戦で相方が自分で和了したら相棒ボードの吹き出しで一言（`showPairBattleDamageFx`＋既存 `showPartnerTalk`）。編成＝相棒選びの意味づけに。
