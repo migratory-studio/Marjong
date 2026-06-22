@@ -2216,7 +2216,7 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
   teamBattleData = null; humanIndex = 0; selectedRounds = 1; // 東風を外枠に、局数上限で短く決着
   rogueliteState.pursuing = !!opts.pursue;
   rogueliteHandLimit = opts.pursue ? 1 : handsForType(floorType); // 追撃は1局ずつ
-  const allies = seatedAllies(run); // 生存メンバーのHP上位2人（席0=あなた優先）。傷ついた控えは休む。
+  const allies = seatedAllies(run); // 並び順で上から生存2人（席0=あなた優先）。自動入れ替えなし。
   rogueliteState.seated = allies; // 決着時にこの2人へHPを戻す（同定）
   // 道具の「次の1戦だけ」効果を取り出す（本戦のみ。追撃には持ち越さない＝消費済み）。
   if (!opts.pursue) rogueliteState.battleMods = takeNextBattle(run);

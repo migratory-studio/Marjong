@@ -165,7 +165,7 @@ eq(seatedAllies(run)[0].id, "you", "席0=あなた");
     { id: "b", char: { id: "b", abilities: [{ abilityId: "danger-sense", params: {} }] }, avatarHpMax: 20000 },
   ];
   const r3 = newRun(p3, "lineup");
-  // 既定（lineup未設定）：HP上位2人＝you,a or you,b。控え=3人目の能力。
+  // 既定（lineup未設定）：パーティ順 you,a が着卓・b が控え（固定）。控え=3人目の能力。
   ok(benchAbilityIds(r3).length >= 1, "既定で控え能力あり");
   // lineupで b を2番目に繰り上げ→ you,b が着卓、a が控え。
   r3.lineup = ["you", "b", "a"];
@@ -174,6 +174,24 @@ eq(seatedAllies(run)[0].id, "you", "席0=あなた");
   eq(seats[1], "b", "lineup: 席1=b（繰り上げ）");
   ok(benchAbilityIds(r3).includes("chunchan"), "lineup: a(chunchan)が控え");
   ok(!benchAbilityIds(r3).includes("danger-sense"), "lineup: b(danger-sense)は着卓で控えに出さない");
+}
+
+// 着卓は固定＝HPで自動入れ替えしない（「勝手に入れ替わる」対策）
+{
+  const p3 = [
+    { id: "a", char: { id: "a", abilities: [] }, avatarHpMax: 25000 },
+    { id: "b", char: { id: "b", abilities: [] }, avatarHpMax: 25000 },
+    { id: "c", char: { id: "c", abilities: [] }, avatarHpMax: 25000 },
+  ];
+  const r = newRun(p3, "noswap");
+  // 着卓中の b が控え c よりHP低くなっても、自動で c に入れ替えない（並び順固定）。
+  r.party[1].hp = 100; r.party[2].hp = 900;
+  const s = seatedAllies(r).map((m) => m.id);
+  eq(s[0], "a", "固定: 席0=a(you)");
+  eq(s[1], "b", "固定: 席1=b（HPが低くても自動で控えcに入れ替えない）");
+  // 着卓が倒れたときだけ控えが繰り上がる（戦死は埋めるしかない）。
+  r.party[1].hp = 0;
+  eq(seatedAllies(r)[1].id, "c", "着卓が倒れたら控えcが繰り上がる");
 }
 
 // 敵生成は決定論（同seed/同階層/同種別で一致）

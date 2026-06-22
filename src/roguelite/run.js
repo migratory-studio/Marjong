@@ -222,23 +222,14 @@ export function shrineOffers(run) {
   ];
 }
 
-// 着卓する味方2人＝生存メンバー（hp>0）のうちHP上位2人。最も傷ついた控えは休んで回復に回る
-// （3人パーティ＝交代でHPを分散・回復できるサステイン）。人間(party[0])が生存し上位2人に入るなら
-// 席0へ固定（操作キャラ）。生存1人なら影武者（同ステの2人目）で卓を成立させる。
+// 着卓する味方2人＝並び順で上から生存2人（自動入れ替えなし）。旧コメント（HP上位2人を自動ローテ）
+// 並び順（編成 lineup → 無ければパーティ順）で「上から生存2人」を着卓させる。
+// ★HPによる自動入れ替えはしない＝プレイヤーが「編成」で動かさない限り着卓メンバーは固定。
+// 着卓中の誰かがトんだ場合だけ、次の控えが繰り上がる（戦死は埋めるしかないため）。
+// 人間(party[0])が着卓2人に入るなら席0へ固定（操作キャラ）。生存1人なら影武者で卓を成立。
 export function seatedAllies(run) {
-  // 出場順の指定（run.lineup＝メンバーid配列）があれば、その順で生存上位2人を着卓させる
-  // ＝プレイヤーが「編成」モーダルで任意に入れ替えた並びを尊重する。未指定なら従来どおり
-  // HP上位2人を自動ローテ（傷ついた控えは休んで回復）。
-  let living;
-  if (Array.isArray(run.lineup) && run.lineup.length) {
-    const byId = new Map(run.party.map((m) => [m.id, m]));
-    const ordered = run.lineup.map((id) => byId.get(id)).filter(Boolean);
-    // lineup に載っていないメンバーは末尾へ（保険）。
-    for (const m of run.party) if (!ordered.includes(m)) ordered.push(m);
-    living = ordered.filter((m) => m.hp > 0);
-  } else {
-    living = run.party.filter((m) => m.hp > 0).sort((a, b) => b.hp - a.hp);
-  }
+  const ordered = partyOrder(run); // lineup or パーティ順（固定）
+  const living = ordered.filter((m) => m.hp > 0);
   if (!living.length) return [run.party[0], run.party[0]]; // 全滅時の保険（通常は allPartyDown で先に終了）
   let fighters = living.slice(0, 2);
   if (fighters.length < 2) fighters = [fighters[0], fighters[0]];

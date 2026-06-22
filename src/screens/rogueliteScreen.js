@@ -447,7 +447,7 @@ export function showRogueliteSwap(container, opts = {}) {
   ov.innerHTML = `
     <div class="rl-modal rl-swap-modal">
       <div class="rl-modal-head">編成 — 誰を卓に出すか</div>
-      <p class="rl-route-hint"><b>戦うのは上の2人だけ</b>。控えのキャラを卓に出すには、▲で<b>着卓ラインより上</b>へ動かす（先頭＝あなたが操作）。控えはパッシブ能力でサポート＆HP回復に回る。</p>
+      <p class="rl-route-hint"><b>戦うのは上の2人だけ</b>（着卓は固定・勝手に入れ替わらない）。控えを卓に出すには ▲ で<b>着卓ラインより上</b>へ（先頭＝あなたが操作）。控えはパッシブ能力でサポート。着卓が倒れたときだけ控えが繰り上がる。</p>
       ${buffTotalsHtml(run)}
       <div class="rl-swap-list" id="rl-swap-list"></div>
       <button type="button" class="rl-start" id="rl-swap-close">この編成で進む</button>
