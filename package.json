@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "description": "Browser mahjong game with character abilities (points as HP). Prototype.",
   "type": "module",
+  "private": true,
   "scripts": {
     "start": "node server.mjs"
   },
-  "license": "MIT",
+  "license": "UNLICENSED",
   "devDependencies": {
     "wrangler": "^4.100.0",
     "ws": "^8.21.0"
