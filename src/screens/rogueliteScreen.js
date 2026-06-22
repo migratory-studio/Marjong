@@ -12,7 +12,7 @@
 import { RARITY_META, CARD_CATEGORY, cardCategory, cardById } from "../data/rogueliteCardMaster.js";
 import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
-import { biomeEffectChips } from "../data/rogueliteBiomeMaster.js";
+import { biomeEffectChips, biomeOf } from "../data/rogueliteBiomeMaster.js";
 import { bgDef } from "../data/backgroundMaster.js";
 
 const MAX_PARTY = 3;
@@ -382,6 +382,15 @@ export function showRogueliteRoute(container, opts = {}) {
       <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
     </div>
     <div class="rl-hub-build">${buffTotalsHtml(run)}</div>` : "";
+  // 現在の層（バイオーム）バナー：いまどんな場所か＋効果を常時表示。
+  const biome = run ? biomeOf(run) : null;
+  const biomeBanner = biome ? `
+    <div class="rl-hub-biomebar" style="--biome:${biome.color || "var(--rl-gold)"}" title="${(biome.blurb || "").replace(/"/g, "&quot;")}">
+      <span class="rl-hub-biome-glyph">${biome.glyph || "✦"}</span>
+      <span class="rl-hub-biome-name">${biome.name}</span>
+      <span class="rl-hub-biome-blurb">${biome.blurb || ""}</span>
+      <span class="rl-hub-biome-chips">${biomeEffectChips(biome).map((g) => `<span class="rl-gain-chip ${g.tone}">${g.t}</span>`).join("")}</span>
+    </div>` : "";
   // 編成・道具は上部の手が届きやすい位置（HUD右の操作クラスタ）へ。
   const manageBtns = run ? `<div class="rl-hub-manage">
     ${onSwap ? `<button type="button" class="rl-hub-mbtn" id="rl-route-swap"><span class="rl-hub-mico">⚌</span>編成</button>` : ""}
@@ -399,6 +408,7 @@ export function showRogueliteRoute(container, opts = {}) {
           ${manageBtns}
         </div>
       </header>
+      ${biomeBanner}
       <main class="rl-hub-main">
         <div class="rl-hub-choose"><span>${boss ? "館の主が待つ" : "進路を選ぶ"}</span></div>
         <div class="rl-route-cards">${cardsHtml}</div>
