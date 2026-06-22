@@ -600,14 +600,26 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   const d = rollDraft(run, { allLegendary: true });
   ok(d.length === 3 && d.every((c) => c.rarity === "legendary"), "rollDraft allLegendary は全レジェ");
 }
-// HP成長の上限（青天井のスポンジ化を防ぐ）：累積HP倍率は hpMulCap を超えない
+// HP成長は既定で青天井（上限なし）＝取れば必ず伸びる（「+90%で凍結＝壊れて見える」対策）。
+// ランが終わるのは被ダメ青天井が担保するのでHP上限は不要。hpMulCap は検証用ノブ（数値時のみクランプ）。
 {
   const { BUFF_TUNE } = await import("../src/roguelite/cardEffects.js");
+  ok(BUFF_TUNE.hpMulCap == null, "既定は hpMulCap=null（HP上限なし）");
+  // 既定（上限なし）：積むほど伸び続ける（途中で凍結しない）。
   const run = newRun(party, "hpcap");
   const base = run.party[0].hpMax;
-  for (let i = 0; i < 20; i++) applyEffect(run, { kind: "maxHpUp", mul: 1.4 }); // 積みまくる
-  ok(run.mods.hpMul <= BUFF_TUNE.hpMulCap + 1e-6, `累積HP倍率は上限以下 (${run.mods.hpMul.toFixed(2)}<=${BUFF_TUNE.hpMulCap})`);
-  ok(run.party[0].hpMax <= Math.round(base * BUFF_TUNE.hpMulCap) + 2, "hpMax も上限内に収まる");
+  let prev = run.mods.hpMul;
+  for (let i = 0; i < 20; i++) { applyEffect(run, { kind: "maxHpUp", mul: 1.4 }); ok(run.mods.hpMul > prev, "HPバフは取るたび必ず増える（凍結しない）"); prev = run.mods.hpMul; }
+  ok(run.mods.hpMul > 5 && run.party[0].hpMax > base * 5, `青天井で大きく伸びる (hpMul=${run.mods.hpMul.toFixed(1)})`);
+  // 検証ノブ：cap を数値にするとその倍率で頭打ち（掃引テスト用の経路が生きている）。
+  BUFF_TUNE.hpMulCap = 1.9;
+  try {
+    const run2 = newRun(party, "hpcap2");
+    const base2 = run2.party[0].hpMax;
+    for (let i = 0; i < 20; i++) applyEffect(run2, { kind: "maxHpUp", mul: 1.4 });
+    ok(run2.mods.hpMul <= 1.9 + 1e-6, `cap=1.9 指定時は上限以下 (${run2.mods.hpMul.toFixed(2)})`);
+    ok(run2.party[0].hpMax <= Math.round(base2 * 1.9) + 2, "cap指定時は hpMax も上限内");
+  } finally { BUFF_TUNE.hpMulCap = null; } // 他テストへ漏らさない
 }
 
 // ボス＝プレイアブルキャラ（編成中＋弟子は除外）／強敵＝ネームドモブ
