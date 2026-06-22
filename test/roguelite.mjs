@@ -543,4 +543,25 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   ok(Math.abs(enemyHitLight) < Math.abs(enemyHit), "軽身の符で深層被ダメが軽くなる");
 }
 
+// ---- バイオーム（層）----
+{
+  const { ROGUELITE_BIOME_MASTER, biomeForBand, bandOfFloor, biomeEffectChips, biomeById } = await import("../src/data/rogueliteBiomeMaster.js");
+  eq(bandOfFloor(1), 0, "F1=帯0"); eq(bandOfFloor(10), 0, "F10=帯0"); eq(bandOfFloor(11), 1, "F11=帯1"); eq(bandOfFloor(21), 2, "F21=帯2");
+  for (let s = 0; s < 12; s++) eq(biomeForBand(`b0-${s}`, 0).id, "ruins", `帯0は必ず中立(${s})`);
+  // minBand ゲート：奈落(minBand3)は帯1〜2では出ない、帯3以降で出うる。
+  for (let s = 0; s < 60; s++) ok(biomeForBand(`g1-${s}`, 1).id !== "abyss", `奈落は帯1で出ない(${s})`);
+  for (let s = 0; s < 60; s++) ok(biomeForBand(`g2-${s}`, 2).id !== "abyss", `奈落は帯2で出ない(${s})`);
+  ok([...Array(200)].some((_, s) => biomeForBand(`g3-${s}`, 3).id === "abyss"), "奈落は帯3以降で出うる");
+  // 通常(中立)層は帯1以降も確率で当選し、深いほど出にくい。
+  const neutralRate = (band) => [...Array(300)].filter((_, s) => biomeForBand(`nr-${s}`, band).id === "ruins").length / 300;
+  ok(neutralRate(1) > 0.15, "帯1で通常層がそこそこ出る");
+  ok(neutralRate(5) < neutralRate(1), "深いほど通常層が出にくい");
+  // 直前帯と同じ層は避ける（決定論）
+  for (let s = 0; s < 80; s++) { const a = biomeForBand(`rep-${s}`, 4), b = biomeForBand(`rep-${s}`, 5); ok(!(a.id !== "ruins" && a.id === b.id), `連続回避(${s})`); }
+  // 効果チップ：奈落はHP最大減チップを持つ
+  ok(biomeEffectChips(biomeById("abyss")).some((c) => /HP最大/.test(c.t)), "奈落チップにHP最大減");
+  ok(biomeEffectChips(biomeById("ruins")).some((c) => /特殊効果なし/.test(c.t)), "中立は特殊効果なしチップ");
+  for (const bdef of ROGUELITE_BIOME_MASTER) ok(bdef.id && bdef.name && bdef.bg && bdef.glyph, `biome 必須項目: ${bdef.id}`);
+}
+
 console.log(`roguelite.mjs: ${n} checks passed`);

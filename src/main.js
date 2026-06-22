@@ -2239,7 +2239,10 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
     for (const mm of enemy.members) mm.stats.startingPoints = Math.max(1, Math.round(mm.stats.startingPoints * battleMods.enemyHpMul));
   }
   // 味方チャラは hpMax をHPボードの満タン基準にするため stats.startingPoints を複製して上書き。
-  const allyChar = (m) => ({ ...m.char, stats: { ...(m.char.stats || {}), startingPoints: m.hpMax } });
+  // 奈落など層の hpMul は「この帯の対局だけ」HP上限を縮める（run.party.hpMax は不変＝抜ければ回復で戻る）。
+  const biomeHpMul = biomeMods(run).hpMul || 1;
+  const allyMaxOf = (m) => Math.max(1, Math.round(m.hpMax * biomeHpMul));
+  const allyChar = (m) => ({ ...m.char, stats: { ...(m.char.stats || {}), startingPoints: allyMaxOf(m) } });
   const a0 = allyChar(allies[0]);
   const a1 = allies[1] === allies[0]
     ? { ...allyChar(allies[0]), id: allies[0].char.id + "#2" } // ソロは影武者（同ステの2人目）
@@ -2264,7 +2267,9 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
     seated[seatIdx].abilities = abilities;
   });
   for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
-  const hp = [allies[0].hp, enemy.members[0].stats.startingPoints, allies[1].hp, enemy.members[1].stats.startingPoints];
+  // 層でHP上限が縮むときは、出場HPもその上限までクランプ（満タン超過を防ぐ）。
+  const hp = [Math.min(allies[0].hp, allyMaxOf(allies[0])), enemy.members[0].stats.startingPoints,
+              Math.min(allies[1].hp, allyMaxOf(allies[1])), enemy.members[1].stats.startingPoints];
   pairBattleData = {
     pairOf: [0, 1, 0, 1], pairs: [{ seats: [0, 2] }, { seats: [1, 3] }], chars: order,
     hp: [...hp],
