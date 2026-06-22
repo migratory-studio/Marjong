@@ -5055,3 +5055,18 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-route-btns { display: flex; flex-direction: column; gap: 4px; align-self: center; }
 .tb-dmg-stamp.endure { background: #6fe08a; color: #07270f; }
 .rl-go-bond { color: #6fe08a; font-size: 13px; text-align: center; margin: 4px 0; }
+
+/* 対戦ホーム：楼光の館ボタンをロゴ画像に（画像が無ければテキストにフォールバック） */
+.menu-btn--logo { position: relative; align-items: center; justify-content: center; padding: 10px 16px; min-height: 96px; background: radial-gradient(120% 120% at 50% 30%, #21342a 0%, #16221c 100%); overflow: visible; }
+.menu-btn-logo { width: 100%; max-width: 340px; max-height: 120px; object-fit: contain; display: block; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); transition: transform .14s ease; }
+.menu-btn--logo:hover:not(:disabled) .menu-btn-logo { transform: scale(1.04); }
+.menu-btn--logo .fallback { display: none; }                 /* 画像表示時はテキスト隠す */
+.menu-btn--logo.no-logo { align-items: flex-start; }
+.menu-btn--logo.no-logo .menu-btn-logo { display: none; }    /* 画像読込失敗時 */
+.menu-btn--logo.no-logo .fallback { display: block; }
+.menu-btn--logo.no-logo .menu-btn-title { font-size: 19px; font-weight: 700; }
+.menu-btn--logo.no-logo .menu-btn-sub { font-size: 13px; color: var(--muted); }
+/* ホバー説明（吹き出し） */
+.menu-btn-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); white-space: nowrap; padding: 6px 12px; background: #14110d; color: var(--ink); border: 1px solid var(--accent, #e8c45d); border-radius: 9px; font-size: 13px; box-shadow: 0 6px 16px rgba(0,0,0,.5); opacity: 0; pointer-events: none; transition: opacity .15s ease, transform .15s ease; z-index: 30; }
+.menu-btn-tip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--accent, #e8c45d); }
+.menu-btn--logo:hover .menu-btn-tip { opacity: 1; transform: translateX(-50%) translateY(0); }

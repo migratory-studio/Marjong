@@ -159,9 +159,11 @@ export async function showBattleHome(container, opts = {}) {
           </div>
         </div>
         <nav class="bh-routes">
-          <button type="button" class="menu-btn" id="bh-roguelite">
-            <span class="menu-btn-title">楼光の館</span>
-            <span class="menu-btn-sub">弟子を連れて階層を登る・撤退と継続の冒険</span>
+          <button type="button" class="menu-btn menu-btn--logo" id="bh-roguelite" title="雀士たちと階層を登る冒険譚">
+            <img class="menu-btn-logo" src="graphic/ui/roguelite/rokou-logo.png" alt="楼光の館" onerror="this.closest('.menu-btn').classList.add('no-logo')">
+            <span class="menu-btn-title fallback">楼光の館</span>
+            <span class="menu-btn-sub fallback">弟子を連れて階層を登る・撤退と継続の冒険</span>
+            <span class="menu-btn-tip">雀士たちと階層を登る冒険譚</span>
           </button>
           <button type="button" class="menu-btn" id="bh-free">
             <span class="menu-btn-title">フリー対戦</span>
