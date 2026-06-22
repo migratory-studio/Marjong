@@ -57,6 +57,7 @@ import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
 import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie } from "./roguelite/itemEffects.js";
+import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear } from "./roguelite/rogueliteLog.js";
 import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
@@ -1919,6 +1920,7 @@ async function startRogueliteRun(partyChars) {
     if (c) applyCard(run, c);
   }
   rogueliteState = { run };
+  rlLog("run_start", { seed: run.seed, party: run.party.map((p) => p.id), ...rlBuffSnap(run) });
   saveRogueliteRun(run); // 中断ランの一時保存（floor1 初期状態）
   enterRogueliteAmbience(); // 専用バックグラウンド＋探索BGM（キャラ選択の見た目を引きずらない）
   enterFloor(run, floorTypeById("normal")); // 1階は通常戦闘から
@@ -1955,8 +1957,29 @@ function exitRogueliteAmbience() {
   host?.querySelector(".rl-run-backdrop")?.remove();
 }
 
+// チューニングログ用：いまのバフ・パーティ・道具の要約スナップショット。
+function rlBuffSnap(run) {
+  const m = run?.mods || {};
+  const im = itemMods(run);
+  return {
+    skillLevel: run?.skillLevel || 1,
+    hpMulEff: +((m.hpMul || 1)).toFixed(3),     // 累積HP倍率（成長曲線の主指標）
+    dealMul: +((m.dealMul || 1)).toFixed(3),    // 累積与ダメ倍率
+    takeMul: +((m.takeMul || 1)).toFixed(3),    // 累積被ダメ倍率（小さいほど硬い）
+    friendlyGuard: m.friendlyGuard || 0,
+    coinMul: +(im.coinMul).toFixed(2),
+    items: [...(run?.items || [])],
+    cards: (run?.cards || []).length,
+    hp: (run?.party || []).map((p) => `${p.id}:${Math.max(0, p.hp)}/${p.hpMax}`),
+    hpTotal: (run?.party || []).reduce((a, p) => a + Math.max(0, p.hp), 0),
+  };
+}
 // 楼光の館：意思決定の瞬間に先頭キャラが一言「返す」（愛着×双方向）。
 const rlLead = () => rogueliteState?.run?.party?.[0]?.char || null;
+// 調整用ログのデバッグアクセス（コンソール/ボタンから）。window.rogueliteTuningLog.download() で取得。
+if (typeof window !== "undefined") {
+  window.rogueliteTuningLog = { all: rlLogAll, jsonl: rlLogJSONL, csv: rlLogCSV, download: rlLogDownload, clear: rlLogClear };
+}
 function cardFamily(card) {
   const k = card?.effect?.kind;
   if (k === "grantAbility") return "ability";
@@ -2028,6 +2051,8 @@ function enterFloor(run, floorType) {
   rogueliteState.floorType = floorType;
   const host = el("roguelite-screen");
   goScreen("roguelite-screen");
+  // 調整ログ：フロア入場（種別・バイオーム・現バフ/HP状況）。
+  { const bi = biomeOf(run); rlLog("floor", { floor: run.floor, kind: floorType?.kind, enemy: floorType?.enemy || null, biome: bi?.id, biomeMods: bi?.mods || {}, ...rlBuffSnap(run) }); }
   switch (floorType?.kind) {
     case "battle":
       rogueliteState.pursueRemaining = floorType.pursueMax || 0;
@@ -2346,6 +2371,7 @@ function onRogueliteBattleEnd(result) {
   run.coins = (run.coins || 0) + coins;
   // 役満ご祝儀：味方が役満を和了して踏破したら、ドラフトをオールレジェンダリーに。
   const yakuman = !!rogueliteState.yakumanThisBattle; rogueliteState.yakumanThisBattle = false;
+  rlLog("clear", { floor: run.floor, biome: biomeOf(run)?.id, ko: !!result.koAny, hpRatio: +(result.hpRatio ?? 0).toFixed(2), dominated, yakuman, gamble: isGamble, pursue: pursued, coins, ...rlBuffSnap(run) });
   // 賭場勝利は高レア確定気味。通常は ko/HP/追撃/制圧でバイアス。ご祝儀は全レジェ。
   const cards = yakuman
     ? rollDraft(run, { allLegendary: true })
@@ -2358,7 +2384,7 @@ function onRogueliteBattleEnd(result) {
       ? { label: "役満ご祝儀", note: "役満を決めて踏破！ オールレジェンダリーの大盤振る舞い" }
       : dominated ? { label: "制圧ボーナス", note: `相手のHPを上回って決着！ 光貨+${Math.round(dominateBonus * itemMods(run).coinMul)}・レア度UP` } : null,
     onPick: (card) => {
-      if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
+      if (card) { rlLog("buff", { floor: run.floor, biome: biomeOf(run)?.id, card: card.id, rarity: card.rarity, kind: card.effect?.kind, jackpot: yakuman }); applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
       enforceGrantCap(run, () => {
         // 追撃の打診（残あり）。なければ前進＝進路選択へ。
         if ((rogueliteState.pursueRemaining || 0) > 0) {
@@ -2378,6 +2404,7 @@ function onRogueliteBattleEnd(result) {
 // 引き継ぎ枠ぶんを選ばせて次ランへ持ち越す（ローグライク・累積しない）。
 // 到達階層＝フロア番号：全滅は死んだ階(run.floor)、撤退は1つ手前(まだ入っていない次の階の手前)。
 async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}) {
+  rlLog("run_end", { depth: run.floor, result: wiped ? "wiped" : (retreated ? "retreat" : "end"), cleared: run.cleared, ...rlBuffSnap(run) });
   clearSavedRogueliteRun(); // 撤退/全滅でラン終了＝一時セーブを削除（再開は出さない）
   // 先頭キャラの別れ際の一言（rogueliteState を消す前に解決）。撤退＝引く判断への“返し”。
   const lead = rlLead();
@@ -5176,6 +5203,20 @@ function showPairBattleDamageFx(r, onDone) {
   // 役満ご祝儀：味方が役満を和了したらフラグを立てる（この戦を踏破するとオールレジェンダリー）。
   if (isRl && winnerIsAlly && r.result?.isYakuman && rogueliteState) rogueliteState.yakumanThisBattle = true;
   const enemyDmg = isRl ? game.players.reduce((a, _p, i) => a + (roles[i] === "enemy" && deltas[i] < 0 ? -deltas[i] : 0), 0) : 0;
+  // 調整ログ：1局の決着（勝者・アガリ点/役満・与/被ダメ・決着時HP）。HP反映後に記録。
+  if (isRl && rogueliteState?.run) {
+    const allyTaken = game.players.reduce((a, _p, i) => a + (roles[i] === "ally" && deltas[i] < 0 ? -deltas[i] : 0), 0);
+    rlLog("hand", {
+      floor: rogueliteState.run.floor, biome: biomeOf(rogueliteState.run)?.id,
+      winner: r.winner == null ? "draw" : (winnerIsAlly ? "ally" : "enemy"), tsumo: !!r.tsumo,
+      yakuman: !!r.result?.isYakuman, han: r.result?.han ?? null, score: r.result?.total ?? r.result?.score ?? null,
+      dealt: enemyDmg, taken: allyTaken,
+      hpSelf: pairBattleData.hp[0], hpAlly: pairBattleData.hp[2],
+      hpAllyTotal: (pairBattleData.hp[0] || 0) + (pairBattleData.hp[2] || 0),
+      hpEnemy: (pairBattleData.hp[1] || 0) + (pairBattleData.hp[3] || 0),
+      ...rlBuffSnap(rogueliteState.run),
+    });
+  }
   const rowHtml = (i) => {
     const c = pairBattleData.chars[i];
     const after = pairBattleData.hp[i];
