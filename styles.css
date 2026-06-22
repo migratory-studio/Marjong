@@ -5185,3 +5185,23 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-dominate-note { font-size: 13px; color: #f0d98a; font-weight: 700; }
 @keyframes rlDomIn { from { opacity: 0; transform: scale(.85) translateY(-6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .rl-dominate { animation: none; } }
+
+/* 楼光の館：層(バイオーム)入場演出（frontend-design＝題材に根ざす／層色に大胆さ集中） */
+.rl-overlay.rl-biome { background: rgba(6,4,9,0.45); }
+.rl-biome-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: .5; }
+.rl-biome-bg::after { content: ""; position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 28%, rgba(6,4,9,.9) 100%); }
+.rl-biome-card { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 11px;
+  width: min(560px, 88%); padding: 30px 36px 26px; border-radius: 20px; color: var(--rl-ink);
+  background: linear-gradient(165deg, rgba(20,15,28,0.88), rgba(10,7,15,0.92)); border: 1px solid var(--biome, var(--rl-gold));
+  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 0 70px -22px var(--biome, var(--rl-gold));
+  animation: rlBiomeIn .5s cubic-bezier(.2,.9,.3,1.1) both; }
+.rl-biome-eyebrow { font-size: 12px; letter-spacing: .3em; color: var(--biome, var(--rl-gold)); opacity: .92; }
+.rl-biome-glyph { font-size: 62px; line-height: 1; filter: drop-shadow(0 4px 18px var(--biome, var(--rl-gold))); animation: rlBiomeGlyph .6s ease both .12s; }
+.rl-biome-name { font-family: var(--font-min, "Shippori Mincho", serif); font-size: 33px; font-weight: 700; margin: 0; letter-spacing: .07em;
+  background: linear-gradient(180deg, #fff 10%, var(--biome, var(--rl-gold))); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.rl-biome-blurb { font-size: 14px; color: #c2bccb; line-height: 1.7; margin: 0; max-width: 430px; }
+.rl-biome-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 2px 0 4px; }
+.rl-biome-go { margin-top: 6px; }
+@keyframes rlBiomeIn { from { opacity: 0; transform: scale(.9) translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes rlBiomeGlyph { from { opacity: 0; transform: scale(.5) rotate(-8deg); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .rl-biome-card, .rl-biome-glyph { animation: none; } }

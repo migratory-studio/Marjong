@@ -12,6 +12,8 @@
 import { RARITY_META, CARD_CATEGORY, cardCategory, cardById } from "../data/rogueliteCardMaster.js";
 import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
+import { biomeEffectChips } from "../data/rogueliteBiomeMaster.js";
+import { bgDef } from "../data/backgroundMaster.js";
 
 const MAX_PARTY = 3;
 
@@ -506,6 +508,32 @@ export function showRoguelitePursue(container, opts = {}) {
   requestAnimationFrame(() => ov.classList.add("is-open"));
   ov.querySelector("#rl-pursue")?.addEventListener("click", () => { ov.remove(); onPursue?.(); });
   ov.querySelector("#rl-go")?.addEventListener("click", () => { ov.remove(); onGo?.(); });
+}
+
+// ---- 層（バイオーム）入場演出 ----
+// 10階ごとに塔の景色が変わる瞬間を、frontend-design のトーンで一拍見せる（題材＝記憶を映す塔）。
+export function showRogueliteBiomeIntro(container, opts = {}) {
+  const { biome, floor = 1, onDone } = opts;
+  if (!container || !biome) { onDone?.(); return; }
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-biome";
+  const bgImg = bgDef(biome.bg)?.image;
+  const chips = biomeEffectChips(biome).map((g) => `<span class="rl-gain-chip ${g.tone}">${g.t}</span>`).join("");
+  const band = Math.floor((Math.max(1, floor) - 1) / 10) + 1;
+  ov.innerHTML = `
+    <div class="rl-biome-bg" style="${bgImg ? `background-image:url('${bgImg}')` : ""}"></div>
+    <div class="rl-biome-card" style="--biome:${biome.color || "var(--rl-gold)"}">
+      <span class="rl-biome-eyebrow">第 ${band} 層 ・ 第 ${floor} 階</span>
+      <span class="rl-biome-glyph">${biome.glyph || "✦"}</span>
+      <h2 class="rl-biome-name">${biome.name}</h2>
+      <p class="rl-biome-blurb">${biome.blurb || ""}</p>
+      <div class="rl-biome-chips">${chips}</div>
+      <button type="button" class="rl-start rl-biome-go" id="rl-biome-go">踏み入る ›</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const go = () => { ov.remove(); onDone?.(); };
+  ov.querySelector("#rl-biome-go")?.addEventListener("click", go, { once: true });
 }
 
 // ---- 休息 / 宴会（回復演出） ----

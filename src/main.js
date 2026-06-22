@@ -52,6 +52,7 @@ import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, apply
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
 import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun } from "./roguelite/run.js";
+import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips } from "./data/rogueliteBiomeMaster.js";
 import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
@@ -60,7 +61,7 @@ import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume, showRogueliteBiomeIntro } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -1942,7 +1943,8 @@ function enterRogueliteAmbience() {
     host.querySelector(".rl-screen")?.remove(); // キャラ選択UIを片付ける（背景に引きずらない）
     let bd = host.querySelector(".rl-run-backdrop");
     if (!bd) { bd = document.createElement("div"); bd.className = "rl-run-backdrop"; host.insertBefore(bd, host.firstChild); }
-    const img = bgDef(ROGUELITE_BG_ID)?.image;
+    const bgId = biomeOf(rogueliteState?.run)?.bg || ROGUELITE_BG_ID; // 層ごとに背景が変わる
+    const img = bgDef(bgId)?.image;
     bd.style.backgroundImage = img ? `url('${img}')` : "";
   }
   audio.playRogueliteBgm();
@@ -2157,6 +2159,14 @@ function advanceRoguelite(run) {
 function renderRoute(run) {
   const host = el("roguelite-screen");
   goScreen("roguelite-screen");
+  // 新しい帯（10階ごと）へ踏み入った瞬間は、層(バイオーム)の入場演出を一度だけ挟む。
+  const band = bandOfFloor(run.floor);
+  if (run._biomeBandShown !== band) {
+    run._biomeBandShown = band;
+    enterRogueliteAmbience(); // 背景を新しい層へ切り替え
+    showRogueliteBiomeIntro(host, { biome: biomeOf(run), floor: run.floor, onDone: () => renderRoute(run) });
+    return;
+  }
   saveRogueliteRun(run); // 進路＝安全な再開チェックポイント（中断時はこの階の進路から再開）
   const held = heldBuffs(run); // 所持バフ一覧（蓄積の可視化）
   // 編成モーダル：任意のタイミングで出場順を入れ替え→閉じたら同じ進路を再描画。
@@ -2302,7 +2312,8 @@ function onRogueliteBattleEnd(result) {
   // ほぼ回復せず手負いのまま次へ（survive=前進は維持しつつ、毎戦の出来に緊張感を持たせる）。
   // トんだ(hp<=0)メンバーは回復しない＝復活させない（脱落はランを通して継続）。
   const perf = Math.max(0.25, Math.min(1.3, 0.25 + (result.hpRatio ?? 0.5) * 0.85 + (result.koAny ? 0.25 : 0)));
-  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * REGEN_FRAC * perf));
+  const regenMul = biomeMods(run).regenMul || 1; // 温泉郷など層で回復量UP
+  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * REGEN_FRAC * perf * regenMul));
   // 光貨を獲得（深いほど・強敵/ボス/撃破/追撃で増す。賭場勝利は2倍）。
   const isGamble = !!rogueliteState.gamble; rogueliteState.gamble = false;
   const pursued = !!rogueliteState.pursuing;
@@ -2310,7 +2321,7 @@ function onRogueliteBattleEnd(result) {
   if (isGamble) coins *= 2;
   // 制圧ボーナス：相手のHP合計を上回って決着なら光貨を上乗せ＋ドラフトのレア度UP（圧勝が嬉しい）。
   const dominateBonus = dominated ? Math.max(4, Math.round(coins * 0.6)) : 0;
-  coins = Math.round((coins + dominateBonus) * itemMods(run).coinMul); // 商人の天秤（道具）で光貨↑
+  coins = Math.round((coins + dominateBonus) * itemMods(run).coinMul * (biomeMods(run).coinMul || 1)); // 商人の天秤（道具）＋層(祭/崩落)で光貨↑
   run.coins = (run.coins || 0) + coins;
   // 賭場勝利は高レア確定気味のドラフト。通常は ko/HP/追撃/制圧でバイアス。
   const cards = isGamble

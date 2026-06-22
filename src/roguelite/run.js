@@ -17,6 +17,7 @@ import { ROGUELITE_CARD_MASTER, drawCards, cardById } from "../data/rogueliteCar
 import { SHOP_PRICE, SHOP_HEAL_PRICE, SHOP_MAXHP_PRICE } from "../data/rogueliteFloorMaster.js";
 import { itemMods } from "./itemEffects.js";
 import { drawItems } from "../data/rogueliteItemMaster.js";
+import { biomeMods } from "../data/rogueliteBiomeMaster.js";
 
 // 点棒→HP の写像係数（25000点 → 1000HP）。味方HP・与被ダメ双方に一貫適用。
 export const DAMAGE_SCALE = 1000 / 25000; // = 0.04
@@ -283,7 +284,7 @@ export function enemyUnitForFloor(run, floorType = null, salt = "") {
   const hpMul = kind === "boss" ? 1.3 : kind === "named" ? 1.2 : 1;
   const lvBump = kind === "boss" ? 2 : kind === "named" ? 1 : 0;
   const hp = Math.round(floorEnemyHp(floor) * hpMul);
-  const lv = Math.min(10, floorEnemyLv(floor) + lvBump);
+  const lv = Math.min(10, floorEnemyLv(floor) + lvBump + (biomeMods(run).enemyLvAdd || 0)); // 層で強敵化（喧噪の都）
   const rng = makeRng(`${run.seed}:floor${floor}:enemy${salt}`);
   const members = [];
 
@@ -332,15 +333,16 @@ export function enemyUnitForFloor(run, floorType = null, salt = "") {
 function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}) {
   const m = run.mods;
   const im = itemMods(run); // 常設道具（光貨/回復/レア度/深度緩和）の集計
-  // 深度被ダメ倍率は「軽身の符」等で緩和（1.0 を割らないよう (fdm-1) 部分にだけ係数）。
+  const bm = biomeMods(run); // 層モディファイア（被ダメ/与ダメ）。帯ごとに変わる。
+  // 深度被ダメ倍率は「軽身の符」等で緩和（1.0 を割らないよう (fdm-1) 部分にだけ係数）。層の被ダメ係数を最後に掛ける。
   const baseFdm = floorDamageMul(run.floor || 1);
-  const fdm = 1 + Math.max(0, baseFdm - 1) * (1 - im.fdmReduceFrac);
+  const fdm = (1 + Math.max(0, baseFdm - 1) * (1 - im.fdmReduceFrac)) * (bm.dmgTakenMul || 1);
   return {
     winnerIsAlly: winnerSeat != null && roles[winnerSeat] === "ally",
     dealMul: Math.min(RL_TUNE.dealCap, m.dealMul * (battleMods.dealMul || 1)),   // 鼓舞=次戦攻撃↑
     takeMul: Math.max(RL_TUNE.takeFloor, m.takeMul * (battleMods.takeMul || 1)), // 鉄壁=次戦被ダメ↓
     fdm,
-    deal: dealDepthMul(run.floor || 1),
+    deal: dealDepthMul(run.floor || 1) * (bm.dmgDealMul || 1), // 層の与ダメ係数（黄昏=攻め映え）
     friendlyMul: RL_TUNE.friendlyMul,
     lethalCapFrac: lethalCapFrac(run.floor || 1),
     hpMax: hpMax || [],
@@ -417,7 +419,7 @@ export function excludedCardIds(run) {
 export function rollDraft(run, perf = {}) {
   const rng = makeRng(`${run.seed}:draft:${run.floor}:${run.cleared}`);
   const base = perf.bias != null ? perf.bias : rarityBiasFor({ ...perf, floor: run.floor });
-  const rarityBias = Math.max(0, Math.min(1, base + itemMods(run).draftRarityBonus)); // 強運の根付で底上げ
+  const rarityBias = Math.max(0, Math.min(1, base + itemMods(run).draftRarityBonus + (biomeMods(run).draftBias || 0))); // 強運の根付＋層(喧噪の都)で底上げ
   const exclude = excludedCardIds(run);
   const minFrac = Math.min(...run.party.map((m) => m.hp / (m.hpMax || 1)));
   if (minFrac > 0.85) {
