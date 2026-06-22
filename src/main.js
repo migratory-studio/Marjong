@@ -5198,7 +5198,11 @@ function showPairBattleDamageFx(r, onDone) {
   // ペア全滅（2人ともHP0＝着席ダウン）をこの局で確定させる。エンジンの bustCheck は
   // _endHand 時点（hp更新前）に評価されるため、ここで game.gameOver を立てて同じ局で
   // 対局終了に倒す（off-by-one 回避）。onDone(=proceed) が isGameOver を見て結果画面へ。
-  if (pairBattleData.pairs.some((p) => p.seats.every((s) => pairBattleData.hp[s] <= 0))) {
+  // ローグライトは「誰か（味方/敵いずれか）が飛んだらその時点で終了」＝決着が明快、
+  // かつ“飛んだ後の手番（リーチ等）”に入らずクラッシュも回避。通常ペア戦はペア全滅で終了。
+  const pairFullyDown = pairBattleData.pairs.some((p) => p.seats.every((s) => pairBattleData.hp[s] <= 0));
+  const anyBust = pairBattleData.hp.some((h) => h <= 0);
+  if (pairFullyDown || (pairBattleData.isRoguelite && anyBust)) {
     game.gameOver = true;
   }
 
