@@ -211,6 +211,9 @@ let rogueliteHandLimit = null;   // 楼光の館：この1戦の「定められ�
 const ROGUELITE_RIICHI_FRAC = 0.05; // 楼光の館：リーチ宣言で最大HPの5%を消費（緊張感のあるギャンブル）
 const ROGUELITE_NOTEN_FRAC = 0.20;  // 楼光の館：荒牌平局でノーテン席が最大HPの20%ダメージ
 const CHARYBDIS_NOTEN_MUL = 3;      // カリュブディス（淵の蒐集）在卓ならノーテン罰符が3倍
+// アカウント共通通貨「宝珠」：層（帯）に到達するたび段階的に獲得（深いほど多い）。用途は別途。
+const ORB_BASE = 5, ORB_STEP = 3;
+const orbsForBand = (band) => ORB_BASE + Math.max(0, band) * ORB_STEP;
 // 楼光の館：中断したランの一時保存（localStorage）。撤退/全滅で削除。データがあれば再開を問う。
 const RL_RUN_KEY = "mahjong-rpg.rogueliteRun";
 function saveRogueliteRun(run) {
@@ -2196,11 +2199,14 @@ function renderRoute(run) {
   // 新しい帯（10階ごと）へ踏み入った瞬間は、層(バイオーム)の入場演出を一度だけ挟む。
   const band = bandOfFloor(run.floor);
   if (run._biomeBandShown !== band) {
+    const firstShow = run._biomeBandReached !== band; // この帯の宝珠を未付与なら付与（再描画では二重加算しない）
     run._biomeBandShown = band;
+    let orbGain = 0;
+    if (firstShow) { run._biomeBandReached = band; orbGain = orbsForBand(band); run.orbsEarned = (run.orbsEarned || 0) + orbGain; }
     enterRogueliteAmbience(); // 背景を新しい層へ切り替え
     const showBiome = () => {
       showRogueliteBiomeIntro(host, {
-        biome: biomeOf(run), floor: run.floor,
+        biome: biomeOf(run), floor: run.floor, orbGain, orbTotal: run.orbsEarned || 0,
         // 巡りの賽を持っていれば「踏み入る」前にこの層を引き直せる（使うと消える）。
         onReshuffle: biomeDieId(run) ? () => {
           consumeBiomeDie(run);
@@ -2427,9 +2433,12 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}
   // 共闘ボーナス：楼光の館で一緒に戦った分だけ、パーティ各員と少しだけ絆が深まる。
   // フリー対戦(1位=12exp/局)より控えめ＝1踏破=2exp・1ラン上限24（連勝/着順履歴には触れない）。
   const coFightExp = Math.min(24, 2 * (run.cleared || 0));
+  // アカウント通貨「宝珠」：このランの稼ぎを口座へ commit（misc jsonb に自動永続）。用途は別途。
+  const orbsEarned = run.orbsEarned || 0;
+  const orbsTotal = (profile?.orbs || 0) + orbsEarned;
   // 進捗（到達・通算）は即保存（離脱しても失わない）。引き継ぎは選択後に上書き。
   if (profile) {
-    let next = { ...profile, roguelite: { bestFloor: best, runs: (prev.runs || 0) + 1, carry: prev.carry || [] } };
+    let next = { ...profile, orbs: orbsTotal, roguelite: { bestFloor: best, runs: (prev.runs || 0) + 1, carry: prev.carry || [] } };
     if (coFightExp > 0) for (const m of run.party) next = addCompanionBondExp(next, m.char?.id || m.id, coFightExp);
     try { await profileRepo.saveProfile(next); } catch { /* 保存失敗は無視 */ }
   }
@@ -2439,6 +2448,7 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}
   const acquired = [...new Set(run.cards)].map((id) => cardById(id)).filter(Boolean);
   showRogueliteGameOver(el("roguelite-screen"), {
     reached, wiped, retreated, bestFloor: best,
+    orbsEarned, orbsTotal, // アカウント通貨「宝珠」：今回の獲得＋口座残高
     carrySlots: slots, acquired, partingLine, speakerChar: lead, charImages,
     bondDeepened: coFightExp > 0, // 共闘で絆が少し深まった（数値は見せない）
     partyChars: run.party.map((m) => m.char).filter(Boolean),

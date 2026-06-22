@@ -5221,3 +5221,10 @@ button.primary.danger:hover { color: #ffbcbc; }
   padding: 7px 18px; font-size: 14px; line-height: 1.15; }
 .rl-biome-reroll small { font-size: 10px; color: #9aa3b2; font-weight: 400; }
 .rl-biome-reroll .rl-hub-mico { color: var(--biome, var(--rl-gold)); font-size: 13px; }
+
+/* 楼光の館：アカウント通貨「宝珠」表示（層入場の獲得＋ゲームオーバーの集計） */
+.rl-biome-orb { margin-top: 2px; font-size: 14px; color: var(--rl-gold, #e8c45d); font-weight: 700; letter-spacing: .04em; }
+.rl-biome-orb b { font-size: 17px; }
+.rl-biome-orb-total { margin-left: 10px; font-size: 11px; color: #9aa3b2; font-weight: 400; }
+.rl-go-orb .rl-go-v { color: var(--rl-gold, #e8c45d); }
+.rl-go-orb-total { display: block; font-size: 11px; color: #9aa3b2; font-weight: 400; margin-top: 1px; }

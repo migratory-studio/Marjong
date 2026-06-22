@@ -523,7 +523,7 @@ export function showRoguelitePursue(container, opts = {}) {
 // ---- 層（バイオーム）入場演出 ----
 // 10階ごとに塔の景色が変わる瞬間を、frontend-design のトーンで一拍見せる（題材＝記憶を映す塔）。
 export function showRogueliteBiomeIntro(container, opts = {}) {
-  const { biome, floor = 1, onDone, onReshuffle = null } = opts;
+  const { biome, floor = 1, onDone, onReshuffle = null, orbGain = 0, orbTotal = 0 } = opts;
   if (!container || !biome) { onDone?.(); return; }
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-biome";
@@ -541,6 +541,7 @@ export function showRogueliteBiomeIntro(container, opts = {}) {
       <h2 class="rl-biome-name">${biome.name}</h2>
       <p class="rl-biome-blurb">${biome.blurb || ""}</p>
       <div class="rl-biome-chips">${chips}</div>
+      ${orbGain > 0 ? `<div class="rl-biome-orb">宝珠 <b>+${orbGain}</b><span class="rl-biome-orb-total">所持 ${orbTotal}</span></div>` : ""}
       <div class="rl-biome-btns">
         ${reshuffleBtn}
         <button type="button" class="rl-start rl-biome-go" id="rl-biome-go">踏み入る ›</button>
@@ -867,7 +868,7 @@ export function showRogueliteShop(container, opts = {}) {
 
 // ---- ラン終了（＋引き継ぎバフ選択） ----
 export function showRogueliteGameOver(container, opts = {}) {
-  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], partingLine, speakerChar, bondDeepened = false, partyChars = [], onClose } = opts;
+  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], partingLine, speakerChar, bondDeepened = false, partyChars = [], orbsEarned = 0, orbsTotal = 0, onClose } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-gameover" + (wiped ? " wiped" : " safe");
@@ -891,6 +892,7 @@ export function showRogueliteGameOver(container, opts = {}) {
       <div class="rl-go-stats">
         <div class="rl-go-stat"><div class="rl-go-k">到達</div><div class="rl-go-v">${reached} 階</div></div>
         <div class="rl-go-stat"><div class="rl-go-k">最深記録</div><div class="rl-go-v">${bestFloor} 階</div></div>
+        <div class="rl-go-stat rl-go-orb"><div class="rl-go-k">宝珠</div><div class="rl-go-v">+${orbsEarned}<span class="rl-go-orb-total">所持 ${orbsTotal}</span></div></div>
       </div>
       <p class="rl-go-sub">${sub}</p>
       ${bondDeepened ? `<p class="rl-go-bond">◆ 共に戦い抜き、${partyChars.length > 1 ? "仲間たち" : (partyChars[0]?.name || "相棒")}との絆が少し深まった。</p>` : ""}
