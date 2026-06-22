@@ -57,7 +57,10 @@ export const ROGUELITE_FLOOR_MASTER = [
   { id: "gamble", name: "賭場", kind: "gamble", enemy: "named", baseHands: 1, weight: 6, blurb: "一局の大勝負。勝てば高レアと光貨が倍。負ければ手痛い。" },
   { id: "shrine", name: "祠", kind: "shrine", weight: 5, blurb: "供物を捧げ、力を請う。痛みと引き換えの強大な恩恵。" },
   { id: "forge", name: "鍛冶屋", kind: "forge", weight: 7, blurb: "光貨を払い、パーティのスキルレベルを鍛える。能力そのものが強くなる。" },
+  { id: "recruit", name: "流派の門", kind: "recruit", weight: 5, blurb: "光貨を多く払い、新たな打ち手を仲間に。候補3人から1人を迎え、1人と入れ替える。" },
 ];
+
+export const RECRUIT_COST = 50; // 流派の門：交代に要する光貨（大量消費）
 
 // 鍛冶屋：スキルレベル+1の費用（光貨）。レベルが上がるほど高くなる。上限Lv10。
 // 序盤から手が届くよう低め（旧 20+lv*12 は高すぎてスキル経済が死んでいた）。

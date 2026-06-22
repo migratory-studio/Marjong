@@ -278,6 +278,7 @@ const FLOOR_KIND_META = {
   gamble: { mark: "🎲", color: "#e8734d" },
   shrine: { mark: "⛩", color: "#c06bff" },
   forge: { mark: "🔨", color: "#e8c45d" },
+  recruit: { mark: "🔁", color: "#56c8b0" },
 };
 
 // カード/道具の任意アイコン画像（HTML文字列）。src 未指定や読込失敗は空（呼び出し側の絵文字へ）。
@@ -493,6 +494,46 @@ export function showRogueliteSwap(container, opts = {}) {
   requestAnimationFrame(() => ov.classList.add("is-open"));
   render();
   ov.querySelector("#rl-swap-close")?.addEventListener("click", () => { ov.remove(); onClose?.(); });
+}
+
+// ---- 流派の門（交代マス）：光貨で1人を迎え、1人を送り出す（PTは3人のまま） ----
+export function showRogueliteRecruit(container, opts = {}) {
+  const { run, candidates = [], cost = 50, charImages = null, onSwap, onSkip } = opts;
+  if (!container || !run) { onSkip?.(); return; }
+  const coins = run.coins || 0;
+  const canAfford = coins >= cost;
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-recruit";
+  let pickCand = null, pickRelease = null;
+  const charCard = (c, kind, key) => {
+    const icon = charImages?.url?.(c, "icon") || charImages?.url?.(c, "portrait") || "";
+    const ab = (c.abilities || []).map((a) => abilityDef(a.abilityId)?.name).filter(Boolean).join("・");
+    const face = icon
+      ? `<img class="rl-rc-face" src="${icon}" alt="">`
+      : `<span class="rl-rc-face rl-face-fb" style="--c:${c.color || "#666"}">${(c.name || "?").slice(0, 1)}</span>`;
+    return `<button type="button" class="rl-rc-card" data-${kind}="${key}">${face}<span class="rl-rc-name">${c.name}</span><span class="rl-rc-ab">${ab || "—"}</span></button>`;
+  };
+  ov.innerHTML = `
+    <div class="rl-modal rl-recruit-modal">
+      <div class="rl-modal-head">流派の門 — 仲間を入れ替える${coinBadge(coins)}</div>
+      <p class="rl-route-hint">候補から1人を<b>迎え</b>、編成から1人を<b>送り出す</b>。<b>光貨 ${cost}</b> 消費（パーティは3人のまま）。${canAfford ? "" : '<span style="color:var(--danger)">　光貨が足りない…</span>'}</p>
+      <div class="rl-rc-sec">迎える（候補）</div>
+      <div class="rl-rc-row">${candidates.map((c, i) => charCard(c, "cand", i)).join("") || "<span class='rl-card-empty'>候補がいない</span>"}</div>
+      <div class="rl-rc-sec">送り出す（編成）</div>
+      <div class="rl-rc-row">${run.party.map((m) => charCard(m.char, "rel", run.party.indexOf(m))).join("")}</div>
+      <div class="rl-continue-btns">
+        <button type="button" class="rl-start" id="rl-rc-go" disabled>入れ替える</button>
+        <button type="button" class="rl-retreat" id="rl-rc-skip">やめる</button>
+      </div>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const goBtn = ov.querySelector("#rl-rc-go");
+  const refresh = () => { goBtn.disabled = !(canAfford && pickCand != null && pickRelease != null); };
+  ov.querySelectorAll("[data-cand]").forEach((b) => b.addEventListener("click", () => { pickCand = +b.dataset.cand; ov.querySelectorAll("[data-cand]").forEach((x) => x.classList.toggle("sel", x === b)); refresh(); }));
+  ov.querySelectorAll("[data-rel]").forEach((b) => b.addEventListener("click", () => { pickRelease = +b.dataset.rel; ov.querySelectorAll("[data-rel]").forEach((x) => x.classList.toggle("sel", x === b)); refresh(); }));
+  ov.querySelector("#rl-rc-skip")?.addEventListener("click", () => { ov.remove(); onSkip?.(); });
+  goBtn.addEventListener("click", () => { if (goBtn.disabled) return; ov.remove(); onSwap?.(pickCand, pickRelease); });
 }
 
 // ---- 追撃（push-your-luck）：先に行く / 追撃（残り回数） ----

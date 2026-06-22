@@ -71,7 +71,7 @@ eq(handsForType(floorTypeById("boss")), 2, "ボス=2局");
 ok(isBossFloor(10) && !isBossFloor(3), "ボスは10階ごと");
 
 // ---- フロア種別マスタ ----
-const KNOWN_FLOOR_KINDS = new Set(["battle", "rest", "banquet", "treasure", "event", "shop", "gamble", "shrine", "forge"]);
+const KNOWN_FLOOR_KINDS = new Set(["battle", "rest", "banquet", "treasure", "event", "shop", "gamble", "shrine", "forge", "recruit"]);
 const fids = new Set();
 for (const f of ROGUELITE_FLOOR_MASTER) {
   ok(f.id && !fids.has(f.id), `floor id 一意: ${f.id}`); fids.add(f.id);

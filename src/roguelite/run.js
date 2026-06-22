@@ -349,6 +349,25 @@ export function enemyUnitForFloor(run, floorType = null, salt = "") {
   };
 }
 
+// 流派の門（交代マス）：編成中＋弟子を除くプレイアブルキャラから候補 n 人（決定論）。
+export function recruitCandidates(run, n = 3) {
+  const exclude = new Set((run.party || []).map((m) => m.id));
+  const avail = CHARACTER_MASTER.filter((c) => c && c.id && !c.isMob && !exclude.has(c.id));
+  const rng = makeRng(`${run.seed}:recruit:${run.floor}:${run.routeReroll || 0}`);
+  const out = [];
+  while (out.length < n && avail.length) out.push(avail.splice(Math.floor(rng() * avail.length), 1)[0]);
+  return out;
+}
+
+// 編成の releaseIdx 番を char で入れ替える（PTは3人のまま）。新メンバーはHP満タンで参加。
+export function swapPartyMember(run, char, releaseIdx) {
+  if (!char || releaseIdx == null || !run.party[releaseIdx]) return false;
+  const hpMax = allyScaledHp(char.stats?.startingPoints ?? 25000);
+  run.party[releaseIdx] = { id: char.id, char, hpMax, hp: hpMax, hungover: false };
+  if (Array.isArray(run.lineup)) run.lineup = run.party.map((m) => m.id); // 並び順を整合
+  return true;
+}
+
 // ---- 対局ダメージ → ローグライトHP 変換 ----
 //
 // ペア戦の素点差分(deltas: 席ごとの点棒増減)を、ローグライトHP差分へ写す。
