@@ -9,7 +9,7 @@
 // 立ち絵/アイコンは charImages（呼び出し側が渡す）から引く。無ければ頭文字フォールバック。
 // 1280×720 ノースクロール方針：ロスターのみ内部スクロールに逃がす（F6 と同様の扱い）。
 
-import { RARITY_META, CARD_CATEGORY, cardCategory } from "../data/rogueliteCardMaster.js";
+import { RARITY_META, CARD_CATEGORY, cardCategory, cardById } from "../data/rogueliteCardMaster.js";
 import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 
@@ -532,6 +532,45 @@ export function showRogueliteRest(container, opts = {}) {
   ov.querySelector("#rl-rest-go")?.addEventListener("click", () => { ov.remove(); onDone?.(); });
 }
 
+// 効果(effect)を「何がどれくらい」の人間語チップへ。compound は再帰。
+function describeEffect(e, out = []) {
+  if (!e) return out;
+  switch (e.kind) {
+    case "heal": out.push({ t: `HP +${Math.round((e.amount || 0) * 100)}%`, tone: "hp" }); break;
+    case "maxHpUp": out.push({ t: `HP最大 +${Math.round(((e.mul || 1) - 1) * 100)}%`, tone: "hp" }); break;
+    case "dealMul": out.push({ t: `攻撃 +${Math.round(((e.mul || 1) - 1) * 100)}%`, tone: "atk" }); break;
+    case "takeReduce": out.push({ t: `防御 +${Math.round((e.rate || 0) * 100)}%`, tone: "def" }); break;
+    case "skillLevelUp": out.push({ t: `スキルLv +${e.delta || 1}`, tone: "skl" }); break;
+    case "grantAbility": out.push({ t: `必殺技「${abilityDef(e.abilityId)?.name || e.abilityId}」習得`, tone: "skill" }); break;
+    case "friendlyGuard": out.push({ t: `庇いの守り ×${e.count || 1}`, tone: "item" }); break;
+    case "addBench": out.push({ t: "控え枠 +1", tone: "gain" }); break;
+    case "paramBoost": out.push({ t: `${e.param || "能力"} +${e.add || 0}`, tone: "gain" }); break;
+    case "compound": for (const p of e.parts || []) describeEffect(p, out); break;
+    default: break;
+  }
+  return out;
+}
+
+// イベント/祠の outcome を「獲得・損失」チップ配列へ（何がどれくらい入ったか／払ったか）。
+export function describeOutcome(outcome) {
+  if (!outcome) return [];
+  const out = [];
+  if (outcome.coins) out.push({ t: `光貨 ${outcome.coins > 0 ? "+" : ""}${outcome.coins}`, tone: outcome.coins > 0 ? "coin" : "loss" });
+  if (outcome.healFrac) out.push({ t: `HP +${Math.round(outcome.healFrac * 100)}%`, tone: "hp" });
+  if (outcome.hurtFrac) out.push({ t: `HP −${Math.round(outcome.hurtFrac * 100)}%`, tone: "loss" });
+  describeEffect(outcome.effect, out);
+  if (outcome.cardId) { const c = cardById(outcome.cardId); if (c) { const sub = describeEffect(c.effect, []); for (const s of sub) out.push(s); } }
+  if (outcome.item) { const it = itemById(outcome.item); out.push({ t: `道具「${it?.name || outcome.item}」入手`, tone: "item" }); }
+  if (outcome.itemRandom) out.push({ t: "道具を入手", tone: "item" });
+  if (outcome.draft) out.push({ t: "バフを1枚選ぶ", tone: "gain" });
+  return out;
+}
+function gainChipsHtml(outcome) {
+  const list = describeOutcome(outcome);
+  if (!list.length) return "";
+  return `<div class="rl-gain"><span class="rl-gain-label">獲得</span>${list.map((g) => `<span class="rl-gain-chip ${g.tone}">${g.t}</span>`).join("")}</div>`;
+}
+
 // ---- 遭遇イベント（会話＋2択／選んだら短く返す） ----
 export function showRogueliteEvent(container, opts = {}) {
   const { event, speakerChar, charImages, floor = 1, onChoose, onDone, affordCoins = Infinity } = opts;
@@ -553,6 +592,7 @@ export function showRogueliteEvent(container, opts = {}) {
           <div class="rl-event-lines">${linesHtml}</div>
           <div class="rl-event-choices">${(event.choices || []).map((c, i) => `<button type="button" class="rl-event-choice" data-i="${i}"${affordable(c) ? "" : " disabled"}>${c.label}${affordable(c) ? "" : "（光貨不足）"}</button>`).join("")}</div>
           <div class="rl-event-reply" id="rl-event-reply" hidden></div>
+          <div class="rl-event-gain" id="rl-event-gain"></div>
           <button type="button" class="rl-start" id="rl-event-go" hidden>先へ進む</button>
         </div>
       </div>
@@ -568,6 +608,9 @@ export function showRogueliteEvent(container, opts = {}) {
       reply.hidden = false; reply.textContent = choice.reply || "";
       // 結果はここで確定（applyEventOutcome）。前進は「先へ進む」で。
       onChoose?.(choice);
+      // 「何がどれくらい入った／払った」をチップで見せる（祠/遭遇 共通）。
+      const gain = ov.querySelector("#rl-event-gain");
+      if (gain) { gain.innerHTML = gainChipsHtml(choice.outcome); requestAnimationFrame(() => gain.classList.add("is-in")); }
       const go = ov.querySelector("#rl-event-go");
       go.hidden = false;
       go.addEventListener("click", () => { ov.remove(); onDone?.(); }, { once: true });

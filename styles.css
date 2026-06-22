@@ -4852,8 +4852,11 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-event-modal { width: min(840px, 92%); }
 .rl-event-row { display: flex; gap: 18px; align-items: stretch; }
 .rl-event-art { width: 200px; min-height: 260px; max-height: 320px; object-fit: cover; object-position: top center;
-  border-radius: 12px; flex-shrink: 0; background: #0e1512; }
-.rl-event-art-fb { width: 200px; background: linear-gradient(160deg, #2a3a30, #14201a); }
+  border-radius: 12px; flex-shrink: 0; background: #120d1a; }
+/* 立ち絵なし（祠など）の枠：楼光トーンの暗パネル＋金の祠グリフ */
+.rl-event-art-fb { width: 200px; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(160deg, rgba(34,26,46,.9), rgba(16,11,22,.95)); border: 1px solid rgba(232,196,93,.18); }
+.rl-event-art-fb::after { content: "⛩"; font-size: 60px; color: rgba(232,196,93,.32); }
 .rl-event-body { flex: 1; display: flex; flex-direction: column; text-align: left; min-width: 0; }
 .rl-event-title { font-size: 16px; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
 .rl-event-lines p { font-size: 15px; line-height: 1.7; margin: 0 0 6px; }
@@ -5155,3 +5158,20 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-hub-mbtn:hover { background: rgba(232,196,93,.3); border-color: var(--rl-gold); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.35); }
 .rl-hub-mbtn b { color: var(--rl-gold); margin-left: 2px; }
 .rl-hub-mico { color: var(--rl-gold); font-size: 13px; }
+
+/* 楼光の館：遭遇/祠の「獲得した内容」チップ（何が・どれくらい入った/払ったか） */
+.rl-event-gain { margin: 9px 0 2px; min-height: 0; }
+.rl-gain { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; opacity: 0; transform: translateY(6px); transition: opacity .3s ease, transform .3s ease; }
+.rl-event-gain.is-in .rl-gain { opacity: 1; transform: none; }
+.rl-gain-label { font-size: 11px; letter-spacing: .18em; color: var(--rl-gold, #e8c45d); margin-right: 2px; }
+.rl-gain-chip { display: inline-flex; align-items: center; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 700;
+  color: #d8d2c8; border: 1px solid currentColor; background: rgba(255,255,255,.05); }
+.rl-gain-chip.hp { color: #6fe08a; } .rl-gain-chip.atk { color: #ee9a78; } .rl-gain-chip.def { color: #79b4ee; }
+.rl-gain-chip.coin { color: #e8c45d; } .rl-gain-chip.skl { color: #6fd6c8; }
+.rl-gain-chip.skill { color: #b59cff; } .rl-gain-chip.item { color: #c8a6ff; }
+.rl-gain-chip.gain { color: #e8c45d; } .rl-gain-chip.loss { color: #ff8f86; }
+.rl-event-gain.is-in .rl-gain-chip { animation: rlChipPop .34s cubic-bezier(.2,.9,.3,1.18) both; }
+.rl-gain-chip:nth-child(2) { animation-delay: .03s; } .rl-gain-chip:nth-child(3) { animation-delay: .09s; }
+.rl-gain-chip:nth-child(4) { animation-delay: .15s; } .rl-gain-chip:nth-child(5) { animation-delay: .21s; }
+@keyframes rlChipPop { from { opacity: 0; transform: scale(.82) translateY(4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .rl-event-gain.is-in .rl-gain-chip { animation: none; } }
