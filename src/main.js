@@ -51,7 +51,7 @@ import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
-import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, benchAbilityIds, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun } from "./roguelite/run.js";
+import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun } from "./roguelite/run.js";
 import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
@@ -2238,16 +2238,19 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
   // 席: 0=あなた / 1=敵A / 2=相棒 / 3=敵B。
   await charImages.load(order.filter((c) => !c.isMob));
   const seated = order.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
-  // 味方席（0,2）の能力をスキルレベル反映で組み直す：自分の能力＋取得カードの付与能力＋控えのパッシブを
-  // すべて run.skillLevel で生成（レベルテーブルを持つ能力は params が強化される）。
+  // 味方席の能力をスキルレベル反映で組み直す（レベルテーブルを持つ能力は params が強化される）。
+  //   着卓する2人（あなた＝席0／対面の相方＝席2）はどちらも「自分の固有能力＋ストックした必殺技」のみ。
+  //   控え（3人目以降）の固有能力は使えない（控えは戦死時の繰り上がり＋共闘要員）。
   // 二日酔いなら能力は封印（空＝この1戦は能力使用不可・戦後に解除）。
-  const grantIds = [...run.mods.grantedAbilityIds, ...benchAbilityIds(run)];
+  const stockedIds = run.mods.grantedAbilityIds; // ストックした必殺技（着卓2人で共有して使える）
   [allies[0], allies[1]].forEach((m, i) => {
     const seatIdx = i === 0 ? 0 : 2;
     if (m.hungover) { seated[seatIdx].abilities = []; return; } // 二日酔い＝能力封印
     const abilities = [];
+    // 着卓キャラ自身の固有能力。
     for (const a of (m.char.abilities || [])) { const ab = skilledAbility(a.abilityId, a.params, run.skillLevel); if (ab) abilities.push(ab); }
-    for (const abId of grantIds) { const ab = skilledAbility(abId, {}, run.skillLevel); if (ab) abilities.push(ab); }
+    // ＋ストックした必殺技（控えの能力は注入しない）。
+    for (const abId of stockedIds) { const ab = skilledAbility(abId, {}, run.skillLevel); if (ab) abilities.push(ab); }
     seated[seatIdx].abilities = abilities;
   });
   for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});

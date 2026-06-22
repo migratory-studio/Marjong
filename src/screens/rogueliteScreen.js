@@ -68,7 +68,7 @@ export function showRoguelite(container, opts = {}) {
       <p class="rl-lead">弟子を連れて階層を登る。<b>味方2人が着卓し、敵2人と同卓（2対2）で戦う</b>。勝てばバフを選び、危なくなる前に撤退して記録を持ち帰れ。<b>戦える味方が1人以下になればランは没収</b>だ（一度トべば復活しない）。</p>
       <div class="rl-body">
         <div class="rl-party">
-          <div class="rl-party-head">パーティ（1〜${MAX_PARTY}人・先頭「あなた」＝操作キャラ／3人目は控えで交代）</div>
+          <div class="rl-party-head">パーティ（1〜${MAX_PARTY}人・先頭「あなた」＝操作キャラ／3人目は控え＝倒れたら繰り上がり）</div>
           <div class="rl-party-slots" id="rl-party-slots"></div>
           ${carry.length ? `<div class="rl-carry">
             <div class="rl-carry-head">引き継ぎ中のバフ</div>
@@ -393,7 +393,7 @@ export function showRogueliteRoute(container, opts = {}) {
 }
 
 // ---- 編成（任意のタイミングでメンバー入れ替え） ----
-// 出場順（run.lineup）を並べ替える。上の2人が着卓、3人目以降は控え（パッシブ能力源）。
+// 出場順（run.lineup）を並べ替える。上の2人が着卓、3人目以降は控え（戦死時の繰り上がり要員）。
 // 並びは run.lineup（id配列）へ保存し、seatedAllies/benchAbilityIds がこれを尊重する。
 export function showRogueliteSwap(container, opts = {}) {
   const { run, charImages, onClose } = opts;
@@ -447,7 +447,7 @@ export function showRogueliteSwap(container, opts = {}) {
   ov.innerHTML = `
     <div class="rl-modal rl-swap-modal">
       <div class="rl-modal-head">編成 — 誰を卓に出すか</div>
-      <p class="rl-route-hint"><b>戦うのは上の2人だけ</b>（着卓は固定・勝手に入れ替わらない）。控えを卓に出すには ▲ で<b>着卓ラインより上</b>へ（先頭＝あなたが操作）。控えはパッシブ能力でサポート。着卓が倒れたときだけ控えが繰り上がる。</p>
+      <p class="rl-route-hint"><b>戦うのは上の2人だけ</b>（着卓は固定・勝手に入れ替わらない）。控えを卓に出すには ▲ で<b>着卓ラインより上</b>へ（先頭＝あなたが操作）。着卓の2人は「自分の能力＋ストックした必殺技」を使える。<b>控えの能力は使えない</b>（戦死時の繰り上がり要員）。</p>
       ${buffTotalsHtml(run)}
       <div class="rl-swap-list" id="rl-swap-list"></div>
       <button type="button" class="rl-start" id="rl-swap-close">この編成で進む</button>
