@@ -109,6 +109,27 @@ export const ROGUELITE_CARD_MASTER = [
     stackable: true,
     maxStacks: 2,
   },
+  // 条件付き（動的）バフ＝対局中の状況で効く（連勝/瀕死/反撃/リーチ）。
+  {
+    id: "ride-the-wave", name: "波に乗る",
+    desc: "味方が和了するほど与ダメが上がる（連勝1につき+8%）。和了を逃すとリセット。",
+    rarity: "rare", effect: { kind: "streakDeal", per: 0.08 }, stackable: true, maxStacks: 3,
+  },
+  {
+    id: "last-stand", name: "火事場の底力",
+    desc: "HPが低いほど与ダメが増え、被ダメが減る（瀕死で最大）。",
+    rarity: "epic", effect: { kind: "lowHpPower", power: 0.5 }, stackable: true, maxStacks: 2,
+  },
+  {
+    id: "vengeance", name: "倍返し",
+    desc: "前局に味方が被弾していたら、次の和了の与ダメが35%増える。",
+    rarity: "rare", effect: { kind: "revengeDeal", bonus: 0.35 }, stackable: true, maxStacks: 2,
+  },
+  {
+    id: "backwater-riichi", name: "背水のリーチ",
+    desc: "リーチ中の和了は与ダメが45%増える（リーチのHP消費と相乗）。",
+    rarity: "epic", effect: { kind: "riichiDeal", bonus: 0.45 }, stackable: true, maxStacks: 2,
+  },
   {
     id: "ally-tsumo-ward",
     name: "庇いの守り",

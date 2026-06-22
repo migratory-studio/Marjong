@@ -5210,17 +5210,40 @@ function applyRogueliteNotenPenalty(r) {
 // ペア戦用ダメージ演出。団体戦版から「交代UI」「飛びカットイン／親満ペナルティ」を
 // 取り除いた簡易版。HPは被弾(マイナス)のみ反映＝着席ダウンで0床。ペア点数は増減そのまま。
 // 飛びペナルティは仕様D（当面なし）に従いゼロ。Phase2 でUIを磨く前提の機能版。
+// 条件付き（動的）バフをこの局の与/被ダメ倍率へ折り込む。base＝次戦アイテムのbattleMods。
+//   波に乗る(streakDeal)：連勝×係数で与ダメ↑（味方和了時）。倍返し(revengeDeal)：前局被弾なら次の和了で↑。
+//   背水(riichiDeal)：リーチ中の和了で↑。火事場(lowHpPower)：和了者HPが低いほど与ダメ↑＋味方最低HPが低いほど被ダメ↓。
+function rlApplyDynamicBuffs(run, r, base) {
+  const m = run.mods || {}; const pb = pairBattleData; const roles = pb.seatRoles || [];
+  const winnerIsAlly = r.winner != null && roles[r.winner] === "ally";
+  const maxOf = (i) => pb.chars[i]?.stats?.startingPoints || 1;
+  let dealMul = 1, takeMul = 1;
+  if (winnerIsAlly) {
+    if (m.streakDeal) dealMul *= 1 + (rogueliteState.allyWinStreak || 0) * m.streakDeal;
+    if (m.revengeDeal && rogueliteState.allyHurtLastHand) dealMul *= 1 + m.revengeDeal;
+    if (m.riichiDeal && game.players[r.winner]?.riichi) dealMul *= 1 + m.riichiDeal;
+    if (m.lowHpPower) dealMul *= 1 + m.lowHpPower * Math.max(0, 1 - (pb.hp[r.winner] || 0) / maxOf(r.winner));
+  }
+  if (m.lowHpPower) {
+    const minHf = Math.min(...roles.map((ro, i) => (ro === "ally" ? (pb.hp[i] || 0) / maxOf(i) : 1)));
+    takeMul *= 1 - Math.min(0.5, m.lowHpPower * Math.max(0, 1 - minHf));
+  }
+  return { ...base, dealMul: (base.dealMul || 1) * dealMul, takeMul: (base.takeMul || 1) * takeMul };
+}
+
 function showPairBattleDamageFx(r, onDone) {
   const host = el("damage-overlay");
   // ローグライト：素点差分を独自HPスケール（与ダメ倍率・被ダメ軽減のmod込み）へ写してから反映。
   const rlHpMax = pairBattleData?.isRoguelite ? pairBattleData.chars.map((c) => c.stats?.startingPoints || 0) : null;
   const rlBattleMods = pairBattleData?.isRoguelite ? (rogueliteState?.battleMods || {}) : {};
+  // 条件付き（動的）バフ＝連勝/瀕死/反撃/リーチをこの局の倍率へ折り込む（次戦アイテムのbattleModsに合流）。
+  const rlEffMods = (pairBattleData?.isRoguelite && rogueliteState) ? rlApplyDynamicBuffs(rogueliteState.run, r, rlBattleMods) : rlBattleMods;
   // 内訳（演出用）は deltas を確定（＝お守り消費）する前に取る＝この局のお守り状態を正しく映す。
   const rlBreakdown = (pairBattleData?.isRoguelite && rogueliteState)
-    ? explainRogueliteDamage(rogueliteState.run, { deltas: r.deltas || [], roles: pairBattleData.seatRoles, winnerSeat: r.winner, hpMax: rlHpMax, battleMods: rlBattleMods })
+    ? explainRogueliteDamage(rogueliteState.run, { deltas: r.deltas || [], roles: pairBattleData.seatRoles, winnerSeat: r.winner, hpMax: rlHpMax, battleMods: rlEffMods })
     : null;
   const deltas = (pairBattleData?.isRoguelite && rogueliteState)
-    ? rogueliteDamageDeltas(rogueliteState.run, { deltas: r.deltas || [], roles: pairBattleData.seatRoles, winnerSeat: r.winner, hpMax: rlHpMax, battleMods: rlBattleMods })
+    ? rogueliteDamageDeltas(rogueliteState.run, { deltas: r.deltas || [], roles: pairBattleData.seatRoles, winnerSeat: r.winner, hpMax: rlHpMax, battleMods: rlEffMods })
     : (r.deltas || []);
 
   // 個人HPとペア点数を別管理で反映。HP=被弾のみ(0床)、pairScore=増減そのまま。
@@ -5240,6 +5263,13 @@ function showPairBattleDamageFx(r, onDone) {
     }
     if (d) pairBattleData.pairScore[pairBattleData.pairOf[i]] += d;
     game.players[i].points = pairBattleData.hp[i]; // 卓のHP表示用に同期
+  }
+  // 条件付きバフ用の状態更新：連勝（味方和了で+1・それ以外で0）と前局の味方被弾。
+  if (pairBattleData.isRoguelite && rogueliteState) {
+    const roles2 = pairBattleData.seatRoles || [];
+    const winnerIsAlly2 = r.winner != null && roles2[r.winner] === "ally";
+    rogueliteState.allyWinStreak = winnerIsAlly2 ? (rogueliteState.allyWinStreak || 0) + 1 : 0;
+    rogueliteState.allyHurtLastHand = roles2.some((ro, i) => ro === "ally" && (deltas[i] || 0) < 0);
   }
 
   // ペア全滅（2人ともHP0＝着席ダウン）をこの局で確定させる。エンジンの bustCheck は

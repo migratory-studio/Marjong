@@ -30,6 +30,7 @@ const eq = (a, b, m) => { assert.strictEqual(a, b, m); n++; };
 const KNOWN_KINDS = new Set([
   "heal", "maxHpUp", "skillLevelUp", "paramBoost", "addBench",
   "dealMul", "takeReduce", "grantAbility", "compound", "friendlyGuard",
+  "streakDeal", "lowHpPower", "revengeDeal", "riichiDeal", // 条件付き（動的）バフ
 ]);
 const ids = new Set();
 for (const c of ROGUELITE_CARD_MASTER) {

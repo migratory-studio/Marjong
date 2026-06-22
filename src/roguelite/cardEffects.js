@@ -53,6 +53,11 @@ export function applyEffect(run, effect) {
     case "friendlyGuard": // 味方のツモで受けるダメージを無効化する“お守り”（受けたら1個消費）
       m.friendlyGuard = (m.friendlyGuard || 0) + (effect.count ?? 1);
       break;
+    // 条件付き（動的）バフ：値を積むだけ。実際の効きは main.js のダメージ計算時に状況で評価。
+    case "streakDeal":  m.streakDeal  = (m.streakDeal  || 0) + (effect.per ?? 0); break;
+    case "lowHpPower":  m.lowHpPower  = (m.lowHpPower  || 0) + (effect.power ?? 0); break;
+    case "revengeDeal": m.revengeDeal = (m.revengeDeal || 0) + (effect.bonus ?? 0); break;
+    case "riichiDeal":  m.riichiDeal  = (m.riichiDeal  || 0) + (effect.bonus ?? 0); break;
     case "skillLevelUp":
       m.skillLevelDelta += effect.delta ?? 0; // 後方互換（集計）
       if (run.skillLevel != null) run.skillLevel = Math.min(10, run.skillLevel + (effect.delta ?? 0)); // パーティのスキルLvを上げる（能力強化）
@@ -99,5 +104,10 @@ export function freshMods() {
     paramAdd: {}, // params6 加算
     benchSlots: 0, // 控え枠の追加数
     grantedAbilityIds: [], // 付与する能力id
+    // 条件付き（動的）バフ＝対局中の状況で効く。main.js のダメージ計算時に評価する。
+    streakDeal: 0,  // 波に乗る：連勝1につき与ダメ +この割合
+    lowHpPower: 0,  // 火事場：HPが低いほど与ダメ↑＆被ダメ↓（この係数）
+    revengeDeal: 0, // 倍返し：前局に味方が被弾していたら次の和了で与ダメ +この割合
+    riichiDeal: 0,  // 背水：リーチ中の和了で与ダメ +この割合
   };
 }
