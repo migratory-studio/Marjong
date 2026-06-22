@@ -5228,3 +5228,7 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-biome-orb-total { margin-left: 10px; font-size: 11px; color: #9aa3b2; font-weight: 400; }
 .rl-go-orb .rl-go-v { color: var(--rl-gold, #e8c45d); }
 .rl-go-orb-total { display: block; font-size: 11px; color: #9aa3b2; font-weight: 400; margin-top: 1px; }
+
+/* 楼光の館：先見の札＝層入場で次の層を表示 */
+.rl-biome-next { margin-top: 2px; font-size: 12px; color: #aab0bd; }
+.rl-biome-next b { font-family: var(--font-min, serif); font-weight: 700; }

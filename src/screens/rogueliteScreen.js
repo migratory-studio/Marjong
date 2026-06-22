@@ -523,7 +523,7 @@ export function showRoguelitePursue(container, opts = {}) {
 // ---- 層（バイオーム）入場演出 ----
 // 10階ごとに塔の景色が変わる瞬間を、frontend-design のトーンで一拍見せる（題材＝記憶を映す塔）。
 export function showRogueliteBiomeIntro(container, opts = {}) {
-  const { biome, floor = 1, onDone, onReshuffle = null, orbGain = 0, orbTotal = 0 } = opts;
+  const { biome, floor = 1, onDone, onReshuffle = null, orbGain = 0, orbTotal = 0, nextBiome = null } = opts;
   if (!container || !biome) { onDone?.(); return; }
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-biome";
@@ -542,6 +542,7 @@ export function showRogueliteBiomeIntro(container, opts = {}) {
       <p class="rl-biome-blurb">${biome.blurb || ""}</p>
       <div class="rl-biome-chips">${chips}</div>
       ${orbGain > 0 ? `<div class="rl-biome-orb">宝珠 <b>+${orbGain}</b><span class="rl-biome-orb-total">所持 ${orbTotal}</span></div>` : ""}
+      ${nextBiome ? `<div class="rl-biome-next">👁 次の層 ▸ <b style="color:${nextBiome.color || "var(--rl-gold)"}">${nextBiome.glyph || ""} ${nextBiome.name}</b></div>` : ""}
       <div class="rl-biome-btns">
         ${reshuffleBtn}
         <button type="button" class="rl-start rl-biome-go" id="rl-biome-go">踏み入る ›</button>

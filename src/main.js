@@ -52,11 +52,11 @@ import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, apply
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
 import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun } from "./roguelite/run.js";
-import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips } from "./data/rogueliteBiomeMaster.js";
+import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from "./data/rogueliteBiomeMaster.js";
 import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
-import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie } from "./roguelite/itemEffects.js";
+import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie, consumeBustSaver, hasForesight } from "./roguelite/itemEffects.js";
 import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear, setRlLogSink, flushRlLog, setRlRunId } from "./roguelite/rogueliteLog.js";
 import { supabase } from "./config/supabase.js";
 import { bgDef } from "./data/backgroundMaster.js";
@@ -2205,8 +2205,10 @@ function renderRoute(run) {
     if (firstShow) { run._biomeBandReached = band; orbGain = orbsForBand(band); run.orbsEarned = (run.orbsEarned || 0) + orbGain; }
     enterRogueliteAmbience(); // 背景を新しい層へ切り替え
     const showBiome = () => {
+      // 先見の札を持っていれば次の層を見通せる（最終帯の先は無し）。
+      const nextBiome = hasForesight(run) ? biomeForBand(run.seed, band + 1) : null;
       showRogueliteBiomeIntro(host, {
-        biome: biomeOf(run), floor: run.floor, orbGain, orbTotal: run.orbsEarned || 0,
+        biome: biomeOf(run), floor: run.floor, orbGain, orbTotal: run.orbsEarned || 0, nextBiome,
         // 巡りの賽を持っていれば「踏み入る」前にこの層を引き直せる（使うと消える）。
         onReshuffle: biomeDieId(run) ? () => {
           consumeBiomeDie(run);
@@ -5254,10 +5256,11 @@ function showPairBattleDamageFx(r, onDone) {
     const d = deltas[i] || 0;
     if (d < 0) {
       let next = pairBattleData.hp[i] + d;
-      // 不屈のお守り（道具）：味方が致命の一撃でトびそうなら、各メンバー1回だけHP1で踏みとどまる。
+      // 致命回避：①不屈のお守り（次戦・各メンバー1回）②不死鳥の羽（ラン中1回・道具消費）。HP1で踏みとどまる。
       const isAlly = pairBattleData.seatRoles?.[i] === "ally";
-      if (next <= 0 && beforeOf[i] > 0 && isAlly && rlBattleMods.endure && rogueliteState && !rogueliteState.enduredSeats.has(i)) {
-        rogueliteState.enduredSeats.add(i); next = 1; enduredNow.push(i);
+      if (next <= 0 && beforeOf[i] > 0 && isAlly && rogueliteState) {
+        if (rlBattleMods.endure && !rogueliteState.enduredSeats.has(i)) { rogueliteState.enduredSeats.add(i); next = 1; enduredNow.push(i); }
+        else if (consumeBustSaver(rogueliteState.run)) { next = 1; enduredNow.push(i); } // 不死鳥の羽
       }
       pairBattleData.hp[i] = Math.max(0, next); // 着席ダウンで0床
     }

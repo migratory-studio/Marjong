@@ -67,7 +67,25 @@ export const ROGUELITE_ITEM_MASTER = [
     desc: "層に踏み入る前に、その層を一度だけ引き直せる（引き直すと消える）。",
     effect: { kind: "biomeReroll" },
   },
+  {
+    // ダウン中の味方を全員HP100%で復活（no-revive の例外＝レジェンダリー級の秘薬）。
+    id: "revive-elixir", name: "復活の霊薬", kind: "active", cost: 60, glyph: "✚", rarity: "legendary",
+    desc: "ダウン中の味方を全員、HP100%で復活させる。一度トんだ味方を呼び戻す秘薬。",
+    effect: { kind: "revive" },
+  },
+  {
+    // 次の層を先に見通す（巡りの賽と対の情報アイテム）。持っている間ずっと有効。
+    id: "foresight-charm", name: "先見の札", kind: "passive", cost: 28, glyph: "👁",
+    desc: "持っている間、次の層が何かを先に見通せる（層入場で次層を表示）。",
+    effect: { kind: "passive", foresight: true },
+  },
   // ---- 自動発動（条件で勝手に効いて消える） ----
+  {
+    // ラン中1回、味方が飛ぶ寸前に身代わりで割れ HP1 で踏みとどまる（end-on-bust の例外）。
+    id: "phoenix-feather", name: "不死鳥の羽", kind: "trigger", cost: 46, glyph: "🪶",
+    desc: "ラン中1回、味方が飛ぶ寸前に割れて HP1 で踏みとどまる（発動で消える）。",
+    effect: { kind: "trigger", on: "bust" },
+  },
   {
     id: "sober-charm", name: "酔い止め", kind: "trigger", cost: 16,
     desc: "宴会で酔いそうになると、身代わりに割れて二日酔いを防ぐ（発動すると消える）。",

@@ -27,6 +27,9 @@ export function useItem(run, itemId) {
       action = "reroll"; // 実体（進路再抽選）は main 側。run.routeReroll を増やして seed をずらす。
       run.routeReroll = (run.routeReroll || 0) + 1;
       break;
+    case "revive": // 復活の霊薬：ダウン中(hp<=0)の味方を全員 HP100% で復活（no-revive の例外）。
+      for (const p of run.party) if (p.hp <= 0) p.hp = p.hpMax;
+      break;
     default:
       break; // passive/trigger は「使う」対象外（保険）
   }
@@ -74,6 +77,19 @@ export function consumeBanquetCharm(run) {
   if (!id) return false;
   run.items.splice(run.items.indexOf(id), 1);
   return true;
+}
+
+// トビ救済：不死鳥の羽(trigger/on=bust)を持っていれば消費して true（＝HP1で踏みとどまる）。
+export function consumeBustSaver(run) {
+  const id = (run?.items || []).find((x) => { const e = itemById(x)?.effect; return e?.kind === "trigger" && e.on === "bust"; });
+  if (!id) return false;
+  run.items.splice(run.items.indexOf(id), 1);
+  return true;
+}
+
+// 先見の札（次の層を見通す道具）を持っているか。
+export function hasForesight(run) {
+  return (run?.items || []).some((x) => itemById(x)?.effect?.foresight);
 }
 
 // 次戦効果を取り出してクリア（対局起動時に呼ぶ）。戻り値の object を launchRogueliteBattle が使う。
