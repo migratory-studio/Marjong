@@ -4762,22 +4762,30 @@ button.primary.danger:hover { color: #ffbcbc; }
 .is-mob-face { background-image: var(--mob-sil); background-size: 240%; background-position: top center; background-repeat: no-repeat; }
 
 .rl-foot { display: flex; align-items: center; justify-content: space-between; }
-.rl-start { padding: 10px 26px; font-size: 16px; font-weight: 700; color: #2a1f08; background: var(--accent);
-  border: none; border-radius: 12px; cursor: pointer; }
-.rl-start:disabled { opacity: .4; cursor: default; }
-.rl-start:hover:not(:disabled) { filter: brightness(1.08); }
-.rl-retreat { padding: 10px 22px; font-size: 15px; font-weight: 700; color: var(--ink);
-  background: transparent; border: 2px solid var(--danger); border-radius: 12px; cursor: pointer; }
-.rl-retreat:hover { background: rgba(232,93,117,.15); }
+/* ボタン（楼光トーン：金のプライマリ／枠線のセカンダリ） */
+.rl-start { padding: 10px 28px; font-size: 16px; font-weight: 700; color: #1a1206; letter-spacing: .02em;
+  background: linear-gradient(180deg, #f0d98a, #e8c45d); border: none; border-radius: 11px; cursor: pointer;
+  box-shadow: 0 4px 14px rgba(232,196,93,.28); transition: transform .14s, box-shadow .14s, filter .14s; }
+.rl-start:disabled { opacity: .4; cursor: default; box-shadow: none; }
+.rl-start:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 6px 18px rgba(232,196,93,.4); }
+.rl-retreat { padding: 10px 22px; font-size: 15px; font-weight: 700; color: #e0a89c;
+  background: transparent; border: 1px solid rgba(255,120,100,.42); border-radius: 11px; cursor: pointer; transition: .14s; }
+.rl-retreat:hover { background: rgba(255,80,60,.1); border-color: var(--danger); color: #ffcec5; }
 
-/* オーバーレイ（ドラフト/継続/結果）。ステージ内に被せる。 */
-.rl-overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  background: rgba(0,0,0,.62); opacity: 0; transition: opacity .18s; z-index: 30; }
+/* オーバーレイ（ドラフト/継続/結果/各モーダル）。ステージ内に被せる。楼光パレットを供給。 */
+.rl-overlay { --rl-gold:#e8c45d; --rl-ink:#f3ece0; --rl-edge:rgba(232,196,93,0.26); --rl-ember:#c0563a;
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, rgba(8,6,12,0.5) 0%, rgba(6,4,9,0.74) 100%); opacity: 0; transition: opacity .18s; z-index: 30; }
 .rl-overlay.is-open { opacity: 1; }
-.rl-modal { width: min(840px, 88%); padding: 26px 30px; border-radius: 16px; text-align: center;
-  background: linear-gradient(160deg, #1c2a22, #141d18); border: 2px solid rgba(246,179,82,.4);
-  box-shadow: 0 18px 48px rgba(0,0,0,.5); }
-.rl-modal-head { font-size: 22px; font-weight: 800; color: var(--accent); margin-bottom: 18px; }
+/* フロスト闇パネル＋金の縁＋上辺アクセント（ハブと同じ世界観） */
+.rl-modal { position: relative; width: min(840px, 88%); padding: 24px 30px 26px; border-radius: 18px; text-align: center; color: var(--rl-ink); overflow: hidden;
+  background: linear-gradient(165deg, rgba(28,22,38,0.95) 0%, rgba(13,9,19,0.97) 100%); border: 1px solid var(--rl-edge);
+  box-shadow: 0 24px 60px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.04); }
+.rl-modal::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--rl-gold), transparent); opacity: .7; }
+.rl-modal-head { position: relative; font-family: var(--font-min, "Shippori Mincho", serif); font-size: 23px; font-weight: 700;
+  color: var(--rl-gold); letter-spacing: .05em; margin-bottom: 16px; padding-bottom: 12px; }
+.rl-modal-head::after { content: ""; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 56px; height: 1px; background: var(--rl-edge); }
 
 .rl-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .rl-card { display: flex; flex-direction: column; gap: 8px; padding: 16px 14px; min-height: 160px;
