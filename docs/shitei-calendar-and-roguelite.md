@@ -260,6 +260,7 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
   - 入手元：**ショップ**(道具枠)・**宝箱**(50%で道具)・**イベント**(`outcome.item`／「行き倒れ＝鉄壁の陣」)。満杯時は `showRogueliteItemSwap`。進路に「道具 N/3」ボタン→`showRogueliteItems`。所持パネルの道具グループに名称表示。
   - 回帰 `test/roguelite.mjs`(417)＋`--assert`(7)。実機で道具パネル/使用/入れ替え/進路ボタンを確認。
   - **任意アイコン画像**：カード/道具マスタに `icon: "graphic/ui/roguelite/{cards,items}/<id>.png"`（任意）を足すと、ドラフト/ショップ/道具パネル/入替/所持で画像表示。**未指定は絵文字マークでフォールバック・読込失敗は自動で絵文字に戻る**（`rlIcon` ヘルパ）。画像が無くても崩れない。
+- ✅ **荒牌流局のノーテン罰符＝HPダメージ（実装済み・楼光限定）**：山切れ流局（`_exhaustiveDraw`→`exhaustive:true`）で、ノーテン席（味方/敵対称）に最大HPの**20%ダメージ**。**カリュブディス（淵の蒐集）在卓で×3（60%）**。`ROGUELITE_NOTEN_FRAC=0.20`/`CHARYBDIS_NOTEN_MUL=3`。途中流局（四開槓）は対象外。罰符でトべば end-on-bust と同じくその局終了。流局オーバーレイに対象者と%を告知。
 - ✅ **HP成長の上限＋チューニング行動ログ（実装済み）**：
   - **HP青天井の抑制**：攻撃(dealCap2.4)・防御(takeFloor0.4)は天井ありだが、HP最大は無制限で「硬すぎて当分負けない」スポンジ化していた（HP積みビルドは敵HP比 F13=4.3倍→F20=9.9倍）。`cardEffects.BUFF_TUNE.hpMulCap=1.9`（累積HP倍率の上限）を導入→全フロアで自HP/敵HP比 0.45〜1.1 に収束、暴走テール(到達max 201→56)を断つ。中央値は維持(中堅greedy 20)・`--assert` 7/7。
   - **チューニング行動ログ**：`src/roguelite/rogueliteLog.js`。run_start/floor/hand/clear/buff/run_end を記録。各イベントに hpMulEff/dealMul/takeMul/skillLevel/items/HP合計＋hand は与/被ダメ・自/味方/敵HP合計を同梱。

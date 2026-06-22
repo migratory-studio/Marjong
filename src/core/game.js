@@ -956,6 +956,7 @@ export class Game {
     const dealerTenpai = tenpai[this.dealerIndex];
     this.lastResult = {
       draw: true,
+      exhaustive: true, // 荒牌平局（山切れ）。四開槓等の途中流局と区別（楼光のノーテン罰符ダメージ用）。
       tenpai,
       deltas: this.players.map((p, i) => p.points - before[i]),
     };

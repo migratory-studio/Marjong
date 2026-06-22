@@ -209,6 +209,8 @@ let pairHpCells = null;          // ペア戦HPボードのDOM参照マップ
 let rogueliteState = null;       // ローグライト・ラン進行中の状態（{ run } 等）。null = 非ローグライト（F7）
 let rogueliteHandLimit = null;   // 楼光の館：この1戦の「定められた局数」(maxHands)。null = 非ローグライト
 const ROGUELITE_RIICHI_FRAC = 0.05; // 楼光の館：リーチ宣言で最大HPの5%を消費（緊張感のあるギャンブル）
+const ROGUELITE_NOTEN_FRAC = 0.20;  // 楼光の館：荒牌平局でノーテン席が最大HPの20%ダメージ
+const CHARYBDIS_NOTEN_MUL = 3;      // カリュブディス（淵の蒐集）在卓ならノーテン罰符が3倍
 // 楼光の館：中断したランの一時保存（localStorage）。撤退/全滅で削除。データがあれば再開を問う。
 const RL_RUN_KEY = "mahjong-rpg.rogueliteRun";
 function saveRogueliteRun(run) {
@@ -4360,13 +4362,22 @@ function showHandResult() {
     const overlay = el("win-overlay");
     overlay.classList.remove("hidden");
     const tenpaiNames = r.tenpai.map((t, i) => (t ? game.players[i].character.name : null)).filter(Boolean);
+    // 楼光：荒牌平局のノーテン罰符（最大HPの20%・カリュブディス在卓で×3）を告知。
+    let notenNote = "";
+    if (pairBattleData?.isRoguelite && r.exhaustive) {
+      const charybdis = (pairBattleData.chars || []).some((c) => (c?.id || "").startsWith("charybdis"));
+      const pct = Math.round(ROGUELITE_NOTEN_FRAC * (charybdis ? CHARYBDIS_NOTEN_MUL : 1) * 100);
+      const notenNames = r.tenpai.map((t, i) => (t ? null : game.players[i].character.name)).filter(Boolean);
+      notenNote = `<div class="win-sub rl-noten-note">ノーテン罰符：${notenNames.join("、") || "なし"} が最大HPの<b>${pct}%</b>ダメージ${charybdis ? "（淵の蒐集 ×3）" : ""}</div>`;
+    }
     overlay.innerHTML = `
       <div class="win-card">
         <h2 class="win-title">流局</h2>
         <div class="win-sub">テンパイ: ${tenpaiNames.join("、") || "なし"}</div>
+        ${notenNote}
         <div class="win-buttons"></div>
       </div>`;
-    appendNextButton(overlay.querySelector(".win-buttons"));
+    appendNextButton(overlay.querySelector(".win-buttons"), r); // r を渡す（ノーテン罰符の適用に必要）
     return;
   }
 
@@ -4655,6 +4666,7 @@ function appendNextButton(box, r) {
       // 流局（ノーテン罰符など）は和了ダメージ演出を通らない。ペア戦は罰符の点移動を
       // ペア点数へ反映してから進む（HPは被弾のみなので変えない）。
       if (pairBattleData && deltas && deltas.some((d) => d)) applyPairDrawSettlement(deltas);
+      applyRogueliteNotenPenalty(r); // 楼光：荒牌平局のノーテン罰符＝HPダメージ（カリュブディス3倍）
       proceed();
     }
   });
@@ -5158,6 +5170,31 @@ function applyPairDrawSettlement(deltas) {
     if (d) pairBattleData.pairScore[pairBattleData.pairOf[i]] += d;
     game.players[i].points = pairBattleData.hp[i]; // HPは流局で変えない（表示も据え置き）
   }
+}
+
+// 楼光の館限定：荒牌平局（山切れ）でノーテン席に最大HPの20%ダメージ（カリュブディス在卓で3倍）。
+// 味方/敵いずれのノーテン席にも対称に効く。トベば end-on-bust と同じく gameOver でその局終了。
+function applyRogueliteNotenPenalty(r) {
+  if (!pairBattleData?.isRoguelite || !r?.exhaustive) return;
+  const tenpai = r.tenpai || [];
+  const charybdis = (pairBattleData.chars || []).some((c) => (c?.id || "").startsWith("charybdis"));
+  const frac = ROGUELITE_NOTEN_FRAC * (charybdis ? CHARYBDIS_NOTEN_MUL : 1);
+  let hit = false;
+  for (let i = 0; i < game.numPlayers; i++) {
+    if (tenpai[i]) continue; // テンパイは無傷
+    const maxHp = pairBattleData.chars[i]?.stats?.startingPoints || 0;
+    const dmg = Math.round(maxHp * frac);
+    if (dmg <= 0 || pairBattleData.hp[i] <= 0) continue;
+    pairBattleData.hp[i] = Math.max(0, pairBattleData.hp[i] - dmg);
+    game.players[i].points = pairBattleData.hp[i];
+    hit = true;
+  }
+  if (!hit) return;
+  // ペア点数を現HP合計へ整合。
+  for (const p of pairBattleData.pairs) pairBattleData.pairScore[pairBattleData.pairOf[p.seats[0]]] = p.seats.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
+  updateHpBoard();
+  // ノーテン罰符でトんだら、誰か飛んだ＝その局で終了（end-on-bust と同じ）。
+  if (pairBattleData.hp.some((h) => h <= 0)) game.gameOver = true;
 }
 
 // ペア戦用ダメージ演出。団体戦版から「交代UI」「飛びカットイン／親満ペナルティ」を

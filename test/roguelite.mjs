@@ -609,4 +609,17 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   ok(run.party[0].hpMax <= Math.round(base * BUFF_TUNE.hpMulCap) + 2, "hpMax も上限内に収まる");
 }
 
+// 荒牌平局フラグ（楼光のノーテン罰符ダメージのトリガ）
+{
+  const seated = CHARACTERS.slice(0, 4).map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
+  const g = new Game(seated, -1, 1, { maxRounds: 1 });
+  g._exhaustiveDraw();
+  ok(g.lastResult?.draw === true, "荒牌＝draw");
+  ok(g.lastResult?.exhaustive === true, "荒牌平局に exhaustive フラグ（途中流局と区別）");
+  ok(Array.isArray(g.lastResult?.tenpai) && g.lastResult.tenpai.length === 4, "tenpai 配列（ノーテン判定用）");
+  // ノーテン罰符の想定計算（main.js 側のUI処理と同じ式）：最大HP×20%、カリュブディスで×3。
+  const dmg20 = Math.round(1000 * 0.20), dmg60 = Math.round(1000 * 0.20 * 3);
+  eq(dmg20, 200, "ノーテン罰符 20%=200"); eq(dmg60, 600, "カリュブディス3倍=600");
+}
+
 console.log(`roguelite.mjs: ${n} checks passed`);
