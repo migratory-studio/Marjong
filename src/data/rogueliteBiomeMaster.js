@@ -12,47 +12,47 @@
 // 出現制御:
 //   weight  … 抽選の重み（既定1）。minBand … この帯番号以降でしか出ない（影響大の層を深層限定に）。
 //   帯0(F1-10)は必ず中立「平穏の廃墟」。通常(中立)層は帯1以降も確率で当選するが、深いほど出にくい。
-// 任意 bgm … PeriTuneの曲名（例 "Tatari"）。指定すると sound/bgm/PerituneMaterial_<bgm>.mp3 を層BGMに。
-//   未配置/未指定は朔夜(Sakuya3)にフォールバック＝ファイルをDLして bgm を立てるだけで切替（要クレジット表記）。
+// 任意 bgm … 層BGM。PeriTuneの曲名（→ sound/bgm/PerituneMaterial_<bgm>.mp3）か ".mp3" 込みフルファイル名。
+//   未配置/未指定は朔夜(Sakuya3)にフォールバック。曲をDLして bgm を立てるだけで切替（要クレジット表記）。
 
 import { makeRng } from "../autobattle/autoBattle.js";
 
 export const ROGUELITE_BIOME_MASTER = [
-  // index 0 ＝ 中立層。帯0は固定でこれ。帯1以降も「通常」として確率当選（深いほど低確率）。
+  // index 0 ＝ 中立層。帯0は固定でこれ。帯1以降も「通常」として確率当選（深いほど低確率）。BGMは朔夜。
   { id: "ruins", name: "平穏の廃墟", bg: "bg-ruins", glyph: "🏚", color: "#9a8fb0",
     blurb: "苔むした静寂。可もなく不可もない、ひと息つける踊り場。", mods: {} },
 
   // ── 軽め（帯1〜）：緩急の波をつくる基本層 ──
   { id: "collapse", name: "崩落の坑", bg: "bg-basement", glyph: "🕳", color: "#c0563a", minBand: 1,
-    blurb: "足元が軋む。被弾が重くのしかかる代わり、抜ければ実入りは大きい。",
+    blurb: "足元が軋む。被弾が重くのしかかる代わり、抜ければ実入りは大きい。", bgm: "Entangle",
     mods: { dmgTakenMul: 1.5, coinMul: 1.4 } },
   { id: "onsen", name: "温泉郷", bg: "bg-ryokan", glyph: "♨", color: "#74b58e", minBand: 1,
-    blurb: "湯けむりの安らぎ。傷は癒え、痛みも和らぐ憩いの層。",
+    blurb: "湯けむりの安らぎ。傷は癒え、痛みも和らぐ憩いの層。", bgm: "Shizima3",
     mods: { dmgTakenMul: 0.65, regenMul: 1.6 } },
   { id: "dusk", name: "見晴らしの屋上", bg: "bg-school-rooftop", glyph: "🌇", color: "#e8a24a", minBand: 1,
-    blurb: "高く晴れた見晴らし。攻めが冴え、アガリがよく刺さる。",
+    blurb: "高く晴れた見晴らし。攻めが冴え、アガリがよく刺さる。", bgm: "Hanagoyomi2",
     mods: { dmgDealMul: 1.25 } },
   { id: "dojo", name: "鍛錬の道場", bg: "bg-dojo", glyph: "🥋", color: "#c8a14a", minBand: 1,
-    blurb: "張りつめた木の匂い。打ち込むほどに冴える、攻めと整えの層。",
+    blurb: "張りつめた木の匂い。打ち込むほどに冴える、攻めと整えの層。", bgm: "Kengeki",
     mods: { dmgDealMul: 1.2, regenMul: 1.2 } },
 
   // ── 中盤（帯2〜）：振れ幅の大きい層 ──
   { id: "festival", name: "狂騒の祭", bg: "bg-festival", glyph: "🎆", color: "#e0a23e", minBand: 2,
-    blurb: "光と喧騒。光貨は雨と降るが、浮かれた心に隙が生まれる。",
+    blurb: "光と喧騒。光貨は雨と降るが、浮かれた心に隙が生まれる。", bgm: "Ohayashi2A",
     mods: { coinMul: 3, dmgTakenMul: 1.25 } },
   { id: "metropolis", name: "喧噪の都", bg: "bg-city", glyph: "🌃", color: "#6f8ad0", minBand: 2,
-    blurb: "強者ひしめく雑踏。敵は手強いが、得る力も上等。",
+    blurb: "強者ひしめく雑踏。敵は手強いが、得る力も上等。", bgm: "Peritune_The_City_Breathes_Your_Name_loop.mp3",
     mods: { enemyLvAdd: 1, draftBias: 0.4 } },
   { id: "gamble", name: "賭場の隠れ家", bg: "bg-hideout", glyph: "🎲", color: "#b0533c", minBand: 2,
-    blurb: "煙の奥、札と点棒が舞う。実入りは破格、だが気を抜けば足元を掬われる。",
+    blurb: "煙の奥、札と点棒が舞う。実入りは破格、だが気を抜けば足元を掬われる。", bgm: "Carnival_Dark",
     mods: { coinMul: 2.4, draftBias: 0.3, dmgTakenMul: 1.2 } },
   { id: "insight", name: "看破の間", bg: "bg-blackboard", glyph: "👁", color: "#5fb0c0", minBand: 2,
-    blurb: "盤面が手に取るように視える。危険は先に読めるが、相手も只者ではない。",
+    blurb: "盤面が手に取るように視える。危険は先に読めるが、相手も只者ではない。", bgm: "Peritune_Bewitched_Forest_loop.mp3",
     mods: { dmgTakenMul: 0.7, enemyLvAdd: 1 } },
 
   // ── 深層（帯3〜）：影響力の大きい劇物 ──
   { id: "abyss", name: "奈落", bg: "bg-bar", glyph: "🕯", color: "#8a6fb0", minBand: 3,
-    blurb: "終電は来ない。盃の底に沈む闇——HPの器が半分に削がれる代わり、抜けた者には破格の褒美が待つ。",
+    blurb: "終電は来ない。盃の底に沈む闇——HPの器が半分に削がれる代わり、抜けた者には破格の褒美が待つ。", bgm: "Tatari",
     mods: { hpMul: 0.5, coinMul: 1.6, draftBias: 0.5 } },
 ];
 
