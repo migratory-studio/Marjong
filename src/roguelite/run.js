@@ -130,6 +130,7 @@ export function newRun(party, seed) {
     items: [],     // 道具スロット（最大3。active=フロア選択で使う / passive=常設 / trigger=自動）
     nextBattle: {}, // 「次の1戦だけ」効果（道具で仕込む。launch で消費）
     routeReroll: 0, // 地図の写しで進路を引き直した回数（seedずらし用）
+    biomeRerolls: {}, // 帯番号→巡りの賽で層を引き直した回数（biomeOf がseedずらしに使う）
     visited: [], // 通過したフロアid（進路の被り回避・来歴）
     alive: true,
   };
@@ -147,6 +148,7 @@ export function serializeRun(run) {
     seed: run.seed, floor: run.floor, cleared: run.cleared, coins: run.coins,
     skillLevel: run.skillLevel, cards: [...(run.cards || [])], items: [...(run.items || [])],
     mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
+    biomeRerolls: { ...(run.biomeRerolls || {}) },
     lineup: run.lineup || null, visited: [...(run.visited || [])], eventSeen: !!run.eventSeen,
     party: run.party.map((m) => ({ id: m.id, hp: m.hp, hpMax: m.hpMax, hungover: !!m.hungover })),
   };
@@ -167,6 +169,7 @@ export function deserializeRun(data, resolveChar) {
     cards: [...(data.cards || [])], mods: { ...freshMods(), ...(data.mods || {}) },
     cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1,
     items: [...(data.items || [])], nextBattle: data.nextBattle || {}, routeReroll: data.routeReroll || 0,
+    biomeRerolls: { ...(data.biomeRerolls || {}) },
     lineup: Array.isArray(data.lineup) ? data.lineup : undefined, visited: [...(data.visited || [])],
     eventSeen: !!data.eventSeen, alive: true,
   };

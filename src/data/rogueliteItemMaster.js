@@ -61,6 +61,12 @@ export const ROGUELITE_ITEM_MASTER = [
     desc: "その場でパーティのスキルレベルを1上げる（鍛冶屋いらず）。",
     effect: { kind: "skillUp", delta: 1 },
   },
+  {
+    // 層に踏み入る前に「巡りの賽」で層を引き直す。フロア選択では使わない（useAt:"biome"）。
+    id: "biome-dice", name: "巡りの賽", kind: "active", cost: 32, useAt: "biome", glyph: "🎲",
+    desc: "層に踏み入る前に、その層を一度だけ引き直せる（引き直すと消える）。",
+    effect: { kind: "biomeReroll" },
+  },
   // ---- 自動発動（条件で勝手に効いて消える） ----
   {
     id: "sober-charm", name: "酔い止め", kind: "trigger", cost: 16,

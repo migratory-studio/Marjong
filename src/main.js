@@ -56,7 +56,7 @@ import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips } from "./data/roguel
 import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
-import { useItem, itemMods, consumeBanquetCharm, takeNextBattle } from "./roguelite/itemEffects.js";
+import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie } from "./roguelite/itemEffects.js";
 import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
@@ -2164,7 +2164,22 @@ function renderRoute(run) {
   if (run._biomeBandShown !== band) {
     run._biomeBandShown = band;
     enterRogueliteAmbience(); // 背景を新しい層へ切り替え
-    showRogueliteBiomeIntro(host, { biome: biomeOf(run), floor: run.floor, onDone: () => renderRoute(run) });
+    const showBiome = () => {
+      showRogueliteBiomeIntro(host, {
+        biome: biomeOf(run), floor: run.floor,
+        // 巡りの賽を持っていれば「踏み入る」前にこの層を引き直せる（使うと消える）。
+        onReshuffle: biomeDieId(run) ? () => {
+          consumeBiomeDie(run);
+          run.biomeRerolls = run.biomeRerolls || {};
+          run.biomeRerolls[band] = (run.biomeRerolls[band] || 0) + 1;
+          saveRogueliteRun(run);
+          enterRogueliteAmbience();   // 引き直した層の背景へ
+          showBiome();                // 新しい層で再提示（賽を使い切れば次はボタン無し）
+        } : null,
+        onDone: () => renderRoute(run),
+      });
+    };
+    showBiome();
     return;
   }
   saveRogueliteRun(run); // 進路＝安全な再開チェックポイント（中断時はこの階の進路から再開）

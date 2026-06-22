@@ -34,9 +34,24 @@ export function useItem(run, itemId) {
   return { ok: true, action, item };
 }
 
-// 所持している道具のうち active（使える消費）か。passive/trigger は使用ボタンを出さない。
+// 所持している道具のうち、フロア選択で「使える」消費か。passive/trigger と
+// useAt:"biome"（層入場でのみ使う巡りの賽）は floor-select の使用ボタンを出さない。
 export function isActiveItem(itemId) {
-  return itemById(itemId)?.kind === "active";
+  const def = itemById(itemId);
+  return def?.kind === "active" && def.useAt !== "biome";
+}
+
+// 「巡りの賽」（層入場で層を引き直す道具）を所持していれば id を返す。
+export function biomeDieId(run) {
+  return (run?.items || []).find((x) => itemById(x)?.useAt === "biome") || null;
+}
+
+// 巡りの賽を1つ消費（層を引き直したとき）。あれば true。
+export function consumeBiomeDie(run) {
+  const id = biomeDieId(run);
+  if (!id) return false;
+  run.items.splice(run.items.indexOf(id), 1);
+  return true;
 }
 
 // 常設(passive)道具の合計効果。run.items から都度集計＝取り出すと効果も消える。

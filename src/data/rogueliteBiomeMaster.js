@@ -66,9 +66,10 @@ export function bandOfFloor(floor = 1) { return Math.floor((Math.max(1, floor) -
 function neutralWeight(band) { return Math.max(0.4, 2.6 - band * 0.55); }
 
 // 帯→その層（決定論：seed×帯）。帯0は必ず中立。minBand ゲート＋通常層の深度減衰＋直前帯と被り回避。
-export function biomeForBand(seed, band) {
+// reroll：巡りの賽で引き直した回数（>0 で別の層になる）。0 は従来と同一の seed 文字列＝後方互換。
+export function biomeForBand(seed, band, reroll = 0) {
   if (band <= 0) return NEUTRAL;
-  const rng = makeRng(`${seed}:biome:${band}`);
+  const rng = makeRng(`${seed}:biome:${band}${reroll ? `:r${reroll}` : ""}`);
   const prev = band > 1 ? biomeForBand(seed, band - 1) : null;
   const cand = [];
   for (const b of ROGUELITE_BIOME_MASTER) {
@@ -84,8 +85,12 @@ export function biomeForBand(seed, band) {
   return cand[cand.length - 1].b;
 }
 
-export function biomeForFloor(seed, floor = 1) { return biomeForBand(seed, bandOfFloor(floor)); }
-export function biomeOf(run) { return biomeForFloor(run?.seed, run?.floor || 1); }
+export function biomeForFloor(seed, floor = 1, reroll = 0) { return biomeForBand(seed, bandOfFloor(floor), reroll); }
+export function biomeOf(run) {
+  const band = bandOfFloor(run?.floor || 1);
+  const reroll = run?.biomeRerolls?.[band] || 0; // 巡りの賽で引き直した回数（帯ごと）
+  return biomeForFloor(run?.seed, run?.floor || 1, reroll);
+}
 export function biomeMods(run) { return biomeOf(run)?.mods || {}; }
 
 // 層効果を「人間語チップ」へ（入場演出用）。tone は describeOutcome と同系統。

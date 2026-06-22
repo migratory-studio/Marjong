@@ -562,6 +562,27 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   ok(biomeEffectChips(biomeById("abyss")).some((c) => /HP最大/.test(c.t)), "奈落チップにHP最大減");
   ok(biomeEffectChips(biomeById("ruins")).some((c) => /特殊効果なし/.test(c.t)), "中立は特殊効果なしチップ");
   for (const bdef of ROGUELITE_BIOME_MASTER) ok(bdef.id && bdef.name && bdef.bg && bdef.glyph, `biome 必須項目: ${bdef.id}`);
+  // 巡りの賽：reroll で層が変わりうる／reroll 0 は従来と同一（後方互換）。
+  const { biomeForFloor, biomeOf } = await import("../src/data/rogueliteBiomeMaster.js");
+  eq(biomeForBand("x", 2, 0).id, biomeForBand("x", 2).id, "reroll=0 は従来と同一");
+  ok([...Array(80)].some((_, s) => biomeForBand(`rr-${s}`, 2, 1).id !== biomeForBand(`rr-${s}`, 2, 0).id), "reroll=1 で層が変わりうる");
+  { // biomeOf が run.biomeRerolls を反映
+    const r = { seed: "bz", floor: 21, biomeRerolls: {} };
+    const a = biomeOf(r); r.biomeRerolls[2] = 1; const b = biomeOf(r);
+    ok(a.id === biomeForFloor("bz", 21, 0).id && b.id === biomeForFloor("bz", 21, 1).id, "biomeOf が帯ごとの reroll を見る");
+  }
+}
+// 巡りの賽（道具）：floor-select 使用対象外／消費ヘルパ
+{
+  const { isActiveItem, biomeDieId, consumeBiomeDie } = await import("../src/roguelite/itemEffects.js");
+  const { itemById } = await import("../src/data/rogueliteItemMaster.js");
+  ok(itemById("biome-dice"), "巡りの賽が存在");
+  ok(!isActiveItem("biome-dice"), "巡りの賽はフロア選択の使用対象外");
+  ok(isActiveItem("heal-potion"), "通常の消費道具は使用対象");
+  const run = { items: ["biome-dice", "heal-potion"] };
+  eq(biomeDieId(run), "biome-dice", "賽の所持判定");
+  ok(consumeBiomeDie(run) && !run.items.includes("biome-dice"), "賽を消費して消える");
+  ok(!consumeBiomeDie(run), "賽が無ければ消費しない");
 }
 
 console.log(`roguelite.mjs: ${n} checks passed`);

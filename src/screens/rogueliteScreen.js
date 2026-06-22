@@ -523,13 +523,16 @@ export function showRoguelitePursue(container, opts = {}) {
 // ---- 層（バイオーム）入場演出 ----
 // 10階ごとに塔の景色が変わる瞬間を、frontend-design のトーンで一拍見せる（題材＝記憶を映す塔）。
 export function showRogueliteBiomeIntro(container, opts = {}) {
-  const { biome, floor = 1, onDone } = opts;
+  const { biome, floor = 1, onDone, onReshuffle = null } = opts;
   if (!container || !biome) { onDone?.(); return; }
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-biome";
   const bgImg = bgDef(biome.bg)?.image;
   const chips = biomeEffectChips(biome).map((g) => `<span class="rl-gain-chip ${g.tone}">${g.t}</span>`).join("");
   const band = Math.floor((Math.max(1, floor) - 1) / 10) + 1;
+  // 巡りの賽を持っていれば「踏み入る」前にこの層を引き直せる（使うと消える）。
+  const reshuffleBtn = onReshuffle
+    ? `<button type="button" class="rl-retreat rl-biome-reroll" id="rl-biome-reroll"><span class="rl-hub-mico">🎲</span>別の層を引く<small>巡りの賽</small></button>` : "";
   ov.innerHTML = `
     <div class="rl-biome-bg" style="${bgImg ? `background-image:url('${bgImg}')` : ""}"></div>
     <div class="rl-biome-card" style="--biome:${biome.color || "var(--rl-gold)"}">
@@ -538,12 +541,16 @@ export function showRogueliteBiomeIntro(container, opts = {}) {
       <h2 class="rl-biome-name">${biome.name}</h2>
       <p class="rl-biome-blurb">${biome.blurb || ""}</p>
       <div class="rl-biome-chips">${chips}</div>
-      <button type="button" class="rl-start rl-biome-go" id="rl-biome-go">踏み入る ›</button>
+      <div class="rl-biome-btns">
+        ${reshuffleBtn}
+        <button type="button" class="rl-start rl-biome-go" id="rl-biome-go">踏み入る ›</button>
+      </div>
     </div>`;
   container.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("is-open"));
   const go = () => { ov.remove(); onDone?.(); };
   ov.querySelector("#rl-biome-go")?.addEventListener("click", go, { once: true });
+  ov.querySelector("#rl-biome-reroll")?.addEventListener("click", () => { ov.remove(); onReshuffle?.(); }, { once: true });
 }
 
 // ---- 休息 / 宴会（回復演出） ----
@@ -701,11 +708,13 @@ export function showRogueliteItems(container, opts = {}) {
     if (!id) return `<div class="rl-item-slot empty"><span>空きスロット ${i + 1}</span></div>`;
     const it = itemById(id); if (!it) return "";
     const km = ITEM_KIND_META[it.kind] || {};
-    const usable = it.kind === "active";
+    const usable = it.kind === "active" && it.useAt !== "biome"; // 巡りの賽は層入場でのみ使う
+    const passiveNote = it.useAt === "biome" ? "層に踏み入る時に使える"
+      : (it.kind === "passive" ? "持っている間ずっと有効" : "条件で自動発動");
     return `<div class="rl-item-slot" data-id="${id}">
       <div class="rl-item-head"><span class="rl-item-kind" style="--cat:${km.color}">${it.icon ? rlIcon(it.icon, "rl-ico") : km.mark} ${km.label}</span><span class="rl-item-name">${it.name}</span></div>
       <div class="rl-item-desc">${it.desc}</div>
-      ${usable ? `<button type="button" class="rl-item-use" data-use="${id}">使う</button>` : `<div class="rl-item-passive">${it.kind === "passive" ? "持っている間ずっと有効" : "条件で自動発動"}</div>`}
+      ${usable ? `<button type="button" class="rl-item-use" data-use="${id}">使う</button>` : `<div class="rl-item-passive">${passiveNote}</div>`}
     </div>`;
   };
   const render = () => {
