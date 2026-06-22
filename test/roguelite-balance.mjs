@@ -12,7 +12,8 @@ import {
   newRun, enemyUnitForFloor, seatedAllies, floorEnemyHp, healParty, rollHangover,
   rogueliteDamageDeltas, rollDraft, carrySlotsFor, allyScaledHp, RL_TUNE, floorDamageMul, runWiped,
 } from "../src/roguelite/run.js";
-import { applyCard, applyEffect } from "../src/roguelite/cardEffects.js";
+import { applyCard, applyEffect, BUFF_TUNE } from "../src/roguelite/cardEffects.js";
+if (process.env.HPCAP) BUFF_TUNE.hpMulCap = Number(process.env.HPCAP); // 累積HP倍率の上限を掃引
 import { shopStock, buyShopItem, shrineOffers } from "../src/roguelite/run.js";
 import { ROGUELITE_CARD_MASTER, RARITY_WEIGHTS, drawCards, cardById } from "../src/data/rogueliteCardMaster.js";
 import { floorTypeById, drawFloorChoices, coinsForClear, forgeCost } from "../src/data/rogueliteFloorMaster.js";
@@ -154,6 +155,19 @@ const PICKERS = {
       if (k === "maxHpUp") return 50 + c.effect.mul * 10;
       if (k === "grantAbility") return 45;
       if (k === "heal") return 30;
+      return 10;
+    };
+    return [...cards].sort((a, b) => rank(b) - rank(a))[0] || null;
+  },
+  // 戦車：HP最大→防御→compound を最優先（「硬すぎて当分負けない」を再現＝HP上限の検証用）。
+  tank: (cards) => {
+    const rank = (c) => {
+      const k = c.effect.kind;
+      if (k === "maxHpUp") return 100 * c.effect.mul;
+      if (k === "compound") return 90;
+      if (k === "takeReduce") return 70 + c.effect.rate * 50;
+      if (k === "heal") return 50;
+      if (k === "dealMul") return 30 * c.effect.mul;
       return 10;
     };
     return [...cards].sort((a, b) => rank(b) - rank(a))[0] || null;

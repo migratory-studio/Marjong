@@ -12,6 +12,12 @@
 //
 // すべて run をその場で破壊的に更新する（ランは1本の可変状態＝セーブ単位）。純粋に近い小関数群。
 
+// バフ成長の上限（test/roguelite-balance.mjs で調整／本番は既定）。攻撃(dealCap)・防御(takeFloor)は
+// run.js 側で天井あり。HP は青天井だと「硬すぎて当分負けない」スポンジ化するので累積倍率に上限を置く。
+export const BUFF_TUNE = {
+  hpMulCap: 1.9, // 累積HP倍率の上限（基礎HPの最大1.9倍まで＝敵HPとの乖離を抑える）
+};
+
 // 1つの effect オブジェクトを run へ適用（compound は再帰）。
 export function applyEffect(run, effect) {
   if (!effect || !effect.kind) return run;
@@ -23,7 +29,10 @@ export function applyEffect(run, effect) {
       break;
     }
     case "maxHpUp": {
-      const mul = effect.mul ?? 1;
+      let mul = effect.mul ?? 1;
+      // 累積HP倍率を上限でクランプ（超過分は無効＝HPスポンジ化を防ぐ）。
+      const cap = BUFF_TUNE.hpMulCap;
+      if (cap && m.hpMul * mul > cap) mul = Math.max(1, cap / m.hpMul);
       m.hpMul *= mul; // 累積HP倍率（バフ合計UIの「HP +X%」表示用）
       for (const p of run.party) {
         p.hpMax = Math.round(p.hpMax * mul);

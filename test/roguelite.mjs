@@ -599,5 +599,14 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   const d = rollDraft(run, { allLegendary: true });
   ok(d.length === 3 && d.every((c) => c.rarity === "legendary"), "rollDraft allLegendary は全レジェ");
 }
+// HP成長の上限（青天井のスポンジ化を防ぐ）：累積HP倍率は hpMulCap を超えない
+{
+  const { BUFF_TUNE } = await import("../src/roguelite/cardEffects.js");
+  const run = newRun(party, "hpcap");
+  const base = run.party[0].hpMax;
+  for (let i = 0; i < 20; i++) applyEffect(run, { kind: "maxHpUp", mul: 1.4 }); // 積みまくる
+  ok(run.mods.hpMul <= BUFF_TUNE.hpMulCap + 1e-6, `累積HP倍率は上限以下 (${run.mods.hpMul.toFixed(2)}<=${BUFF_TUNE.hpMulCap})`);
+  ok(run.party[0].hpMax <= Math.round(base * BUFF_TUNE.hpMulCap) + 2, "hpMax も上限内に収まる");
+}
 
 console.log(`roguelite.mjs: ${n} checks passed`);
