@@ -10,7 +10,7 @@
 //     和了1発で 200〜400 程度を削る＝1戦は数和了で決着。階層で敵HPだけ増やして難度を上げる。
 
 import { makeMob } from "../data/mobMaster.js";
-import { buildRivalById, RIVAL_IDS } from "../data/tournamentRivalMaster.js";
+import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { paramsFromLv, makeRng } from "../autobattle/autoBattle.js";
 import { freshMods, applyCard } from "./cardEffects.js";
 import { ROGUELITE_CARD_MASTER, drawCards, cardById } from "../data/rogueliteCardMaster.js";
@@ -281,6 +281,32 @@ export function benchAbilityIds(run) {
 //   floorType.enemy: 'mob'（通常）/ 'named'（強敵＝名前＋能力のモブ）/ 'boss'（ボス＝キャラ）
 //   未指定は floor のボス判定にフォールバック（後方互換）。強敵/ボスはHP・Lvを上乗せ。
 const ELITE_ABILITIES = ["lucky-draw", "chunchan", "dora-pull", "danger-sense"];
+
+// ボス＝プレイアブルキャラ（編成中＋弟子を除く）から決定論で n 人選ぶ。
+// 弟子(CompletedAvatar)は CHARACTER_MASTER に居ないので自然に除外。編成中キャラは id で除外。
+function pickBossChars(run, rng, n) {
+  const exclude = new Set((run.party || []).map((m) => m.id));
+  const avail = CHARACTER_MASTER.filter((c) => c && c.id && !c.isMob && !exclude.has(c.id));
+  const chosen = [];
+  while (chosen.length < n && avail.length) chosen.push(avail.splice(Math.floor(rng() * avail.length), 1)[0]);
+  return chosen;
+}
+
+// プレイアブルキャラ → ボス敵メンバー（HP・強さを階層スケールで上書き。立ち絵/能力は本人のもの）。
+function bossMemberFromChar(char, hp, lv, seed) {
+  return {
+    id: `boss:${char.id}`,
+    name: char.name, reading: char.reading || "", color: char.color || "#7c7f8a",
+    role: "boss", isMob: false, isRival: true, rivalTitle: char.title || "館の主",
+    bio: "", profile: "",
+    stats: { startingPoints: hp },
+    assets: char.assets || { icon: "", portrait: "", voices: {} },
+    portraitPos: char.portraitPos || "top center",
+    params: paramsFromLv(lv, seed),
+    abilities: Array.isArray(char.abilities) ? char.abilities.map((a) => ({ ...a })) : [],
+  };
+}
+
 export function enemyUnitForFloor(run, floorType = null, salt = "") {
   const floor = run.floor;
   const kind = floorType?.enemy || (isBossFloor(floor) ? "boss" : "mob");
@@ -292,9 +318,9 @@ export function enemyUnitForFloor(run, floorType = null, salt = "") {
   const members = [];
 
   if (kind === "boss") {
-    const bossId = RIVAL_IDS[Math.floor(rng() * RIVAL_IDS.length)];
-    const lead = buildRivalById(bossId, hp);
-    if (lead) { lead.params = paramsFromLv(lv, `${run.seed}:boss${floor}${salt}`); members.push(lead); }
+    // ボス＝プレイアブルキャラ2人（編成中＋弟子は除外）。本人の立ち絵・能力で立ちはだかる。
+    const bosses = pickBossChars(run, rng, 2);
+    for (const c of bosses) members.push(bossMemberFromChar(c, hp, lv, `${run.seed}:boss${floor}:${c.id}${salt}`));
   } else if (kind === "named") {
     const abil = ELITE_ABILITIES[Math.floor(rng() * ELITE_ABILITIES.length)];
     const lead = makeMob({ seed: `${run.seed}:elite${floor}${salt}`, startingPoints: hp, abilityId: abil });

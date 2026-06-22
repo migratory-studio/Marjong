@@ -609,6 +609,25 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   ok(run.party[0].hpMax <= Math.round(base * BUFF_TUNE.hpMulCap) + 2, "hpMax も上限内に収まる");
 }
 
+// ボス＝プレイアブルキャラ（編成中＋弟子は除外）／強敵＝ネームドモブ
+{
+  const { CHARACTER_MASTER } = await import("../src/data/characterMaster.js");
+  const cmIds = new Set(CHARACTER_MASTER.map((c) => c.id));
+  const party2 = [
+    { id: "shiyue", char: { id: "shiyue" }, avatarHpMax: 14000 },
+    { id: "kuidoshi", char: { id: "kuidoshi" }, avatarHpMax: 13000 },
+  ];
+  const run = newRun(party2, "bossplay"); run.floor = 10;
+  const boss = enemyUnitForFloor(run, { enemy: "boss" });
+  ok(boss.isBoss && boss.members.length === 2, "ボスは2人");
+  ok(boss.members.every((m) => cmIds.has(m.id.replace(/^boss:/, ""))), "ボスはプレイアブルキャラ実体");
+  ok(!boss.members.some((m) => /shiyue|kuidoshi/.test(m.id)), "編成中キャラはボスに出ない");
+  ok(boss.members.some((m) => (m.abilities || []).length > 0), "ボスは本人の能力を持つ");
+  ok(boss.members.every((m) => !m.isMob), "ボスはモブ扱いでない（実立ち絵）");
+  const elite = enemyUnitForFloor(run, { enemy: "named" });
+  ok(elite.isElite && elite.members.some((m) => m.isElite), "強敵はネームドモブ");
+}
+
 // 荒牌平局フラグ（楼光のノーテン罰符ダメージのトリガ）
 {
   const seated = CHARACTERS.slice(0, 4).map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
