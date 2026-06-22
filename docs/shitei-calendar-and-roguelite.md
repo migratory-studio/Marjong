@@ -268,8 +268,8 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
 - ✅ **アカウント通貨「宝珠」＝進度報酬（実装済み）**：層（帯）に到達するたび段階的に獲得（`orbsForBand=5+band*3`・深いほど多い）。`run.orbsEarned` に加算→ラン終了時に `profile.orbs` へ commit（`saveProfile` の misc jsonb に自動永続＝マイグレ不要）。層入場演出に「宝珠+N／所持M」、ゲームオーバーに獲得＋口座残高を表示。**用途は別途検討**（アカウント横断のメタ通貨）。
 - ✅ **ボス＝プレイアブルキャラ／強敵＝ネームドモブ（実装済み）**：ボスフロアの敵を rival(モブ立ち絵)から**プレイアブルキャラ2人**へ（`CHARACTER_MASTER` から決定論抽選・**編成中＋弟子は除外**／弟子=CompletedAvatarはマスタ外で自然除外）。本人の立ち絵（`assets.portrait`解決＝青フォールバック無し）＋本人の能力で立ちはだかる。強敵(elite)はネームドモブのまま（`enemy:"named"`）。
 - ✅ **荒牌流局のノーテン罰符＝HPダメージ（実装済み・楼光限定）**：山切れ流局（`_exhaustiveDraw`→`exhaustive:true`）で、ノーテン席（味方/敵対称）に最大HPの**20%ダメージ**。**カリュブディス（淵の蒐集）在卓で×3（60%）**。`ROGUELITE_NOTEN_FRAC=0.20`/`CHARYBDIS_NOTEN_MUL=3`。途中流局（四開槓）は対象外。罰符でトべば end-on-bust と同じくその局終了。流局オーバーレイに対象者と%を告知。
-- ✅ **HP成長の上限＋チューニング行動ログ（実装済み）**：
-  - **HP青天井の抑制**：攻撃(dealCap2.4)・防御(takeFloor0.4)は天井ありだが、HP最大は無制限で「硬すぎて当分負けない」スポンジ化していた（HP積みビルドは敵HP比 F13=4.3倍→F20=9.9倍）。`cardEffects.BUFF_TUNE.hpMulCap=1.9`（累積HP倍率の上限）を導入→全フロアで自HP/敵HP比 0.45〜1.1 に収束、暴走テール(到達max 201→56)を断つ。中央値は維持(中堅greedy 20)・`--assert` 7/7。
+- ✅ **HP成長カーブ（上限は撤廃）＋チューニング行動ログ（実装済み）**：
+  - **HP上限は撤廃（青天井に戻した）**：当初 `cardEffects.BUFF_TUNE.hpMulCap=1.9` で累積HP倍率に上限を置いたが、深度値上がりと合わさり**+90%でHPが凍結→「取っても増えない＝壊れて見える」**体感バグになっていた。撤廃判断（実測）：ランを終わらせる主レバーは**被ダメ青天井(`floorDamageMul`)**で、HP上限は冗長。`hpMulCap` を **null（上限なし）** に戻しても**到達深度の中央値は不変**（tank型でも中堅17/育成完了20のまま）、伸びるのは運のいいtankランの**裾(max)のみ**（育成完了 max 62→87）＝スポンジ化はしない。`--assert` 7/7。`hpMulCap` は検証ノブとして残置（数値指定時のみクランプ・`HPCAP` env で掃引可）。
   - **チューニング行動ログ**：`src/roguelite/rogueliteLog.js`。run_start/floor/hand/clear/buff/run_end を記録。各イベントに hpMulEff/dealMul/takeMul/skillLevel/items/HP合計＋hand は与/被ダメ・自/味方/敵HP合計を同梱。
     - **送り先＝Supabase `public.roguelite_logs`**（節目イベントは即フラッシュ＝ラン中も追従／hand はバッチ20）。列＝client_id/session_id/run_id/seq/type/floor/biome/data(jsonb全文)、RLS＝anon INSERTのみ・読みは本人分（解析はダッシュボード/service_role）。
     - **識別子3段階**：`client_id`（端末・localStorage永続＝同じ人/端末か）／`session_id`（ページ読込ごと＝同じ起動か）／`run_id`（=run.seed・ランごと＝同じプレイか別か。再開は同seed＝繋がる）。これで「同一/別」を端末・起動・プレイの各粒度で追える。

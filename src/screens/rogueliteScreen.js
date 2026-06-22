@@ -320,7 +320,17 @@ export function buffTotalsHtml(run) {
   const defPct = Math.round((1 - (m.takeMul || 1)) * 100);
   const stat = (label, val, cls) => `<span class="rl-buff-stat ${cls}"><span class="rl-buff-k">${label}</span><b>${val >= 0 ? "+" : ""}${val}%</b></span>`;
   const lv = run?.skillLevel || 1;
-  const buffRow = `${stat("HP", hpPct, "hp")}${stat("攻", atkPct, "atk")}${stat("防", defPct, "def")}${lv > 1 ? `<span class="rl-buff-stat skl"><span class="rl-buff-k">技Lv</span><b>${lv}</b></span>` : ""}`;
+  // 条件付き（状況）バフ＝発動条件つきで効くため HP/攻/防 の累積%には乗らない。取ったのに合計が
+  // 動かず「効いてない」に見える対策＝専用チップで明示（title に発動条件を補足）。値>0のみ表示。
+  const cond = (label, val, tip) => `<span class="rl-buff-stat cond" title="${tip}"><span class="rl-buff-k">${label}</span><b>${val}</b></span>`;
+  const pct = (v) => Math.round(v * 100);
+  const condChips = [
+    m.streakDeal ? cond("波に乗る", `+${pct(m.streakDeal)}%/連勝`, "連勝数ぶん与ダメ上昇") : "",
+    m.lowHpPower ? cond("火事場", `+${pct(m.lowHpPower)}%`, "HPが低いほど与ダメ↑・被ダメ↓") : "",
+    m.revengeDeal ? cond("倍返し", `+${pct(m.revengeDeal)}%`, "前局に味方が被弾していた次局の和了で与ダメ↑") : "",
+    m.riichiDeal ? cond("背水", `+${pct(m.riichiDeal)}%`, "リーチ中の和了で与ダメ↑") : "",
+  ].join("");
+  const buffRow = `${stat("HP", hpPct, "hp")}${stat("攻", atkPct, "atk")}${stat("防", defPct, "def")}${lv > 1 ? `<span class="rl-buff-stat skl"><span class="rl-buff-k">技Lv</span><b>${lv}</b></span>` : ""}${condChips}`;
   // 必殺技（技スロット）
   const skills = (m.grantedAbilityIds || []).map((id) => abilityDef(id)?.name || id);
   const skillRow = skills.length

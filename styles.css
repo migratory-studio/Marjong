@@ -4958,6 +4958,8 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-buff-stat.atk b { color: #ff8f6b; }
 .rl-buff-stat.def b { color: #6fb6ff; }
 .rl-buff-stat.ward b { color: #e8c45d; }
+.rl-buff-stat.cond { border-color: rgba(217,168,255,0.30); }
+.rl-buff-stat.cond b { color: #d9a8ff; }
 
 /* 楼光の館：ラン専用バックグラウンド（廃墟の館） */
 .rl-run-backdrop { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 0; }

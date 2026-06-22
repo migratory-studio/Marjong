@@ -13,9 +13,12 @@
 // すべて run をその場で破壊的に更新する（ランは1本の可変状態＝セーブ単位）。純粋に近い小関数群。
 
 // バフ成長の上限（test/roguelite-balance.mjs で調整／本番は既定）。攻撃(dealCap)・防御(takeFloor)は
-// run.js 側で天井あり。HP は青天井だと「硬すぎて当分負けない」スポンジ化するので累積倍率に上限を置く。
+// run.js 側で天井あり。HP は上限なし（青天井）＝取れば必ず伸びる（「+90%で凍結＝壊れて見える」対策）。
+// ランが必ず終わるのは被ダメ青天井(floorDamageMul)が担保する＝HP上限は不要（バランス実測：上限を外しても
+// 到達深度の中央値は不変、伸びるのは運のいいtankランの裾のみ＝スポンジ化はしない）。hpMulCap は検証用に残す
+// （null=上限なし。test 側で HPCAP env を数値指定したときだけ効く）。
 export const BUFF_TUNE = {
-  hpMulCap: 1.9,       // 累積HP倍率の上限（基礎HPの最大1.9倍まで＝敵HPとの乖離を抑える）
+  hpMulCap: null,      // 累積HP倍率の上限。null=上限なし（青天井）。数値を入れるとその倍率で頭打ち（掃引検証用）
   depthGrowth: 0.025,  // 深度値上がり：HP/攻撃/防御バフの付与値を 1階ごとに +この割合 増幅（深いほど強いバフ）
 };
 // 深度スケール：その階で取得したバフの「上乗せ部分」をどれだけ増幅するか（floor1=×1）。
@@ -34,7 +37,7 @@ export function applyEffect(run, effect) {
     case "maxHpUp": {
       // 深度値上がり：上乗せ分(mul-1)を階層で増幅（深い階で取るほど強い）。
       let mul = 1 + ((effect.mul ?? 1) - 1) * depthScale(run.floor);
-      // 累積HP倍率を上限でクランプ（超過分は無効＝HPスポンジ化を防ぐ）。
+      // 累積HP倍率の上限（既定 null＝上限なし）。検証用に cap が数値のときだけクランプ。
       const cap = BUFF_TUNE.hpMulCap;
       if (cap && m.hpMul * mul > cap) mul = Math.max(1, cap / m.hpMul);
       m.hpMul *= mul; // 累積HP倍率（バフ合計UIの「HP +X%」表示用）
