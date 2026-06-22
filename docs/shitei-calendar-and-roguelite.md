@@ -260,6 +260,9 @@ HP回復／HP最大値＋／与ダメ倍率＋／被ダメ軽減＋／**＋1名�
   - 入手元：**ショップ**(道具枠)・**宝箱**(50%で道具)・**イベント**(`outcome.item`／「行き倒れ＝鉄壁の陣」)。満杯時は `showRogueliteItemSwap`。進路に「道具 N/3」ボタン→`showRogueliteItems`。所持パネルの道具グループに名称表示。
   - 回帰 `test/roguelite.mjs`(417)＋`--assert`(7)。実機で道具パネル/使用/入れ替え/進路ボタンを確認。
   - **任意アイコン画像**：カード/道具マスタに `icon: "graphic/ui/roguelite/{cards,items}/<id>.png"`（任意）を足すと、ドラフト/ショップ/道具パネル/入替/所持で画像表示。**未指定は絵文字マークでフォールバック・読込失敗は自動で絵文字に戻る**（`rlIcon` ヘルパ）。画像が無くても崩れない。
+- ✅ **役満ご祝儀＋必殺技レア度（実装済み）**：
+  - **役満ご祝儀**：味方が役満を和了して踏破したら、ドラフトを**オールレジェンダリー**に（`rogueliteState.yakumanThisBattle`＝和了FXで検出／`rollDraft({allLegendary})`→`drawCards(forceRarity:"legendary")`・在庫不足は epic フォールバック）。金帯「役満ご祝儀」で告知。
+  - **必殺技は常に epic/legendary**：grant 系カードを格上げ（幸運のツモ/ドラ手繰り=legendary・中張/老頭/危険感知=epic・牌寄せ=epic据置）。これでレジェンダリープールが4枚＝3枚ご祝儀が成立。
 - ✅ **バイオーム（"層"）システム＋層入場演出（実装済み）**：10階＝1層。塔の景色（背景）と固有モディファイアが帯ごとに変わる（楼光＝記憶を映す塔）。
   - 正典マスタ `src/data/rogueliteBiomeMaster.js`（1エントリ追記で層を増やせる）。決定論抽選（seed×帯／帯0=中立「平穏の廃墟」固定・連続回避）。
   - モディファイアは**既存ノブに掛けるだけ**：`dmgTakenMul`(被ダメ深度)・`dmgDealMul`(与ダメ深度)・`coinMul`(光貨)・`regenMul`(踏破回復)・`enemyLvAdd`(敵Lv)・`draftBias`(レア度)・`hpMul`(対局中HP上限・`run.party.hpMax`不変＝抜ければ回復で戻る)。

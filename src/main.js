@@ -2247,6 +2247,7 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
   if (!opts.pursue) rogueliteState.battleMods = takeNextBattle(run);
   const battleMods = rogueliteState.battleMods || {};
   rogueliteState.enduredSeats = new Set(); // 不屈：致命回避を使った席（各メンバー1回）
+  rogueliteState.yakumanThisBattle = false; // この戦で味方が役満を和了したか（踏破でご祝儀＝オールレジェ）
   const salt = opts.pursue ? `:p${rogueliteState.pursueRemaining || 0}` : "";
   const enemy = enemyUnitForFloor(run, floorType, salt);
   // 弱体の札：次戦だけ敵の初期HPを下げる。
@@ -2343,13 +2344,19 @@ function onRogueliteBattleEnd(result) {
   const dominateBonus = dominated ? Math.max(4, Math.round(coins * 0.6)) : 0;
   coins = Math.round((coins + dominateBonus) * itemMods(run).coinMul * (biomeMods(run).coinMul || 1)); // 商人の天秤（道具）＋層(祭/崩落)で光貨↑
   run.coins = (run.coins || 0) + coins;
-  // 賭場勝利は高レア確定気味のドラフト。通常は ko/HP/追撃/制圧でバイアス。
-  const cards = isGamble
-    ? rollDraft(run, { bias: 1, hpRatio: 1 })
-    : rollDraft(run, { ko: !!result.koAny || pursued || dominated, hpRatio: result.hpRatio ?? 0.5 });
+  // 役満ご祝儀：味方が役満を和了して踏破したら、ドラフトをオールレジェンダリーに。
+  const yakuman = !!rogueliteState.yakumanThisBattle; rogueliteState.yakumanThisBattle = false;
+  // 賭場勝利は高レア確定気味。通常は ko/HP/追撃/制圧でバイアス。ご祝儀は全レジェ。
+  const cards = yakuman
+    ? rollDraft(run, { allLegendary: true })
+    : isGamble
+      ? rollDraft(run, { bias: 1, hpRatio: 1 })
+      : rollDraft(run, { ko: !!result.koAny || pursued || dominated, hpRatio: result.hpRatio ?? 0.5 });
   showRogueliteDraft(host, {
     floor: run.floor, cards, charImages, coins: run.coins || 0,
-    bonus: dominated ? { label: "制圧ボーナス", note: `相手のHPを上回って決着！ 光貨+${Math.round(dominateBonus * itemMods(run).coinMul)}・レア度UP` } : null,
+    bonus: yakuman
+      ? { label: "役満ご祝儀", note: "役満を決めて踏破！ オールレジェンダリーの大盤振る舞い" }
+      : dominated ? { label: "制圧ボーナス", note: `相手のHPを上回って決着！ 光貨+${Math.round(dominateBonus * itemMods(run).coinMul)}・レア度UP` } : null,
     onPick: (card) => {
       if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
       enforceGrantCap(run, () => {
@@ -5166,6 +5173,8 @@ function showPairBattleDamageFx(r, onDone) {
   const isRl = !!pairBattleData.isRoguelite;
   const roles = pairBattleData.seatRoles || [];
   const winnerIsAlly = isRl && roles[r.winner] === "ally";
+  // 役満ご祝儀：味方が役満を和了したらフラグを立てる（この戦を踏破するとオールレジェンダリー）。
+  if (isRl && winnerIsAlly && r.result?.isYakuman && rogueliteState) rogueliteState.yakumanThisBattle = true;
   const enemyDmg = isRl ? game.players.reduce((a, _p, i) => a + (roles[i] === "enemy" && deltas[i] < 0 ? -deltas[i] : 0), 0) : 0;
   const rowHtml = (i) => {
     const c = pairBattleData.chars[i];

@@ -584,5 +584,20 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   ok(consumeBiomeDie(run) && !run.items.includes("biome-dice"), "賽を消費して消える");
   ok(!consumeBiomeDie(run), "賽が無ければ消費しない");
 }
+// 必殺技は常に最高(legendary)かその1つ下(epic)／役満ご祝儀＝オールレジェンダリー
+{
+  for (const c of ROGUELITE_CARD_MASTER) {
+    if (c.effect?.kind === "grantAbility") ok(["epic", "legendary"].includes(c.rarity), `必殺技は epic/legendary: ${c.id}=${c.rarity}`);
+  }
+  // forceRarity:"legendary" は全てレジェンダリー（在庫4枚＝3枚引ける）
+  for (let s = 0; s < 30; s++) {
+    const d = drawCards(makeRng(`leg-${s}`), { count: 3, forceRarity: "legendary" });
+    ok(d.length === 3 && d.every((c) => c.rarity === "legendary"), `forceRarity=legendary で全レジェ(${s})`);
+  }
+  // rollDraft allLegendary も全レジェ
+  const run = newRun(party, "yaktest"); run.floor = 7;
+  const d = rollDraft(run, { allLegendary: true });
+  ok(d.length === 3 && d.every((c) => c.rarity === "legendary"), "rollDraft allLegendary は全レジェ");
+}
 
 console.log(`roguelite.mjs: ${n} checks passed`);

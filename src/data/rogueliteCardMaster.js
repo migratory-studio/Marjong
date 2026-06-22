@@ -122,7 +122,7 @@ export const ROGUELITE_CARD_MASTER = [
     id: "grant-lucky-draw",
     name: "幸運のツモ（札）",
     desc: "着卓する味方に「ツモ偏重」が宿る。手が早くなる。",
-    rarity: "rare",
+    rarity: "legendary",
     effect: { kind: "grantAbility", abilityId: "lucky-draw" },
     stackable: false,
   },
@@ -130,7 +130,7 @@ export const ROGUELITE_CARD_MASTER = [
     id: "grant-chunchan",
     name: "中張の風（札）",
     desc: "着卓する味方に「中張ツモ」が宿る。タンヤオ軸で押す。",
-    rarity: "rare",
+    rarity: "epic",
     effect: { kind: "grantAbility", abilityId: "chunchan" },
     stackable: false,
   },
@@ -138,7 +138,7 @@ export const ROGUELITE_CARD_MASTER = [
     id: "grant-rootou",
     name: "老頭の構え（札）",
     desc: "着卓する味方に「老頭ツモ」が宿る。么九・染め手・国士の軸。",
-    rarity: "rare",
+    rarity: "epic",
     effect: { kind: "grantAbility", abilityId: "rootou" },
     stackable: false,
   },
@@ -146,7 +146,7 @@ export const ROGUELITE_CARD_MASTER = [
     id: "grant-danger-sense",
     name: "危険感知（札）",
     desc: "着卓する味方に「危険感知」が宿る。当たり牌を警告＝放銃を避けて粘る守備の軸。",
-    rarity: "rare",
+    rarity: "epic",
     effect: { kind: "grantAbility", abilityId: "danger-sense" },
     stackable: false,
   },
@@ -212,7 +212,7 @@ export const ROGUELITE_CARD_MASTER = [
     id: "grant-dora-pull",
     name: "ドラ手繰り（札）",
     desc: "着卓する味方に「ドラ手繰り」が宿る。一発逆転の打点。",
-    rarity: "epic",
+    rarity: "legendary",
     effect: { kind: "grantAbility", abilityId: "dora-pull" },
     stackable: false,
   },
@@ -304,9 +304,22 @@ function pickRarity(rng, weights) {
 //   opts.exclude    … 除外したいカードid（取り切った非stackable等）の集合/配列
 //   opts.count      … 引く枚数（既定3）
 // レア度を抽選 → そのレア度のプールから1枚 → 足りなければ全プールから補完。
+// レア度の高い順（forceRarity のフォールバック順）。
+const RARITY_DESC = ["legendary", "epic", "rare", "common"];
+
 export function drawCards(rng, opts = {}) {
   const count = opts.count ?? 3;
   const exclude = new Set(opts.exclude || []);
+  // ご祝儀など：指定レア度だけから引く（足りなければ1つ下のレア度へフォールバック）。
+  if (opts.forceRarity) {
+    const start = Math.max(0, RARITY_DESC.indexOf(opts.forceRarity));
+    const out = []; const used = new Set();
+    for (let oi = start; oi < RARITY_DESC.length && out.length < count; oi++) {
+      const pool = ROGUELITE_CARD_MASTER.filter((c) => c.rarity === RARITY_DESC[oi] && !used.has(c.id) && !exclude.has(c.id));
+      while (pool.length && out.length < count) { const c = pool.splice(Math.floor(rng() * pool.length), 1)[0]; used.add(c.id); out.push(c); }
+    }
+    return out;
+  }
   const weights = biasedWeights(opts.rarityBias || 0);
   const out = [];
   const used = new Set();

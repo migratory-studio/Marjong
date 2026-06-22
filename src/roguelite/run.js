@@ -421,6 +421,8 @@ export function excludedCardIds(run) {
 // HPがほぼ満タンなら純回復カード（kind:"heal"）は無駄なので候補から外す（偏り/死に札の解消）。
 export function rollDraft(run, perf = {}) {
   const rng = makeRng(`${run.seed}:draft:${run.floor}:${run.cleared}`);
+  // 役満ご祝儀：オールレジェンダリー（在庫が足りなければ epic でフォールバック）。
+  if (perf.allLegendary) return drawCards(rng, { count: 3, forceRarity: "legendary", exclude: excludedCardIds(run) });
   const base = perf.bias != null ? perf.bias : rarityBiasFor({ ...perf, floor: run.floor });
   const rarityBias = Math.max(0, Math.min(1, base + itemMods(run).draftRarityBonus + (biomeMods(run).draftBias || 0))); // 強運の根付＋層(喧噪の都)で底上げ
   const exclude = excludedCardIds(run);
