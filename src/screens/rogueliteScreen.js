@@ -391,7 +391,7 @@ export function showRogueliteSwap(container, opts = {}) {
     const isYou = m.id === run.party[0]?.id;
     const role = i < 2 ? `<span class="rl-swap-tag active">出場${isYou ? "・操作" : ""}</span>` : `<span class="rl-swap-tag bench">控え</span>`;
     const dead = m.hp <= 0 ? " is-dead" : "";
-    return `<div class="rl-swap-row${dead}" data-id="${m.id}">
+    return `<div class="rl-swap-row${i < 2 ? " active" : " bench"}${dead}" data-id="${m.id}">
       <div class="rl-swap-move"><button type="button" class="rl-swap-up" data-id="${m.id}" ${i === 0 ? "disabled" : ""}>▲</button><button type="button" class="rl-swap-down" data-id="${m.id}" ${i === order.length - 1 ? "disabled" : ""}>▼</button></div>
       <div class="rl-swap-face-wrap" data-face="${m.id}"></div>
       <div class="rl-swap-info"><div class="rl-swap-name" style="color:${m.char?.color || "#ccc"}">${m.char?.name || "?"}${m.hungover ? " 🍶" : ""} ${role}</div>
@@ -401,7 +401,11 @@ export function showRogueliteSwap(container, opts = {}) {
   };
   const render = () => {
     const list = ov.querySelector("#rl-swap-list");
-    list.innerHTML = order.map((m, i) => rowHtml(m, i)).join("");
+    // 着卓ライン：上の2人＝戦う／それ以下＝控え。境界を仕切りで明示（控えを出すには線より上へ）。
+    const rowsHtml = order.map((m, i) => rowHtml(m, i));
+    list.innerHTML = order.length > 2
+      ? [...rowsHtml.slice(0, 2), `<div class="rl-swap-divider"><span>― ここまで着卓（戦う2人）／下は控え ―</span></div>`, ...rowsHtml.slice(2)].join("")
+      : rowsHtml.join("");
     // 顔を挿す
     for (const m of order) {
       const slot = list.querySelector(`[data-face="${m.id}"]`);
@@ -420,8 +424,8 @@ export function showRogueliteSwap(container, opts = {}) {
   };
   ov.innerHTML = `
     <div class="rl-modal rl-swap-modal">
-      <div class="rl-modal-head">編成 — 出場順の入れ替え</div>
-      <p class="rl-route-hint">上の<b>2人が着卓</b>して戦う。3人目以降は<b>控え</b>（パッシブ能力でサポート）。▲▼で並べ替え。</p>
+      <div class="rl-modal-head">編成 — 誰を卓に出すか</div>
+      <p class="rl-route-hint"><b>戦うのは上の2人だけ</b>。控えのキャラを卓に出すには、▲で<b>着卓ラインより上</b>へ動かす（先頭＝あなたが操作）。控えはパッシブ能力でサポート＆HP回復に回る。</p>
       ${buffTotalsHtml(run)}
       <div class="rl-swap-list" id="rl-swap-list"></div>
       <button type="button" class="rl-start" id="rl-swap-close">この編成で進む</button>

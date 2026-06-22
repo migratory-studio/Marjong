@@ -5070,3 +5070,9 @@ button.primary.danger:hover { color: #ffbcbc; }
 .menu-btn-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); white-space: nowrap; padding: 6px 12px; background: #14110d; color: var(--ink); border: 1px solid var(--accent, #e8c45d); border-radius: 9px; font-size: 13px; box-shadow: 0 6px 16px rgba(0,0,0,.5); opacity: 0; pointer-events: none; transition: opacity .15s ease, transform .15s ease; z-index: 30; }
 .menu-btn-tip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--accent, #e8c45d); }
 .menu-btn--logo:hover .menu-btn-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* 楼光の館：編成の着卓ライン（戦う2人と控えの境界を明示） */
+.rl-swap-divider { display: flex; align-items: center; justify-content: center; margin: 2px 0; }
+.rl-swap-divider span { font-size: 11px; font-weight: 700; color: #e8c45d; background: rgba(232,196,93,0.12); border: 1px dashed rgba(232,196,93,0.5); border-radius: 7px; padding: 2px 12px; }
+.rl-swap-row.active { border-color: rgba(86,168,255,0.55); background: rgba(86,168,255,0.08); }
+.rl-swap-row.bench { opacity: 0.82; }
