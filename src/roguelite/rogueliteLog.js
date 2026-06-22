@@ -21,14 +21,46 @@ function persist() { try { localStorage.setItem(KEY, JSON.stringify(buf)); } cat
 
 let seq = 0;
 
+// ---- Supabase シンク（任意・main.js が設定）。localStorage は常に正本、Supabase はベストエフォート集約。 ----
+let sink = null;          // (rows[]) => Promise … バッチINSERT
+let pending = [];         // 未送信イベント
+const BATCH = 20;         // この件数たまったら送る
+const PENDING_CAP = 400;  // 送信失敗が続いても無制限に貯めない
+let sessionId = null;
+function sid() {
+  if (sessionId) return sessionId;
+  try { sessionId = crypto.randomUUID(); }
+  catch { try { sessionId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`; } catch { sessionId = "session"; } }
+  return sessionId;
+}
+// Supabase への送信口を登録（行＝{session_id, seq, type, floor, biome, data}）。
+export function setRlLogSink(fn) { sink = fn; }
+// 溜まったイベントを送る（失敗分は捨てる＝localStorage が全量を保持）。
+export async function flushRlLog() {
+  if (!sink || !pending.length) return;
+  const rows = pending; pending = [];
+  try { await sink(rows); } catch { /* ベストエフォート：再送しない（localStorageに残る） */ }
+}
+
 // 1イベント追記。type＝種別（run_start / floor / hand / clear / buff / item / heal / run_end …）。
 export function rlLog(type, data = {}) {
   const b = load();
   let ts = 0; try { ts = Date.now(); } catch { ts = 0; }
-  b.push({ seq: seq++, ts, type, ...data });
+  const ev = { seq: seq++, ts, type, ...data };
+  b.push(ev);
   if (b.length > CAP) b.splice(0, b.length - CAP);
   persist();
+  // Supabase 行（主要列を昇格＋全文を data へ）。シンク未設定なら貯めない。
+  if (sink) {
+    pending.push({ session_id: sid(), seq: ev.seq, type, floor: data.floor ?? null, biome: data.biome ?? null, data: ev });
+    if (pending.length > PENDING_CAP) pending.splice(0, pending.length - PENDING_CAP);
+    // 節目（フロア/踏破/バフ/開始/終了…）は即フラッシュ＝ラン中もSupabaseが追従。
+    // 連発する hand だけはバッチ（BATCH件）にまとめて送る。
+    if (pending.length >= BATCH || FLUSH_TYPES.has(type)) flushRlLog();
+  }
 }
+// 即フラッシュする節目イベント（hand は連発するのでバッチに任せる）。
+const FLUSH_TYPES = new Set(["run_start", "floor", "clear", "buff", "item", "heal", "biome_reroll", "run_end"]);
 
 export function rlLogClear() { buf = []; persist(); }
 export function rlLogAll() { return load().slice(); }

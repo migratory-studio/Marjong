@@ -57,7 +57,8 @@ import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
 import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie } from "./roguelite/itemEffects.js";
-import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear } from "./roguelite/rogueliteLog.js";
+import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear, setRlLogSink, flushRlLog } from "./roguelite/rogueliteLog.js";
+import { supabase } from "./config/supabase.js";
 import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
@@ -1976,9 +1977,12 @@ function rlBuffSnap(run) {
 }
 // 楼光の館：意思決定の瞬間に先頭キャラが一言「返す」（愛着×双方向）。
 const rlLead = () => rogueliteState?.run?.party?.[0]?.char || null;
+// 調整ログを Supabase(roguelite_logs) へバッチ送信（localStorage は常に正本・Supabaseは集約用）。
+setRlLogSink(async (rows) => { const { error } = await supabase.from("roguelite_logs").insert(rows); if (error) throw error; });
 // 調整用ログのデバッグアクセス（コンソール/ボタンから）。window.rogueliteTuningLog.download() で取得。
 if (typeof window !== "undefined") {
-  window.rogueliteTuningLog = { all: rlLogAll, jsonl: rlLogJSONL, csv: rlLogCSV, download: rlLogDownload, clear: rlLogClear };
+  window.rogueliteTuningLog = { all: rlLogAll, jsonl: rlLogJSONL, csv: rlLogCSV, download: rlLogDownload, clear: rlLogClear, flush: flushRlLog };
+  window.addEventListener("beforeunload", () => { try { flushRlLog(); } catch { /* ベストエフォート */ } });
 }
 function cardFamily(card) {
   const k = card?.effect?.kind;
@@ -2405,6 +2409,7 @@ function onRogueliteBattleEnd(result) {
 // 到達階層＝フロア番号：全滅は死んだ階(run.floor)、撤退は1つ手前(まだ入っていない次の階の手前)。
 async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}) {
   rlLog("run_end", { depth: run.floor, result: wiped ? "wiped" : (retreated ? "retreat" : "end"), cleared: run.cleared, ...rlBuffSnap(run) });
+  flushRlLog(); // ラン終端でSupabaseへ送信（取りこぼし低減）
   clearSavedRogueliteRun(); // 撤退/全滅でラン終了＝一時セーブを削除（再開は出さない）
   // 先頭キャラの別れ際の一言（rogueliteState を消す前に解決）。撤退＝引く判断への“返し”。
   const lead = rlLead();
