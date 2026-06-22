@@ -15,8 +15,11 @@
 // バフ成長の上限（test/roguelite-balance.mjs で調整／本番は既定）。攻撃(dealCap)・防御(takeFloor)は
 // run.js 側で天井あり。HP は青天井だと「硬すぎて当分負けない」スポンジ化するので累積倍率に上限を置く。
 export const BUFF_TUNE = {
-  hpMulCap: 1.9, // 累積HP倍率の上限（基礎HPの最大1.9倍まで＝敵HPとの乖離を抑える）
+  hpMulCap: 1.9,       // 累積HP倍率の上限（基礎HPの最大1.9倍まで＝敵HPとの乖離を抑える）
+  depthGrowth: 0.025,  // 深度値上がり：HP/攻撃/防御バフの付与値を 1階ごとに +この割合 増幅（深いほど強いバフ）
 };
+// 深度スケール：その階で取得したバフの「上乗せ部分」をどれだけ増幅するか（floor1=×1）。
+function depthScale(floor) { return 1 + Math.max(0, (floor || 1) - 1) * BUFF_TUNE.depthGrowth; }
 
 // 1つの effect オブジェクトを run へ適用（compound は再帰）。
 export function applyEffect(run, effect) {
@@ -29,7 +32,8 @@ export function applyEffect(run, effect) {
       break;
     }
     case "maxHpUp": {
-      let mul = effect.mul ?? 1;
+      // 深度値上がり：上乗せ分(mul-1)を階層で増幅（深い階で取るほど強い）。
+      let mul = 1 + ((effect.mul ?? 1) - 1) * depthScale(run.floor);
       // 累積HP倍率を上限でクランプ（超過分は無効＝HPスポンジ化を防ぐ）。
       const cap = BUFF_TUNE.hpMulCap;
       if (cap && m.hpMul * mul > cap) mul = Math.max(1, cap / m.hpMul);
@@ -41,10 +45,10 @@ export function applyEffect(run, effect) {
       break;
     }
     case "dealMul":
-      m.dealMul *= effect.mul ?? 1;
+      m.dealMul *= 1 + ((effect.mul ?? 1) - 1) * depthScale(run.floor); // 深度値上がり
       break;
     case "takeReduce":
-      m.takeMul *= 1 - (effect.rate ?? 0); // 軽減は乗算で重ねる（1-r の積＝重ね取りが逓減）
+      m.takeMul *= 1 - (effect.rate ?? 0) * depthScale(run.floor); // 軽減も深度で増幅（1-r の積＝重ね取りが逓減）
       break;
     case "friendlyGuard": // 味方のツモで受けるダメージを無効化する“お守り”（受けたら1個消費）
       m.friendlyGuard = (m.friendlyGuard || 0) + (effect.count ?? 1);

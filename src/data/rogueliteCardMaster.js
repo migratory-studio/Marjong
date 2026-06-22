@@ -192,15 +192,6 @@ export const ROGUELITE_CARD_MASTER = [
     maxStacks: 9,
   },
   {
-    id: "add-bench",
-    name: "新たな相棒",
-    desc: "控え枠が1つ増える。次の編成から控えを追加できる。",
-    rarity: "epic",
-    effect: { kind: "addBench" },
-    stackable: true,
-    maxStacks: 2,
-  },
-  {
     id: "grant-summon-tile",
     name: "牌寄せ（札）",
     desc: "着卓する味方に「牌寄せ」が宿る。ターツを埋める有効牌を呼ぶ＝手が早い速度の軸。",

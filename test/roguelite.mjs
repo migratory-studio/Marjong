@@ -312,8 +312,8 @@ applyCard(run, cardById("grant-lucky-draw")); // 重複付与は1回
 eq(run.mods.grantedAbilityIds.filter((x) => x === "lucky-draw").length, 1, "付与は重複しない");
 
 run = newRun(party, "s");
-applyCard(run, cardById("add-bench"));
-eq(run.mods.benchSlots, 1, "控え枠+1");
+applyEffect(run, { kind: "addBench" }); // PT枠増加カードは廃止（3人固定）だが effect kind は存続
+eq(run.mods.benchSlots, 1, "addBench 効果で控え枠+1");
 
 // ---------- スキルレベル（全員Lv1スタート→バフ/鍛冶屋でUP） ----------
 {
