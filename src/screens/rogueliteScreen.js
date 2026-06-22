@@ -377,19 +377,23 @@ export function showRogueliteRoute(container, opts = {}) {
     <div class="rl-hub-party">
       <div class="rl-hub-party-head">パーティ</div>
       <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
-      <div class="rl-hub-actions">
-        ${onSwap ? `<button type="button" class="rl-hub-btn" id="rl-route-swap">編成</button>` : ""}
-        ${onItems ? `<button type="button" class="rl-hub-btn" id="rl-route-items">道具 <b>${(run.items || []).length}/${ITEM_SLOTS}</b></button>` : ""}
-      </div>
     </div>
     <div class="rl-hub-build">${buffTotalsHtml(run)}</div>` : "";
+  // 編成・道具は上部の手が届きやすい位置（HUD右の操作クラスタ）へ。
+  const manageBtns = run ? `<div class="rl-hub-manage">
+    ${onSwap ? `<button type="button" class="rl-hub-mbtn" id="rl-route-swap"><span class="rl-hub-mico">⚌</span>編成</button>` : ""}
+    ${onItems ? `<button type="button" class="rl-hub-mbtn" id="rl-route-items"><span class="rl-hub-mico">◆</span>道具 <b>${(run.items || []).length}/${ITEM_SLOTS}</b></button>` : ""}
+  </div>` : "";
   ov.innerHTML = `
     <div class="rl-hub-wrap">
       <header class="rl-hub-top">
         <div class="rl-hub-floor"><span class="rl-hub-eyebrow">楼光の館</span><span class="rl-hub-floornum">第 <b>${floor}</b> 階</span></div>
-        <div class="rl-hub-res">
-          <span class="rl-hub-res-i"><span class="rl-hub-res-k">光貨</span><b>${coins | 0}</b></span>
-          <span class="rl-hub-res-i"><span class="rl-hub-res-k">スキルLv</span><b>${skillLevel || 1}</b></span>
+        <div class="rl-hub-topright">
+          <div class="rl-hub-res">
+            <span class="rl-hub-res-i"><span class="rl-hub-res-k">光貨</span><b>${coins | 0}</b></span>
+            <span class="rl-hub-res-i"><span class="rl-hub-res-k">スキルLv</span><b>${skillLevel || 1}</b></span>
+          </div>
+          ${manageBtns}
         </div>
       </header>
       <main class="rl-hub-main">

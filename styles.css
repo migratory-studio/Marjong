@@ -5136,3 +5136,11 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-hub-retreat small { font-size: 10px; color: #8b929c; font-weight: 400; }
 .rl-hub-retreat:hover { border-color: var(--danger, #ff6b6b); color: #ffcec5; background: rgba(255,80,60,.08); }
 @media (prefers-reduced-motion: reduce) { .rl-hub .rl-route-card { transition: border-color .16s, box-shadow .16s; opacity: 1; transform: none; } }
+
+/* 楼光の館ハブ：編成・道具を上部HUD右の手が届きやすい位置へ */
+.rl-hub-topright { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
+.rl-hub-manage { display: flex; gap: 9px; }
+.rl-hub-mbtn { display: inline-flex; align-items: center; gap: 7px; padding: 8px 18px; border-radius: 10px; background: rgba(232,196,93,.14); border: 1px solid var(--rl-edge); color: var(--rl-ink); font-size: 14px; font-weight: 600; cursor: pointer; transition: background .14s, border-color .14s, transform .14s; }
+.rl-hub-mbtn:hover { background: rgba(232,196,93,.3); border-color: var(--rl-gold); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.35); }
+.rl-hub-mbtn b { color: var(--rl-gold); margin-left: 2px; }
+.rl-hub-mico { color: var(--rl-gold); font-size: 13px; }
