@@ -99,8 +99,8 @@ export const CHARACTER_MASTER = [
   },
   {
     id: "yao_chu",
-    name: "ヤオ＝チュウ",
-    reading: "",
+    name: "姚玖",
+    reading: "ヤオ・チュウ",
     color: "#9b6dd6",
     role: "attacker",
     bio: "端と字牌を呼び込む癖者。1ゲーム2局だけツモが么九牌に偏る。",
@@ -112,8 +112,8 @@ export const CHARACTER_MASTER = [
   },
   {
     id: "chun_chan",
-    name: "チュン=チャン",
-    reading: "",
+    name: "春嬋",
+    reading: "チュン・チャン",
     color: "#46c2b5",
     role: "attacker",
     bio: "中張牌を引き寄せる速攻型。1ゲーム2局だけツモが2〜8に偏る。",
