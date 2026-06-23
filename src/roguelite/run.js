@@ -140,6 +140,7 @@ export function newRun(party, seed) {
     cleared: 0, // 撃破した戦数
     coins: 0,   // ラン内通貨「光貨」（ショップ/鍛冶屋）
     skillLevel: 1, // パーティ共通のスキルレベル（全員Lv1スタート・バフ/鍛冶屋でUP・能力が強化）
+    forgeOvercharge: 0, // 鍛冶屋・限界突破の購入回数（Lv上限後に攻撃力を鍛えた段数。コスト急騰の基準）
     items: [],     // 道具スロット（最大3。active=フロア選択で使う / passive=常設 / trigger=自動）
     nextBattle: {}, // 「次の1戦だけ」効果（道具で仕込む。launch で消費）
     routeReroll: 0, // 地図の写しで進路を引き直した回数（seedずらし用）
@@ -160,7 +161,7 @@ export function serializeRun(run) {
   return {
     v: RUN_SAVE_VERSION,
     seed: run.seed, floor: run.floor, cleared: run.cleared, coins: run.coins,
-    skillLevel: run.skillLevel, cards: [...(run.cards || [])], items: [...(run.items || [])],
+    skillLevel: run.skillLevel, forgeOvercharge: run.forgeOvercharge || 0, cards: [...(run.cards || [])], items: [...(run.items || [])],
     mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
     biomeRerolls: { ...(run.biomeRerolls || {}) }, orbsEarned: run.orbsEarned || 0,
     lineup: run.lineup || null, visited: [...(run.visited || [])], eventSeen: !!run.eventSeen,
@@ -181,7 +182,7 @@ export function deserializeRun(data, resolveChar) {
   return {
     seed: String(data.seed), floor: data.floor || 1, party,
     cards: [...(data.cards || [])], mods: { ...freshMods(), ...(data.mods || {}) },
-    cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1,
+    cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1, forgeOvercharge: data.forgeOvercharge || 0,
     items: [...(data.items || [])], nextBattle: data.nextBattle || {}, routeReroll: data.routeReroll || 0,
     biomeRerolls: { ...(data.biomeRerolls || {}) }, orbsEarned: data.orbsEarned || 0,
     lineup: Array.isArray(data.lineup) ? data.lineup : undefined, visited: [...(data.visited || [])],

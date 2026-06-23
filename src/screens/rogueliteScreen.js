@@ -843,24 +843,40 @@ export function showRogueliteForget(container, opts = {}) {
 }
 
 // ---- 鍛冶屋（光貨でスキルレベルを鍛える。打つたびLv/残高を更新） ----
+// Lv上限(cap)に達した後は「限界突破」モードに切り替わり、光貨を大量に払って攻撃力(与ダメ)を鍛え続けられる。
 export function showRogueliteForge(container, opts = {}) {
-  const { floor = 1, run, cap = 10, costOf, onForge, onLeave } = opts;
+  const { floor = 1, run, cap = 10, costOf, overchargeCostOf, overchargeDeal = 0.08, onForge, onOvercharge, onLeave } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-forge";
   const render = () => {
     const lv = run?.skillLevel || 1;
-    const cost = costOf ? costOf(lv) : 40;
     const maxed = lv >= cap;
-    const afford = (run?.coins || 0) >= cost;
+    const coins = run?.coins | 0;
     ov.querySelector("#rl-forge-lv").textContent = lv;
-    ov.querySelector("#rl-forge-coins").textContent = run?.coins | 0;
+    ov.querySelector("#rl-forge-coins").textContent = coins;
     const btn = ov.querySelector("#rl-forge-do");
-    btn.disabled = maxed || !afford;
-    btn.textContent = maxed ? "これ以上は鍛えられない（Lv上限）" : `鍛える（光貨 ${cost}）→ Lv${lv + 1}`;
-    ov.querySelector("#rl-forge-note").textContent = maxed
-      ? "パーティのスキルは極まっている。"
-      : afford ? "スキルレベルが上がると、全員の能力そのものが強くなる。" : "光貨が足りない。戦って稼ごう。";
+    const note = ov.querySelector("#rl-forge-note");
+    if (maxed && onOvercharge && overchargeCostOf) {
+      // 限界突破：攻撃力を鍛える。
+      const n = run?.forgeOvercharge || 0;
+      const cost = overchargeCostOf(n);
+      const afford = coins >= cost;
+      const pct = Math.round(overchargeDeal * 100);
+      btn.disabled = !afford;
+      btn.textContent = `限界突破：攻撃力を鍛える（光貨 ${cost}）→ 与ダメ +${pct}%`;
+      note.textContent = n > 0
+        ? `スキルは極まった。さらに光貨を捧げ、攻撃力を研ぎ澄ます（強化済み +${n}段）。`
+        : afford ? "スキルは極まった。光貨を大量に捧げれば、なお攻撃力を鍛えられる。" : "限界突破には大量の光貨が要る。戦って稼ごう。";
+    } else {
+      const cost = costOf ? costOf(lv) : 40;
+      const afford = coins >= cost;
+      btn.disabled = maxed || !afford;
+      btn.textContent = maxed ? "これ以上は鍛えられない（Lv上限）" : `鍛える（光貨 ${cost}）→ Lv${lv + 1}`;
+      note.textContent = maxed
+        ? "パーティのスキルは極まっている。"
+        : afford ? "スキルレベルが上がると、全員の能力そのものが強くなる。" : "光貨が足りない。戦って稼ごう。";
+    }
   };
   ov.innerHTML = `
     <div class="rl-modal">
@@ -874,7 +890,12 @@ export function showRogueliteForge(container, opts = {}) {
   container.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("is-open"));
   render();
-  ov.querySelector("#rl-forge-do")?.addEventListener("click", () => { if (onForge?.()) render(); });
+  ov.querySelector("#rl-forge-do")?.addEventListener("click", () => {
+    const lv = run?.skillLevel || 1;
+    const maxed = lv >= cap;
+    const ok = (maxed && onOvercharge) ? onOvercharge() : onForge?.();
+    if (ok) render();
+  });
   ov.querySelector("#rl-forge-leave")?.addEventListener("click", () => { ov.remove(); onLeave?.(); });
 }
 

@@ -2256,6 +2256,43 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 }
 .ability-bar button { border: 2px solid #0003; color: #1a120a; cursor: pointer; }
 .ability-bar button:disabled { opacity: .4; cursor: default; }
+
+/* ペア戦・相方への指示ウィンドウ（能力ボタンの上に常時表示）。文字は読みやすく大きめ。 */
+.pair-cmd {
+  display: flex; flex-direction: column; gap: 8px;
+  background: #18241d; border: 2px solid #f6b35255; border-radius: 11px;
+  padding: 10px 11px; margin-bottom: 6px;
+}
+.pair-cmd-head { font-size: 15px; font-weight: 800; color: #f6d59a; letter-spacing: .04em; }
+.pair-cmd .pair-cmd-toggle {
+  width: 100%; display: flex; align-items: center; gap: 9px; text-align: left;
+  font-size: 14px; font-weight: 800; padding: 8px 10px; border-radius: 9px;
+  border: 2px solid #ffffff1f; cursor: pointer; color: #e9f3ec; background: #2a3b30;
+}
+.pair-cmd .pair-cmd-toggle.on { background: #2f6d4a; border-color: #6fe0a0; color: #eafff2; }
+.pair-cmd .pair-cmd-toggle.off { background: #3a2b2b; border-color: #c98a8a; }
+.pair-cmd-knob {
+  width: 14px; height: 14px; border-radius: 50%; flex: 0 0 14px;
+  background: #cfe0d6; box-shadow: 0 0 0 2px #0003 inset;
+}
+.pair-cmd-toggle.on .pair-cmd-knob { background: #b6ffd2; }
+.pair-cmd-toggle.off .pair-cmd-knob { background: #ffd0d0; }
+.pair-cmd-rows { display: flex; flex-direction: column; gap: 6px; }
+.pair-cmd-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.pair-cmd-name { font-size: 14px; font-weight: 700; color: #e9f3ec; flex: 1 1 auto; }
+.pair-cmd .pair-cmd-req {
+  width: auto; flex: 0 0 auto; align-self: auto;
+  font-size: 13px; font-weight: 800; padding: 7px 12px; border-radius: 8px;
+  background: var(--accent, #f6b352); color: #20140a; border: 2px solid #0003; cursor: pointer;
+}
+.pair-cmd .pair-cmd-req.is-req { background: #f6d59a; }
+.pair-cmd .pair-cmd-req.is-active { background: #6b4caa; color: #fff; }
+.pair-cmd-row.passive { opacity: .9; }
+.pair-cmd-passive-tag {
+  flex: 0 0 auto; font-size: 12px; font-weight: 800; color: #bfe0cf;
+  background: #233b30; border: 1px solid #ffffff14; border-radius: 7px; padding: 5px 9px;
+}
+.pair-cmd-empty { font-size: 13px; color: #9fb3a7; }
 /* remaining-count chip, shown above the activation button */
 .ability-remain {
   align-self: stretch; text-align: center; font-size: 12px; font-weight: 700;
@@ -3779,7 +3816,7 @@ button.secondary { color: var(--ink); }
 
 /* セリフ吹き出し */
 .tb-talk {
-  margin: 0 10px 5px; padding: 4px 9px; font-size: 11px; color: #f6efe1;
+  margin: 0 10px 5px; padding: 5px 10px; font-size: 13px; line-height: 1.45; color: #f6efe1;
   background: #1a2c23; border: 1px solid #f6b35255; border-radius: 7px;
   position: relative;
 }
@@ -5247,3 +5284,58 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-rc-face.rl-face-fb { display: inline-flex; align-items: center; justify-content: center; background: var(--c,#666); color: #fff; font-weight: 700; font-size: 22px; }
 .rl-rc-name { font-size: 13px; font-weight: 700; }
 .rl-rc-ab { font-size: 10px; color: #aab0bd; line-height: 1.3; text-align: center; }
+
+/* ===== 宝珠ショップ (shop-screen) ===== 楼光の館と同系統の和風・暗カード＋金アクセント。1280×720 内に収める。 */
+.shop-screen {
+  width: 100%; height: 100%; box-sizing: border-box; padding: 18px 30px;
+  display: flex; flex-direction: column; color: #f3ead9; overflow: hidden;
+}
+.shop-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.shop-title { margin: 0; font-size: 30px; font-weight: 800; color: #f6d59a; letter-spacing: .04em; }
+.shop-orbs { font-size: 17px; color: #e9f3ec; }
+.shop-orbs b { color: #ffe39a; font-size: 23px; margin-left: 4px; }
+.shop-lead { margin: 5px 0 10px; color: #c8baa1; font-size: 13.5px; }
+.shop-body { flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow: hidden; }
+.shop-sec { display: flex; flex-direction: column; gap: 9px; }
+.shop-sec-h { font-size: 18px; font-weight: 800; color: #f6d59a; }
+.shop-sec-sub { font-size: 13px; font-weight: 600; color: #9fb3a7; margin-left: 8px; }
+.shop-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+.shop-card {
+  background: #1b261f; border: 2px solid #f6b35233; border-radius: 12px;
+  padding: 12px 13px; display: flex; flex-direction: column; gap: 6px; min-height: 0;
+}
+.shop-card.poor { opacity: .72; }
+.shop-card.maxed { border-color: #6fe0a055; }
+.shop-card-top { display: flex; align-items: center; gap: 7px; }
+.shop-card-ico { font-size: 18px; }
+.shop-card-name { font-size: 15px; font-weight: 800; color: #f3ead9; flex: 1 1 auto; }
+.shop-card-lv { font-size: 12px; font-weight: 700; color: #bfe0cf; background: #233b30; border-radius: 7px; padding: 3px 8px; }
+.shop-card-desc { font-size: 12.5px; line-height: 1.45; color: #cdbfa6; flex: 1 1 auto; }
+.shop-card-eff { font-size: 12.5px; color: #e9f3ec; }
+.shop-card-eff b { color: #ffe39a; }
+
+.shop-buy {
+  margin-top: 4px; align-self: stretch; text-align: center;
+  font-size: 14px; font-weight: 800; padding: 8px 12px; border-radius: 9px;
+  background: var(--accent, #f6b352); color: #20140a; border: 2px solid #0003; cursor: pointer;
+}
+.shop-buy:hover:not(:disabled) { filter: brightness(1.08); }
+.shop-buy:disabled { opacity: .45; cursor: default; background: #5a5247; color: #d8cdb8; }
+
+/* 解禁カードはサムネを敷いて、下半分にベール＋情報。 */
+.shop-card--unlock {
+  position: relative; overflow: hidden; padding: 0; min-height: 118px;
+  background-size: cover; background-position: center; background-color: #1b261f;
+}
+.shop-card--unlock.owned { outline: 2px solid #6fe0a0; }
+.shop-card-veil {
+  margin-top: auto; padding: 10px 12px;
+  background: linear-gradient(180deg, #0b0f0c00 0%, #0b0f0ce0 46%, #0b0f0cf2 100%);
+  display: flex; flex-direction: column; gap: 5px;
+}
+.shop-card--unlock .shop-card-name { font-size: 15px; }
+.shop-card--unlock .shop-card-desc { flex: 0 0 auto; }
+.shop-empty { color: #9fb3a7; font-size: 14px; padding: 10px 2px; }
+
+.shop-foot { margin-top: 10px; flex: 0 0 auto; }

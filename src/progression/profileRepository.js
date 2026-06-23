@@ -21,6 +21,11 @@ export function createDefaultProfile() {
     favoriteCharId: null, // 対戦ホームに常駐させる「お気に入りキャラ」。未選択は絆最上位→既定で補う。
     homeBg: null,         // 対戦ホームの背景キー（"washi"|"dojo"|"street"）。null=既定(washi)。
     homeBgm: null,        // 対戦ホームのBGMキー（HOME_BGM_CHOICES）。null=既定(hanadoki)。
+    orbs: 0,              // アカウント通貨「宝珠」。宝珠ショップで恒久強化/解禁に使う。
+    rogueliteShopBuffs: {}, // 宝珠で買った恒久バフ（shopMaster の id → 購入レベル）。run生成時に適用。
+    unlockedBackgrounds: [], // 宝珠ショップで解禁した対戦ホーム背景キー。
+    unlockedBgms: [],     // 宝珠ショップで解禁したBGMキー。
+    unlockedCharacters: [], // 宝珠ショップで解禁したキャラid（将来のキャラ解禁の受け皿）。
     avatars: [],
     completedAvatars: [], // 修行完了データ（卒業した弟子のスナップショット・最大5枠）。対戦/ローグライトで使用。misc(jsonb)に保存される
     roguelite: { bestFloor: 0, runs: 0 }, // ローグライト（F7）：最深到達階層・通算ラン数。misc(jsonb)に保存。専用テーブル不要
@@ -68,6 +73,12 @@ export class ProfileRepository {
       merged.companionBonds = {};
     }
     if (!Array.isArray(merged.completedAvatars)) merged.completedAvatars = [];
+    // 宝珠ショップ関連の欠損補完（旧セーブ）。
+    if (typeof merged.orbs !== "number") merged.orbs = 0;
+    if (!merged.rogueliteShopBuffs || typeof merged.rogueliteShopBuffs !== "object") merged.rogueliteShopBuffs = {};
+    if (!Array.isArray(merged.unlockedBackgrounds)) merged.unlockedBackgrounds = [];
+    if (!Array.isArray(merged.unlockedBgms)) merged.unlockedBgms = [];
+    if (!Array.isArray(merged.unlockedCharacters)) merged.unlockedCharacters = [];
     if (!merged.playerHistory || typeof merged.playerHistory !== "object") {
       merged.playerHistory = { ...base.playerHistory };
     } else {

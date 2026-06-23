@@ -27,12 +27,18 @@ const HOME_BG_CHOICES = [
   { key: "washi",  label: "青海波", img: null,                       thumb: "graphic/ui/sc/bg.png" },
   { key: "dojo",   label: "道場",   img: "graphic/bg/bg-dojo.png",   thumb: "graphic/bg/bg-dojo.png" },
   { key: "street", label: "街角",   img: "graphic/bg/bg-street.png", thumb: "graphic/bg/bg-street.png" },
+  // 宝珠ショップで解禁する背景（locked=既定は施錠。profile.unlockedBackgrounds に key が入れば解放）。
+  { key: "washitsu", label: "和室",       img: "graphic/bg/sc/bg-washitsu.jpg", thumb: "graphic/bg/sc/bg-washitsu.jpg", locked: true },
+  { key: "cafe",     label: "喫茶店",     img: "graphic/bg/sc/bg-cafe.jpg",     thumb: "graphic/bg/sc/bg-cafe.jpg",     locked: true },
+  { key: "ryokan",   label: "旅館の和室", img: "graphic/bg/sc/bg-ryokan.jpg",   thumb: "graphic/bg/sc/bg-ryokan.jpg",   locked: true },
 ];
 
-// 解禁判定。今は全解放。将来は item.locked / item.unlock(profile) や profile.unlocked* を見て
-// ここを差し替えるだけで、一覧モーダルがロック表示（グレーアウト＋🔒）に切り替わる拡張点。
-function isUnlocked(item /* , profile */) {
-  return !item?.locked;
+// 解禁判定。locked でなければ常に解放。locked は宝珠ショップで買った key（profile.unlocked*）を見る。
+// 背景キーとBGMキーは衝突しないので両配列の和で判定（呼び出し側は bg/bgm 双方からこの1関数を使う）。
+function isUnlocked(item, profile) {
+  if (!item?.locked) return true;
+  const u = profile || {};
+  return (u.unlockedBackgrounds || []).includes(item.key) || (u.unlockedBgms || []).includes(item.key);
 }
 
 const selectableChars = () => CHARACTERS.filter((c) => !c.isMob);
@@ -114,7 +120,7 @@ function portraitNode(c) {
 }
 
 export async function showBattleHome(container, opts = {}) {
-  const { repository, audio, loggedIn = false, onFree, onRoguelite, onBack } = opts;
+  const { repository, audio, loggedIn = false, onFree, onRoguelite, onShop, onBack } = opts;
   if (!container) return;
 
   let profile = null;
@@ -168,6 +174,10 @@ export async function showBattleHome(container, opts = {}) {
           <button type="button" class="menu-btn" id="bh-free">
             <span class="menu-btn-title">フリー対戦</span>
             <span class="menu-btn-sub">CPU対戦 / オンライン対戦</span>
+          </button>
+          <button type="button" class="menu-btn" id="bh-shop" title="宝珠で恒久強化・解禁">
+            <span class="menu-btn-title">宝珠ショップ</span>
+            <span class="menu-btn-sub">宝珠で恒久強化・背景やBGMを解禁</span>
           </button>
         </nav>
         <button type="button" class="ghost-back bh-back" id="bh-back">← ホームへ</button>
@@ -252,6 +262,7 @@ export async function showBattleHome(container, opts = {}) {
   // 導線。
   container.querySelector("#bh-free")?.addEventListener("click", () => onFree?.());
   container.querySelector("#bh-roguelite")?.addEventListener("click", () => onRoguelite?.());
+  container.querySelector("#bh-shop")?.addEventListener("click", () => onShop?.());
   container.querySelector("#bh-back")?.addEventListener("click", () => onBack?.());
 
   // 背景・BGM の「変更」→ 一覧モーダル（選択中ハイライト／将来は解禁状態も表示）。

@@ -63,10 +63,17 @@ export const ROGUELITE_FLOOR_MASTER = [
 export const RECRUIT_COST = 50; // 流派の門：交代に要する光貨（大量消費）
 
 // 鍛冶屋：スキルレベル+1の費用（光貨）。レベルが上がるほど高くなる。上限Lv10。
-// 序盤から手が届くよう低め（旧 20+lv*12 は高すぎてスキル経済が死んでいた）。
+// 傾斜は二次カーブ：序盤は安く手が届き、深層ほど指数的に重くなる（鍛え切るには相応の蓄積が要る）。
 export const SKILL_LEVEL_CAP = 10;
 export function forgeCost(skillLevel = 1) {
-  return 10 + skillLevel * 6;
+  return Math.round(10 + skillLevel * skillLevel * 3);
+}
+
+// 鍛冶屋・限界突破：スキルLvが上限(10)に達した後も、光貨を大量に払えば「攻撃力」を鍛え続けられる。
+// 与ダメ倍率(mods.dealMul)を1段ごとに加算。コストは買うほど急騰する純粋な光貨シンク。
+export const FORGE_OVERCHARGE_DEAL = 0.08; // 1段あたりの与ダメ上昇（+8%）
+export function forgeOverchargeCost(count = 0) {
+  return 120 + count * 90; // 120 → 210 → 300 …（買うほど高い）
 }
 
 // ラン内通貨「光貨」の経済（第2弾）。
