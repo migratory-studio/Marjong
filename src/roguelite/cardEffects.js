@@ -47,6 +47,17 @@ export function applyEffect(run, effect) {
       }
       break;
     }
+    case "maxHpAdd": {
+      // 絶対値（固定HP点）でHP最大を底上げ。深度値上がりで額は増えるが線形＝複利爆発しない。
+      // add は基礎HPスケール(allyScaledHp 基準＝25000点が1000HP)での点数。割合(maxHpUp)と棲み分け：
+      // common/rare はこちら（積んでも指数的に膨らまない地力）、epic+ は maxHpUp（希少な割合スパイク）。
+      const add = Math.round((effect.add ?? 0) * depthScale(run.floor));
+      if (add > 0) {
+        m.hpAdd = (m.hpAdd || 0) + add; // 累積（バフ合計UI表示用）
+        for (const p of run.party) { p.hpMax += add; p.hp += add; } // 現在HPも同量底上げ（取得が即得）
+      }
+      break;
+    }
     case "dealMul":
       m.dealMul *= 1 + ((effect.mul ?? 1) - 1) * depthScale(run.floor); // 深度値上がり
       break;
@@ -101,7 +112,8 @@ export function freshMods() {
   return {
     dealMul: 1, // 与ダメ倍率（積）
     takeMul: 1, // 被ダメ倍率（積＝1-軽減率の積）
-    hpMul: 1,   // 累積HP倍率（バフ合計UI用・maxHpUpで積む）
+    hpMul: 1,   // 累積HP倍率（割合・epic+ の maxHpUp で積む。バフ合計UI用）
+    hpAdd: 0,   // 累積HP加算（絶対値・common/rare の maxHpAdd で積む。線形＝複利しない）
     friendlyGuard: 0, // 味方ツモ被弾を無効化するお守りの残数（アイテム）
     skillLevelDelta: 0, // 能力Lv一時加算
     paramAdd: {}, // params6 加算

@@ -28,7 +28,7 @@ const eq = (a, b, m) => { assert.strictEqual(a, b, m); n++; };
 
 // ---------- マスタ整合 ----------
 const KNOWN_KINDS = new Set([
-  "heal", "maxHpUp", "skillLevelUp", "paramBoost", "addBench",
+  "heal", "maxHpUp", "maxHpAdd", "skillLevelUp", "paramBoost", "addBench",
   "dealMul", "takeReduce", "grantAbility", "compound", "friendlyGuard",
   "streakDeal", "lowHpPower", "revengeDeal", "riichiDeal", // 条件付き（動的）バフ
 ]);
@@ -533,14 +533,15 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
 
 // 一撃死緩和＋次戦バフが rogueliteDamageDeltas に効く（battleMods）
 {
-  const r = newRun(party, "bmods"); r.floor = 7; // 深度倍率が立つ階（floorDmgStart=6 以降）
+  const r = newRun(party, "bmods"); r.floor = 12; // 深度倍率が立つ階（floorDmgStart=8 以降）
   const base = rogueliteDamageDeltas(r, { deltas: [0, -8000, 0, 0], roles, winnerSeat: 0 })[1];
   const drum = rogueliteDamageDeltas(r, { deltas: [0, -8000, 0, 0], roles, winnerSeat: 0, battleMods: { dealMul: 1.3 } })[1];
   ok(Math.abs(drum) > Math.abs(base), "鼓舞の陣太鼓（battleMods.dealMul）で与ダメ増");
-  // 軽身の符（passive fdm緩和）：被ダメが軽くなる
-  const enemyHit = rogueliteDamageDeltas(r, { deltas: [-3000, 0, 0, 0], roles, winnerSeat: 1, hpMax: [1000, 0, 1000, 0] })[0];
-  const rl = newRun(party, "bmods2"); rl.floor = 7; rl.items = ["light-body"];
-  const enemyHitLight = rogueliteDamageDeltas(rl, { deltas: [-3000, 0, 0, 0], roles, winnerSeat: 1, hpMax: [1000, 0, 1000, 0] })[0];
+  // 軽身の符（passive fdm緩和）：被ダメが軽くなる。HP最大は大きめにして一撃死上限に張り付かせない
+  // （深層は被ダメ倍率が大きく、上限で頭打ちになると差が出ないため）。
+  const enemyHit = rogueliteDamageDeltas(r, { deltas: [-3000, 0, 0, 0], roles, winnerSeat: 1, hpMax: [1000000, 0, 1000000, 0] })[0];
+  const rl = newRun(party, "bmods2"); rl.floor = 12; rl.items = ["light-body"];
+  const enemyHitLight = rogueliteDamageDeltas(rl, { deltas: [-3000, 0, 0, 0], roles, winnerSeat: 1, hpMax: [1000000, 0, 1000000, 0] })[0];
   ok(Math.abs(enemyHitLight) < Math.abs(enemyHit), "軽身の符で深層被ダメが軽くなる");
 }
 

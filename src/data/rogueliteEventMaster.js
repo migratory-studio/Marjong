@@ -65,7 +65,7 @@ export const ROGUELITE_EVENT_MASTER = [
       {
         label: "点棒を懐に（HP最大値を増やす）",
         reply: "「現金なんだから。……まあ、生き延びるのも実力よ」",
-        outcome: { effect: { kind: "maxHpUp", mul: 1.2 } },
+        outcome: { effect: { kind: "maxHpAdd", add: 200 } },
       },
       {
         label: "蹴り崩して進む（詩玥に倣う）",

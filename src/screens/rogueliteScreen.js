@@ -316,9 +316,11 @@ export function buffTotalsHtml(run) {
   const C = CARD_CATEGORY;
   // バフ
   const hpPct = Math.round(((m.hpMul || 1) - 1) * 100);
+  const hpAdd = Math.round(m.hpAdd || 0); // 絶対値HP加算（線形・複利しない地力）
   const atkPct = Math.round(((m.dealMul || 1) - 1) * 100);
   const defPct = Math.round((1 - (m.takeMul || 1)) * 100);
   const stat = (label, val, cls) => `<span class="rl-buff-stat ${cls}"><span class="rl-buff-k">${label}</span><b>${val >= 0 ? "+" : ""}${val}%</b></span>`;
+  const statAdd = (label, val, cls) => `<span class="rl-buff-stat ${cls}"><span class="rl-buff-k">${label}</span><b>+${val}</b></span>`;
   const lv = run?.skillLevel || 1;
   // 条件付き（状況）バフ＝発動条件つきで効くため HP/攻/防 の累積%には乗らない。取ったのに合計が
   // 動かず「効いてない」に見える対策＝専用チップで明示（title に発動条件を補足）。値>0のみ表示。
@@ -330,7 +332,8 @@ export function buffTotalsHtml(run) {
     m.revengeDeal ? cond("倍返し", `+${pct(m.revengeDeal)}%`, "前局に味方が被弾していた次局の和了で与ダメ↑") : "",
     m.riichiDeal ? cond("背水", `+${pct(m.riichiDeal)}%`, "リーチ中の和了で与ダメ↑") : "",
   ].join("");
-  const buffRow = `${stat("HP", hpPct, "hp")}${stat("攻", atkPct, "atk")}${stat("防", defPct, "def")}${lv > 1 ? `<span class="rl-buff-stat skl"><span class="rl-buff-k">技Lv</span><b>${lv}</b></span>` : ""}${condChips}`;
+  const hpAddChip = hpAdd > 0 ? statAdd("HP", hpAdd, "hp") : ""; // 絶対値HP（地力・複利しない）は実数で表示
+  const buffRow = `${stat("HP", hpPct, "hp")}${hpAddChip}${stat("攻", atkPct, "atk")}${stat("防", defPct, "def")}${lv > 1 ? `<span class="rl-buff-stat skl"><span class="rl-buff-k">技Lv</span><b>${lv}</b></span>` : ""}${condChips}`;
   // 必殺技（技スロット）
   const skills = (m.grantedAbilityIds || []).map((id) => abilityDef(id)?.name || id);
   const skillRow = skills.length
@@ -637,6 +640,7 @@ function describeEffect(e, out = []) {
   switch (e.kind) {
     case "heal": out.push({ t: `HP +${Math.round((e.amount || 0) * 100)}%`, tone: "hp" }); break;
     case "maxHpUp": out.push({ t: `HP最大 +${Math.round(((e.mul || 1) - 1) * 100)}%`, tone: "hp" }); break;
+    case "maxHpAdd": out.push({ t: `HP最大 +${e.add || 0}`, tone: "hp" }); break;
     case "dealMul": out.push({ t: `攻撃 +${Math.round(((e.mul || 1) - 1) * 100)}%`, tone: "atk" }); break;
     case "takeReduce": out.push({ t: `防御 +${Math.round((e.rate || 0) * 100)}%`, tone: "def" }); break;
     case "skillLevelUp": out.push({ t: `スキルLv +${e.delta || 1}`, tone: "skl" }); break;

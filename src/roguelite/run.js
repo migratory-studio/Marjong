@@ -31,8 +31,8 @@ const BOSS_EVERY = 10; // この階層ごとにボスフロア（10F・進路選
 // テストはこのオブジェクトを書き換えて掃引できる（本番は既定値）。
 export const RL_TUNE = {
   regenFrac: 0.18,    // 1階踏破ごとの部分回復（最大HP比）。回復しすぎず消耗を残す。
-  floorDmgStart: 6,   // この階から被ダメ深度倍率が立ち上がる（序盤は警戒不要）
-  floorDmgSlope: 2.4, // 深度1階あたりの被ダメ増（青天井＝必ず終わる主レバー）。なだらか化（2.8→2.4・強ビルドのテールは有界に保つ）。一撃死上限とセットで深度の圧を作る。
+  floorDmgStart: 8,   // この階から被ダメ深度倍率が立ち上がる（F8まで地力で抜けられる＝「うまく戦えばいける」）
+  floorDmgSlope: 4.0, // 深度1階あたりの被ダメ増（青天井＝必ず終わる主レバー）。深層を急峻化（2.4→4.0＝「どんどん難しくなる」）。HP割合複利を除去（maxHpAdd棲み分け）した上での再校正：育成完了greedy max 162→94・中央値20/バフ効き×1.43は維持。一撃死上限とセットで深層の圧を作る。
   dealCap: 2.4,       // 与ダメ倍率の実効上限（積み過ぎの無双化を防ぐ）。攻め一辺倒の最適化を緩める（3.0→2.4）
   takeFloor: 0.4,     // 被ダメ倍率の実効下限＝軽減は最大60%まで（持続を有界にする）
   friendlyMul: 0.3,   // 味方の和了で味方が払う分（＝主に自摸の同士討ち）を大幅軽減（1.0→0.3）。「味方がトぶ不思議」対策。
@@ -68,6 +68,19 @@ export function dealDepthMul(floor = 1) {
 // 味方の avatarHpMax（点棒スケール）→ ローグライトHP。
 export function allyScaledHp(avatarHpMax = 25000) {
   return Math.max(200, Math.round((avatarHpMax || 25000) * DAMAGE_SCALE));
+}
+
+// 館の気脈：フロアを進むほど味方の最大HPも緩やかに底上げ（基礎HP比・線形＝複利爆発しない）。
+// 敵HPが階層で増える(floorEnemyHp)のに追従させ、攻撃特化ビルドでも深層で「相手の合計HPを上回る」
+// ＝制圧ボーナスを狙える余地を残す狙い。0.03＝控えめ（実測：育成完了greedy max140で有界・無限化しない）。
+export const FLOOR_HP_GROWTH = 0.03;
+export function growMaxHp(run) {
+  if (!run || !Array.isArray(run.party)) return;
+  for (const m of run.party) {
+    if (m.hp <= 0) continue; // トんだメンバーは育たない（脱落はランを通して継続）
+    const add = Math.round((m.baseHp || m.hpMax) * FLOOR_HP_GROWTH);
+    m.hpMax += add; m.hp += add; // 現在HPも同量底上げ（進むだけで少し回復＝前進の手応え）
+  }
 }
 
 // 階層→敵1人あたりのHP（線形成長・上限で頭打ち）。複利をやめ、深層でも傾斜がなだらか。
@@ -116,7 +129,7 @@ export function carrySlotsFor(bestFloor = 0) {
 export function newRun(party, seed) {
   const members = (party || []).map((p) => {
     const hpMax = allyScaledHp(p.avatarHpMax ?? p.char?.stats?.startingPoints ?? 25000);
-    return { id: p.id, char: p.char, hpMax, hp: hpMax, hungover: false };
+    return { id: p.id, char: p.char, hpMax, hp: hpMax, baseHp: hpMax, hungover: false }; // baseHp=館の気脈の底上げ基準（初期HP最大）
   });
   return {
     seed: seed != null ? String(seed) : String(Date.now()),
@@ -151,7 +164,7 @@ export function serializeRun(run) {
     mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
     biomeRerolls: { ...(run.biomeRerolls || {}) }, orbsEarned: run.orbsEarned || 0,
     lineup: run.lineup || null, visited: [...(run.visited || [])], eventSeen: !!run.eventSeen,
-    party: run.party.map((m) => ({ id: m.id, hp: m.hp, hpMax: m.hpMax, hungover: !!m.hungover })),
+    party: run.party.map((m) => ({ id: m.id, hp: m.hp, hpMax: m.hpMax, baseHp: m.baseHp ?? m.hpMax, hungover: !!m.hungover })),
   };
 }
 
@@ -163,7 +176,7 @@ export function deserializeRun(data, resolveChar) {
   for (const m of data.party) {
     const char = resolveChar?.(m.id);
     if (!char) return null;
-    party.push({ id: m.id, char, hp: m.hp, hpMax: m.hpMax, hungover: !!m.hungover });
+    party.push({ id: m.id, char, hp: m.hp, hpMax: m.hpMax, baseHp: m.baseHp ?? m.hpMax, hungover: !!m.hungover });
   }
   return {
     seed: String(data.seed), floor: data.floor || 1, party,
@@ -198,7 +211,7 @@ export function shopStock(run, rng) {
   const it = drawItems(rng, { count: 1, exclude: run.items })[0];
   if (it) stock.push({ type: "item", item: it, price: it.cost, name: it.name, desc: it.desc, rarity: "rare" });
   stock.push({ type: "heal", price: SHOP_HEAL_PRICE, name: "気付け薬", desc: "パーティ全員のHPを50%回復する。", rarity: "common" });
-  stock.push({ type: "maxhp", price: SHOP_MAXHP_PRICE, name: "厚みの護符", desc: "HP最大値が20%増える（現在HPも底上げ）。", rarity: "rare" });
+  stock.push({ type: "maxhp", price: SHOP_MAXHP_PRICE, name: "厚みの護符", desc: "HP最大値が一定値増える（深い階ほど大きい・現在HPも底上げ）。", rarity: "rare" });
   return stock;
 }
 
@@ -213,7 +226,7 @@ export function buyShopItem(run, item) {
   run.coins -= item.price;
   if (item.type === "card") applyCard(run, item.card);
   else if (item.type === "heal") healParty(run, 0.5);
-  else if (item.type === "maxhp") applyCard(run, { id: "_shop-maxhp", effect: { kind: "maxHpUp", mul: 1.2 } });
+  else if (item.type === "maxhp") applyCard(run, { id: "_shop-maxhp", effect: { kind: "maxHpAdd", add: 200 } }); // 絶対値（複利インフレ防止・買い増しは線形）
   return true;
 }
 
@@ -223,7 +236,7 @@ export function buyShopItem(run, item) {
 export function shrineOffers(run) {
   return [
     { label: "HPを捧げる（最大HPの30%）", reply: "祠が応える――力が body に満ちる。", outcome: { hurtFrac: 0.3, effect: { kind: "compound", parts: [{ kind: "dealMul", mul: 1.4 }, { kind: "takeReduce", rate: 0.2 }] } } },
-    { label: "光貨を捧げる（40）", reply: "供物は受け取られた。確かな手応え。", outcome: { coins: -40, effect: { kind: "maxHpUp", mul: 1.25 } } },
+    { label: "光貨を捧げる（40）", reply: "供物は受け取られた。確かな手応え。", outcome: { coins: -40, effect: { kind: "maxHpAdd", add: 250 } } },
     { label: "何も捧げず去る", reply: "祠は沈黙したまま。", outcome: {} },
   ];
 }
@@ -363,7 +376,7 @@ export function recruitCandidates(run, n = 3) {
 export function swapPartyMember(run, char, releaseIdx) {
   if (!char || releaseIdx == null || !run.party[releaseIdx]) return false;
   const hpMax = allyScaledHp(char.stats?.startingPoints ?? 25000);
-  run.party[releaseIdx] = { id: char.id, char, hpMax, hp: hpMax, hungover: false };
+  run.party[releaseIdx] = { id: char.id, char, hpMax, hp: hpMax, baseHp: hpMax, hungover: false };
   if (Array.isArray(run.lineup)) run.lineup = run.party.map((m) => m.id); // 並び順を整合
   return true;
 }
