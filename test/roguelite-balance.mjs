@@ -11,6 +11,7 @@ import { LEAGUE_SIM } from "../src/autobattle/leagueAutoSim.js";
 import {
   newRun, enemyUnitForFloor, seatedAllies, floorEnemyHp, healParty, rollHangover,
   rogueliteDamageDeltas, rollDraft, carrySlotsFor, allyScaledHp, RL_TUNE, floorDamageMul, runWiped,
+  growMaxHp, FLOOR_HP_GROWTH,
 } from "../src/roguelite/run.js";
 import { applyCard, applyEffect, BUFF_TUNE } from "../src/roguelite/cardEffects.js";
 if (process.env.HPCAP) BUFF_TUNE.hpMulCap = Number(process.env.HPCAP); // 累積HP倍率の上限を掃引
@@ -227,7 +228,18 @@ function simRun(profile, seed) {
   const rng = makeRng(`${seed}:battle`);
   let guard = 0;
   while (guard++ < (Number(process.env.GUARD) || 200)) {
+    const before = run.floor;
     if (!stepFloor(run, rng, profile.picker || "none")) break;
+    // 館の気脈：フロアを進むほど味方の最大HPも緩やかに底上げ（本番 growMaxHp と同経路）。
+    // 既定は本番値 FLOOR_HP_GROWTH。GROWHP env を渡すとその値で掃引（本番ロジックを一時上書き）。
+    if (run.floor > before) {
+      if (process.env.GROWHP) {
+        const g = Number(process.env.GROWHP);
+        for (const m of run.party) if (m.hp > 0) { const add = Math.round((m.baseHp || m.hpMax) * g); m.hpMax += add; m.hp += add; }
+      } else {
+        growMaxHp(run);
+      }
+    }
   }
   return run.floor;
 }

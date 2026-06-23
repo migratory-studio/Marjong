@@ -57,9 +57,9 @@ export const ROGUELITE_CARD_MASTER = [
   {
     id: "maxhp-up-common",
     name: "厚みの点棒",
-    desc: "パーティのHP最大値が15%増える（現在HPも底上げ）。",
+    desc: "パーティのHP最大値が一定値増える（深い階ほど大きい・現在HPも底上げ）。",
     rarity: "common",
-    effect: { kind: "maxHpUp", mul: 1.15 },
+    effect: { kind: "maxHpAdd", add: 150 },
     stackable: true,
     maxStacks: 4,
   },
@@ -75,9 +75,9 @@ export const ROGUELITE_CARD_MASTER = [
   {
     id: "brace-common",
     name: "踏ん張り",
-    desc: "被ダメ-8%、さらにHP最大+5%。じわりと固める。",
+    desc: "被ダメ-8%、さらにHP最大+50（深い階ほど大きい）。じわりと固める。",
     rarity: "common",
-    effect: { kind: "compound", parts: [{ kind: "takeReduce", rate: 0.08 }, { kind: "maxHpUp", mul: 1.05 }] },
+    effect: { kind: "compound", parts: [{ kind: "takeReduce", rate: 0.08 }, { kind: "maxHpAdd", add: 50 }] },
     stackable: true,
     maxStacks: 4,
   },
@@ -286,7 +286,7 @@ export function cardCategory(card) {
   const k = card?.effect?.kind;
   if (k === "grantAbility") return "skill";
   if (k === "heal" || k === "friendlyGuard") return "item";
-  return "buff"; // dealMul/takeReduce/maxHpUp/skillLevelUp/paramBoost/addBench/compound
+  return "buff"; // dealMul/takeReduce/maxHpUp/maxHpAdd/skillLevelUp/paramBoost/addBench/compound
 }
 
 // rarityBias（0..1）でレア以上に重みを寄せたコピーを返す。飛ばし/点差/階層で上振れさせる燃料。
