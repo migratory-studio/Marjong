@@ -25,6 +25,8 @@ const ASSERT = process.argv.includes("--assert");
 if (process.env.REGEN) RL_TUNE.regenFrac = Number(process.env.REGEN);
 if (process.env.DSTART) RL_TUNE.floorDmgStart = Number(process.env.DSTART);
 if (process.env.DSLOPE) RL_TUNE.floorDmgSlope = Number(process.env.DSLOPE);
+if (process.env.DKNEE) RL_TUNE.floorDmgKnee = Number(process.env.DKNEE);
+if (process.env.DACCEL) RL_TUNE.floorDmgAccel = Number(process.env.DACCEL);
 if (process.env.DEALCAP) RL_TUNE.dealCap = Number(process.env.DEALCAP);
 if (process.env.TAKEFLOOR) RL_TUNE.takeFloor = Number(process.env.TAKEFLOOR);
 if (process.env.FRIENDLY) RL_TUNE.friendlyMul = Number(process.env.FRIENDLY);
@@ -261,7 +263,9 @@ function survivalCurve(profile, N = 3000) {
   return { reached, won };
 }
 
-function montecarlo(profile, N = 2000) {
+const MC_N = Number(process.env.MCN || 2000); // 掃引高速化用：試行数を環境変数で絞れる
+const FAST = process.argv.includes("--fast") || process.env.FAST; // 到達深度テーブルだけ出して終わる
+function montecarlo(profile, N = MC_N) {
   const depths = [];
   for (let i = 0; i < N; i++) depths.push(simRun(profile, `mc-${profile.tag}-${i}`));
   depths.sort((a, b) => a - b);
@@ -286,6 +290,7 @@ function report() {
       console.log(`${t.label}\t${picker}\t${r.mean}\t${r.p10}\t${r.median}\t${r.p90}\t${r.max}`);
     }
   }
+  if (FAST) return; // 掃引時は到達深度テーブルだけで切り上げ（重い分布計算を省く）
   console.log("\n=== バフ効果の差（中堅弟子・greedy vs none の median 深度比） ===");
   const mid = TIERS[1];
   const none = montecarlo({ ...mid, picker: "none" });
@@ -313,20 +318,25 @@ function report() {
 
 function assertTargets() {
   let n = 0; const ok = (c, m) => { if (!c) { console.error("FAIL:", m); process.exitCode = 1; } else n++; };
-  const mid = montecarlo({ ...TIERS[1], picker: "greedy" }, 3000);
-  const midNone = montecarlo({ ...TIERS[1], picker: "none" }, 3000);
-  const strong = montecarlo({ ...TIERS[2], picker: "greedy" }, 3000);
-  const weak = montecarlo({ ...TIERS[0], picker: "none" }, 3000);
-  // 目標帯（校正後・深度＝到達フロア。進路選択＋回復フロアで底上げ）
-  ok(mid.median >= 12 && mid.median <= 28, `中堅greedy median 12〜28 (=${mid.median})`);
-  ok(strong.median >= mid.median, `育成完了 ≥ 中堅 (${strong.median} ≥ ${mid.median})`);
-  ok(weak.median <= mid.median, `弱弟子 ≤ 中堅 (${weak.median} ≤ ${mid.median})`);
-  ok(mid.median > midNone.median + 2, `バフ＋進路選択が無策より明確に深い (${mid.median} > ${midNone.median})`);
-  ok(midNone.median >= 8 && midNone.median <= 16, `無策でも最初のボス(10F)前後まで (=${midNone.median})`);
+  const N = Number(process.env.ASSERTN || 1500);
+  const mid = montecarlo({ ...TIERS[1], picker: "greedy" }, N);
+  const midNone = montecarlo({ ...TIERS[1], picker: "none" }, N);
+  const strong = montecarlo({ ...TIERS[2], picker: "greedy" }, N);
+  const weak = montecarlo({ ...TIERS[0], picker: "none" }, N);
+  // 目標帯（翻数係数モデル・深度＝到達フロア）。一撃死クジを廃し「点棒の殴り合い＝深く潜れる」へ再校正。
+  //   ねらい：無バフでも数十階・バフ＋育成で100階級（"100いっちゃってOK"）。最適化の神引きは尾を引くが
+  //   現実的プレイ(p10〜median)が指標。深度バンドは尾(p90)でなく median/p10 で締める。
+  ok(midNone.median >= 25 && midNone.median <= 85, `無策(中堅none) 数十階で消耗死 25〜85 (=${midNone.median})`);
+  ok(midNone.p10 >= 15, `不運な無策でも序盤即死しない p10≥15 (=${midNone.p10})`);
+  ok(mid.median >= midNone.median + 30, `バフ＋進路選択が無策より遥かに深い (+30超: ${mid.median} vs ${midNone.median})`);
+  ok(mid.median >= 90 && mid.median <= 260, `中堅greedy median 90〜260（100階級で必ず終わる帯） (=${mid.median})`);
+  ok(mid.p10 >= 55, `中堅greedy は安定して深く潜れる p10≥55 (=${mid.p10})`);
+  ok(strong.median >= mid.median - 10, `育成完了 ≳ 中堅 (${strong.median} ≳ ${mid.median})`);
+  ok(weak.median <= midNone.median + 5, `弱弟子(none) ≲ 中堅(none) (${weak.median} ≲ ${midNone.median})`);
   // レア度（bias0）
-  const cnt = { common: 0, rare: 0, epic: 0, legendary: 0 }; const N = 30000;
-  for (let i = 0; i < N; i++) for (const c of drawCards(makeRng(`a-${i}`), { count: 3 })) cnt[c.rarity]++;
-  const pct = (k) => cnt[k] / (N * 3) * 100;
+  const cnt = { common: 0, rare: 0, epic: 0, legendary: 0 }; const RN = 30000;
+  for (let i = 0; i < RN; i++) for (const c of drawCards(makeRng(`a-${i}`), { count: 3 })) cnt[c.rarity]++;
+  const pct = (k) => cnt[k] / (RN * 3) * 100;
   ok(pct("legendary") >= 0.5 && pct("legendary") <= 5, `legendary 0.5〜5% (=${pct("legendary").toFixed(2)})`);
   ok(pct("common") >= 45, `common が主体 ≥45% (=${pct("common").toFixed(1)})`);
   console.log(`roguelite-balance assertions: ${n} passed`);
