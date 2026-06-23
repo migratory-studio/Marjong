@@ -8,7 +8,7 @@ import {
 import { applyEffect, applyCard, freshMods } from "../src/roguelite/cardEffects.js";
 import {
   newRun, allyScaledHp, floorEnemyHp, handsForType, isBossFloor,
-  enemyUnitForFloor, rogueliteDamageDeltas, explainRogueliteDamage, lethalCapFrac, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, serializeRun, deserializeRun, DAMAGE_SCALE,
+  enemyUnitForFloor, rogueliteDamageDeltas, explainRogueliteDamage, lethalCapFrac, hanTierMul, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, serializeRun, deserializeRun, DAMAGE_SCALE,
   carrySlotsFor, excludedCardIds, rollDraft, allPartyDown, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers,
 } from "../src/roguelite/run.js";
@@ -357,9 +357,10 @@ applyCard(run, cardById("take-down-common")); // takeMul ×0.9
 dd = rogueliteDamageDeltas(run, { deltas: [0, -8000, -2000, 0], roles, winnerSeat: 0 });
 eq(dd[1], Math.round(-8000 * DAMAGE_SCALE * 1.25), "敵失点に与ダメ倍率");
 eq(dd[2], Math.round(-2000 * DAMAGE_SCALE * 0.9 * 0.3), "同士討ちは被ダメ軽減×同士討ち軽減");
-// 敵が和了したら dealMul は掛からない（味方失点には軽減のみ・floor1はfdm=1）
-dd = rogueliteDamageDeltas(run, { deltas: [-3000, 0, 0, 0], roles, winnerSeat: 1 });
-eq(dd[0], Math.round(-3000 * DAMAGE_SCALE * 0.9), "敵和了時は味方失点に軽減のみ（floor1）");
+// 敵が和了したら dealMul は掛からない（味方失点には軽減＋翻数係数・floor1はfdm=1）
+// 敵席1が 3000 でロン（勝者得点を席1に入れる＝翻数判定の正典）。3000=安手帯→係数で軽くなる。
+dd = rogueliteDamageDeltas(run, { deltas: [-3000, 3000, 0, 0], roles, winnerSeat: 1 });
+eq(dd[0], Math.round(-3000 * DAMAGE_SCALE * 0.9 * hanTierMul(3000)), "敵和了時は味方失点に軽減＋翻数係数（安手は軽い・floor1）");
 
 // ---------- 一撃死上限（hpMax を渡すと最大HP比で被ダメをクランプ） ----------
 {
@@ -369,8 +370,9 @@ eq(dd[0], Math.round(-3000 * DAMAGE_SCALE * 0.9), "敵和了時は味方失点�
   const dCap = rogueliteDamageDeltas(r, { deltas: [-99999, 0, 0, 0], roles, winnerSeat: 1, hpMax });
   const cap = Math.round(1000 * lethalCapFrac(6));
   eq(dCap[0], -cap, "1ハンドの被ダメは最大HP比の上限でクランプ");
-  ok(lethalCapFrac(1) < lethalCapFrac(30), "上限は深層ほど緩む（一撃死が戻る）");
-  eq(lethalCapFrac(40), 1, "十分深ければ上限なし（=1.0）");
+  eq(lethalCapFrac(1), lethalCapFrac(40), "中盤(F40)まで上限は固定＝満タン一撃死なし");
+  ok(lethalCapFrac(40) < lethalCapFrac(60), "上限は深層(F40超)で緩む＝一撃死が戻る");
+  eq(lethalCapFrac(63), 1, "十分深ければ上限なし（=1.0・F63前後）");
   // hpMax を渡さなければクランプしない（後方互換）
   const dNoCap = rogueliteDamageDeltas(r, { deltas: [-99999, 0, 0, 0], roles, winnerSeat: 1 });
   ok(dNoCap[0] < -cap, "hpMax 無しは従来どおり上限なし");
@@ -394,11 +396,12 @@ eq(dd[0], Math.round(-3000 * DAMAGE_SCALE * 0.9), "敵和了時は味方失点�
 
 // ---------- バランス調整：深度倍率は敵の攻撃だけ・与ダメは深度ボーナス・お守り ----------
 {
-  // 深いフロアで、敵の攻撃（winner=enemy）→味方失点に fdm が乗る。味方の自摸（winner=ally）→乗らない。
-  const r = newRun(party, "depth"); r.floor = 10;
-  const enemyHit = rogueliteDamageDeltas(r, { deltas: [-1000, 0, 0, 0], roles, winnerSeat: 1 });
-  const allyTsumo = rogueliteDamageDeltas(r, { deltas: [0, 0, -1000, 0], roles, winnerSeat: 0 });
-  ok(Math.abs(enemyHit[0]) > Math.abs(allyTsumo[2]) * 3, "敵の攻撃は深度倍率で重い／味方の自摸被弾は軽い");
+  // 深いフロアで、敵の攻撃（winner=enemy）→味方失点に fdm＋翻数係数が乗る。味方の自摸（winner=ally）→乗らない。
+  const r = newRun(party, "depth"); r.floor = 20;
+  // 敵が満貫(8000)ロン（勝者得点を席1に）。味方の自摸被弾(同士討ち)と比べて遥かに重い。
+  const enemyHit = rogueliteDamageDeltas(r, { deltas: [-8000, 8000, 0, 0], roles, winnerSeat: 1 });
+  const allyTsumo = rogueliteDamageDeltas(r, { deltas: [8000, 0, -8000, 0], roles, winnerSeat: 0 });
+  ok(Math.abs(enemyHit[0]) > Math.abs(allyTsumo[2]) * 3, "敵の攻撃は深度倍率＋翻数で重い／味方の自摸被弾は軽い");
   // 与ダメは深度で少し伸びる（floor10 > floor1）
   const dealF1 = rogueliteDamageDeltas(newRun(party, "d1"), { deltas: [0, -1000, 0, 0], roles, winnerSeat: 0 })[1];
   const dealF10 = rogueliteDamageDeltas(r, { deltas: [0, -1000, 0, 0], roles, winnerSeat: 0 })[1];

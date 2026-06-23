@@ -32,29 +32,53 @@ const BOSS_EVERY = 10; // この階層ごとにボスフロア（10F・進路選
 export const RL_TUNE = {
   regenFrac: 0.18,    // 1階踏破ごとの部分回復（最大HP比）。回復しすぎず消耗を残す。
   floorDmgStart: 8,   // この階から被ダメ深度倍率が立ち上がる（F8まで地力で抜けられる＝「うまく戦えばいける」）
-  floorDmgSlope: 4.0, // 深度1階あたりの被ダメ増（青天井＝必ず終わる主レバー）。深層を急峻化（2.4→4.0＝「どんどん難しくなる」）。HP割合複利を除去（maxHpAdd棲み分け）した上での再校正：育成完了greedy max 162→94・中央値20/バフ効き×1.43は維持。一撃死上限とセットで深層の圧を作る。
+  floorDmgSlope: 0.25, // 深度1階あたりの被ダメ増（線形・緩やか）。一撃死クジ(旧4.0)を廃し、難度の主役は「翻数(点数帯)係数」へ。F1〜60は“じわじわ重くなる”だけ。
+  floorDmgKnee: 40,    // この階から二次加速が立ち上がる（深層エンドレスの“壁”）。線形だけだと最適化ビルドが永遠に終わらないため。
+  floorDmgAccel: 0.04, // 二次加速係数。(floor-knee)^2 に乗る＝深いほど加速度的に重い。F90前後で安手すら受け切れなくなる＝最適化ビルドでも必ず終わる。
   dealCap: 2.4,       // 与ダメ倍率の実効上限（積み過ぎの無双化を防ぐ）。攻め一辺倒の最適化を緩める（3.0→2.4）
   takeFloor: 0.4,     // 被ダメ倍率の実効下限＝軽減は最大60%まで（持続を有界にする）
   friendlyMul: 0.3,   // 味方の和了で味方が払う分（＝主に自摸の同士討ち）を大幅軽減（1.0→0.3）。「味方がトぶ不思議」対策。
   dealDepthStart: 1,  // 与ダメ深度ボーナスの立ち上がり階
   dealDepthSlope: 0.04, // 深度1階あたりの与ダメ増。敵HP成長に追従させ「アガっても嬉しくない」を解消。
-  // 1ハンドで味方が失うHPの上限（最大HP比）。満タンからの一撃全滅を防ぎ、死を“なだれ”から“消耗”へ。
-  // ただし深層では上限が薄れて一撃が戻る＝エンドレスがちゃんと終わる（序盤〜中盤の理不尽だけ抜く）。
+  // 翻数(＝点数帯)→被ダメ係数。麻雀の手の重さをHPダメージへ直結させる中核レバー。
+  //   満貫未満は和らげ「安手では死ににくい」、跳満で跳ね上げ「あてられるとぶっ飛ぶ」、倍満/役満はさらに痛い。
+  //   [gross素点しきい値, 係数] の昇順テーブルを線形補間（端は端値でクランプ）。
+  hanTier: [[2000, 0.45], [3900, 0.55], [5200, 0.62], [7700, 0.72], [8000, 0.80], [12000, 1.30], [16000, 1.65], [24000, 2.0], [32000, 2.4]],
+  // 1ハンドで味方が失うHPの上限（最大HP比）。満タンからの一撃全滅を防ぎ「HPを積めば耐える」を成立させる。
+  // 序盤〜中盤(F1〜lethalCapFadeStart)は固定で守り、深層エンドレスでだけ超ゆっくり開く＝ランは“深く”だが必ず終わる。
   lethalCapBase: 0.55,      // 立ち上がりの上限（F1〜lethalCapFadeStart はこの割合で頭打ち）
-  lethalCapFadeStart: 8,    // この階から上限が緩み始める
-  lethalCapFadeSlope: 0.09, // 1階あたり上限が緩む量（floor が深いほど大きな一撃を許す→F13前後で即死が戻る）
+  lethalCapFadeStart: 40,   // この階まで上限は固定（中盤までは満タン一撃死なし）
+  lethalCapFadeSlope: 0.02, // 1階あたり上限が緩む量（F62前後で1.0＝即死復活。深層エンドレスは終わる）
+  tsumoCapMul: 0.7,         // ツモ被弾の席あたり上限＝ron上限×この値。「ツモられてもトビまではしない（が痛い）」。
 };
 
-// 深度スケールの一撃死上限（最大HP比）。深いほど 1.0（=上限なし）へ漸近。
+// 深度スケールの一撃死上限（最大HP比）。中盤まで固定、深層で 1.0（=上限なし）へ超ゆっくり漸近。
 export function lethalCapFrac(floor = 1) {
   return Math.min(1, RL_TUNE.lethalCapBase + Math.max(0, floor - RL_TUNE.lethalCapFadeStart) * RL_TUNE.lethalCapFadeSlope);
+}
+
+// 翻数(点数帯)→被ダメ係数。gross＝和了者が得た素点（ron=満額・ツモ=合計）。RL_TUNE.hanTier を線形補間。
+export function hanTierMul(gross = 0) {
+  const t = RL_TUNE.hanTier;
+  const g = Math.abs(gross);
+  if (g <= t[0][0]) return t[0][1];
+  if (g >= t[t.length - 1][0]) return t[t.length - 1][1];
+  for (let i = 1; i < t.length; i++) {
+    if (g <= t[i][0]) {
+      const [g0, m0] = t[i - 1], [g1, m1] = t[i];
+      return m0 + (m1 - m0) * (g - g0) / (g1 - g0);
+    }
+  }
+  return t[t.length - 1][1];
 }
 export const REGEN_FRAC = RL_TUNE.regenFrac; // 後方互換の別名（参照箇所用）
 
 // 深度被ダメ倍率：param 上限（敵Lv10）の先でも難度が上がり続ける＝エンドレスが必ず終わる。
 // ※ 敵の攻撃で味方が受ける失点にだけ乗る（味方同士の自摸被弾には乗せない＝rogueliteDamageDeltas 参照）。
 export function floorDamageMul(floor = 1) {
-  return 1 + Math.max(0, floor - RL_TUNE.floorDmgStart) * RL_TUNE.floorDmgSlope;
+  const lin = Math.max(0, floor - RL_TUNE.floorDmgStart) * RL_TUNE.floorDmgSlope;
+  const knee = Math.max(0, floor - (RL_TUNE.floorDmgKnee || Infinity));
+  return 1 + lin + knee * knee * (RL_TUNE.floorDmgAccel || 0); // 深層は二次加速＝必ず終わる壁
 }
 
 // 与ダメ深度ボーナス：階層が深いほど敵HPが増えるので、味方の与ダメも緩やかに伸ばして
@@ -393,13 +417,17 @@ export function swapPartyMember(run, char, releaseIdx) {
 // 戻り値: 席ごとのHP差分（負数・整数）。呼び出し側が hp[i]=max(0,hp[i]+d) で反映する。
 // 味方の失点には「深度被ダメ倍率（run.floor）」も乗る＝深いほど痛い（エンドレスの難度ランプ）。
 // 計算文脈（mod・深度倍率・上限）をまとめる。deltas/breakdown が共有＝二重実装を避ける。
-function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}) {
+function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}, deltas = []) {
   const m = run.mods;
   const im = itemMods(run); // 常設道具（光貨/回復/レア度/深度緩和）の集計
   const bm = biomeMods(run); // 層モディファイア（被ダメ/与ダメ）。帯ごとに変わる。
   // 深度被ダメ倍率は「軽身の符」等で緩和（1.0 を割らないよう (fdm-1) 部分にだけ係数）。層の被ダメ係数を最後に掛ける。
   const baseFdm = floorDamageMul(run.floor || 1);
   const fdm = (1 + Math.max(0, baseFdm - 1) * (1 - im.fdmReduceFrac)) * (bm.dmgTakenMul || 1);
+  // 翻数(点数帯)係数：和了者の得た素点(gross)で「手の重さ」を判定。ツモは払い手が複数＝負deltaが2席以上。
+  const winnerGross = winnerSeat != null && deltas[winnerSeat] > 0 ? deltas[winnerSeat] : 0;
+  const isTsumo = deltas.filter((d) => d < 0).length >= 2;
+  const cap = lethalCapFrac(run.floor || 1);
   return {
     winnerIsAlly: winnerSeat != null && roles[winnerSeat] === "ally",
     dealMul: Math.min(RL_TUNE.dealCap, m.dealMul * (battleMods.dealMul || 1)),   // 鼓舞=次戦攻撃↑
@@ -407,7 +435,10 @@ function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}) {
     fdm,
     deal: dealDepthMul(run.floor || 1) * (bm.dmgDealMul || 1), // 層の与ダメ係数（黄昏=攻め映え）
     friendlyMul: RL_TUNE.friendlyMul,
-    lethalCapFrac: lethalCapFrac(run.floor || 1),
+    tierMul: hanTierMul(winnerGross), // 安手は軽く・跳満以上は重く
+    isTsumo,
+    lethalCapFrac: cap,
+    tsumoCapFrac: cap * RL_TUNE.tsumoCapMul, // ツモは席あたり上限を一段下げる＝トビにくい
     hpMax: hpMax || [],
   };
 }
@@ -433,12 +464,17 @@ function seatDamage(d, role, i, ctx, guardRef) {
     if (guardRef.n > 0) { guardRef.n -= 1; return { value: 0, steps: [{ k: "素点", v: d }, { k: "庇いの守りで無効化", v: 0 }], capped: false, guardUsed: true }; }
     scaled *= ctx.friendlyMul; steps.push({ k: `同士討ち ×${ctx.friendlyMul}`, v: Math.round(scaled) });
   } else {
-    scaled *= ctx.fdm; if (ctx.fdm > 1.001) steps.push({ k: `深度 ×${ctx.fdm.toFixed(1)}`, v: Math.round(scaled) });
+    // 敵の和了で味方が払う失点：翻数(点数帯)係数 → 深度倍率の順で乗る。手の重さが主役。
+    scaled *= ctx.tierMul; if (Math.abs(ctx.tierMul - 1) > 0.001) steps.push({ k: `翻数 ×${ctx.tierMul.toFixed(2)}`, v: Math.round(scaled) });
+    scaled *= ctx.fdm; if (ctx.fdm > 1.001) steps.push({ k: `深度 ×${ctx.fdm.toFixed(2)}`, v: Math.round(scaled) });
   }
   let val = Math.round(scaled);
   let capped = false;
-  const cap = ctx.hpMax[i] ? Math.round(ctx.hpMax[i] * ctx.lethalCapFrac) : 0; // 一撃死防止：最大HPの一定割合まで
-  if (cap && -val > cap) { val = -cap; capped = true; steps.push({ k: `上限 最大HPの${Math.round(ctx.lethalCapFrac * 100)}%`, v: val }); }
+  // 一撃死防止：最大HP比の上限。敵の和了による被弾だけが対象（同士討ちは friendlyMul で別軽減済み）。
+  // ツモ被弾は上限を一段下げて「トビまではしない」。
+  const capFrac = ctx.winnerIsAlly ? ctx.lethalCapFrac : (ctx.isTsumo ? ctx.tsumoCapFrac : ctx.lethalCapFrac);
+  const cap = ctx.hpMax[i] ? Math.round(ctx.hpMax[i] * capFrac) : 0;
+  if (cap && -val > cap) { val = -cap; capped = true; steps.push({ k: `上限 最大HPの${Math.round(capFrac * 100)}%`, v: val }); }
   return { value: val, steps, capped };
 }
 
@@ -446,7 +482,7 @@ function seatDamage(d, role, i, ctx, guardRef) {
 //   hpMax … 席ごとの最大HP（任意）。渡すと1ハンドの被ダメに最大HP比の上限を掛ける（満タン即死を防ぐ）。
 //   battleMods … 「次の1戦だけ」効果（道具）。{ dealMul, takeMul } を一時的に上乗せする。
 export function rogueliteDamageDeltas(run, { deltas, roles, winnerSeat, hpMax, battleMods }) {
-  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods);
+  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods, deltas);
   const guardRef = { n: run.mods.friendlyGuard || 0 };
   const out = deltas.map((d, i) => seatDamage(d, roles[i], i, ctx, guardRef).value);
   if (guardRef.n !== (run.mods.friendlyGuard || 0)) run.mods.friendlyGuard = guardRef.n; // 消費を反映
@@ -455,7 +491,7 @@ export function rogueliteDamageDeltas(run, { deltas, roles, winnerSeat, hpMax, b
 
 // ダメージの内訳（演出用）。各席の計算過程 steps を返す。お守りは消費しない（表示のみ・コピーで判定）。
 export function explainRogueliteDamage(run, { deltas, roles, winnerSeat, hpMax, battleMods }) {
-  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods);
+  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods, deltas);
   const guardRef = { n: run.mods.friendlyGuard || 0 };
   return deltas.map((d, i) => ({ seat: i, role: roles[i], ...seatDamage(d, roles[i], i, ctx, guardRef) }));
 }
