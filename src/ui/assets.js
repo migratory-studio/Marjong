@@ -171,9 +171,10 @@ export const HOME_BGM_CHOICES = [
   { key: "sakuya3",     label: "朔夜",     src: BGM_SAKUYA3 },
   { key: "hanadoki",    label: "花どき",   src: BGM_HOME },
   { key: "amenoshita",  label: "天ノ下",   src: BGM_SELECT },
-  { key: "otogi4",      label: "おとぎ4",  src: BGM_MENTOR },
-  { key: "kengeki",     label: "剣戟",     src: BGM_TOURNEY[1] },
-  { key: "epic",        label: "勇壮",     src: BGM_TOURNEY[2] },
+  // 以下3曲は宝珠ショップ解禁（locked）。購入で profile.unlockedBgms に key が入ると選べる。
+  { key: "otogi4",      label: "おとぎ4",  src: BGM_MENTOR,     locked: true },
+  { key: "kengeki",     label: "剣戟",     src: BGM_TOURNEY[1], locked: true },
+  { key: "epic",        label: "勇壮",     src: BGM_TOURNEY[2], locked: true },
 ];
 const SE_DAHAI = ["１", "２", "３", "４"].map((n) => enc(`sound/se/dahai/牌を置く・その${n}.mp3`));
 const SE_SHUFFLE = enc("sound/se/麻雀牌をまぜる.mp3"); // start of hand (deal)

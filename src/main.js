@@ -28,6 +28,8 @@ import { showAccount } from "./screens/accountScreen.js";
 import { buildPrologueLines } from "./data/prologueScenario.js";
 import { showMentorHome } from "./screens/mentorHomeScreen.js";
 import { showBattleHome } from "./screens/battleHomeScreen.js";
+import { showShop } from "./screens/shopScreen.js";
+import { SHOP_BUFFS } from "./data/shopMaster.js";
 import { showRest } from "./screens/restScreen.js";
 import { showGrowth } from "./screens/growthScreen.js";
 import { showAbilityChange } from "./screens/abilityChangeScreen.js";
@@ -60,7 +62,7 @@ import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, con
 import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear, setRlLogSink, flushRlLog, setRlRunId } from "./roguelite/rogueliteLog.js";
 import { supabase } from "./config/supabase.js";
 import { bgDef } from "./data/backgroundMaster.js";
-import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, SKILL_LEVEL_CAP, RECRUIT_COST } from "./data/rogueliteFloorMaster.js";
+import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, forgeOverchargeCost, FORGE_OVERCHARGE_DEAL, SKILL_LEVEL_CAP, RECRUIT_COST } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
 import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume, showRogueliteBiomeIntro, showRogueliteRecruit } from "./screens/rogueliteScreen.js";
@@ -206,6 +208,8 @@ let teamHpCells = null;          // 団体戦HPボードのDOM参照マップ
 let selectedPairBattle = false;  // ペア戦モードが選択されているか
 let pairBattleData = null;       // ペア戦中の状態（独立新モード）。null = 非ペア戦
 let pairHpCells = null;          // ペア戦HPボードのDOM参照マップ
+let pairPartnerAuto = true;      // ペア戦：相方の能力発動をおまかせ(自動)にするか。false=「発動要請」した時だけ撃つ
+const pairAbilityRequests = new Set(); // ペア戦：相方へ発動要請した能力id（撃てる手番で消費）
 let rogueliteState = null;       // ローグライト・ラン進行中の状態（{ run } 等）。null = 非ローグライト（F7）
 let rogueliteHandLimit = null;   // 楼光の館：この1戦の「定められた局数」(maxHands)。null = 非ローグライト
 const ROGUELITE_RIICHI_FRAC = 0.05; // 楼光の館：リーチ宣言で最大HPの5%を消費（緊張感のあるギャンブル）
@@ -231,7 +235,7 @@ function makeRogueliteCharResolver(deshiRoster) {
   for (const c of [...(deshiRoster || []), ...CHARACTERS]) if (c && !pool.has(c.id)) pool.set(c.id, c);
   return (id) => pool.get(id) || null;
 }
-const MAX_GRANTED_ABILITIES = 2;    // 追加必殺枠の上限（付与能力）。超えそうなら1つ忘れる（ポケモン式）
+const MAX_GRANTED_ABILITIES = 1;    // 追加必殺枠の上限（付与能力）。1枠＝抱える必殺技は常に1つ。超えそうなら持ち替える（ポケモン式）
 // L1: 非同期ポンプ runHand() 用の状態。人間の手番/鳴きの決定は DOM ハンドラが
 // これらの resolver を解決して返す（CPU/オートは AI 経路、将来のオンラインは別経路）。
 let humanTurnResolver = null;  // 解決値: 打牌/ツモ/カンの決定、または SWITCH_TO_AI
@@ -884,6 +888,7 @@ function goScreen(id) {
   if (id === "select-screen") { resetSelectWizard(); loadCompletedRoster(); } // ①卓へ＋弟子ロスター更新
   if (id === "online-screen") renderOnlineProfile(); // プロフィール帯を最新の名前/相棒/段位で更新
   if (id === "battle-home-screen") renderBattleHome(); // お気に入りキャラ＋出迎えセリフを毎回更新
+  if (id === "shop-screen") renderShop(); // 宝珠ショップ（残高/解禁状態を毎回最新で描く）
 }
 
 // フリー対戦 select-screen 用：プロフィールの修行完了弟子（completedAvatars）を読み、席0で
@@ -914,7 +919,19 @@ async function renderBattleHome() {
     loggedIn: !!user,
     onFree: () => { audio.playClick?.(); goScreen("free-battle-screen"); },
     onRoguelite: () => { audio.playClick?.(); openRoguelite(); },
+    onShop: () => { audio.playClick?.(); goScreen("shop-screen"); },
     onBack: () => { audio.playClick?.(); goScreen("home-screen"); },
+  });
+}
+
+// 宝珠ショップ：恒久強化・解禁のハブ（当面は対戦ホームから。将来は楼光の館トップへ）。
+function renderShop() {
+  const host = el("shop-screen");
+  if (!host) return;
+  showShop(host, {
+    repository: profileRepo,
+    audio,
+    onBack: () => { audio.playClick?.(); goScreen("battle-home-screen"); },
   });
 }
 
@@ -1913,6 +1930,23 @@ async function openRoguelite() {
   goScreen("roguelite-screen");
 }
 
+// 宝珠ショップで買った恒久バフ（profile.rogueliteShopBuffs：id→レベル）を新ランへ適用する。
+// kind ごとに run.mods / 光貨 / 最大HP を底上げ（ラン開始時点。SHOP_BUFFS が単一の出どころ）。
+function applyShopBuffsToRun(run, shopBuffs) {
+  if (!run || !shopBuffs) return;
+  for (const b of SHOP_BUFFS) {
+    const lv = shopBuffs[b.id] | 0;
+    if (lv <= 0) continue;
+    if (b.kind === "dealMul") run.mods.dealMul = (run.mods.dealMul || 1) * (1 + b.perLevel * lv);
+    else if (b.kind === "takeMul") run.mods.takeMul = (run.mods.takeMul || 1) * Math.max(0.1, 1 - b.perLevel * lv);
+    else if (b.kind === "startCoins") run.coins = (run.coins || 0) + b.perLevel * lv;
+    else if (b.kind === "startHp") {
+      const mul = 1 + b.perLevel * lv;
+      for (const m of run.party) { m.hpMax = Math.round(m.hpMax * mul); m.baseHp = m.hpMax; m.hp = m.hpMax; }
+    }
+  }
+}
+
 // パーティ（charById で解決済みの CHARACTER 配列）からランを開始し、1階の対局へ。
 // 引き継ぎバフ（profile.roguelite.carry）を新ランへ適用してから出発する（ローグライク）。
 async function startRogueliteRun(partyChars) {
@@ -1925,6 +1959,7 @@ async function startRogueliteRun(partyChars) {
     const c = cardById(id);
     if (c) applyCard(run, c);
   }
+  applyShopBuffsToRun(run, profile?.rogueliteShopBuffs); // 宝珠ショップで買った恒久バフを開始時に反映
   rogueliteState = { run };
   setRlRunId(run.seed); // このランのイベントを run_id=seed で束ねる
   rlLog("run_start", { seed: run.seed, party: run.party.map((p) => p.id), ...rlBuffSnap(run) });
@@ -2152,11 +2187,25 @@ function enterFloor(run, floorType) {
     }
     case "forge":
       // 鍛冶屋：光貨を払ってパーティのスキルレベルを+1（能力強化）。上限Lv10。
+      // Lv上限に達した後は「限界突破」＝光貨を大量に払って攻撃力(与ダメ)を鍛え続けられる。
       showRogueliteForge(host, {
         floor: run.floor, run, cap: SKILL_LEVEL_CAP, costOf: forgeCost,
+        overchargeCostOf: forgeOverchargeCost, overchargeDeal: FORGE_OVERCHARGE_DEAL,
         onForge: () => {
           const cost = forgeCost(run.skillLevel);
           if ((run.coins || 0) >= cost && run.skillLevel < SKILL_LEVEL_CAP) { run.coins -= cost; run.skillLevel += 1; return true; }
+          return false;
+        },
+        onOvercharge: () => {
+          const n = run.forgeOvercharge || 0;
+          const cost = forgeOverchargeCost(n);
+          if ((run.coins || 0) >= cost && run.skillLevel >= SKILL_LEVEL_CAP) {
+            run.coins -= cost;
+            run.forgeOvercharge = n + 1;
+            run.mods.dealMul = (run.mods.dealMul || 1) * (1 + FORGE_OVERCHARGE_DEAL);
+            rlLog("forgeOvercharge", { floor: run.floor, cost, n: run.forgeOvercharge, dealMul: run.mods.dealMul });
+            return true;
+          }
           return false;
         },
         onLeave: () => advanceRoguelite(run),
@@ -3650,6 +3699,9 @@ function startPairBattleGame(partnerId) {
       order[1].stats.startingPoints + order[3].stats.startingPoints,
     ],
   };
+  // 相方への指示：おまかせ(自動発動)で開始。要請キューは空に。
+  pairPartnerAuto = true;
+  pairAbilityRequests.clear();
 
   const dealerIndex = Math.floor(Math.random() * seated.length);
   showScreen("match-intro-screen");
@@ -3804,6 +3856,21 @@ function startPump() {
   runHand().catch((e) => console.error("runHand crashed", e));
 }
 
+// 次の局を開始する共通口。楼光の館は「1戦＝複数局」が1ゲームなので、能力の使用回数は戦を通して
+// 持続させたい（局ごとに補充＝リセットしない）。startHand は hand スコープの charges を満タンに戻す
+// ため、ローグライト戦では局開始前の残量を控え、startHand 後に書き戻す（active/cooldown の局リセットは活かす）。
+// ※game スコープの能力は startHand で元々 charges を触られないので、この書き戻しは無害（同値）。
+function startNextHand() {
+  const keep = pairBattleData?.isRoguelite
+    ? game.players.map((p) => (p.abilities || []).map((ab) => ab.charges))
+    : null;
+  game.startHand();
+  if (keep) {
+    game.players.forEach((p, pi) => (p.abilities || []).forEach((ab, ai) => { ab.charges = keep[pi][ai]; }));
+  }
+  startPump();
+}
+
 async function runHand() {
   while (true) {
     render();
@@ -3827,6 +3894,10 @@ const LocalController = {
   decideAbilities(game, seat) {
     const actor = game.players[seat];
     if (actor.isHuman && !autoPlay) return [];
+    // ペア戦・相方席：おまかせOFFなら「発動要請」された能力だけを撃つ（要件を満たした手番で消費）。
+    if (pairBattleData && !autoPlay && !pairPartnerAuto && seat === pairPartnerSeat()) {
+      return drainPartnerAbilityRequests(game, seat);
+    }
     return decideAbilityActivations(game, seat);
   },
   // 手番の決定を返す。人間席=リーチ/強制中は自動ツモ切り・それ以外は resolver 待ち、
@@ -4158,6 +4229,8 @@ function showHumanActions() {
   // Ability activation buttons / indicators (発動種別ごと)。These go in the side
   // panel (#ability-bar), not the action bar, so they never cover the hand tiles.
   const abilityBar = el("ability-bar");
+  // ペア戦：相方への指示ウィンドウ（自分の能力ボタンの上に常時表示）。
+  renderPairCommandPanel(abilityBar);
   let luxGrayHint = false; // ゼロ・リサーチがグレーアウト中なら下のヒントを出す
   // オンラインは権威が送った abilityStatus を表示する。手動発動はテスト中は未対応（intent 化は後段）
   // ＝発動ボタンは出さずチップ表示のみ。受動能力は権威側で従来どおり効く。
@@ -4682,8 +4755,7 @@ function appendNextButton(box, r) {
       ackWaitTimer = setTimeout(() => { if (online && !game.gameOver) showOnlineWaitToast(); }, ACK_WAIT_DELAY);
       return;
     }
-    game.startHand();
-    startPump();
+    startNextHand();
   };
   const btn = mkBtn(game.isGameOver() ? "結果へ" : "次の局へ", "btn-tsumo", () => {
     el("win-overlay").classList.add("hidden");
@@ -6339,6 +6411,97 @@ function clearActions() {
   if (ab) ab.innerHTML = ""; // ability controls live in the side panel now
 }
 
+// ペア戦・相方への指示ウィンドウ。自分の能力ボタンの上に常時表示する。
+//  ・「能力発動はおまかせ」トグル … ON=相方が自動で能力を撃つ / OFF=要請した時だけ撃つ
+//  ・各能力の「発動要請」ボタン … OFF時のみ有効。パッシブは常時表示で要請不可、要件未達はグレー。
+function renderPairCommandPanel(abilityBar) {
+  if (!pairBattleData || online || !game) return;
+  const seat = pairPartnerSeat();
+  if (seat < 0) return;
+  const list = game.abilityStatus(seat);
+  const name = pairBattleData.chars?.[seat]?.name || game.players[seat]?.character?.name || "相方";
+
+  const panel = document.createElement("div");
+  panel.className = "pair-cmd";
+
+  const head = document.createElement("div");
+  head.className = "pair-cmd-head";
+  head.textContent = `${name} への指示`;
+  panel.appendChild(head);
+
+  // おまかせトグル
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "pair-cmd-toggle" + (pairPartnerAuto ? " on" : " off");
+  toggle.innerHTML = `<span class="pair-cmd-knob"></span><span class="pair-cmd-toggle-label">能力発動はおまかせ <b>${pairPartnerAuto ? "ON" : "OFF"}</b></span>`;
+  toggle.addEventListener("click", () => {
+    pairPartnerAuto = !pairPartnerAuto;
+    if (pairPartnerAuto) pairAbilityRequests.clear();
+    showHumanActions();
+  });
+  panel.appendChild(toggle);
+
+  const rows = document.createElement("div");
+  rows.className = "pair-cmd-rows";
+  const manual = list.filter((a) => a.activation !== "passive");
+  const passive = list.filter((a) => a.activation === "passive");
+
+  for (const a of manual) {
+    const row = document.createElement("div");
+    row.className = "pair-cmd-row";
+    const nm = document.createElement("span");
+    nm.className = "pair-cmd-name";
+    nm.textContent = a.name + (a.maxCharges !== Infinity ? `（残${a.charges}）` : "");
+    row.appendChild(nm);
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pair-cmd-req";
+    const requested = pairAbilityRequests.has(a.id);
+    if (a.active) {
+      btn.textContent = "発動中"; btn.disabled = true; btn.classList.add("is-active");
+    } else if (pairPartnerAuto) {
+      btn.textContent = "おまかせ中"; btn.disabled = true;
+    } else if (!a.canActivate) {
+      btn.textContent = "発動要請"; btn.disabled = true; // 要件未達＝グレー
+    } else if (requested) {
+      btn.textContent = "要請中…"; btn.classList.add("is-req");
+    } else {
+      btn.textContent = "発動要請";
+    }
+    btn.addEventListener("click", () => {
+      if (pairAbilityRequests.has(a.id)) pairAbilityRequests.delete(a.id);
+      else pairAbilityRequests.add(a.id);
+      showHumanActions();
+    });
+    row.appendChild(btn);
+    rows.appendChild(row);
+  }
+
+  for (const a of passive) {
+    const row = document.createElement("div");
+    row.className = "pair-cmd-row passive";
+    const nm = document.createElement("span");
+    nm.className = "pair-cmd-name";
+    nm.textContent = a.name;
+    row.appendChild(nm);
+    const tag = document.createElement("span");
+    tag.className = "pair-cmd-passive-tag";
+    tag.textContent = "常時";
+    row.appendChild(tag);
+    rows.appendChild(row);
+  }
+
+  if (!manual.length && !passive.length) {
+    const empty = document.createElement("div");
+    empty.className = "pair-cmd-empty";
+    empty.textContent = "指示できる能力はない。";
+    rows.appendChild(empty);
+  }
+  panel.appendChild(rows);
+  abilityBar.appendChild(panel);
+}
+
 // Fisher–Yates copy shuffle (used for random CPU character selection).
 function shuffled(arr) {
   const a = [...arr];
@@ -7114,11 +7277,33 @@ function fireSelfTalk(event, { force = false } = {}) {
 // 隣で一緒に打つ相方（自ペアの非人間席）が、味方＝人間プレイヤーの節目に声をかける。
 // 文言は characterVoiceMaster の ally* イベント。表示は相棒ボード（自ペアブロック）の吹き出し。
 let partnerTalkTimer = null;
-function pairPartnerId() {
-  if (!pairBattleData) return null;
+// 相方（自ペアの非人間席）の席index。pairPartnerId と対。-1=ペア戦でない/未解決。
+function pairPartnerSeat() {
+  if (!pairBattleData) return -1;
   const myPair = pairBattleData.pairOf[humanIndex];
   const seat = pairBattleData.pairs[myPair].seats.find((s) => s !== humanIndex);
-  return seat != null ? pairBattleData.chars[seat].id : null;
+  return seat == null ? -1 : seat;
+}
+function pairPartnerId() {
+  const seat = pairPartnerSeat();
+  return seat >= 0 ? pairBattleData.chars[seat].id : null;
+}
+// 「発動要請」キューを相方の手番で消費：撃てる能力だけ発動し、未達なら要請を残す（次手番で再試行）。
+function drainPartnerAbilityRequests(game, seat) {
+  if (!pairAbilityRequests.size) return [];
+  const actor = game.players[seat];
+  const api = game.abilities.apiFor(actor);
+  const aiPicks = decideAbilityActivations(game, seat); // 対象/賭け金などの良い選択を再利用
+  const out = [];
+  for (const id of [...pairAbilityRequests]) {
+    const ab = (actor.abilities || []).find((a) => a.id === id);
+    if (!ab || ab.activation !== "manual") { pairAbilityRequests.delete(id); continue; }
+    if (!ab.canActivate(api)) continue; // まだ撃てない（要件未達）。要請は保持し次手番で再試行。
+    const pick = aiPicks.find((p) => p.id === id);
+    out.push(pick || { id, params: {} });
+    pairAbilityRequests.delete(id);
+  }
+  return out;
 }
 function showPartnerTalk(text, ms = 4200) {
   if (!text || !pairHpCells || !pairBattleData) return;
