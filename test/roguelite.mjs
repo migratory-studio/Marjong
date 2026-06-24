@@ -19,6 +19,10 @@ import { ROGUELITE_EVENT_MASTER, pickEvent } from "../src/data/rogueliteEventMas
 import { makeRng } from "../src/autobattle/autoBattle.js";
 import { abilityDef } from "../src/data/abilityMaster.js";
 import { pickVoiceLine } from "../src/data/voiceLines.js";
+import { CHARACTER_VOICE_MASTER } from "../src/data/characterVoiceMaster.js";
+import { bossMemoryTier, readBossTally, recordBossOutcome, withBossTally } from "../src/roguelite/bossMemory.js";
+import { previewBossChars } from "../src/roguelite/run.js";
+import { ROGUELITE_CHAPTER_MASTER, chapterById, firstChapterId, isChapterUnlocked, chaptersWithState, canOrbUnlock } from "../src/data/rogueliteChapterMaster.js";
 import { Game } from "../src/core/game.js";
 import { CHARACTERS, instantiateAbilities } from "../src/characters/characters.js";
 
@@ -880,6 +884,224 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   eq(CLUSTER_META.gamble.awaken, "総取り", "博打の到達呼称は総取り");
   const prog = clusterProgress(g).find((p) => p.cluster === "gamble");
   ok(prog && prog.count === 5 && prog.reached === 2, "博打進捗＝5枚/2段");
+}
+
+// ---------- 提案B：ボス記憶（bossTally）の純関数＋対局前口上の照合 ----------
+{
+  // 段階(tier)判定：初遭遇/再戦/雪辱。
+  eq(bossMemoryTier(undefined), "first", "記録なし＝初遭遇");
+  eq(bossMemoryTier({ w: 0, l: 0 }), "first", "0-0＝初遭遇");
+  eq(bossMemoryTier({ w: 2, l: 0 }), "rematch", "勝ち越し0敗＝再戦");
+  eq(bossMemoryTier({ w: 0, l: 1 }), "revenge", "1敗＝雪辱");
+  eq(bossMemoryTier({ w: 3, l: 1 }), "revenge", "敗北の記憶を最優先＝雪辱");
+  eq(bossMemoryTier({ w: -5, l: -5 }), "first", "負値はクランプして初遭遇");
+
+  // 勝敗記録は入力を破壊しない＆正しく加算。
+  const t0 = {};
+  const t1 = recordBossOutcome(t0, "shiyue", true);
+  eq(Object.keys(t0).length, 0, "recordBossOutcome は入力を破壊しない");
+  eq(t1.shiyue.w, 1, "勝利でw+1"); eq(t1.shiyue.l, 0, "勝利でlは据置");
+  const t2 = recordBossOutcome(t1, "shiyue", false);
+  eq(t2.shiyue.w, 1, "敗北でwは据置"); eq(t2.shiyue.l, 1, "敗北でl+1");
+  eq(recordBossOutcome(t0, "", true).constructor, Object, "charId空でも安全（コピー返し）");
+
+  // readBossTally：欠損/不正は安全に空へ正規化。
+  eq(Object.keys(readBossTally(null)).length, 0, "profile無し＝空");
+  eq(readBossTally({ roguelite: { bossTally: { kuidoshi: { w: "2", l: 1 } } } }).kuidoshi.w, 2, "文字列wも数値化");
+
+  // withBossTally：roguelite 他フィールドを保全しつつ bossTally だけ差し替え。
+  const merged = withBossTally({ orbs: 9, roguelite: { bestFloor: 12, carry: ["x"] } }, t2);
+  eq(merged.orbs, 9, "withBossTally は他フィールド保全(orbs)");
+  eq(merged.roguelite.bestFloor, 12, "withBossTally は roguelite.bestFloor 保全");
+  eq(merged.roguelite.bossTally.shiyue.l, 1, "withBossTally は bossTally を載せる");
+
+  // previewBossChars：ボス階は2人を決定論で先読み、非ボス階は空。
+  const party = [{ id: "shiyue", char: { id: "shiyue" } }];
+  const r = newRun(party, "boss-preview");
+  r.floor = 10; // 10階＝ボス
+  const bossFt = floorTypeById("boss");
+  const b1 = previewBossChars(r, bossFt);
+  const b2 = previewBossChars(r, bossFt);
+  eq(b1.length, 2, "ボス階は2人先読み");
+  eq(b1.map((c) => c.id).join(","), b2.map((c) => c.id).join(","), "previewBossChars は決定論（同seed=同顔ぶれ）");
+  ok(!b1.some((c) => c.id === "shiyue"), "編成中キャラはボスに出ない");
+  eq(previewBossChars(newRun(party, "x"), floorTypeById("normal")).length, 0, "非ボス階は空");
+
+  // 対局前口上：全キャラが各 tier で rlBossIntro を返す（汎用モック注入で穴がない）。
+  for (const id of Object.keys(CHARACTER_VOICE_MASTER)) {
+    for (const tier of ["first", "rematch", "revenge"]) {
+      ok(typeof pickVoiceLine(id, "rlBossIntro", { bossMemoryTier: tier }) === "string", `rlBossIntro 返る: ${id}/${tier}`);
+    }
+  }
+  // tier を渡さなければ出さない（cond.bossMemoryTier 未一致）。
+  eq(pickVoiceLine("shiyue", "rlBossIntro", {}), null, "tier未指定では rlBossIntro は出ない");
+  // 詩玥/凌雲は先行の固有口上を持つ（汎用モックと差し替わっている）。
+  ok(pickVoiceLine("shiyue", "rlBossIntro", { bossMemoryTier: "first" }).includes("ツモれば勝ち"), "詩玥は固有のボス口上");
+}
+
+// ---------- 提案B スライス2：相棒が潜行履歴に反応（固有性）＋群像の二人相槌 ----------
+{
+  // 固有性：詩玥は最多流派ごとに専用 rlBuff を持つ（cond.rlMainCluster）。
+  for (const cl of ["flush", "guard", "tempo", "value", "gamble"]) {
+    const lines = (CHARACTER_VOICE_MASTER.shiyue || []).filter((e) => e.event === "rlBuff" && e.cond?.rlMainCluster === cl);
+    ok(lines.length >= 1, `詩玥 rlBuff 流派専用あり: ${cl}`);
+  }
+  // 流派 ctx を渡すと専用 or 汎用が返る（必ず文字列）。
+  ok(typeof pickVoiceLine("shiyue", "rlBuff", { rlMainCluster: "flush" }) === "string", "rlMainCluster で rlBuff 返る");
+  // 撤退癖：閾値未満では habit 専用行は候補に入らない（汎用 rlRetreat は常に在る）。
+  const habitLine = (CHARACTER_VOICE_MASTER.shiyue || []).find((e) => e.event === "rlRetreat" && e.cond?.rlRetreatHabitMin === 3);
+  ok(habitLine, "詩玥 撤退癖専用セリフ定義あり");
+  ok(typeof pickVoiceLine("shiyue", "rlRetreat", { rlRetreatHabit: 5 }) === "string", "撤退癖ありで rlRetreat 返る");
+  ok(typeof pickVoiceLine("shiyue", "rlRetreat", {}) === "string", "撤退癖なしでも汎用 rlRetreat は返る");
+  // 自己ベスト更新中：rlDeepRun は厳密一致（未供給=false 扱い）。
+  const deep = (CHARACTER_VOICE_MASTER.shiyue || []).find((e) => e.event === "rlPursue" && e.cond?.rlDeepRun === true);
+  ok(deep, "詩玥 自己ベスト更新中の rlPursue あり");
+
+  // 群像の二人相槌：全キャラが rlBanter/rlBanterReply を持つ（withBanter 補完で穴なし）。
+  for (const id of Object.keys(CHARACTER_VOICE_MASTER)) {
+    ok(typeof pickVoiceLine(id, "rlBanter", {}) === "string", `rlBanter 返る: ${id}`);
+    ok(typeof pickVoiceLine(id, "rlBanterReply", {}) === "string", `rlBanterReply 返る: ${id}`);
+  }
+  // 詩玥/凌雲は固有のバンター（汎用注入されず、本人の文だけ）を持つ。
+  for (const id of ["shiyue", "kuidoshi"]) {
+    ok((CHARACTER_VOICE_MASTER[id] || []).filter((e) => e.event === "rlBanter").length >= 2, `${id} は固有 rlBanter を持つ`);
+    ok((CHARACTER_VOICE_MASTER[id] || []).filter((e) => e.event === "rlBanterReply").length >= 2, `${id} は固有 rlBanterReply を持つ`);
+  }
+}
+
+// ---------- 提案B スライス3：死＝継続（rlWipe）＋見守り（P7/P8） ----------
+{
+  // 全キャラが rlWipe を持つ（withWipe 補完で穴なし＝どの相棒が先頭でも別れ際が出る）。
+  for (const id of Object.keys(CHARACTER_VOICE_MASTER)) {
+    ok(typeof pickVoiceLine(id, "rlWipe", {}) === "string", `rlWipe 返る: ${id}`);
+  }
+  // 見守り(P8)：浅い到達(reached=1)でも必ず言葉が出る＝null退行しない。
+  ok(typeof pickVoiceLine("shiyue", "rlWipe", { rlReached: 1 }) === "string", "浅い全滅でも rlWipe 返る");
+  // 深い到達では rlReachedMin の専用行が候補に入る（詩玥に rlReachedMin:12 を定義）。
+  const deepWipe = (CHARACTER_VOICE_MASTER.shiyue || []).find((e) => e.event === "rlWipe" && e.cond?.rlReachedMin === 12);
+  ok(deepWipe, "詩玥 深い全滅の見守りセリフあり");
+  ok(typeof pickVoiceLine("shiyue", "rlWipe", { rlReached: 20 }) === "string", "深い全滅でも rlWipe 返る");
+  // 浅い帯セリフ（rlReachedMax:6）は深い全滅では候補外＝「最初はこんなもん」が深層で出ない（トーン整合）。
+  const shallowWipe = (CHARACTER_VOICE_MASTER.shiyue || []).find((e) => e.event === "rlWipe" && e.cond?.rlReachedMax === 6);
+  ok(shallowWipe, "詩玥 浅い全滅の励ましセリフあり（rlReachedMax:6）");
+  { // 多数回引いて、深い全滅(reached=20)では浅セリフ本文が一度も返らないことを確認。
+    let leaked = false;
+    for (let i = 0; i < 80; i++) if (pickVoiceLine("shiyue", "rlWipe", { rlReached: 20 }) === shallowWipe.text) { leaked = true; break; }
+    ok(!leaked, "深い全滅で浅い励ましセリフは出ない（rlReachedMax 効く）");
+  }
+  // P7：全滅の別れ際は懲罰語（没収/力尽き）でなく継続の語。詩玥 rlWipe に「また登」系の継続表現がある。
+  const wipeTexts = (CHARACTER_VOICE_MASTER.shiyue || []).filter((e) => e.event === "rlWipe").map((e) => e.text).join(" ");
+  ok(/また登|残る|刻まれ/.test(wipeTexts), "詩玥 rlWipe は継続フレーミング(また登る/残る/刻まれる)");
+  ok(!/没収|力尽き/.test(wipeTexts), "詩玥 rlWipe に懲罰語(没収/力尽き)が無い");
+}
+
+// ---------- 提案B 大章（記憶）選択ハブ：マスタ整合＋解禁ツリー ----------
+{
+  // マスタ整合：id一意・必須文言・tone妥当・unlock参照は実在id・clearFloor>0。
+  // ※ 大2章は comingSoon（空＝予告枠）なので aim/cast/blurb は緩める（中身を勝手に増やさない方針）。
+  const cids = new Set();
+  const validTones = new Set(["gold", "jade", "ember", "ash"]);
+  for (const ch of ROGUELITE_CHAPTER_MASTER) {
+    ok(ch.id && !cids.has(ch.id), `chapter id 一意: ${ch.id}`); cids.add(ch.id);
+    ok(ch.title && ch.subtitle && ch.blurb, `chapter 文言あり: ${ch.id}`);
+    ok(validTones.has(ch.tone), `chapter tone 妥当: ${ch.id}=${ch.tone}`);
+    ok(typeof ch.clearFloor === "number" && ch.clearFloor > 0, `chapter clearFloor>0: ${ch.id}`);
+    if (ch.unlock != null) ok(chapterById(ch.unlock), `chapter unlock 参照は実在: ${ch.id}->${ch.unlock}`);
+    if (!ch.comingSoon) ok(Array.isArray(ch.cast) && ch.cast.length >= 1, `playable章は cast あり: ${ch.id}`);
+  }
+  // ちょうど1本が常時解禁（unlock===null）＝最初の記憶＝師匠をめぐる群像（大1章）。
+  eq(ROGUELITE_CHAPTER_MASTER.filter((c) => c.unlock == null).length, 1, "常時解禁の章はちょうど1本");
+  ok(firstChapterId(), "firstChapterId が取れる");
+  eq(chapterById(firstChapterId()).unlock, null, "firstChapter は unlock=null");
+  ok(!chapterById(firstChapterId()).comingSoon, "firstChapter は遊べる（comingSoonでない）");
+  // 大1章＝師匠群像：弟子＋御庭番が一本に集約されている（割っていない）。
+  const ch1cast = new Set((chapterById(firstChapterId()).cast || []).map((p) => p.id));
+  for (const id of ["shiyue", "kuidoshi", "mamori", "yao_chu", "chun_chan"]) ok(ch1cast.has(id), `大1章 cast に ${id} を含む`);
+
+  // 解禁ロジック：踏破有無に関わらず、遊べるのは大1章のみ（大2章は comingSoon＝常に封）。
+  const open0 = chaptersWithState([]);
+  eq(open0.filter((c) => c.unlocked).length, 1, "踏破0なら解禁は1本だけ");
+  ok(open0.find((c) => c.id === firstChapterId()).unlocked, "踏破0でも最初の記憶は解禁");
+  const coming = ROGUELITE_CHAPTER_MASTER.find((c) => c.comingSoon);
+  ok(coming, "大2章＝comingSoon プレースホルダが存在（空）");
+  ok(!isChapterUnlocked(coming, []), "comingSoon は未踏破では封");
+  ok(!isChapterUnlocked(coming, [firstChapterId()]), "comingSoon は大1章踏破でも開かない（中身が空）");
+  eq(chaptersWithState([firstChapterId()]).find((c) => c.id === firstChapterId()).cleared, true, "踏破済フラグが立つ");
+  // newRun は chapterId / bossPool を保持し、serialize/deserialize で往復する。
+  const r = newRun([{ id: "shiyue", char: { id: "shiyue" } }], "chap-seed", "mentor", ["kuidoshi", "mamori", "yao_chu"]);
+  eq(r.chapterId, "mentor", "newRun が chapterId を保持");
+  eq((r.bossPool || []).join(","), "kuidoshi,mamori,yao_chu", "newRun が bossPool を保持");
+  const round = deserializeRun(serializeRun(r), (id) => ({ id }));
+  eq(round.chapterId, "mentor", "chapterId は保存往復で残る");
+  eq((round.bossPool || []).join(","), "kuidoshi,mamori,yao_chu", "bossPool は保存往復で残る");
+
+  // ボス陣＝この記憶の群像から引く（提案B・縦軸の結びつけ）。詩玥編成で大1章なら、ボスは残りの群像から。
+  const ch1 = chapterById(firstChapterId());
+  const bossPool = ch1.cast.map((c) => c.id);
+  const br = newRun([{ id: "shiyue", char: { id: "shiyue" } }], "boss-pool", ch1.id, bossPool);
+  br.floor = 10;
+  const bosses = previewBossChars(br, floorTypeById("boss"));
+  eq(bosses.length, 2, "ボスは2人");
+  ok(bosses.every((c) => bossPool.includes(c.id)), "ボスは記憶の群像（章cast）から選ばれる");
+  ok(bosses.every((c) => c.id !== "shiyue"), "編成中の相棒はボスに出ない");
+}
+
+// ---------- 提案B 章intro口上（縦軸の結びつけ） ----------
+{
+  // 全キャラが rlChapterIntro を持つ（withChapterIntro 補完で穴なし＝どの相棒でも導入が出る）。
+  for (const id of Object.keys(CHARACTER_VOICE_MASTER)) {
+    ok(typeof pickVoiceLine(id, "rlChapterIntro", {}) === "string", `rlChapterIntro 返る: ${id}`);
+  }
+  // 詩玥/凌雲は固有の章intro（汎用注入されず本人の文）。
+  for (const id of ["shiyue", "kuidoshi"]) {
+    ok((CHARACTER_VOICE_MASTER[id] || []).filter((e) => e.event === "rlChapterIntro").length >= 2, `${id} は固有 rlChapterIntro を持つ`);
+  }
+}
+
+// ---------- 提案B ① 双方向2択（プレイヤーが返す→キャラが覚える） ----------
+{
+  // 別れ際の返し：climb/rest で出し分け、どちらも文字列が返る（全キャラ withResolve 補完）。
+  for (const id of Object.keys(CHARACTER_VOICE_MASTER)) {
+    ok(typeof pickVoiceLine(id, "rlResolve", { resolveChoice: "climb" }) === "string", `rlResolve climb 返る: ${id}`);
+    ok(typeof pickVoiceLine(id, "rlResolve", { resolveChoice: "rest" }) === "string", `rlResolve rest 返る: ${id}`);
+  }
+  // resolveChoice 未指定では返さない（厳密一致）。
+  eq(pickVoiceLine("shiyue", "rlResolve", {}), null, "resolveChoice 未指定では rlResolve は出ない");
+  // 「覚える」：また登るを重ねた相棒の専用 chapterIntro が rlResolveClimbMin で解放（閾値未満は出ない）。
+  const climbLine = (CHARACTER_VOICE_MASTER.shiyue || []).find((e) => e.event === "rlChapterIntro" && e.cond?.rlResolveClimbMin === 3);
+  ok(climbLine, "詩玥 rlResolveClimbMin の章intro あり（挑み続ける性分を覚えている）");
+  { // rlResolveClimb=5 のとき専用行が候補入り、=0 では出ない
+    let leakedHigh = false, leakedLow = false;
+    for (let i = 0; i < 80; i++) { if (pickVoiceLine("shiyue", "rlChapterIntro", { rlResolveClimb: 0 }) === climbLine.text) leakedLow = true; }
+    for (let i = 0; i < 80; i++) { if (pickVoiceLine("shiyue", "rlChapterIntro", { rlResolveClimb: 5 }) === climbLine.text) leakedHigh = true; }
+    ok(!leakedLow, "climb0 では覚えてるセリフは出ない");
+    ok(leakedHigh, "climb5 では覚えてるセリフが候補に入る");
+  }
+}
+
+// ---------- 提案B ② 宝珠で章解禁（仕組み・大2は触らない） ----------
+{
+  // 合成データで宝珠解禁ロジックを検証（マスタ本体＝大2 comingSoon は触らない方針）。
+  const playable = { id: "ch_x", comingSoon: false, unlock: "prev", orbUnlockCost: 30 };
+  ok(!isChapterUnlocked(playable, [], []), "前提未踏破・宝珠未解禁なら封");
+  ok(isChapterUnlocked(playable, ["prev"], []), "前提踏破で解禁");
+  ok(isChapterUnlocked(playable, [], ["ch_x"]), "宝珠で先行解禁済みなら解禁（別ルート）");
+  // canOrbUnlock：封・非予告枠・値付き・所持十分なときだけ true。
+  ok(canOrbUnlock(playable, [], [], 30), "宝珠ちょうどで解禁可");
+  ok(!canOrbUnlock(playable, [], [], 29), "宝珠不足は不可");
+  ok(!canOrbUnlock(playable, ["prev"], [], 999), "既に踏破解禁済みなら宝珠解禁は不要(false)");
+  ok(!canOrbUnlock(playable, [], ["ch_x"], 999), "既に宝珠解禁済みなら再解禁不可");
+  // comingSoon（空＝大2 相当）は宝珠でも開けない（中身が無い）。
+  const empty = { id: "ch_empty", comingSoon: true, unlock: "prev", orbUnlockCost: 30 };
+  ok(!canOrbUnlock(empty, ["prev"], [], 999), "comingSoon は宝珠でも開けない");
+  ok(!isChapterUnlocked(empty, ["prev"], ["ch_empty"]), "comingSoon は宝珠解禁IDがあっても封");
+  // 値付けの無い章は宝珠対象外。
+  ok(!canOrbUnlock({ id: "ch_y", comingSoon: false, unlock: "prev" }, [], [], 999), "orbUnlockCost 無しは宝珠対象外");
+  // 実マスタ：大2(comingSoon) は宝珠でも開かない＝大2は触らない方針が成立。
+  const realComing = ROGUELITE_CHAPTER_MASTER.find((c) => c.comingSoon);
+  if (realComing) ok(!canOrbUnlock(realComing, [firstChapterId()], [], 99999), "実マスタ大2は宝珠でも開けない");
+  // chaptersWithState は orbUnlocked フラグを付ける。
+  ok("orbUnlocked" in chaptersWithState([], [])[0], "chaptersWithState が orbUnlocked を付与");
 }
 
 console.log(`roguelite.mjs: ${n} checks passed`);

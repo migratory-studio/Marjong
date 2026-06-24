@@ -18,6 +18,18 @@
 //                            → cond.lastHandResult で前の局の結果参照
 //   { playStyleTag }         topPlayStyle(playerHistory) → cond.playStyleTag で多用打ち筋参照
 //   { firstMeet }            まだ一度も一緒に打っていない（totalMatches===0） → cond.firstMeet で初対面の出迎え
+//   { bossMemoryTier }       楼光の館・ボスが覚えている段階（"first"|"rematch"|"revenge"）→ cond.bossMemoryTier
+//                            （bossMemory.js の bossMemoryTier(profile.roguelite.bossTally[charId]) で算出）
+//   ── 楼光の館・相棒が潜行履歴に反応（提案B スライス2・固有性。供給は main.js rlVoiceCtx） ──
+//   { rlChapter }            登っている記憶（大章）id → cond.rlChapter（章ごとの専用セリフ）
+//   { rlMainCluster }        このランの最多流派 → cond.rlMainCluster（"flush"|"guard"|"tempo"|"value"|"gamble"）
+//   { rlRetreatHabit }       過去の撤退回数（撤退癖）→ cond.rlRetreatHabitMin
+//   { rlCleared }            この潜行での踏破数（勢い）→ cond.rlClearedMin
+//   { rlDeepRun }            自己ベスト更新中か → cond.rlDeepRun
+//   { rlReached }            ラン終了時の到達階（別れ際の見守り）→ cond.rlReachedMin（P8＝物語ゲートではなくフレーバー差のみ）
+//   ── 双方向（プレイヤーが返す2択。提案B §3.2-5・供給は main.js） ──
+//   { resolveChoice }        別れ際の2択で選んだ手（"climb"|"rest"）→ cond.resolveChoice（キャラの返し）
+//   { rlResolveClimb }       「また登る」を選んだ通算回数 → cond.rlResolveClimbMin（挑み続ける性分を覚えている）
 //
 import { CHARACTER_VOICE_MASTER } from "./characterVoiceMaster.js";
 
@@ -68,6 +80,30 @@ function condMatches(cond, ctx) {
   if (cond.firstMeet != null && Boolean(ctx.firstMeet) !== cond.firstMeet) return false;
   // buffFamily: 楼光の館のバフ系統（"attack"|"defense"|"sustain"|"ability"|"ally"）。未供給は不一致扱い。
   if (cond.buffFamily && cond.buffFamily !== ctx.buffFamily) return false;
+  // bossMemoryTier: 楼光の館・ボスが"覚えている"段階（"first"|"rematch"|"revenge"）。
+  // ctx.bossMemoryTier（bossMemory.js の bossMemoryTier で算出）と一致したときだけ候補。未供給は不一致扱い。
+  if (cond.bossMemoryTier && cond.bossMemoryTier !== ctx.bossMemoryTier) return false;
+  // ── 楼光の館・相棒が「あなたの潜行履歴」に反応（提案B スライス2／固有性）。供給は src/main.js の rlVoiceCtx ──
+  // rlChapter: 登っている記憶（大章）id。章ごとの専用セリフを解放。未供給は不一致扱い。
+  if (cond.rlChapter && cond.rlChapter !== ctx.rlChapter) return false;
+  // rlMainCluster: このランで最多の流派（"flush"|"guard"|"tempo"|"value"|"gamble"）。未供給は不一致扱い。
+  if (cond.rlMainCluster && cond.rlMainCluster !== ctx.rlMainCluster) return false;
+  // rlRetreatHabitMin: 過去の撤退回数の下限（撤退癖）。ctx.rlRetreatHabit 未供給なら 0。
+  if (cond.rlRetreatHabitMin != null && !(Number(ctx.rlRetreatHabit) >= cond.rlRetreatHabitMin)) return false;
+  // rlClearedMin: この潜行での踏破数（勢い／連勝）の下限。ctx.rlCleared 未供給なら 0。
+  if (cond.rlClearedMin != null && !(Number(ctx.rlCleared) >= cond.rlClearedMin)) return false;
+  // rlDeepRun: 自己ベスト（過去最深）を更新中か。true/false を ctx.rlDeepRun と厳密一致で評価。
+  if (cond.rlDeepRun != null && Boolean(ctx.rlDeepRun) !== cond.rlDeepRun) return false;
+  // ── 楼光の館・双方向（プレイヤーが返す2択）（提案B §3.2-5。供給は main.js） ──
+  // resolveChoice: 別れ際の2択で選んだ手（"climb"=また登る / "rest"=今は休む）。キャラの“返し”を出し分ける。
+  if (cond.resolveChoice && cond.resolveChoice !== ctx.resolveChoice) return false;
+  // rlResolveClimbMin: 「また登る」を選んだ通算回数の下限（＝挑み続ける性分をキャラが覚えている）。未供給は0。
+  if (cond.rlResolveClimbMin != null && !(Number(ctx.rlResolveClimb) >= cond.rlResolveClimbMin)) return false;
+  // rlReachedMin / rlReachedMax: ラン終了時の到達階の下限／上限（別れ際の見守り＝深さ帯でフレーバーを変える）。
+  // ※ P8 厳守：これは物語フラグのゲートではなく“別れ際のフレーバー差”のみ。無指定行が常にフォールバックで残る。
+  // 浅い帯=rlReachedMax(励まし)／深い帯=rlReachedMin(誇り)／中間=無指定。ctx.rlReached 未供給なら下限0扱い・上限は不一致。
+  if (cond.rlReachedMin != null && !(Number(ctx.rlReached) >= cond.rlReachedMin)) return false;
+  if (cond.rlReachedMax != null && !(Number(ctx.rlReached) <= cond.rlReachedMax)) return false;
   return true;
 }
 

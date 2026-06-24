@@ -150,13 +150,15 @@ export function carrySlotsFor(bestFloor = 0) {
 // パーティ（charById で解決済みの CHARACTER 互換配列）から新規ランを作る。
 //   party: [{ id, char, avatarHpMax }] の配列（先頭=あなた）。最低1人。
 //   seed:  乱数シード（省略時は時刻）。テストは固定 seed を渡す。
-export function newRun(party, seed) {
+export function newRun(party, seed, chapterId = null, bossPool = null) {
   const members = (party || []).map((p) => {
     const hpMax = allyScaledHp(p.avatarHpMax ?? p.char?.stats?.startingPoints ?? 25000);
     return { id: p.id, char: p.char, hpMax, hp: hpMax, baseHp: hpMax, hungover: false }; // baseHp=館の気脈の底上げ基準（初期HP最大）
   });
   return {
     seed: seed != null ? String(seed) : String(Date.now()),
+    chapterId: chapterId || null, // 登っている記憶（大章）id。踏破時の解禁・章フレーバーに使う（提案B）。
+    bossPool: Array.isArray(bossPool) && bossPool.length ? [...bossPool] : null, // ボス陣＝この記憶の群像id（提案B・縦軸の結びつけ）
     floor: 1,
     party: members, // 先頭2人が着卓・3人目以降は控え（パッシブ能力源）
     cards: [], // 取得カードid（履歴）
@@ -184,7 +186,7 @@ export function serializeRun(run) {
   if (!run || !Array.isArray(run.party)) return null;
   return {
     v: RUN_SAVE_VERSION,
-    seed: run.seed, floor: run.floor, cleared: run.cleared, coins: run.coins,
+    seed: run.seed, chapterId: run.chapterId || null, bossPool: Array.isArray(run.bossPool) ? [...run.bossPool] : null, floor: run.floor, cleared: run.cleared, coins: run.coins,
     skillLevel: run.skillLevel, forgeOvercharge: run.forgeOvercharge || 0, cards: [...(run.cards || [])], items: [...(run.items || [])],
     mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
     biomeRerolls: { ...(run.biomeRerolls || {}) }, orbsEarned: run.orbsEarned || 0,
@@ -204,7 +206,7 @@ export function deserializeRun(data, resolveChar) {
     party.push({ id: m.id, char, hp: m.hp, hpMax: m.hpMax, baseHp: m.baseHp ?? m.hpMax, hungover: !!m.hungover });
   }
   return {
-    seed: String(data.seed), floor: data.floor || 1, party,
+    seed: String(data.seed), chapterId: data.chapterId || null, bossPool: Array.isArray(data.bossPool) ? [...data.bossPool] : null, floor: data.floor || 1, party,
     cards: [...(data.cards || [])], mods: { ...freshMods(), ...(data.mods || {}) },
     cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1, forgeOvercharge: data.forgeOvercharge || 0,
     items: [...(data.items || [])], nextBattle: data.nextBattle || {}, routeReroll: data.routeReroll || 0,
@@ -323,9 +325,14 @@ const ELITE_ABILITIES = ["lucky-draw", "chunchan", "dora-pull", "danger-sense"];
 
 // ボス＝プレイアブルキャラ（編成中＋弟子を除く）から決定論で n 人選ぶ。
 // 弟子(CompletedAvatar)は CHARACTER_MASTER に居ないので自然に除外。編成中キャラは id で除外。
+// 大章（記憶）が bossPool を指定していれば、その記憶の群像からだけ立ちはだかる（提案B・縦軸の結びつけ）。
+// プールが2人未満に枯れたら全プレイアブルにフォールバック（必ずボスを2人立てられる安全側）。
 function pickBossChars(run, rng, n) {
   const exclude = new Set((run.party || []).map((m) => m.id));
-  const avail = CHARACTER_MASTER.filter((c) => c && c.id && !c.isMob && !exclude.has(c.id));
+  const pool = Array.isArray(run.bossPool) && run.bossPool.length ? new Set(run.bossPool) : null;
+  const eligible = (c) => c && c.id && !c.isMob && !exclude.has(c.id);
+  let avail = CHARACTER_MASTER.filter((c) => eligible(c) && (!pool || pool.has(c.id)));
+  if (avail.length < n) avail = CHARACTER_MASTER.filter(eligible); // 群像が足りなければ全体から
   const chosen = [];
   while (chosen.length < n && avail.length) chosen.push(avail.splice(Math.floor(rng() * avail.length), 1)[0]);
   return chosen;
@@ -344,6 +351,17 @@ function bossMemberFromChar(char, hp, lv, seed) {
     params: paramsFromLv(lv, seed),
     abilities: Array.isArray(char.abilities) ? char.abilities.map((a) => ({ ...a })) : [],
   };
+}
+
+// 対局前口上（提案B）用：この階のボスキャラ（プレイアブル本人）を、enemyUnitForFloor と
+// 同一の決定論で先読みする。pickBossChars が rng の最初の消費者なので同じ seed で同じ顔ぶれになる。
+// ボス階以外は空配列（口上を出さない）。
+export function previewBossChars(run, floorType = null, salt = "") {
+  const floor = run.floor;
+  const kind = floorType?.enemy || (isBossFloor(floor) ? "boss" : "mob");
+  if (kind !== "boss") return [];
+  const rng = makeRng(`${run.seed}:floor${floor}:enemy${salt}`);
+  return pickBossChars(run, rng, 2);
 }
 
 export function enemyUnitForFloor(run, floorType = null, salt = "") {

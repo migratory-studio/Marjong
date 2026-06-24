@@ -22,6 +22,7 @@
 //   "handSmooth"       さくさく進んでいる（連続で手が進んだ）
 //   "lastTiles"        流局間際（山が残りわずか）
 //   "swapIn"           団体戦・交代で出場（控え→出場の登場ボイス）
+//   "rlBossIntro"      楼光の館・ボスとして立ちはだかる対局前口上 cond.bossMemoryTier: "first"(初遭遇)|"rematch"(再戦)|"revenge"(雪辱)
 //   ── ペア戦・相方への局中相槌（隣で一緒に打つ相棒として、味方＝人間プレイヤーの節目に反応） ──
 //   "allyHandStart"    ペア戦・局のはじまり（相棒への声かけ）
 //   "allyTenpai"       ペア戦・味方が聴牌
@@ -161,6 +162,48 @@ const SHIYUE = [
   // 撤退（引く・素が少し滲む）
   L("rlRetreat", {}, "……今日は、ここまでにしとくヨ。無理して全部失うのは——もう、こりごりだから。"),
   L("rlRetreat", {}, "撤収ーっ! ちゃんと持ち帰る、これも強さダロ? また登ろうネ。"),
+  // ── ボスとして立ちはだかる対局前口上（提案B・モック）。bossMemoryTier で「覚えている」を出し分け ──
+  L("rlBossIntro", { bossMemoryTier: "first" }, "へえ、見ない顔ネ。この塔で会ったのが運の尽き——ツモれば勝ち、覚悟しなヨ?"),
+  L("rlBossIntro", { bossMemoryTier: "rematch" }, "また来たんだ? 前は我（ウォ）が押し負けたけど……今日は、そうはいかないヨ。"),
+  L("rlBossIntro", { bossMemoryTier: "revenge" }, "ふふ、懲りずに来たネ。前に沈めたの、もう忘れたカ? ……今日も、同じダヨ。"),
+
+  // ── 相棒が「あなたの潜行履歴」に反応（提案B スライス2・固有性＝"私"を見ている。条件付き＝無指定の汎用に上乗せ） ──
+  // 最多流派＝このランの“君らしさ”を覚えている。
+  L("rlBuff", { rlMainCluster: "flush" }, "また染め狙いネ? ふふ、我（ウォ）、君の染め好きはお見通しダヨ。"),
+  L("rlBuff", { rlMainCluster: "gamble" }, "博打路線、好きだよネ君は。……気が合うダロ? 我もそっち派ヨ。"),
+  L("rlBuff", { rlMainCluster: "tempo" }, "速さで押すの、君らしいヨ。ツモれば勝ち——スピード勝負ネ!"),
+  L("rlBuff", { rlMainCluster: "value" }, "一発の重さ狙いか。……君、地味に大物手ねらいだもんネ。知ってるヨ。"),
+  L("rlBuff", { rlMainCluster: "guard" }, "また堅いの選ぶ。君って慎重さんだネ……ま、生き延びてこそダロ?"),
+  // 自己ベスト更新中＝この高さは初めて。
+  L("rlPursue", { rlDeepRun: true }, "ねえ、ここ——君の最高到達、超えてるヨ! 引いたらもったいないダロ?"),
+  L("rlBuff", { rlDeepRun: true }, "見て、こんな高さ初めてダヨ。……君と来れたんだネ、ここまで。"),
+  // 撤退癖＝何度も引いてるのを覚えている（軽口でいじる→素がほんの少し）。
+  L("rlRetreat", { rlRetreatHabitMin: 3 }, "また撤退ネ。ふふ、君は引き際が上手いンだ。……無茶して全部失うよりは、ずっといいヨ。"),
+  L("rlRetreat", { rlRetreatHabitMin: 6 }, "ん、もう帰るの? 君と撤退するの、何回目だろネ……。でも、また登れるから——いいダヨ、それで。"),
+
+  // ── 群像の二人相槌（提案B スライス2・モック）。相棒として口火を切る／相方に受ける ──
+  L("rlBanter", {}, "ねえ、この塔さ……登るほど、昔のこと思い出すんだヨ。君も、そう?"),
+  L("rlBanter", {}, "ふー、ひと休みネ。……こういう時、ちょっとだけ昔の卓を思い出すダヨ。"),
+  L("rlBanterReply", {}, "……うん、わかるヨ。我（ウォ）も、同じこと考えてたダロ。"),
+  L("rlBanterReply", {}, "ふふ、君もそう思う? ……なんか、嬉しいネ。"),
+
+  // ── 全滅の別れ際（提案B スライス3・P7＝死は罰でなく継続）。点棒嫌い×口癖反転を“送り出し”に転じる ──
+  // 浅くても言葉が出る見守り(P8)。無指定＝常にフォールバック。
+  L("rlWipe", {}, "……塔に弾かれちゃったネ。でも、これで終わりじゃないヨ。我（ウォ）たちの記憶は、ちゃんと残るんダ。"),
+  L("rlWipe", {}, "点棒、ぜんぶ持ってかれたネ……ふふ、いいんダヨ。数えるのは嫌いだもん。——また、登ろ?"),
+  // 章intro（記憶へ踏み入る・縦軸の結びつけ）。
+  L("rlChapterIntro", {}, "さ、記憶のなかへ——我（ウォ）についてきて、ネ? ツモれば勝ち、それは変わらないダヨ。"),
+  L("rlChapterIntro", {}, "懐かしい匂いがするヨ、この記憶。……ちょっとだけ、胸がざわつくケド——いこ。"),
+  // 「また登る」を選び続ける君を覚えている（双方向＝覚える・固有性）。
+  L("rlChapterIntro", { rlResolveClimbMin: 3 }, "君さ、いっつも“また登る”って言うネ。……ふふ、そういうとこ、我は好きダヨ。さ、今日も。"),
+  // 別れ際の2択への返し。
+  L("rlResolve", { resolveChoice: "climb" }, "うんっ、それでこそ! また一緒にてっぺん目指すヨ——ツモれば勝ち、ダロ?"),
+  L("rlResolve", { resolveChoice: "rest" }, "ん、今日は休も。……無理して点棒すり減らすの、もう見たくないからネ。待ってるヨ。"),
+  // 浅い到達（序の口）＝励まし。
+  L("rlWipe", { rlReachedMax: 6 }, "ここまで来れたじゃないカ。最初はみんなこんなもんヨ……次は、もっと先まで連れてってネ。"),
+  // 深く潜れた／自己ベスト更新中に散った＝誇り。
+  L("rlWipe", { rlReachedMin: 12 }, "すごいダロ、こんな高さまで……! 散ったって、ちゃんと刻まれたヨ。ツモれば勝ち——次は、てっぺん獲るダヨ。"),
+  L("rlWipe", { rlDeepRun: true }, "君の最高到達、塗り替えたまま散ったネ。……でも、それって最高ダロ? 我、ちょっと泣きそうヨ。また登ろ。"),
 
   // ── 局中マイクロ反応（短め・軽口） ──
   // 局のはじまり
@@ -458,6 +501,29 @@ const KUIDOSHI = [
   L("swapIn", {}, "交代だね。——ここからは、僕が前に立つ。任せて。"),
   L("swapIn", {}, "おまたせ。みんなのぶんも、しっかり受け止めるよ。"),
 
+  // ── ボスとして立ちはだかる対局前口上（提案B・モック）。bossMemoryTier で「覚えている」を出し分け ──
+  L("rlBossIntro", { bossMemoryTier: "first" }, "……君が登ってくる気配だったのか。いいよ、来なさい。僕が試す側に回るのも、たまには。"),
+  L("rlBossIntro", { bossMemoryTier: "rematch" }, "また来たね。前は、僕が受け切れなかった。……今日は、そう簡単には沈まないよ。"),
+  L("rlBossIntro", { bossMemoryTier: "revenge" }, "ふ、もう一度立ったんだね。前に沈めてしまったこと、覚えてる。……だから今度は、本気で受ける。"),
+
+  // ── 群像の二人相槌（提案B スライス2・モック）。静かに口火を切る／相方を受け止める ──
+  L("rlBanter", {}, "……少し、休もうか。この塔は、急ぐ者から沈めていくからね。"),
+  L("rlBanter", {}, "懐かしい気配だ。……ここは、置いてきたものをそっと見せてくる。"),
+  L("rlBanterReply", {}, "ああ。……君が隣にいてくれて、よかったよ。"),
+  L("rlBanterReply", {}, "……うん。僕も、同じことを思っていた。"),
+
+  // ── 全滅の別れ際（提案B スライス3・P7＝沈んでも、また立てる。護りの矜持を“継続”に重ねる） ──
+  // 章intro（記憶へ踏み入る・縦軸の結びつけ）。
+  L("rlChapterIntro", {}, "……記憶の扉が開いた。いこうか。何が出てきても、僕が前に立つ。"),
+  L("rlChapterIntro", {}, "懐かしくて、少し痛い記憶だ。……でも、君となら歩ける。さ、登ろう。"),
+  L("rlChapterIntro", { rlResolveClimbMin: 3 }, "君は、何度沈んでも“また登る”と言う。……その芯を、僕は知ってるよ。いこう。"),
+  // 別れ際の2択への返し。
+  L("rlResolve", { resolveChoice: "climb" }, "ああ。……何度でも、付き合うよ。次は、もっと遠くまで護る。"),
+  L("rlResolve", { resolveChoice: "rest" }, "うん、休もう。退くのも強さだ。……僕は、ここで待ってる。"),
+  L("rlWipe", {}, "……沈んだね。でも、終わりじゃない。塔は、記憶を覚えている。——また、立とう。"),
+  L("rlWipe", { rlReachedMax: 6 }, "ここまで来られた。それで充分だよ。……次は、もっと遠くまで護ってみせる。"),
+  L("rlWipe", { rlReachedMin: 12 }, "よく、ここまで連れてきてくれたね。……沈んでも、君の足跡は消えない。また登ろう。"),
+
   // ── ペア戦・相方への局中相槌（隣で打つ相棒として、味方＝あなたに声をかける） ──
   // 局のはじまり
   L("allyHandStart", {}, "いこう、相棒。君の背中は、僕が護るから。"),
@@ -525,7 +591,73 @@ function withHome(lines) {
   return hasHome ? lines : [...lines, ...GENERIC_HOME];
 }
 
-// 全キャラぶんを id キーで用意（名前はマスタと自動同期）。
+// 楼光の館・ボス対局前口上の汎用モック（提案B）。ボス＝任意のプレイアブルキャラが
+// なり得るため、固有 rlBossIntro を未記入のキャラにはこの中立フレーバーを補い、
+// 「初遭遇／再戦／雪辱」の出し分けだけは全ボスで成立させる（シナリオはモック）。
+// 固有性を出すには各キャラに L("rlBossIntro", { bossMemoryTier... }, ...) を足すだけ（詩玥/凌雲が先例）。
+const GENERIC_BOSS_INTRO = [
+  L("rlBossIntro", { bossMemoryTier: "first" }, "……来たか。この塔は、記憶を映す。君が何者か、ひと勝負で見せてもらおう。"),
+  L("rlBossIntro", { bossMemoryTier: "rematch" }, "また登ってきたな。前の卓は、まだ覚えている。……今度はこちらの番だ。"),
+  L("rlBossIntro", { bossMemoryTier: "revenge" }, "懲りない奴だ。一度沈めた相手が、また牌を握るとは。……いいだろう、相手になろう。"),
+];
+
+// rlBossIntro を1つも持たないキャラには GENERIC_BOSS_INTRO を補う（withHome と同型）。
+function withBossIntro(lines) {
+  return lines.some((e) => e.event === "rlBossIntro") ? lines : [...lines, ...GENERIC_BOSS_INTRO];
+}
+
+// 楼光の館・章intro口上（提案B・縦軸の結びつけ／モック）。相棒(先頭)が「記憶へ踏み入る」一言。
+// ※ 中身はモック。章ごと固有は cond.rlChapter で後付けできる（いまは記憶不問の汎用）。
+const GENERIC_CHAPTER_INTRO = [
+  L("rlChapterIntro", {}, "……この記憶、登るよ。何が待っていても、隣にいる。"),
+  L("rlChapterIntro", {}, "塔が、扉を開いた。——いこう。確かめに。"),
+];
+function withChapterIntro(lines) {
+  return lines.some((e) => e.event === "rlChapterIntro") ? lines : [...lines, ...GENERIC_CHAPTER_INTRO];
+}
+
+// 楼光の館・別れ際の2択への“返し”（提案B §3.2-5・双方向／モック）。プレイヤーが返した選択にキャラが応える。
+// resolveChoice: "climb"=また登る ／ "rest"=今は休む。
+const GENERIC_RESOLVE = [
+  L("rlResolve", { resolveChoice: "climb" }, "ああ、その意気だ。……また、登ろう。"),
+  L("rlResolve", { resolveChoice: "rest" }, "うん、今日はゆっくり休むといい。……塔は逃げない。"),
+];
+function withResolve(lines) {
+  const hasC = lines.some((e) => e.event === "rlResolve" && e.cond?.resolveChoice === "climb");
+  const hasR = lines.some((e) => e.event === "rlResolve" && e.cond?.resolveChoice === "rest");
+  if (hasC && hasR) return lines;
+  const add = GENERIC_RESOLVE.filter((e) => (e.cond.resolveChoice === "climb" ? !hasC : !hasR));
+  return [...lines, ...add];
+}
+
+// 楼光の館・群像の二人相槌（提案B スライス2・モック）。相棒(先頭)＝rlBanter で口火、
+// 控えの相方＝rlBanterReply で受ける。塔＝記憶を辿る縦軸に沿った“群像の片鱗”を軽く滲ませる。
+// 発火はテーマの面々が2人以上いるときだけ（ゲートは main.js）。固有性は各キャラに足すだけ（詩玥/凌雲が先例）。
+const GENERIC_BANTER = [
+  L("rlBanter", {}, "……この塔は、登るほど昔を連れてくるな。なあ、君もそう感じないか?"),
+  L("rlBanter", {}, "ふと、懐かしい気配がした。……ここは、そういう場所だ。"),
+  L("rlBanterReply", {}, "ええ。……忘れたいことまで、連れてくる。"),
+  L("rlBanterReply", {}, "ああ。……でも、今は隣に君がいる。それで、充分だよ。"),
+];
+function withBanter(lines) {
+  const hasInit = lines.some((e) => e.event === "rlBanter");
+  const hasReply = lines.some((e) => e.event === "rlBanterReply");
+  if (hasInit && hasReply) return lines;
+  const add = GENERIC_BANTER.filter((e) => (e.event === "rlBanter" ? !hasInit : !hasReply));
+  return [...lines, ...add];
+}
+
+// 楼光の館・全滅の別れ際（提案B スライス3・P7＝死は罰でなく継続。塔から記憶として弾かれただけ）。
+// 数値で送らず、関係と「また登れる」で送り出す。rlReached 未供給=浅くても必ず言葉が出る見守り(P8)＝無指定が常にフォールバック。
+const GENERIC_WIPE = [
+  L("rlWipe", {}, "……塔に弾かれただけだ。君は、まだ終わっていない。また登ろう。"),
+  L("rlWipe", {}, "ここで潰えても、記憶は残る。……次は、もっと先へ行ける。"),
+];
+function withWipe(lines) {
+  return lines.some((e) => e.event === "rlWipe") ? lines : [...lines, ...GENERIC_WIPE];
+}
+
+// 全キャラぶんを id キーで用意（名前はマスタと自動同期）。home・ボス口上・群像相槌・全滅の別れ際・章introの汎用フォールバックを補う。
 export const CHARACTER_VOICE_MASTER = Object.fromEntries(
-  CHARACTER_MASTER.map((c) => [c.id, withHome(EXPLICIT[c.id] || templateLines(c.name))])
+  CHARACTER_MASTER.map((c) => [c.id, withResolve(withChapterIntro(withWipe(withBanter(withBossIntro(withHome(EXPLICIT[c.id] || templateLines(c.name)))))))])
 );

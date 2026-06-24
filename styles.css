@@ -4847,12 +4847,22 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-continue-btns { display: flex; justify-content: center; gap: 16px; }
 
 .rl-go-banner { font-size: 26px; font-weight: 800; margin-bottom: 18px; }
-.rl-gameover.wiped .rl-go-banner { color: var(--danger); }
+/* P7：全滅は「記憶として還る」継続。懲罰的な赤(--danger)でなく、塔／記憶の琥珀色で送り出す。 */
+.rl-gameover.wiped .rl-go-banner { color: #e8c45d; }
 .rl-gameover.safe .rl-go-banner { color: var(--accent); }
 .rl-go-stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 14px; }
 .rl-go-k { font-size: 13px; color: var(--muted); }
 .rl-go-v { font-size: 30px; font-weight: 800; color: var(--ink); }
 .rl-go-sub { font-size: 14px; color: var(--muted); margin-bottom: 22px; }
+
+/* 別れ際の2択（提案B §3.2-5・双方向＝プレイヤーが返す→相棒が覚える） */
+.rl-go-resolve { margin: 4px 0 16px; }
+.rl-go-resolve-q { font-size: 13px; color: var(--muted); margin-bottom: 8px; letter-spacing: .04em; }
+.rl-go-resolve-opts { display: flex; justify-content: center; gap: 12px; }
+.rl-go-resolve-btn { padding: 9px 22px; border-radius: 999px; font-size: 14px; font-weight: 700; cursor: pointer;
+  color: var(--ink); background: rgba(255,255,255,.05); border: 1px solid rgba(232,196,93,.4); transition: background .18s, transform .12s, border-color .18s; }
+.rl-go-resolve-btn:hover { background: rgba(232,196,93,.14); border-color: var(--accent, #e8c45d); transform: translateY(-1px); }
+.rl-go-resolve-reply { font-size: 14px; line-height: 1.7; color: #d8d2df; max-width: 46ch; margin: 4px auto 0; }
 
 /* F7 メタ進行＝ローグライク引き継ぎ枠 */
 .rl-carry { margin-top: 4px; padding: 10px 12px; border: 1px solid rgba(86,168,255,.4); border-radius: 10px; background: rgba(86,168,255,.08); }
@@ -4863,7 +4873,8 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-carry-pick { margin: 6px 0 18px; padding: 14px; border-radius: 12px; background: rgba(0,0,0,.28); border: 1px solid rgba(246,179,82,.3); }
 .rl-carry-pick-head { font-size: 14px; color: var(--ink); margin-bottom: 10px; }
 .rl-carry-pick-head b { color: var(--accent); }
-.rl-carry-pick-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+/* 引き継ぎ候補は可変数。深層ランで20枚超のとき固定ステージ(720)を割らないよう、リストだけ内部スクロールに逃がす。 */
+.rl-carry-pick-list { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; max-height: 104px; overflow-y: auto; }
 .rl-pick-chip { font-size: 13px; padding: 6px 12px; border-radius: 999px; cursor: pointer;
   border: 2px solid var(--rarity, #888); background: rgba(0,0,0,.3); color: var(--ink); transition: transform .1s; }
 .rl-pick-chip:hover:not(:disabled) { transform: translateY(-2px); }
@@ -5268,6 +5279,149 @@ button.primary.danger:hover { color: #ffbcbc; }
 @keyframes rlBiomeIn { from { opacity: 0; transform: scale(.9) translateY(16px); } to { opacity: 1; transform: none; } }
 @keyframes rlBiomeGlyph { from { opacity: 0; transform: scale(.5) rotate(-8deg); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .rl-biome-card, .rl-biome-glyph { animation: none; } }
+
+/* 楼光の館：章intro（記憶へ踏み入る導入。提案B・縦軸の結びつけ）。記憶の色調で送り出す */
+.rl-overlay.rl-chapintro { background: rgba(6,4,9,0.62); --tc: var(--rl-gold); }
+.rl-overlay.rl-chapintro.tone-gold { --tc: #e8c45d; }
+.rl-overlay.rl-chapintro.tone-jade { --tc: #6f9b8e; }
+.rl-overlay.rl-chapintro.tone-ember { --tc: #c0563a; }
+.rl-overlay.rl-chapintro.tone-ash { --tc: #6b6675; }
+.rl-chapintro-card { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px;
+  width: min(620px, 90%); padding: 30px 36px 26px; border-radius: 20px; color: var(--rl-ink);
+  background: linear-gradient(165deg, rgba(20,15,28,0.92), rgba(10,7,15,0.95)); border: 1px solid var(--tc);
+  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 0 80px -26px var(--tc); animation: rlBiomeIn .5s cubic-bezier(.2,.9,.3,1.1) both; }
+.rl-chapintro-eyebrow { font-size: 12px; letter-spacing: .34em; color: var(--tc); opacity: .92; }
+.rl-chapintro-name { margin: 0; font-family: var(--font-min, "Shippori Mincho", serif); font-size: 32px; font-weight: 700; letter-spacing: .08em;
+  background: linear-gradient(180deg, #fff 8%, var(--tc)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.rl-chapintro-blurb { margin: 0; font-size: 14px; line-height: 1.85; color: #cfc8d6; max-width: 46ch; }
+.rl-chapintro-speak { display: flex; align-items: flex-end; gap: 12px; width: 100%; margin-top: 4px; text-align: left; }
+.rl-chapintro-face { width: 56px; height: 56px; border-radius: 11px; object-fit: cover; object-position: top center; flex: none;
+  border: 1px solid var(--tc); box-shadow: 0 4px 16px -6px var(--tc); }
+.rl-chapintro-fb { display: grid; place-items: center; font-family: var(--font-min, serif); font-size: 26px; font-weight: 700; color: var(--c, var(--tc)); background: rgba(255,255,255,.05); }
+.rl-chapintro-bubble { flex: 1 1 auto; min-width: 0; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 9px 14px; }
+.rl-chapintro-who { font-size: 12px; font-weight: 700; letter-spacing: .04em; margin-bottom: 2px; }
+.rl-chapintro-line { font-size: 14px; line-height: 1.7; color: #ddd7e2; }
+.rl-chapintro-go { margin-top: 6px; }
+
+/* 楼光の館：ボス対局前口上（提案B「ボスが覚えている」）。立ち絵＋口上で対峙させる */
+.rl-overlay.rl-bossintro { background: rgba(6,4,9,0.62); }
+.rl-bossintro-card { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;
+  width: min(840px, 92%); padding: 26px 32px 24px; border-radius: 20px; color: var(--rl-ink);
+  background: linear-gradient(165deg, rgba(24,12,16,0.9), rgba(10,7,12,0.94)); border: 1px solid var(--rl-ember);
+  box-shadow: 0 24px 70px rgba(0,0,0,.6), 0 0 80px -24px var(--rl-ember);
+  animation: rlBiomeIn .5s cubic-bezier(.2,.9,.3,1.1) both; }
+.rl-bossintro-eyebrow { font-size: 12px; letter-spacing: .34em; color: var(--rl-ember); opacity: .95; }
+.rl-bossintro-stage { display: flex; justify-content: center; gap: 22px; width: 100%; }
+.rl-bossintro-boss { display: flex; flex-direction: column; align-items: center; gap: 9px; flex: 1 1 0; min-width: 0; max-width: 360px; }
+.rl-bossintro-art { width: 150px; height: 210px; object-fit: cover; object-position: top center; border-radius: 14px;
+  border: 1px solid var(--c, var(--rl-gold)); box-shadow: 0 10px 34px -12px var(--c, var(--rl-gold)); }
+.rl-bossintro-art-fb { width: 150px; height: 210px; display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-min, "Shippori Mincho", serif); font-size: 64px; font-weight: 700; color: var(--c, var(--rl-gold));
+  background: radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--c, #888) 26%, transparent), rgba(10,7,12,.9)); }
+.rl-bossintro-name { font-family: var(--font-min, "Shippori Mincho", serif); font-size: 21px; font-weight: 700; letter-spacing: .06em; color: var(--c, var(--rl-gold)); }
+.rl-bossintro-line { font-size: 14px; line-height: 1.7; color: #d8d2df; max-width: 320px; }
+.rl-bossintro-go { margin-top: 4px; }
+@media (prefers-reduced-motion: reduce) { .rl-bossintro-card { animation: none; } }
+
+/* ============================================================
+   楼光の館・大章選択ハブ「記憶の塔」（提案B §3.1 ①）
+   主題＝記憶を映す塔。塔を登る＝記憶を辿る縦軸を、層の積み上げで体現。
+   色は記憶ごとの感情色（金=兄弟弟子/青磁=御庭番/燠火=最奥）。
+   ============================================================ */
+.rl-chapter { position: relative; height: 100%; display: flex; flex-direction: column;
+  --gold:#e8c45d; --jade:#6f9b8e; --ember:#c0563a; --ink:#f3ece0; --ash:#6b6675;
+  background: radial-gradient(120% 90% at 50% -10%, #14101c 0%, #0a070f 60%, #060409 100%);
+  color: var(--ink); overflow: hidden; }
+.rl-chap-backdrop { position: absolute; inset: 0; pointer-events: none; opacity: .5;
+  /* 塔のシルエット＝記憶の柱が立ち上る暗がり（実画像に依存しないプロシージャル背景） */
+  background:
+    radial-gradient(60% 120% at 50% 120%, rgba(232,196,93,.10), transparent 60%),
+    repeating-linear-gradient(90deg, transparent 0 46px, rgba(255,255,255,.012) 46px 47px);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 40%); mask-image: linear-gradient(180deg, transparent, #000 40%); }
+
+.rl-chap-head { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto; align-items: baseline;
+  row-gap: 2px; padding: 22px 36px 14px; }
+.rl-chap-eyebrow { grid-column: 1 / -1; font-size: 12px; letter-spacing: .42em; color: var(--gold); opacity: .85; }
+.rl-chap-title { margin: 0; font-family: var(--font-min, "Shippori Mincho", serif); font-size: 30px; font-weight: 700; letter-spacing: .1em; }
+.rl-chap-best { font-size: 12px; color: var(--ash); letter-spacing: .08em; }
+.rl-chap-best b { color: var(--ink); font-size: 18px; font-family: var(--font-min, serif); }
+
+.rl-chap-body { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; display: grid;
+  grid-template-columns: 366px 1fr; gap: 30px; padding: 6px 40px 8px; }
+
+/* ── 記憶の塔（縦・麓=下）。column-reverse で第一を最下層に置き、上へ積む ── */
+.rl-tower { list-style: none; margin: 0; padding: 6px 4px; display: flex; flex-direction: column-reverse; justify-content: flex-start; gap: 12px; }
+.rl-stratum { position: relative; display: flex; align-items: center; gap: 14px; padding: 14px 16px; cursor: pointer;
+  border-radius: 12px; border: 1px solid rgba(255,255,255,.07); background: linear-gradient(100deg, rgba(22,17,30,.7), rgba(12,9,17,.55));
+  color: var(--ink); text-align: left; transition: transform .18s ease, border-color .2s ease, box-shadow .25s ease, background .2s ease;
+  animation: rlStratumRise .5s cubic-bezier(.2,.9,.3,1.1) both; animation-delay: var(--rise, 0ms); }
+@keyframes rlStratumRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.rl-stratum.tone-gold { --tc: var(--gold); }
+.rl-stratum.tone-jade { --tc: var(--jade); }
+.rl-stratum.tone-ember { --tc: var(--ember); }
+.rl-stratum.tone-ash { --tc: var(--ash); }
+.rl-stratum-rune { flex: none; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 9px;
+  font-family: var(--font-min, serif); font-size: 18px; color: var(--tc); border: 1px solid color-mix(in srgb, var(--tc) 45%, transparent);
+  background: color-mix(in srgb, var(--tc) 12%, transparent); }
+.rl-stratum-meta { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.rl-stratum-sub { font-size: 11px; letter-spacing: .22em; color: var(--ash); }
+.rl-stratum-name { font-family: var(--font-min, serif); font-size: 18px; font-weight: 700; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rl-stratum.is-open:hover { transform: translateX(4px); border-color: color-mix(in srgb, var(--tc) 50%, transparent); }
+.rl-stratum.is-focused { border-color: var(--tc); background: linear-gradient(100deg, color-mix(in srgb, var(--tc) 18%, rgba(22,17,30,.8)), rgba(12,9,17,.6));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tc) 40%, transparent), 0 12px 40px -16px var(--tc); }
+.rl-stratum.is-sealed { cursor: default; opacity: .62; filter: saturate(.5); }
+.rl-stratum.is-sealed .rl-stratum-rune { color: var(--ash); border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.03); }
+.rl-stratum.is-sealed.is-focused { border-color: rgba(255,255,255,.18); box-shadow: none; }
+.rl-stratum:focus-visible { outline: 2px solid var(--tc); outline-offset: 2px; }
+
+/* ── 記憶の詳細（選んだ層が立ち上がる）── */
+.rl-chap-detail { display: flex; flex-direction: column; gap: 12px; align-self: center; max-width: 560px;
+  --tc: var(--gold); }
+.rl-chap-detail.tone-gold { --tc: var(--gold); }
+.rl-chap-detail.tone-jade { --tc: var(--jade); }
+.rl-chap-detail.tone-ember { --tc: var(--ember); }
+.rl-chap-detail.tone-ash { --tc: var(--ash); }
+.rl-chap-sub { font-size: 12px; letter-spacing: .26em; color: var(--tc); }
+.rl-chap-done { color: var(--gold); }
+.rl-chap-name { margin: 0; font-family: var(--font-min, serif); font-size: 34px; font-weight: 700; letter-spacing: .06em;
+  background: linear-gradient(180deg, #fff 8%, var(--tc)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.rl-chap-name-sealed { color: var(--ash); -webkit-text-fill-color: var(--ash); }
+.rl-chap-blurb { margin: 0; font-size: 14.5px; line-height: 1.85; color: #cfc8d6; max-width: 48ch; }
+.rl-chap-cast { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+.rl-chap-cast-k { font-size: 11px; letter-spacing: .2em; color: var(--ash); margin-right: 2px; }
+.rl-chap-castchip { font-family: var(--font-min, serif); font-size: 13px; padding: 3px 12px; border-radius: 999px;
+  color: var(--ink); border: 1px solid color-mix(in srgb, var(--tc) 40%, transparent); background: color-mix(in srgb, var(--tc) 10%, transparent); }
+.rl-chap-aim { margin: 2px 0 0; font-size: 13px; color: #b3acbe; }
+.rl-chap-aim::before { content: "◆ ねらい　"; color: var(--tc); letter-spacing: .1em; }
+.rl-chap-go { margin-top: 10px; align-self: flex-start; }
+.rl-chap-seal { display: inline-flex; align-items: center; gap: 10px; margin-top: 6px; padding: 10px 16px; border-radius: 10px;
+  font-size: 13px; color: #b6b0bf; border: 1px dashed rgba(255,255,255,.16); background: rgba(255,255,255,.03); }
+.rl-chap-seal-rune { font-family: var(--font-min, serif); color: var(--ash); }
+
+.rl-chap-foot { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; padding: 8px 36px 16px; }
+.rl-chap-foot-hint { font-size: 12px; color: var(--ash); letter-spacing: .04em; }
+
+@media (prefers-reduced-motion: reduce) { .rl-stratum { animation: none; } }
+
+/* 楼光の館：群像の二人相槌（提案B スライス2）。相棒×相方の軽い掛け合い */
+.rl-overlay.rl-banter { background: rgba(6,4,9,0.5); }
+.rl-banter-card { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 14px;
+  width: min(680px, 90%); padding: 26px 30px 22px; border-radius: 20px; color: var(--rl-ink);
+  background: linear-gradient(165deg, rgba(20,15,28,0.9), rgba(10,7,15,0.94)); border: 1px solid var(--rl-edge);
+  box-shadow: 0 24px 70px rgba(0,0,0,.6); animation: rlBiomeIn .45s cubic-bezier(.2,.9,.3,1.1) both; }
+.rl-banter-row { display: flex; align-items: flex-end; gap: 12px; transition: opacity .3s ease, transform .3s ease; }
+.rl-banter-r { flex-direction: row-reverse; }
+.rl-banter-pending { opacity: 0; transform: translateY(8px); }
+.rl-banter-face { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; object-position: top center; flex: none;
+  border: 1px solid var(--c, var(--rl-gold)); box-shadow: 0 4px 16px -6px var(--c, var(--rl-gold)); }
+.rl-banter-fb { display: flex; align-items: center; justify-content: center; font-family: var(--font-min, "Shippori Mincho", serif);
+  font-size: 30px; font-weight: 700; color: var(--c, var(--rl-gold)); background: rgba(255,255,255,.05); }
+.rl-banter-bubble { flex: 1 1 auto; min-width: 0; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  border-radius: 12px; padding: 9px 14px; }
+.rl-banter-r .rl-banter-bubble { text-align: right; }
+.rl-banter-name { font-size: 12px; font-weight: 700; letter-spacing: .04em; margin-bottom: 2px; }
+.rl-banter-line { font-size: 14px; line-height: 1.65; color: #ddd7e2; }
+.rl-banter-go { align-self: center; margin-top: 4px; }
 
 /* 楼光の館ハブ：現在の層バナー（いまどんな場所か＋効果を常時表示・層色アクセント） */
 .rl-hub-biomebar { display: flex; align-items: center; gap: 12px; padding: 9px 16px; margin-top: 2px;

@@ -53,7 +53,9 @@ import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
-import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp } from "./roguelite/run.js";
+import { newRun, enemyUnitForFloor, previewBossChars, seatedAllies, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp } from "./roguelite/run.js";
+import { bossMemoryTier, readBossTally, recordBossOutcome, withBossTally } from "./roguelite/bossMemory.js";
+import { chaptersWithState, chapterById, firstChapterId, canOrbUnlock } from "./data/rogueliteChapterMaster.js";
 import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from "./data/rogueliteBiomeMaster.js";
 import { applyCard, applyEffect, clusterDealMul, recomputeClusterCount } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER, clusterOf } from "./data/rogueliteCardMaster.js";
@@ -65,7 +67,7 @@ import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, forgeOverchargeCost, FORGE_OVERCHARGE_DEAL, SKILL_LEVEL_CAP, RECRUIT_COST } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume, showRogueliteBiomeIntro, showRogueliteRecruit } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume, showRogueliteBiomeIntro, showRogueliteRecruit, showRogueliteBossIntro, showRogueliteBanter, showRogueliteChapterSelect, showRogueliteChapterIntro } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -1918,16 +1920,54 @@ async function openRoguelite() {
     }
     clearSavedRogueliteRun(); // 復元不能（メンバー欠落等）は破棄
   }
-  showRoguelite(el("roguelite-screen"), {
-    deshiRoster: roster,
-    characters: CHARACTERS,
-    charImages,
-    bestFloor: best,
-    carry: carryCards, // 引き継ぎ中のバフ（表示用）
-    onBack: () => goScreen("battle-home-screen"),
-    onStart: (party) => startRogueliteRun(party),
-  });
-  goScreen("roguelite-screen");
+  // 大章（記憶）選択ハブ → 編成 → 出発（提案B §3.1 ①）。どの記憶を登るかを最初に選ぶ。
+  const cleared = profile?.roguelite?.chaptersCleared || [];
+  let orbs = profile?.orbs || 0; // 宝珠で章解禁（提案D）に使える残高（解禁後に減る→再描画で反映）
+  let orbUnlockedIds = [...(profile?.roguelite?.chaptersUnlocked || [])]; // 宝珠で先行解禁済みの章
+  // 編成画面（選んだ記憶を抱えて出発）。onBack で記憶選択へ戻れる。
+  const showPartyFor = (chapterId) => {
+    showRoguelite(el("roguelite-screen"), {
+      deshiRoster: roster,
+      characters: CHARACTERS,
+      charImages,
+      bestFloor: best,
+      carry: carryCards, // 引き継ぎ中のバフ（表示用）
+      backLabel: "← 記憶を選ぶ", // 戻り先＝大章選択ハブ（ボタンは行き先を名乗る）
+      onBack: () => showChapterHub(),
+      onStart: (party) => startRogueliteRun(party, chapterId),
+    });
+    goScreen("roguelite-screen");
+  };
+  const showChapterHub = () => {
+    showRogueliteChapterSelect(el("roguelite-screen"), {
+      chapters: chaptersWithState(cleared, orbUnlockedIds), bestFloor: best, orbs,
+      onPick: (chapterId) => showPartyFor(chapterId),
+      onBack: () => goScreen("battle-home-screen"),
+      onOrbUnlock: (chapterId) => orbUnlockChapter(chapterId, cleared, orbUnlockedIds, orbs, (newOrbs) => { orbs = newOrbs; showChapterHub(); }),
+    });
+    goScreen("roguelite-screen");
+  };
+  showChapterHub();
+}
+
+// 宝珠で章を先行解禁する（提案D・別ルート／仕組み）。所持・条件を満たせば宝珠を払い、解禁を永続してハブを再描画。
+async function orbUnlockChapter(chapterId, cleared, orbUnlockedIds, orbs, done) {
+  const chap = chapterById(chapterId);
+  if (!canOrbUnlock(chap, cleared, orbUnlockedIds, orbs)) return; // 二重押し/不足/予告枠は弾く
+  const cost = chap.orbUnlockCost;
+  orbUnlockedIds.push(chapterId); // ローカルに反映（再描画で解禁表示）
+  const nextOrbs = Math.max(0, orbs - cost);
+  rlLog("chapter_orb_unlock", { chapter: chapterId, cost });
+  try {
+    const p = await profileRepo.loadProfile();
+    if (p) {
+      const unlocked = [...new Set([...(p.roguelite?.chaptersUnlocked || []), chapterId])];
+      p.orbs = Math.max(0, (p.orbs || 0) - cost);
+      p.roguelite = { ...(p.roguelite || {}), chaptersUnlocked: unlocked };
+      await profileRepo.saveProfile(p);
+    }
+  } catch { /* 永続失敗時もこのセッションの解禁は活かす（次回再取得で整合） */ }
+  done?.(nextOrbs);
 }
 
 // 宝珠ショップで買った恒久バフ（profile.rogueliteShopBuffs：id→レベル）を新ランへ適用する。
@@ -1949,10 +1989,14 @@ function applyShopBuffsToRun(run, shopBuffs) {
 
 // パーティ（charById で解決済みの CHARACTER 配列）からランを開始し、1階の対局へ。
 // 引き継ぎバフ（profile.roguelite.carry）を新ランへ適用してから出発する（ローグライク）。
-async function startRogueliteRun(partyChars) {
+async function startRogueliteRun(partyChars, chapterId = null) {
   const party = (partyChars || []).filter(Boolean).map((c) => ({ id: c.id, char: c }));
   if (!party.length) return;
-  const run = newRun(party);
+  const chap = chapterById(chapterId || firstChapterId()); // 登る記憶（大章）
+  // ボス陣＝この記憶の群像（章の cast）から立ちはだかる（提案B・縦軸の結びつけ）。
+  const bossPool = (chap?.cast || []).map((c) => c.id).filter(Boolean);
+  const run = newRun(party, undefined, chap?.id || null, bossPool);
+  rlLog("chapter_start", { chapter: run.chapterId, bossPool: run.bossPool });
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 引き継ぎ無しで開始 */ }
   for (const id of profile?.roguelite?.carry || []) {
@@ -1960,17 +2004,35 @@ async function startRogueliteRun(partyChars) {
     if (c) applyCard(run, c);
   }
   applyShopBuffsToRun(run, profile?.rogueliteShopBuffs); // 宝珠ショップで買った恒久バフを開始時に反映
-  rogueliteState = { run };
+  // ボス記憶（提案B）：プロフィールの通算勝敗をランへ持ち込む（対局前口上の出し分けに使う・ラン内で更新→永続）。
+  // 潜行履歴（提案B スライス2）：過去最深・撤退回数を持ち込み、相棒のセリフ ctx（rlVoiceCtx）に効かせる。
+  rogueliteState = { run, bossTally: readBossTally(profile), bestFloor: profile?.roguelite?.bestFloor || 0, retreatCount: profile?.roguelite?.retreats || 0, resolveClimb: profile?.roguelite?.resolve?.climb || 0 };
   setRlRunId(run.seed); // このランのイベントを run_id=seed で束ねる
   rlLog("run_start", { seed: run.seed, party: run.party.map((p) => p.id), ...rlBuffSnap(run) });
   saveRogueliteRun(run); // 中断ランの一時保存（floor1 初期状態）
+  goScreen("roguelite-screen"); // 章introオーバーレイを乗せる前に楼光画面をアクティブ化（従来は enterFloor 内 goScreen が担保）
   enterRogueliteAmbience(); // 専用バックグラウンド＋探索BGM（キャラ選択の見た目を引きずらない）
-  enterFloor(run, floorTypeById("normal")); // 1階は通常戦闘から
+  // 章intro口上（提案B・縦軸の結びつけ）：記憶へ入る導入を一度だけ。相棒(先頭)が記憶へ踏み出す一言を添える。
+  // ※ 中身はモック。姚玖/春嬋の作り込みは未着手のため、語り口は相棒（well-defined）＋章フレーミングに留める。
+  showChapterIntroThen(run, chap, () => enterFloor(run, floorTypeById("normal"))); // 1階は通常戦闘から
+}
+// 記憶へ入る導入を出してから続行（章が無ければ素通り）。相棒の rlChapterIntro を一言添える。
+function showChapterIntroThen(run, chap, after) {
+  if (!chap) { after?.(); return; }
+  const lead = run.party?.[0]?.char || null;
+  const leadLine = lead ? vline(lead.id, "rlChapterIntro", { ...rlVoiceCtx(), rlChapter: run.chapterId }) : null;
+  showRogueliteChapterIntro(el("roguelite-screen"), {
+    chapter: chap, leadChar: lead, leadLine, charImages,
+    onProceed: () => after?.(),
+  });
 }
 
 // 中断ランの再開：復元済み run を rogueliteState に据え、進路から再開する。
 async function resumeRogueliteRun(run) {
-  rogueliteState = { run };
+  // ボス記憶（提案B）：再開時もプロフィールから通算勝敗を復元（口上の出し分け用）。
+  let resumeProfile = null;
+  try { resumeProfile = await profileRepo.loadProfile(); } catch { /* 読込失敗は空タリーで継続 */ }
+  rogueliteState = { run, bossTally: readBossTally(resumeProfile), bestFloor: resumeProfile?.roguelite?.bestFloor || 0, retreatCount: resumeProfile?.roguelite?.retreats || 0, resolveClimb: resumeProfile?.roguelite?.resolve?.climb || 0 };
   setRlRunId(run.seed); // 再開＝同じ run_id（seed）でログが繋がる
   rlLog("run_resume", { seed: run.seed, floor: run.floor, ...rlBuffSnap(run) });
   try { await charImages.load(run.party.map((m) => m.char).filter((c) => c && !c.isMob)); } catch { /* 画像はフォールバック */ }
@@ -2051,11 +2113,46 @@ function cardFamily(card) {
   }
   return "attack";
 }
+// 楼光の館・相棒が「あなたの潜行履歴」に反応するための動的 ctx（提案B スライス2・固有性）。
+// 最多流派・この潜行の踏破数（勢い）・自己ベスト更新中か・撤退癖を、相棒のセリフ条件へ渡す。
+function rlVoiceCtx() {
+  const run = rogueliteState?.run;
+  if (!run) return {};
+  return {
+    rlChapter: run.chapterId || null, // 登っている記憶（大章）id＝章ごとのセリフ出し分けに（cond.rlChapter）
+    rlMainCluster: dominantCluster(run.mods?.clusterCount),
+    rlCleared: run.cleared || 0,
+    rlRetreatHabit: rogueliteState.retreatCount || 0,
+    rlResolveClimb: rogueliteState.resolveClimb || 0, // 「また登る」を選び続けた回数＝挑み続ける性分（双方向で覚える）
+    rlDeepRun: run.floor > (rogueliteState.bestFloor || 0), // 過去最深を超えて潜っている＝自己ベスト更新中
+  };
+}
 function rogueliteSpeak(event, ctx = {}) {
   const lead = rlLead();
   if (!lead) return;
-  const line = vline(lead.id, event, ctx);
+  const line = vline(lead.id, event, { ...rlVoiceCtx(), ...ctx });
   if (line) showRogueliteSpeak(el("roguelite-screen"), { char: lead, charImages, line });
+}
+// 群像＝物語の縦軸を背負うテーマの面々（兄弟弟子＋御庭番）。二人相槌はこの面々が2人以上いるときだけ滲ませる。
+const RL_THEMED_CAST = new Set(["shiyue", "kuidoshi", "mamori", "yao_chu", "chun_chan"]);
+// 休息など落ち着いた拍で、相棒(先頭)＋控えのテーマ相方がいれば“群像の二人相槌”を時折挟む（提案B スライス2・最小）。
+// 発火可否は seed×floor で決定論（再描画で二度出さない）。出さない場合は after をそのまま呼ぶ。
+function maybePlayBanter(run, after) {
+  const lead = run.party?.[0]?.char;
+  if (!lead || !RL_THEMED_CAST.has(lead.id)) { after?.(); return; }
+  const partnerMember = run.party.slice(1).find((m) => m.char && RL_THEMED_CAST.has(m.char.id) && m.char.id !== lead.id);
+  const partner = partnerMember?.char;
+  if (!partner) { after?.(); return; }
+  // 毎休息では出さない（半々）。同一フロアでは決定論で固定＝再描画しても揺れない。
+  if (makeRng(`${run.seed}:banter:${run.floor}`)() >= 0.5) { after?.(); return; }
+  const ctx = rlVoiceCtx();
+  const aLine = vline(lead.id, "rlBanter", ctx);
+  const bLine = vline(partner.id, "rlBanterReply", ctx);
+  if (!aLine || !bLine) { after?.(); return; }
+  charImages.load([lead, partner].filter((c) => c && !c.isMob)).finally(() => {
+    rlLog("banter", { floor: run.floor, a: lead.id, b: partner.id });
+    showRogueliteBanter(el("roguelite-screen"), { a: { char: lead, line: aLine }, b: { char: partner, line: bLine }, charImages, onDone: () => after?.() });
+  });
 }
 // 能力をスキルレベルで生成する。レベルテーブルを持つ能力は run.skillLevel の params で強化、
 // 持たない能力は baseParams のまま。レベルは各能力テーブルの上限でクランプ。
@@ -2116,11 +2213,12 @@ function enterFloor(run, floorType) {
     case "battle":
       rogueliteState.pursueRemaining = floorType.pursueMax || 0;
       rogueliteState.pursuing = false;
-      launchRogueliteBattle(run, floorType);
+      if (floorType?.enemy === "boss") showBossIntroThenBattle(run, floorType);
+      else launchRogueliteBattle(run, floorType);
       break;
     case "rest":
       healParty(run, floorType.healFrac ?? 0.3);
-      showRogueliteRest(host, { kind: "rest", floor: run.floor, run, charImages, onDone: () => advanceRoguelite(run) });
+      showRogueliteRest(host, { kind: "rest", floor: run.floor, run, charImages, onDone: () => maybePlayBanter(run, () => advanceRoguelite(run)) });
       break;
     case "banquet": {
       healParty(run, floorType.healFrac ?? 1);
@@ -2359,6 +2457,42 @@ function grantRogueliteItem(run, itemId, after) {
 
 // この階層の1戦を起動（ペア戦エンジン流用）。味方席へカードの付与能力＋控え能力を相乗り。
 // opts.pursue=true は追撃の追加戦（敵を salt で別個体に・局数は pursueMax を1局ずつ消費）。
+// ボス階：対局前に「館の主」が立ちはだかる口上を見せてから本戦へ（提案B「ボスが覚えている」）。
+// 表示するボス＝enemyUnitForFloor と同一決定論で先読み。bossTally から段階(初遭遇/再戦/雪辱)を出し分ける。
+async function showBossIntroThenBattle(run, floorType) {
+  const bossChars = previewBossChars(run, floorType);
+  if (!bossChars.length) { launchRogueliteBattle(run, floorType); return; }
+  const tally = rogueliteState?.bossTally || {};
+  const bosses = bossChars.map((c) => ({
+    char: c,
+    line: vline(c.id, "rlBossIntro", { bossMemoryTier: bossMemoryTier(tally[c.id]) }),
+  }));
+  try { await charImages.load(bossChars.filter((c) => c && !c.isMob)); } catch { /* 画像はフォールバック */ }
+  showRogueliteBossIntro(el("roguelite-screen"), {
+    bosses, floor: run.floor, charImages,
+    onProceed: () => launchRogueliteBattle(run, floorType),
+  });
+}
+
+// ボス階決着をランの bossTally へ刻み、プロフィールへ永続（提案B「ボスが覚えている」）。
+// won=true=踏破（プレイヤー勝利）→w+1 / won=false=全滅→l+1。次ラン以降の口上の出し分けに効く。
+function recordBossEncounter(run, won) {
+  // salt 省略（=""）は本戦の enemyUnitForFloor と同一＝同じボス顔ぶれ。記録は本戦決着のみ（追撃は呼び元で除外）。
+  const bosses = previewBossChars(run, rogueliteState.floorType);
+  if (!bosses.length) return;
+  let tally = rogueliteState.bossTally || {};
+  for (const c of bosses) tally = recordBossOutcome(tally, c.id, won);
+  rogueliteState.bossTally = tally;
+  rlLog("bossMemory", { floor: run.floor, won, bosses: bosses.map((c) => c.id) });
+  persistBossTally(tally);
+}
+async function persistBossTally(tally) {
+  try {
+    const p = await profileRepo.loadProfile();
+    if (p) await profileRepo.saveProfile(withBossTally(p, tally));
+  } catch { /* 永続失敗はラン内 bossTally を保持して続行 */ }
+}
+
 async function launchRogueliteBattle(run, floorType, opts = {}) {
   teamBattleData = null; humanIndex = 0; selectedRounds = 1; // 東風を外枠に、局数上限で短く決着
   rogueliteState.pursuing = !!opts.pursue;
@@ -2448,6 +2582,8 @@ function onRogueliteBattleEnd(result) {
   const host = el("roguelite-screen");
   goScreen("roguelite-screen");
   enterRogueliteAmbience(); // 専用背景＋探索BGMへ復帰（対局中の in-game BGM から戻す）
+  // ボス記憶（提案B）：本戦（追撃でない）のボス階決着を通算勝敗へ刻む。勝敗＝全滅でなく踏破できたか。
+  if (rogueliteState.floorType?.enemy === "boss" && !rogueliteState.pursuing) recordBossEncounter(run, !runWiped(run));
   // ゲームオーバー＝生存メンバーが1人以下（2人で着卓できない）。残り2人以上なら踏破（次の階へ）。
   if (runWiped(run)) { finishRogueliteRun(run, { wiped: true }); return; }
   run.cleared += 1;
@@ -2495,7 +2631,7 @@ function onRogueliteBattleEnd(result) {
         if ((rogueliteState.pursueRemaining || 0) > 0) {
           showRoguelitePursue(host, {
             floor: run.floor, remaining: rogueliteState.pursueRemaining, run, charImages,
-            leadLine: vline(rlLead()?.id, "rlPursue", {}), leadChar: rlLead(),
+            leadLine: vline(rlLead()?.id, "rlPursue", rlVoiceCtx()), leadChar: rlLead(),
             onPursue: () => { rogueliteState.pursueRemaining -= 1; launchRogueliteBattle(run, rogueliteState.floorType, { pursue: true }); },
             onGo: () => advanceRoguelite(run),
           });
@@ -2508,18 +2644,35 @@ function onRogueliteBattleEnd(result) {
 // ラン終了（撤退＝報酬確保で帰還／全滅＝没収）。最深到達階層を保存し、獲得バフから
 // 引き継ぎ枠ぶんを選ばせて次ランへ持ち越す（ローグライク・累積しない）。
 // 到達階層＝フロア番号：全滅は死んだ階(run.floor)、撤退は1つ手前(まだ入っていない次の階の手前)。
+// 双方向2択（提案B §3.2-5）：別れ際にプレイヤーが返した手（climb/rest）の通算をプロフィールへ。
+// 「また登る(climb)」の積み重ねが rlVoiceCtx.rlResolveClimb として次ラン以降の相棒セリフに効く（覚える）。
+async function persistRogueliteResolve(choiceId) {
+  if (choiceId !== "climb" && choiceId !== "rest") return;
+  try {
+    const p = await profileRepo.loadProfile();
+    if (!p) return;
+    const resolve = { climb: 0, rest: 0, ...(p.roguelite?.resolve || {}) };
+    resolve[choiceId] = (resolve[choiceId] || 0) + 1;
+    p.roguelite = { ...(p.roguelite || {}), resolve };
+    await profileRepo.saveProfile(p);
+  } catch { /* 永続失敗は次ランに反映されないだけ */ }
+}
+
 async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}) {
   // 計測（P9）：終了時に最終ビルド全カードを記録＝offlineで「勝利ビルド出現率」(到達深度別にどのカード/流派が残るか)を出せる。
   rlLog("run_end", { depth: run.floor, result: wiped ? "wiped" : (retreated ? "retreat" : "end"), cleared: run.cleared, cardIds: [...(run.cards || [])], ...rlBuffSnap(run) });
   flushRlLog(); // ラン終端でSupabaseへ送信（取りこぼし低減）
   clearSavedRogueliteRun(); // 撤退/全滅でラン終了＝一時セーブを削除（再開は出さない）
-  // 先頭キャラの別れ際の一言（rogueliteState を消す前に解決）。撤退＝引く判断への“返し”。
+  // 到達階層＝全滅は死んだ階(run.floor)、撤退は1つ手前。別れ際セリフの見守り(P8)にも使う。
+  const reached = wiped ? run.floor : Math.max(1, run.floor - 1);
+  // 先頭キャラの別れ際の一言（rogueliteState を消す前に解決）。
+  //   全滅＝罰でなく「塔から記憶として弾かれた」継続(P7)＝専用 rlWipe で前向きに送り出す（matchEnd の敗北弁は使わない）。
+  //   撤退＝引く判断への“返し”。どちらも到達深度(rlReached)を渡し、浅くても言葉が出る見守り(P8)。
   const lead = rlLead();
-  const partingLine = lead ? vline(lead.id, retreated ? "rlRetreat" : "matchEnd", retreated ? {} : { rankIndex: 1, numPlayers: 2 }) : null;
+  const partingLine = lead ? vline(lead.id, retreated ? "rlRetreat" : "rlWipe", { ...rlVoiceCtx(), rlReached: reached }) : null;
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 保存できなくても結果は見せる */ }
   const prev = profile?.roguelite || { bestFloor: 0, runs: 0, carry: [] };
-  const reached = wiped ? run.floor : Math.max(1, run.floor - 1);
   const best = Math.max(prev.bestFloor || 0, reached);
   // 共闘ボーナス：楼光の館で一緒に戦った分だけ、パーティ各員と少しだけ絆が深まる。
   // フリー対戦(1位=12exp/局)より控えめ＝1踏破=2exp・1ラン上限24（連勝/着順履歴には触れない）。
@@ -2527,9 +2680,21 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}
   // アカウント通貨「宝珠」：このランの稼ぎを口座へ commit（misc jsonb に自動永続）。用途は別途。
   const orbsEarned = run.orbsEarned || 0;
   const orbsTotal = (profile?.orbs || 0) + orbsEarned;
+  // ボス記憶（提案B）：ラン内で最新化した bossTally を保全（mid-runのpersistと競合しても上書きで失わない）。
+  const liveBossTally = rogueliteState?.bossTally ?? prev.bossTally ?? {};
+  // 撤退癖（提案B スライス2）：撤退で帰還したランだけ通算撤退回数を+1（相棒のセリフ ctx rlRetreatHabit の源）。
+  const nextRetreats = (prev.retreats || 0) + (retreated ? 1 : 0);
+  // 大章の解禁（提案B §3.1 ①）：登っていた記憶の踏破階(clearFloor)に届いていれば、その章を踏破済へ。
+  // → 次の記憶が選択ハブで開く（解禁ツリー）。P8厳守＝物語フラグでなく「選択の解禁」のみ。
+  const chap = chapterById(run.chapterId);
+  const prevCleared = Array.isArray(prev.chaptersCleared) ? prev.chaptersCleared : [];
+  const nextCleared = (chap && reached >= chap.clearFloor && !prevCleared.includes(chap.id))
+    ? [...prevCleared, chap.id] : prevCleared;
+  if (nextCleared !== prevCleared) rlLog("chapter_cleared", { chapter: chap.id, reached });
   // 進捗（到達・通算）は即保存（離脱しても失わない）。引き継ぎは選択後に上書き。
   if (profile) {
-    let next = { ...profile, orbs: orbsTotal, roguelite: { bestFloor: best, runs: (prev.runs || 0) + 1, carry: prev.carry || [] } };
+    // chaptersUnlocked（宝珠先行解禁）/ resolve（双方向2択の通算）はこのランで触らないが、明示構築のため必ず引き継ぐ（ドロップ防止）。
+    let next = { ...profile, orbs: orbsTotal, roguelite: { bestFloor: best, runs: (prev.runs || 0) + 1, carry: prev.carry || [], bossTally: liveBossTally, retreats: nextRetreats, chaptersCleared: nextCleared, chaptersUnlocked: prev.chaptersUnlocked || [], resolve: prev.resolve || { climb: 0, rest: 0 } } };
     if (coFightExp > 0) for (const m of run.party) next = addCompanionBondExp(next, m.char?.id || m.id, coFightExp);
     try { await profileRepo.saveProfile(next); } catch { /* 保存失敗は無視 */ }
   }
@@ -2537,18 +2702,30 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}
   const slots = carrySlotsFor(best);
   // 獲得バフ（ユニーク）を引き継ぎ候補に。
   const acquired = [...new Set(run.cards)].map((id) => cardById(id)).filter(Boolean);
+  // 双方向＝プレイヤーが返す2択（提案B §3.2-5）。「また登る/今は休む」を選ぶと相棒が返し、その手をキャラが覚える。
   showRogueliteGameOver(el("roguelite-screen"), {
     reached, wiped, retreated, bestFloor: best,
     orbsEarned, orbsTotal, // アカウント通貨「宝珠」：今回の獲得＋口座残高
     carrySlots: slots, acquired, partingLine, speakerChar: lead, charImages,
     bondDeepened: coFightExp > 0, // 共闘で絆が少し深まった（数値は見せない）
     partyChars: run.party.map((m) => m.char).filter(Boolean),
+    resolveChoices: lead ? [{ id: "climb", label: "また登る" }, { id: "rest", label: "今は休む" }] : [],
+    onResolve: (choiceId) => { // 選択を永続（覚える）＋相棒の返しを同期で返す（rogueliteState は既に null なので vline を直接）
+      persistRogueliteResolve(choiceId);
+      return lead ? vline(lead.id, "rlResolve", { resolveChoice: choiceId }) : null;
+    },
     onClose: async (selectedIds) => {
       const carry = (selectedIds || []).slice(0, slots);
       try {
         const p = (await profileRepo.loadProfile()) || profile;
         if (p) {
-          p.roguelite = { ...(p.roguelite || { bestFloor: best, runs: 1 }), carry };
+          // 直前の roguelite 保存が失敗していても、ラン内で確定した記録を必ず保全（bossTally/retreats/章解禁）。
+          p.roguelite = {
+            ...(p.roguelite || { bestFloor: best, runs: 1 }), carry,
+            bossTally: p.roguelite?.bossTally ?? liveBossTally,
+            retreats: p.roguelite?.retreats ?? nextRetreats,
+            chaptersCleared: p.roguelite?.chaptersCleared ?? nextCleared,
+          };
           await profileRepo.saveProfile(p);
         }
       } catch { /* 保存失敗は次ランで引き継がれないだけ */ }

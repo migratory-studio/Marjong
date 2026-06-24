@@ -14,6 +14,79 @@
 
 ---
 
+## 0.5 進捗ログ（提案B）
+
+### 2026-06-24 §7論点ヒアリング → スライス1 実装完了
+**握った方針（§7）:**
+- **物語の枠**：大章選択ツリー（最初に大章を選ぶ→踏破で次の大章が解禁）。**シナリオは当面モック**。
+  テーマ＝弟子（詩玥/凌雲/真守）＋御庭番（姚玖/春嬋）＋**今は亡き師匠（先代九蓮宝士＝詩玥の恩師）**をめぐる群像。
+- **「覚えている」の粒度**：勝敗カウントだけ＝`profile.roguelite.bossTally:{charId:{w,l}}`。
+- **セリフ生成**：現在モック（手書きの簡易フレーバー。詩玥/凌雲のみ固有先行例、他は汎用モック）。
+- **物語ゲート**：P8厳守（難易度で物語を塞がない）。
+
+**スライス1＝「ボスが覚えている」実装済み（回帰緑・実機feel確認済・QA1件修正反映）:**
+- 新規 `src/roguelite/bossMemory.js`：純関数 `bossMemoryTier`(first/rematch/revenge)／`readBossTally`／`recordBossOutcome`／`withBossTally`。
+  tier規約＝`first`:0-0／`revenge`:l>0（敗北の記憶を最優先）／`rematch`:w>0&l==0。
+- `voiceLines.js`：`condMatches` に `cond.bossMemoryTier` を1行追加。
+- `characterVoiceMaster.js`：event `rlBossIntro`。詩玥/凌雲に固有口上（3tier）＋`GENERIC_BOSS_INTRO` を `withBossIntro` で全キャラ補完（モック）。
+- `run.js`：`previewBossChars(run, floorType, salt="")` をエクスポート（`enemyUnitForFloor` と同一決定論でボス先読み）。
+- `rogueliteScreen.js`：`showRogueliteBossIntro`（純UIモーダル・立ち絵＋口上＋「対峙する」）。tier名はUIに出さず口上の変化で気づかせる（数値レス思想）。
+- `styles.css`：`.rl-bossintro*`（ember調・1280×720収まり確認済）。
+- `main.js` 結線：run開始/再開で `rogueliteState.bossTally` ロード／ボス階で `showBossIntroThenBattle`（口上→本戦）／`onRogueliteBattleEnd` で本戦（追撃除外）決着を `recordBossEncounter`＋`persistBossTally`／`finishRogueliteRun`＋carry保存で `bossTally` 保全（保存失敗時も `liveBossTally` フォールバック）。
+- 回帰：`test/roguelite.mjs` 948 passed（bossMemory純関数＋voiceLines照合追加）／`roguelite-balance.mjs --assert` 12 passed／`smoke.mjs` ✅。
+
+### 2026-06-24 スライス2 実装完了（相棒が履歴に反応＋群像の最小二人相槌）
+**握った方針（§7 群像の深さ）**：固有性を主軸＋群像は最小の二人相槌（モック・2択なし）。双方向2択は後のスライスへ。
+- **(A) 相棒が「あなたの潜行履歴」に反応（固有性）**：
+  - `main.js` `rlVoiceCtx()`＝`rlMainCluster`（最多流派）・`rlCleared`（この潜行の踏破数）・`rlRetreatHabit`（過去撤退回数）・`rlDeepRun`（自己ベスト更新中）を供給。`rogueliteSpeak`/`rlPursue`/`rlRetreat`/`matchEnd(finish)` の vline に注入。
+  - 履歴の源：run開始/再開で `rogueliteState.bestFloor`/`retreatCount` を profile からロード。撤退回数は `finishRogueliteRun` で `profile.roguelite.retreats` に永続（撤退ランのみ+1）。
+  - `voiceLines.js condMatches`：`rlMainCluster`/`rlRetreatHabitMin`/`rlClearedMin`/`rlDeepRun` を追加。
+  - `characterVoiceMaster.js`：詩玥に流派別 rlBuff・自己ベスト更新 rlPursue/rlBuff・撤退癖 rlRetreat（3/6回）を追加（条件付き＝無指定の汎用に上乗せ）。
+- **(B) 群像の二人相槌（最小・モック）**：
+  - event `rlBanter`（口火）＋`rlBanterReply`（受け）。`GENERIC_BANTER` を `withBanter` で全キャラ補完＋詩玥/凌雲に固有。
+  - `rogueliteScreen.js` `showRogueliteBanter`（相棒=左／相方=右の2吹き出し＋「続ける」・二言目はワンテンポ遅延）。`styles.css .rl-banter*`（1280×720収まり確認済）。
+  - 発火：`maybePlayBanter`＝**休息フロア**の onDone で、相棒(先頭)＋控えにテーマ相方（`RL_THEMED_CAST`=詩玥/凌雲/真守/姚玖/春嬋）がいるとき seed×floor 決定論で半々。出さなければ素通り。
+- 回帰：`test/roguelite.mjs` **990 passed**（固有性ctx照合＋全キャラbanter存在）／`roguelite-balance.mjs --assert` 12／`smoke.mjs` ✅。実機1280×720でバンターfeel＋ノースクロール確認・コンソールエラー0。
+
+### 2026-06-24 スライス3 実装完了（死＝継続＋見守り・P7/P8）
+**握った方針**：全滅を「罰」でなく「塔から記憶として弾かれた＝継続」に作り替える。到達深度で物語を塞がない見守り。
+- **全滅の別れ際を継続フレーミングへ（P7）**：
+  - `main.js finishRogueliteRun`：全滅の別れ際を matchEnd（敗北弁）流用→専用 `rlWipe` イベントへ。`vline(lead, retreated?"rlRetreat":"rlWipe", { ...rlVoiceCtx(), rlReached: reached })`。`reached` を partingLine より先に算出。
+  - `characterVoiceMaster.js`：event `rlWipe`。`GENERIC_WIPE`+`withWipe` で全キャラ補完。詩玥/凌雲に固有（口癖反転×点棒嫌いを“送り出し”に転じる）。
+  - `rogueliteScreen.js showRogueliteGameOver`：全滅 title/sub を非懲罰化（「没収」「力尽きた」を排し「塔に弾かれた——だが、記憶は還る／また登れる」）。`styles.css` 全滅バナー色 `--danger`(赤)→琥珀 `#e8c45d`。
+- **見守り（P8）**：`voiceLines condMatches` に `rlReachedMin`/`rlReachedMax`（深さ帯フレーバー差・**物語ゲートではない**＝無指定フォールバック常在）。浅い帯=rlReachedMax:6（励まし）／深い帯=rlReachedMin:12（誇り）／rlDeepRun（自己ベスト更新中に散）。
+- 回帰：`test/roguelite.mjs` **1011 passed**（rlWipe全キャラ存在・深さ帯・継続フレーミング懲罰語なし・浅セリフが深層で出ない）／`roguelite-balance.mjs --assert` 12／`smoke.mjs` ✅。実機1280×720で全滅画面feel（継続トーン）・ノースクロール・コンソールエラー0確認。QA違反0（要確認1=浅セリフ深層漏れ→rlReachedMaxで解消済）。
+
+### 2026-06-24 大章選択ハブ 実装完了（§3.1 ①／解禁ツリーの足場・frontend-designスキル適用）
+**握った方針**：物語層は当面モック。frontend-design スキルでハブUIを仕上げ（「例のスキル」指定）。
+- **大章マスタ（モック）**：`src/data/rogueliteChapterMaster.js`。**章立て確定（2026-06-24）＝大1章「還らぬ師の記憶」(id=mentor)に師匠の群像を一本集約**（弟子3＋御庭番2＋今は亡き師＝cast 5名・unlock=null常時解禁）。**大2章(id=memory_two)は今のところ空＝`comingSoon:true` の「未だ綴られぬ記憶」予告枠（踏破しても開かない・中身を増やさない）**。各章 { id,index,title,subtitle,blurb,aim,cast,unlock,clearFloor,tone(gold/jade/ember/ash),comingSoon? }。helper：chapterById/firstChapterId/isChapterUnlocked(comingSoonは常に封)/chaptersWithState。
+- **ハブUI（frontend-design）**：`showRogueliteChapterSelect`＝シグネチャ「記憶の塔」縦選択（column-reverse で第一を麓に積層・解禁=灯る/未解禁=封で翳る・麓から立ち上がる所作）＋右に詳細（明朝題字/登場チップ/ねらい/「この記憶を登る」or封理由）。色6種（闇/楼光金/青磁/燠火/象牙/灰＝記憶の感情色・AI定番3配色を回避）。`styles.css .rl-chapter*`。1280×720ノースクロール確認。
+- **結線**：`openRoguelite`＝再開確認→**大章ハブ**→編成(戻る=ハブ)→`startRogueliteRun(party, chapterId)`。`newRun(party,seed,chapterId)`＋serialize/deserialize に chapterId 往復。`finishRogueliteRun`＝`reached>=chap.clearFloor` で `profile.roguelite.chaptersCleared` に追加→次章解禁（P8厳守＝物語ゲートでなく選択の解禁のみ）。carry保存onCloseもspreadで保全。
+- 回帰：`test/roguelite.mjs` **1038 passed**（章マスタ整合＋解禁ツリー＋chapterId保存往復）／`roguelite-balance.mjs --assert` 12／`smoke.mjs` ✅。実機1280×720でハブfeel（塔・解禁/封・既定フォーカス=未踏破の最初の解禁章）・コンソールエラー0。
+
+### 2026-06-24 ボス陣・相棒・縦軸の結びつけ＋章intro口上 実装完了
+**握った方針**：機構のみ実装。**シナリオの肉付けはしない**（姚玖/春嬋のキャラ設定が未完のため）。章intro/姚玖春嬋のボス口上は既存の汎用モックのまま＝固有の作り込みを避ける。
+- **ボス陣＝記憶の群像**：`run.bossPool`（章の cast id 群）を newRun/serialize に追加。`pickBossChars` は bossPool 指定時その群像からだけ選ぶ（2人未満に枯れたら全プレイアブルにフォールバック＝必ず2人立つ安全側）。`startRogueliteRun` で `chap.cast` から bossPool を設定。→ スライス1の bossTally と自然合流（登る記憶の面々を相手取り、覚えられていく）。
+- **縦軸の結びつけ**：`rlVoiceCtx` に `rlChapter`（章id）追加、`voiceLines condMatches` に `cond.rlChapter`（章ごと専用セリフの足場）。
+- **章intro口上**：`showRogueliteChapterIntro`（記憶へ入る導入＝章題/blurb＋相棒の一言＋「記憶に入る」・記憶の色調 tone）。event `rlChapterIntro`（`GENERIC_CHAPTER_INTRO`+`withChapterIntro` 全キャラ補完＋詩玥/凌雲固有）。`startRogueliteRun` で1階の前に一度だけ（resumeは出さない）。語り口は相棒(well-defined)＋章フレーミングに限定＝姚玖/春嬋の作り込み不要。
+- 回帰：`test/roguelite.mjs` **1059 passed**（bossPool 保存往復＋群像から選出＋rlChapterIntro 全キャラ）／balance/smoke 緑。実機で記憶ハブ→登る→編成→出発→**章intro口上(還らぬ師の記憶＋詩玥導入)**→1階、までの通しと1280×720・章intro feel を確認（詩玥の対局ボイス404は既存の音声未収録で本件無関係）。
+
+### 2026-06-24 ①双方向2択＋②宝珠で章解禁（仕組み）実装完了
+**①双方向2択（§3.2-5・プレイヤーが返す→キャラが覚える）**：
+- 別れ際（全滅/撤退の game over）に「また登る／今は休む」の2択。`showRogueliteGameOver` に `resolveChoices`/`onResolve`。選ぶと相棒が `rlResolve`（cond.resolveChoice climb/rest・汎用 withResolve＋詩玥/凌雲固有）で返す→選択肢は消えて返しを表示。
+- **覚える**：`persistRogueliteResolve` で `profile.roguelite.resolve.{climb,rest}` を通算。run開始/再開で `rogueliteState.resolveClimb` ロード→`rlVoiceCtx.rlResolveClimb`→`cond.rlResolveClimbMin`。詩玥/凌雲の rlChapterIntro に「いつも"また登る"って言うネ」(climbMin:3)＝挑み続ける性分を次ラン以降に織り込む。
+- voiceLines condMatches に `resolveChoice`/`rlResolveClimbMin`。
+**②宝珠で章解禁（提案D・仕組みのみ／大2は触らない）**：
+- `rogueliteChapterMaster`：`isChapterUnlocked(ch, cleared, orbUnlockedIds)`（宝珠先行解禁も解禁扱い・comingSoonは常に封）／`canOrbUnlock`（封・非comingSoon・orbUnlockCost付き・所持十分・未解禁）／`chaptersWithState` に orbUnlocked 付与。
+- ハブUI：封・非comingSoon・値付き章にだけ「宝珠 N で解く」ボタン（所持不足は disabled）。`openRoguelite` で orbs/chaptersUnlocked を渡し、`orbUnlockChapter` が宝珠を払い `profile.roguelite.chaptersUnlocked` を永続→ハブ再描画。
+- **大2は comingSoon（空）のままなので宝珠ボタンは出ない＝大2不可侵**。合成の内容付き封章では「宝珠30で解く」が出て発火することを実機確認＝将来章で有効化。
+- finishRogueliteRun の保存に `chaptersUnlocked`/`resolve` を明示引き継ぎ（ドロップ防止）。
+- 回帰：`test/roguelite.mjs` **1103 passed**（rlResolve全キャラ・climb覚える閾値・宝珠解禁ロジック・comingSoonは宝珠でも封）／balance 12／smoke ✅。実機で別れ際2択（climb→詩玥返し）・大2に宝珠ボタン無し・合成封章に宝珠ボタン有りを確認。コンソールエラー0。
+
+**次の着手候補**：①姚玖/春嬋のキャラ設定が固まり次第、大1章の群像セリフ（ボス口上/群像相槌/章intro）を固有化＋大2章の起こし（内容＋orbUnlockCost付与で②が即有効化）②双方向2択を章intro/群像相槌へも拡張③提案Dの宝珠ショップ本体との統合。
+
+---
+
 ## 1. 現在地（提案A 完了済み）
 楼光の館に「流派(クラスター)」システムを実装済み。5流派（速攻/染め么九/打点ドラ/守備/博打）がしきい値シナジーで稼働、データで均衡実証（スプレッド1.03）、シナジーUIもlegible、通しQAクリア。
 - 正典コード：`src/data/rogueliteCardMaster.js`（CLUSTER_META/CLUSTER_SYNERGY）／`src/roguelite/cardEffects.js`（clusterDealMul/clusterTakeCapFrac/clusterTakeRaiseFrac/clusterProgress/clusterPickPreview/recomputeClusterCount）／`src/roguelite/run.js`（被ダメ層）／`src/main.js`（rlApplyDynamicBuffs・計測ログ）／`src/screens/rogueliteScreen.js`（UI）。

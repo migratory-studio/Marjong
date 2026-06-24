@@ -50,8 +50,91 @@ function faceNode(charImages, c, cls = "rl-face") {
 }
 
 // ---- パーティ編成 ----
+// ---- 大章（記憶）選択ハブ（提案B §3.1 ①／「記憶の塔」縦選択）。どの記憶を登るかを選ぶ ----
+// 塔＝記憶を辿る縦軸そのもの：層を下(第一)から上へ積み、解禁された記憶は灯り、未解禁は封じられて翳る。
+export function showRogueliteChapterSelect(container, opts = {}) {
+  const { chapters = [], bestFloor = 0, orbs = 0, onPick, onBack, onOrbUnlock } = opts;
+  if (!container || !chapters.length) { onBack?.(); return; }
+
+  const sealReason = (ch) => {
+    if (ch.comingSoon) return "未だ綴られぬ記憶 ・ 近日";
+    const prev = chapters.find((c) => c.id === ch.unlock);
+    return prev ? `「${prev.title}」を踏破すると開く` : "まだ開かれていない記憶";
+  };
+
+  container.innerHTML = `
+    <div class="rl-screen rl-chapter">
+      <div class="rl-chap-backdrop"></div>
+      <header class="rl-chap-head">
+        <span class="rl-chap-eyebrow">楼光の館 ・ 記憶を映す塔</span>
+        <h1 class="rl-chap-title">登る記憶を選ぶ</h1>
+        <span class="rl-chap-best">最深の記録　<b>${bestFloor}</b> 階</span>
+      </header>
+      <div class="rl-chap-body">
+        <ol class="rl-tower" id="rl-tower">
+          ${chapters.map((ch, i) => `
+            <li class="rl-stratum tone-${ch.tone} ${ch.unlocked ? "is-open" : "is-sealed"}" data-id="${ch.id}" style="--rise:${(chapters.length - 1 - i) * 70}ms" tabindex="0" role="button" aria-pressed="false">
+              <span class="rl-stratum-rune">${ch.unlocked ? (ch.cleared ? "✦" : "◇") : "封"}</span>
+              <span class="rl-stratum-meta">
+                <span class="rl-stratum-sub">${ch.subtitle}</span>
+                <span class="rl-stratum-name">${ch.unlocked ? ch.title : "？？？"}</span>
+              </span>
+            </li>`).join("")}
+        </ol>
+        <section class="rl-chap-detail" id="rl-chap-detail"></section>
+      </div>
+      <footer class="rl-chap-foot">
+        <button type="button" class="ghost-back" id="rl-chap-back">← 対戦ホームへ</button>
+        <span class="rl-chap-foot-hint">踏破した記憶が、次の記憶への扉を開く。</span>
+      </footer>
+    </div>`;
+
+  const detailEl = container.querySelector("#rl-chap-detail");
+  const strata = [...container.querySelectorAll(".rl-stratum")];
+
+  const renderDetail = (ch) => {
+    const castChips = (ch.cast || []).map((p) => `<span class="rl-chap-castchip">${p.name}</span>`).join("");
+    detailEl.className = `rl-chap-detail tone-${ch.tone}`;
+    detailEl.innerHTML = ch.unlocked
+      ? `
+        <div class="rl-chap-sub">${ch.subtitle}${ch.cleared ? ' ・ <span class="rl-chap-done">踏破済</span>' : ""}</div>
+        <h2 class="rl-chap-name">${ch.title}</h2>
+        <p class="rl-chap-blurb">${ch.blurb}</p>
+        <div class="rl-chap-cast"><span class="rl-chap-cast-k">登場</span>${castChips}</div>
+        <p class="rl-chap-aim">${ch.aim}</p>
+        <button type="button" class="rl-start rl-chap-go" id="rl-chap-go">この記憶を登る ›</button>`
+      : `
+        <div class="rl-chap-sub">${ch.subtitle}</div>
+        <h2 class="rl-chap-name rl-chap-name-sealed">封じられた記憶</h2>
+        <p class="rl-chap-blurb">この記憶は、まだ姿を見せない。</p>
+        <div class="rl-chap-seal"><span class="rl-chap-seal-rune">封</span>${sealReason(ch)}</div>
+        ${(!ch.comingSoon && ch.orbUnlockCost > 0 && onOrbUnlock) ? `<button type="button" class="rl-start rl-chap-orb" id="rl-chap-orb"${orbs >= ch.orbUnlockCost ? "" : " disabled"}>宝珠 ${ch.orbUnlockCost} で解く${orbs >= ch.orbUnlockCost ? "" : "（所持 " + orbs + "）"}</button>` : ""}`;
+    const go = detailEl.querySelector("#rl-chap-go");
+    if (go) go.addEventListener("click", () => onPick?.(ch.id), { once: true });
+    const orbBtn = detailEl.querySelector("#rl-chap-orb");
+    if (orbBtn) orbBtn.addEventListener("click", () => onOrbUnlock?.(ch.id), { once: true });
+  };
+
+  const focus = (id) => {
+    const ch = chapters.find((c) => c.id === id);
+    if (!ch) return;
+    for (const s of strata) { const on = s.dataset.id === id; s.classList.toggle("is-focused", on); s.setAttribute("aria-pressed", on ? "true" : "false"); }
+    renderDetail(ch);
+  };
+  for (const s of strata) {
+    const pick = () => focus(s.dataset.id);
+    s.addEventListener("click", pick);
+    s.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(); } });
+  }
+  // 既定フォーカス＝未踏破の最初の解禁章（無ければ先頭）＝「いま登るべき記憶」を提示。
+  const def = chapters.find((c) => c.unlocked && !c.cleared) || chapters.find((c) => c.unlocked) || chapters[0];
+  focus(def.id);
+
+  container.querySelector("#rl-chap-back")?.addEventListener("click", () => onBack?.());
+}
+
 export function showRoguelite(container, opts = {}) {
-  const { deshiRoster = [], characters = [], charImages, bestFloor = 0, carry = [], onBack, onStart } = opts;
+  const { deshiRoster = [], characters = [], charImages, bestFloor = 0, carry = [], onBack, onStart, backLabel = "← 対戦ホームへ" } = opts;
   if (!container) return;
   // 候補：修行完了弟子（先頭）＋通常キャラ。id 重複は弟子優先。
   const seen = new Set();
@@ -87,7 +170,7 @@ export function showRoguelite(container, opts = {}) {
         </div>
       </div>
       <div class="rl-foot">
-        <button type="button" class="ghost-back" id="rl-back">← 対戦ホームへ</button>
+        <button type="button" class="ghost-back" id="rl-back">${backLabel}</button>
         <span class="rl-foot-hint">対局は右上の「オート」で観戦に切替可（設定は記憶される）</span>
         <button type="button" class="rl-start" id="rl-start" disabled>出発する</button>
       </div>
@@ -649,6 +732,91 @@ export function showRogueliteBiomeIntro(container, opts = {}) {
   ov.querySelector("#rl-biome-reroll")?.addEventListener("click", () => { ov.remove(); onReshuffle?.(); }, { once: true });
 }
 
+// ---- 章intro（記憶へ踏み入る導入。提案B・縦軸の結びつけ）。相棒が一言添えて記憶へ入る ----
+export function showRogueliteChapterIntro(container, opts = {}) {
+  const { chapter, leadChar = null, leadLine = null, charImages = null, onProceed } = opts;
+  if (!container || !chapter) { onProceed?.(); return; }
+  const ov = document.createElement("div");
+  ov.className = `rl-overlay rl-chapintro tone-${chapter.tone || "gold"}`;
+  let speak = "";
+  if (leadChar && leadLine) {
+    const u = charImages?.url?.(leadChar, "portrait") || charImages?.url?.(leadChar, "icon") || "";
+    const face = u
+      ? `<img class="rl-chapintro-face" src="${u}" alt="">`
+      : `<div class="rl-chapintro-face rl-chapintro-fb" style="--c:${leadChar.color || "#888"}">${[...(leadChar.name || "?")][0] || "?"}</div>`;
+    speak = `<div class="rl-chapintro-speak">${face}<div class="rl-chapintro-bubble"><div class="rl-chapintro-who" style="color:${leadChar.color || "var(--rl-gold)"}">${leadChar.name || ""}</div><div class="rl-chapintro-line">${leadLine}</div></div></div>`;
+  }
+  ov.innerHTML = `
+    <div class="rl-chapintro-card">
+      <span class="rl-chapintro-eyebrow">${chapter.subtitle || "記憶"}　に入る</span>
+      <h2 class="rl-chapintro-name">${chapter.title || ""}</h2>
+      <p class="rl-chapintro-blurb">${chapter.blurb || ""}</p>
+      ${speak}
+      <button type="button" class="rl-start rl-chapintro-go" id="rl-chapintro-go">記憶に入る ›</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  ov.querySelector("#rl-chapintro-go")?.addEventListener("click", () => { ov.remove(); onProceed?.(); }, { once: true });
+}
+
+// ---- ボス対局前口上（提案B・「ボスが覚えている」）。tier名はUIに出さず、口上の変化で気づかせる ----
+export function showRogueliteBossIntro(container, opts = {}) {
+  const { bosses = [], floor = 1, charImages = null, onProceed } = opts;
+  if (!container || !bosses.length) { onProceed?.(); return; }
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-bossintro";
+  const panel = (b) => {
+    const c = b.char || {};
+    const u = charImages?.url?.(c, "portrait") || charImages?.url?.(c, "icon") || "";
+    const art = u
+      ? `<img class="rl-bossintro-art" src="${u}" alt="">`
+      : `<div class="rl-bossintro-art rl-bossintro-art-fb" style="--c:${c.color || "#888"}">${[...(c.name || "?")][0] || "?"}</div>`;
+    return `
+      <div class="rl-bossintro-boss" style="--c:${c.color || "var(--rl-gold)"}">
+        ${art}
+        <div class="rl-bossintro-name">${c.name || "館の主"}</div>
+        ${b.line ? `<div class="rl-bossintro-line">${b.line}</div>` : ""}
+      </div>`;
+  };
+  ov.innerHTML = `
+    <div class="rl-bossintro-card">
+      <span class="rl-bossintro-eyebrow">第 ${floor} 階 ・ 館の主</span>
+      <div class="rl-bossintro-stage rl-bossintro-n${Math.min(2, bosses.length)}">${bosses.map(panel).join("")}</div>
+      <button type="button" class="rl-start rl-bossintro-go" id="rl-bossintro-go">対峙する ›</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  ov.querySelector("#rl-bossintro-go")?.addEventListener("click", () => { ov.remove(); onProceed?.(); }, { once: true });
+}
+
+// ---- 群像の二人相槌（提案B スライス2）。相棒(A)が口火→相方(B)が受ける軽い掛け合い ----
+export function showRogueliteBanter(container, opts = {}) {
+  const { a, b, charImages = null, onDone } = opts;
+  if (!container || !a?.char || !a?.line || !b?.char || !b?.line) { onDone?.(); return; }
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-banter";
+  const row = (s, side) => {
+    const c = s.char;
+    const u = charImages?.url?.(c, "portrait") || charImages?.url?.(c, "icon") || "";
+    const face = u
+      ? `<img class="rl-banter-face" src="${u}" alt="">`
+      : `<div class="rl-banter-face rl-banter-fb" style="--c:${c.color || "#888"}">${[...(c.name || "?")][0] || "?"}</div>`;
+    return `<div class="rl-banter-row rl-banter-${side}">${face}<div class="rl-banter-bubble"><div class="rl-banter-name" style="color:${c.color || "var(--rl-gold)"}">${c.name || ""}</div><div class="rl-banter-line">${s.line}</div></div></div>`;
+  };
+  ov.innerHTML = `
+    <div class="rl-banter-card">
+      ${row(a, "l")}
+      ${row(b, "r")}
+      <button type="button" class="rl-start rl-banter-go" id="rl-banter-go">続ける ›</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  // 二言目はワンテンポ遅れて滲ませる（掛け合いの呼吸）。
+  const second = ov.querySelector(".rl-banter-r");
+  if (second) { second.classList.add("rl-banter-pending"); setTimeout(() => second.classList.remove("rl-banter-pending"), 650); }
+  ov.querySelector("#rl-banter-go")?.addEventListener("click", () => { ov.remove(); onDone?.(); }, { once: true });
+}
+
 // ---- 休息 / 宴会（回復演出） ----
 export function showRogueliteRest(container, opts = {}) {
   const { kind = "rest", floor = 1, run, charImages = null, hungover = [], soberUsed = false, onDone } = opts;
@@ -985,13 +1153,14 @@ export function showRogueliteShop(container, opts = {}) {
 
 // ---- ラン終了（＋引き継ぎバフ選択） ----
 export function showRogueliteGameOver(container, opts = {}) {
-  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], partingLine, speakerChar, bondDeepened = false, partyChars = [], orbsEarned = 0, orbsTotal = 0, onClose } = opts;
+  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], partingLine, speakerChar, bondDeepened = false, partyChars = [], orbsEarned = 0, orbsTotal = 0, onClose, resolveChoices = [], onResolve } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-gameover" + (wiped ? " wiped" : " safe");
-  const title = wiped ? "全滅……ランは没収された" : retreated ? "撤退成功・記録を持ち帰った" : "ラン終了";
+  // P7：全滅は「罰」でなく「塔から記憶として弾かれた＝継続」。没収/力尽きた等の懲罰的な語を使わない。
+  const title = wiped ? "塔に弾かれた——だが、記憶は還る" : retreated ? "撤退成功・記録を持ち帰った" : "ラン終了";
   const sub = wiped
-    ? `第 ${reached} 階で力尽きた。到達の記録だけが残る。`
+    ? `第 ${reached} 階で塔は君を記憶として還した。歩いた道は消えない——また、登れる。`
     : `第 ${reached} 階まで到達した。`;
   const canCarry = carrySlots > 0 && acquired.length > 0;
   const carryHtml = canCarry ? `
@@ -1014,6 +1183,11 @@ export function showRogueliteGameOver(container, opts = {}) {
       <p class="rl-go-sub">${sub}</p>
       ${bondDeepened ? `<p class="rl-go-bond">◆ 共に戦い抜き、${partyChars.length > 1 ? "仲間たち" : (partyChars[0]?.name || "相棒")}との絆が少し深まった。</p>` : ""}
       ${partingLine && speakerChar ? `<div class="rl-modal-speak" style="--c:${speakerChar.color || "var(--accent)"}"><b>${speakerChar.name}</b>「${partingLine}」</div>` : ""}
+      ${resolveChoices.length && onResolve ? `<div class="rl-go-resolve" id="rl-go-resolve">
+        <div class="rl-go-resolve-q">——君は、どうする?</div>
+        <div class="rl-go-resolve-opts">${resolveChoices.map((c) => `<button type="button" class="rl-go-resolve-btn" data-id="${c.id}">${c.label}</button>`).join("")}</div>
+        <div class="rl-go-resolve-reply" id="rl-go-resolve-reply" hidden></div>
+      </div>` : ""}
       ${carryHtml}
       <button type="button" class="rl-start" id="rl-go-close">編成へ戻る</button>
     </div>`;
@@ -1041,6 +1215,26 @@ export function showRogueliteGameOver(container, opts = {}) {
     });
   }
   refresh();
+
+  // 双方向＝プレイヤーが返す2択（提案B §3.2-5）。選ぶと相棒が短く返し、その手はキャラが覚える（onResolveで永続）。
+  const resolveBox = ov.querySelector("#rl-go-resolve");
+  if (resolveBox && onResolve) {
+    resolveBox.querySelectorAll(".rl-go-resolve-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = btn.dataset.id;
+        const reply = onResolve(id); // 永続＋相棒の返しセリフ（同期）
+        resolveBox.querySelector(".rl-go-resolve-opts")?.remove();
+        const r = resolveBox.querySelector("#rl-go-resolve-reply");
+        if (r) {
+          r.hidden = false;
+          r.innerHTML = reply && speakerChar
+            ? `<span style="color:${speakerChar.color || "var(--accent)"}"><b>${speakerChar.name}</b></span>「${reply}」`
+            : "";
+        }
+        resolveBox.querySelector(".rl-go-resolve-q")?.remove();
+      }, { once: true });
+    });
+  }
 
   ov.querySelector("#rl-go-close")?.addEventListener("click", () => { ov.remove(); onClose?.([...selected]); });
 }
