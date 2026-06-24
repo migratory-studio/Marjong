@@ -83,7 +83,15 @@
 - finishRogueliteRun の保存に `chaptersUnlocked`/`resolve` を明示引き継ぎ（ドロップ防止）。
 - 回帰：`test/roguelite.mjs` **1103 passed**（rlResolve全キャラ・climb覚える閾値・宝珠解禁ロジック・comingSoonは宝珠でも封）／balance 12／smoke ✅。実機で別れ際2択（climb→詩玥返し）・大2に宝珠ボタン無し・合成封章に宝珠ボタン有りを確認。コンソールエラー0。
 
-**次の着手候補**：①姚玖/春嬋のキャラ設定が固まり次第、大1章の群像セリフ（ボス口上/群像相槌/章intro）を固有化＋大2章の起こし（内容＋orbUnlockCost付与で②が即有効化）②双方向2択を章intro/群像相槌へも拡張③提案Dの宝珠ショップ本体との統合。
+### 2026-06-24 大1章 完成のための scenario-forge 制作要件を発行
+- 要件書＝`E:/AI/scenario-forge/masters/rouko-ch1.requirements.md`（自己完結ハンドオフ）。
+- 章＝群像劇（1:1濃厚は師弟の領分／大2章は触らない）。現状＝機構実装済・セリフはモック。これを群像5人の固有セリフへ置換するのがゴール。
+- **ブロッカー**：①scenario-forge `reference/characters.json` の同期（凌雲/真守の旧名が残存）②world.md に楼光（記憶の塔）を追記③**姚玖/春嬋のキャラ設計（未設計・最優先・character-designer→承認→apply）**。
+- **語彙拡張**：voice-lines.md / voice-vocab.json に楼光イベント群 `roguelite`（rlBossIntro×3tier・rlChapterIntro・rlBanter/Reply・rlWipe×深さ・rlResolve×choice・rlBuff/rlPursue/rlRetreat）と cond 語彙を登録。
+- **制作物**：群像5人×楼光イベントを各slot≥2本（emphasis＝詩玥rlWipe点棒嫌い反転/rlResolve climb/覚えるchapterIntro、凌雲護り、御庭番は守る側の距離感）。数値レス＝tier名はセリフに出さない。
+- **取り込み**：emit-voice-master→voiceLineMaster.js→本体。固有が入れば withBossIntro 等の汎用フォールバックが自動で出なくなる。DoD＝同tierボスが別文・群像相槌固有・test/proposalB-sim.mjs で初遭遇→再戦→雪辱が固有口調に。
+
+**次の着手候補**：①scenario-forge で上記要件を実行（姚玖/春嬋 design から）②双方向2択を章intro/群像相槌へ拡張③提案Dの宝珠ショップ本体との統合。
 
 ---
 
