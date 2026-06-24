@@ -485,7 +485,36 @@ const DORANIE_BATTLE = [
   Q("complete", {}, "完走じゃ! よう頑張った! さ、帰って大物手の話をしようぞ!"),
   Q("retreat", {}, "引くか。……ふむ、賢いのう。たまには、それも博徒の腕じゃ。"),
 ];
-const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE, bibi: BIBI_BATTLE, kakeha_ruina: RUINA_BATTLE, kuidoshi: KUIDOSHI_BATTLE, yao_chu: YAO_CHU_BATTLE, chun_chan: CHUN_CHAN_BATTLE, yobinin: YOBININ_BATTLE, doranie: DORANIE_BATTLE };
+// 真守の見守り＝ていねいな守り手。弟子を静かに気づかい、沈ませぬことを第一に。design/mamori.json 準拠（生成）。
+const MAMORI_BATTLE = [
+  Q("matchStart", {}, "よろしくお願いします。沈まないことを、第一に。"),
+  Q("matchStart", { condTier: "vgood" }, "今日もいい卓ですね。落ち着いて参りましょう。——放銃は、いたしません。"),
+  Q("bigWin", {}, "和了です。攻めは苦手ですが……守った先の一手は、格別ですね。"),
+  Q("bigWin", { bondMin: 3 }, "……見事です。あなたの攻めは、私には眩しいくらいですよ。"),
+  Q("bigLoss", {}, "痛手を負っても、まだ立っています。膝をつかなければ、それでいいのです。"),
+  Q("bigLoss", { bondMin: 4 }, "……減っていくものを見るのは、いまだに、こたえます。守れず、申し訳ありません。"),
+  Q("pinch", {}, "後がありません……。いえ、まだ放銃はしていません。守り抜きます。"),
+  Q("pinch", { bondMin: 4 }, "……大切なものが減るのは、怖いものですね。でも、あなたは沈ませません。私がついています。"),
+  Q("tobi", {}, "——ここまでです。よく耐えました。次は、私が前で受けます。"),
+  Q("tobi", {}, "沈んでしまいましたね……。守りきれず、すみません。立て直しましょう。"),
+  Q("bustWin", {}, "相手が沈みましたか。守りに徹した先に、こういう景色もあるのですね。"),
+  Q("bustWin", {}, "……最後まで卓に残った者が勝ちます。沈まぬ者の、勝ち方です。"),
+  Q("abilityUse", {}, "危険を感じます。ここは退いてください。それが正解です。"),
+  Q("abilityUse", {}, "その牌はいけません。読みは外しません——お任せを。"),
+  Q("readWin", {}, "危険手を避けきりましたね。読み通りです。沈まぬ者が、最後に残ります。"),
+  Q("readWin", { bondMin: 3 }, "……いい目をしていますね。守りの読み、あなたにも宿ってきました。"),
+  Q("riichiSelf", {}, "リーチですか。めずらしい。……たまには、攻めてみるのもいいでしょう。"),
+  Q("riichiSelf", {}, "いきましょう。守ってきた分、この一手は信じます。"),
+  Q("riichiOpp", {}, "相手のリーチ……。慌てず、安全な牌から。——放銃は、いたしません。"),
+  Q("riichiOpp", { bondMin: 3 }, "……来ましたね。だいじょうぶ。こういう局面は、私の領分です。後ろはお任せを。"),
+  Q("rareGuest", {}, "……強い打ち手ですね。気を引き締めましょう。読みを外せません。"),
+  Q("rareGuest", {}, "これは、油断のならない相手です。いつも以上に、丁寧に受けます。"),
+  Q("complete", {}, "完走、お疲れさまでした。誰にも沈まされず、帰ってこられましたね。"),
+  Q("complete", {}, "よく守り抜きました。沈まぬ者が、最後まで卓に残るのです。"),
+  Q("retreat", {}, "引くのも、立派な守りです。……ええ、いい判断でした。無理はいたしません。"),
+  Q("retreat", {}, "退きましょう。ここで沈まなければ、また打てます。"),
+];
+const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE, bibi: BIBI_BATTLE, kakeha_ruina: RUINA_BATTLE, kuidoshi: KUIDOSHI_BATTLE, yao_chu: YAO_CHU_BATTLE, chun_chan: CHUN_CHAN_BATTLE, yobinin: YOBININ_BATTLE, doranie: DORANIE_BATTLE , mamori: MAMORI_BATTLE };
 
 // ── 大会敗北の夜の2択（leagueLossTalk）──
 // 大会リザルト（優勝できなかった夜）に師匠が問いかけ、プレイヤーが返せる（双方向の見せ場）。
@@ -673,8 +702,60 @@ const KUIDOSHI_PRAISE = [
   G({}, "見てたよ、ぜんぶ。……うん。誰にも、文句は言わせない一打だ。"),
   G({ bondMin: 3 }, "……君の伸びは、まぶしいね。僕も、うかうかしていられない。"),
 ];
-const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET, kuidoshi: KUIDOSHI_GREET };
-const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST, kuidoshi: KUIDOSHI_REST };
+// ルクス・ゼロ の師弟ホーム一言＋休憩2択（design準拠・生成）。
+const YOBININ_GREET = [
+  G({}, "起動。本日の手順を提示する。最短経路で進めるぞ。"),
+  G({}, "状態、捕捉済み。無駄を削り、揺らぎは消す。それだけだ。"),
+  G({ time: "asa" }, "始動。一手目の精度が一日を決める。整えていけ。"),
+  G({ time: "hiru" }, "中盤。ここまで誤差なし。手を緩めるな。"),
+  G({ time: "yoru" }, "残り一手。締めの精度で、今日が確定する。"),
+  G({ condTier: "vbad" }, "出力が落ちている。原因を切り分けろ。慌てるな、想定内だ。"),
+  G({ condTier: "bad" }, "わずかにブレている。基本手順へ戻せ。修正は早いほどいい。"),
+  G({ condTier: "ok" }, "基準値。可もなく不可もなし。ここから誤差を削る。"),
+  G({ condTier: "good" }, "精度、良好。捕捉できている。この水準を維持しろ。"),
+  G({ condTier: "vgood" }, "全項目、最適解に近い。……悪くない仕上がりだ。続けろ。"),
+  G({ lastOutcome: "daiseikou" }, "前回の成果、確保。誤差なしの一打だった。再現できれば本物だ。"),
+  G({ lastOutcome: "shippai" }, "前回は手順が崩れた。……失敗も観測値だ。同じ揺らぎは、次で消す。"),
+  G({ bondMin: 3 }, "お前の手順はまだ粗い。だが伸びている。観測する価値はある。"),
+  G({ bondMin: 6 }, "お前の運任せの一打……私には組めない。理解はできん。だが無価値ではないらしい。"),
+  G({ phase: "hadou" }, "外卓は揺らぎが多い。……それでも、お前となら読み切れる気がする。"),
+  G({ phase: "hadou", bondMin: 8 }, "私はお前を、消すべき揺らぎとして見ていた。だが今は——計算外の、変数だ。"),
+  G({ treasuresMin: 7 }, "終点が見えた。ここまでの値は、お前と私で確定させたものだ。誤りはない。"),
+  G({ bondMin: 10 }, "私はずっと、確定できない宙吊りが怖かった。……お前が来るまでは。隣でなら、もう恐れない。"),
+  G({ bondMin: 10 }, "正直に言う。完璧な手順だけでは、頂には届かなかった。……届けたのは、お前の不完全な一打だ。"),
+  G({ cleared: true }, "頂点を確保した。……奇妙だ。誤差を消すことだけが、目的ではなくなっていた。"),
+  G({ cleared: true }, "肩の力を抜いていい。すべてを計算で詰めずとも届く。……お前が教えたことだ。"),
+  G({ cleared: true, bondMin: 12 }, "運の揺らぎを、私は許せなかった。……だがお前という揺らぎだけは、消したくなかった。誤差も……悪くない。"),
+];
+const YOBININ_REST = [
+  RT({}, "手順の組み立て方を確認する。お前は、どちらで判断する。", [{ key: "calc", label: "確率で詰める", reply: "正解だ。揺らぎを残さない打ち方は、私と同じ思考だ。捕捉した。", memory: "calc" }, { key: "feel", label: "感覚で打つ", reply: "……非効率だ。だが、私には組めない手だ。その感覚、観測対象に加える。", memory: "feel" }]),
+  RT({}, "一向聴で足踏みしたとき、お前はどうする。", [{ key: "push", label: "押し切る", reply: "攻めの判断だ。空白で止まるより、ずっといい。私も……止まるのは、嫌いだ。", memory: "push" }, { key: "wait", label: "山を読んで待つ", reply: "賢明だ。残り山を読めば、揺らぎは確定に変わる。誤差は、消す。それでいい。", memory: "wait" }]),
+  RT({ bondMin: 3 }, "私の打ち方は、無機質で退屈か。正直に答えろ。", [{ key: "respect", label: "美しいと思う", reply: "……そうか。誤差のない手順を、そう呼ぶ者は少ない。記録しておく。", memory: "respect" }, { key: "warm", label: "もっと崩していい", reply: "崩す、か。……お前といると、その選択肢も悪くないと思えてくる。妙だな。", memory: "warm" }]),
+  RT({ treasuresMin: 7 }, "この修行が終わったら、私とお前はどうなる。考えたことはあるか。", [{ key: "rival", label: "ライバルになる", reply: "面白い。誤差のない私を、お前の揺らぎで超えてみせろ。……待っている。", memory: "rival" }, { key: "together", label: "ずっと隣にいたい", reply: "……単独の打ち手だったはずの私が、それを拒めなくなっている。お前のせいだ。", memory: "together" }]),
+  RT({ cleared: true }, "頂点は確保した。次に、私たちが消すべき誤差は何だと思う。", [{ key: "next", label: "まだ上を目指す", reply: "了解した。お前と組む卓に、退屈という誤差はない。次へ行くぞ。", memory: "next" }, { key: "rest", label: "少し休もう", reply: "……それも値の一つだ。すべてを詰めなくていいと、お前が教えた。休もう。", memory: "rest" }]),
+];
+// ドラニエル の師弟ホーム一言＋休憩2択（design準拠・生成）。
+const DORANIE_GREET = [
+  G({}, "おお、来たか弟子よ! 今日も派手に張ろうぞ!"),
+  G({}, "ふぉっふぉ、待っておったぞ。下界の麻雀は、何度やっても飽きんのう!"),
+  G({ condTier: "vgood" }, "おぬし、今日はいい目をしておる! 大物手、狙い時じゃぞ!"),
+  G({ condTier: "vbad" }, "むむ、浮かぬ顔じゃのう。……なに、賭けは負けてからが面白いのじゃ!"),
+  G({ time: "asa" }, "朝じゃ朝じゃ! 一日の最初の一張りは、格別じゃのう!"),
+  G({ lastOutcome: "daiseikou" }, "大成功じゃったな! わはは、わらわの弟子は大したものじゃ!"),
+  G({ lastOutcome: "shippai" }, "しくじったか。……紙HPのわらわなど、もっと派手に転ぶぞ。気にするな!"),
+  G({ bondMin: 3 }, "おぬしと打つの、わらわは好きじゃ。……天界より、下界のほうが面白いのう。"),
+  G({ bondMin: 5 }, "……のう。わらわが天界から降りた理由、教えてやろうか。——おぬしと張るためじゃ。なんてな!"),
+  G({ phase: "hadou" }, "覇道じゃな! いよいよ大舞台ぞ。……わらわも、本気で張るのじゃ!"),
+  G({ cleared: true }, "九蓮宝士、達成じゃ! ……のう、まだ張り足りんであろう? わらわもじゃ!"),
+];
+const DORANIE_REST = [
+  RT({}, "のう弟子よ、賭けは楽しいか?", [{ key: "fun", label: "最高に楽しい", reply: "であろう、であろう! それでこそ、わらわの弟子じゃ!", memory: "fun" }, { key: "scary", label: "正直、こわい", reply: "ふぉっふぉ、こわいか。……だが、その震えこそ賭けの醍醐味ぞ!", memory: "scary" }]),
+  RT({}, "紙HPは、こわいか? わらわはいつも飛んでおるがのう!", [{ key: "bold", label: "飛んでも気にしない", reply: "わはは! 博徒の鑑じゃ! 一緒に派手に散ろうぞ!", memory: "bold" }, { key: "careful", label: "できれば守りたい", reply: "ふむ、堅実じゃのう。……まあ、それも一つの賭け方じゃ。", memory: "careful" }]),
+  RT({ bondMin: 3 }, "のう、わらわと組むの、嫌ではないか?", [{ key: "together", label: "ずっと組みたい", reply: "……っ。ふ、ふぉっふぉ! 言うてくれるのう! 嬉しいぞ!", memory: "together" }, { key: "myway", label: "自分の張り方でいく", reply: "よいぞよいぞ、それでこそ博徒じゃ! わらわは隣で見ておる!", memory: "myway" }]),
+  RT({ cleared: true }, "ぜんぶ獲ったのう。……次は、何を賭ける?", [{ key: "more", label: "もっと大きい賭けを", reply: "わはは、底なしじゃのう! よし、天界も巻き込んでやろうぞ!", memory: "more" }, { key: "enjoy", label: "のんびり楽しみたい", reply: "ふむ、それも乙じゃ。勝ち負け抜きの一張りも、悪くないのう。", memory: "enjoy" }]),
+];
+const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET, kuidoshi: KUIDOSHI_GREET , yobinin: YOBININ_GREET, doranie: DORANIE_GREET };
+const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST, kuidoshi: KUIDOSHI_REST , yobinin: YOBININ_REST, doranie: DORANIE_REST };
 const EXPLICIT_PRAISE = { shiyue: SHIYUE_PRAISE, bibi: BIBI_PRAISE, kakeha_ruina: RUINA_PRAISE, kuidoshi: KUIDOSHI_PRAISE };
 const nameOf = (id) => CHARACTER_MASTER.find((c) => c.id === id)?.name || id;
 
