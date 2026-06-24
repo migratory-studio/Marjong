@@ -12,7 +12,7 @@
 import { makeMob } from "../data/mobMaster.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { paramsFromLv, makeRng } from "../autobattle/autoBattle.js";
-import { freshMods, applyCard } from "./cardEffects.js";
+import { freshMods, applyCard, clusterTakeCapFrac, clusterTakeRaiseFrac } from "./cardEffects.js";
 import { ROGUELITE_CARD_MASTER, drawCards, cardById } from "../data/rogueliteCardMaster.js";
 import { SHOP_PRICE, SHOP_HEAL_PRICE, SHOP_MAXHP_PRICE } from "../data/rogueliteFloorMaster.js";
 import { itemMods } from "./itemEffects.js";
@@ -427,7 +427,17 @@ function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}, deltas = 
   // 翻数(点数帯)係数：和了者の得た素点(gross)で「手の重さ」を判定。ツモは払い手が複数＝負deltaが2席以上。
   const winnerGross = winnerSeat != null && deltas[winnerSeat] > 0 ? deltas[winnerSeat] : 0;
   const isTsumo = deltas.filter((d) => d < 0).length >= 2;
-  const cap = lethalCapFrac(run.floor || 1);
+  // 一撃死防止の上限（最大HP比）。守備流派(takeCap)を達成していれば、その上限まで締める（min＝より固い方）。
+  // ＝事故スパイクを抑える分散低減（提案A・守備流）。守備capも基準capと同じ深度減衰をかける＝
+  // 序盤〜中盤は強固に守るが、深層では守りも崩れて必ずトぶ（守備不死を防ぐ＝「必ず終わる」を保つ）。
+  // 博打(takeRaise)は上限を上げる＝大振り（高分散）／守備(takeCap)は上限を下げる＝鉄壁（低分散）。
+  // 両取りなら最終的に守備の min が勝つ（守りが優先＝矛盾なく安全側）。
+  const raise = clusterTakeRaiseFrac(run);
+  const baseCap = Math.min(1, lethalCapFrac(run.floor || 1) + raise);
+  const guardCapBase = clusterTakeCapFrac(run);
+  const guardCap = guardCapBase == null ? null
+    : Math.min(1, guardCapBase + Math.max(0, (run.floor || 1) - RL_TUNE.lethalCapFadeStart) * RL_TUNE.lethalCapFadeSlope);
+  const cap = guardCap != null ? Math.min(baseCap, guardCap) : baseCap;
   return {
     winnerIsAlly: winnerSeat != null && roles[winnerSeat] === "ally",
     dealMul: Math.min(RL_TUNE.dealCap, m.dealMul * (battleMods.dealMul || 1)),   // 鼓舞=次戦攻撃↑

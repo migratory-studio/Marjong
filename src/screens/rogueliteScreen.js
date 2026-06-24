@@ -9,7 +9,8 @@
 // 立ち絵/アイコンは charImages（呼び出し側が渡す）から引く。無ければ頭文字フォールバック。
 // 1280×720 ノースクロール方針：ロスターのみ内部スクロールに逃がす（F6 と同様の扱い）。
 
-import { RARITY_META, CARD_CATEGORY, cardCategory, cardById } from "../data/rogueliteCardMaster.js";
+import { RARITY_META, CARD_CATEGORY, cardCategory, cardById, CLUSTER_META, clusterOf } from "../data/rogueliteCardMaster.js";
+import { clusterProgress, clusterPickPreview } from "../roguelite/cardEffects.js";
 import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { biomeEffectChips, biomeOf } from "../data/rogueliteBiomeMaster.js";
@@ -202,19 +203,30 @@ export function showRogueliteResume(container, opts = {}) {
 
 // ---- バフカード3択 ----
 export function showRogueliteDraft(container, opts = {}) {
-  const { floor = 1, cards = [], onPick, title, coins = null, bonus = null } = opts;
+  const { floor = 1, cards = [], onPick, title, coins = null, bonus = null, run = null } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-draft";
   const cardHtml = cards.map((c, i) => {
     const meta = RARITY_META[c.rarity] || { label: c.rarity, color: "#999" };
     const cat = CARD_CATEGORY[cardCategory(c)];
+    const cl = clusterOf(c); const clm = cl ? CLUSTER_META[cl] : null;
+    const clTag = clm ? `<span class="rl-card-cluster" style="--cl:${clm.color}">${clm.label}</span>` : "";
+    // シナジー予告（スライス5）：取ると流派がどう動くか。しきい値到達は「開眼」を大きく見せる＝決断の山場。
+    const pv = run ? clusterPickPreview(run, c) : null;
+    let synHtml = "";
+    if (pv) {
+      synHtml = pv.crosses
+        ? `<div class="rl-card-syn awaken" style="--cl:${pv.color}"><span class="rl-syn-seal">${pv.awaken}</span><span class="rl-syn-txt">取ると【${pv.awaken}】 ${pv.label}が一段強くなる</span></div>`
+        : `<div class="rl-card-syn" style="--cl:${pv.color}">${pv.label} ${pv.from}→${pv.to}${pv.nextAt ? `（${pv.awaken}まであと${pv.nextAt - pv.to}）` : ""}</div>`;
+    }
     return `
-      <button type="button" class="rl-card r-${c.rarity}" data-i="${i}" style="--rarity:${meta.color}">
-        <div class="rl-card-tags"><span class="rl-card-cat" style="--cat:${cat.color}">${cat.mark} ${cat.label}</span><span class="rl-card-rarity">${meta.label}</span></div>
+      <button type="button" class="rl-card r-${c.rarity}${pv && pv.crosses ? " syn-awaken" : ""}" data-i="${i}" style="--rarity:${meta.color}${pv ? `;--cl:${pv.color}` : ""}">
+        <div class="rl-card-tags"><span class="rl-card-cat" style="--cat:${cat.color}">${cat.mark} ${cat.label}</span>${clTag}<span class="rl-card-rarity">${meta.label}</span></div>
         ${c.icon ? `<div class="rl-card-ico-wrap">${rlIcon(c.icon, "rl-card-ico")}</div>` : ""}
         <div class="rl-card-name">${c.name}</div>
         <div class="rl-card-desc">${c.desc}</div>
+        ${synHtml}
       </button>`;
   }).join("");
   ov.innerHTML = `
@@ -344,8 +356,36 @@ export function buffTotalsHtml(run) {
   for (const id of run?.items || []) { const it = itemById(id); if (it) items.push(`<span class="rl-inv-chip item">${it.icon ? rlIcon(it.icon, "rl-ico-sm") : "◆"} ${it.name}</span>`); }
   if ((m.friendlyGuard || 0) > 0) items.push(`<span class="rl-inv-chip item">◆ 庇いの守り ×${m.friendlyGuard}</span>`);
   const groupHead = (cat, extra = "") => `<span class="rl-inv-head" style="--cat:${C[cat].color}">${C[cat].mark} ${C[cat].label}${extra}</span>`;
+  // 流派（クラスター）の進捗＝「あと1枚で開眼」の緊張を legible に（提案A・docs §4.3）。
+  const clProg = clusterProgress(run);
+  const clRow = clProg.length
+    ? clProg.map((p) => {
+        const clm = CLUSTER_META[p.cluster] || { label: p.cluster, color: "#9ad", awaken: "開眼", tip: "同じ流派の札を集めると効果が跳ねる" };
+        const aw = clm.awaken || "開眼"; // 攻め=開眼／守り=鉄壁 など流派ごとの呼称
+        const tierSet = new Set(p.tiers || []);
+        // 玉(pip)を maxまで並べ、所持ぶんを点灯。しきい値の玉は大きく＝「あと1で開眼」が一目で分かる。
+        const pips = [];
+        for (let i = 1; i <= (p.max || 0); i++) {
+          const cls = ["rl-pip"];
+          if (tierSet.has(i)) cls.push("brk");        // しきい値の節目
+          if (i <= p.count) cls.push("on");            // 取得済み
+          if (tierSet.has(i) && i <= p.count) cls.push("lit"); // 到達した節目
+          pips.push(`<i class="${cls.join(" ")}"></i>`);
+        }
+        // 状態文：到達済みは「開眼」（次段があれば あとM）、未到達は あとMで開眼。
+        const state = p.reached > 0
+          ? `<b>${aw}${p.reached > 1 ? `×${p.reached}` : ""}</b>${p.nextAt ? ` ・あと${p.nextAt - p.count}で次段` : ""}`
+          : `あと${p.nextAt - p.count}で${aw}`;
+        return `<span class="rl-cluster ${p.reached ? "lit" : ""}" style="--cl:${clm.color}" title="${clm.tip || ""}">
+          <span class="rl-cluster-name">${clm.label}</span>
+          <span class="rl-pips">${pips.join("")}</span>
+          <span class="rl-cluster-state">${state}</span>
+        </span>`;
+      }).join("")
+    : "";
   return `<div class="rl-inv">
     <div class="rl-inv-row">${groupHead("buff")}<div class="rl-buff-totals">${buffRow}</div></div>
+    ${clRow ? `<div class="rl-inv-row"><span class="rl-inv-head" style="--cat:#8fd0ff">◈ 流派</span><div class="rl-inv-chips">${clRow}</div></div>` : ""}
     <div class="rl-inv-row">${groupHead("skill", ` <small>${skills.length}/2</small>`)}<div class="rl-inv-chips">${skillRow}</div></div>
     ${items.length ? `<div class="rl-inv-row">${groupHead("item", run?.items ? ` <small>${(run.items || []).length}/${ITEM_SLOTS}</small>` : "")}<div class="rl-inv-chips">${items.join("")}</div></div>` : ""}
   </div>`;

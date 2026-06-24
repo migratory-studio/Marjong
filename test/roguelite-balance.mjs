@@ -13,7 +13,8 @@ import {
   rogueliteDamageDeltas, rollDraft, carrySlotsFor, allyScaledHp, RL_TUNE, floorDamageMul, runWiped,
   growMaxHp, FLOOR_HP_GROWTH,
 } from "../src/roguelite/run.js";
-import { applyCard, applyEffect, BUFF_TUNE } from "../src/roguelite/cardEffects.js";
+import { applyCard, applyEffect, BUFF_TUNE, clusterDealMul } from "../src/roguelite/cardEffects.js";
+import { clusterOf, CLUSTER_SYNERGY } from "../src/data/rogueliteCardMaster.js";
 if (process.env.HPCAP) BUFF_TUNE.hpMulCap = Number(process.env.HPCAP); // 累積HP倍率の上限を掃引
 import { shopStock, buyShopItem, shrineOffers } from "../src/roguelite/run.js";
 import { ROGUELITE_CARD_MASTER, RARITY_WEIGHTS, drawCards, cardById } from "../src/data/rogueliteCardMaster.js";
@@ -39,6 +40,9 @@ const TUNE = {
   enemyLvSlope: Number(process.env.LVSLOPE ?? 0.6), // 敵Lvの階層あたり傾き（敵強度モデル＝シム専用）
 };
 const localEnemyLv = (floor) => Math.max(1, Math.min(10, Math.round(1 + (floor - 1) * TUNE.enemyLvSlope)));
+// 染め手の発火率（シム近似）。シムは手牌を持たないため、染めビルドの味方和了がどれだけ染め手かを定数で表す。
+// rootou/染め軸は么九・一色に寄るため中程度に。env FLUSHRATE で掃引可。実機は r.result.yaku で厳密判定。
+const FLUSH_SIM_RATE = Number(process.env.FLUSHRATE ?? 0.5);
 const FT = { normal: floorTypeById("normal"), elite: floorTypeById("elite"), boss: floorTypeById("boss") };
 
 // ルート方針：その階のフロア種別を決める（boss は呼び出し側で強制）。
@@ -62,14 +66,16 @@ function routePick(rng, run, policy) {
 
 // 特殊フロアの効果をシムへ反映（戦闘以外）。treasure/event/shop/shrine は greedy がリターンを得る近似。
 function resolveSpecial(run, floorType, rng, policy) {
+  const pick = PICKERS[policy] || PICKERS.none;
+  const active = isActive(policy); // none 以外（greedy / 流派特化）はリターンを取りに行く
   switch (floorType.kind) {
     case "rest": healParty(run, floorType.healFrac ?? 0.3); break;
     case "banquet": healParty(run, 1); rollHangover(run, floorType.hangoverChance ?? 0.35, rng); break;
-    case "treasure": if (policy === "greedy") { const c = PICKERS.greedy(rollDraft(run, { hpRatio: 1 })); if (c) applyCard(run, c); } break;
-    case "event": { healParty(run, 0.2); if (policy === "greedy") { const c = cardById("deal-up-common"); if (c) applyCard(run, c); } break; } // 近似：小回復＋小バフ
-    case "shop": if (policy === "greedy") { for (const it of shopStock(run, rng)) { if ((run.coins || 0) >= it.price) buyShopItem(run, it); } } break; // 買えるだけ買う
-    case "forge": if (policy === "greedy") { let c = forgeCost(run.skillLevel); while ((run.coins || 0) >= c && run.skillLevel < 10) { run.coins -= c; run.skillLevel += 1; c = forgeCost(run.skillLevel); } } break; // 鍛冶：払える限りLvを上げる
-    case "shrine": if (policy === "greedy" && Math.min(...run.party.map((m) => m.hp / m.hpMax)) > 0.5) { const o = shrineOffers(run)[0]; for (const m of run.party) m.hp = Math.max(1, m.hp - Math.round(m.hpMax * (o.outcome.hurtFrac || 0))); if (o.outcome.effect) applyEffect(run, o.outcome.effect); } break;
+    case "treasure": if (active) { const c = pick(rollDraft(run, { hpRatio: 1 })); if (c) applyCard(run, c); } break;
+    case "event": { healParty(run, 0.2); if (active) { const c = cardById("deal-up-common"); if (c) applyCard(run, c); } break; } // 近似：小回復＋小バフ
+    case "shop": if (active) { for (const it of shopStock(run, rng)) { if ((run.coins || 0) >= it.price) buyShopItem(run, it); } } break; // 買えるだけ買う
+    case "forge": if (active) { let c = forgeCost(run.skillLevel); while ((run.coins || 0) >= c && run.skillLevel < 10) { run.coins -= c; run.skillLevel += 1; c = forgeCost(run.skillLevel); } } break; // 鍛冶：払える限りLvを上げる
+    case "shrine": if (active && Math.min(...run.party.map((m) => m.hp / m.hpMax)) > 0.5) { const o = shrineOffers(run)[0]; for (const m of run.party) m.hp = Math.max(1, m.hp - Math.round(m.hpMax * (o.outcome.hurtFrac || 0))); if (o.outcome.effect) applyEffect(run, o.outcome.effect); } break;
     default: break;
   }
 }
@@ -130,7 +136,21 @@ function simBattle(run, rng, floorType, pursue = false) {
       const v = pick(w);
       deltas[v] = -value; deltas[w] = value;
     }
-    const hpd = rogueliteDamageDeltas(run, { deltas, roles, winnerSeat: w, hpMax }); // 深度倍率/一撃死上限を本体側で適用
+    // 流派deal シナジー（提案A）：味方和了のとき、発火条件に応じた与ダメ倍率を本番と同経路(battleMods.dealMul)で乗せる。
+    //   速攻＝ツモ(honest)／打点＝満貫以上(value>=8000・honest)／染め＝染め手はシムが手牌を持たないため確率近似(FLUSH_SIM_RATE)。
+    //   守備のtakeCapは rogueliteDamageDeltas 内で自動適用（battleMods不要）。
+    let battleMods;
+    if (roles[w] === "ally") {
+      const ctx = {
+        tsumoWin: tsumo,
+        bigWin: Math.abs(value) >= 8000,
+        flushWin: (run.mods.clusterCount?.flush > 0) && (rng() < FLUSH_SIM_RATE),
+        anyWin: true, // 博打＝味方和了なら常に発火（takeRaise の被ダメ上限上げは rogueliteDamageDeltas 内で自動）
+      };
+      const cm = clusterDealMul(run, ctx);
+      if (cm > 1.0001) battleMods = { dealMul: cm };
+    }
+    const hpd = rogueliteDamageDeltas(run, { deltas, roles, winnerSeat: w, hpMax, battleMods }); // 深度倍率/一撃死上限/流派シナジーを本体側で適用
     for (let i = 0; i < 4; i++) hp[i] = Math.max(0, hp[i] + hpd[i]);
   }
   // 結果反映：味方HPを run へ戻す（回復しない＝消耗が累積する）。
@@ -177,6 +197,31 @@ const PICKERS = {
   },
 };
 
+// 流派特化picker（提案A・均衡検証用）：自流派のカードを最優先しつつ、回復/HPで最低限の生存も確保。
+// 「どの流派に寄せても近い深度に届く＝一意最適解なし(P1)」を測るため、各流派に1つ作る。
+function clusterPicker(cluster) {
+  return (cards) => {
+    if (!cards || !cards.length) return null;
+    const rank = (c) => {
+      let s = 0;
+      if (clusterOf(c) === cluster) s += 100;          // 自流派を強く優先（しきい値到達を狙う）
+      const k = c.effect.kind;
+      if (k === "heal") s += 9;                          // 生存の最低限
+      if (k === "maxHpAdd" || k === "maxHpUp") s += 7;
+      if (k === "compound") s += 6;
+      if (k === "dealMul") s += 5;
+      if (k === "takeReduce") s += 4;
+      if (k === "grantAbility") s += 3;
+      return s;
+    };
+    return [...cards].sort((a, b) => rank(b) - rank(a))[0] || null;
+  };
+}
+for (const cl of ["flush", "guard", "tempo", "value", "gamble"]) PICKERS[cl] = clusterPicker(cl);
+
+// 「素のドラフトを取りに行く方針か（none以外）」。特殊フロアの取得/購入をこのゲートで判定。
+const isActive = (policy) => policy !== "none";
+
 // 戦いの質でスケールした回復（本番 onRogueliteBattleEnd と同じ式）。
 const regenAll = (run, res = {}) => {
   const perf = Math.max(0.25, Math.min(1.3, 0.25 + (res.hpRatio ?? 0.5) * 0.85 + (res.koAny ? 0.25 : 0)));
@@ -200,7 +245,7 @@ function stepFloor(run, rng, policy, floorWins = null) {
   let c = pick(rollDraft(run, { ko: res.koAny, hpRatio: res.hpRatio })); if (c) applyCard(run, c);
   // 追撃（greedy・HP健全なら pursueMax 回まで）
   let remaining = floorType.pursueMax || 0;
-  while (policy === "greedy" && remaining > 0 && Math.min(...run.party.map((m) => m.hp / m.hpMax)) > 0.55) {
+  while (isActive(policy) && remaining > 0 && Math.min(...run.party.map((m) => m.hp / m.hpMax)) > 0.55) {
     const pr = simBattle(run, rng, floorType, true);
     if (runWiped(run)) return false; // 追撃中の全滅（生存1人以下）＝没収
     run.cleared += 1; regenAll(run, pr);
@@ -297,6 +342,18 @@ function report() {
   const greedy = montecarlo({ ...mid, picker: "greedy" });
   console.log(`none median=${none.median} / greedy median=${greedy.median} / 伸び ×${(greedy.median / Math.max(1, none.median)).toFixed(2)}`);
 
+  console.log("\n=== 流派均衡（中堅・各流派特化 vs 汎用greedy の median 深度） ===");
+  {
+    const clusters = ["flush", "guard", "tempo", "value", "gamble"];
+    const meds = {};
+    for (const cl of clusters) meds[cl] = montecarlo({ ...mid, picker: cl }).median;
+    const gen = greedy.median;
+    const vals = Object.values(meds);
+    const lo = Math.min(...vals), hi = Math.max(...vals);
+    console.log(clusters.map((cl) => `${cl}:${meds[cl]}`).join("  ") + `  | 汎用greedy:${gen}`);
+    console.log(`  流派間スプレッド hi/lo = ${(hi / Math.max(1, lo)).toFixed(2)}（1に近いほど均衡＝一意最適解なし）`);
+  }
+
   console.log("\n=== レア度分布（drawCards・bias別の出現割合） ===");
   for (const bias of [0, 0.5, 1]) {
     const cnt = { common: 0, rare: 0, epic: 0, legendary: 0 };
@@ -333,6 +390,15 @@ function assertTargets() {
   ok(mid.p10 >= 55, `中堅greedy は安定して深く潜れる p10≥55 (=${mid.p10})`);
   ok(strong.median >= mid.median - 10, `育成完了 ≳ 中堅 (${strong.median} ≳ ${mid.median})`);
   ok(weak.median <= midNone.median + 5, `弱弟子(none) ≲ 中堅(none) (${weak.median} ≲ ${midNone.median})`);
+  // 流派均衡（提案A・P1「唯一最適解を作らない」）：どの流派に寄せても近い深度＝一意最適解がない。
+  const CN = Math.min(N, 900); // 流派4本ぶん回すので件数は控えめに
+  const clMeds = {};
+  for (const cl of ["flush", "guard", "tempo", "value", "gamble"]) clMeds[cl] = montecarlo({ ...TIERS[1], picker: cl }, CN).median;
+  const cv = Object.values(clMeds);
+  const clLo = Math.min(...cv), clHi = Math.max(...cv);
+  ok(clHi / Math.max(1, clLo) <= 1.5, `流派間スプレッド hi/lo ≤1.5＝一意最適解なし (=${(clHi / clLo).toFixed(2)} ${JSON.stringify(clMeds)})`);
+  ok(cv.every((m) => m >= 70 && m <= 260), `各流派が成立帯(70〜260)で必ず終わる (=${JSON.stringify(clMeds)})`);
+  ok(cv.every((m) => m >= midNone.median + 20), `各流派が無策より明確に深い (+20超 vs none=${midNone.median}: ${JSON.stringify(clMeds)})`);
   // レア度（bias0）
   const cnt = { common: 0, rare: 0, epic: 0, legendary: 0 }; const RN = 30000;
   for (let i = 0; i < RN; i++) for (const c of drawCards(makeRng(`a-${i}`), { count: 3 })) cnt[c.rarity]++;

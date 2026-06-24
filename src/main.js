@@ -55,8 +55,8 @@ import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS 
 import { createAbility } from "./abilities/registry.js";
 import { newRun, enemyUnitForFloor, seatedAllies, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp } from "./roguelite/run.js";
 import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from "./data/rogueliteBiomeMaster.js";
-import { applyCard, applyEffect } from "./roguelite/cardEffects.js";
-import { cardById, isGrantCard, ROGUELITE_CARD_MASTER } from "./data/rogueliteCardMaster.js";
+import { applyCard, applyEffect, clusterDealMul, recomputeClusterCount } from "./roguelite/cardEffects.js";
+import { cardById, isGrantCard, ROGUELITE_CARD_MASTER, clusterOf } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
 import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie, consumeBustSaver, hasForesight } from "./roguelite/itemEffects.js";
 import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear, setRlLogSink, flushRlLog, setRlRunId } from "./roguelite/rogueliteLog.js";
@@ -2016,7 +2016,16 @@ function rlBuffSnap(run) {
     cards: (run?.cards || []).length,
     hp: (run?.party || []).map((p) => `${p.id}:${Math.max(0, p.hp)}/${p.hpMax}`),
     hpTotal: (run?.party || []).reduce((a, p) => a + Math.max(0, p.hp), 0),
+    clusters: { ...(m.clusterCount || {}) }, // 流派ごとの取得枚数（提案A・ビルド傾向の主指標）
+    mainCluster: dominantCluster(m.clusterCount), // 最多流派（=このランの軸）
   };
+}
+// 最多の流派id（同数/無しは null）。計測（勝利ビルド出現率）の集計軸。
+function dominantCluster(counts) {
+  if (!counts) return null;
+  let best = null, bn = 0, tie = false;
+  for (const [k, v] of Object.entries(counts)) { if (v > bn) { best = k; bn = v; tie = false; } else if (v === bn && bn > 0) tie = true; }
+  return bn > 0 && !tie ? best : null;
 }
 // 楼光の館：意思決定の瞬間に先頭キャラが一言「返す」（愛着×双方向）。
 const rlLead = () => rogueliteState?.run?.party?.[0]?.char || null;
@@ -2080,7 +2089,10 @@ function enforceGrantCap(run, after) {
         const c = ROGUELITE_CARD_MASTER.find((x) => x.id === cid);
         return c && c.effect?.kind === "grantAbility" && c.effect.abilityId === forgetId;
       });
-      if (ci >= 0) run.cards.splice(ci, 1);
+      if (ci >= 0) {
+        run.cards.splice(ci, 1);
+        recomputeClusterCount(run); // 流派タグ付き付与札を手放したら clusterCount を再集計（しきい値のオーバーカウント防止）。
+      }
       enforceGrantCap(run, after); // 念のため再判定（多重超過の保険）
     },
   });
@@ -2133,7 +2145,7 @@ function enterFloor(run, floorType) {
         });
       } else {
         showRogueliteDraft(host, {
-          floor: run.floor, title: "宝箱：力を1つ授かる", cards: rollDraft(run, { hpRatio: 1 }), charImages, coins: run.coins || 0,
+          floor: run.floor, title: "宝箱：力を1つ授かる", cards: rollDraft(run, { hpRatio: 1 }), charImages, coins: run.coins || 0, run,
           onPick: (card) => {
             if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
             enforceGrantCap(run, () => advanceRoguelite(run)); // 必殺枠が3つ目なら忘却モーダル
@@ -2248,7 +2260,7 @@ function applyEventOutcome(run, outcome) {
   if (outcome.itemRandom) { const it = drawItems(makeRng(`${run.seed}:evitem:${run.floor}`), { count: 1, exclude: run.items })[0]; if (it) grantRogueliteItem(run, it.id, () => {}); }
   if (outcome.draft) { // 無料ドラフト（イベント内即時）
     const host = el("roguelite-screen");
-    showRogueliteDraft(host, { floor: run.floor, title: "餞別：1枚選ぶ", cards: rollDraft(run, { hpRatio: 1 }), charImages, coins: run.coins || 0, onPick: (card) => { if (card) applyCard(run, card); enforceGrantCap(run, () => {}); } });
+    showRogueliteDraft(host, { floor: run.floor, title: "餞別：1枚選ぶ", cards: rollDraft(run, { hpRatio: 1 }), charImages, coins: run.coins || 0, run, onPick: (card) => { if (card) applyCard(run, card); enforceGrantCap(run, () => {}); } });
   }
   enforceGrantCap(run, () => {}); // effect/cardId 経由で必殺枠が超過したら忘却モーダル
 }
@@ -2464,12 +2476,20 @@ function onRogueliteBattleEnd(result) {
       ? rollDraft(run, { bias: 1, hpRatio: 1 })
       : rollDraft(run, { ko: !!result.koAny || pursued || dominated, hpRatio: result.hpRatio ?? 0.5 });
   showRogueliteDraft(host, {
-    floor: run.floor, cards, charImages, coins: run.coins || 0,
+    floor: run.floor, cards, charImages, coins: run.coins || 0, run,
     bonus: yakuman
       ? { label: "役満ご祝儀", note: "役満を決めて踏破！ オールレジェンダリーの大盤振る舞い" }
       : dominated ? { label: "制圧ボーナス", note: `相手のHPを上回って決着！ 光貨+${Math.round(dominateBonus * itemMods(run).coinMul)}・レア度UP` } : null,
     onPick: (card) => {
-      if (card) { rlLog("buff", { floor: run.floor, biome: biomeOf(run)?.id, card: card.id, rarity: card.rarity, kind: card.effect?.kind, jackpot: yakuman }); applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
+      // 計測（P9）：提示3枚(offered)と選択(picked)を必ず記録＝offlineで「カード別pick率」を出せる。
+      // 提示時に未取得カードを把握 → 選ばれた率を見て「居場所のないカード(pick率が極端に低い)」を炙る。
+      rlLog("buff", {
+        floor: run.floor, biome: biomeOf(run)?.id,
+        offered: cards.map((c) => c.id), picked: card?.id ?? null, skipped: !card,
+        card: card?.id ?? null, rarity: card?.rarity ?? null, kind: card?.effect?.kind ?? null,
+        cluster: card ? clusterOf(card) : null, jackpot: yakuman,
+      });
+      if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
       enforceGrantCap(run, () => {
         // 追撃の打診（残あり）。なければ前進＝進路選択へ。
         if ((rogueliteState.pursueRemaining || 0) > 0) {
@@ -2489,7 +2509,8 @@ function onRogueliteBattleEnd(result) {
 // 引き継ぎ枠ぶんを選ばせて次ランへ持ち越す（ローグライク・累積しない）。
 // 到達階層＝フロア番号：全滅は死んだ階(run.floor)、撤退は1つ手前(まだ入っていない次の階の手前)。
 async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}) {
-  rlLog("run_end", { depth: run.floor, result: wiped ? "wiped" : (retreated ? "retreat" : "end"), cleared: run.cleared, ...rlBuffSnap(run) });
+  // 計測（P9）：終了時に最終ビルド全カードを記録＝offlineで「勝利ビルド出現率」(到達深度別にどのカード/流派が残るか)を出せる。
+  rlLog("run_end", { depth: run.floor, result: wiped ? "wiped" : (retreated ? "retreat" : "end"), cleared: run.cleared, cardIds: [...(run.cards || [])], ...rlBuffSnap(run) });
   flushRlLog(); // ラン終端でSupabaseへ送信（取りこぼし低減）
   clearSavedRogueliteRun(); // 撤退/全滅でラン終了＝一時セーブを削除（再開は出さない）
   // 先頭キャラの別れ際の一言（rogueliteState を消す前に解決）。撤退＝引く判断への“返し”。
@@ -5316,6 +5337,14 @@ function rlApplyDynamicBuffs(run, r, base) {
     if (m.revengeDeal && rogueliteState.allyHurtLastHand) dealMul *= 1 + m.revengeDeal;
     if (m.riichiDeal && game.players[r.winner]?.riichi) dealMul *= 1 + m.riichiDeal;
     if (m.lowHpPower) dealMul *= 1 + m.lowHpPower * Math.max(0, 1 - (pb.hp[r.winner] || 0) / maxOf(r.winner));
+    // 流派シナジー（提案A）：和了の質に応じて各流派のしきい値ボーナスが与ダメに乗る。
+    //   染め＝染め手(混一/清一)／速攻＝ツモ和了／打点＝満貫以上。複数該当なら掛け合わせ（混色のご褒美）。
+    const flushWin = !!r.result?.yaku?.some((y) => y.name === "清一色" || y.name === "混一色");
+    const tsumoWin = !!r.tsumo;
+    const score = r.result?.total ?? r.result?.score ?? 0;
+    // 満貫以上＝打点流派の発火。score(支払い合計)が主。翻数は score.js の totalHan（han という別名は無い）。
+    const bigWin = !!r.result && (r.result.isYakuman || (r.result.totalHan || 0) >= 5 || score >= 8000);
+    dealMul *= clusterDealMul(run, { flushWin, tsumoWin, bigWin, anyWin: true }); // 博打=anyWin（味方和了なら常に）
   }
   if (m.lowHpPower) {
     const minHf = Math.min(...roles.map((ro, i) => (ro === "ally" ? (pb.hp[i] || 0) / maxOf(i) : 1)));
@@ -5392,7 +5421,7 @@ function showPairBattleDamageFx(r, onDone) {
     rlLog("hand", {
       floor: rogueliteState.run.floor, biome: biomeOf(rogueliteState.run)?.id,
       winner: r.winner == null ? "draw" : (winnerIsAlly ? "ally" : "enemy"), tsumo: !!r.tsumo,
-      yakuman: !!r.result?.isYakuman, han: r.result?.han ?? null, score: r.result?.total ?? r.result?.score ?? null,
+      yakuman: !!r.result?.isYakuman, han: r.result?.totalHan ?? null, score: r.result?.total ?? r.result?.score ?? null,
       dealt: enemyDmg, taken: allyTaken,
       hpSelf: pairBattleData.hp[0], hpAlly: pairBattleData.hp[2],
       hpAllyTotal: (pairBattleData.hp[0] || 0) + (pairBattleData.hp[2] || 0),

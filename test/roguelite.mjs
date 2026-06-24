@@ -3,9 +3,9 @@
 import assert from "node:assert";
 import {
   ROGUELITE_CARD_MASTER, RARITY_WEIGHTS, RARITY_META, cardById, drawCards, isGrantCard,
-  cardCategory, CARD_CATEGORY,
+  cardCategory, CARD_CATEGORY, CLUSTER_SYNERGY, CLUSTER_META, clusterOf,
 } from "../src/data/rogueliteCardMaster.js";
-import { applyEffect, applyCard, freshMods } from "../src/roguelite/cardEffects.js";
+import { applyEffect, applyCard, freshMods, clusterDealMul, clusterProgress, clusterTakeCapFrac, clusterTakeRaiseFrac, clusterPickPreview, recomputeClusterCount } from "../src/roguelite/cardEffects.js";
 import {
   newRun, allyScaledHp, floorEnemyHp, handsForType, isBossFloor,
   enemyUnitForFloor, rogueliteDamageDeltas, explainRogueliteDamage, lethalCapFrac, hanTierMul, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, serializeRun, deserializeRun, DAMAGE_SCALE,
@@ -656,6 +656,230 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   // ノーテン罰符の想定計算（main.js 側のUI処理と同じ式）：最大HP×20%、カリュブディスで×3。
   const dmg20 = Math.round(1000 * 0.20), dmg60 = Math.round(1000 * 0.20 * 3);
   eq(dmg20, 200, "ノーテン罰符 20%=200"); eq(dmg60, 600, "カリュブディス3倍=600");
+}
+
+// ── 提案A：流派（クラスター）しきい値シナジー（スライス1＝染め么九流） ──────────────
+{
+  const party = CHARACTERS.slice(0, 3).map((c) => ({ id: c.id, hp: 1000, hpMax: 1000, baseHp: 1000 }));
+
+  // マスタ整合：CLUSTER_META と CLUSTER_SYNERGY のキーが一致／flush が定義済み。
+  ok(CLUSTER_META.flush && CLUSTER_SYNERGY.flush, "flush 流派が CLUSTER_META/SYNERGY に存在");
+  ok(Object.keys(CLUSTER_SYNERGY).every((k) => CLUSTER_META[k]), "全シナジーに表示メタがある");
+  // 染め札のタグ整合（rootou＝核／flush-omote・flush-tetsu＝スケーラ）。
+  eq(clusterOf(cardById("grant-rootou")), "flush", "老頭の構え＝flush 核");
+  eq(clusterOf(cardById("flush-omote")), "flush", "一色への傾倒＝flush");
+  eq(clusterOf(cardById("flush-tetsu")), "flush", "孤高の一色＝flush");
+  eq(clusterOf(cardById("heal-small")), null, "無所属カードは cluster=null");
+
+  // 集計：applyCard で clusterCount が積まれる。
+  const run = newRun(party, "cluster-flush");
+  eq(run.mods.clusterCount.flush || 0, 0, "初期 flush=0");
+  applyCard(run, cardById("grant-rootou"));      // flush 1
+  applyCard(run, cardById("flush-omote"));        // flush 2
+  eq(run.mods.clusterCount.flush, 2, "染め札2枚で flush=2");
+
+  // しきい値未達（2枚）＝染め手でもボーナスなし。
+  eq(clusterDealMul(run, { flushWin: true }), 1, "2枚＝開眼前は与ダメ倍率1");
+  // 非染め手＝しきい値到達でも発火しない。
+  applyCard(run, cardById("flush-tetsu"));        // flush 3（開眼）
+  eq(run.mods.clusterCount.flush, 3, "染め札3枚で flush=3");
+  eq(clusterDealMul(run, { flushWin: false }), 1, "染め手でない局はシナジー不発");
+  // 開眼（3枚）＋染め手＝+50%。
+  eq(Math.round(clusterDealMul(run, { flushWin: true }) * 100), 150, "3枚＋染め手＝×1.5（開眼+50%）");
+
+  // 極み（5枚）＝最大段 +110%（累積しない＝段で跳ねる）。
+  applyCard(run, cardById("flush-omote")); applyCard(run, cardById("flush-omote")); // flush 5
+  eq(run.mods.clusterCount.flush, 5, "染め札5枚で flush=5");
+  eq(Math.round(clusterDealMul(run, { flushWin: true }) * 100), 210, "5枚＋染め手＝×2.1（極み+110%・段は累積しない）");
+
+  // legible：進捗（現在枚数・次のしきい値・開眼済み段数）。
+  const prog = clusterProgress(run).find((p) => p.cluster === "flush");
+  ok(prog && prog.count === 5 && prog.reached === 2 && prog.nextAt === null, "進捗＝5枚/2段開眼/次なし");
+  const run2 = newRun(party, "cluster-prog2"); applyCard(run2, cardById("grant-rootou"));
+  const prog2 = clusterProgress(run2).find((p) => p.cluster === "flush");
+  ok(prog2 && prog2.count === 1 && prog2.nextAt === 3, "1枚時の次しきい値は3");
+
+  // 後方互換：clusterCount を持たない古いセーブでも resolver が落ちない。
+  eq(clusterDealMul({ mods: {} }, { flushWin: true }), 1, "clusterCount 無しでも安全（後方互換）");
+
+  // シリアライズ往復で clusterCount が保たれる。
+  const round = deserializeRun(serializeRun(run), (id) => party.find((p) => p.id === id) || { id, hp: 1000, hpMax: 1000, baseHp: 1000 });
+  eq(round.mods.clusterCount.flush, 5, "シリアライズ往復で flush=5 が保持");
+}
+
+// ── 提案A スライス2：守備耐久流（guard）＝被ダメ上限を締める分散低減（P3） ──────────
+{
+  const party = CHARACTERS.slice(0, 3).map((c) => ({ id: c.id, hp: 1000, hpMax: 1000, baseHp: 1000 }));
+
+  // マスタ整合：guard 流派とタグ。
+  ok(CLUSTER_META.guard && CLUSTER_SYNERGY.guard?.takeCap, "guard 流派＝takeCap シナジーが存在");
+  eq(clusterOf(cardById("grant-danger-sense")), "guard", "危険感知＝guard 核");
+  eq(clusterOf(cardById("take-down-common")), "guard", "薄い守り＝guard");
+  eq(clusterOf(cardById("take-down-rare")), "guard", "堅い構え＝guard");
+  eq(clusterOf(cardById("ally-tsumo-ward")), "guard", "庇いの守り＝guard");
+  eq(clusterOf(cardById("fortress")), "guard", "不動の城壁＝guard");
+
+  // takeCap 解決：未達=null、3枚=0.30、5枚=0.20（最も低い達成段）。
+  const run = newRun(party, "cluster-guard");
+  eq(clusterTakeCapFrac(run), null, "守備0枚＝既定上限（null）");
+  applyCard(run, cardById("take-down-common")); applyCard(run, cardById("take-down-common")); // 2
+  eq(clusterTakeCapFrac(run), null, "守備2枚＝まだ締まらない（null）");
+  applyCard(run, cardById("grant-danger-sense")); // 3（核）
+  eq(run.mods.clusterCount.guard, 3, "守備3枚");
+  eq(clusterTakeCapFrac(run), 0.30, "守備3枚＝被ダメ上限0.30（鉄壁）");
+  applyCard(run, cardById("take-down-common")); applyCard(run, cardById("ally-tsumo-ward")); // 5
+  eq(run.mods.clusterCount.guard, 5, "守備5枚");
+  eq(clusterTakeCapFrac(run), 0.20, "守備5枚＝被ダメ上限0.20（不抜・最も低い段）");
+
+  // 被ダメ層への反映：守備上限が既定(深度由来)より固いとき、実際に被ダメがクランプされる。
+  // 敵ロン(席1が勝者)で席0の味方が大きく被弾するケースを、守備なし vs 守備5枚で比較。
+  const roles = ["ally", "enemy", "ally", "enemy"];
+  const hpMax = [1000, 1000, 1000, 1000];
+  const bigLoss = [-32000, 32000, 0, 0]; // 役満級の素点（HP変換前）
+  const bare = newRun(party.map((p) => ({ ...p })), "guard-dmg-bare");
+  const dmgBare = rogueliteDamageDeltas(bare, { deltas: bigLoss.slice(), roles, winnerSeat: 1, hpMax, battleMods: {} });
+  const fort = newRun(party.map((p) => ({ ...p })), "guard-dmg-fort");
+  // 守備6枚（≧5）＝被ダメ上限0.20。applyCard は集計のみ（maxStacks は draft 除外で別管理）。
+  for (let k = 0; k < 5; k++) applyCard(fort, cardById("take-down-common"));
+  applyCard(fort, cardById("grant-danger-sense"));
+  eq(clusterTakeCapFrac(fort), 0.20, "守備6枚＝上限0.20");
+  const dmgFort = rogueliteDamageDeltas(fort, { deltas: bigLoss.slice(), roles, winnerSeat: 1, hpMax, battleMods: {} });
+  ok(Math.abs(dmgFort[0]) < Math.abs(dmgBare[0]), "守備流は被ダメが既定より固く締まる");
+  ok(Math.abs(dmgFort[0]) <= Math.round(1000 * 0.20) + 1, "守備5枚以上で席0被ダメは最大HPの20%以下");
+
+  // legible：guard の進捗チップは「鉄壁」呼称（攻めの開眼と別）。
+  const prog = clusterProgress(run).find((p) => p.cluster === "guard");
+  ok(prog && prog.count === 5 && prog.reached === 2 && prog.nextAt === null, "guard 進捗＝5枚/2段/次なし");
+  eq(CLUSTER_META.guard.awaken, "鉄壁", "guard の到達呼称は鉄壁");
+
+  // 攻め(flush)と守り(guard)が独立して同居できる。
+  const mix = newRun(party, "cluster-mix");
+  applyCard(mix, cardById("grant-rootou")); applyCard(mix, cardById("flush-omote")); applyCard(mix, cardById("flush-tetsu")); // flush3
+  applyCard(mix, cardById("take-down-common")); applyCard(mix, cardById("take-down-rare")); applyCard(mix, cardById("brace-common")); // guard3
+  eq(Math.round(clusterDealMul(mix, { flushWin: true }) * 100), 150, "混色：染め3で×1.5");
+  eq(clusterTakeCapFrac(mix), 0.30, "混色：守備3で上限0.30");
+}
+
+// ── 提案A スライス3：速攻(tempo)・打点(value)流派＋発火条件の差別化 ─────────────────
+{
+  const party = CHARACTERS.slice(0, 3).map((c) => ({ id: c.id, hp: 1000, hpMax: 1000, baseHp: 1000 }));
+
+  // 4流派が出揃い、各 deal 流派は別トリガーで差別化されている。
+  ok(CLUSTER_META.tempo && CLUSTER_META.value, "tempo/value 流派メタが存在");
+  eq(CLUSTER_SYNERGY.tempo.deal.trigger, "tsumoWin", "速攻＝ツモ和了で発火");
+  eq(CLUSTER_SYNERGY.value.deal.trigger, "bigWin", "打点＝満貫以上で発火");
+  eq(CLUSTER_SYNERGY.flush.deal.trigger, "flushWin", "染め＝染め手で発火");
+  const dealSyns = Object.values(CLUSTER_SYNERGY).filter((s) => s.deal);
+  const triggers = new Set(dealSyns.map((s) => s.deal.trigger));
+  eq(triggers.size, dealSyns.length, "deal系流派はすべて別トリガー（差別化・重複なし）");
+
+  // タグ整合（核＋スケーラ）。
+  eq(clusterOf(cardById("grant-lucky-draw")), "tempo", "幸運のツモ＝tempo核");
+  eq(clusterOf(cardById("ride-the-wave")), "tempo", "波に乗る＝tempo");
+  eq(clusterOf(cardById("tempo-sen")), "tempo", "先手の気構え＝tempo");
+  eq(clusterOf(cardById("grant-dora-pull")), "value", "ドラ手繰り＝value核");
+  eq(clusterOf(cardById("backwater-riichi")), "value", "背水のリーチ＝value");
+  eq(clusterOf(cardById("deal-up-legend")), "value", "天衣無縫＝value（warping札を流派へ再配置）");
+  eq(clusterOf(cardById("value-tame")), "value", "打点への布石＝value");
+
+  // 速攻：ツモ和了でのみ跳ねる（ロン和了では不発）。
+  const t = newRun(party, "cluster-tempo");
+  applyCard(t, cardById("tempo-sen")); applyCard(t, cardById("tempo-sen")); applyCard(t, cardById("tempo-sen")); // tempo 3
+  eq(clusterDealMul(t, { tsumoWin: true }), 1.4, "速攻3＋ツモ＝×1.4（加速）");
+  eq(clusterDealMul(t, { tsumoWin: false }), 1, "速攻3＋ロン＝不発");
+
+  // 打点：満貫以上でのみ跳ねる。
+  const v = newRun(party, "cluster-value");
+  applyCard(v, cardById("grant-dora-pull")); applyCard(v, cardById("backwater-riichi")); applyCard(v, cardById("value-tame")); // value 3
+  eq(clusterDealMul(v, { bigWin: true }), 1.5, "打点3＋満貫＝×1.5（会心）");
+  eq(clusterDealMul(v, { bigWin: false }), 1, "打点3＋安手＝不発");
+
+  // 複数トリガー該当（ツモの満貫染め手）は掛け合わさる＝混色コミットのご褒美。
+  const all = newRun(party, "cluster-all");
+  applyCard(all, cardById("flush-omote")); applyCard(all, cardById("flush-omote")); applyCard(all, cardById("flush-omote")); // flush 3
+  applyCard(all, cardById("tempo-sen")); applyCard(all, cardById("tempo-sen")); applyCard(all, cardById("tempo-sen")); // tempo 3
+  applyCard(all, cardById("value-tame")); applyCard(all, cardById("value-tame")); applyCard(all, cardById("value-tame")); // value 3
+  const triple = clusterDealMul(all, { flushWin: true, tsumoWin: true, bigWin: true });
+  eq(Math.round(triple * 100), Math.round(1.5 * 1.4 * 1.5 * 100), "ツモ満貫染め手＝3流派が掛かる(×1.5×1.4×1.5)");
+  // 1つだけ該当なら1流派分のみ。
+  eq(clusterDealMul(all, { flushWin: true, tsumoWin: false, bigWin: false }), 1.5, "染め手のみ＝染め分だけ");
+}
+
+// ── 提案A スライス5：ドラフト時シナジー予告（clusterPickPreview） ──────────────────
+{
+  const party = CHARACTERS.slice(0, 3).map((c) => ({ id: c.id, hp: 1000, hpMax: 1000, baseHp: 1000 }));
+  const run = newRun(party, "preview");
+  // 無所属カードは null。
+  eq(clusterPickPreview(run, cardById("heal-small")), null, "無所属カードは予告なし");
+  // 染め0枚→1枚目を取る：crosses=false、開眼(at3)まであと2。
+  let pv = clusterPickPreview(run, cardById("grant-rootou"));
+  ok(pv && pv.from === 0 && pv.to === 1 && !pv.crosses && pv.nextAt === 3, "染め1枚目＝開眼まであと2(nextAt3)");
+  // 染め2枚所持→3枚目で「取ると開眼」(crosses=true)。
+  applyCard(run, cardById("flush-omote")); applyCard(run, cardById("flush-omote"));
+  pv = clusterPickPreview(run, cardById("grant-rootou"));
+  ok(pv && pv.from === 2 && pv.to === 3 && pv.crosses, "染め3枚目を取ると開眼(crosses)");
+  eq(pv.awaken, "開眼", "染めの呼称は開眼");
+  // 守備の呼称は鉄壁、取ると到達で crosses。
+  const g = newRun(party, "preview-g");
+  applyCard(g, cardById("take-down-common")); applyCard(g, cardById("take-down-common"));
+  const pg = clusterPickPreview(g, cardById("grant-danger-sense"));
+  ok(pg && pg.crosses && pg.awaken === "鉄壁", "守備3枚目を取ると鉄壁(crosses)");
+}
+
+// ── QA反映：必殺技忘却での clusterCount desync 防止（recomputeClusterCount） ──────────
+{
+  const party = CHARACTERS.slice(0, 3).map((c) => ({ id: c.id, hp: 1000, hpMax: 1000, baseHp: 1000 }));
+  const run = newRun(party, "forget-cluster");
+  applyCard(run, cardById("grant-rootou"));   // flush 1（付与札）
+  applyCard(run, cardById("flush-omote"));     // flush 2
+  applyCard(run, cardById("flush-omote"));     // flush 3（開眼）
+  eq(run.mods.clusterCount.flush, 3, "染め3（うち付与札1）");
+  eq(clusterTakeCapFrac({ mods: {} }), null, "空modsでtakeCap安全(再掲)");
+  // 付与札(grant-rootou)を手放した想定：run.cards から除いて再集計＝オーバーカウントしない。
+  run.cards.splice(run.cards.indexOf("grant-rootou"), 1);
+  recomputeClusterCount(run);
+  eq(run.mods.clusterCount.flush, 2, "付与札を忘却→染め2へ正しく減る（desyncしない）");
+  eq(clusterDealMul(run, { flushWin: true }), 1, "忘却後は開眼未達＝シナジー不発（オーバーカウント防止）");
+  // 再集計は run.cards が単一情報源：全カード除去で0に。
+  run.cards.length = 0; recomputeClusterCount(run);
+  eq(run.mods.clusterCount.flush || 0, 0, "全除去で0");
+}
+
+// ── 博打(gamble)流派＝守備の真逆・高分散（5本目） ───────────────────────────────
+{
+  const party = CHARACTERS.slice(0, 3).map((c) => ({ id: c.id, hp: 1000, hpMax: 1000, baseHp: 1000 }));
+  ok(CLUSTER_META.gamble && CLUSTER_SYNERGY.gamble?.deal && CLUSTER_SYNERGY.gamble?.takeRaise, "博打＝deal(anyWin)＋takeRaise の両刃シナジー");
+  eq(CLUSTER_SYNERGY.gamble.deal.trigger, "anyWin", "博打＝どんな和了でも発火(anyWin)");
+  eq(clusterOf(cardById("gamble-ittetsu")), "gamble", "乾坤一擲＝gamble");
+  eq(clusterOf(cardById("last-stand")), "gamble", "火事場＝gamble(再配置)");
+  eq(clusterOf(cardById("gamble-odds")), "gamble", "丁か半か＝gamble");
+
+  const g = newRun(party, "cluster-gamble");
+  applyCard(g, cardById("gamble-ittetsu")); applyCard(g, cardById("gamble-ittetsu")); applyCard(g, cardById("gamble-ittetsu")); // gamble 3
+  eq(g.mods.clusterCount.gamble, 3, "博打3");
+  // anyWin＝どんな和了でも +35%（ロンでもツモでも安手でも）。
+  eq(clusterDealMul(g, { anyWin: true }), 1.35, "博打3＝どんな和了でも×1.35(総取り)");
+  eq(clusterDealMul(g, { anyWin: false }), 1, "和了でなければ不発");
+  // takeRaise＝被ダメ上限を上げる（守備の真逆）。0枚=0、3枚=+0.20、5枚=+0.45。
+  eq(clusterTakeRaiseFrac(newRun(party, "g0")), 0, "博打0＝上限上げなし");
+  eq(clusterTakeRaiseFrac(g), 0.20, "博打3＝被ダメ上限+0.20(大振り)");
+  applyCard(g, cardById("gamble-odds")); applyCard(g, cardById("gamble-odds")); // gamble 5
+  eq(clusterTakeRaiseFrac(g), 0.45, "博打5＝被ダメ上限+0.45");
+
+  // 被ダメ層：博打は守備と逆＝同じ大被弾で被ダメ上限が緩み「より痛い」。
+  const roles = ["ally", "enemy", "ally", "enemy"]; const hpMax = [1000, 1000, 1000, 1000];
+  const big = [-32000, 32000, 0, 0];
+  const bare = newRun(party.map((p) => ({ ...p })), "g-bare");
+  const dmgBare = rogueliteDamageDeltas(bare, { deltas: big.slice(), roles, winnerSeat: 1, hpMax, battleMods: {} });
+  const gam = newRun(party.map((p) => ({ ...p })), "g-raise");
+  for (let k = 0; k < 5; k++) applyCard(gam, cardById("gamble-ittetsu"));
+  const dmgGam = rogueliteDamageDeltas(gam, { deltas: big.slice(), roles, winnerSeat: 1, hpMax, battleMods: {} });
+  ok(Math.abs(dmgGam[0]) >= Math.abs(dmgBare[0]), "博打は被ダメ上限が緩み、無策以上に痛い（高分散）");
+
+  // legible：呼称は総取り。
+  eq(CLUSTER_META.gamble.awaken, "総取り", "博打の到達呼称は総取り");
+  const prog = clusterProgress(g).find((p) => p.cluster === "gamble");
+  ok(prog && prog.count === 5 && prog.reached === 2, "博打進捗＝5枚/2段");
 }
 
 console.log(`roguelite.mjs: ${n} checks passed`);
