@@ -335,7 +335,11 @@ export class DoraPullAbility extends Ability {
   }
   // 既にこの局で使っていれば（回数が残る限り）継続OK。未使用の局では、
   // まだ使用局数が上限未満のときだけ新規に発動できる。
-  activationCondition(_api) {
+  // ただし「この発動が四開槓の流局を引き起こす」場合は塞ぐ。即時効果ゆえ自分の手番待ち中に
+  // めくり＝流局させてしまうと、ポンプが打牌待ちのまま局が終わって操作不能になるため
+  // （すでに槓ドラ表示が出揃い、他席もめくりに関与している＝5枚目で四開槓、という状況）。
+  activationCondition(api) {
+    if (api?.state?.wouldSuukaikanAbortFrom?.(api.me.index)) return false;
     return this._usedThisHand || this._handsUsed < DORA_PULL_MAX_HANDS;
   }
   // 即時効果: 新ドラ表示牌を1枚めくる（リンシャンは引かない）。めくりの主体（自分の

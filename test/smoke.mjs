@@ -73,6 +73,21 @@ const M = (r) => makeKind("m", r), P = (r) => makeKind("p", r), S = (r) => makeK
   assert(gMulti.lastResult && gMulti.lastResult.abort === "suukaikan", "suukaikan marked in lastResult");
   assert(gMulti.phase === Phase.HAND_OVER, "suukaikan ends the hand");
   console.log("  四開槓: single-source no-abort / multi-source abort OK");
+
+  // (3) ドラ寄せ guard: 「自分の発動が5枚目＝四開槓」になる状況では発動を弾く。
+  // 即時効果ゆえ手番待ち中にめくり＝流局させるとポンプが打牌待ちのままフリーズするため。
+  const gGuard = new Game(seated.map((s) => ({ ...s, abilities: instantiateAbilities(s.character) })), -1, 3);
+  gGuard.startHand();
+  gGuard.revealKanDoraFrom(1); // 他席めくり（2枚目）
+  gGuard.revealKanDoraFrom(1); // 3枚目
+  gGuard.revealKanDoraFrom(0); // 自席（ドラニエル）めくり（4枚目）
+  assert(gGuard.wall.doraRevealed === 4 && gGuard.phase !== Phase.HAND_OVER, "setup: 4 indicators, hand still live");
+  assert(gGuard.wouldSuukaikanAbortFrom(0) === true, "自席の次のめくりは四開槓を誘発する");
+  const dp = (gGuard.players[0].abilities || []).find((a) => a.id === "dora-pull");
+  assert(dp, "ドラニエルは dora-pull を持つ");
+  assert(dp.activationCondition(gGuard.abilities.apiFor(gGuard.players[0])) === false,
+    "四開槓を自爆で誘発する状況ではドラ寄せ発動不可（フリーズ防止）");
+  console.log("  ドラ寄せ guard: 自爆四開槓を発動前に弾く OK");
 }
 
 // ---- integration: autoplay ----

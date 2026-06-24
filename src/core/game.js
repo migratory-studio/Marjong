@@ -691,6 +691,18 @@ export class Game {
     return false;
   }
 
+  // `sourceIndex` がいま槓ドラを1枚めくったら四開槓で流局するか？を事前判定する。
+  // 即時効果型の能力（ドラ寄せ）が「自分の発動で局を流す」のを発動前に弾くために使う。
+  // ※即時効果は人間の手番待ち（AWAIT_DISCARD）中に走るため、めくり＝流局させてしまうと
+  //   ポンプが打牌待ちのまま局が終わり操作不能（フリーズ）になる。それを起こさせない。
+  wouldSuukaikanAbortFrom(sourceIndex) {
+    const nextRevealed = Math.min(5, this.wall.doraRevealed + 1);
+    const nextSize = this._kanDoraSources.has(sourceIndex)
+      ? this._kanDoraSources.size
+      : this._kanDoraSources.size + 1;
+    return nextRevealed >= 5 && nextSize >= 2;
+  }
+
   // 四開槓による途中流局（abortive draw）。和了者なし・本場 +1・供託リーチ棒は卓に残す。
   // 聴牌料の授受は無い純粋なアボート（荒牌平局の精算経路は流用しない）。
   _abortSuukaikan() {
