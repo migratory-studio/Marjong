@@ -429,7 +429,63 @@ const CHUN_CHAN_BATTLE = [
   Q("complete", {}, "完走っ! おつかれっ。いい巡りだったねっ、さ、帰ろっ。"),
   Q("retreat", {}, "引くのも、速さのうちっ。……うん、いい判断だよっ。"),
 ];
-const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE, bibi: BIBI_BATTLE, kakeha_ruina: RUINA_BATTLE, kuidoshi: KUIDOSHI_BATTLE, yao_chu: YAO_CHU_BATTLE, chun_chan: CHUN_CHAN_BATTLE };
+// ルクス・ゼロの見守り＝無機質な精密機械（クール系）。戦果を効率・誤差で評価。絆が深いと一瞬だけ平坦が緩む。
+// design/yobinin.json 準拠。
+const YOBININ_BATTLE = [
+  Q("matchStart", {}, "始めろ。……私が、すべて見ている。"),
+  Q("matchStart", {}, "最短経路を引け。無駄は、省け。"),
+  Q("matchStart", { condTier: "vgood" }, "今日は、調子がいいな。……数字に、出ている。"),
+  Q("bigWin", {}, "満貫。……効率的だ。悪くない。"),
+  Q("bigWin", {}, "捕捉、確保。計算どおりの出力だ。"),
+  Q("bigWin", { bondMin: 3 }, "……いい手だ。お前の打牌、誤差が減ってきている。"),
+  Q("bigLoss", {}, "誤差が出た。……再計算しろ。点棒は、取り返せる。"),
+  Q("bigLoss", {}, "想定内の被弾だ。崩れるな。"),
+  Q("bigLoss", { bondMin: 4 }, "……今のは、私でも読めなかった。お前のせいじゃない。顔を上げろ。"),
+  Q("pinch", {}, "まだ、確率はゼロじゃない。……落ち着け。経路は、残っている。"),
+  Q("pinch", { bondMin: 4 }, "……減っていく点棒を見るのは、好かない。だが、お前なら詰め切れる。データが、そう言っている。"),
+  Q("tobi", {}, "——終了。よく打った。今日の数値は、私が記録しておく。次に活かせ。"),
+  Q("bustWin", {}, "飛ばしたか。……効率的な決着だ。"),
+  Q("abilityUse", {}, "切り札。……投入の判断、正しい。"),
+  Q("abilityUse", {}, "そこだ。最適なタイミングだった。"),
+  Q("readWin", {}, "読み勝ち。……相手の経路を、捕捉していたな。"),
+  Q("readWin", { bondMin: 3 }, "……いい読みだ。お前の計算、私に近づいている。"),
+  Q("riichiSelf", {}, "リーチ。待ちは、確保した。あとは、ツモだ。"),
+  Q("riichiSelf", {}, "宣言したな。……期待値は、正だ。いける。"),
+  Q("riichiOpp", {}, "相手、リーチ。……慌てるな。安牌を、計算しろ。"),
+  Q("riichiOpp", { bondMin: 3 }, "……来たな。大丈夫だ、私が一緒に読む。落ち着け。"),
+  Q("rareGuest", {}, "……格上だ。いいデータになる。捕捉しろ。"),
+  Q("complete", {}, "完走。誤差なく、帰投した。……お疲れ。"),
+  Q("retreat", {}, "撤退。期待値が負なら、引くのが正解だ。……賢明な判断だ。"),
+];
+// ドラニエルの見守り＝無邪気な自称天使（のじゃ）。派手な賭けを煽り、飛んでもけろっと。煽りは悪気ゼロの天然。
+// design/doranie.json 準拠。
+const DORANIE_BATTLE = [
+  Q("matchStart", {}, "さあ弟子よ、張れ張れ! わらわが見ておるぞ!"),
+  Q("matchStart", {}, "ぬるい打ちは許さんぞ! 派手にいかんか!"),
+  Q("matchStart", { condTier: "vgood" }, "ほう、今日はいい目をしておるのう! 大物手、狙ってみい!"),
+  Q("bigWin", {}, "わはは、でかいのじゃ! さすがわらわの弟子よ!"),
+  Q("bigWin", {}, "満貫か! ……ぬるい、もっとデカく張らんか! ……まあ、上出来じゃ!"),
+  Q("bigWin", { bondMin: 3 }, "……今のは、見事じゃった。わらわ、ちと感心したのじゃ。"),
+  Q("bigLoss", {}, "うぐっ、持っていかれたか! ……まあ、賭けじゃ、気にするな!"),
+  Q("bigLoss", {}, "飛ぶときは飛ぶ、それが博徒じゃ! 顔を上げい!"),
+  Q("bigLoss", { bondMin: 4 }, "……痛かったのう。わらわも紙HPじゃから、その気持ち、よう分かるぞ。次じゃ次!"),
+  Q("pinch", {}, "おっと、危ないのじゃ! ……だが博徒の見せ場は、ここからじゃぞ!"),
+  Q("pinch", { bondMin: 4 }, "……わらわの前で、沈むでないぞ。一発、大きいのを狙え。お前ならできる。"),
+  Q("tobi", {}, "——飛んでしもうたか! わはは、派手じゃったのう! ……よし、帰って茶じゃ。次こそ大物手ぞ。"),
+  Q("bustWin", {}, "飛ばしたのじゃ! わはは、容赦ないのう、わらわの弟子は!"),
+  Q("abilityUse", {}, "おお、切り札じゃ! そこで切るのが、博徒よ!"),
+  Q("abilityUse", {}, "いい度胸じゃ! 賭けは、そうでなくてはのう!"),
+  Q("readWin", {}, "読み勝ちか! ……ふむ、わらわの天界仕込みが効いておるな?"),
+  Q("readWin", { bondMin: 3 }, "……ようも見抜いたのう。お前、筋がよいぞ。"),
+  Q("riichiSelf", {}, "リーチじゃ! さあ、一発ツモるのじゃ!"),
+  Q("riichiSelf", {}, "乗ったのう! 大物手、期待しておるぞ!"),
+  Q("riichiOpp", {}, "むっ、相手リーチか。……まあ、構わん、張り返せ!"),
+  Q("riichiOpp", { bondMin: 3 }, "……来たのう。だいじょぶじゃ、わらわがついておる。慌てるな。"),
+  Q("rareGuest", {}, "ほう、強そうなのが来たぞ! ……わくわくするのう!"),
+  Q("complete", {}, "完走じゃ! よう頑張った! さ、帰って大物手の話をしようぞ!"),
+  Q("retreat", {}, "引くか。……ふむ、賢いのう。たまには、それも博徒の腕じゃ。"),
+];
+const EXPLICIT_BATTLE = { shiyue: SHIYUE_BATTLE, bibi: BIBI_BATTLE, kakeha_ruina: RUINA_BATTLE, kuidoshi: KUIDOSHI_BATTLE, yao_chu: YAO_CHU_BATTLE, chun_chan: CHUN_CHAN_BATTLE, yobinin: YOBININ_BATTLE, doranie: DORANIE_BATTLE };
 
 // ── 大会敗北の夜の2択（leagueLossTalk）──
 // 大会リザルト（優勝できなかった夜）に師匠が問いかけ、プレイヤーが返せる（双方向の見せ場）。
