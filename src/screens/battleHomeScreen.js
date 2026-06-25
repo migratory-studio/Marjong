@@ -86,8 +86,9 @@ function esc(s) {
 //   ここに1行足す/数値を変えるだけで各キャラの収まりを調整できる（立ち絵を差し替えても安全）。
 const HOME_PORTRAIT_TUNE = {
   bibi: { x: "12%" }, // 人物が左に寄っているため右へ寄せる
-  chun_chan: { x: "-27%", y: "2%", zoom: 1.3 }, // 全身・前傾ポーズで顔が右上＝左へ寄せて顔を中央に＋ズーム
+  chun_chan: { x: "-18%", zoom: 1.1 },           // 全身・前傾ポーズで顔が右上＝左へ寄せて顔を中央に。寄りすぎず上半身を見せる
   yao_chu: { x: "18%", zoom: 1.12 },             // 全身立ち・顔が左寄り＝右へ寄せてバストアップ
+  doranie: { zoom: 0.82 },                       // 全身立ち＝引いて頭光輪〜胸元のバストアップに収める（顔は上中央）
 };
 function applyPortraitTune(img, id) {
   const t = HOME_PORTRAIT_TUNE[id] || {};
