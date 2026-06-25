@@ -696,6 +696,9 @@ export class Game {
   // ※即時効果は人間の手番待ち（AWAIT_DISCARD）中に走るため、めくり＝流局させてしまうと
   //   ポンプが打牌待ちのまま局が終わり操作不能（フリーズ）になる。それを起こさせない。
   wouldSuukaikanAbortFrom(sourceIndex) {
+    // 局開始前（startHand 未実行＝wall 未生成）に UI が能力状態を引きに来ることがある。
+    // 山が無ければ四開槓は起こり得ないので false（＝塞がない）で安全側に返す。
+    if (!this.wall) return false;
     const nextRevealed = Math.min(5, this.wall.doraRevealed + 1);
     const nextSize = this._kanDoraSources.has(sourceIndex)
       ? this._kanDoraSources.size
