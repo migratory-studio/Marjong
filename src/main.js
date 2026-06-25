@@ -2278,8 +2278,14 @@ function enterFloor(run, floorType) {
             grantRogueliteItem(run, item.item.id, () => {});
             return true;
           }
+          // カード購入は段越えを「取得前」に判定（②演出）。ドラフト取得と同じ経路に揃える。
+          const lvlUp = item?.type === "card" && item.card ? clusterLevelUp(run, item.card) : null;
           const ok = buyShopItem(run, item); // 戻り値 true=成立（UIが光貨/在庫を更新）
-          if (ok && item?.type === "card" && isGrantCard(item.card)) enforceGrantCap(run, () => {}); // 必殺枠超過なら忘却モーダル
+          if (ok && item?.type === "card") {
+            rogueliteSpeak("rlBuff", { buffFamily: cardFamily(item.card) }); // バフ獲得ボイス
+            if (lvlUp) showRogueliteClusterLevelUp(host, { items: [lvlUp] }); // 流派が一段強くなった演出（ショップに重ねて表示）
+            if (isGrantCard(item.card)) enforceGrantCap(run, () => {}); // 必殺枠超過なら忘却モーダル
+          }
           return ok;
         },
         onLeave: () => advanceRoguelite(run),
