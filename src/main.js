@@ -216,7 +216,7 @@ let rogueliteState = null;       // ローグライト・ラン進行中の状�
 let rogueliteHandLimit = null;   // 楼光の館：この1戦の「定められた局数」(maxHands)。null = 非ローグライト
 const ROGUELITE_RIICHI_FRAC = 0.05; // 楼光の館：リーチ宣言で最大HPの5%を消費（緊張感のあるギャンブル）
 const ROGUELITE_NOTEN_FRAC = 0.20;  // 楼光の館：荒牌平局でノーテン席が最大HPの20%ダメージ
-const ROGUELITE_HP_LOSS_PENALTY_FRAC = 0.30; // 楼光の館：1戦の合計HPで負けたら全員 最大HPの30%ダメージ（撃墜あり・救済なし）
+const ROGUELITE_HP_LOSS_PENALTY_FRAC = 0.20; // 楼光の館：1戦の合計HPで負けたら全員 最大HPのこの割合だけダメージ（撃墜あり・救済なし）。緊張感の調整レバー。
 const CHARYBDIS_NOTEN_MUL = 3;      // カリュブディス（淵の蒐集）在卓ならノーテン罰符が3倍
 // アカウント共通通貨「宝珠」：層（帯）に到達するたび段階的に獲得（深いほど多い）。用途は別途。
 const ORB_BASE = 5, ORB_STEP = 3;
@@ -2624,8 +2624,8 @@ function onRogueliteBattleEnd(result) {
     bonus: yakuman
       ? { label: "役満ご祝儀", note: "役満を決めて踏破！ オールレジェンダリーの大盤振る舞い" }
       : null,
-    // 合計HPで競り負けたら被弾を明示（次画面でHPバーが下がる理由を legible に）。
-    penalty: outHpRace ? { label: "競り負け", note: "合計HPで及ばず — パーティ全員に 最大HPの30%ダメージ" } : null,
+    // 合計HPで競り負けたら被弾を明示（次画面でHPバーが下がる理由を legible に）。割合は定数に追従。
+    penalty: outHpRace ? { label: "競り負け", note: `合計HPで及ばず — パーティ全員に 最大HPの${Math.round(ROGUELITE_HP_LOSS_PENALTY_FRAC * 100)}%ダメージ` } : null,
     onPick: (card) => {
       // 計測（P9）：提示3枚(offered)と選択(picked)を必ず記録＝offlineで「カード別pick率」を出せる。
       // 提示時に未取得カードを把握 → 選ばれた率を見て「居場所のないカード(pick率が極端に低い)」を炙る。
