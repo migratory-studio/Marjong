@@ -5260,6 +5260,45 @@ button.primary.danger:hover { color: #ffbcbc; }
 @keyframes rlDomIn { from { opacity: 0; transform: scale(.85) translateY(-6px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .rl-dominate { animation: none; } }
 
+/* 楼光の館：被弾告知帯（合計HPで競り負け＝全員に最大HPの30%ダメージ） */
+.rl-penalty { display: flex; align-items: center; justify-content: center; gap: 10px; margin: -4px 0 14px;
+  padding: 8px 16px; border-radius: 999px; background: linear-gradient(90deg, rgba(255,84,112,.08), rgba(255,84,112,.2), rgba(255,84,112,.08));
+  border: 1px solid rgba(255,84,112,.42); animation: rlDomIn .4s cubic-bezier(.2,.9,.3,1.2) both; }
+.rl-penalty-tag { font-family: var(--font-min, serif); font-weight: 700; font-size: 15px; color: #2a0d12;
+  background: linear-gradient(180deg, #ff8a9c, #ff5470); padding: 3px 12px; border-radius: 999px; letter-spacing: .06em; white-space: nowrap; }
+.rl-penalty-note { font-size: 13px; color: #ffb3bf; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .rl-penalty { animation: none; } }
+
+/* 楼光の館：合計HP敗北ペナルティの被弾カード（インゲームの .dmg-card を踏襲しつつ赤系に） */
+.rl-pen-card { border-color: rgba(255,84,112,.5) !important; }
+.rl-pen-head { color: #ff8a9c !important; }
+.rl-pen-sub { margin: 2px 0 14px; font-size: 13px; color: #d9b3ba; text-align: center; }
+
+/* 楼光の館：流派パネル（①）＝HPバー下に全5流派を行数固定で常設（未取得はグレー）。
+   増えても縦に伸びない＝進路カードに被らない。1行=1流派の固定高。 */
+.rl-clusters { display: flex; flex-direction: column; gap: 2px; margin-top: 7px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,.07); }
+.rl-clrow { display: grid; grid-template-columns: 46px auto 1fr; align-items: center; gap: 8px; height: 17px; font-size: 11px;
+  opacity: .4; color: color-mix(in srgb, var(--cl, #8fd0ff) 72%, #d8d2c4); transition: opacity .18s; }
+.rl-clrow.on { opacity: 1; }
+.rl-clrow-name { font-weight: 800; letter-spacing: .04em; white-space: nowrap; }
+.rl-clrow.lit .rl-clrow-name { color: #fff; }
+.rl-clrow-state { font-size: 10px; color: #9aa3b2; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rl-clrow-state b { color: #fff; }
+
+/* 楼光の館：流派レベルアップ演出モーダル（②）＝段を越えた瞬間に呼称＋効果を見せる */
+.rl-levelup { z-index: 6; }
+.rl-lvl-modal { width: min(560px, 88%); border-color: color-mix(in srgb, var(--cl, #8fd0ff) 55%, var(--rl-edge)) !important; }
+.rl-lvl-modal::before { background: linear-gradient(90deg, transparent, var(--cl, #8fd0ff), transparent) !important; }
+.rl-lvl-seal { display: inline-block; margin: 2px auto 8px; padding: 4px 18px; border-radius: 999px; font-family: var(--font-min, serif);
+  font-weight: 700; letter-spacing: .12em; color: #fff; background: color-mix(in srgb, var(--cl, #8fd0ff) 26%, transparent);
+  border: 1px solid color-mix(in srgb, var(--cl, #8fd0ff) 60%, transparent); box-shadow: 0 0 14px color-mix(in srgb, var(--cl, #8fd0ff) 40%, transparent); }
+.rl-lvl-name { color: color-mix(in srgb, var(--cl, #8fd0ff) 78%, #fff); }
+.rl-lvl-tiers { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 6px 0 12px; font-family: var(--font-min, serif); }
+.rl-lvl-prev { font-size: 15px; color: #8a8f9a; }
+.rl-lvl-arrow { color: var(--cl, #8fd0ff); }
+.rl-lvl-now { font-size: 21px; font-weight: 800; color: #fff; text-shadow: 0 0 12px color-mix(in srgb, var(--cl, #8fd0ff) 60%, transparent); }
+.rl-lvl-desc { font-size: 14px; line-height: 1.6; color: var(--rl-ink); margin: 0 auto 18px; max-width: 42ch; }
+
 /* 楼光の館：層(バイオーム)入場演出（frontend-design＝題材に根ざす／層色に大胆さ集中） */
 .rl-overlay.rl-biome { background: rgba(6,4,9,0.45); }
 .rl-biome-bg { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: .5; }

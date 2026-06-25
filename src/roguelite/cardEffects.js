@@ -193,7 +193,8 @@ export function clusterTakeRaiseFrac(run) {
 
 // UI/legible用：流派ごとの達成状況（現在枚数・次のしきい値・開眼済み段数）。
 // docs §4.3「【染め】3枚で開眼（あと1枚）」表示の素。攻め/守りどちらの流派も同じ形で返す。
-export function clusterProgress(run) {
+// all=true で取得0の流派も含めて全流派を返す（①流派パネルの「全枠常設・行数固定」表示用）。
+export function clusterProgress(run, { all = false } = {}) {
   const counts = run?.mods?.clusterCount || {};
   const out = [];
   for (const [cl, syn] of Object.entries(CLUSTER_SYNERGY)) {
@@ -203,9 +204,32 @@ export function clusterProgress(run) {
     const nextAt = tiers.find((at) => count < at) ?? null;
     const reached = tiers.filter((at) => count >= at).length;
     const max = tiers[tiers.length - 1] || 0;
-    if (count > 0 || reached > 0) out.push({ cluster: cl, label: CLUSTER_META[cl]?.label || cl, count, nextAt, reached, tiers, max });
+    if (all || count > 0 || reached > 0) out.push({ cluster: cl, label: CLUSTER_META[cl]?.label || cl, count, nextAt, reached, tiers, max });
   }
   return out;
+}
+
+// レベルアップ判定（②演出モーダル用）：このカードを取ると流派の段(しきい値)を新たに越えるか。
+// 越えるなら「流派〇〇が〇〇になった＋効果説明」のペイロード、越えないなら null。
+// 取得前カウントで判定するため applyCard の「前」に呼ぶこと（clusterPickPreview と同じ前提）。
+export function clusterLevelUp(run, card) {
+  const pv = clusterPickPreview(run, card);
+  if (!pv || !pv.crosses) return null; // 段の節目にちょうど到達したときだけ発火
+  const desc = synDescriptor(CLUSTER_SYNERGY[pv.cluster]);
+  const tiers = (desc?.tiers || []).slice().sort((a, b) => a.at - b.at);
+  const cur = tiers.find((t) => t.at === pv.to); // 到達した段
+  if (!cur) return null;
+  const prev = tiers.filter((t) => t.at < pv.to).pop() || null; // 直前の段（あれば「○○→●●」表示用）
+  const meta = CLUSTER_META[pv.cluster] || {};
+  return {
+    cluster: pv.cluster,
+    label: pv.label,
+    color: pv.color,
+    awaken: meta.awaken || "開眼",
+    tierName: cur.name || meta.awaken || "開眼",
+    tierDesc: cur.desc || meta.tip || "",
+    prevName: prev ? (prev.name || null) : null,
+  };
 }
 
 // run.mods の初期値（newRun から呼ぶ）。

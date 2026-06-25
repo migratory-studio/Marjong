@@ -57,7 +57,7 @@ import { newRun, enemyUnitForFloor, previewBossChars, seatedAllies, runWiped, su
 import { bossMemoryTier, readBossTally, recordBossOutcome, withBossTally } from "./roguelite/bossMemory.js";
 import { chaptersWithState, chapterById, firstChapterId, canOrbUnlock } from "./data/rogueliteChapterMaster.js";
 import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from "./data/rogueliteBiomeMaster.js";
-import { applyCard, applyEffect, clusterDealMul, recomputeClusterCount } from "./roguelite/cardEffects.js";
+import { applyCard, applyEffect, clusterDealMul, clusterLevelUp, recomputeClusterCount } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER, clusterOf } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
 import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie, consumeBustSaver, hasForesight } from "./roguelite/itemEffects.js";
@@ -67,7 +67,7 @@ import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, forgeOverchargeCost, FORGE_OVERCHARGE_DEAL, SKILL_LEVEL_CAP, RECRUIT_COST } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume, showRogueliteBiomeIntro, showRogueliteRecruit, showRogueliteBossIntro, showRogueliteBanter, showRogueliteChapterSelect, showRogueliteChapterIntro } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume, showRogueliteBiomeIntro, showRogueliteRecruit, showRogueliteBossIntro, showRogueliteBanter, showRogueliteChapterSelect, showRogueliteChapterIntro, showRogueliteClusterLevelUp } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -216,6 +216,7 @@ let rogueliteState = null;       // ローグライト・ラン進行中の状�
 let rogueliteHandLimit = null;   // 楼光の館：この1戦の「定められた局数」(maxHands)。null = 非ローグライト
 const ROGUELITE_RIICHI_FRAC = 0.05; // 楼光の館：リーチ宣言で最大HPの5%を消費（緊張感のあるギャンブル）
 const ROGUELITE_NOTEN_FRAC = 0.20;  // 楼光の館：荒牌平局でノーテン席が最大HPの20%ダメージ
+const ROGUELITE_HP_LOSS_PENALTY_FRAC = 0.30; // 楼光の館：1戦の合計HPで負けたら全員 最大HPの30%ダメージ（撃墜あり・救済なし）
 const CHARYBDIS_NOTEN_MUL = 3;      // カリュブディス（淵の蒐集）在卓ならノーテン罰符が3倍
 // アカウント共通通貨「宝珠」：層（帯）に到達するたび段階的に獲得（深いほど多い）。用途は別途。
 const ORB_BASE = 5, ORB_STEP = 3;
@@ -2245,8 +2246,11 @@ function enterFloor(run, floorType) {
         showRogueliteDraft(host, {
           floor: run.floor, title: "宝箱：力を1つ授かる", cards: rollDraft(run, { hpRatio: 1 }), charImages, coins: run.coins || 0, run,
           onPick: (card) => {
+            const lvlUp = card ? clusterLevelUp(run, card) : null; // 取得前に段越えを判定（②演出）
             if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
-            enforceGrantCap(run, () => advanceRoguelite(run)); // 必殺枠が3つ目なら忘却モーダル
+            const proceed = () => enforceGrantCap(run, () => advanceRoguelite(run)); // 必殺枠が3つ目なら忘却モーダル
+            if (lvlUp) showRogueliteClusterLevelUp(host, { items: [lvlUp], onClose: proceed });
+            else proceed();
           },
         });
       }
@@ -2566,7 +2570,8 @@ function onRogueliteBattleEnd(result) {
   // 制圧判定：決着時に「自ペアの合計HP > 敵ペアの合計HP」だったか（pairBattleData を消す前に確保）。
   const allyEndHp = (pairBattleData?.hp?.[0] ?? 0) + (pairBattleData?.hp?.[2] ?? 0);
   const enemyEndHp = (pairBattleData?.hp?.[1] ?? 0) + (pairBattleData?.hp?.[3] ?? 0);
-  const dominated = allyEndHp > enemyEndHp; // 相手のHP合計を上回って決着＝制圧ボーナス
+  const dominated = allyEndHp > enemyEndHp; // 自パーティのHP合計が相手を上回って決着したか（計測ログ用）
+  const outHpRace = allyEndHp < enemyEndHp; // 合計HPで競り負け＝全員にペナルティ（緊張感の主動力）
   // 着卓していた2人へHPを戻す（同定）。ソロ(影武者)は2席の低い方をその1人のHPに。
   const seated = rogueliteState?.seated || seatedAllies(run);
   if (seated[1] === seated[0]) {
@@ -2582,6 +2587,9 @@ function onRogueliteBattleEnd(result) {
   const host = el("roguelite-screen");
   goScreen("roguelite-screen");
   enterRogueliteAmbience(); // 専用背景＋探索BGMへ復帰（対局中の in-game BGM から戻す）
+  // 決着後の本処理（ボス記憶→全滅判定→回復→光貨→ドラフト）。合計HP敗北の被弾演出を挟む場合は
+  // その演出を閉じてから（＝ペナルティをデータ確定してから）呼ぶ。
+  const proceedAfterBattle = () => {
   // ボス記憶（提案B）：本戦（追撃でない）のボス階決着を通算勝敗へ刻む。勝敗＝全滅でなく踏破できたか。
   if (rogueliteState.floorType?.enemy === "boss" && !rogueliteState.pursuing) recordBossEncounter(run, !runWiped(run));
   // ゲームオーバー＝生存メンバーが1人以下（2人で着卓できない）。残り2人以上なら踏破（次の階へ）。
@@ -2598,24 +2606,26 @@ function onRogueliteBattleEnd(result) {
   const pursued = !!rogueliteState.pursuing;
   let coins = coinsForClear({ floor: run.floor, kind: rogueliteState.floorType?.enemy || "mob", ko: !!result.koAny, pursue: pursued });
   if (isGamble) coins *= 2;
-  // 制圧ボーナス：相手のHP合計を上回って決着なら光貨を上乗せ＋ドラフトのレア度UP（圧勝が嬉しい）。
-  const dominateBonus = dominated ? Math.max(4, Math.round(coins * 0.6)) : 0;
-  coins = Math.round((coins + dominateBonus) * itemMods(run).coinMul * (biomeMods(run).coinMul || 1)); // 商人の天秤（道具）＋層(祭/崩落)で光貨↑
+  // ※ 旧「制圧ボーナス」（合計HPで勝つと光貨上乗せ＋レア度UP）は撤廃。HPで勝つ意義は
+  //   「ボーナスを得る」ではなく「ペナルティ（合計HP敗北で全員30%ダメージ）を避ける」側へ反転した。
+  coins = Math.round(coins * itemMods(run).coinMul * (biomeMods(run).coinMul || 1)); // 商人の天秤（道具）＋層(祭/崩落)で光貨↑
   run.coins = (run.coins || 0) + coins;
   // 役満ご祝儀：味方が役満を和了して踏破したら、ドラフトをオールレジェンダリーに。
   const yakuman = !!rogueliteState.yakumanThisBattle; rogueliteState.yakumanThisBattle = false;
   rlLog("clear", { floor: run.floor, biome: biomeOf(run)?.id, ko: !!result.koAny, hpRatio: +(result.hpRatio ?? 0).toFixed(2), dominated, yakuman, gamble: isGamble, pursue: pursued, coins, ...rlBuffSnap(run) });
-  // 賭場勝利は高レア確定気味。通常は ko/HP/追撃/制圧でバイアス。ご祝儀は全レジェ。
+  // 賭場勝利は高レア確定気味。通常は ko/HP/追撃でバイアス。ご祝儀は全レジェ。
   const cards = yakuman
     ? rollDraft(run, { allLegendary: true })
     : isGamble
       ? rollDraft(run, { bias: 1, hpRatio: 1 })
-      : rollDraft(run, { ko: !!result.koAny || pursued || dominated, hpRatio: result.hpRatio ?? 0.5 });
+      : rollDraft(run, { ko: !!result.koAny || pursued, hpRatio: result.hpRatio ?? 0.5 });
   showRogueliteDraft(host, {
     floor: run.floor, cards, charImages, coins: run.coins || 0, run,
     bonus: yakuman
       ? { label: "役満ご祝儀", note: "役満を決めて踏破！ オールレジェンダリーの大盤振る舞い" }
-      : dominated ? { label: "制圧ボーナス", note: `相手のHPを上回って決着！ 光貨+${Math.round(dominateBonus * itemMods(run).coinMul)}・レア度UP` } : null,
+      : null,
+    // 合計HPで競り負けたら被弾を明示（次画面でHPバーが下がる理由を legible に）。
+    penalty: outHpRace ? { label: "競り負け", note: "合計HPで及ばず — パーティ全員に 最大HPの30%ダメージ" } : null,
     onPick: (card) => {
       // 計測（P9）：提示3枚(offered)と選択(picked)を必ず記録＝offlineで「カード別pick率」を出せる。
       // 提示時に未取得カードを把握 → 選ばれた率を見て「居場所のないカード(pick率が極端に低い)」を炙る。
@@ -2625,8 +2635,9 @@ function onRogueliteBattleEnd(result) {
         card: card?.id ?? null, rarity: card?.rarity ?? null, kind: card?.effect?.kind ?? null,
         cluster: card ? clusterOf(card) : null, jackpot: yakuman,
       });
+      const lvlUp = card ? clusterLevelUp(run, card) : null; // 取得前に段越えを判定（②演出）
       if (card) { applyCard(run, card); rogueliteSpeak("rlBuff", { buffFamily: cardFamily(card) }); }
-      enforceGrantCap(run, () => {
+      const proceed = () => enforceGrantCap(run, () => {
         // 追撃の打診（残あり）。なければ前進＝進路選択へ。
         if ((rogueliteState.pursueRemaining || 0) > 0) {
           showRoguelitePursue(host, {
@@ -2637,8 +2648,24 @@ function onRogueliteBattleEnd(result) {
           });
         } else advanceRoguelite(run);
       });
+      // 流派が一段上がったら演出モーダルを挟んでから先へ（閉じたら proceed）。
+      if (lvlUp) showRogueliteClusterLevelUp(host, { items: [lvlUp], onClose: proceed });
+      else proceed();
     },
   });
+  }; // ← proceedAfterBattle ここまで
+
+  // 合計HPで競り負けたら、控え含む全員に最大HPの30%ダメージ。インゲーム同様の被弾演出
+  // （HPバー減少＋赤い被ダメ数字＋撃沈スタンプ＋揺れ＋SE）を見せ、閉じたらダメージを確定して本処理へ。
+  // 撃墜あり・救済なし＝この一撃で残り1人以下になれば proceedAfterBattle 内の全滅判定でラン終了。
+  const penTargets = outHpRace
+    ? run.party.filter((m) => m.hp > 0).map((m) => ({ m, before: m.hp, after: Math.max(0, m.hp - Math.round(m.hpMax * ROGUELITE_HP_LOSS_PENALTY_FRAC)) }))
+    : [];
+  if (penTargets.length) {
+    showRoguelitePenaltyFx({ targets: penTargets, onDone: () => { for (const t of penTargets) t.m.hp = t.after; proceedAfterBattle(); } });
+  } else {
+    proceedAfterBattle();
+  }
 }
 
 // ラン終了（撤退＝報酬確保で帰還／全滅＝没収）。最深到達階層を保存し、獲得バフから
@@ -5097,6 +5124,88 @@ function showTransientSpeaker(character, event, ctx, { side = "left", duration =
 // shake/flash and a floating -N, heals the winner (+N). セリフを読み切れるよう、
 // クリック or 10秒で次へ進む。`onDone` runs once when the sequence finishes.
 let damageFxTimer = null;
+// 楼光の館：合計HP敗北ペナルティの被弾演出。インゲームのダメージカード（showDamageFx）と同じ
+// #damage-overlay / .dmg-* 語彙を流用し、パーティ全員のHPバーを一斉にドレイン＋赤い被ダメ数字＋
+// 撃沈スタンプ＋揺れ＋SE。閉じる（クリック or 自動）と onDone。data確定は呼び出し側が onDone で行う。
+function showRoguelitePenaltyFx({ targets = [], onDone } = {}) {
+  const host = el("damage-overlay");
+  if (!host || !targets.length) { onDone?.(); return; }
+  const fillClsFor = (pct) => (pct <= 25 ? "low" : pct <= 50 ? "mid" : "high");
+  const rowHtml = (t, idx) => {
+    const c = t.m.char;
+    const before = Math.round(t.before), after = Math.round(t.after);
+    const delta = after - before; // 負値（被ダメ）
+    const busted = after <= 0;
+    const bPct = Math.max(0, Math.min(100, (before / (t.m.hpMax || 1)) * 100));
+    const iconUrl = charImages?.url?.(c, "icon") || charImages?.url?.(c, "portrait");
+    const face = faceMarkup(c, "dmg-face", iconUrl)
+      || `<div class="dmg-face dmg-face-fb" style="--c:${c?.color || "#888"}">${[...(c?.name || "?")][0] || "?"}</div>`;
+    return `
+      <div class="dmg-row is-loser${busted ? " is-down" : ""}" data-i="${idx}" data-before="${before}" data-after="${after}" data-max="${t.m.hpMax}">
+        ${face}
+        <div class="dmg-info">
+          <div class="dmg-name" style="color:${c?.color || "#ccc"}">${c?.name || "?"}</div>
+          <div class="hpbar">
+            <div class="hpfill-ghost" style="width:${bPct}%"></div>
+            <div class="hpfill ${fillClsFor(bPct)}" style="width:${bPct}%"></div>
+          </div>
+        </div>
+        <div class="dmg-hp"><span class="dmg-hp-num">${before}</span></div>
+        <div class="dmg-pop hit">${delta}</div>
+        ${busted ? `<div class="dmg-down-stamp">撃沈</div>` : ""}
+      </div>`;
+  };
+  host.innerHTML = `
+    <div class="dmg-card rl-pen-card">
+      <div class="dmg-head rl-pen-head">競り負け — 被弾</div>
+      <p class="rl-pen-sub">合計HPで及ばず、パーティ全員が痛手を負った。</p>
+      ${targets.map(rowHtml).join("")}
+      <div class="dmg-hint">クリックで次へ</div>
+    </div>`;
+  host.classList.remove("hidden");
+  requestAnimationFrame(() => host.classList.add("show"));
+  let finished = false; let timer = null;
+  const finish = () => {
+    if (finished) return;
+    finished = true;
+    clearTimeout(timer);
+    host.onclick = null;
+    host.classList.remove("show", "ko");
+    host.classList.add("hidden");
+    host.innerHTML = "";
+    onDone?.();
+  };
+  // ひと呼吸おいて一斉ドレイン。
+  setTimeout(() => {
+    audio.playSe(sePath("ボウリングのピンを倒す1.mp3"), 0.9);
+    host.querySelectorAll(".dmg-row").forEach((row) => {
+      const before = +row.dataset.before, after = +row.dataset.after, max = +row.dataset.max;
+      const aPct = Math.max(0, Math.min(100, (after / (max || 1)) * 100));
+      const fillEl = row.querySelector(".hpfill");
+      fillEl.style.width = aPct + "%";
+      fillEl.className = "hpfill " + fillClsFor(aPct);
+      const ghost = row.querySelector(".hpfill-ghost");
+      setTimeout(() => { ghost.style.width = aPct + "%"; }, 430); // 削れる残像が追いつく
+      row.classList.add("flash");
+      const busted = after <= 0;
+      if (!busted) row.classList.add("shake");
+      row.querySelector(".dmg-pop")?.classList.add("show");
+      tweenNum(row.querySelector(".dmg-hp-num"), before, after, 850);
+      if (busted) {
+        setTimeout(() => {
+          row.classList.add("downed");
+          row.querySelector(".dmg-down-stamp")?.classList.add("show");
+          host.classList.add("ko");
+          audio.playSe(sePath("布団に倒れ込む.mp3"), 1.0);
+        }, 620);
+      }
+    });
+  }, 300);
+  // 直前クリックの流れ込みを避け、少し待ってから受付。自動でも閉じる。
+  setTimeout(() => { host.onclick = finish; }, 700);
+  timer = setTimeout(finish, 6500);
+}
+
 function showDamageFx(r, onDone) {
   const host = el("damage-overlay");
   const deltas = r.deltas || [];

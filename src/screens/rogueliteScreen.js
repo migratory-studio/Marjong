@@ -286,7 +286,7 @@ export function showRogueliteResume(container, opts = {}) {
 
 // ---- バフカード3択 ----
 export function showRogueliteDraft(container, opts = {}) {
-  const { floor = 1, cards = [], onPick, title, coins = null, bonus = null, run = null } = opts;
+  const { floor = 1, cards = [], onPick, title, coins = null, bonus = null, penalty = null, run = null } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-draft";
@@ -316,6 +316,7 @@ export function showRogueliteDraft(container, opts = {}) {
     <div class="rl-modal">
       <div class="rl-modal-head">${title || `第 ${floor} 階 突破！　力を1つ授かる`}${coins != null ? coinBadge(coins) : ""}</div>
       ${bonus ? `<div class="rl-dominate"><span class="rl-dominate-tag">${bonus.label}</span><span class="rl-dominate-note">${bonus.note}</span></div>` : ""}
+      ${penalty ? `<div class="rl-penalty"><span class="rl-penalty-tag">${penalty.label}</span><span class="rl-penalty-note">${penalty.note}</span></div>` : ""}
       <div class="rl-cards">${cardHtml || '<div class="rl-card-empty">授かれる力は出尽くした……</div>'}</div>
       ${cards.length ? "" : '<button type="button" class="rl-start" id="rl-skip">先へ進む</button>'}
     </div>`;
@@ -326,6 +327,34 @@ export function showRogueliteDraft(container, opts = {}) {
     btn.addEventListener("click", () => close(cards[+btn.dataset.i]));
   });
   ov.querySelector("#rl-skip")?.addEventListener("click", () => close(null));
+}
+
+// 流派レベルアップ演出（②）：段(しきい値)を新たに越えた瞬間に「流派〇〇が〇〇になった」＋効果説明を
+// モーダルで見せる。複数同時に上がったときはキューで1枚ずつ。閉じ切ったら onClose で先へ進む。
+export function showRogueliteClusterLevelUp(container, { items = [], onClose } = {}) {
+  if (!container || !items.length) { onClose?.(); return; }
+  const queue = items.filter(Boolean);
+  const showNext = () => {
+    const it = queue.shift();
+    if (!it) { onClose?.(); return; }
+    const ov = document.createElement("div");
+    ov.className = "rl-overlay rl-levelup";
+    const tiers = it.prevName
+      ? `<span class="rl-lvl-prev">${it.prevName}</span><span class="rl-lvl-arrow">▸</span><span class="rl-lvl-now">${it.tierName}</span>`
+      : `<span class="rl-lvl-now">${it.tierName}</span>`;
+    ov.innerHTML = `
+      <div class="rl-modal rl-lvl-modal" style="--cl:${it.color || "#8fd0ff"}">
+        <div class="rl-lvl-seal">${it.awaken || "開眼"}</div>
+        <div class="rl-modal-head">流派・${it.label} が<br><b class="rl-lvl-name">「${it.tierName}」</b> になった</div>
+        <div class="rl-lvl-tiers">${tiers}</div>
+        <p class="rl-lvl-desc">${it.tierDesc || ""}</p>
+        <button type="button" class="rl-start" id="rl-lvl-ok">${queue.length ? "次へ ›" : "力を受け取る"}</button>
+      </div>`;
+    container.appendChild(ov);
+    requestAnimationFrame(() => ov.classList.add("is-open"));
+    ov.querySelector("#rl-lvl-ok")?.addEventListener("click", () => { ov.remove(); showNext(); });
+  };
+  showNext();
 }
 
 // ---- 継続 or 撤退 ----
@@ -439,39 +468,43 @@ export function buffTotalsHtml(run) {
   for (const id of run?.items || []) { const it = itemById(id); if (it) items.push(`<span class="rl-inv-chip item">${it.icon ? rlIcon(it.icon, "rl-ico-sm") : "◆"} ${it.name}</span>`); }
   if ((m.friendlyGuard || 0) > 0) items.push(`<span class="rl-inv-chip item">◆ 庇いの守り ×${m.friendlyGuard}</span>`);
   const groupHead = (cat, extra = "") => `<span class="rl-inv-head" style="--cat:${C[cat].color}">${C[cat].mark} ${C[cat].label}${extra}</span>`;
-  // 流派（クラスター）の進捗＝「あと1枚で開眼」の緊張を legible に（提案A・docs §4.3）。
-  const clProg = clusterProgress(run);
-  const clRow = clProg.length
-    ? clProg.map((p) => {
-        const clm = CLUSTER_META[p.cluster] || { label: p.cluster, color: "#9ad", awaken: "開眼", tip: "同じ流派の札を集めると効果が跳ねる" };
-        const aw = clm.awaken || "開眼"; // 攻め=開眼／守り=鉄壁 など流派ごとの呼称
-        const tierSet = new Set(p.tiers || []);
-        // 玉(pip)を maxまで並べ、所持ぶんを点灯。しきい値の玉は大きく＝「あと1で開眼」が一目で分かる。
-        const pips = [];
-        for (let i = 1; i <= (p.max || 0); i++) {
-          const cls = ["rl-pip"];
-          if (tierSet.has(i)) cls.push("brk");        // しきい値の節目
-          if (i <= p.count) cls.push("on");            // 取得済み
-          if (tierSet.has(i) && i <= p.count) cls.push("lit"); // 到達した節目
-          pips.push(`<i class="${cls.join(" ")}"></i>`);
-        }
-        // 状態文：到達済みは「開眼」（次段があれば あとM）、未到達は あとMで開眼。
-        const state = p.reached > 0
-          ? `<b>${aw}${p.reached > 1 ? `×${p.reached}` : ""}</b>${p.nextAt ? ` ・あと${p.nextAt - p.count}で次段` : ""}`
-          : `あと${p.nextAt - p.count}で${aw}`;
-        return `<span class="rl-cluster ${p.reached ? "lit" : ""}" style="--cl:${clm.color}" title="${clm.tip || ""}">
-          <span class="rl-cluster-name">${clm.label}</span>
-          <span class="rl-pips">${pips.join("")}</span>
-          <span class="rl-cluster-state">${state}</span>
-        </span>`;
-      }).join("")
-    : "";
+  // 流派（クラスター）はここでは出さない。増えると縦に伸びて選択肢に被るため、HPバー下の
+  // 固定パネル（clusterPanelHtml）へ分離した（①の修正）。ここはバフ/必殺技/道具のみ。
   return `<div class="rl-inv">
     <div class="rl-inv-row">${groupHead("buff")}<div class="rl-buff-totals">${buffRow}</div></div>
-    ${clRow ? `<div class="rl-inv-row"><span class="rl-inv-head" style="--cat:#8fd0ff">◈ 流派</span><div class="rl-inv-chips">${clRow}</div></div>` : ""}
     <div class="rl-inv-row">${groupHead("skill", ` <small>${skills.length}/2</small>`)}<div class="rl-inv-chips">${skillRow}</div></div>
     ${items.length ? `<div class="rl-inv-row">${groupHead("item", run?.items ? ` <small>${(run.items || []).length}/${ITEM_SLOTS}</small>` : "")}<div class="rl-inv-chips">${items.join("")}</div></div>` : ""}
   </div>`;
+}
+
+// 流派パネル（①）：全5流派を常に同じ行数で表示（未取得はグレー）。HPバーの直下に置く。
+// 「増えると縦に伸びて選択肢に被る」を解消＝行数は流派数で固定、レイアウトが暴れない。
+// 副産物として「あと何が育つか」が常に見える＝蓄積の可視化（CLAUDE.md）。
+export function clusterPanelHtml(run) {
+  const prog = clusterProgress(run, { all: true }); // 取得0も含めて全流派
+  const rows = prog.map((p) => {
+    const clm = CLUSTER_META[p.cluster] || { label: p.cluster, color: "#9ad", awaken: "開眼" };
+    const aw = clm.awaken || "開眼";
+    const tierSet = new Set(p.tiers || []);
+    const pips = [];
+    for (let i = 1; i <= (p.max || 0); i++) {
+      const cls = ["rl-pip"];
+      if (tierSet.has(i)) cls.push("brk");                 // しきい値の節目は大きい玉
+      if (i <= p.count) cls.push("on");                    // 取得済み
+      if (tierSet.has(i) && i <= p.count) cls.push("lit"); // 到達した節目
+      pips.push(`<i class="${cls.join(" ")}"></i>`);
+    }
+    const state = p.reached > 0
+      ? `<b>${aw}${p.reached > 1 ? `×${p.reached}` : ""}</b>${p.nextAt ? `・あと${p.nextAt - p.count}` : ""}`
+      : (p.nextAt ? `あと${p.nextAt - p.count}で${aw}` : "");
+    const cls = ["rl-clrow"]; if (p.count > 0) cls.push("on"); if (p.reached > 0) cls.push("lit");
+    return `<div class="${cls.join(" ")}" style="--cl:${clm.color}" title="${(clm.tip || "").replace(/"/g, "&quot;")}">
+      <span class="rl-clrow-name">${clm.label}</span>
+      <span class="rl-pips">${pips.join("")}</span>
+      <span class="rl-clrow-state">${state}</span>
+    </div>`;
+  }).join("");
+  return `<div class="rl-clusters" aria-label="流派">${rows}</div>`;
 }
 
 // 意思決定の瞬間に、先頭キャラが一言「返す」小トースト（立ち絵＋吹き出し）。
@@ -517,6 +550,7 @@ export function showRogueliteRoute(container, opts = {}) {
     <div class="rl-hub-party">
       <div class="rl-hub-party-head">パーティ</div>
       <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
+      ${clusterPanelHtml(run)}
     </div>
     <div class="rl-hub-build">${buffTotalsHtml(run)}</div>` : "";
   // 現在の層（バイオーム）バナー：いまどんな場所か＋効果を常時表示。

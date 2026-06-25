@@ -357,13 +357,15 @@ export const CLUSTER_META = {
 // 流派シナジー定義。各流派は「.tiers を持つシナジー記述子」を1つ持つ（種類はキー名で分岐）：
 //   deal    … 攻め：trigger（対局中に main.js が立てる発火フラグ）が立つ局に与ダメ +bonus。最高達成段を採用（累積しない）。
 //   takeCap … 守り：1局に受ける被ダメの上限（最大HP比）を cap へ締める。最も低い達成段を採用（＝最も固い）。深度由来の既定上限と min を取る。
+// 各 tier の name/desc＝レベルアップ演出（②モーダル）と流派パネル（①）が引く単一の出典。
+// name＝その段の呼称（開眼→極み 等）、desc＝その段で効くこと（プレイヤー向けの一文）。
 export const CLUSTER_SYNERGY = {
   flush: {
     deal: {
       trigger: "flushWin",
       tiers: [
-        { at: 3, bonus: 0.5 },  // 開眼：染め手の与ダメ +50%
-        { at: 5, bonus: 1.1 },  // 極み：染め手の与ダメ +110%
+        { at: 3, bonus: 0.5, name: "開眼", desc: "染め手（混一・清一）で和了したとき、与ダメージ +50%" },
+        { at: 5, bonus: 1.1, name: "極み", desc: "染め手（混一・清一）で和了したとき、与ダメージ +110%" },
       ],
     },
   },
@@ -371,8 +373,8 @@ export const CLUSTER_SYNERGY = {
     // 守備札を集めるほど「1局の被ダメ上限(最大HP比)」が下がる＝事故スパイクを抑える分散低減（P3）。
     takeCap: {
       tiers: [
-        { at: 3, cap: 0.30 },  // 鉄壁：1局の被害は最大HPの30%まで
-        { at: 5, cap: 0.20 },  // 不抜：最大HPの20%まで（どんな大物手でもトびにくい）
+        { at: 3, cap: 0.30, name: "鉄壁", desc: "1局に受ける被害の上限が、最大HPの30%までに下がる" },
+        { at: 5, cap: 0.20, name: "不抜", desc: "1局に受ける被害の上限が、最大HPの20%までに下がる（大物手でもトびにくい）" },
       ],
     },
   },
@@ -381,8 +383,8 @@ export const CLUSTER_SYNERGY = {
     deal: {
       trigger: "tsumoWin",
       tiers: [
-        { at: 3, bonus: 0.4 },  // 加速：ツモ和了の与ダメ +40%
-        { at: 5, bonus: 0.9 },  // 疾風：+90%
+        { at: 3, bonus: 0.4, name: "加速", desc: "ツモ和了したとき、与ダメージ +40%" },
+        { at: 5, bonus: 0.9, name: "疾風", desc: "ツモ和了したとき、与ダメージ +90%" },
       ],
     },
   },
@@ -391,8 +393,8 @@ export const CLUSTER_SYNERGY = {
     deal: {
       trigger: "bigWin",
       tiers: [
-        { at: 3, bonus: 0.5 },  // 会心：満貫以上の与ダメ +50%
-        { at: 5, bonus: 1.1 },  // 必殺：+110%
+        { at: 3, bonus: 0.5, name: "会心", desc: "満貫以上で和了したとき、与ダメージ +50%" },
+        { at: 5, bonus: 1.1, name: "必殺", desc: "満貫以上で和了したとき、与ダメージ +110%" },
       ],
     },
   },
@@ -401,8 +403,8 @@ export const CLUSTER_SYNERGY = {
     deal: {
       trigger: "anyWin",
       tiers: [
-        { at: 3, bonus: 0.35 }, // 総取り：与ダメ +35%
-        { at: 5, bonus: 0.8 },  // 一擲：+80%
+        { at: 3, bonus: 0.35, name: "総取り", desc: "どんな和了でも与ダメージ +35%（その代わり1局に受ける被害の上限も上がる＝諸刃）" },
+        { at: 5, bonus: 0.8, name: "一擲", desc: "どんな和了でも与ダメージ +80%（その代わり1局に受ける被害の上限も上がる＝諸刃）" },
       ],
     },
     // 守備 takeCap の真逆：1局の被ダメ上限(最大HP比)を上げる＝大振り（事故も大きい＝高分散）。
