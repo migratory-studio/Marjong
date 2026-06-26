@@ -323,6 +323,35 @@ function survivalCurve(profile, N = 3000) {
   return { reached, won };
 }
 
+// ---- 章クリア率（指定フロアの 到達/踏破 率）。always-continue＝撤退せず限界まで押した1ランで、
+//   その階に「届く」(depth≥F) ／「抜ける＝踏破」(depth>F⟺クリアして先へ) 割合。boss階(F%10==0)はboss難度。
+//   node test/roguelite-balance.mjs --clearrate            … 既定 F30
+//   CLEARFLOOR=20 CLEARN=6000 node ... --clearrate         … 階・試行数を指定
+function clearRateReport() {
+  const F = Number(process.env.CLEARFLOOR || 30);
+  const N = Number(process.env.CLEARN || 5000);
+  const sample = (profile) => {
+    let reach = 0, clear = 0, sum = 0;
+    for (let i = 0; i < N; i++) { const d = simRun({ ...profile }, `cr-${profile.tag}-${profile.picker}-${i}`); sum += d; if (d >= F) reach++; if (d > F) clear++; }
+    return { reach: reach / N, clear: clear / N, mean: sum / N };
+  };
+  const pct = (x) => (x * 100).toFixed(1) + "%";
+  console.log(`=== 第${F}階 到達/踏破率（always-continue・撤退せず限界まで押した1ラン・N=${N}） ===`);
+  console.log(`弟子強度\t方針\t到達(≥F${F})\t踏破(クリアF${F})\t平均到達`);
+  for (const t of TIERS) {
+    for (const picker of ["none", "greedy"]) {
+      const r = sample({ ...t, picker });
+      console.log(`${t.label}\t${picker}\t${pct(r.reach)}\t${pct(r.clear)}\t${r.mean.toFixed(1)}`);
+    }
+  }
+  // 中堅・各流派特化＝「1つの戦い方にコミットした現実的プレイ」の F踏破率（none と greedy の中間目安）。
+  console.log(`\n--- 中堅・各流派特化の 第${F}階 踏破率（現実的な“ひと筋”プレイの目安） ---`);
+  for (const cl of ["flush", "guard", "tempo", "value", "gamble"]) {
+    const r = sample({ ...TIERS[1], picker: cl });
+    console.log(`中堅・${cl}\t踏破 ${pct(r.clear)}（到達 ${pct(r.reach)}）`);
+  }
+}
+
 const MC_N = Number(process.env.MCN || 2000); // 掃引高速化用：試行数を環境変数で絞れる
 const FAST = process.argv.includes("--fast") || process.env.FAST; // 到達深度テーブルだけ出して終わる
 function montecarlo(profile, N = MC_N) {
@@ -423,5 +452,9 @@ function assertTargets() {
   console.log(`roguelite-balance assertions: ${n} passed`);
 }
 
-report();
-if (ASSERT) assertTargets();
+if (process.argv.includes("--clearrate")) {
+  clearRateReport();
+} else {
+  report();
+  if (ASSERT) assertTargets();
+}
