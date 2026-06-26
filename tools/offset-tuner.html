@@ -106,7 +106,7 @@ const asset = (p) => p ? ("../" + p) : "";
 const LS_KEY = "offsetTuner.v1";
 
 // ---- defaults / parse / format -------------------------------------------
-const DEF = { portrait:{x:50,y:0,zoom:1}, icon:{x:50,y:0}, home:{x:0,y:0,zoom:1} };
+const DEF = { portrait:{x:50,y:0,zoom:1}, icon:{x:50,y:0}, home:{x:0,y:0,zoom:1}, scenario:{x:0,y:0,zoom:1} };
 const EMO_DEF = { side:"left", x:67, y:3 }; // 未設定キャラの初期エモート位置（描画既定 size*0.42 / size*0.02 相当）
 const KW = { left:0, right:100, top:0, bottom:100, center:50 };
 // エモート可視化に使う代表スプライト（notice / STD: 400px枠・5×8）。本物の見え方を確認するため実画像を使う。
@@ -140,11 +140,13 @@ function initialState(c){
   const icon = parseObjPos(ip.icon) || {...DEF.icon};
   const h = ip.home || {};
   const home = { x: parsePct(h.x,0), y: parsePct(h.y,0), zoom: (h.zoom!=null? Number(h.zoom):1) };
+  const sc = ip.scenario || {};
+  const scenario = { x: parsePct(sc.x,0), y: parsePct(sc.y,0), zoom: (sc.zoom!=null? Number(sc.zoom):1) };
   const em = c.emotePos;
   const emote = em
     ? { side: em.side==="right"?"right":"left", x: parsePct(em.x,EMO_DEF.x), y: parsePct(em.y,EMO_DEF.y), set:true }
     : { ...EMO_DEF, set:false }; // 未設定キャラはドラッグするまで出力に含めない
-  return { portrait, icon, home, emote };
+  return { portrait, icon, home, scenario, emote };
 }
 
 // 既定一致か（出力時に省略するため）
@@ -161,6 +163,11 @@ function toImagePos(st){
   if(Math.abs(st.home.y)>=0.05) h.y = num(st.home.y)+"%";
   if(Math.abs(st.home.zoom-1)>=0.005) h.zoom = Math.round(st.home.zoom*100)/100;
   if(Object.keys(h).length) out.home = h;
+  const s={};
+  if(Math.abs(st.scenario.x)>=0.05) s.x = num(st.scenario.x)+"%";
+  if(Math.abs(st.scenario.y)>=0.05) s.y = num(st.scenario.y)+"%";
+  if(Math.abs(st.scenario.zoom-1)>=0.005) s.zoom = Math.round(st.scenario.zoom*100)/100;
+  if(Object.keys(s).length) out.scenario = s;
   return Object.keys(out).length ? out : null;
 }
 // エモート位置の出力（set のときだけ）。emotePos は characterMaster の独立フィールド。
@@ -182,6 +189,13 @@ function imagePosLiteral(ip){
     if(ip.home.y) hp.push(`y: ${JSON.stringify(ip.home.y)}`);
     if(ip.home.zoom!=null) hp.push(`zoom: ${ip.home.zoom}`);
     parts.push(`home: { ${hp.join(", ")} }`);
+  }
+  if(ip.scenario){
+    const sp=[];
+    if(ip.scenario.x) sp.push(`x: ${JSON.stringify(ip.scenario.x)}`);
+    if(ip.scenario.y) sp.push(`y: ${JSON.stringify(ip.scenario.y)}`);
+    if(ip.scenario.zoom!=null) sp.push(`zoom: ${ip.scenario.zoom}`);
+    parts.push(`scenario: { ${sp.join(", ")} }`);
   }
   return `imagePos: { ${parts.join(", ")} },`;
 }
@@ -281,6 +295,7 @@ function renderMain(){
   cards.appendChild(portraitCard(c,st));
   cards.appendChild(iconCard(c,st));
   cards.appendChild(homeCard(c,st));
+  cards.appendChild(scenarioCard(c,st));
   cards.appendChild(emoteCard(c,st));
   mainEl.appendChild(cards);
 
@@ -404,6 +419,51 @@ function homeCard(c,st){
     apply();
   });
   attachWheelZoom(frame, ()=>st.home.zoom, (z)=>st.home.zoom=z, apply, 0.6, 1.5);
+  img.complete ? apply() : img.addEventListener("load",apply);
+  apply();
+  return card;
+}
+
+// --- scenario (紙芝居立ち絵 contain / バストアップ化の足場, imagePos.scenario{x,y,zoom}) ---
+// 紙芝居は立ち絵を contain（全身）で底辺合わせ表示。ここで translate%＋scale（上端基準）を掛けると
+// 「頭を残して下を切る」バストアップ等に寄せられる。値は scene の見え方どおり実機と比例一致（%/scale）。
+function scenarioCard(c,st){
+  const card=document.createElement("div"); card.className="card";
+  card.innerHTML=`<h2>シナリオ立ち絵 <span class="tag">紙芝居 / バストアップ化の足場・ドラッグ=寄せ / スクロール=ズーム</span></h2>`;
+  const SW=300, SH=250, STAND=0.82, TEXTBOX=228/720; // ステージ比で枠を構成（立ち絵=高さ82% / 下にメッセージ枠）
+  const frame=document.createElement("div"); frame.className="frame"; frame.style.width=SW+"px"; frame.style.height=SH+"px"; frame.style.cursor="grab";
+  const slot=document.createElement("div"); slot.style.position="absolute"; slot.style.left="50%"; slot.style.bottom="0"; slot.style.transform="translateX(-50%)";
+  const img=document.createElement("img");
+  const PH=SH*STAND;
+  img.src=asset(c.assets?.portrait); img.style.display="block"; img.style.height=PH+"px"; img.style.width="auto";
+  img.style.transformOrigin="top center"; img.style.filter="drop-shadow(0 6px 16px rgba(0,0,0,.5))";
+  img.onerror=()=>{ frame.style.opacity=.3; };
+  slot.appendChild(img); frame.appendChild(slot);
+  const tb=document.createElement("div"); tb.style.position="absolute"; tb.style.left="0"; tb.style.right="0"; tb.style.bottom="0";
+  tb.style.height=(SH*TEXTBOX)+"px"; tb.style.background="linear-gradient(rgba(10,8,6,.1),rgba(10,8,6,.78))";
+  tb.style.borderTop="1px solid rgba(255,255,255,.12)"; tb.style.display="flex"; tb.style.alignItems="flex-end";
+  tb.style.justifyContent="center"; tb.style.color="rgba(255,255,255,.4)"; tb.style.fontSize="10px"; tb.style.paddingBottom="4px"; tb.style.pointerEvents="none";
+  tb.textContent="メッセージ枠";
+  const grid=document.createElement("div"); grid.className="grid";
+  frame.appendChild(grid); frame.appendChild(tb); card.appendChild(frame);
+  const apply=()=>{
+    img.style.transform=`translate(${num(st.scenario.x)}%, ${num(st.scenario.y)}%) scale(${st.scenario.zoom})`;
+    read.textContent=`x:${num(st.scenario.x)}%  y:${num(st.scenario.y)}%  zoom:${Math.round(st.scenario.zoom*100)/100}`;
+  };
+  const ctl=document.createElement("div"); ctl.className="ctl";
+  ctl.innerHTML=`<div class="row"><b class="read"></b><button class="mini">既定に戻す</button></div>`;
+  const read=ctl.querySelector(".read");
+  ctl.querySelector("button").onclick=()=>{ st.scenario={...DEF.scenario}; apply(); persist(); renderOutput(); };
+  card.appendChild(ctl);
+  let s0;
+  attachDrag(frame, ()=>{ s0={...st.scenario}; }, (dx,dy)=>{
+    const nw=img.naturalWidth||0, nh=img.naturalHeight||0; if(!nw||!nh) return;
+    const baseH=PH, baseW=PH*(nw/nh);
+    st.scenario.x=clamp(s0.x + dx*100/baseW, -150, 150);
+    st.scenario.y=clamp(s0.y + dy*100/baseH, -150, 150);
+    apply();
+  });
+  attachWheelZoom(frame, ()=>st.scenario.zoom, (z)=>st.scenario.zoom=z, apply, 0.6, 3);
   img.complete ? apply() : img.addEventListener("load",apply);
   apply();
   return card;

@@ -62,10 +62,13 @@ body {
   object-fit: contain;
   filter: drop-shadow(0 8px 24px rgba(0,0,0,.55)) brightness(.9);
   opacity: 1; transition: opacity .25s ease, filter .25s ease, transform .25s ease;
+  /* キャラ別の見せ方チューニング（バストアップ化等）を JS が --sc-tune に注入（translate+scale）。
+     上端基準で拡大＝頭を残して下を切る。未設定は空＝無変形。 */
+  transform-origin: top center; transform: var(--sc-tune, none);
 }
-/* 話者は明るく前面、非話者は減光して後退 */
-.sc-standing.sc-active { filter: drop-shadow(0 8px 24px rgba(0,0,0,.55)) brightness(1.05); opacity: 1; z-index: 2; transform: translateY(-6px); }
-.sc-standing.sc-dim { filter: drop-shadow(0 6px 18px rgba(0,0,0,.5)) brightness(.55) saturate(.85); opacity: .8; z-index: 1; }
+/* 話者は明るく前面、非話者は減光して後退。--sc-tune を合成（空フォールバックで lift が消えないように）。 */
+.sc-standing.sc-active { filter: drop-shadow(0 8px 24px rgba(0,0,0,.55)) brightness(1.05); opacity: 1; z-index: 2; transform: translateY(-6px) var(--sc-tune,); }
+.sc-standing.sc-dim { filter: drop-shadow(0 6px 18px rgba(0,0,0,.5)) brightness(.55) saturate(.85); opacity: .8; z-index: 1; transform: var(--sc-tune, none); }
 .sc-fx-screen { position: absolute; inset: 0; pointer-events: none; }
 /* メッセージ枠は購入UIセット(gameUIset_19 v100)の message_window.png を採用。
    1280×228 の全幅バー画像で、上部 0–48px に名前タブ／48–190px に本文帯／192–228px に底枠。

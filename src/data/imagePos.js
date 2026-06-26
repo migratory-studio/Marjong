@@ -47,6 +47,26 @@ export function iconPosOf(c) {
   return c?.imagePos?.icon || DEFAULT_OBJPOS;
 }
 
+// テンプレ文字列(innerHTML)用の立ち絵 style 値（object-position[＋scale]）。
+//   zoom:false でズームを外す（クリップ容器が無いカバー枠＝楼光アート等で transform はみ出しを避ける）。
+export function portraitStyleAttr(c, { zoom = true } = {}) {
+  let s = `object-position:${portraitPosOf(c)}`;
+  if (zoom) { const z = portraitZoomOf(c); if (z !== 1) s += `;transform:scale(${z})`; }
+  return s;
+}
+
+// 紙芝居立ち絵(contain・全身)の見せ方チューニング = 拡大/寄せ（バストアップ化の足場）。
+//   imagePos.scenario = { x, y, zoom }（translate%＋scale）。未設定/既定は空文字（無変形）。
+//   scenarioPlayer が img の CSS変数 --sc-tune にこの transform を流し込み、active/dim と合成する。
+export function scenarioTuneOf(c) {
+  const t = c?.imagePos?.scenario;
+  if (!t) return "";
+  const x = t.x || "0%", y = t.y || "0%", z = (t.zoom != null ? Number(t.zoom) : 1);
+  const off = (x === "0%" || !t.x) && (y === "0%" || !t.y);
+  if (off && z === 1) return "";
+  return `translate(${x}, ${y}) scale(${z})`;
+}
+
 // 対戦ホーム拡大（バストアップ）の寄せ/拡大 { x, y, zoom }。
 //   imagePos.home が中身を持てばそれを、無ければ呼び出し側の既定(fallback)を使う。
 export function homeTuneOf(c, fallback = {}) {

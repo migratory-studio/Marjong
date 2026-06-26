@@ -24,6 +24,7 @@
 //     - portraitZoom … 立ち絵カバーの拡大率（任意・既定1）。cover画像を scale で寄る／引く
 //     - icon         … icon.png 顔アイコンの object-position（全アイコン共通）
 //     - home         … 対戦ホーム拡大の { x, y, zoom }（translate%＋拡大）
+//     - scenario     … 紙芝居立ち絵(contain全身)の見せ方 { x, y, zoom }（バストアップ化の足場・上端基準）
 //   ※ 紙芝居エモートの位置は別フィールド emotePos = { side, x, y }（立ち絵の頭付近に浮かせる）。
 //   値はすべて任意。調整は開発ツール tools/offset-tuner.html でグラフィカルに行い、出力を貼り戻す。
 //   解決ロジックは src/data/imagePos.js（portraitPosOf / iconPosOf / homeTuneOf）。

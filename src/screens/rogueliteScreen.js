@@ -15,6 +15,7 @@ import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaste
 import { abilityDef } from "../data/abilityMaster.js";
 import { biomeEffectChips, biomeOf } from "../data/rogueliteBiomeMaster.js";
 import { bgDef } from "../data/backgroundMaster.js";
+import { portraitStyleAttr } from "../data/imagePos.js";
 
 const MAX_PARTY = 3;
 
@@ -775,8 +776,9 @@ export function showRogueliteChapterIntro(container, opts = {}) {
   let speak = "";
   if (leadChar && leadLine) {
     const u = charImages?.url?.(leadChar, "portrait") || charImages?.url?.(leadChar, "icon") || "";
+    const ps = u && u === charImages?.url?.(leadChar, "portrait") ? ` style="${portraitStyleAttr(leadChar, { zoom: false })}"` : "";
     const face = u
-      ? `<img class="rl-chapintro-face" src="${u}" alt="">`
+      ? `<img class="rl-chapintro-face" src="${u}" alt=""${ps}>`
       : `<div class="rl-chapintro-face rl-chapintro-fb" style="--c:${leadChar.color || "#888"}">${[...(leadChar.name || "?")][0] || "?"}</div>`;
     speak = `<div class="rl-chapintro-speak">${face}<div class="rl-chapintro-bubble"><div class="rl-chapintro-who" style="color:${leadChar.color || "var(--rl-gold)"}">${leadChar.name || ""}</div><div class="rl-chapintro-line">${leadLine}</div></div></div>`;
   }
@@ -804,8 +806,9 @@ export function showRogueliteChapterClear(container, opts = {}) {
   let speak = "";
   if (leadChar && leadLine) {
     const u = charImages?.url?.(leadChar, "portrait") || charImages?.url?.(leadChar, "icon") || "";
+    const ps = u && u === charImages?.url?.(leadChar, "portrait") ? ` style="${portraitStyleAttr(leadChar, { zoom: false })}"` : "";
     const face = u
-      ? `<img class="rl-chapclear-face" src="${u}" alt="">`
+      ? `<img class="rl-chapclear-face" src="${u}" alt=""${ps}>`
       : `<div class="rl-chapclear-face rl-chapclear-fb" style="--c:${leadChar.color || "#888"}">${[...(leadChar.name || "?")][0] || "?"}</div>`;
     speak = `<div class="rl-chapclear-speak">${face}<div class="rl-chapclear-bubble"><div class="rl-chapclear-who" style="color:${leadChar.color || "var(--rl-gold)"}">${leadChar.name || ""}</div><div class="rl-chapclear-line">${leadLine}</div></div></div>`;
   }
@@ -837,8 +840,9 @@ export function showRogueliteBossIntro(container, opts = {}) {
   const panel = (b) => {
     const c = b.char || {};
     const u = charImages?.url?.(c, "portrait") || charImages?.url?.(c, "icon") || "";
+    const ps = u && u === charImages?.url?.(c, "portrait") ? ` style="${portraitStyleAttr(c, { zoom: false })}"` : "";
     const art = u
-      ? `<img class="rl-bossintro-art" src="${u}" alt="">`
+      ? `<img class="rl-bossintro-art" src="${u}" alt=""${ps}>`
       : `<div class="rl-bossintro-art rl-bossintro-art-fb" style="--c:${c.color || "#888"}">${[...(c.name || "?")][0] || "?"}</div>`;
     return `
       <div class="rl-bossintro-boss" style="--c:${c.color || "var(--rl-gold)"}">
@@ -960,7 +964,7 @@ export function showRogueliteEvent(container, opts = {}) {
   ov.className = "rl-overlay rl-event";
   const portrait = speakerChar ? (charImages?.url?.(speakerChar, "portrait") || "") : "";
   const art = portrait
-    ? `<img class="rl-event-art" src="${portrait}" alt="">`
+    ? `<img class="rl-event-art" src="${portrait}" alt="" style="${portraitStyleAttr(speakerChar, { zoom: false })}">`
     : `<div class="rl-event-art rl-event-art-fb"></div>`;
   const linesHtml = (event.lines || []).map((l) => `<p>${l}</p>`).join("");
   ov.innerHTML = `
