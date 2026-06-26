@@ -91,6 +91,12 @@ export const ROGUELITE_ITEM_MASTER = [
     desc: "宴会で酔いそうになると、身代わりに割れて二日酔いを防ぐ（発動すると消える）。",
     effect: { kind: "trigger", on: "banquet" },
   },
+  {
+    // 点負け（合計HPで競り負け）の全員ダメージを、ラン中1回だけ身代わりに割れて無効化する。
+    id: "scoreguard-charm", name: "競り守りの護符", kind: "trigger", cost: 34, glyph: "🛡",
+    desc: "ラン中1回、合計HPで競り負けても、身代わりに割れて着卓した味方への痛手を無効化する（発動で消える）。",
+    effect: { kind: "trigger", on: "hpRace" },
+  },
   // ---- 常設（スロットに入れている間ずっと） ----
   {
     id: "merchant-scale", name: "商人の天秤", kind: "passive", cost: 40,

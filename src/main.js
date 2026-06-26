@@ -61,7 +61,7 @@ import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from 
 import { applyCard, applyEffect, clusterDealMul, clusterLevelUp, recomputeClusterCount } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER, clusterOf } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
-import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie, consumeBustSaver, hasForesight } from "./roguelite/itemEffects.js";
+import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie, consumeBustSaver, consumeHpRaceSaver, hasForesight } from "./roguelite/itemEffects.js";
 import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear, setRlLogSink, flushRlLog, setRlRunId } from "./roguelite/rogueliteLog.js";
 import { supabase } from "./config/supabase.js";
 import { bgDef } from "./data/backgroundMaster.js";
@@ -2616,6 +2616,9 @@ function onRogueliteBattleEnd(result) {
   const enemyEndHp = (pairBattleData?.hp?.[1] ?? 0) + (pairBattleData?.hp?.[3] ?? 0);
   const dominated = allyEndHp > enemyEndHp; // 自パーティのHP合計が相手を上回って決着したか（計測ログ用）
   const outHpRace = allyEndHp < enemyEndHp; // 合計HPで競り負け＝全員にペナルティ（緊張感の主動力）
+  // 競り守りの護符（trigger/on=hpRace）：点負けの痛手をラン中1回だけ無効化。持っていれば自動発動して消える。
+  const warded = outHpRace && consumeHpRaceSaver(run);
+  const applyPenalty = outHpRace && !warded; // 実際にペナルティを与えるか（護符で防げば与えない）
   // 着卓していた2人へHPを戻す（同定）。ソロ(影武者)は2席の低い方をその1人のHPに。
   const seated = rogueliteState?.seated || seatedAllies(run);
   if (seated[1] === seated[0]) {
@@ -2664,7 +2667,7 @@ function onRogueliteBattleEnd(result) {
   run.coins = (run.coins || 0) + coins;
   // 役満ご祝儀：味方が役満を和了して踏破したら、ドラフトをオールレジェンダリーに。
   const yakuman = !!rogueliteState.yakumanThisBattle; rogueliteState.yakumanThisBattle = false;
-  rlLog("clear", { floor: run.floor, biome: biomeOf(run)?.id, ko: !!result.koAny, hpRatio: +(result.hpRatio ?? 0).toFixed(2), dominated, yakuman, gamble: isGamble, pursue: pursued, coins, ...rlBuffSnap(run) });
+  rlLog("clear", { floor: run.floor, biome: biomeOf(run)?.id, ko: !!result.koAny, hpRatio: +(result.hpRatio ?? 0).toFixed(2), dominated, warded, yakuman, gamble: isGamble, pursue: pursued, coins, ...rlBuffSnap(run) });
   // 賭場勝利は高レア確定気味。通常は ko/HP/追撃でバイアス。ご祝儀は全レジェ。
   const cards = yakuman
     ? rollDraft(run, { allLegendary: true })
@@ -2675,9 +2678,11 @@ function onRogueliteBattleEnd(result) {
     floor: run.floor, cards, charImages, coins: run.coins || 0, run,
     bonus: yakuman
       ? { label: "役満ご祝儀", note: "役満を決めて踏破！ オールレジェンダリーの大盤振る舞い" }
+      // 競り守りの護符が割れて点負けの痛手を防いだら、その旨を明示（HPが減らない理由を legible に）。
+      : warded ? { label: "競り守り", note: "競り守りの護符が割れ、競り負けの痛手を防いだ。" }
       : null,
     // 合計HPで競り負けたら被弾を明示（次画面でHPバーが下がる理由を legible に）。割合は定数に追従。
-    penalty: outHpRace ? { label: "競り負け", note: `合計HPで及ばず — 着卓していた味方に 最大HPの${Math.round(ROGUELITE_HP_LOSS_PENALTY_FRAC * 100)}%ダメージ` } : null,
+    penalty: applyPenalty ? { label: "競り負け", note: `合計HPで及ばず — 着卓していた味方に 最大HPの${Math.round(ROGUELITE_HP_LOSS_PENALTY_FRAC * 100)}%ダメージ` } : null,
     onPick: (card) => {
       // 計測（P9）：提示3枚(offered)と選択(picked)を必ず記録＝offlineで「カード別pick率」を出せる。
       // 提示時に未取得カードを把握 → 選ばれた率を見て「居場所のないカード(pick率が極端に低い)」を炙る。
@@ -2727,7 +2732,7 @@ function onRogueliteBattleEnd(result) {
   //   （HPバー減少＋赤い被ダメ数字＋撃沈スタンプ＋揺れ＋SE）を見せ、閉じたらダメージを確定して本処理へ。
   // 撃墜あり・救済なし＝この一撃で残り1人以下になれば proceedAfterBattle 内の全滅判定でラン終了。
   const seatedPenTargets = [...new Set(seated)].filter((m) => m && m.hp > 0); // 着卓2人（ソロは重複排除）・生存のみ
-  const penTargets = outHpRace
+  const penTargets = applyPenalty
     ? seatedPenTargets.map((m) => ({ m, before: m.hp, after: Math.max(0, m.hp - Math.round(m.hpMax * ROGUELITE_HP_LOSS_PENALTY_FRAC)) }))
     : [];
   // 競り負けでダメージを受けた着卓メンバーは、この1戦の踏破回復から除外（ペナルティを直後の回復で打ち消さない）。

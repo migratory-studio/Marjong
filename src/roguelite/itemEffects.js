@@ -87,6 +87,14 @@ export function consumeBustSaver(run) {
   return true;
 }
 
+// 点負け救済：競り守りの護符(trigger/on=hpRace)を持っていれば消費して true（＝合計HP敗北の痛手を無効化）。
+export function consumeHpRaceSaver(run) {
+  const id = (run?.items || []).find((x) => { const e = itemById(x)?.effect; return e?.kind === "trigger" && e.on === "hpRace"; });
+  if (!id) return false;
+  run.items.splice(run.items.indexOf(id), 1);
+  return true;
+}
+
 // 先見の札（次の層を見通す道具）を持っているか。
 export function hasForesight(run) {
   return (run?.items || []).some((x) => itemById(x)?.effect?.foresight);
