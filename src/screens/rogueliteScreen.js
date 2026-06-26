@@ -776,7 +776,7 @@ export function showRogueliteChapterIntro(container, opts = {}) {
   let speak = "";
   if (leadChar && leadLine) {
     const u = charImages?.url?.(leadChar, "portrait") || charImages?.url?.(leadChar, "icon") || "";
-    const ps = u && u === charImages?.url?.(leadChar, "portrait") ? ` style="${portraitStyleAttr(leadChar, { zoom: false })}"` : "";
+    const ps = u && u === charImages?.url?.(leadChar, "portrait") ? ` style="${portraitStyleAttr(leadChar, { zoom: false, translate: false })}"` : "";
     const face = u
       ? `<img class="rl-chapintro-face" src="${u}" alt=""${ps}>`
       : `<div class="rl-chapintro-face rl-chapintro-fb" style="--c:${leadChar.color || "#888"}">${[...(leadChar.name || "?")][0] || "?"}</div>`;
@@ -806,7 +806,7 @@ export function showRogueliteChapterClear(container, opts = {}) {
   let speak = "";
   if (leadChar && leadLine) {
     const u = charImages?.url?.(leadChar, "portrait") || charImages?.url?.(leadChar, "icon") || "";
-    const ps = u && u === charImages?.url?.(leadChar, "portrait") ? ` style="${portraitStyleAttr(leadChar, { zoom: false })}"` : "";
+    const ps = u && u === charImages?.url?.(leadChar, "portrait") ? ` style="${portraitStyleAttr(leadChar, { zoom: false, translate: false })}"` : "";
     const face = u
       ? `<img class="rl-chapclear-face" src="${u}" alt=""${ps}>`
       : `<div class="rl-chapclear-face rl-chapclear-fb" style="--c:${leadChar.color || "#888"}">${[...(leadChar.name || "?")][0] || "?"}</div>`;
@@ -840,7 +840,7 @@ export function showRogueliteBossIntro(container, opts = {}) {
   const panel = (b) => {
     const c = b.char || {};
     const u = charImages?.url?.(c, "portrait") || charImages?.url?.(c, "icon") || "";
-    const ps = u && u === charImages?.url?.(c, "portrait") ? ` style="${portraitStyleAttr(c, { zoom: false })}"` : "";
+    const ps = u && u === charImages?.url?.(c, "portrait") ? ` style="${portraitStyleAttr(c, { zoom: false, translate: false })}"` : "";
     const art = u
       ? `<img class="rl-bossintro-art" src="${u}" alt=""${ps}>`
       : `<div class="rl-bossintro-art rl-bossintro-art-fb" style="--c:${c.color || "#888"}">${[...(c.name || "?")][0] || "?"}</div>`;
@@ -964,7 +964,7 @@ export function showRogueliteEvent(container, opts = {}) {
   ov.className = "rl-overlay rl-event";
   const portrait = speakerChar ? (charImages?.url?.(speakerChar, "portrait") || "") : "";
   const art = portrait
-    ? `<img class="rl-event-art" src="${portrait}" alt="" style="${portraitStyleAttr(speakerChar, { zoom: false })}">`
+    ? `<img class="rl-event-art" src="${portrait}" alt="" style="${portraitStyleAttr(speakerChar, { zoom: false, translate: false })}">`
     : `<div class="rl-event-art rl-event-art-fb"></div>`;
   const linesHtml = (event.lines || []).map((l) => `<p>${l}</p>`).join("");
   ov.innerHTML = `

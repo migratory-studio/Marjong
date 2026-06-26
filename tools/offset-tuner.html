@@ -106,7 +106,7 @@ const asset = (p) => p ? ("../" + p) : "";
 const LS_KEY = "offsetTuner.v1";
 
 // ---- defaults / parse / format -------------------------------------------
-const DEF = { portrait:{x:50,y:0,zoom:1}, icon:{x:50,y:0}, home:{x:0,y:0,zoom:1}, scenario:{x:0,y:0,zoom:1} };
+const DEF = { portrait:{x:50,y:0,zoom:1,ox:0,oy:0}, icon:{x:50,y:0}, home:{x:0,y:0,zoom:1}, scenario:{x:0,y:0,zoom:1} };
 const EMO_DEF = { side:"left", x:67, y:3 }; // 未設定キャラの初期エモート位置（描画既定 size*0.42 / size*0.02 相当）
 const KW = { left:0, right:100, top:0, bottom:100, center:50 };
 // エモート可視化に使う代表スプライト（notice / STD: 400px枠・5×8）。本物の見え方を確認するため実画像を使う。
@@ -137,6 +137,8 @@ function initialState(c){
   const ip = c.imagePos || {};
   const portrait = parseObjPos(ip.portrait || c.portraitPos) || {...DEF.portrait};
   portrait.zoom = (ip.portraitZoom!=null && Number(ip.portraitZoom)>0) ? Number(ip.portraitZoom) : 1;
+  const po = ip.portraitOffset || {};
+  portrait.ox = parsePct(po.x,0); portrait.oy = parsePct(po.y,0);
   const icon = parseObjPos(ip.icon) || {...DEF.icon};
   const h = ip.home || {};
   const home = { x: parsePct(h.x,0), y: parsePct(h.y,0), zoom: (h.zoom!=null? Number(h.zoom):1) };
@@ -157,6 +159,10 @@ function toImagePos(st){
   const out={};
   if(!eqXY(st.portrait,DEF.portrait)) out.portrait = objPosStr(st.portrait);
   if(Math.abs((st.portrait.zoom||1)-1)>=0.005) out.portraitZoom = Math.round(st.portrait.zoom*100)/100;
+  const po={};
+  if(Math.abs(st.portrait.ox||0)>=0.05) po.x = num(st.portrait.ox)+"%";
+  if(Math.abs(st.portrait.oy||0)>=0.05) po.y = num(st.portrait.oy)+"%";
+  if(Object.keys(po).length) out.portraitOffset = po;
   if(!eqXY(st.icon,DEF.icon)) out.icon = objPosStr(st.icon);
   const h={};
   if(Math.abs(st.home.x)>=0.05) h.x = num(st.home.x)+"%";
@@ -182,6 +188,12 @@ function imagePosLiteral(ip){
   const parts=[];
   if(ip.portrait) parts.push(`portrait: ${JSON.stringify(ip.portrait)}`);
   if(ip.portraitZoom!=null) parts.push(`portraitZoom: ${ip.portraitZoom}`);
+  if(ip.portraitOffset){
+    const op=[];
+    if(ip.portraitOffset.x) op.push(`x: ${JSON.stringify(ip.portraitOffset.x)}`);
+    if(ip.portraitOffset.y) op.push(`y: ${JSON.stringify(ip.portraitOffset.y)}`);
+    parts.push(`portraitOffset: { ${op.join(", ")} }`);
+  }
   if(ip.icon) parts.push(`icon: ${JSON.stringify(ip.icon)}`);
   if(ip.home){
     const hp=[];
@@ -215,9 +227,18 @@ function charOutput(st){
 let store = {};
 try{ store = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); }catch{ store={}; }
 const states = {}; // id -> editing state
-for(const c of CHARACTER_MASTER){
-  states[c.id] = store[c.id] ? structuredClone(store[c.id]) : initialState(c);
+// 保存値を既定にマージしてハイドレート（古い保存に新フィールド ox/oy 等が無くても NaN にしない）。
+function hydrate(c){
+  const base=initialState(c), saved=store[c.id];
+  if(!saved) return base;
+  const m={};
+  for(const k of Object.keys(base)){
+    const bv=base[k], sv=saved[k];
+    m[k] = (bv && typeof bv==="object") ? { ...bv, ...(sv||{}) } : (sv!=null ? sv : bv);
+  }
+  return m;
 }
+for(const c of CHARACTER_MASTER){ states[c.id] = hydrate(c); }
 function persist(){
   const dirty={};
   for(const c of CHARACTER_MASTER){
@@ -311,29 +332,31 @@ function renderMain(){
 // --- portrait (立ち絵カード, cover) ---
 function portraitCard(c,st){
   const card=document.createElement("div"); card.className="card";
-  card.innerHTML=`<h2>立ち絵カード <span class="tag">portrait.png / cover・ドラッグ＝位置 / スクロール＝ズーム</span></h2>`;
+  card.innerHTML=`<h2>立ち絵カード <span class="tag">portrait.png / cover・ドラッグ＝上下左右に移動 / スクロール＝ズーム</span></h2>`;
   const frame=document.createElement("div"); frame.className="frame cover";
-  frame.style.width="198px"; frame.style.height="252px";
+  const FW=198, FH=252; frame.style.width=FW+"px"; frame.style.height=FH+"px";
   const img=document.createElement("img"); img.src=asset(c.assets?.portrait);
   img.onerror=()=>{ frame.style.opacity=.3; };
   const grid=document.createElement("div"); grid.className="grid";
   frame.appendChild(img); frame.appendChild(grid); card.appendChild(frame);
   const apply=()=>{
-    img.style.objectPosition=objPosStr(st.portrait);
-    img.style.transform = st.portrait.zoom!==1 ? `scale(${st.portrait.zoom})` : "";
-    read.textContent=`${objPosStr(st.portrait)}  zoom:${Math.round(st.portrait.zoom*100)/100}`;
+    const p=st.portrait; const ox=p.ox||0, oy=p.oy||0, zoom=p.zoom||1;
+    img.style.objectPosition=objPosStr(p);
+    const parts=[]; if(ox||oy) parts.push(`translate(${num(ox)}%, ${num(oy)}%)`); if(zoom!==1) parts.push(`scale(${zoom})`);
+    img.style.transform=parts.join(" "); img.style.transformOrigin="center";
+    read.textContent=`移動 x:${num(ox)}% y:${num(oy)}%  zoom:${Math.round(zoom*100)/100}`;
   };
   const ctl=document.createElement("div"); ctl.className="ctl";
-  ctl.innerHTML=`<div class="row"><span>pos/zoom</span> <b class="read"></b>
-     <button class="mini">既定に戻す</button></div>`;
+  ctl.innerHTML=`<div class="row"><b class="read"></b><button class="mini">既定に戻す</button></div>`;
   const read=ctl.querySelector(".read");
   ctl.querySelector("button").onclick=()=>{ st.portrait={...DEF.portrait}; apply(); persist(); renderOutput(); };
   card.appendChild(ctl);
   let s0;
+  // 移動は translate（左右も動く）。縦長立ち絵は cover で横幅ぴったり＝object-position では
+  // 左右に動かせないため、寄せは translate に統一（ゲーム側もクリップ枠内で同じ transform）。
   attachDrag(frame, ()=>{ s0={...st.portrait}; }, (dx,dy)=>{
-    const ov=coverOverflow(frame,img);
-    if(ov.ox>0) st.portrait.x=clamp(s0.x - dx*100/ov.ox,0,100);
-    if(ov.oy>0) st.portrait.y=clamp(s0.y - dy*100/ov.oy,0,100);
+    st.portrait.ox=clamp((s0.ox||0) + dx*100/FW, -100, 100);
+    st.portrait.oy=clamp((s0.oy||0) + dy*100/FH, -100, 100);
     apply();
   });
   attachWheelZoom(frame, ()=>st.portrait.zoom, (z)=>st.portrait.zoom=z, apply);

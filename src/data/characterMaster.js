@@ -22,6 +22,8 @@
 //   画面の用途ごとに切り抜きの収まりが変わるので、用途別に基準点や寄せ/拡大を持てる。
 //     - portrait     … 立ち絵カバーの object-position（旧 portraitPos の後継。未設定はそちらへフォールバック）
 //     - portraitZoom … 立ち絵カバーの拡大率（任意・既定1）。cover画像を scale で寄る／引く
+//     - portraitOffset … 立ち絵カバーの移動 { x, y }（translate%）。縦長立ち絵は cover で横幅ぴったり＝
+//                        object-position では左右に動かせないので、左右の寄せはこれで行う
 //     - icon         … icon.png 顔アイコンの object-position（全アイコン共通）
 //     - home         … 対戦ホーム拡大の { x, y, zoom }（translate%＋拡大）
 //     - scenario     … 紙芝居立ち絵(contain全身)の見せ方 { x, y, zoom }（バストアップ化の足場・上端基準）

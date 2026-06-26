@@ -31,14 +31,34 @@ export function portraitZoomOf(c) {
   return z > 0 ? z : 1;
 }
 
-// 立ち絵 <img> に object-position＋ズームをまとめて適用するヘルパ（cover枠の中で使う）。
+// 立ち絵カバーの移動オフセット { x, y }（translate%）。imagePos.portraitOffset（任意）。
+//   縦長立ち絵は cover で横幅ぴったり＝object-position では左右に動かせないので、左右の寄せは
+//   これ(translate)で行う。上下も微調整可。クリップ容器内でのみ使う（はみ出しは枠で切る）。
+export function portraitOffsetOf(c) {
+  const o = c?.imagePos?.portraitOffset;
+  if (!o) return null;
+  const x = o.x || "0%", y = o.y || "0%";
+  if ((x === "0%" || !o.x) && (y === "0%" || !o.y)) return null;
+  return { x, y };
+}
+
+// 立ち絵カバーの transform（translate＋scale）を組み立てる。無変形なら空文字。
+function portraitTransform(c) {
+  const z = portraitZoomOf(c), o = portraitOffsetOf(c);
+  const parts = [];
+  if (o) parts.push(`translate(${o.x}, ${o.y})`);
+  if (z !== 1) parts.push(`scale(${z})`);
+  return parts.join(" ");
+}
+
+// 立ち絵 <img> に object-position＋移動＋ズームをまとめて適用するヘルパ（cover枠の中で使う）。
 //   ※ object-fit:contain の紙芝居立ち絵には使わない（あちらは別系統）。
 export function applyPortraitCrop(img, c) {
   if (!img) return;
   img.style.objectPosition = portraitPosOf(c);
-  const z = portraitZoomOf(c);
-  if (z !== 1) { img.style.transform = `scale(${z})`; img.style.transformOrigin = "center"; }
-  else { img.style.transform = ""; }
+  const tr = portraitTransform(c);
+  img.style.transform = tr;
+  if (tr) img.style.transformOrigin = "center";
 }
 
 // icon.png の顔アイコンの object-position（rl顔 / HPボード / autobattle席 など全アイコン共通）。
@@ -47,11 +67,15 @@ export function iconPosOf(c) {
   return c?.imagePos?.icon || DEFAULT_OBJPOS;
 }
 
-// テンプレ文字列(innerHTML)用の立ち絵 style 値（object-position[＋scale]）。
-//   zoom:false でズームを外す（クリップ容器が無いカバー枠＝楼光アート等で transform はみ出しを避ける）。
-export function portraitStyleAttr(c, { zoom = true } = {}) {
+// テンプレ文字列(innerHTML)用の立ち絵 style 値（object-position[＋translate＋scale]）。
+//   transform:false / zoom:false で変形を外す（クリップ容器が無いカバー枠＝楼光アート等で
+//   transform のはみ出しを避ける。その場合は object-position だけ効かせる）。
+export function portraitStyleAttr(c, { zoom = true, translate = true } = {}) {
   let s = `object-position:${portraitPosOf(c)}`;
-  if (zoom) { const z = portraitZoomOf(c); if (z !== 1) s += `;transform:scale(${z})`; }
+  const parts = [];
+  if (translate) { const o = portraitOffsetOf(c); if (o) parts.push(`translate(${o.x}, ${o.y})`); }
+  if (zoom) { const z = portraitZoomOf(c); if (z !== 1) parts.push(`scale(${z})`); }
+  if (parts.length) s += `;transform:${parts.join(" ")}`;
   return s;
 }
 
