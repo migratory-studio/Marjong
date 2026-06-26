@@ -2633,6 +2633,10 @@ function onRogueliteBattleEnd(result) {
   enterRogueliteAmbience(); // 専用背景＋探索BGMへ復帰（対局中の in-game BGM から戻す）
   // 決着後の本処理（ボス記憶→全滅判定→回復→光貨→ドラフト）。合計HP敗北の被弾演出を挟む場合は
   // その演出を閉じてから（＝ペナルティをデータ確定してから）呼ぶ。
+  // 合計HP敗北ペナルティを受けた着卓2人は、この1戦の踏破回復から除外する（下で代入）。
+  // ※ さもないと「ペナルティ20%」を直後の踏破回復(最大41%超)が打ち消し、競り負けたのに全回復して見える。
+  //   競り負け＝手負いのまま次へ、を成立させるため当該メンバーは今回だけ回復しない（控えは通常通り回復）。
+  let regenSkip = null;
   const proceedAfterBattle = () => {
   // ボス記憶（提案B）：本戦（追撃でない）のボス階決着を通算勝敗へ刻む。勝敗＝全滅でなく踏破できたか。
   if (rogueliteState.floorType?.enemy === "boss" && !rogueliteState.pursuing) recordBossEncounter(run, !runWiped(run));
@@ -2645,7 +2649,10 @@ function onRogueliteBattleEnd(result) {
   const perf = Math.max(0.25, Math.min(1.3, 0.25 + (result.hpRatio ?? 0.5) * 0.85 + (result.koAny ? 0.25 : 0)));
   const regenMul = biomeMods(run).regenMul || 1; // 温泉郷など層で回復量UP
   const regenFrac = run.tuning?.regenFrac ?? REGEN_FRAC; // 大章ごとに踏破回復を上書きできる（無指定=グローバル既定）
-  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * regenFrac * perf * regenMul));
+  for (const m of run.party) {
+    if (m.hp <= 0 || regenSkip?.has(m)) continue; // トんだメンバー＋競り負けペナルティを受けた着卓2人は回復しない
+    m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * regenFrac * perf * regenMul));
+  }
   // 光貨を獲得（深いほど・強敵/ボス/撃破/追撃で増す。賭場勝利は2倍）。
   const isGamble = !!rogueliteState.gamble; rogueliteState.gamble = false;
   const pursued = !!rogueliteState.pursuing;
@@ -2723,6 +2730,8 @@ function onRogueliteBattleEnd(result) {
   const penTargets = outHpRace
     ? seatedPenTargets.map((m) => ({ m, before: m.hp, after: Math.max(0, m.hp - Math.round(m.hpMax * ROGUELITE_HP_LOSS_PENALTY_FRAC)) }))
     : [];
+  // 競り負けでダメージを受けた着卓メンバーは、この1戦の踏破回復から除外（ペナルティを直後の回復で打ち消さない）。
+  if (penTargets.length) regenSkip = new Set(penTargets.map((t) => t.m));
   if (penTargets.length) {
     showRoguelitePenaltyFx({ targets: penTargets, onDone: () => { for (const t of penTargets) t.m.hp = t.after; proceedAfterBattle(); } });
   } else {
