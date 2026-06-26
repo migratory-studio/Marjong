@@ -66,7 +66,8 @@ export const CHARACTER_MASTER = [
     profile: "「ツモれば勝ち」が口癖の楽天家。理屈より勘、守りより速さを信じる。引きの強さは天性だが、点棒の管理だけはからっきし。",
     stats: { startingPoints: 14000 }, // glass cannon raised a touch (low win rate / high bust)
     assets: assetsFor("shiyue"),
-    emotePos: { side: "left", x: -10, y: -82 },
+    imagePos: { portraitZoom: 1.19, portraitOffset: { x: "-14.1%", y: "8.7%" }, home: { x: "-9%", y: "-0.2%", zoom: 0.84 }, scenario: { x: "-19%", y: "-16.6%", zoom: 2.01 } },
+    emotePos: { side: "right", x: -162, y: -54 },
     // 選択画面ゲージ用パラメータ（1〜5）: attack 攻め / defense 守り / quirk 癖 / difficulty 難易度
     params: { attack: 4, defense: 2, quirk: 3, difficulty: 2 },
     abilities: [{ abilityId: "lucky-draw", params: {} }],
@@ -81,6 +82,8 @@ export const CHARACTER_MASTER = [
     profile: "感情を映さない無機質な打ち手。手が聴牌の一歩手前で空回りすること——イーシャンテン地獄——を何より嫌う。残る山に光（ルクス）を当てて必要牌の在処を読み切り、在るなら確実に手繰り寄せ、運の揺らぎを零（ゼロ）にする。在らぬときの沈黙さえ、次の一手の材料に変える。",
     stats: { startingPoints: 13000 },
     assets: assetsFor("yobinin"),
+    imagePos: { portraitZoom: 1.19, portraitOffset: { x: "1%", y: "-3.2%" }, home: { x: "-0.7%", y: "-3.5%", zoom: 0.89 }, scenario: { x: "-8.6%", y: "-29.3%", zoom: 2.26 } },
+    emotePos: { side: "left", x: 57, y: -23 },
     params: { attack: 4, defense: 2, quirk: 5, difficulty: 4 },
     abilities: [{ abilityId: "zero-search", params: {} }],
   },
@@ -94,6 +97,8 @@ export const CHARACTER_MASTER = [
     profile: "詩玥と同じ卓で育った打ち手。あの日の喪失に、詩玥が『攻め』で応えたなら、凌雲は『護り』で応えた。多くを語らず、ただ前に立つ。卓を沈める致命の一撃だけを琥珀の盾で受け止め、守り抜いた先で、攻めることもまた護りだと知る。",
     stats: { startingPoints: 13000 }, // 守備特化: 盾で大物手を受ける代わり HP は低め
     assets: assetsFor("kuidoshi"),
+    imagePos: { home: { x: "0.2%", y: "-0.6%", zoom: 0.89 }, scenario: { x: "-4.1%", y: "-18%", zoom: 2.01 } },
+    emotePos: { side: "left", x: 81, y: -45 },
     params: { attack: 1, defense: 5, quirk: 3, difficulty: 3 },
     abilities: [{ abilityId: "amber-shield", params: {} }],
   },
@@ -107,6 +112,8 @@ export const CHARACTER_MASTER = [
     profile: "場の気配から危険牌を察知する守りの名手。攻めは苦手だが、放銃だけは決してしないと心に決めている。",
     stats: { startingPoints: 14000 }, // danger-sense keeps dealing-in low; nudged up
     assets: assetsFor("mamori"),
+    imagePos: { portraitOffset: { x: "-0.5%", y: "2%" }, home: { x: "2.7%", y: "0.1%", zoom: 0.84 }, scenario: { x: "-6.5%", y: "-18.5%", zoom: 1.5 } },
+    emotePos: { side: "left", x: 71, y: -19 },
     params: { attack: 1, defense: 5, quirk: 2, difficulty: 2 },
     abilities: [{ abilityId: "danger-sense", params: {} }],
   },
@@ -120,7 +127,7 @@ export const CHARACTER_MASTER = [
     profile: "端と字牌を偏愛する変わり者。么九牌を引き寄せ、国士無双や混老頭といった大物手を狙い続ける夢追い人。",
     stats: { startingPoints: 16000 }, // weakest ability in short games — compensate with HP
     assets: assetsFor("yao_chu"),
-    imagePos: { home: { x: "18%", zoom: 1.12 } }, // 全身立ち・顔が左寄り＝右へ寄せてバストアップ
+    imagePos: { portraitZoom: 1.12, portraitOffset: { x: "11.6%", y: "6.3%" }, home: { x: "15.5%", y: "-1.1%", zoom: 0.89 }, scenario: { x: "19.8%", y: "-17.1%", zoom: 1.59 } },
     params: { attack: 2, defense: 2, quirk: 5, difficulty: 5 },
     abilities: [{ abilityId: "rootou", params: {} }],
   },
@@ -138,10 +145,8 @@ export const CHARACTER_MASTER = [
     // 立ち絵が右傾ポーズで顔が右上にあるため、cover切り抜きの基準を右寄りにする
     // （未指定キャラは既定の "top center"）。値は CSS object-position。
     portraitPos: "72% 0%", // 後方互換（= imagePos.portrait）
-    imagePos: {
-      portrait: "72% 0%",
-      home: { x: "-18%", zoom: 1.1 }, // 全身・前傾ポーズ＝左へ寄せて顔を中央／少し拡大
-    },
+    imagePos: { portrait: "72% 0%", portraitZoom: 1.79, portraitOffset: { x: "-24.2%", y: "35.3%" }, home: { x: "-15.9%", y: "-1.8%", zoom: 0.78 }, scenario: { x: "-11.6%", y: "-19%", zoom: 1.5 } },
+    emotePos: { side: "left", x: -195, y: -49 },
     abilities: [{ abilityId: "chunchan", params: {} }],
   },
   {
@@ -154,7 +159,7 @@ export const CHARACTER_MASTER = [
     profile: "新たなドラ表示牌を次々めくり、場ごと巻き込んで打点を釣り上げる博徒。暴いたドラは全員の刃にもなり、めくり過ぎれば四開槓で局そのものが流れる諸刃の賭け。最強の打点と引き換えに、持ち点は賭け金のように紙のごとく脆い。ハイリスク・ハイリターンの体現者。",
     stats: { startingPoints: 12500 }, // glass cannon: strongest ability, paper HP（4人卓の床が深すぎたので微増）
     assets: assetsFor("doranie"),
-    imagePos: { home: { zoom: 0.82 } }, // 全身立ち＝引いて頭光輪〜胸元のバストアップに収める
+    imagePos: { portraitZoom: 1.79, portraitOffset: { x: "-2%", y: "23.8%" }, home: { x: "-1.2%", y: "-5.7%", zoom: 0.82 }, scenario: { x: "-2%", y: "-24.4%", zoom: 1.42 } },
     params: { attack: 5, defense: 1, quirk: 4, difficulty: 5 },
     abilities: [{ abilityId: "dora-pull", params: {} }],
   },
@@ -168,6 +173,8 @@ export const CHARACTER_MASTER = [
     profile: "あらゆる情報を「回収（リコール）」する寡黙なエージェント。一度手放した牌すら取引材料に変える老獪な打ち回しで、攻めにも守りにも化ける器用さを持つ。",
     stats: { startingPoints: 15000 }, // 1局1回の小回り能力。標準的なHP。
     assets: assetsFor("agentRE"),
+    imagePos: { portraitZoom: 2.69, portraitOffset: { x: "11.6%", y: "80.2%" }, home: { x: "3.6%", y: "-0.9%" }, scenario: { x: "1.9%", y: "-22.4%", zoom: 2.01 } },
+    emotePos: { side: "left", x: -7, y: -29 },
     params: { attack: 3, defense: 4, quirk: 3, difficulty: 3 },
     abilities: [{ abilityId: "recall-deal", params: {} }],
   },
@@ -181,6 +188,8 @@ export const CHARACTER_MASTER = [
     profile: "漆黒の星雲をまとう寡黙な打ち手。受ける痛みは人の倍、掴む喜びは半分——それでも尽きぬ膨大な持ち点で場に居座り続ける。極端な体質ゆえ立ち回りは一筋縄ではいかない、大いに癖の強い存在。",
     stats: { startingPoints: 25000 }, // huge HP to offset doubled losses / halved wins
     assets: assetsFor("nebula"),
+    imagePos: { portraitZoom: 2.01, portraitOffset: { x: "3.5%", y: "44.4%" }, home: { x: "0.8%", y: "-0.2%", zoom: 0.71 }, scenario: { x: "4.8%", y: "-16.6%", zoom: 1.42 } },
+    emotePos: { side: "left", x: 23, y: -27 },
     params: { attack: 1, defense: 4, quirk: 5, difficulty: 5 },
     abilities: [{ abilityId: "nebula-curse", params: {} }],
   },
@@ -194,6 +203,7 @@ export const CHARACTER_MASTER = [
     profile: "立ち上がりの一瞬に勝負を懸ける焔の打ち手。大物手なら炎は燃え盛り（1.5倍）、小さくまとめれば火は萎む（固定点）。安手で妥協せず、常に満貫以上を狙い続ける生き様の体現者。",
     stats: { startingPoints: 13000 }, // gambler: conditional burst, modest HP
     assets: assetsFor("homura"),
+    imagePos: { portraitZoom: 1.12, portraitOffset: { y: "3.2%" }, home: { x: "-2.3%", y: "-1.9%", zoom: 0.84 }, scenario: { x: "2.5%", y: "-21.5%", zoom: 1.69 } },
     params: { attack: 5, defense: 2, quirk: 4, difficulty: 4 },
     abilities: [{ abilityId: "homura", params: {} }],
   },
@@ -207,6 +217,8 @@ export const CHARACTER_MASTER = [
     profile: "勝負の天秤に己の点棒を積み上げる女博徒。立ち上がりの一瞬（1巡目）に賭け金を放り込み、アガりの果実を1.5倍・2倍へと膨らませる。負ければ賭け金は霧と消える——それでも彼女は笑って牌を握る、ハイリスクの体現者。",
     stats: { startingPoints: 18000 }, // 前払いの賭け金(最大1万)を払えるよう厚めのHP
     assets: assetsFor("kakeha_ruina"),
+    imagePos: { portraitZoom: 1.69, portraitOffset: { x: "17.7%", y: "36.5%" }, scenario: { x: "1%", y: "-14.6%", zoom: 1.9 } },
+    emotePos: { side: "left", x: 57, y: -61 },
     params: { attack: 5, defense: 2, quirk: 5, difficulty: 5 },
     abilities: [{ abilityId: "kakeha-bet", params: {} }],
   },
@@ -220,6 +232,8 @@ export const CHARACTER_MASTER = [
     profile: "名もなき疫病医のいでたちで卓を徘徊する妨害者。狙いを定めた相手から打牌の自由を奪い（強制ツモ切り）、手作りを停滞させる。攻めは地味だが、場を支配する不気味な存在感を放つ。",
     stats: { startingPoints: 16000 }, // disruptor: utility over raw offense, sturdy HP
     assets: assetsFor("janedoe"),
+    imagePos: { portraitZoom: 1.12, home: { x: "-3.9%", y: "-1.5%", zoom: 0.67 }, scenario: { x: "-2.2%", y: "-18.5%", zoom: 1.79 } },
+    emotePos: { side: "left", x: 67, y: 3 },
     params: { attack: 2, defense: 3, quirk: 5, difficulty: 4 },
     abilities: [{ abilityId: "jane-doe", params: {} }],
   },
@@ -228,15 +242,14 @@ export const CHARACTER_MASTER = [
     name: "ビビ",
     reading: "ビビ",
     color: "#5aa9e6",
-    // 紙芝居エモートの表示位置（立ち絵の頭の左上に浮かせる）。全身立ち絵で頭が中央寄り
-    // なので、左端からやや内側(x)＋頭上(y)へ。実機で調整した値。
-    emotePos: { side: "left", x: -89, y: -80 },
+    // 紙芝居エモートの表示位置（立ち絵の頭付近に浮かせる）。実機（調整ツール）で詰めた値。
+    emotePos: { side: "left", x: 27, y: -56 },
     role: "blocker",
     bio: "誰にも「奪わせない」無効化型。発動後6打牌のあいだ、ロン・ツモを帳消しにする（自分は失点せず、勝者も得点0）。",
     profile: "あどけない見た目に反し、誰にも「奪わせない」打ち手。身代わり人形のように被弾を引き受け（6打牌のあいだ）、彼女に勝ってもアガりは帳消し——勝者すら点棒を得られない。攻めずとも沈まない、粘り勝ちの申し子。",
     stats: { startingPoints: 12000 }, // trimmed: 両モードで勝率トップだったため減点（守備で粘れる分HP低め）
     assets: assetsFor("bibi"),
-    imagePos: { home: { x: "12%" } }, // 人物が左に寄っているため右へ寄せる
+    imagePos: { portraitZoom: 1.79, portraitOffset: { x: "7.1%", y: "38.9%" }, home: { x: "11.2%", y: "-0.6%", zoom: 0.79 }, scenario: { x: "21.3%", y: "-16.6%", zoom: 1.42 } },
     params: { attack: 2, defense: 5, quirk: 2, difficulty: 1 },
     abilities: [{ abilityId: "bibi", params: {} }],
   },
@@ -250,6 +263,8 @@ export const CHARACTER_MASTER = [
     profile: "全てを呑み込む深淵の渦を宿した打ち手。アガりという果実を永遠に手放した代償に、場が流れるたび点棒を蒐集する（流局の受取3倍）。誰も和了れぬまま局が枯れることこそ彼女の狩り——終局へ引きずり込む流し満貫は、役満の威をもって相手を沈める。",
     stats: { startingPoints: 23000 }, // 和了で攻めれない分の高HP。ネビュラ(25000)のちょい下。
     assets: assetsFor("charybdis"),
+    imagePos: { portraitZoom: 3, portraitOffset: { x: "-19.2%", y: "98%" }, home: { x: "-5.6%", y: "0.3%", zoom: 0.71 }, scenario: { x: "-7.7%", y: "-17.1%", zoom: 1.79 } },
+    emotePos: { side: "left", x: -43, y: -27 },
     params: { attack: 1, defense: 3, quirk: 5, difficulty: 5 },
     abilities: [{ abilityId: "abyss-collection", params: {} }],
   },
