@@ -2631,16 +2631,22 @@ function onRogueliteBattleEnd(result) {
   seated[0].hungover = false; if (seated[1] !== seated[0]) seated[1].hungover = false;
   rogueliteState.battleMods = null; rogueliteState.enduredSeats = null; // 「次の1戦だけ」効果は終了
   pairBattleData = null; honestCtx = null;
+  // 合計HP敗北ペナルティ対象（着卓2人・生存のみ）。被弾演出は #game-screen がまだ可視のうちに出す。
+  // ── #damage-overlay は #game-screen の子。先に roguelite 画面へ切り替えると display:none の中に
+  //    入り、「SEだけ鳴って何も見えない・HPも減って見えない」状態になる（過去はそれで全回復に見えた）。
+  const seatedPenTargets = [...new Set(seated)].filter((m) => m && m.hp > 0); // 着卓2人（ソロは重複排除）・生存のみ
+  const penTargets = applyPenalty
+    ? seatedPenTargets.map((m) => ({ m, before: m.hp, after: Math.max(0, m.hp - Math.round(m.hpMax * ROGUELITE_HP_LOSS_PENALTY_FRAC)) }))
+    : [];
+  // 競り負けでダメージを受けた着卓2人は、この1戦の踏破回復から除外（ペナルティを直後の回復で打ち消さない）。
+  // ※ さもないと「ペナルティ20%」を直後の踏破回復(最大41%超)が打ち消し、競り負けたのに全回復して見える。
+  const regenSkip = penTargets.length ? new Set(penTargets.map((t) => t.m)) : null;
+  // 決着後の本処理（roguelite画面へ戻し→ボス記憶→全滅判定→回復→光貨→ドラフト）。合計HP敗北の被弾演出を
+  // 挟む場合は、その演出を閉じてから（＝ペナルティをデータ確定してから）呼ぶ。
+  const proceedAfterBattle = () => {
   const host = el("roguelite-screen");
   goScreen("roguelite-screen");
   enterRogueliteAmbience(); // 専用背景＋探索BGMへ復帰（対局中の in-game BGM から戻す）
-  // 決着後の本処理（ボス記憶→全滅判定→回復→光貨→ドラフト）。合計HP敗北の被弾演出を挟む場合は
-  // その演出を閉じてから（＝ペナルティをデータ確定してから）呼ぶ。
-  // 合計HP敗北ペナルティを受けた着卓2人は、この1戦の踏破回復から除外する（下で代入）。
-  // ※ さもないと「ペナルティ20%」を直後の踏破回復(最大41%超)が打ち消し、競り負けたのに全回復して見える。
-  //   競り負け＝手負いのまま次へ、を成立させるため当該メンバーは今回だけ回復しない（控えは通常通り回復）。
-  let regenSkip = null;
-  const proceedAfterBattle = () => {
   // ボス記憶（提案B）：本戦（追撃でない）のボス階決着を通算勝敗へ刻む。勝敗＝全滅でなく踏破できたか。
   if (rogueliteState.floorType?.enemy === "boss" && !rogueliteState.pursuing) recordBossEncounter(run, !runWiped(run));
   // ゲームオーバー＝生存メンバーが1人以下（2人で着卓できない）。残り2人以上なら踏破（次の階へ）。
@@ -2727,16 +2733,10 @@ function onRogueliteBattleEnd(result) {
   }
   }; // ← proceedAfterBattle ここまで
 
-  // 合計HPで競り負けたら、その卓で打っていた2人（着卓メンバー）だけ最大HPの30%ダメージ。
-  // ※ 卓に座っていなかった控えは点棒勝負に絡んでいない＝対象外。インゲーム同様の被弾演出
-  //   （HPバー減少＋赤い被ダメ数字＋撃沈スタンプ＋揺れ＋SE）を見せ、閉じたらダメージを確定して本処理へ。
-  // 撃墜あり・救済なし＝この一撃で残り1人以下になれば proceedAfterBattle 内の全滅判定でラン終了。
-  const seatedPenTargets = [...new Set(seated)].filter((m) => m && m.hp > 0); // 着卓2人（ソロは重複排除）・生存のみ
-  const penTargets = applyPenalty
-    ? seatedPenTargets.map((m) => ({ m, before: m.hp, after: Math.max(0, m.hp - Math.round(m.hpMax * ROGUELITE_HP_LOSS_PENALTY_FRAC)) }))
-    : [];
-  // 競り負けでダメージを受けた着卓メンバーは、この1戦の踏破回復から除外（ペナルティを直後の回復で打ち消さない）。
-  if (penTargets.length) regenSkip = new Set(penTargets.map((t) => t.m));
+  // 合計HPで競り負けたら、その卓で打っていた着卓2人だけ最大HPの一定割合ダメージ。控え（卓外）は対象外。
+  // インゲーム同様の被弾演出（HPバー減少＋赤い被ダメ数字＋撃沈スタンプ＋揺れ＋SE）を #game-screen 上で
+  // 見せ、閉じたらダメージを確定して本処理（画面切替→踏破処理）へ。撃墜あり・救済なし＝この一撃で残り
+  // 1人以下になれば proceedAfterBattle 内の全滅判定でラン終了。
   if (penTargets.length) {
     showRoguelitePenaltyFx({ targets: penTargets, onDone: () => { for (const t of penTargets) t.m.hp = t.after; proceedAfterBattle(); } });
   } else {
