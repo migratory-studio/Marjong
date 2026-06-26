@@ -91,6 +91,14 @@
 - **制作物**：群像5人×楼光イベントを各slot≥2本（emphasis＝詩玥rlWipe点棒嫌い反転/rlResolve climb/覚えるchapterIntro、凌雲護り、御庭番は守る側の距離感）。数値レス＝tier名はセリフに出さない。
 - **取り込み**：emit-voice-master→voiceLineMaster.js→本体。固有が入れば withBossIntro 等の汎用フォールバックが自動で出なくなる。DoD＝同tierボスが別文・群像相槌固有・test/proposalB-sim.mjs で初遭遇→再戦→雪辱が固有口調に。
 
+### 2026-06-26 大章ごとの難度オーバーライド（tuning スキャフォルド）実装
+**握った方針**：clearFloor は既に大章ごと。**敵HP・被ダメ深度・一撃死上限・与ダメ深度・踏破回復も大章ごとに出せる土台**を組む（`bossFloors` と同じ「章データを run に通す」パターン）。mentor は無指定＝既定のまま挙動ゼロ変化。
+- **マージ方式**：`run.js` に `tv(tuning, key, fallback)` を新設＝`run.tuning[key] ?? 既定`。深度関数を tuning 受け取りに：`floorEnemyHp`/`floorEnemyLv`/`floorDamageMul`/`dealDepthMul`/`lethalCapFrac`（+ damageContext の guardCap フェードも tuning 参照）。call site（`enemyUnitForFloor`/`damageContext`）は `run.tuning` を渡す。`main.js` の踏破回復も `run.tuning?.regenFrac ?? REGEN_FRAC`。
+- **配線**：`newRun(...,tuning)` ＋ serialize/deserialize で往復。`startRogueliteRun` が `chap.tuning` を渡す。
+- **対応キー**：baseEnemyHp/enemyHpSlope/enemyHpCapFloor/enemyLvSlope（敵）・floorDmgStart/Slope/Knee/Accel（被ダメ深度）・lethalCapBase/FadeStart/FadeSlope（一撃死上限）・dealDepthStart/Slope（与ダメ深度）・regenFrac（踏破回復）。**章は変えたいノブだけ書く**（章マスタ header にキー一覧＋例：殺意高め/やさしい入門）。
+- **注意（運用）**：章ごとに難度を変えたら、その章のクリア率は `CLEARFLOOR=○ node test/roguelite-balance.mjs --clearrate` で要確認（harness は今もグローバル既定基準＝tuning章は別途検証 or 将来 harness を章tuning対応に拡張）。
+- 回帰：`roguelite.mjs` **1129 passed**（tuning=null は既定一致・tv 上書き/fallback・敵HP/被ダメ/一撃死の上書き・保存往復・enemyUnitForFloor 反映・mentorは無指定）／smoke ✅／sim完走／`balance --assert` **12 passed**（既定章はtuning無し＝グローバル不変＝後方互換）。
+
 ### 2026-06-26 バランス：無バフ「下手プレイ」の間口を広げる（踏破回復 0.18→0.32）
 **握った方針（ヒアリング）**：`--assert` の2 FAIL（無策noneの到達が浅い＝中堅 中央値15／目標25〜85）を**実態に合わせて緩めるのでなく、間口を広げる方向で解消**（下手でも~25-40潜れる健全カーブへ）。
 - **診断**：無策と最適(greedy)の差が **×9.5**（none中央値15 vs greedy142・max/p90は測定上限201張り付き）。原因は深度設計の転換（`floorDmgSlope` 4.0→0.25・難度の主役を翻数係数とF40開のlethalCapへ移行）で**greedyだけ深く伸び、無バフ勢は底上げされず**。

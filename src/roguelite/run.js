@@ -54,9 +54,24 @@ export const RL_TUNE = {
   tsumoCapMul: 0.7,         // ツモ被弾の席あたり上限＝ron上限×この値。「ツモられてもトビまではしない（が痛い）」。
 };
 
+// 大章ごとの難度オーバーライド解決。run.tuning（章マスタの tuning）が key を持てばそれ、無ければ既定。
+//   未指定の章は全キー既定＝グローバル（RL_TUNE/定数）と完全一致＝後方互換。
+//   対応キー：baseEnemyHp / enemyHpSlope / enemyHpCapFloor / enemyLvSlope（敵）、
+//             floorDmgStart / floorDmgSlope / floorDmgKnee / floorDmgAccel（被ダメ深度）、
+//             lethalCapBase / lethalCapFadeStart / lethalCapFadeSlope（一撃死上限）、
+//             dealDepthStart / dealDepthSlope（与ダメ深度）、regenFrac（踏破回復・main側で参照）。
+//   ※ clearFloor は章マスタの独立フィールド（tuning ではない）＝既に大章ごと。
+export function tv(tuning, key, fallback) {
+  const v = tuning && tuning[key];
+  return (v === undefined || v === null) ? fallback : v;
+}
+
 // 深度スケールの一撃死上限（最大HP比）。中盤まで固定、深層で 1.0（=上限なし）へ超ゆっくり漸近。
-export function lethalCapFrac(floor = 1) {
-  return Math.min(1, RL_TUNE.lethalCapBase + Math.max(0, floor - RL_TUNE.lethalCapFadeStart) * RL_TUNE.lethalCapFadeSlope);
+export function lethalCapFrac(floor = 1, tuning = null) {
+  const base = tv(tuning, "lethalCapBase", RL_TUNE.lethalCapBase);
+  const fadeStart = tv(tuning, "lethalCapFadeStart", RL_TUNE.lethalCapFadeStart);
+  const fadeSlope = tv(tuning, "lethalCapFadeSlope", RL_TUNE.lethalCapFadeSlope);
+  return Math.min(1, base + Math.max(0, floor - fadeStart) * fadeSlope);
 }
 
 // 翻数(点数帯)→被ダメ係数。gross＝和了者が得た素点（ron=満額・ツモ=合計）。RL_TUNE.hanTier を線形補間。
@@ -77,16 +92,20 @@ export const REGEN_FRAC = RL_TUNE.regenFrac; // 後方互換の別名（参照�
 
 // 深度被ダメ倍率：param 上限（敵Lv10）の先でも難度が上がり続ける＝エンドレスが必ず終わる。
 // ※ 敵の攻撃で味方が受ける失点にだけ乗る（味方同士の自摸被弾には乗せない＝rogueliteDamageDeltas 参照）。
-export function floorDamageMul(floor = 1) {
-  const lin = Math.max(0, floor - RL_TUNE.floorDmgStart) * RL_TUNE.floorDmgSlope;
-  const knee = Math.max(0, floor - (RL_TUNE.floorDmgKnee || Infinity));
-  return 1 + lin + knee * knee * (RL_TUNE.floorDmgAccel || 0); // 深層は二次加速＝必ず終わる壁
+export function floorDamageMul(floor = 1, tuning = null) {
+  const start = tv(tuning, "floorDmgStart", RL_TUNE.floorDmgStart);
+  const slope = tv(tuning, "floorDmgSlope", RL_TUNE.floorDmgSlope);
+  const kneeAt = tv(tuning, "floorDmgKnee", RL_TUNE.floorDmgKnee);
+  const accel = tv(tuning, "floorDmgAccel", RL_TUNE.floorDmgAccel);
+  const lin = Math.max(0, floor - start) * slope;
+  const knee = Math.max(0, floor - (kneeAt || Infinity));
+  return 1 + lin + knee * knee * (accel || 0); // 深層は二次加速＝必ず終わる壁
 }
 
 // 与ダメ深度ボーナス：階層が深いほど敵HPが増えるので、味方の与ダメも緩やかに伸ばして
 // 「アガリの手応え（敵HPがちゃんと削れる）」を深層まで保つ。
-export function dealDepthMul(floor = 1) {
-  return 1 + Math.max(0, floor - RL_TUNE.dealDepthStart) * RL_TUNE.dealDepthSlope;
+export function dealDepthMul(floor = 1, tuning = null) {
+  return 1 + Math.max(0, floor - tv(tuning, "dealDepthStart", RL_TUNE.dealDepthStart)) * tv(tuning, "dealDepthSlope", RL_TUNE.dealDepthSlope);
 }
 
 // ---- HP スケール ----
@@ -110,14 +129,17 @@ export function growMaxHp(run) {
 }
 
 // 階層→敵1人あたりのHP（線形成長・上限で頭打ち）。複利をやめ、深層でも傾斜がなだらか。
-export function floorEnemyHp(floor = 1) {
-  const f = Math.min(floor, ENEMY_HP_CAP_FLOOR);
-  return Math.round(ROGUELITE_BASE_ENEMY_HP * (1 + ENEMY_HP_SLOPE * (f - 1)));
+export function floorEnemyHp(floor = 1, tuning = null) {
+  const base = tv(tuning, "baseEnemyHp", ROGUELITE_BASE_ENEMY_HP);
+  const slope = tv(tuning, "enemyHpSlope", ENEMY_HP_SLOPE);
+  const capFloor = tv(tuning, "enemyHpCapFloor", ENEMY_HP_CAP_FLOOR);
+  const f = Math.min(floor, capFloor);
+  return Math.round(base * (1 + slope * (f - 1)));
 }
 
 // 階層→敵の強さ Lv（paramsFromLv 用・1..10 目安）。深いほど強い。
-function floorEnemyLv(floor = 1) {
-  return Math.max(1, Math.min(10, Math.round(1 + (floor - 1) * 0.6)));
+function floorEnemyLv(floor = 1, tuning = null) {
+  return Math.max(1, Math.min(10, Math.round(1 + (floor - 1) * tv(tuning, "enemyLvSlope", 0.6))));
 }
 
 // 1戦の「定められた局数」はフロア種別の baseHands が真実（マスタ駆動）。
@@ -152,7 +174,7 @@ export function carrySlotsFor(bestFloor = 0) {
 // パーティ（charById で解決済みの CHARACTER 互換配列）から新規ランを作る。
 //   party: [{ id, char, avatarHpMax }] の配列（先頭=あなた）。最低1人。
 //   seed:  乱数シード（省略時は時刻）。テストは固定 seed を渡す。
-export function newRun(party, seed, chapterId = null, bossPool = null, bossFloors = null) {
+export function newRun(party, seed, chapterId = null, bossPool = null, bossFloors = null, tuning = null) {
   const members = (party || []).map((p) => {
     const hpMax = allyScaledHp(p.avatarHpMax ?? p.char?.stats?.startingPoints ?? 25000);
     return { id: p.id, char: p.char, hpMax, hp: hpMax, baseHp: hpMax, hungover: false }; // baseHp=館の気脈の底上げ基準（初期HP最大）
@@ -162,6 +184,7 @@ export function newRun(party, seed, chapterId = null, bossPool = null, bossFloor
     chapterId: chapterId || null, // 登っている記憶（大章）id。踏破時の解禁・章フレーバーに使う（提案B）。
     bossPool: Array.isArray(bossPool) && bossPool.length ? [...bossPool] : null, // ボス陣＝この記憶の群像id（提案B・縦軸の結びつけ）
     bossFloors: bossFloors && typeof bossFloors === "object" ? { ...bossFloors } : null, // フロア別ボス配役（floor→[castId|"$mob"]）。無いフロアは bossPool フォールバック
+    tuning: tuning && typeof tuning === "object" ? { ...tuning } : null, // 大章ごとの難度オーバーライド（敵HP/被ダメ深度/一撃死上限等）。null=グローバル既定
     floor: 1,
     party: members, // 先頭2人が着卓・3人目以降は控え（パッシブ能力源）
     cards: [], // 取得カードid（履歴）
@@ -189,7 +212,7 @@ export function serializeRun(run) {
   if (!run || !Array.isArray(run.party)) return null;
   return {
     v: RUN_SAVE_VERSION,
-    seed: run.seed, chapterId: run.chapterId || null, bossPool: Array.isArray(run.bossPool) ? [...run.bossPool] : null, bossFloors: run.bossFloors ? { ...run.bossFloors } : null, floor: run.floor, cleared: run.cleared, coins: run.coins,
+    seed: run.seed, chapterId: run.chapterId || null, bossPool: Array.isArray(run.bossPool) ? [...run.bossPool] : null, bossFloors: run.bossFloors ? { ...run.bossFloors } : null, tuning: run.tuning ? { ...run.tuning } : null, floor: run.floor, cleared: run.cleared, coins: run.coins,
     skillLevel: run.skillLevel, forgeOvercharge: run.forgeOvercharge || 0, cards: [...(run.cards || [])], items: [...(run.items || [])],
     mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
     biomeRerolls: { ...(run.biomeRerolls || {}) }, orbsEarned: run.orbsEarned || 0,
@@ -209,7 +232,7 @@ export function deserializeRun(data, resolveChar) {
     party.push({ id: m.id, char, hp: m.hp, hpMax: m.hpMax, baseHp: m.baseHp ?? m.hpMax, hungover: !!m.hungover });
   }
   return {
-    seed: String(data.seed), chapterId: data.chapterId || null, bossPool: Array.isArray(data.bossPool) ? [...data.bossPool] : null, bossFloors: data.bossFloors && typeof data.bossFloors === "object" ? { ...data.bossFloors } : null, floor: data.floor || 1, party,
+    seed: String(data.seed), chapterId: data.chapterId || null, bossPool: Array.isArray(data.bossPool) ? [...data.bossPool] : null, bossFloors: data.bossFloors && typeof data.bossFloors === "object" ? { ...data.bossFloors } : null, tuning: data.tuning && typeof data.tuning === "object" ? { ...data.tuning } : null, floor: data.floor || 1, party,
     cards: [...(data.cards || [])], mods: { ...freshMods(), ...(data.mods || {}) },
     cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1, forgeOvercharge: data.forgeOvercharge || 0,
     items: [...(data.items || [])], nextBattle: data.nextBattle || {}, routeReroll: data.routeReroll || 0,
@@ -388,8 +411,8 @@ export function enemyUnitForFloor(run, floorType = null, salt = "") {
   const kind = floorType?.enemy || (isBossFloor(floor) ? "boss" : "mob");
   const hpMul = kind === "boss" ? 1.3 : kind === "named" ? 1.2 : 1;
   const lvBump = kind === "boss" ? 2 : kind === "named" ? 1 : 0;
-  const hp = Math.round(floorEnemyHp(floor) * hpMul);
-  const lv = Math.min(10, floorEnemyLv(floor) + lvBump + (biomeMods(run).enemyLvAdd || 0)); // 層で強敵化（喧噪の都）
+  const hp = Math.round(floorEnemyHp(floor, run.tuning) * hpMul);
+  const lv = Math.min(10, floorEnemyLv(floor, run.tuning) + lvBump + (biomeMods(run).enemyLvAdd || 0)); // 層で強敵化（喧噪の都）
   const rng = makeRng(`${run.seed}:floor${floor}:enemy${salt}`);
   const members = [];
 
@@ -474,7 +497,7 @@ function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}, deltas = 
   const im = itemMods(run); // 常設道具（光貨/回復/レア度/深度緩和）の集計
   const bm = biomeMods(run); // 層モディファイア（被ダメ/与ダメ）。帯ごとに変わる。
   // 深度被ダメ倍率は「軽身の符」等で緩和（1.0 を割らないよう (fdm-1) 部分にだけ係数）。層の被ダメ係数を最後に掛ける。
-  const baseFdm = floorDamageMul(run.floor || 1);
+  const baseFdm = floorDamageMul(run.floor || 1, run.tuning);
   const fdm = (1 + Math.max(0, baseFdm - 1) * (1 - im.fdmReduceFrac)) * (bm.dmgTakenMul || 1);
   // 翻数(点数帯)係数：和了者の得た素点(gross)で「手の重さ」を判定。ツモは払い手が複数＝負deltaが2席以上。
   const winnerGross = winnerSeat != null && deltas[winnerSeat] > 0 ? deltas[winnerSeat] : 0;
@@ -485,17 +508,17 @@ function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}, deltas = 
   // 博打(takeRaise)は上限を上げる＝大振り（高分散）／守備(takeCap)は上限を下げる＝鉄壁（低分散）。
   // 両取りなら最終的に守備の min が勝つ（守りが優先＝矛盾なく安全側）。
   const raise = clusterTakeRaiseFrac(run);
-  const baseCap = Math.min(1, lethalCapFrac(run.floor || 1) + raise);
+  const baseCap = Math.min(1, lethalCapFrac(run.floor || 1, run.tuning) + raise);
   const guardCapBase = clusterTakeCapFrac(run);
   const guardCap = guardCapBase == null ? null
-    : Math.min(1, guardCapBase + Math.max(0, (run.floor || 1) - RL_TUNE.lethalCapFadeStart) * RL_TUNE.lethalCapFadeSlope);
+    : Math.min(1, guardCapBase + Math.max(0, (run.floor || 1) - tv(run.tuning, "lethalCapFadeStart", RL_TUNE.lethalCapFadeStart)) * tv(run.tuning, "lethalCapFadeSlope", RL_TUNE.lethalCapFadeSlope));
   const cap = guardCap != null ? Math.min(baseCap, guardCap) : baseCap;
   return {
     winnerIsAlly: winnerSeat != null && roles[winnerSeat] === "ally",
     dealMul: Math.min(RL_TUNE.dealCap, m.dealMul * (battleMods.dealMul || 1)),   // 鼓舞=次戦攻撃↑
     takeMul: Math.max(RL_TUNE.takeFloor, m.takeMul * (battleMods.takeMul || 1)), // 鉄壁=次戦被ダメ↓
     fdm,
-    deal: dealDepthMul(run.floor || 1) * (bm.dmgDealMul || 1), // 層の与ダメ係数（黄昏=攻め映え）
+    deal: dealDepthMul(run.floor || 1, run.tuning) * (bm.dmgDealMul || 1), // 層の与ダメ係数（黄昏=攻め映え）
     friendlyMul: RL_TUNE.friendlyMul,
     tierMul: hanTierMul(winnerGross), // 安手は軽く・跳満以上は重く
     isTsumo,

@@ -7,7 +7,7 @@ import {
 } from "../src/data/rogueliteCardMaster.js";
 import { applyEffect, applyCard, freshMods, clusterDealMul, clusterProgress, clusterTakeCapFrac, clusterTakeRaiseFrac, clusterPickPreview, recomputeClusterCount } from "../src/roguelite/cardEffects.js";
 import {
-  newRun, allyScaledHp, floorEnemyHp, handsForType, isBossFloor,
+  newRun, allyScaledHp, floorEnemyHp, floorDamageMul, tv, handsForType, isBossFloor,
   enemyUnitForFloor, rogueliteDamageDeltas, explainRogueliteDamage, lethalCapFrac, hanTierMul, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, serializeRun, deserializeRun, DAMAGE_SCALE,
   carrySlotsFor, excludedCardIds, rollDraft, allPartyDown, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers,
@@ -1082,6 +1082,37 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   // 保存往復で bossFloors が残る。
   const round2 = deserializeRun(serializeRun(pr), (id) => ({ id }));
   ok(round2.bossFloors && round2.bossFloors[10], "bossFloors は保存往復で残る");
+}
+
+// ---------- 大章ごとの難度オーバーライド（tuning スキャフォルド・2026-06-26） ----------
+{
+  // 無指定（null）＝グローバル既定と完全一致（後方互換）。
+  eq(floorEnemyHp(10, null), floorEnemyHp(10), "tuning=null は敵HP既定と一致");
+  eq(floorDamageMul(30, null), floorDamageMul(30), "tuning=null は被ダメ深度既定と一致");
+  eq(lethalCapFrac(50, null), lethalCapFrac(50), "tuning=null は一撃死上限既定と一致");
+  // tv：指定キーは上書き・無指定キーは fallback。
+  eq(tv({ baseEnemyHp: 900 }, "baseEnemyHp", 700), 900, "tv 指定キーは上書き");
+  eq(tv({ baseEnemyHp: 900 }, "enemyHpSlope", 0.08), 0.08, "tv 無指定キーは fallback");
+  eq(tv(null, "baseEnemyHp", 700), 700, "tv tuning=null は fallback");
+  // 敵HP：base を上げると硬くなる（F10 で既定より大きい）。
+  const hard = { baseEnemyHp: 1000, enemyHpSlope: 0.12 };
+  ok(floorEnemyHp(10, hard) > floorEnemyHp(10), "tuning baseEnemyHp↑ で敵HPが増える");
+  // 被ダメ深度：slope を上げると深層が重い（F40 で既定より大きい）。
+  ok(floorDamageMul(40, { floorDmgSlope: 0.6 }) > floorDamageMul(40), "tuning floorDmgSlope↑ で被ダメ深度が増える");
+  // 一撃死上限：fadeStart を早めると深層で早く開く（F35 で既定より大きいか同等）。
+  ok(lethalCapFrac(45, { lethalCapFadeStart: 20 }) >= lethalCapFrac(45), "tuning lethalCapFadeStart↓ で上限が早く開く");
+  // 章マスタの tuning が run に乗り、保存往復で残る。
+  const tr = newRun([{ id: "x", char: { id: "x" } }], "tune-seed", "mentor", ["shiyue"], null, { baseEnemyHp: 850 });
+  eq(tr.tuning?.baseEnemyHp, 850, "newRun が tuning を保持");
+  const tround = deserializeRun(serializeRun(tr), (id) => ({ id }));
+  eq(tround.tuning?.baseEnemyHp, 850, "tuning は保存往復で残る");
+  // enemyUnitForFloor が run.tuning を反映（硬い章は敵HPが大きい）。
+  const plain = newRun([{ id: "x", char: { id: "x" } }], "tune-seed2", "mentor", ["shiyue"]);
+  plain.floor = 5; tr.floor = 5;
+  ok(enemyUnitForFloor(tr, floorTypeById("normal")).members[0].stats.startingPoints
+     > enemyUnitForFloor(plain, floorTypeById("normal")).members[0].stats.startingPoints, "tuning硬い章はenemyUnitForFloorの敵HPが大きい");
+  // 現状の mentor 章は tuning 無指定＝既定のまま（挙動不変）。
+  eq(chapterById("mentor").tuning ?? null, null, "mentor は tuning 無指定（既定のまま）");
 }
 
 // ---------- 提案B 章intro口上（縦軸の結びつけ） ----------

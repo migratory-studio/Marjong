@@ -10,11 +10,21 @@
 //   ※ シナリオ本文は当面モック。文言は差し替え前提。中身を勝手に増やさない（大2章を埋めない）。
 //
 // データ形：
-//   { id, index, title, subtitle, blurb, aim, cast:[{id,name}], unlock(前章id|null), clearFloor, tone, comingSoon? }
+//   { id, index, title, subtitle, blurb, aim, cast:[{id,name}], unlock(前章id|null), clearFloor, bossFloors?, tone, tuning?, comingSoon? }
 //     unlock=null   … 常時解禁（最初の記憶）。それ以外は unlock の章を踏破済みなら解禁。
-//     clearFloor    … この記憶を「踏破した」とみなす到達階（このボス階に届けば次章が解禁され得る）。
+//     clearFloor    … この記憶を「踏破した」とみなす到達階（このボス階に届けば次章が解禁され得る）。※大章ごと。
+//     bossFloors    … フロア別ボス配役 { floor:[castId|"$mob"] }（無いフロアは cast から決定論ランダム）。
 //     tone          … 'gold'（群像＝温かさと喪失）/ 'jade' / 'ember' / 'ash'（未綴＝沈黙）。
 //     comingSoon    … true なら中身が未定＝常に封（踏破しても開かない。来たる記憶の予告枠）。
+//     tuning?       … 大章ごとの難度オーバーライド（任意）。**書いたノブだけ**グローバル既定(run.js RL_TUNE/定数)を上書き。
+//                     未指定の章は全てグローバル既定＝挙動不変。対応キー（run.js tv 参照）：
+//                       敵HP: baseEnemyHp / enemyHpSlope / enemyHpCapFloor ／ 敵Lv: enemyLvSlope
+//                       被ダメ深度: floorDmgStart / floorDmgSlope / floorDmgKnee / floorDmgAccel
+//                       一撃死上限: lethalCapBase / lethalCapFadeStart / lethalCapFadeSlope
+//                       与ダメ深度: dealDepthStart / dealDepthSlope ／ 踏破回復: regenFrac
+//                     例（殺意高めの記憶）: tuning: { baseEnemyHp: 900, floorDmgSlope: 0.4, lethalCapFadeStart: 30 }
+//                     例（やさしい入門の記憶）: tuning: { regenFrac: 0.4, floorDmgStart: 14 }
+//                     ※ 章ごとに難度を変えたら、その章のクリア率を CLEARFLOOR=○ node test/roguelite-balance.mjs --clearrate で要確認。
 
 export const ROGUELITE_CHAPTER_MASTER = [
   {

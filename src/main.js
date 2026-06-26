@@ -1996,7 +1996,7 @@ async function startRogueliteRun(partyChars, chapterId = null) {
   const chap = chapterById(chapterId || firstChapterId()); // 登る記憶（大章）
   // ボス陣＝この記憶の群像（章の cast）から立ちはだかる（提案B・縦軸の結びつけ）。
   const bossPool = (chap?.cast || []).map((c) => c.id).filter(Boolean);
-  const run = newRun(party, undefined, chap?.id || null, bossPool, chap?.bossFloors || null);
+  const run = newRun(party, undefined, chap?.id || null, bossPool, chap?.bossFloors || null, chap?.tuning || null);
   rlLog("chapter_start", { chapter: run.chapterId, bossPool: run.bossPool });
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 引き継ぎ無しで開始 */ }
@@ -2640,7 +2640,8 @@ function onRogueliteBattleEnd(result) {
   // トんだ(hp<=0)メンバーは回復しない＝復活させない（脱落はランを通して継続）。
   const perf = Math.max(0.25, Math.min(1.3, 0.25 + (result.hpRatio ?? 0.5) * 0.85 + (result.koAny ? 0.25 : 0)));
   const regenMul = biomeMods(run).regenMul || 1; // 温泉郷など層で回復量UP
-  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * REGEN_FRAC * perf * regenMul));
+  const regenFrac = run.tuning?.regenFrac ?? REGEN_FRAC; // 大章ごとに踏破回復を上書きできる（無指定=グローバル既定）
+  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * regenFrac * perf * regenMul));
   // 光貨を獲得（深いほど・強敵/ボス/撃破/追撃で増す。賭場勝利は2倍）。
   const isGamble = !!rogueliteState.gamble; rogueliteState.gamble = false;
   const pursued = !!rogueliteState.pursuing;
