@@ -793,6 +793,41 @@ export function showRogueliteChapterIntro(container, opts = {}) {
   ov.querySelector("#rl-chapintro-go")?.addEventListener("click", () => { ov.remove(); onProceed?.(); }, { once: true });
 }
 
+// ---- 大章 踏破演出（提案B §3.1）。clearFloor の主を初めて退けた瞬間の祝祭。
+//   「第一の記憶を読み切った」を一拍見せ、相棒が一言締める。ラン自体はエンドレス＝なお登れる。
+//   ※ シナリオ本文は別途。ここは器（演出シェル）。leadLine も差し替え前提のモック。 ----
+export function showRogueliteChapterClear(container, opts = {}) {
+  const { chapter, floor = 1, leadChar = null, leadLine = null, nextChapter = null, charImages = null, onProceed } = opts;
+  if (!container || !chapter) { onProceed?.(); return; }
+  const ov = document.createElement("div");
+  ov.className = `rl-overlay rl-chapclear tone-${chapter.tone || "gold"}`;
+  let speak = "";
+  if (leadChar && leadLine) {
+    const u = charImages?.url?.(leadChar, "portrait") || charImages?.url?.(leadChar, "icon") || "";
+    const face = u
+      ? `<img class="rl-chapclear-face" src="${u}" alt="">`
+      : `<div class="rl-chapclear-face rl-chapclear-fb" style="--c:${leadChar.color || "#888"}">${[...(leadChar.name || "?")][0] || "?"}</div>`;
+    speak = `<div class="rl-chapclear-speak">${face}<div class="rl-chapclear-bubble"><div class="rl-chapclear-who" style="color:${leadChar.color || "var(--rl-gold)"}">${leadChar.name || ""}</div><div class="rl-chapclear-line">${leadLine}</div></div></div>`;
+  }
+  // 次の記憶：実在して新規解禁されるなら「開かれた」、未綴(comingSoon)/無しなら塔の予告に留める（嘘をつかない）。
+  const nextNote = nextChapter
+    ? `<div class="rl-chapclear-next rl-chapclear-open">🗝 次の記憶が開かれた ▸ <b>${nextChapter.title || ""}</b></div>`
+    : `<div class="rl-chapclear-next rl-chapclear-foretell">……やがて、次の記憶がこの塔に綴られる。</div>`;
+  ov.innerHTML = `
+    <div class="rl-chapclear-card">
+      <span class="rl-chapclear-seal">踏 破</span>
+      <span class="rl-chapclear-eyebrow">${chapter.subtitle || "記憶"}　を読み切った</span>
+      <h2 class="rl-chapclear-name">${chapter.title || ""}</h2>
+      <p class="rl-chapclear-blurb">第 ${floor} 階の主を退け、この記憶の核へ辿り着いた。</p>
+      ${speak}
+      ${nextNote}
+      <button type="button" class="rl-start rl-chapclear-go" id="rl-chapclear-go">記憶を胸に、なお登る ›</button>
+    </div>`;
+  container.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  ov.querySelector("#rl-chapclear-go")?.addEventListener("click", () => { ov.remove(); onProceed?.(); }, { once: true });
+}
+
 // ---- ボス対局前口上（提案B・「ボスが覚えている」）。tier名はUIに出さず、口上の変化で気づかせる ----
 export function showRogueliteBossIntro(container, opts = {}) {
   const { bosses = [], floor = 1, charImages = null, onProceed } = opts;

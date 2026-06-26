@@ -4,7 +4,7 @@
 //    ボス陣=群像・ボス記憶tier・群像相槌・別れ際の見守り・双方向2択・宝珠解禁）は本物のコードで解決する。
 //    複数潜行を回し「覚える（蓄積）」がセリフを変えていく様子を見せるのが目的。
 
-import { chaptersWithState, chapterById, firstChapterId, isChapterUnlocked, canOrbUnlock } from "../src/data/rogueliteChapterMaster.js";
+import { chaptersWithState, chapterById, firstChapterId, isChapterUnlocked, canOrbUnlock, nextChapterAfter } from "../src/data/rogueliteChapterMaster.js";
 import { newRun, previewBossChars } from "../src/roguelite/run.js";
 import { floorTypeById } from "../src/data/rogueliteFloorMaster.js";
 import { bossMemoryTier, recordBossOutcome } from "../src/roguelite/bossMemory.js";
@@ -55,9 +55,9 @@ function runOnce(idx, script) {
   const chap = chapterById(firstChapterId());
   line(`\n→ 「${chap.title}」を選び、${nameOf(LEAD)}（相棒）と ${nameOf(BENCH)}（控え）で登る。`);
 
-  // run を起こす（ボス陣＝章 cast の群像。相棒/控えは除外される）
+  // run を起こす（ボス陣＝章 cast の群像。相棒/控えは除外される）。bossFloors＝フロア別配役。
   const bossPool = chap.cast.map((c) => c.id);
-  const run = newRun(PARTY, script.seed, chap.id, bossPool);
+  const run = newRun(PARTY, script.seed, chap.id, bossPool, chap.bossFloors);
   const snap = { bestFloor: R.bestFloor, retreatCount: R.retreats, resolveClimb: R.resolve.climb };
 
   // --- 章intro口上 ---
@@ -76,21 +76,40 @@ function runOnce(idx, script) {
     line(`    ${nameOf(BENCH)}「${say(BENCH, "rlBanterReply", rlCtx(run, snap))}」`);
   }
 
-  // --- 10階ボス（群像＋ボス記憶tier） ---
-  run.floor = 10;
-  const bosses = previewBossChars(run, BOSS_FLOOR);
-  line(`\n【第10階・館の主】ボス陣＝この記憶の群像から：${bosses.map((b) => nameOf(b.id)).join("・")}`);
-  let bossWon = true;
-  bosses.forEach((b, i) => {
-    const tier = bossMemoryTier(R.bossTally[b.id]);
-    const tierJa = { first: "初遭遇", rematch: "再戦", revenge: "雪辱" }[tier];
-    line(`  ${nameOf(b.id)}（${tierJa}）「${say(b.id, "rlBossIntro", { bossMemoryTier: tier })}」`);
-  });
-  // 台本で勝敗を与える → bossTally 更新（覚える）
-  bossWon = script.bossWin(idx);
-  for (const b of bosses) R.bossTally = recordBossOutcome(R.bossTally, b.id, bossWon);
-  line(`  → 対局の結果：${bossWon ? "撃破！（この群像に勝ち越し）" : "敗北……（この群像に苦杯）"}`);
-  line(`     ボス通算：${bosses.map((b) => `${nameOf(b.id)} ${R.bossTally[b.id].w}勝${R.bossTally[b.id].l}敗`).join(" / ")}`);
+  // --- ボス階（F10/F20/F30＝群像の段階配役＋ボス記憶tier） ---
+  // 配役：F10=真守＋門番モブ／F20=詩玥・凌雲／F30=姚玖・春嬋。相棒本人は自分の卓に出せないので、
+  //       いま詩玥+凌雲を連れている＝F20の主2人が出払い→門番モブが代理する（記憶の自然なフォールバック）。
+  //       ※ 綺麗な「F20=詩玥・凌雲」配役は中立パーティで test/roguelite.mjs が実証済み。
+  const castNote = { 10: "門番（真守＋モブ）", 20: "兄弟弟子（詩玥・凌雲）", 30: "御庭番（姚玖・春嬋）＝締め" };
+  const won = script.bossWin(idx);
+  const reach = won ? (script.wipeFloor || 30) : 10; // 勝ち続ければ上のボスへ、初戦で負ければF10で止まる
+  let clearedChapter = false;
+  for (const bf of [10, 20, 30]) {
+    if (bf > reach) break;
+    run.floor = bf;
+    const bosses = previewBossChars(run, BOSS_FLOOR);
+    const who = bosses.map((b) => nameOf(b.id)).join("・") || "（門番モブのみ＝主が相棒として出払い）";
+    line(`\n【第${bf}階・館の主｜${castNote[bf]}】口上＝${who}`);
+    bosses.forEach((b) => {
+      const tier = bossMemoryTier(R.bossTally[b.id]);
+      const tierJa = { first: "初遭遇", rematch: "再戦", revenge: "雪辱" }[tier];
+      line(`  ${nameOf(b.id)}（${tierJa}）「${say(b.id, "rlBossIntro", { bossMemoryTier: tier })}」`);
+    });
+    for (const b of bosses) R.bossTally = recordBossOutcome(R.bossTally, b.id, won);
+    if (bosses.length) line(`  → ${won ? "撃破！" : "敗北……"}　${bosses.map((b) => `${nameOf(b.id)} ${R.bossTally[b.id].w}勝${R.bossTally[b.id].l}敗`).join(" / ")}`);
+    else line(`  → ${won ? "門番を退けて先へ。" : "門番に阻まれた……"}`);
+    if (!won) break;
+    if (bf === 30) clearedChapter = true;
+  }
+  // --- 踏破演出（clearFloor=30 を退けたら「第一の記憶を読み切った」＝ドラフト前に一拍） ---
+  if (clearedChapter && !R.chaptersCleared.includes(chap.id)) {
+    R.chaptersCleared.push(chap.id);
+    const next = nextChapterAfter(chap.id);
+    line(`\n【踏 破】「${chap.title}」を読み切った！`);
+    line(`  ${nameOf(LEAD)}「${say(LEAD, "rlChapterClear", { ...rlCtx(run, snap), rlChapter: chap.id })}」`);
+    line(`  （次の記憶：${next ? next.title : "やがてこの塔に綴られる——いまは予告枠（大2＝comingSoon）"}）`);
+  }
+  const bossWon = won;
 
   // --- 全滅（別れ際＝継続＋見守り） ---
   const wipeFloor = bossWon ? script.wipeFloor : 10; // ボスに負ければその階で全滅
@@ -119,6 +138,7 @@ runOnce(1, { seed: "sim-run-1", restAt: 4, bossWin: () => true,  wipeFloor: 13 }
 runOnce(2, { seed: "sim-run-2", restAt: 5, bossWin: () => false, wipeFloor: 10 }); // 再戦→負け（群像に1敗＝以後“雪辱”）
 runOnce(3, { seed: "sim-run-3", restAt: 6, bossWin: () => true,  wipeFloor: 18 }); // 雪辱→勝ち、自己ベスト更新中に散る
 runOnce(4, { seed: "sim-run-4", restAt: 7, bossWin: () => true,  wipeFloor: 21 }); // “また登る”4回目＝相棒が性分を覚えている
+runOnce(5, { seed: "sim-run-5", restAt: 6, bossWin: () => true,  wipeFloor: 34 }); // F10→F20→F30 を抜けて踏破！ なお登り34階で散る
 
 // 宝珠解禁の仕組み（大2は触らない＝comingSoon。内容付き封章なら宝珠で開ける）
 hr();

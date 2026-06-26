@@ -5342,6 +5342,37 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-chapintro-line { font-size: 14px; line-height: 1.7; color: #ddd7e2; }
 .rl-chapintro-go { margin-top: 6px; }
 
+/* 楼光の館：大章 踏破演出（提案B §3.1・clearFloor の主を退けた祝祭）。章intro語彙＋「踏破」印で締める */
+.rl-overlay.rl-chapclear { background: rgba(6,4,9,0.66); --tc: var(--rl-gold); }
+.rl-overlay.rl-chapclear.tone-gold { --tc: #e8c45d; }
+.rl-overlay.rl-chapclear.tone-jade { --tc: #6f9b8e; }
+.rl-overlay.rl-chapclear.tone-ember { --tc: #c0563a; }
+.rl-overlay.rl-chapclear.tone-ash { --tc: #6b6675; }
+.rl-chapclear-card { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 11px;
+  width: min(620px, 90%); padding: 30px 36px 26px; border-radius: 20px; color: var(--rl-ink);
+  background: linear-gradient(165deg, rgba(24,18,33,0.94), rgba(11,8,17,0.96)); border: 1px solid var(--tc);
+  box-shadow: 0 24px 70px rgba(0,0,0,.62), 0 0 110px -30px var(--tc); animation: rlChapClearIn .6s cubic-bezier(.2,.9,.3,1.1) both; }
+@keyframes rlChapClearIn { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+.rl-chapclear-seal { font-family: var(--font-min, "Shippori Mincho", serif); font-size: 15px; font-weight: 700; letter-spacing: .42em; text-indent: .42em;
+  color: var(--tc); padding: 5px 16px 4px; border: 1px solid var(--tc); border-radius: 999px;
+  background: rgba(232,196,93,.08); box-shadow: 0 0 26px -8px var(--tc); animation: rlSealGlow 2.4s ease-in-out infinite; }
+@keyframes rlSealGlow { 0%,100% { box-shadow: 0 0 26px -10px var(--tc); } 50% { box-shadow: 0 0 34px -4px var(--tc); } }
+.rl-chapclear-eyebrow { font-size: 12px; letter-spacing: .32em; color: var(--tc); opacity: .92; margin-top: 2px; }
+.rl-chapclear-name { margin: 0; font-family: var(--font-min, "Shippori Mincho", serif); font-size: 32px; font-weight: 700; letter-spacing: .08em;
+  background: linear-gradient(180deg, #fff 8%, var(--tc)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.rl-chapclear-blurb { margin: 0; font-size: 13.5px; line-height: 1.8; color: #cfc8d6; max-width: 46ch; }
+.rl-chapclear-speak { display: flex; align-items: flex-end; gap: 12px; width: 100%; margin-top: 2px; text-align: left; }
+.rl-chapclear-face { width: 56px; height: 56px; border-radius: 11px; object-fit: cover; object-position: top center; flex: none;
+  border: 1px solid var(--tc); box-shadow: 0 4px 16px -6px var(--tc); }
+.rl-chapclear-fb { display: grid; place-items: center; font-family: var(--font-min, serif); font-size: 26px; font-weight: 700; color: var(--c, var(--tc)); background: rgba(255,255,255,.05); }
+.rl-chapclear-bubble { flex: 1 1 auto; min-width: 0; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 9px 14px; }
+.rl-chapclear-who { font-size: 12px; font-weight: 700; letter-spacing: .04em; margin-bottom: 2px; }
+.rl-chapclear-line { font-size: 14px; line-height: 1.7; color: #ddd7e2; }
+.rl-chapclear-next { font-size: 12.5px; letter-spacing: .03em; padding: 6px 14px; border-radius: 10px; }
+.rl-chapclear-open { color: var(--tc); background: rgba(232,196,93,.08); border: 1px solid var(--rl-edge); }
+.rl-chapclear-foretell { color: #9890a6; font-style: italic; }
+.rl-chapclear-go { margin-top: 4px; }
+
 /* 楼光の館：ボス対局前口上（提案B「ボスが覚えている」）。立ち絵＋口上で対峙させる */
 .rl-overlay.rl-bossintro { background: rgba(6,4,9,0.62); }
 .rl-bossintro-card { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px;

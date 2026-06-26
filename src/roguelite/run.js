@@ -150,7 +150,7 @@ export function carrySlotsFor(bestFloor = 0) {
 // パーティ（charById で解決済みの CHARACTER 互換配列）から新規ランを作る。
 //   party: [{ id, char, avatarHpMax }] の配列（先頭=あなた）。最低1人。
 //   seed:  乱数シード（省略時は時刻）。テストは固定 seed を渡す。
-export function newRun(party, seed, chapterId = null, bossPool = null) {
+export function newRun(party, seed, chapterId = null, bossPool = null, bossFloors = null) {
   const members = (party || []).map((p) => {
     const hpMax = allyScaledHp(p.avatarHpMax ?? p.char?.stats?.startingPoints ?? 25000);
     return { id: p.id, char: p.char, hpMax, hp: hpMax, baseHp: hpMax, hungover: false }; // baseHp=館の気脈の底上げ基準（初期HP最大）
@@ -159,6 +159,7 @@ export function newRun(party, seed, chapterId = null, bossPool = null) {
     seed: seed != null ? String(seed) : String(Date.now()),
     chapterId: chapterId || null, // 登っている記憶（大章）id。踏破時の解禁・章フレーバーに使う（提案B）。
     bossPool: Array.isArray(bossPool) && bossPool.length ? [...bossPool] : null, // ボス陣＝この記憶の群像id（提案B・縦軸の結びつけ）
+    bossFloors: bossFloors && typeof bossFloors === "object" ? { ...bossFloors } : null, // フロア別ボス配役（floor→[castId|"$mob"]）。無いフロアは bossPool フォールバック
     floor: 1,
     party: members, // 先頭2人が着卓・3人目以降は控え（パッシブ能力源）
     cards: [], // 取得カードid（履歴）
@@ -186,7 +187,7 @@ export function serializeRun(run) {
   if (!run || !Array.isArray(run.party)) return null;
   return {
     v: RUN_SAVE_VERSION,
-    seed: run.seed, chapterId: run.chapterId || null, bossPool: Array.isArray(run.bossPool) ? [...run.bossPool] : null, floor: run.floor, cleared: run.cleared, coins: run.coins,
+    seed: run.seed, chapterId: run.chapterId || null, bossPool: Array.isArray(run.bossPool) ? [...run.bossPool] : null, bossFloors: run.bossFloors ? { ...run.bossFloors } : null, floor: run.floor, cleared: run.cleared, coins: run.coins,
     skillLevel: run.skillLevel, forgeOvercharge: run.forgeOvercharge || 0, cards: [...(run.cards || [])], items: [...(run.items || [])],
     mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
     biomeRerolls: { ...(run.biomeRerolls || {}) }, orbsEarned: run.orbsEarned || 0,
@@ -206,7 +207,7 @@ export function deserializeRun(data, resolveChar) {
     party.push({ id: m.id, char, hp: m.hp, hpMax: m.hpMax, baseHp: m.baseHp ?? m.hpMax, hungover: !!m.hungover });
   }
   return {
-    seed: String(data.seed), chapterId: data.chapterId || null, bossPool: Array.isArray(data.bossPool) ? [...data.bossPool] : null, floor: data.floor || 1, party,
+    seed: String(data.seed), chapterId: data.chapterId || null, bossPool: Array.isArray(data.bossPool) ? [...data.bossPool] : null, bossFloors: data.bossFloors && typeof data.bossFloors === "object" ? { ...data.bossFloors } : null, floor: data.floor || 1, party,
     cards: [...(data.cards || [])], mods: { ...freshMods(), ...(data.mods || {}) },
     cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1, forgeOvercharge: data.forgeOvercharge || 0,
     items: [...(data.items || [])], nextBattle: data.nextBattle || {}, routeReroll: data.routeReroll || 0,
@@ -329,6 +330,9 @@ const ELITE_ABILITIES = ["lucky-draw", "chunchan", "dora-pull", "danger-sense"];
 // プールが2人未満に枯れたら全プレイアブルにフォールバック（必ずボスを2人立てられる安全側）。
 function pickBossChars(run, rng, n) {
   const exclude = new Set((run.party || []).map((m) => m.id));
+  // フロア別配役があれば、その記憶の段階通りに立てる（プレイアブル枠だけを返す＝口上/記憶tally対象）。
+  const planned = plannedBossSlots(run, run.floor, exclude);
+  if (planned) return planned.filter((s) => s.kind === "char").map((s) => s.char);
   const pool = Array.isArray(run.bossPool) && run.bossPool.length ? new Set(run.bossPool) : null;
   const eligible = (c) => c && c.id && !c.isMob && !exclude.has(c.id);
   let avail = CHARACTER_MASTER.filter((c) => eligible(c) && (!pool || pool.has(c.id)));
@@ -336,6 +340,19 @@ function pickBossChars(run, rng, n) {
   const chosen = [];
   while (chosen.length < n && avail.length) chosen.push(avail.splice(Math.floor(rng() * avail.length), 1)[0]);
   return chosen;
+}
+
+// フロア別ボス配役（run.bossFloors[floor]）を slot 記述子へ解決。配役が無ければ null。
+//   "$mob"＝ネームドモブ枠／cast id＝そのキャラ（編成中なら出せないのでモブ枠に退避＝必ず卓は埋まる安全側）。
+function plannedBossSlots(run, floor, exclude = null) {
+  const plan = run.bossFloors && run.bossFloors[floor];
+  if (!Array.isArray(plan) || !plan.length) return null;
+  const ex = exclude || new Set((run.party || []).map((m) => m.id));
+  return plan.map((spec) => {
+    if (spec === "$mob") return { kind: "mob" };
+    const c = CHARACTER_MASTER.find((ch) => ch && ch.id === spec && !ch.isMob);
+    return c && !ex.has(c.id) ? { kind: "char", char: c } : { kind: "mob" };
+  });
 }
 
 // プレイアブルキャラ → ボス敵メンバー（HP・強さを階層スケールで上書き。立ち絵/能力は本人のもの）。
@@ -376,8 +393,23 @@ export function enemyUnitForFloor(run, floorType = null, salt = "") {
 
   if (kind === "boss") {
     // ボス＝プレイアブルキャラ2人（編成中＋弟子は除外）。本人の立ち絵・能力で立ちはだかる。
-    const bosses = pickBossChars(run, rng, 2);
-    for (const c of bosses) members.push(bossMemberFromChar(c, hp, lv, `${run.seed}:boss${floor}:${c.id}${salt}`));
+    // フロア別配役があればその通りに（プレイアブル枠＝本人／"$mob"枠＝ネームドモブで埋める）。
+    const planned = plannedBossSlots(run, floor);
+    if (planned) {
+      planned.forEach((slot, i) => {
+        if (slot.kind === "char") {
+          members.push(bossMemberFromChar(slot.char, hp, lv, `${run.seed}:boss${floor}:${slot.char.id}${salt}`));
+        } else {
+          const mseed = `${run.seed}:bossmob${floor}:${i}${salt}`;
+          const abil = ELITE_ABILITIES[Math.floor(makeRng(mseed)() * ELITE_ABILITIES.length)];
+          const m = makeMob({ seed: mseed, startingPoints: hp, abilityId: abil });
+          m.isElite = true; m.params = paramsFromLv(lv, mseed); members.push(m);
+        }
+      });
+    } else {
+      const bosses = pickBossChars(run, rng, 2);
+      for (const c of bosses) members.push(bossMemberFromChar(c, hp, lv, `${run.seed}:boss${floor}:${c.id}${salt}`));
+    }
   } else if (kind === "named") {
     const abil = ELITE_ABILITIES[Math.floor(rng() * ELITE_ABILITIES.length)];
     const lead = makeMob({ seed: `${run.seed}:elite${floor}${salt}`, startingPoints: hp, abilityId: abil });

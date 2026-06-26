@@ -230,13 +230,15 @@ const regenAll = (run, res = {}) => {
   for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * TUNE.regenFrac * perf)); // トんだメンバーは回復しない
 };
 
-// 合計HPで競り負けたら、控え含む全員に最大HPのこの割合だけダメージ（撃墜あり・救済なし）＝本番 onRogueliteBattleEnd と同じ。
+// 合計HPで競り負けたら、その卓で打っていた2人（着卓メンバー）だけ最大HPのこの割合だけダメージ
+// （撃墜あり・救済なし／控えは点棒勝負に絡んでいない＝対象外）＝本番 onRogueliteBattleEnd と同じ。
 // 全滅判定の前に効かせる（この一撃で生存1人以下になればラン終了）。
 // 調整レバー：PENALTY=0.15 node test/roguelite-balance.mjs のように環境変数で差し替え可（既定=本体と同じ0.20）。
 const HP_LOSS_PENALTY_FRAC = Number(process.env.PENALTY ?? 0.20);
-const applyHpRacePenalty = (run, res = {}) => {
+const applyHpRacePenalty = (run, res = {}, seated = null) => {
   if (!res.outHpRace) return;
-  for (const m of run.party) if (m.hp > 0) m.hp = Math.max(0, m.hp - Math.round(m.hpMax * HP_LOSS_PENALTY_FRAC));
+  const targets = seated ? [...new Set(seated)].filter((m) => m && m.hp > 0) : run.party.filter((m) => m.hp > 0);
+  for (const m of targets) m.hp = Math.max(0, m.hp - Math.round(m.hpMax * HP_LOSS_PENALTY_FRAC));
 };
 
 // 1フロアを処理。戻り値 false=全滅（ラン終了）。floorWins に踏破した戦闘階を記録。
@@ -249,7 +251,7 @@ function stepFloor(run, rng, policy, floorWins = null) {
   if (floorWins && res.cleared) floorWins[run.floor] = (floorWins[run.floor] || 0) + 1;
   // 着卓した2人の二日酔いは消費
   const seated = seatedAllies(run); seated[0].hungover = false; if (seated[1] !== seated[0]) seated[1].hungover = false;
-  applyHpRacePenalty(run, res); // 合計HP敗北なら全員30%（全滅判定の前）
+  applyHpRacePenalty(run, res, seated); // 合計HP敗北なら着卓2人に20%（全滅判定の前）
   if (runWiped(run)) return false; // ゲームオーバー＝生存1人以下（復活なし）
   run.cleared += 1; regenAll(run, res);
   run.coins = (run.coins || 0) + coinsForClear({ floor: run.floor, kind: floorType.enemy || "mob", ko: res.koAny }) * (floorType.kind === "gamble" ? 2 : 1);
@@ -259,7 +261,7 @@ function stepFloor(run, rng, policy, floorWins = null) {
   let remaining = floorType.pursueMax || 0;
   while (isActive(policy) && remaining > 0 && Math.min(...run.party.map((m) => m.hp / m.hpMax)) > 0.55) {
     const pr = simBattle(run, rng, floorType, true);
-    applyHpRacePenalty(run, pr); // 追撃でも合計HP敗北なら全員30%
+    applyHpRacePenalty(run, pr, seated); // 追撃でも合計HP敗北なら着卓2人に20%
     if (runWiped(run)) return false; // 追撃中の全滅（生存1人以下）＝没収
     run.cleared += 1; regenAll(run, pr);
     c = pick(rollDraft(run, { ko: true, hpRatio: pr.hpRatio })); if (c) applyCard(run, c);

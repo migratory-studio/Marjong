@@ -91,7 +91,19 @@
 - **制作物**：群像5人×楼光イベントを各slot≥2本（emphasis＝詩玥rlWipe点棒嫌い反転/rlResolve climb/覚えるchapterIntro、凌雲護り、御庭番は守る側の距離感）。数値レス＝tier名はセリフに出さない。
 - **取り込み**：emit-voice-master→voiceLineMaster.js→本体。固有が入れば withBossIntro 等の汎用フォールバックが自動で出なくなる。DoD＝同tierボスが別文・群像相槌固有・test/proposalB-sim.mjs で初遭遇→再戦→雪辱が固有口調に。
 
-**次の着手候補**：①scenario-forge で上記要件を実行（姚玖/春嬋 design から）②双方向2択を章intro/群像相槌へ拡張③提案Dの宝珠ショップ本体との統合。
+### 2026-06-26 大1章 踏破階＝F30化＋踏破演出 実装完了（周回案・ディレクション確定）
+**握った方針（ヒアリング）**：F10踏破＝1ボスで薄い → **周回案（1周＝数滴のドリップ）に倒し、踏破階を F30 へ**。F10/F20/F30 の3ボスに群像を段階配置し、F30 の主を退けて「第一の記憶を読み切った」＝踏破。**シナリオ本文は別途**＝今回は「踏破演出（器）」だけ実装（leadLine 等はモック・差し替え前提）。
+- **clearFloor 10→30**（`rogueliteChapterMaster.js` mentor章）。`nextChapterAfter(chapId)` ヘルパ新設＝踏破で「開く中身のある次章（unlock一致＆非comingSoon）」を返す。大2は comingSoon ＝ null → 踏破演出は「やがて綴られる」予告に留め、空の予告枠を解禁済みと偽らない。
+- **踏破モーメントを mid-run で確定＆祝祭**（ラン終了の `reached>=clearFloor` 記録より先）：`isChapterClearMoment`（clearFloor ちょうどのボス本戦を初踏破・追撃除外・既踏破除外・ラン内1回）／`markChapterClearedNow`（run.chapterCleared＋rogueliteState.chaptersCleared＋`persistChapterCleared` で即永続＝死んでも踏破は残る）。`onRogueliteBattleEnd` の `proceedAfterBattle` で**ドラフトの前に一拍**挟む（`showDraft` 関数化してゲート）。エンドレスは継続＝踏破はゴールでなく節目。
+- **演出モーダル** `showRogueliteChapterClear`（`rogueliteScreen.js`）：「踏 破」印（金グロー脈動）＋明朝の章題＋相棒の締めセリフ＋次章ノート（解禁 or 予告）＋「記憶を胸に、なお登る ›」。章intro語彙を踏襲（`.rl-chapclear*`・tone別・1280×720）。
+- **セリフ器**（既存スライス同作法・モック）：event `rlChapterClear`＝`GENERIC_CHAPTER_CLEAR`+`withChapterClear` で全キャラ補完＋詩玥/凌雲に固有2本（gold＝温かさと喪失。詩玥は師匠/ツモれば勝ち、凌雲は護り）。`rogueliteState` 開始/再開で `chaptersCleared` をロード（mid-run 同期判定用）。
+- **フロア別ボス配役（2026-06-26 確定）**：mentor章に `bossFloors` を追加＝**F10＝真守＋ネームドモブ（門番）／F20＝詩玥・凌雲（兄弟弟子）／F30＝姚玖・春嬋（御庭番＝締め）**。塔を登るほど核心の群像へ。
+  - `run.js`：`newRun`/serialize/deserialize に `bossFloors` を往復。`plannedBossSlots(run,floor)`＝配役を `{kind:"char"|"mob"}` へ解決（`"$mob"`＝ネームドモブ枠／配役キャラが**編成中なら自動でモブ枠に退避**＝卓は必ず2人埋まる）。`pickBossChars` は配役floorでプレイアブル枠だけ返す（口上/記憶tally対象）。`enemyUnitForFloor` の boss枝は配役を順に建てる（char→本人ボス／$mob→eliteモブ）。配役外の深層ボス階（F40+）は従来どおり `bossPool` から決定論ランダム。
+  - `startRogueliteRun` が `chap.bossFloors` を newRun へ渡す。
+- 回帰：`test/roguelite.mjs` **1116 passed**（clearFloor=30・nextChapterAfter・**フロア別配役F10/20/30＋モブ退避＋保存往復**）／smoke ✅／全キャラ rlChapterClear 補完OK／`proposalB-sim.mjs` 完走（第5潜行で F10真守→F20→F30姚玖春嬋→**踏破**を再生）。**balance の2 FAIL（無策cohortの到達浅）は clean tree でも同一再現＝本変更と無関係の既存ドリフト**（balance sim は本変更ファイルを一切importしない）。
+- **残**：①実機 F30 まで登っての feel 確認（深いランが要るため未実施）②scenario-forge で `rlChapterClear` の群像固有セリフ本実装（詩玥/凌雲以外＝特に F30 を締める姚玖/春嬋）③F20 ボス＝詩玥・凌雲の固有 rlBossIntro（現状は汎用モック）。
+
+**次の着手候補**：①scenario-forge で上記要件を実行（姚玖/春嬋 design から）②双方向2択を章intro/群像相槌へ拡張③提案Dの宝珠ショップ本体との統合④踏破演出の F30 実機feel確認＋群像固有 rlChapterClear。
 
 ---
 

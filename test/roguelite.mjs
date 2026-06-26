@@ -22,7 +22,7 @@ import { pickVoiceLine } from "../src/data/voiceLines.js";
 import { CHARACTER_VOICE_MASTER } from "../src/data/characterVoiceMaster.js";
 import { bossMemoryTier, readBossTally, recordBossOutcome, withBossTally } from "../src/roguelite/bossMemory.js";
 import { previewBossChars } from "../src/roguelite/run.js";
-import { ROGUELITE_CHAPTER_MASTER, chapterById, firstChapterId, isChapterUnlocked, chaptersWithState, canOrbUnlock } from "../src/data/rogueliteChapterMaster.js";
+import { ROGUELITE_CHAPTER_MASTER, chapterById, firstChapterId, isChapterUnlocked, chaptersWithState, canOrbUnlock, nextChapterAfter } from "../src/data/rogueliteChapterMaster.js";
 import { Game } from "../src/core/game.js";
 import { CHARACTERS, instantiateAbilities } from "../src/characters/characters.js";
 
@@ -1027,6 +1027,11 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   ok(!isChapterUnlocked(coming, []), "comingSoon は未踏破では封");
   ok(!isChapterUnlocked(coming, [firstChapterId()]), "comingSoon は大1章踏破でも開かない（中身が空）");
   eq(chaptersWithState([firstChapterId()]).find((c) => c.id === firstChapterId()).cleared, true, "踏破済フラグが立つ");
+  // 大1章の踏破階＝F30（周回案・3ボス群像／2026-06-26）。10だと1ボスで薄い → 30へ。
+  eq(chapterById("mentor").clearFloor, 30, "大1章 clearFloor=30（F30踏破）");
+  // 次章解禁ヘルパ：大1章を踏破しても、次は comingSoon（空）なので「開く中身」は無い＝null（踏破演出は予告に留める）。
+  eq(nextChapterAfter("mentor"), null, "mentor の次は comingSoon＝nextChapterAfter は null（嘘の解禁を出さない）");
+  eq(nextChapterAfter(null), null, "nextChapterAfter(null)=null（保険）");
   // newRun は chapterId / bossPool を保持し、serialize/deserialize で往復する。
   const r = newRun([{ id: "shiyue", char: { id: "shiyue" } }], "chap-seed", "mentor", ["kuidoshi", "mamori", "yao_chu"]);
   eq(r.chapterId, "mentor", "newRun が chapterId を保持");
@@ -1044,6 +1049,39 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   eq(bosses.length, 2, "ボスは2人");
   ok(bosses.every((c) => bossPool.includes(c.id)), "ボスは記憶の群像（章cast）から選ばれる");
   ok(bosses.every((c) => c.id !== "shiyue"), "編成中の相棒はボスに出ない");
+}
+
+// ---------- フロア別ボス配役（2026-06-26・大1章＝F10真守+モブ / F20詩玥・凌雲 / F30姚玖・春嬋） ----------
+{
+  const chap = chapterById("mentor");
+  ok(chap.bossFloors && chap.bossFloors[10] && chap.bossFloors[20] && chap.bossFloors[30], "大1章に F10/20/30 のボス配役がある");
+  const castIds = chap.cast.map((c) => c.id);
+  // 配役と衝突しない中立パーティで配役そのものを検証。
+  const pr = newRun([{ id: "x_player", char: { id: "x_player" } }], "cast-seed", "mentor", castIds, chap.bossFloors);
+  const bossFt = floorTypeById("boss");
+  // F10：真守＋ネームドモブ（口上対象＝真守のみ／卓は2人）。
+  pr.floor = 10;
+  eq(previewBossChars(pr, bossFt).map((c) => c.id).join(","), "mamori", "F10 口上=真守のみ（モブ枠は口上に出ない）");
+  const f10 = enemyUnitForFloor(pr, bossFt);
+  eq(f10.members.length, 2, "F10 ボス卓は2人");
+  ok(f10.members.some((m) => m.id === "boss:mamori"), "F10 に真守ボスが立つ");
+  ok(f10.members.some((m) => m.isElite), "F10 のもう1枠はネームドモブ");
+  // F20：詩玥・凌雲。
+  pr.floor = 20;
+  eq(previewBossChars(pr, bossFt).map((c) => c.id).sort().join(","), "kuidoshi,shiyue", "F20=詩玥・凌雲");
+  // F30：姚玖・春嬋（締め）。
+  pr.floor = 30;
+  eq(previewBossChars(pr, bossFt).map((c) => c.id).sort().join(","), "chun_chan,yao_chu", "F30=姚玖・春嬋");
+  // 配役外の深層ボス階（F40）は cast から決定論ランダム（bossPool フォールバック）＝2人立つ。
+  pr.floor = 40;
+  eq(previewBossChars(pr, bossFt).length, 2, "配役外F40は群像から2人（フォールバック）");
+  // 配役キャラが編成中なら、その枠はモブへ退避（卓は必ず埋まる安全側）。
+  const pr2 = newRun([{ id: "shiyue", char: { id: "shiyue" } }], "cast-seed2", "mentor", castIds, chap.bossFloors);
+  pr2.floor = 20;
+  ok(!previewBossChars(pr2, bossFt).some((c) => c.id === "shiyue"), "編成中の詩玥はF20ボスに出ない（モブ退避）");
+  // 保存往復で bossFloors が残る。
+  const round2 = deserializeRun(serializeRun(pr), (id) => ({ id }));
+  ok(round2.bossFloors && round2.bossFloors[10], "bossFloors は保存往復で残る");
 }
 
 // ---------- 提案B 章intro口上（縦軸の結びつけ） ----------

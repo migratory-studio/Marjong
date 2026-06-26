@@ -196,6 +196,9 @@ const SHIYUE = [
   L("rlChapterIntro", {}, "懐かしい匂いがするヨ、この記憶。……ちょっとだけ、胸がざわつくケド——いこ。"),
   // 「また登る」を選び続ける君を覚えている（双方向＝覚える・固有性）。
   L("rlChapterIntro", { rlResolveClimbMin: 3 }, "君さ、いっつも“また登る”って言うネ。……ふふ、そういうとこ、我は好きダヨ。さ、今日も。"),
+  // 大章 踏破（clearFloor の主を退け、第一の記憶を読み切った瞬間。※シナリオ確定前のモック）。
+  L("rlChapterClear", {}, "……ここまで来たヨ。第一の記憶、ぜんぶ見届けた。ふぅ……ツモれば勝ち、ネ。師匠も、そう言ってたっけ。"),
+  L("rlChapterClear", {}, "読み切った……なんてね、まだ胸はいっぱいダ。でも——前より、ちょっとだけ軽いヨ。君のおかげ、かな。"),
   // 別れ際の2択への返し。
   L("rlResolve", { resolveChoice: "climb" }, "うんっ、それでこそ! また一緒にてっぺん目指すヨ——ツモれば勝ち、ダロ?"),
   L("rlResolve", { resolveChoice: "rest" }, "ん、今日は休も。……無理して点棒すり減らすの、もう見たくないからネ。待ってるヨ。"),
@@ -517,6 +520,9 @@ const KUIDOSHI = [
   L("rlChapterIntro", {}, "……記憶の扉が開いた。いこうか。何が出てきても、僕が前に立つ。"),
   L("rlChapterIntro", {}, "懐かしくて、少し痛い記憶だ。……でも、君となら歩ける。さ、登ろう。"),
   L("rlChapterIntro", { rlResolveClimbMin: 3 }, "君は、何度沈んでも“また登る”と言う。……その芯を、僕は知ってるよ。いこう。"),
+  // 大章 踏破（第一の記憶の核へ辿り着いた瞬間。※シナリオ確定前のモック）。
+  L("rlChapterClear", {}, "……見届けたよ。この記憶の、いちばん奥まで。よく登った——君も、僕も。"),
+  L("rlChapterClear", {}, "ここまで来ると、痛みも少しだけ和らぐ。……護りきれた気がするんだ。ありがとう。"),
   // 別れ際の2択への返し。
   L("rlResolve", { resolveChoice: "climb" }, "ああ。……何度でも、付き合うよ。次は、もっと遠くまで護る。"),
   L("rlResolve", { resolveChoice: "rest" }, "うん、休もう。退くのも強さだ。……僕は、ここで待ってる。"),
@@ -1041,6 +1047,16 @@ function withChapterIntro(lines) {
   return lines.some((e) => e.event === "rlChapterIntro") ? lines : [...lines, ...GENERIC_CHAPTER_INTRO];
 }
 
+// 楼光の館・大章 踏破（提案B §3.1・clearFloor の主を退け「第一の記憶を読み切った」瞬間／モック）。
+// 祝祭でも数値で送らず、関係と「なお登る」で締める（gold＝温かさと喪失）。固有が入れば自動で出なくなる。
+const GENERIC_CHAPTER_CLEAR = [
+  L("rlChapterClear", {}, "……この記憶を、読み切った。よく、ここまで登ったね。"),
+  L("rlChapterClear", {}, "塔の奥に、確かに辿り着いた。——でも、まだ終わりじゃない。なお、登ろう。"),
+];
+function withChapterClear(lines) {
+  return lines.some((e) => e.event === "rlChapterClear") ? lines : [...lines, ...GENERIC_CHAPTER_CLEAR];
+}
+
 // 楼光の館・別れ際の2択への“返し”（提案B §3.2-5・双方向／モック）。プレイヤーが返した選択にキャラが応える。
 // resolveChoice: "climb"=また登る ／ "rest"=今は休む。
 const GENERIC_RESOLVE = [
@@ -1084,5 +1100,5 @@ function withWipe(lines) {
 
 // 全キャラぶんを id キーで用意（名前はマスタと自動同期）。home・ボス口上・群像相槌・全滅の別れ際・章introの汎用フォールバックを補う。
 export const CHARACTER_VOICE_MASTER = Object.fromEntries(
-  CHARACTER_MASTER.map((c) => [c.id, withResolve(withChapterIntro(withWipe(withBanter(withBossIntro(withHome(EXPLICIT[c.id] || templateLines(c.name)))))))])
+  CHARACTER_MASTER.map((c) => [c.id, withResolve(withChapterClear(withChapterIntro(withWipe(withBanter(withBossIntro(withHome(EXPLICIT[c.id] || templateLines(c.name))))))))])
 );
