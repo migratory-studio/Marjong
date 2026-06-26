@@ -3,6 +3,7 @@
 import { Game, Phase, Events } from "./core/game.js";
 import { CHARACTERS, instantiateAbilities } from "./characters/characters.js";
 import { CHARACTER_MASTER, ROLE_MASTER } from "./data/characterMaster.js";
+import { applyPortraitCrop, installIconPosStyles } from "./data/imagePos.js";
 import { abilityDef } from "./data/abilityMaster.js";
 import { decideDiscard, decideCall, decideAbilityActivations } from "./ai/simpleAI.js";
 import { CanvasRenderer } from "./ui/canvasRenderer.js";
@@ -172,6 +173,9 @@ const pairWinPolicy = { noWin: false, noAllyRon: false };
 const tileImages = new TileImages();
 const charImages = new CharacterImages();
 const audio = new AudioManager();
+// icon.png の用途別オフセット（imagePos.icon）を src 末尾一致の <style> で全アイコンに一括適用。
+// 注入は1回でよい（CSSなので後から描かれる要素にも効く）。
+installIconPosStyles(CHARACTER_MASTER);
 // 起動時のリソース先読み（ロード画面の進捗バーへ 0..1 を報告）。各ローダの (done,total) を集約。
 // renderer/UI は未ready時はフォールバック描画なので、ここで待ってから本編を見せる。
 function preloadAssets(onProgress) {
@@ -346,8 +350,8 @@ function makeCharPortrait(c) {
     img.className = "detail-portrait";
     img.src = path;
     img.alt = c.name;
-    // Per-character crop focal point (defaults to the CSS "top center").
-    if (c.portraitPos) img.style.objectPosition = c.portraitPos;
+    // Per-character crop focal point + zoom (defaults to the CSS "top center", scale 1).
+    applyPortraitCrop(img, c);
     wireImgSelfHeal(img, c, "detail-portrait detail-portrait-fallback");
     return img;
   }
@@ -7542,7 +7546,7 @@ function fillPortrait(host, c) {
     img.className = "self-portrait";
     img.src = url;
     img.alt = c.name;
-    if (c.portraitPos) img.style.objectPosition = c.portraitPos;
+    applyPortraitCrop(img, c);
     host.appendChild(img);
   } else {
     const fb = document.createElement("div");

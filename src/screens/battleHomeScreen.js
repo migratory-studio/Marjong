@@ -20,6 +20,7 @@ import { pickVoiceLine } from "../data/voiceLines.js";
 import { topPlayStyle, bondProgressFrac } from "../progression/companionBond.js";
 import { bondBandLabel } from "../progression/progressionService.js";
 import { HOME_BGM_CHOICES } from "../ui/assets.js";
+import { homeTuneOf } from "../data/imagePos.js";
 
 // 対戦ホームで切替できる背景（画像は graphic/bg/。washi=既定＝#app の青海波をそのまま見せる）。
 // thumb=一覧モーダルのサムネ。locked を付ければ将来の解禁機能でロック表示にできる（後述 isUnlocked）。
@@ -83,15 +84,18 @@ function esc(s) {
 
 // 対戦ホームの立ち絵フレーミングのキャラ別微調整（バストアップ時に人物が中心からズレる子を寄せる）。
 //   x: 横方向の translate（自身サイズ比%。＋で右へ） / y: 縦方向（＋で下へ） / zoom: 拡大率。未指定=無補正。
-//   ここに1行足す/数値を変えるだけで各キャラの収まりを調整できる（立ち絵を差し替えても安全）。
+//   ※ 正式な調整先は characterMaster の imagePos.home（開発ツール tools/offset-tuner.html の出力先）。
+//     下表はそれが未設定のキャラ用の既定フォールバックとして残す（既存値は master へ移管済み）。
 const HOME_PORTRAIT_TUNE = {
   bibi: { x: "12%" }, // 人物が左に寄っているため右へ寄せる
   chun_chan: { x: "-18%", zoom: 1.1 },           // 全身・前傾ポーズで顔が右上＝左へ寄せて顔を中央に。寄りすぎず上半身を見せる
   yao_chu: { x: "18%", zoom: 1.12 },             // 全身立ち・顔が左寄り＝右へ寄せてバストアップ
   doranie: { zoom: 0.82 },                       // 全身立ち＝引いて頭光輪〜胸元のバストアップに収める（顔は上中央）
 };
-function applyPortraitTune(img, id) {
-  const t = HOME_PORTRAIT_TUNE[id] || {};
+// 適用順: characterMaster の imagePos.home（開発ツールの出力先）を最優先、無ければ
+// 下の HOME_PORTRAIT_TUNE を既定として使う。どちらも未設定なら無補正。
+function applyPortraitTune(img, c) {
+  const t = homeTuneOf(c, HOME_PORTRAIT_TUNE[c?.id] || {});
   if (t.x) img.style.setProperty("--bh-x", t.x);
   if (t.y) img.style.setProperty("--bh-y", t.y);
   if (t.zoom) img.style.setProperty("--bh-zoom", String(t.zoom));
@@ -105,7 +109,7 @@ function portraitNode(c) {
     img.className = "bh-portrait";
     img.src = path;
     img.alt = c.name || "";
-    applyPortraitTune(img, c?.id); // キャラ別フレーミング微調整（offset/zoom）
+    applyPortraitTune(img, c); // キャラ別フレーミング微調整（offset/zoom）
     img.onerror = () => {
       const fb = document.createElement("div");
       fb.className = "bh-portrait bh-portrait-fallback";

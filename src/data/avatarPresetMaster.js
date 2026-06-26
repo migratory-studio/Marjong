@@ -10,6 +10,7 @@
 //   - background      … css に CSS background 値
 //   - frame           … css に枠色（CSS color）
 import { CHARACTER_MASTER } from "./characterMaster.js";
+import { portraitPosOf } from "./imagePos.js";
 
 // 既存13キャラのアイコン／立ち絵を流用したプリセット（流用元キャラ名を表示名に使う）。
 const charIconPresets = CHARACTER_MASTER.map((c, i) => ({
@@ -28,8 +29,8 @@ const charStandingPresets = CHARACTER_MASTER.map((c, i) => ({
   presetType: "standing",
   name: c.name,
   assetPath: `graphic/chars/${c.id}/portrait.png`,
-  // 立ち絵の切り抜き基準（characterMaster.portraitPos があれば踏襲）
-  objectPosition: c.portraitPos || "top center",
+  // 立ち絵の切り抜き基準（imagePos.portrait → 旧 portraitPos → 既定 を踏襲）
+  objectPosition: portraitPosOf(c),
   rarity: "normal",
   unlockConditions: [],
   isPaid: false,

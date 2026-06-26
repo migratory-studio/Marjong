@@ -9,6 +9,7 @@
 //   import { showMentorSelect } from "./screens/mentorSelectScreen.js";
 //   showMentorSelect(container, { repository, draft, onBack, onDecided });
 import { CHARACTER_MASTER, ROLE_MASTER } from "../data/characterMaster.js";
+import { applyPortraitCrop } from "../data/imagePos.js";
 import { INITIAL_MENTOR_IDS, templatesForMentor } from "../data/skillTemplateMaster.js";
 import { presetById, defaultPresetIds } from "../data/avatarPresetMaster.js";
 import { buildNewAvatar, addAvatarToProfile, initialParams6 } from "../progression/avatarFactory.js";
@@ -140,7 +141,7 @@ export async function showMentorSelect(container, { repository, draft, onBack, o
     mentorHero.style.setProperty("--role", c.color || "var(--accent)");
     const pwrap = elt("div", "av-mentor-hero-portrait");
     const img = elt("img", "av-mentor-hero-img", { src: c.assets?.portrait || "", alt: c.name });
-    if (c.portraitPos) img.style.objectPosition = c.portraitPos;
+    applyPortraitCrop(img, c);
     img.onerror = () => { img.style.visibility = "hidden"; };
     pwrap.appendChild(img);
     mentorHero.appendChild(pwrap);

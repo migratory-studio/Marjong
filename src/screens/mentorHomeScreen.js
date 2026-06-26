@@ -13,6 +13,7 @@
 //   showMentorHome(container, { repository, onNavigate, onBack });
 //     onNavigate("growth"|"ability-change"|"avatar"|"scenario"|"settings")
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
+import { portraitPosOf, portraitZoomOf } from "../data/imagePos.js";
 import { skillTemplateById, templateForAbility } from "../data/skillTemplateMaster.js";
 import { skillLevelEntry } from "../data/skillLevelMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
@@ -261,7 +262,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     <div class="mhx-scene">
       <div class="mhx-master${portraitSrc ? " has-img" : ""}">
         <div class="mhx-floorglow"></div>
-        ${portraitSrc ? `<img class="mhx-master-img" alt="${esc(mentor?.name || "")}" src="${esc(portraitSrc)}">` : ""}
+        ${portraitSrc ? `<img class="mhx-master-img" alt="${esc(mentor?.name || "")}" src="${esc(portraitSrc)}" style="object-position:${esc(portraitPosOf(mentor))}${portraitZoomOf(mentor) !== 1 ? `;transform:scale(${portraitZoomOf(mentor)})` : ""}">` : ""}
       </div>
       <div class="mhx-nameplate" role="button" tabindex="0" title="師匠の詳細">
         <span class="mhx-np-ttl">師匠</span>

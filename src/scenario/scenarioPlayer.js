@@ -25,6 +25,7 @@
 import { SCENARIO_MASTER } from "../data/scenarioMaster.js";
 import { SCENARIO_LINE_MASTER } from "../data/scenarioLineMaster.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
+import { portraitPosOf } from "../data/imagePos.js";
 import { emoteDef } from "../data/emoteMaster.js";
 import { bgDef } from "../data/backgroundMaster.js";
 import { bgmDef, seDef } from "../data/scenarioAudioMaster.js";
@@ -301,7 +302,7 @@ export function playScenario(scenarioId, { onEnd, audio, lines: linesOverride } 
         img.className = "sc-standing";
         img.alt = ch?.name || st.name || "";
         img.src = st.portraitSrc || portraitFor(ch, st.standingId);
-        img.style.objectPosition = st.objectPosition || ch?.portraitPos || "top center";
+        img.style.objectPosition = st.objectPosition || portraitPosOf(ch);
         img.onerror = () => { slot.style.display = "none"; };
         slot.appendChild(img);
         elStage.appendChild(slot);

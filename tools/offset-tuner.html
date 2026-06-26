@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>キャラ画像 オフセット調整ツール</title>
+<style>
+  :root{
+    --bg:#13171c; --panel:#1b212a; --panel2:#222a35; --line:#2f3a48;
+    --ink:#e8eef6; --sub:#9fb0c2; --accent:#e85d75; --ok:#5fd0a8; --warn:#f6b352;
+    --frame:#0c0f14;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,"Segoe UI",sans-serif}
+  a{color:var(--accent)}
+  .app{display:grid;grid-template-columns:200px 1fr;grid-template-rows:auto 1fr;height:100vh}
+  header{grid-column:1/3;display:flex;align-items:center;gap:14px;padding:10px 16px;
+    background:var(--panel);border-bottom:1px solid var(--line)}
+  header h1{font-size:16px;margin:0;font-weight:800;letter-spacing:.02em}
+  header .hint{color:var(--sub);font-size:12px}
+  header .grow{flex:1}
+  button{font:inherit;color:var(--ink);background:var(--panel2);border:1px solid var(--line);
+    border-radius:8px;padding:6px 12px;cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+  button.ghost{background:transparent}
+  /* roster */
+  nav.roster{grid-row:2;background:var(--panel);border-right:1px solid var(--line);overflow:auto;padding:8px}
+  .ch{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;border-radius:8px;
+    border:1px solid transparent;background:transparent;cursor:pointer;text-align:left;margin-bottom:2px}
+  .ch:hover{background:var(--panel2)}
+  .ch.sel{border-color:var(--accent);background:#2a2026}
+  .ch img{width:30px;height:30px;border-radius:7px;object-fit:cover;object-position:top center;flex:none;background:#000}
+  .ch .nm{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ch .edited{margin-left:auto;width:8px;height:8px;border-radius:50%;background:var(--warn);flex:none;visibility:hidden}
+  .ch.has-edit .edited{visibility:visible}
+  /* main */
+  main{grid-row:2;overflow:auto;padding:16px}
+  .who{display:flex;align-items:baseline;gap:10px;margin:0 0 12px}
+  .who .name{font-size:20px;font-weight:800}
+  .who .id{color:var(--sub);font-size:12px}
+  .cards{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;width:max-content}
+  .card h2{font-size:13px;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+  .card h2 .tag{color:var(--sub);font-weight:500;font-size:11px}
+  .frame{position:relative;background:
+      repeating-conic-gradient(#1a1f27 0% 25%, #161b22 0% 50%) 50% / 18px 18px;
+    border:1px solid var(--line);border-radius:10px;overflow:hidden;cursor:grab;touch-action:none}
+  .frame.dragging{cursor:grabbing}
+  .frame img{display:block;pointer-events:none;user-select:none}
+  .frame .grid{position:absolute;inset:0;pointer-events:none;
+    background:
+      linear-gradient(to right, rgba(255,255,255,.08) 1px, transparent 1px) 0 0/33.33% 100%,
+      linear-gradient(to bottom, rgba(255,255,255,.08) 1px, transparent 1px) 0 0/100% 33.33%;
+    opacity:0;transition:opacity .15s}
+  .frame:hover .grid,.frame.dragging .grid{opacity:1}
+  /* cover frames */
+  .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  /* round preview for icon */
+  .iconrow{display:flex;gap:10px;align-items:flex-start}
+  .round{width:64px;height:64px;border-radius:50%;overflow:hidden;border:1px solid var(--line);flex:none;background:#000}
+  .round img{width:100%;height:100%;object-fit:cover}
+  .round .cap{font-size:10px}
+  /* home frame */
+  .home .wrap{position:absolute;inset:0;display:flex;justify-content:center;align-items:flex-start;overflow:hidden}
+  .home img{height:310%;width:auto;max-width:none;transform-origin:top center;
+    filter:drop-shadow(0 8px 20px rgba(0,0,0,.5))}
+  .ctl{margin-top:8px;display:flex;flex-direction:column;gap:6px;font-size:12px;color:var(--sub)}
+  .ctl .read{font-variant-numeric:tabular-nums;color:var(--ink)}
+  .ctl .row{display:flex;align-items:center;gap:8px}
+  .ctl input[type=range]{flex:1;accent-color:var(--accent)}
+  .ctl .mini{padding:2px 8px;font-size:11px}
+  /* output */
+  .out{margin-top:18px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .out .bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .out h2{font-size:13px;margin:0}
+  textarea{width:100%;min-height:120px;background:var(--frame);color:var(--ok);border:1px solid var(--line);
+    border-radius:8px;padding:10px;font:12px/1.5 ui-monospace,Consolas,monospace;resize:vertical}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ok);color:#06281d;
+    padding:8px 16px;border-radius:20px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.show{opacity:1}
+  .help{color:var(--sub);font-size:12px;max-width:60ch}
+  code{background:#0c0f14;padding:1px 5px;border-radius:4px;color:var(--warn)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>キャラ画像 オフセット調整ツール</h1>
+    <span class="hint">枠の中で画像をドラッグ → 用途別に切り抜き基準を調整。値は <code>characterMaster.imagePos</code> に貼り戻す。</span>
+    <span class="grow"></span>
+    <button id="copyAll" class="primary">変更ぶんを全キャラ分コピー</button>
+    <button id="resetAll" class="ghost" title="このツールのローカル編集を全消去してマスタ値に戻す">編集を破棄</button>
+  </header>
+  <nav class="roster" id="roster"></nav>
+  <main id="main"></main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { CHARACTER_MASTER } from "../src/data/characterMaster.js";
+
+// 画像パスはマスタ基準(graphic/chars/..)。ツールは /tools/ 配下なので 1つ上へ。
+const asset = (p) => p ? ("../" + p) : "";
+const LS_KEY = "offsetTuner.v1";
+
+// ---- defaults / parse / format -------------------------------------------
+const DEF = { portrait:{x:50,y:0,zoom:1}, icon:{x:50,y:0}, home:{x:0,y:0,zoom:1} };
+const EMO_DEF = { side:"left", x:67, y:3 }; // 未設定キャラの初期エモート位置（描画既定 size*0.42 / size*0.02 相当）
+const KW = { left:0, right:100, top:0, bottom:100, center:50 };
+// エモート可視化に使う代表スプライト（notice / STD: 400px枠・5×8）。本物の見え方を確認するため実画像を使う。
+const EMO_SPRITE = { sheet:"../graphic/emo/sheet/emo_001_L_ss.png", size:160, cols:5, rows:8 };
+const STAND_H_STAGE = 0.82 * 720; // 紙芝居立ち絵の実レンダ高(ステージpx)。emotePos px はこの座標系。
+
+// CSS object-position 文字列 → {x,y}(%)。"top center" / "72% 0%" 等に対応。
+function parseObjPos(str){
+  if(!str) return null;
+  const toks = String(str).trim().split(/\s+/);
+  let x=null,y=null;
+  const setH=(v)=>{ if(x===null) x=v; }, setV=(v)=>{ if(y===null) y=v; };
+  for(const t of toks){
+    if(t==='left'||t==='right') setH(KW[t]);
+    else if(t==='top'||t==='bottom') setV(KW[t]);
+    else if(t==='center'){ if(x===null&&y!==null) x=50; else if(y===null&&x!==null) y=50; else if(x===null) x=50; else y=50; }
+    else if(t.endsWith('%')){ const n=parseFloat(t); if(x===null) x=n; else if(y===null) y=n; }
+  }
+  if(x===null) x=50; if(y===null) y=0;
+  return { x, y };
+}
+function parsePct(v, d=0){ if(v==null) return d; const n=parseFloat(String(v)); return isNaN(n)?d:n; }
+const num = (n)=> Number.isInteger(n) ? String(n) : (Math.round(n*10)/10).toString();
+const objPosStr = (p)=> `${num(p.x)}% ${num(p.y)}%`;
+
+// マスタの 1キャラ → 編集状態 {portrait,icon,home,emote}（初期値）
+function initialState(c){
+  const ip = c.imagePos || {};
+  const portrait = parseObjPos(ip.portrait || c.portraitPos) || {...DEF.portrait};
+  portrait.zoom = (ip.portraitZoom!=null && Number(ip.portraitZoom)>0) ? Number(ip.portraitZoom) : 1;
+  const icon = parseObjPos(ip.icon) || {...DEF.icon};
+  const h = ip.home || {};
+  const home = { x: parsePct(h.x,0), y: parsePct(h.y,0), zoom: (h.zoom!=null? Number(h.zoom):1) };
+  const em = c.emotePos;
+  const emote = em
+    ? { side: em.side==="right"?"right":"left", x: parsePct(em.x,EMO_DEF.x), y: parsePct(em.y,EMO_DEF.y), set:true }
+    : { ...EMO_DEF, set:false }; // 未設定キャラはドラッグするまで出力に含めない
+  return { portrait, icon, home, emote };
+}
+
+// 既定一致か（出力時に省略するため）
+const eqXY = (a,b)=> Math.abs(a.x-b.x)<0.05 && Math.abs(a.y-b.y)<0.05;
+
+// 編集状態 → imagePos オブジェクト（変更ぶんのみ）。空なら null。
+function toImagePos(st){
+  const out={};
+  if(!eqXY(st.portrait,DEF.portrait)) out.portrait = objPosStr(st.portrait);
+  if(Math.abs((st.portrait.zoom||1)-1)>=0.005) out.portraitZoom = Math.round(st.portrait.zoom*100)/100;
+  if(!eqXY(st.icon,DEF.icon)) out.icon = objPosStr(st.icon);
+  const h={};
+  if(Math.abs(st.home.x)>=0.05) h.x = num(st.home.x)+"%";
+  if(Math.abs(st.home.y)>=0.05) h.y = num(st.home.y)+"%";
+  if(Math.abs(st.home.zoom-1)>=0.005) h.zoom = Math.round(st.home.zoom*100)/100;
+  if(Object.keys(h).length) out.home = h;
+  return Object.keys(out).length ? out : null;
+}
+// エモート位置の出力（set のときだけ）。emotePos は characterMaster の独立フィールド。
+function toEmote(st){
+  const e=st.emote;
+  if(!e || !e.set) return null;
+  return { side:e.side, x:Math.round(e.x), y:Math.round(e.y) };
+}
+// imagePos オブジェクト → JS リテラル文字列（貼り戻し用）
+function imagePosLiteral(ip){
+  if(!ip) return "";
+  const parts=[];
+  if(ip.portrait) parts.push(`portrait: ${JSON.stringify(ip.portrait)}`);
+  if(ip.portraitZoom!=null) parts.push(`portraitZoom: ${ip.portraitZoom}`);
+  if(ip.icon) parts.push(`icon: ${JSON.stringify(ip.icon)}`);
+  if(ip.home){
+    const hp=[];
+    if(ip.home.x) hp.push(`x: ${JSON.stringify(ip.home.x)}`);
+    if(ip.home.y) hp.push(`y: ${JSON.stringify(ip.home.y)}`);
+    if(ip.home.zoom!=null) hp.push(`zoom: ${ip.home.zoom}`);
+    parts.push(`home: { ${hp.join(", ")} }`);
+  }
+  return `imagePos: { ${parts.join(", ")} },`;
+}
+function emoteLiteral(e){
+  if(!e) return "";
+  return `emotePos: { side: ${JSON.stringify(e.side)}, x: ${e.x}, y: ${e.y} },`;
+}
+// 1キャラぶんの貼り戻しテキスト（imagePos と emotePos の両方／あるものだけ）
+function charOutput(st){
+  const lines=[];
+  const ip=imagePosLiteral(toImagePos(st)); if(ip) lines.push(ip);
+  const em=emoteLiteral(toEmote(st)); if(em) lines.push(em);
+  return lines.join("\n");
+}
+
+// ---- persistence ----------------------------------------------------------
+let store = {};
+try{ store = JSON.parse(localStorage.getItem(LS_KEY) || "{}"); }catch{ store={}; }
+const states = {}; // id -> editing state
+for(const c of CHARACTER_MASTER){
+  states[c.id] = store[c.id] ? structuredClone(store[c.id]) : initialState(c);
+}
+function persist(){
+  const dirty={};
+  for(const c of CHARACTER_MASTER){
+    const base=initialState(c), cur=states[c.id];
+    // 初期と異なるキャラだけ保存
+    if(JSON.stringify(base)!==JSON.stringify(cur)) dirty[c.id]=cur;
+  }
+  store=dirty; localStorage.setItem(LS_KEY, JSON.stringify(dirty));
+  refreshRosterFlags();
+}
+function isEditedFromMaster(c){
+  return JSON.stringify(initialState(c))!==JSON.stringify(states[c.id]);
+}
+
+// ---- UI -------------------------------------------------------------------
+const rosterEl = document.getElementById("roster");
+const mainEl = document.getElementById("main");
+let curId = CHARACTER_MASTER[0].id;
+
+function buildRoster(){
+  rosterEl.innerHTML="";
+  for(const c of CHARACTER_MASTER){
+    const b=document.createElement("button");
+    b.className="ch"+(c.id===curId?" sel":"")+(isEditedFromMaster(c)?" has-edit":"");
+    b.dataset.id=c.id;
+    b.innerHTML=`<img src="${asset(c.assets?.icon)}" alt="" onerror="this.style.visibility='hidden'">
+      <span class="nm">${c.name}</span><span class="edited"></span>`;
+    b.onclick=()=>{ curId=c.id; buildRoster(); renderMain(); };
+    rosterEl.appendChild(b);
+  }
+}
+function refreshRosterFlags(){
+  for(const b of rosterEl.children){
+    const c=CHARACTER_MASTER.find(x=>x.id===b.dataset.id);
+    b.classList.toggle("has-edit", isEditedFromMaster(c));
+  }
+}
+
+// スクロール（ホイール）でズーム。getZoom/setZoom はキャラ状態の zoom を読み書き、apply で反映。
+let persistT;
+function schedulePersist(){ clearTimeout(persistT); persistT=setTimeout(()=>{ persist(); renderOutput(); },180); }
+function attachWheelZoom(frame, getZoom, setZoom, apply, min=0.5, max=3){
+  frame.addEventListener("wheel",(e)=>{
+    e.preventDefault();
+    const z = clamp(getZoom() * (e.deltaY<0 ? 1.06 : 1/1.06), min, max);
+    setZoom(Math.round(z*1000)/1000); apply(); schedulePersist();
+  }, { passive:false });
+}
+
+// 汎用ドラッグ: frame上のpointer移動 → onMove(dx,dy)。確定時 persist+output。
+function attachDrag(frame, onStart, onMove){
+  let sx=0, sy=0, active=false;
+  frame.addEventListener("pointerdown",(e)=>{
+    active=true; frame.classList.add("dragging");
+    sx=e.clientX; sy=e.clientY; onStart(); // capture 前に状態確定（capture失敗でドラッグが死なないように）
+    try{ frame.setPointerCapture(e.pointerId); }catch{ /* 一部環境で無効なIDだと投げる */ }
+  });
+  frame.addEventListener("pointermove",(e)=>{
+    if(!active) return; onMove(e.clientX-sx, e.clientY-sy);
+  });
+  const end=()=>{ if(!active) return; active=false; frame.classList.remove("dragging"); persist(); renderOutput(); };
+  frame.addEventListener("pointerup",end);
+  frame.addEventListener("pointercancel",end);
+}
+
+function renderMain(){
+  const c=CHARACTER_MASTER.find(x=>x.id===curId);
+  const st=states[c.id];
+  mainEl.innerHTML="";
+  const who=document.createElement("div"); who.className="who";
+  who.innerHTML=`<span class="name">${c.name}</span><span class="id">${c.id}${c.reading?" / "+c.reading:""}</span>`;
+  mainEl.appendChild(who);
+
+  const cards=document.createElement("div"); cards.className="cards";
+  cards.appendChild(portraitCard(c,st));
+  cards.appendChild(iconCard(c,st));
+  cards.appendChild(homeCard(c,st));
+  cards.appendChild(emoteCard(c,st));
+  mainEl.appendChild(cards);
+
+  const help=document.createElement("p"); help.className="help";
+  help.innerHTML="ヒント: 枠内で画像をドラッグ＝位置、<b>スクロール＝ズーム</b>（立ち絵・ホーム）。エモートは立ち絵の頭付近にドラッグで配置（左右ボタンで反転）。下の出力を該当キャラ行へ貼り付け＝<code>imagePos:</code> と <code>emotePos:</code>（既存があれば置換）。";
+  mainEl.appendChild(help);
+
+  const out=document.createElement("div"); out.className="out"; out.id="outBox";
+  mainEl.appendChild(out);
+  renderOutput();
+}
+
+// --- portrait (立ち絵カード, cover) ---
+function portraitCard(c,st){
+  const card=document.createElement("div"); card.className="card";
+  card.innerHTML=`<h2>立ち絵カード <span class="tag">portrait.png / cover・ドラッグ＝位置 / スクロール＝ズーム</span></h2>`;
+  const frame=document.createElement("div"); frame.className="frame cover";
+  frame.style.width="198px"; frame.style.height="252px";
+  const img=document.createElement("img"); img.src=asset(c.assets?.portrait);
+  img.onerror=()=>{ frame.style.opacity=.3; };
+  const grid=document.createElement("div"); grid.className="grid";
+  frame.appendChild(img); frame.appendChild(grid); card.appendChild(frame);
+  const apply=()=>{
+    img.style.objectPosition=objPosStr(st.portrait);
+    img.style.transform = st.portrait.zoom!==1 ? `scale(${st.portrait.zoom})` : "";
+    read.textContent=`${objPosStr(st.portrait)}  zoom:${Math.round(st.portrait.zoom*100)/100}`;
+  };
+  const ctl=document.createElement("div"); ctl.className="ctl";
+  ctl.innerHTML=`<div class="row"><span>pos/zoom</span> <b class="read"></b>
+     <button class="mini">既定に戻す</button></div>`;
+  const read=ctl.querySelector(".read");
+  ctl.querySelector("button").onclick=()=>{ st.portrait={...DEF.portrait}; apply(); persist(); renderOutput(); };
+  card.appendChild(ctl);
+  let s0;
+  attachDrag(frame, ()=>{ s0={...st.portrait}; }, (dx,dy)=>{
+    const ov=coverOverflow(frame,img);
+    if(ov.ox>0) st.portrait.x=clamp(s0.x - dx*100/ov.ox,0,100);
+    if(ov.oy>0) st.portrait.y=clamp(s0.y - dy*100/ov.oy,0,100);
+    apply();
+  });
+  attachWheelZoom(frame, ()=>st.portrait.zoom, (z)=>st.portrait.zoom=z, apply);
+  img.complete ? apply() : img.addEventListener("load",apply);
+  apply();
+  return card;
+}
+
+// --- icon (アイコン, cover square) ---
+function iconCard(c,st){
+  const card=document.createElement("div"); card.className="card";
+  card.innerHTML=`<h2>アイコン <span class="tag">icon.png / 顔切り抜き(全箇所共通)</span></h2>`;
+  const wrap=document.createElement("div"); wrap.className="iconrow";
+  const frame=document.createElement("div"); frame.className="frame cover";
+  frame.style.width="132px"; frame.style.height="132px";
+  const img=document.createElement("img"); img.src=asset(c.assets?.icon);
+  img.onerror=()=>{ frame.style.opacity=.3; };
+  const grid=document.createElement("div"); grid.className="grid";
+  frame.appendChild(img); frame.appendChild(grid);
+  // 円形プレビュー(HPボード等の見え方)
+  const roundBox=document.createElement("div");
+  const round=document.createElement("div"); round.className="round";
+  const rimg=document.createElement("img"); rimg.src=asset(c.assets?.icon); round.appendChild(rimg);
+  roundBox.appendChild(round);
+  const cap=document.createElement("div"); cap.className="cap"; cap.style.color="var(--sub)"; cap.style.fontSize="10px"; cap.style.marginTop="4px"; cap.textContent="円形時";
+  roundBox.appendChild(cap);
+  wrap.appendChild(frame); wrap.appendChild(roundBox); card.appendChild(wrap);
+  const apply=()=>{ const v=objPosStr(st.icon); img.style.objectPosition=v; rimg.style.objectPosition=v; read.textContent=v; };
+  const ctl=document.createElement("div"); ctl.className="ctl";
+  ctl.innerHTML=`<div class="row"><span>object-position</span> <b class="read"></b>
+     <button class="mini">既定に戻す</button></div>`;
+  const read=ctl.querySelector(".read");
+  ctl.querySelector("button").onclick=()=>{ st.icon={...DEF.icon}; apply(); persist(); renderOutput(); };
+  card.appendChild(ctl);
+  let s0;
+  attachDrag(frame, ()=>{ s0={...st.icon}; }, (dx,dy)=>{
+    const ov=coverOverflow(frame,img);
+    if(ov.ox>0) st.icon.x=clamp(s0.x - dx*100/ov.ox,0,100);
+    if(ov.oy>0) st.icon.y=clamp(s0.y - dy*100/ov.oy,0,100);
+    apply();
+  });
+  img.complete ? apply() : img.addEventListener("load",apply);
+  apply();
+  return card;
+}
+
+// --- home (対戦ホーム拡大, translate%+zoom) ---
+function homeCard(c,st){
+  const card=document.createElement("div"); card.className="card";
+  card.innerHTML=`<h2>ホーム拡大 <span class="tag">対戦ホーム / ドラッグ＝寄せ・スクロール＝ズーム ※近似</span></h2>`;
+  const frame=document.createElement("div"); frame.className="frame home";
+  frame.style.width="320px"; frame.style.height="420px";
+  const wrap=document.createElement("div"); wrap.className="wrap";
+  const img=document.createElement("img"); img.src=asset(c.assets?.portrait);
+  img.onerror=()=>{ frame.style.opacity=.3; };
+  wrap.appendChild(img); frame.appendChild(wrap);
+  const grid=document.createElement("div"); grid.className="grid"; frame.appendChild(grid);
+  card.appendChild(frame);
+  const apply=()=>{
+    img.style.transform=`translate(${num(st.home.x)}%, ${num(st.home.y)}%) scale(${st.home.zoom})`;
+    read.textContent=`x:${num(st.home.x)}%  y:${num(st.home.y)}%  zoom:${Math.round(st.home.zoom*100)/100}`;
+    zr.value=st.home.zoom;
+  };
+  const ctl=document.createElement("div"); ctl.className="ctl";
+  ctl.innerHTML=`<div class="row"><b class="read"></b></div>
+    <div class="row"><span>zoom</span><input type="range" min="0.6" max="1.5" step="0.01"></div>
+    <div class="row"><button class="mini">既定に戻す</button></div>`;
+  const read=ctl.querySelector(".read");
+  const zr=ctl.querySelector("input");
+  zr.oninput=()=>{ st.home.zoom=Number(zr.value); apply(); };
+  zr.onchange=()=>{ persist(); renderOutput(); };
+  ctl.querySelector("button").onclick=()=>{ st.home={x:0,y:0,zoom:1}; apply(); persist(); renderOutput(); };
+  card.appendChild(ctl);
+  let s0;
+  attachDrag(frame, ()=>{ s0={...st.home}; }, (dx,dy)=>{
+    // translate% は変形前のボーダーボックス基準。height:310% なので naturals から確定的に算出
+    // （offsetWidth は画像未レイアウト時に 0 になり暴走するため使わない）。
+    const nw=img.naturalWidth||0, nh=img.naturalHeight||0;
+    if(!nw||!nh) return;
+    const baseH=frame.clientHeight*3.1, baseW=baseH*(nw/nh);
+    st.home.x=clamp(s0.x + dx*100/baseW, -120, 120);
+    st.home.y=clamp(s0.y + dy*100/baseH, -120, 120);
+    apply();
+  });
+  attachWheelZoom(frame, ()=>st.home.zoom, (z)=>st.home.zoom=z, apply, 0.6, 1.5);
+  img.complete ? apply() : img.addEventListener("load",apply);
+  apply();
+  return card;
+}
+
+// --- emote (紙芝居エモート位置, emotePos{side,x,y}) ---
+// 紙芝居の立ち絵(contain)の頭付近にエモートを浮かせる。値は characterMaster.emotePos へ貼り戻す。
+//   x = 立ち絵の端からの距離(px) / y = 立ち絵上端からの距離(px。負で頭上) / side = 立ち絵の左右どちら側か。
+//   ※ emotePos px はステージ(1280×720)座標系。枠は実寸を STAND_SCALE で縮小して 1:1 換算する。
+function emoteCard(c,st){
+  const card=document.createElement("div"); card.className="card";
+  card.innerHTML=`<h2>エモート位置 <span class="tag">紙芝居 / 立ち絵の頭付近・ドラッグで配置</span></h2>`;
+  const FW=300, FH=360, STAND_SCALE=0.5; // 枠サイズ / ステージpx→枠px の倍率
+  const PH=STAND_H_STAGE*STAND_SCALE;     // 立ち絵の枠内レンダ高
+  const HEAD_TOP=110;                      // 立ち絵上端のy（上にエモート余白を確保）
+  const frame=document.createElement("div"); frame.className="frame"; frame.style.width=FW+"px"; frame.style.height=FH+"px";
+  frame.style.cursor="default";
+  const stand=document.createElement("img"); stand.src=asset(c.assets?.portrait);
+  stand.style.position="absolute"; stand.style.height=PH+"px"; stand.style.width="auto";
+  stand.style.top=HEAD_TOP+"px"; stand.style.filter="drop-shadow(0 6px 14px rgba(0,0,0,.5))";
+  stand.onerror=()=>{ frame.style.opacity=.3; };
+  const emo=document.createElement("div");
+  const ez=EMO_SPRITE.size*STAND_SCALE; // エモート枠px
+  emo.style.position="absolute"; emo.style.width=ez+"px"; emo.style.height=ez+"px";
+  emo.style.backgroundImage=`url("${EMO_SPRITE.sheet}")`;
+  emo.style.backgroundSize=`${EMO_SPRITE.cols*ez}px ${EMO_SPRITE.rows*ez}px`;
+  emo.style.backgroundPosition="0 0"; emo.style.cursor="grab"; emo.style.touchAction="none";
+  emo.style.outline="1px dashed rgba(255,255,255,.35)"; emo.style.borderRadius="6px";
+  frame.appendChild(stand); frame.appendChild(emo); card.appendChild(frame);
+  // 立ち絵の枠内座標（中央寄せ）。画像読込後に確定。
+  let imgLeft=0, imgRight=0, imgTop=HEAD_TOP, imgW=0;
+  function measure(){ imgW = stand.getBoundingClientRect().width || (PH*0.5);
+    imgLeft=(FW-imgW)/2; imgRight=imgLeft+imgW; stand.style.left=imgLeft+"px"; }
+  const apply=()=>{
+    const e=st.emote, s=STAND_SCALE;
+    const left = e.side==="right" ? imgRight + e.x*s : imgLeft - e.x*s;
+    emo.style.left=left+"px"; emo.style.top=(imgTop + e.y*s)+"px";
+    emo.style.opacity = e.set ? 1 : .45;
+    read.textContent=`side:${e.side}  x:${Math.round(e.x)}  y:${Math.round(e.y)}${e.set?"":"  (未設定)"}`;
+  };
+  const ctl=document.createElement("div"); ctl.className="ctl";
+  ctl.innerHTML=`<div class="row"><b class="read"></b></div>
+    <div class="row"><span>立ち絵の</span>
+      <button class="mini" data-side="left">左側</button>
+      <button class="mini" data-side="right">右側</button>
+      <button class="mini" data-reset>クリア</button></div>`;
+  const read=ctl.querySelector(".read");
+  ctl.querySelectorAll("[data-side]").forEach(b=>b.onclick=()=>{ st.emote.side=b.dataset.side; st.emote.set=true; apply(); persist(); renderOutput(); });
+  ctl.querySelector("[data-reset]").onclick=()=>{ st.emote={...EMO_DEF, set:false}; apply(); persist(); renderOutput(); };
+  card.appendChild(ctl);
+  let s0;
+  attachDrag(emo, ()=>{ s0={...st.emote}; st.emote.set=true; }, (dx,dy)=>{
+    const s=STAND_SCALE;
+    // emote左上 = ドラッグ後の位置。side に応じて端からの距離(px,ステージ系)へ逆算。
+    const newLeft = (s0.side==="right" ? imgRight + s0.x*s : imgLeft - s0.x*s) + dx;
+    st.emote.x = s0.side==="right" ? (newLeft - imgRight)/s : (imgLeft - newLeft)/s;
+    st.emote.y = s0.y + dy/s;
+    apply();
+  });
+  const ready=()=>{ measure(); apply(); };
+  stand.complete && stand.naturalWidth ? ready() : stand.addEventListener("load",ready);
+  measure(); apply();
+  return card;
+}
+
+function coverOverflow(frame,img){
+  const bw=frame.clientWidth, bh=frame.clientHeight;
+  const nw=img.naturalWidth||0, nh=img.naturalHeight||0;
+  if(!nw||!nh) return { ox:0, oy:0 }; // 未ロードは可動量0（誤動作させない）
+  const scale=Math.max(bw/nw, bh/nh);
+  return { ox: nw*scale-bw, oy: nh*scale-bh };
+}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+function renderOutput(){
+  const box=document.getElementById("outBox"); if(!box) return;
+  const c=CHARACTER_MASTER.find(x=>x.id===curId);
+  const lit = charOutput(states[c.id]) || "// （既定のまま＝貼り戻し不要）";
+  box.innerHTML=`<div class="bar"><h2>${c.name} の出力（このキャラの行へ貼り戻す）</h2>
+     <button id="copyOne">コピー</button>
+     <button id="revertOne" class="ghost">マスタ値に戻す</button></div>`;
+  const ta=document.createElement("textarea"); ta.readOnly=true; ta.value=lit; ta.style.minHeight="64px";
+  box.appendChild(ta);
+  box.querySelector("#copyOne").onclick=()=>{ copy(lit); };
+  box.querySelector("#revertOne").onclick=()=>{ states[c.id]=initialState(c); persist(); renderMain(); };
+}
+
+function buildAllOutput(){
+  const lines=[];
+  for(const c of CHARACTER_MASTER){
+    const out=charOutput(states[c.id]);
+    if(!out) continue;
+    lines.push(`// ${c.id} (${c.name})`);
+    lines.push(out);
+  }
+  return lines.length ? lines.join("\n") : "// 変更ぶんはありません";
+}
+
+document.getElementById("copyAll").onclick=()=>{
+  copy(buildAllOutput()); toast("変更ぶんを全キャラ分コピーしました");
+};
+document.getElementById("resetAll").onclick=()=>{
+  if(!confirm("このツールのローカル編集を全消去し、マスタ値に戻します。よろしいですか？")) return;
+  localStorage.removeItem(LS_KEY); store={};
+  for(const c of CHARACTER_MASTER) states[c.id]=initialState(c);
+  buildRoster(); renderMain(); toast("編集を破棄しました");
+};
+
+function copy(text){
+  navigator.clipboard?.writeText(text).then(()=>toast("コピーしました")).catch(()=>{
+    const ta=document.createElement("textarea"); ta.value=text; document.body.appendChild(ta);
+    ta.select(); try{document.execCommand("copy");toast("コピーしました");}catch{} ta.remove();
+  });
+}
+let toastT;
+function toast(msg){
+  const el=document.getElementById("toast"); el.textContent=msg; el.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove("show"),1400);
+}
+
+buildRoster();
+renderMain();
+</script>
+</body>
+</html>

@@ -17,6 +17,16 @@
 //                       表情は portrait にフォールバック。※実在するファイルのパスだけ登録すること
 //                       （存在しないパスを入れると onerror で立ち絵が消える）。
 //   - ボイス          … sound/voice/<id>/{pon,chi,kan,riichi,tsumo,ron}.mp3
+//
+// 画像の用途別オフセット(任意) … imagePos = { portrait, icon, home }。同じ立ち絵/アイコンでも
+//   画面の用途ごとに切り抜きの収まりが変わるので、用途別に基準点や寄せ/拡大を持てる。
+//     - portrait     … 立ち絵カバーの object-position（旧 portraitPos の後継。未設定はそちらへフォールバック）
+//     - portraitZoom … 立ち絵カバーの拡大率（任意・既定1）。cover画像を scale で寄る／引く
+//     - icon         … icon.png 顔アイコンの object-position（全アイコン共通）
+//     - home         … 対戦ホーム拡大の { x, y, zoom }（translate%＋拡大）
+//   ※ 紙芝居エモートの位置は別フィールド emotePos = { side, x, y }（立ち絵の頭付近に浮かせる）。
+//   値はすべて任意。調整は開発ツール tools/offset-tuner.html でグラフィカルに行い、出力を貼り戻す。
+//   解決ロジックは src/data/imagePos.js（portraitPosOf / iconPosOf / homeTuneOf）。
 const voicesFor = (id) => ({
   pon: `sound/voice/${id}/pon.mp3`,
   chi: `sound/voice/${id}/chi.mp3`,
@@ -107,6 +117,7 @@ export const CHARACTER_MASTER = [
     profile: "端と字牌を偏愛する変わり者。么九牌を引き寄せ、国士無双や混老頭といった大物手を狙い続ける夢追い人。",
     stats: { startingPoints: 16000 }, // weakest ability in short games — compensate with HP
     assets: assetsFor("yao_chu"),
+    imagePos: { home: { x: "18%", zoom: 1.12 } }, // 全身立ち・顔が左寄り＝右へ寄せてバストアップ
     params: { attack: 2, defense: 2, quirk: 5, difficulty: 5 },
     abilities: [{ abilityId: "rootou", params: {} }],
   },
@@ -123,7 +134,11 @@ export const CHARACTER_MASTER = [
     params: { attack: 5, defense: 2, quirk: 3, difficulty: 2 },
     // 立ち絵が右傾ポーズで顔が右上にあるため、cover切り抜きの基準を右寄りにする
     // （未指定キャラは既定の "top center"）。値は CSS object-position。
-    portraitPos: "72% 0%",
+    portraitPos: "72% 0%", // 後方互換（= imagePos.portrait）
+    imagePos: {
+      portrait: "72% 0%",
+      home: { x: "-18%", zoom: 1.1 }, // 全身・前傾ポーズ＝左へ寄せて顔を中央／少し拡大
+    },
     abilities: [{ abilityId: "chunchan", params: {} }],
   },
   {
@@ -136,6 +151,7 @@ export const CHARACTER_MASTER = [
     profile: "新たなドラ表示牌を次々めくり、場ごと巻き込んで打点を釣り上げる博徒。暴いたドラは全員の刃にもなり、めくり過ぎれば四開槓で局そのものが流れる諸刃の賭け。最強の打点と引き換えに、持ち点は賭け金のように紙のごとく脆い。ハイリスク・ハイリターンの体現者。",
     stats: { startingPoints: 12500 }, // glass cannon: strongest ability, paper HP（4人卓の床が深すぎたので微増）
     assets: assetsFor("doranie"),
+    imagePos: { home: { zoom: 0.82 } }, // 全身立ち＝引いて頭光輪〜胸元のバストアップに収める
     params: { attack: 5, defense: 1, quirk: 4, difficulty: 5 },
     abilities: [{ abilityId: "dora-pull", params: {} }],
   },
@@ -217,6 +233,7 @@ export const CHARACTER_MASTER = [
     profile: "あどけない見た目に反し、誰にも「奪わせない」打ち手。身代わり人形のように被弾を引き受け（6打牌のあいだ）、彼女に勝ってもアガりは帳消し——勝者すら点棒を得られない。攻めずとも沈まない、粘り勝ちの申し子。",
     stats: { startingPoints: 12000 }, // trimmed: 両モードで勝率トップだったため減点（守備で粘れる分HP低め）
     assets: assetsFor("bibi"),
+    imagePos: { home: { x: "12%" } }, // 人物が左に寄っているため右へ寄せる
     params: { attack: 2, defense: 5, quirk: 2, difficulty: 1 },
     abilities: [{ abilityId: "bibi", params: {} }],
   },

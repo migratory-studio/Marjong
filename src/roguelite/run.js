@@ -390,6 +390,8 @@ function bossMemberFromChar(char, hp, lv, seed) {
     stats: { startingPoints: hp },
     assets: char.assets || { icon: "", portrait: "", voices: {} },
     portraitPos: char.portraitPos || "top center",
+    imagePos: char.imagePos, // 用途別オフセットを本人から引き継ぐ（立ち絵/アイコン/ホーム）
+
     params: paramsFromLv(lv, seed),
     abilities: Array.isArray(char.abilities) ? char.abilities.map((a) => ({ ...a })) : [],
   };

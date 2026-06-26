@@ -11,6 +11,7 @@
 // 立ち絵は character.assets.portrait を直接 src に使い、onerror で色ブロックへフォールバック
 // （CharacterImages のプリロード状態に依存しない＝選択画面と同じ流儀）。
 import { ROLE_MASTER } from "../data/characterMaster.js";
+import { applyPortraitCrop } from "../data/imagePos.js";
 
 // 起家から各席の自風（東南西北）を引く。SEAT_WINDS は core/game.js と同じ並び。
 const WIND_LABEL = ["東", "南", "西", "北"];
@@ -38,7 +39,7 @@ function makeArt(c, which, cls) {
     if (which === "portrait" && c.isMob) img.classList.add("mi-mob-bg");
     img.src = path;
     img.alt = c.name;
-    if (which === "portrait" && c.portraitPos) img.style.objectPosition = c.portraitPos;
+    if (which === "portrait") applyPortraitCrop(img, c);
     img.onerror = () => {
       const fb = makeArtFallback(c, cls);
       img.replaceWith(fb);
