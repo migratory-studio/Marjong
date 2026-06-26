@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>セリフ・エディター（局中／雀荘／ロビー）</title>
+<style>
+  :root { --bg:#0f1115; --panel:#1a1d24; --panel2:#13161c; --ink:#e8eaed; --muted:#9aa0a8; --accent:#6cc6ff; --warn:#ffcf6c; --err:#ff7a7a; --ok:#7ee0a5; --line:#2a2f3a; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:14px/1.55 system-ui, "Segoe UI", sans-serif; }
+  header { padding:10px 16px; border-bottom:1px solid var(--line); display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  header h1 { font-size:15px; margin:0 12px 0 0; font-weight:700; letter-spacing:.02em; }
+  .row { display:flex; align-items:center; gap:8px; }
+  label { color:var(--muted); }
+  select, input[type=text], textarea {
+    background:#11141a; color:var(--ink); border:1px solid var(--line); border-radius:6px; padding:6px 8px; font:inherit;
+  }
+  textarea { width:100%; resize:vertical; min-height:34px; line-height:1.45; }
+  button { background:var(--accent); color:#06212e; border:none; border-radius:6px; padding:7px 12px; font-weight:700; cursor:pointer; }
+  button.ghost { background:transparent; color:var(--ink); border:1px solid var(--line); font-weight:600; }
+  button.mini { padding:4px 8px; font-size:12px; }
+  button:disabled { opacity:.4; cursor:not-allowed; }
+  .tabs { display:flex; gap:4px; }
+  .tab { padding:6px 14px; border:1px solid var(--line); border-bottom:none; border-radius:8px 8px 0 0; background:var(--panel2); color:var(--muted); cursor:pointer; }
+  .tab.on { background:var(--panel); color:var(--ink); font-weight:700; box-shadow:inset 0 2px 0 var(--accent); }
+  main { display:grid; grid-template-columns: 1fr 400px; gap:0; height:calc(100vh - 56px); }
+  .list { padding:14px 16px; overflow:auto; }
+  .side { border-left:1px solid var(--line); padding:14px 16px; overflow:auto; background:var(--panel2); }
+  .grp { margin-bottom:18px; }
+  .grp h2 { font-size:13px; color:var(--accent); margin:0 0 8px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--line); padding-bottom:5px; }
+  .grp h2 .count { color:var(--muted); font-weight:400; font-size:12px; }
+  .grp.ro h2 { color:var(--muted); }
+  .line { display:grid; grid-template-columns: 150px 1fr auto; gap:8px; align-items:start; padding:8px; border:1px solid var(--line); border-radius:8px; background:var(--panel); margin-bottom:7px; }
+  .line.tmpl { border-color:#5a4326; background:#221a10; }
+  .line.ro { opacity:.62; }
+  .line .meta { display:flex; flex-direction:column; gap:5px; }
+  .line .meta .badge { font-size:10px; color:var(--muted); }
+  .line .body { display:flex; flex-direction:column; gap:5px; min-width:0; }
+  .line .cond { font-size:12px; font-family:ui-monospace, monospace; }
+  .line .cond.bad { border-color:var(--err); }
+  .line .ops { display:flex; flex-direction:column; gap:5px; }
+  .choices { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:4px; }
+  .choices .ch { border:1px solid var(--line); border-radius:6px; padding:6px; background:var(--panel2); }
+  .choices .ch input { width:100%; margin-bottom:4px; }
+  .choices .ch label { font-size:11px; display:block; margin-bottom:2px; }
+  small.hint { color:var(--muted); }
+  .pill { padding:2px 9px; border:1px solid var(--line); border-radius:999px; color:var(--muted); font-size:12px; }
+  .side h3 { font-size:13px; margin:0 0 8px; color:var(--accent); }
+  .side section { margin-bottom:20px; }
+  .preview-out { background:#11141a; border:1px solid var(--line); border-radius:8px; padding:10px 12px; min-height:48px; }
+  .preview-out .who { font-size:11px; color:var(--muted); margin-bottom:4px; }
+  .preview-out .say { font-size:15px; }
+  .preview-out .none { color:var(--muted); font-style:italic; }
+  .vlist { list-style:none; margin:6px 0 0; padding:0; font-size:12px; }
+  .vlist li { padding:4px 8px; border-radius:6px; margin-bottom:3px; }
+  .vlist li.err { background:#2a1414; color:var(--err); }
+  .vlist li.warn { background:#2a2410; color:var(--warn); }
+  .vlist li.ok { background:#0f2418; color:var(--ok); }
+  .codebox { width:100%; min-height:200px; background:#0a0c10; color:#cfe6ff; font:12px/1.5 ui-monospace, "Cascadia Code", monospace; border:1px solid var(--line); border-radius:8px; padding:10px; white-space:pre; overflow:auto; }
+  .toast { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:var(--ok); color:#062014; padding:9px 18px; border-radius:999px; font-weight:700; opacity:0; transition:opacity .2s; pointer-events:none; }
+  .toast.show { opacity:1; }
+  .empty { color:var(--muted); padding:24px; text-align:center; }
+  kbd { background:#11141a; border:1px solid var(--line); border-radius:4px; padding:1px 5px; font-size:11px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>セリフ・エディター</h1>
+  <div class="row"><label>キャラ</label><select id="charSel"></select></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="row" style="margin-left:auto"><span class="pill" id="stat">—</span></div>
+  <small class="hint">編集→右の「コードを生成」でコピー。マスタは<b>上書きされません</b>（offset-tuner と同じ貼り戻し方式）。</small>
+</header>
+
+<main>
+  <div class="list" id="list"></div>
+  <div class="side">
+    <section>
+      <h3>プレビュー（この状況で出る候補）</h3>
+      <div class="row" style="gap:6px; flex-wrap:wrap; margin-bottom:8px">
+        <select id="pvEvent"></select>
+        <select id="pvTier"></select>
+        <button class="mini" id="pvRoll">1つ引く</button>
+      </div>
+      <div class="preview-out" id="pvOut"><span class="none">イベントを選んでください</span></div>
+      <ul class="vlist" id="pvCand"></ul>
+    </section>
+
+    <section>
+      <h3>検証</h3>
+      <ul class="vlist" id="valOut"><li class="ok">問題なし</li></ul>
+    </section>
+
+    <section>
+      <h3>コード生成（貼り戻し用）</h3>
+      <div class="row" style="gap:6px; margin-bottom:8px">
+        <button id="genBtn">このキャラのコードを生成</button>
+        <button class="ghost mini" id="copyBtn" disabled>コピー</button>
+      </div>
+      <small class="hint">対戦キャラは <kbd>characterVoiceMaster.js</kbd> の該当配列へ、師匠は <kbd>mentorVoiceMaster.js</kbd> の各セクションへ貼ります。生成物は<b>手書き分のみ</b>（scenario-forge 量産分は除外）。</small>
+      <div class="codebox" id="codeOut" style="margin-top:8px">（未生成）</div>
+    </section>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { CHARACTER_MASTER } from '../src/data/characterMaster.js';
+import { CHARACTER_VOICE_MASTER } from '../src/data/characterVoiceMaster.js';
+import { VOICE_LINE_MASTER } from '../src/data/voiceLineMaster.js';
+import {
+  MENTOR_GREETINGS, MENTOR_REST_TALKS, MENTOR_PRAISE,
+  MENTOR_BATTLE_QUIPS, MENTOR_PARLOR_COMMENTS,
+} from '../src/data/mentorVoiceMaster.js';
+
+// ── 前提（マスタの組み立て方）─────────────────────────────────────────────
+//  characterVoiceMaster: CHARACTER_VOICE_MASTER[id] = [...手書き(or tmpl), ...forge(VOICE_LINE_MASTER)]
+//    末尾 forge.length 件は scenario-forge 量産分＝手編集禁止。読み取り専用の参考として分離表示し、
+//    編集・貼り戻し対象には含めない（手書き配列への混入＝重複の温床を防ぐ）。
+//  mentorVoiceMaster: HANDWRITTEN_MENTOR[id] or templateMentor。forge マージ無し＝export をそのまま貼り戻せる。
+//  ヘルパー: character=L(event,cond,text) / mentor greet・praise=L(cond,text) / battle=L2(event,cond,text)
+//           / parlor=L3(tier,cond,text) / rest=オブジェクト直書き。
+
+const TEMPLATE_MARK = "［テンプレ］";
+const SCORE_TIERS = ["yakuman", "high", "mid", "low"];
+const DMG_TIERS   = ["pinch", "big", "mid", "small"];
+const RANK_TIERS  = ["top", "upper", "lower", "bottom"];
+const BATTLE_EVENTS = ["matchStart","bigWin","bigLoss","pinch","tobi","bustWin","abilityUse","readWin","complete","retreat","rareGuest","riichiSelf","riichiOpp"];
+const PARLOR_TIERS  = ["bigWin","win","rough"];
+
+const LOBBY_EVENTS = ["home","homeChat","homeTap"];
+const MATCH_EVENTS = ["matchStart","agari","damage","matchEnd","handStart","tenpai","tenpaiDrop","tsumogiriStreak","handStuck","iishantenHell","handSmooth","lastTiles","swapIn","allyHandStart","allyTenpai","allyStuck","allyLast"];
+// 楼光の館（ローグライト）の潜行ナラティブ系。
+const ROGUELITE_EVENTS = ["rlChapterIntro","rlBanter","rlBanterReply","rlBuff","rlPursue","rlRetreat","rlBossIntro","rlChapterClear","rlWipe","rlResolve"];
+
+const EVENT_LABEL = {
+  matchStart:"対局開始", agari:"和了", damage:"被ダメージ", matchEnd:"対局終了",
+  handStart:"局のはじまり", tenpai:"聴牌", tenpaiDrop:"聴牌くずし", tsumogiriStreak:"ツモ切り続き",
+  handStuck:"手詰まり", iishantenHell:"イーシャンテン地獄", handSmooth:"好調", lastTiles:"流局間際",
+  swapIn:"交代登場", allyHandStart:"相方相槌・局頭", allyTenpai:"相方相槌・味方聴牌",
+  allyStuck:"相方相槌・味方手詰まり", allyLast:"相方相槌・流局間際",
+  rlChapterIntro:"楼光・章の導入", rlBanter:"楼光・潜行中の雑談", rlBanterReply:"楼光・雑談への返し",
+  rlBuff:"楼光・バフ獲得", rlPursue:"楼光・進撃/追撃", rlRetreat:"楼光・撤退", rlBossIntro:"楼光・ボス口上",
+  rlChapterClear:"楼光・章クリア", rlWipe:"楼光・全滅", rlResolve:"楼光・別れ際の決意",
+  home:"出迎え(固有)", homeChat:"雑談", homeTap:"タップ反応",
+  bigWin:"大勝ち", bigLoss:"大敗け", pinch:"ピンチ", tobi:"飛ばし", bustWin:"トビ勝ち",
+  abilityUse:"能力使用", readWin:"読み勝ち", complete:"踏破/完了", retreat:"撤退", rareGuest:"レア客",
+  riichiSelf:"自リーチ", riichiOpp:"他家リーチ",
+};
+const evLabel = (ev) => EVENT_LABEL[ev] ? `${EVENT_LABEL[ev]}（${ev}）` : ev;
+
+const TONE = { shiyue: ["我","ダヨ","ネ","ヨ","ダロ"] };
+
+// CHARACTER_MASTER は配列（[{id,name,reading},...]）。id で引けるようマップ化する。
+const CHAR_BY_ID = Object.fromEntries((CHARACTER_MASTER || []).map((c) => [c.id, c]));
+const charInfo = (id) => CHAR_BY_ID[id] || {};
+const charName = (id) => CHAR_BY_ID[id]?.name || id;
+
+// キャラ一覧は CHARACTER_MASTER（正典の14人）を起点に、セリフ定義のあるidも取りこぼさない。
+const CHAR_IDS = (() => {
+  const set = new Set([
+    ...(CHARACTER_MASTER || []).map((c) => c.id),
+    ...Object.keys(CHARACTER_VOICE_MASTER || {}),
+    ...Object.keys(MENTOR_GREETINGS || {}),
+  ]);
+  return [...set].filter(Boolean);
+})();
+
+const condStr = (cond) => {
+  const c = cond || {};
+  return Object.keys(c).length ? JSON.stringify(c) : "{}";
+};
+
+function buildModel(charId) {
+  const merged = CHARACTER_VOICE_MASTER[charId] || [];
+  const forge  = (VOICE_LINE_MASTER || {})[charId] || [];
+  const handCount = Math.max(0, merged.length - forge.length);
+  const handRows  = merged.slice(0, handCount);
+  const forgeRows = merged.slice(handCount);
+
+  return {
+    character: handRows.map((e) => ({ kind:"character", event:e.event, condStr:condStr(e.cond), text:e.text })),
+    forge: forgeRows.map((e) => ({ kind:"character", readOnly:true, event:e.event, condStr:condStr(e.cond), text:e.text })),
+    mentor: {
+      greet:  (MENTOR_GREETINGS[charId]   || []).map((e) => ({ kind:"mentor", section:"greet",  condStr:condStr(e.cond), text:e.text })),
+      praise: (MENTOR_PRAISE[charId]      || []).map((e) => ({ kind:"mentor", section:"praise", condStr:condStr(e.cond), text:e.text })),
+      battle: (MENTOR_BATTLE_QUIPS[charId]|| []).map((e) => ({ kind:"mentor", section:"battle", event:e.event, condStr:condStr(e.cond), text:e.text })),
+      parlor: (MENTOR_PARLOR_COMMENTS[charId]|| []).map((e) => ({ kind:"mentor", section:"parlor", tier:e.tier, condStr:condStr(e.cond), text:e.text })),
+      rest:   (MENTOR_REST_TALKS[charId]  || []).map((e) => ({
+        kind:"mentor", section:"rest", condStr:condStr(e.cond), prompt:e.prompt,
+        choices: (e.choices || []).slice(0,2).map((c) => ({ label:c.label||"", reply:c.reply||"", memory:c.memory||"" })),
+      })),
+    },
+  };
+}
+
+let curChar = CHAR_IDS[0];
+let curTab  = "lobby";
+let model   = buildModel(curChar);
+
+const TABS = [
+  { id:"lobby",  label:"ロビー" },
+  { id:"match",  label:"局中" },
+  { id:"rl",     label:"楼光" },
+  { id:"parlor", label:"雀荘" },
+  { id:"growth", label:"育成(休憩/称賛)" },
+];
+
+// 既知イベント（character系）。これに無い event は「その他」群で必ず拾う＝取りこぼし防止。
+const KNOWN_CHAR_EVENTS = new Set([...LOBBY_EVENTS, ...MATCH_EVENTS, ...ROGUELITE_EVENTS]);
+
+function groupsForTab(tab) {
+  const groups = [];
+  const charRows = model.character;
+  const byEvents = (events) => charRows.filter((r) => events.includes(r.event));
+  const forgeBy  = (events) => (model.forge || []).filter((r) => events.includes(r.event));
+
+  if (tab === "lobby") {
+    groups.push({ title:"対戦キャラ — ロビー（home / homeChat / homeTap）", rows: byEvents(LOBBY_EVENTS),
+      addNew: () => ({ kind:"character", event:"homeChat", condStr:"{}", text:"" }), addPool: charRows });
+    groups.push({ title:"師匠 — ホーム出迎え（greet）", rows: model.mentor.greet,
+      addNew: () => ({ kind:"mentor", section:"greet", condStr:"{}", text:"" }), addPool: model.mentor.greet });
+    pushForge(groups, forgeBy(LOBBY_EVENTS));
+  } else if (tab === "match") {
+    groups.push({ title:"対戦キャラ — 局中（和了/被ダメ/聴牌ほか）", rows: byEvents(MATCH_EVENTS),
+      addNew: () => ({ kind:"character", event:"agari", condStr:'{"scoreTier":"mid"}', text:"" }), addPool: charRows });
+    groups.push({ title:"師匠 — オート対局・見守り相槌（battle）", rows: model.mentor.battle,
+      addNew: () => ({ kind:"mentor", section:"battle", event:"matchStart", condStr:"{}", text:"" }), addPool: model.mentor.battle });
+    pushForge(groups, forgeBy(MATCH_EVENTS));
+    // 取りこぼし防止：既知イベントに無い character 行を必ず拾う（将来の新イベント対策）。
+    const orphans = charRows.filter((r) => !KNOWN_CHAR_EVENTS.has(r.event));
+    if (orphans.length) groups.push({ title:"対戦キャラ — その他（未分類イベント）", rows: orphans,
+      addNew: null, addPool: charRows });
+  } else if (tab === "rl") {
+    groups.push({ title:"対戦キャラ — 楼光の館（潜行ナラティブ）", rows: byEvents(ROGUELITE_EVENTS),
+      addNew: () => ({ kind:"character", event:"rlChapterIntro", condStr:"{}", text:"" }), addPool: charRows });
+    pushForge(groups, forgeBy(ROGUELITE_EVENTS));
+  } else if (tab === "parlor") {
+    groups.push({ title:"師匠 — 雀荘巡り帰りの一言（parlor）", rows: model.mentor.parlor,
+      addNew: () => ({ kind:"mentor", section:"parlor", tier:"win", condStr:"{}", text:"" }), addPool: model.mentor.parlor });
+  } else if (tab === "growth") {
+    groups.push({ title:"師匠 — 大成功の素出し（praise）", rows: model.mentor.praise,
+      addNew: () => ({ kind:"mentor", section:"praise", condStr:"{}", text:"" }), addPool: model.mentor.praise });
+    groups.push({ title:"師匠 — 休憩コマンドの2択（rest）", rows: model.mentor.rest,
+      addNew: () => ({ kind:"mentor", section:"rest", condStr:"{}", prompt:"", choices:[{label:"",reply:"",memory:""},{label:"",reply:"",memory:""}] }), addPool: model.mentor.rest });
+  }
+  return groups;
+}
+
+function pushForge(groups, rows) {
+  if (!rows || !rows.length) return;
+  groups.push({ title:"（参考・読取専用）scenario-forge 量産分 — 編集は scenario-forge 側で", rows, addNew:null, addPool:null, readOnly:true });
+}
+
+const charSel = document.getElementById("charSel");
+const tabsEl  = document.getElementById("tabs");
+const listEl  = document.getElementById("list");
+const statEl  = document.getElementById("stat");
+const toastEl = document.getElementById("toast");
+
+for (const id of CHAR_IDS) {
+  const o = document.createElement("option");
+  o.value = id;
+  const info = charInfo(id);
+  const reading = info.reading ? `（${info.reading}）` : "";
+  o.textContent = `${charName(id)}${reading} · ${id}`;
+  charSel.appendChild(o);
+}
+charSel.value = curChar;
+charSel.addEventListener("change", () => { curChar = charSel.value; model = buildModel(curChar); render(); });
+
+for (const t of TABS) {
+  const b = document.createElement("div");
+  b.className = "tab" + (t.id === curTab ? " on" : "");
+  b.textContent = t.label; b.dataset.id = t.id;
+  b.addEventListener("click", () => { curTab = t.id; render(); });
+  tabsEl.appendChild(b);
+}
+
+function render() {
+  [...tabsEl.children].forEach((b) => b.classList.toggle("on", b.dataset.id === curTab));
+  const groups = groupsForTab(curTab);
+  listEl.innerHTML = "";
+  let total = 0;
+  for (const g of groups) {
+    if (!g.readOnly) total += g.rows.length;
+    const wrap = document.createElement("div");
+    wrap.className = "grp" + (g.readOnly ? " ro" : "");
+    const h = document.createElement("h2");
+    h.innerHTML = `<span>${g.title}</span><span class="count">${g.rows.length}件</span>`;
+    if (g.addNew) {
+      const add = document.createElement("button");
+      add.className = "mini ghost"; add.textContent = "＋ 行を追加"; add.style.marginLeft = "auto";
+      add.addEventListener("click", () => { g.addPool.push(g.addNew()); render(); });
+      h.appendChild(add);
+    }
+    wrap.appendChild(h);
+    if (!g.rows.length) {
+      const e = document.createElement("div"); e.className = "empty"; e.textContent = "（まだセリフがありません）"; wrap.appendChild(e);
+    }
+    for (const row of g.rows) wrap.appendChild(renderLine(row, g.addPool, !!g.readOnly));
+    listEl.appendChild(wrap);
+  }
+  if (!groups.length) listEl.innerHTML = '<div class="empty">このタブに対象セクションがありません。</div>';
+  statEl.textContent = `${charName(curChar)} ／ ${TABS.find((t)=>t.id===curTab)?.label} ：編集対象${total}件`;
+  refreshPreviewControls();
+  runValidation();
+}
+
+function isTemplate(s) { return typeof s === "string" && s.includes(TEMPLATE_MARK); }
+
+function renderLine(row, pool, readOnly = false) {
+  const el = document.createElement("div");
+  el.className = "line" + ((isTemplate(row.text) || isTemplate(row.prompt)) ? " tmpl" : "") + (readOnly ? " ro" : "");
+
+  const meta = document.createElement("div"); meta.className = "meta";
+  const badge = document.createElement("div"); badge.className = "badge";
+  badge.textContent = readOnly ? "▤ forge(読取専用)" : (row.kind === "character" ? "◆対戦キャラ" : `◇師匠/${row.section}`);
+  meta.appendChild(badge);
+
+  if (row.kind === "character") {
+    meta.appendChild(makeSelect(LOBBY_EVENTS.concat(MATCH_EVENTS, ROGUELITE_EVENTS), row.event, (v) => { row.event = v; render(); }, evLabel, readOnly));
+  } else if (row.section === "battle") {
+    meta.appendChild(makeSelect(BATTLE_EVENTS, row.event, (v) => { row.event = v; refreshPreviewControls(); }, evLabel, readOnly));
+  } else if (row.section === "parlor") {
+    meta.appendChild(makeSelect(PARLOR_TIERS, row.tier, (v) => { row.tier = v; }, (x)=>x, readOnly));
+  }
+
+  const cond = document.createElement("input");
+  cond.type = "text"; cond.className = "cond"; cond.value = row.condStr;
+  cond.placeholder = '{} か {"scoreTier":"high"}'; cond.disabled = readOnly;
+  cond.addEventListener("input", () => { row.condStr = cond.value; cond.classList.toggle("bad", !condOk(cond.value)); runValidation(); });
+  cond.classList.toggle("bad", !condOk(row.condStr));
+  meta.appendChild(cond);
+  el.appendChild(meta);
+
+  const body = document.createElement("div"); body.className = "body";
+  if (row.section === "rest") {
+    const p = document.createElement("textarea"); p.value = row.prompt || ""; p.placeholder = "問いかけ（休憩の一言）"; p.disabled = readOnly;
+    p.addEventListener("input", () => { row.prompt = p.value; runValidation(); });
+    body.appendChild(p);
+    const ch = document.createElement("div"); ch.className = "choices";
+    row.choices = (row.choices && row.choices.length === 2) ? row.choices : [{label:"",reply:"",memory:""},{label:"",reply:"",memory:""}];
+    row.choices.forEach((c, i) => ch.appendChild(makeChoice(c, i, readOnly)));
+    body.appendChild(ch);
+  } else {
+    const ta = document.createElement("textarea"); ta.value = row.text || ""; ta.placeholder = "セリフ本文"; ta.disabled = readOnly;
+    ta.addEventListener("input", () => { row.text = ta.value; el.classList.toggle("tmpl", isTemplate(ta.value)); runValidation(); });
+    body.appendChild(ta);
+  }
+  el.appendChild(body);
+
+  const ops = document.createElement("div"); ops.className = "ops";
+  if (!readOnly) {
+    const dup = document.createElement("button"); dup.className = "mini ghost"; dup.textContent = "複製";
+    dup.addEventListener("click", () => { pool.splice(pool.indexOf(row)+1, 0, JSON.parse(JSON.stringify(row))); render(); });
+    const del = document.createElement("button"); del.className = "mini ghost"; del.textContent = "削除"; del.style.color = "var(--err)";
+    del.addEventListener("click", () => { const i = pool.indexOf(row); if (i>=0) pool.splice(i,1); render(); });
+    ops.appendChild(dup); ops.appendChild(del);
+  }
+  el.appendChild(ops);
+  return el;
+}
+
+function makeSelect(options, value, onChange, labelFn, disabled = false) {
+  const s = document.createElement("select"); s.disabled = disabled;
+  for (const o of options) { const op = document.createElement("option"); op.value = o; op.textContent = labelFn ? labelFn(o) : o; s.appendChild(op); }
+  if (!options.includes(value)) { const op = document.createElement("option"); op.value = value; op.textContent = value + "（未知）"; s.appendChild(op); }
+  s.value = value;
+  s.addEventListener("change", () => onChange(s.value));
+  return s;
+}
+
+function makeChoice(c, i, disabled = false) {
+  const box = document.createElement("div"); box.className = "ch";
+  const head = document.createElement("label"); head.textContent = `選択肢 ${i===0?"A":"B"}`; head.style.color = "var(--accent)"; box.appendChild(head);
+  const mk = (key, ph) => {
+    const lab = document.createElement("label"); lab.textContent = ph;
+    const inp = document.createElement("input"); inp.type = "text"; inp.value = c[key] || ""; inp.placeholder = ph; inp.disabled = disabled;
+    inp.addEventListener("input", () => { c[key] = inp.value; runValidation(); });
+    box.appendChild(lab); box.appendChild(inp);
+  };
+  mk("label", "label（ボタン文言）");
+  mk("reply", "reply（キャラの返し）");
+  mk("memory", "memory（覚えるキー）");
+  return box;
+}
+
+function condOk(str) {
+  const s = (str || "").trim();
+  if (s === "" || s === "{}") return true;
+  try { const o = JSON.parse(s); return o && typeof o === "object" && !Array.isArray(o); } catch { return false; }
+}
+function parseCond(str) {
+  const s = (str || "").trim();
+  if (s === "" || s === "{}") return {};
+  try { return JSON.parse(s); } catch { return null; }
+}
+
+const pvEvent = document.getElementById("pvEvent");
+const pvTier  = document.getElementById("pvTier");
+const pvOut   = document.getElementById("pvOut");
+const pvCand  = document.getElementById("pvCand");
+document.getElementById("pvRoll").addEventListener("click", rollPreview);
+pvEvent.addEventListener("change", () => { syncTierOptions(); renderPreview(); });
+pvTier.addEventListener("change", renderPreview);
+
+function previewableEvents() {
+  if (curTab === "lobby") return LOBBY_EVENTS;
+  if (curTab === "match") return MATCH_EVENTS;
+  return [];
+}
+function refreshPreviewControls() {
+  const evs = previewableEvents();
+  pvEvent.innerHTML = "";
+  if (!evs.length) {
+    const o = document.createElement("option"); o.textContent = "（このタブはプレビュー対象外）"; pvEvent.appendChild(o);
+    pvEvent.disabled = true; pvTier.disabled = true;
+    pvOut.innerHTML = '<span class="none">対戦キャラの局中／ロビーのみプレビューできます</span>'; pvCand.innerHTML = ""; return;
+  }
+  pvEvent.disabled = false;
+  for (const ev of evs) { const o = document.createElement("option"); o.value = ev; o.textContent = evLabel(ev); pvEvent.appendChild(o); }
+  syncTierOptions();
+  renderPreview();
+}
+function syncTierOptions() {
+  const ev = pvEvent.value;
+  let tiers = [];
+  if (ev === "agari") tiers = SCORE_TIERS;
+  else if (ev === "damage") tiers = DMG_TIERS;
+  else if (ev === "matchEnd") tiers = RANK_TIERS;
+  pvTier.innerHTML = "";
+  if (!tiers.length) { const o = document.createElement("option"); o.value=""; o.textContent="（条件なし）"; pvTier.appendChild(o); pvTier.disabled = true; return; }
+  pvTier.disabled = false;
+  const any = document.createElement("option"); any.value=""; any.textContent="すべて"; pvTier.appendChild(any);
+  for (const t of tiers) { const o = document.createElement("option"); o.value=t; o.textContent=t; pvTier.appendChild(o); }
+}
+function candidatesFor(ev, tierVal) {
+  const rows = [...model.character, ...(model.forge||[])].filter((r) => r.event === ev);
+  const tierKey = ev === "agari" ? "scoreTier" : ev === "damage" ? "dmgTier" : ev === "matchEnd" ? "rankTier" : null;
+  return rows.filter((r) => {
+    if (!tierVal || !tierKey) return true;
+    const c = parseCond(r.condStr) || {};
+    if (c[tierKey] == null) return true;
+    return c[tierKey] === tierVal;
+  });
+}
+function renderPreview() {
+  const cands = candidatesFor(pvEvent.value, pvTier.value);
+  pvCand.innerHTML = "";
+  if (!cands.length) { pvOut.innerHTML = '<span class="none">候補なし（このイベントのセリフが未定義）</span>'; return; }
+  pvOut.innerHTML = `<div class="who">候補 ${cands.length}件（下記からランダムに1つ出ます）</div>`;
+  for (const r of cands) {
+    const li = document.createElement("li");
+    li.className = isTemplate(r.text) ? "warn" : (r.readOnly ? "" : "ok");
+    li.textContent = (r.readOnly ? "▤ " : "") + (r.text || "（空）");
+    pvCand.appendChild(li);
+  }
+}
+function rollPreview() {
+  const cands = candidatesFor(pvEvent.value, pvTier.value);
+  if (!cands.length) return;
+  const pick = cands[(Math.random()*cands.length)|0];
+  pvOut.innerHTML = `<div class="who">${charName(curChar)}</div><div class="say">${escapeHtml(pick.text || "（空）")}</div>`;
+}
+function escapeHtml(s){ return String(s).replace(/[&<>]/g, (c)=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+const valOut = document.getElementById("valOut");
+function runValidation() {
+  const issues = [];
+  const tone = TONE[curChar] || null;
+  const all = [
+    ...model.character.map((r)=>({r, where:"対戦キャラ"})),
+    ...model.mentor.greet.map((r)=>({r, where:"師匠/greet"})),
+    ...model.mentor.praise.map((r)=>({r, where:"師匠/praise"})),
+    ...model.mentor.battle.map((r)=>({r, where:"師匠/battle"})),
+    ...model.mentor.parlor.map((r)=>({r, where:"師匠/parlor"})),
+    ...model.mentor.rest.map((r)=>({r, where:"師匠/rest"})),
+  ];
+  for (const {r, where} of all) {
+    const txt = r.section === "rest" ? r.prompt : r.text;
+    if (!String(txt||"").trim()) issues.push(["err", `${where}: 本文が空`]);
+    if (isTemplate(txt)) issues.push(["warn", `${where}: ${TEMPLATE_MARK}未記入が残っている`]);
+    if (!condOk(r.condStr)) issues.push(["err", `${where}: cond の JSON が不正「${r.condStr}」`]);
+    if (r.section === "battle" && !BATTLE_EVENTS.includes(r.event)) issues.push(["warn", `師匠/battle: event「${r.event}」が語彙外`]);
+    if (r.section === "parlor" && !PARLOR_TIERS.includes(r.tier)) issues.push(["warn", `師匠/parlor: tier「${r.tier}」が語彙外`]);
+    if (r.section === "rest") {
+      for (const c of (r.choices||[])) { if (!c.label || !c.reply || !c.memory) { issues.push(["err", `師匠/rest: 選択肢は label/reply/memory が必須`]); break; } }
+    }
+    if (tone && txt && (r.kind === "character" || r.section === "greet" || r.section === "battle")) {
+      if (!tone.some((m)=>String(txt).includes(m))) issues.push(["warn", `${where}: 口調マーカー(${tone.join("/")})が見当たらない`]);
+    }
+  }
+  valOut.innerHTML = "";
+  if (!issues.length) { valOut.innerHTML = '<li class="ok">問題なし</li>'; return; }
+  issues.sort((a,b)=> (a[0]==="err"?0:1) - (b[0]==="err"?0:1));
+  for (const [lvl, msg] of issues.slice(0, 60)) {
+    const li = document.createElement("li"); li.className = lvl; li.textContent = (lvl==="err"?"✕ ":"⚠ ") + msg; valOut.appendChild(li);
+  }
+  if (issues.length > 60) { const li=document.createElement("li"); li.textContent=`…ほか ${issues.length-60}件`; valOut.appendChild(li); }
+}
+
+const codeOut = document.getElementById("codeOut");
+const copyBtn = document.getElementById("copyBtn");
+document.getElementById("genBtn").addEventListener("click", generateCode);
+copyBtn.addEventListener("click", async () => { await navigator.clipboard.writeText(codeOut.textContent); toast("コピーしました"); });
+
+function condLiteral(str) {
+  const o = parseCond(str);
+  if (o == null) return "/* cond JSON不正 */ {}";
+  const keys = Object.keys(o);
+  if (!keys.length) return "{}";
+  const parts = keys.map((k) => { const v = o[k]; return `${k}: ${typeof v === "string" ? JSON.stringify(v) : String(v)}`; });
+  return `{ ${parts.join(", ")} }`;
+}
+const q = (s) => JSON.stringify(String(s ?? ""));
+const allTemplate = (rows, getTxt) => rows.length > 0 && rows.every((r) => isTemplate(getTxt(r)));
+
+function generateCode() {
+  const id = curChar;
+  const name = charName(id);
+  const out = [];
+  out.push(`// ============================================================`);
+  out.push(`// ${name}（${id}）— dialogue-editor.html で生成。各マスタの該当箇所へ貼り戻し。`);
+  out.push(`// ============================================================`);
+
+  if (model.character.length) {
+    const isTmpl = allTemplate(model.character, (r)=>r.text);
+    out.push("");
+    out.push(`// ── src/data/characterVoiceMaster.js ──`);
+    if (isTmpl) {
+      out.push(`// ⚠ ${id} は HANDWRITTEN 未登録（テンプレ状態）。次の手順で登録:`);
+      out.push(`//   1) const ${id.toUpperCase()} = [ ...下記... ];  を定義`);
+      out.push(`//   2) HANDWRITTEN に  ${id}: ${id.toUpperCase()},  を追加`);
+    } else {
+      out.push(`// HANDWRITTEN.${id}（const ${id.toUpperCase()} = [ ... ] の中身）。※ scenario-forge 量産分は含めない。`);
+    }
+    for (const r of model.character) out.push(`  L(${q(r.event)}, ${condLiteral(r.condStr)}, ${q(r.text)}),`);
+  }
+
+  const M = model.mentor;
+  const hasMentor = M.greet.length || M.praise.length || M.battle.length || M.parlor.length || M.rest.length;
+  if (hasMentor) {
+    const mentorTmpl =
+      allTemplate(M.greet,(r)=>r.text) && allTemplate(M.praise,(r)=>r.text) &&
+      allTemplate(M.battle,(r)=>r.text) && allTemplate(M.parlor,(r)=>r.text);
+    out.push("");
+    out.push(`// ── src/data/mentorVoiceMaster.js ──`);
+    if (mentorTmpl) {
+      out.push(`// ⚠ ${id} は HANDWRITTEN_MENTOR 未登録（テンプレ状態）。const ${id.toUpperCase()}_GREET 等を定義し`);
+      out.push(`//   HANDWRITTEN_MENTOR に ${id}: { greet, rest, praise, battle, parlor } を追加。`);
+    }
+    if (M.greet.length)  { out.push(`// ${id.toUpperCase()}_GREET（L=cond,text）`);   for (const r of M.greet)  out.push(`  L(${condLiteral(r.condStr)}, ${q(r.text)}),`); }
+    if (M.praise.length) { out.push(`// ${id.toUpperCase()}_PRAISE（L=cond,text）`);  for (const r of M.praise) out.push(`  L(${condLiteral(r.condStr)}, ${q(r.text)}),`); }
+    if (M.battle.length) { out.push(`// ${id.toUpperCase()}_BATTLE（L2=event,cond,text）`); for (const r of M.battle) out.push(`  L2(${q(r.event)}, ${condLiteral(r.condStr)}, ${q(r.text)}),`); }
+    if (M.parlor.length) { out.push(`// ${id.toUpperCase()}_PARLOR（L3=tier,cond,text）`);  for (const r of M.parlor) out.push(`  L3(${q(r.tier)}, ${condLiteral(r.condStr)}, ${q(r.text)}),`); }
+    if (M.rest.length) {
+      out.push(`// ${id.toUpperCase()}_REST（オブジェクト直書き）`);
+      for (const r of M.rest) {
+        out.push(`  {`);
+        out.push(`    cond: ${condLiteral(r.condStr)},`);
+        out.push(`    prompt: ${q(r.prompt)},`);
+        out.push(`    choices: [`);
+        for (const c of (r.choices||[])) out.push(`      { key: ${q(c.memory)}, label: ${q(c.label)}, reply: ${q(c.reply)}, memory: ${q(c.memory)} },`);
+        out.push(`    ],`);
+        out.push(`  },`);
+      }
+    }
+  }
+
+  codeOut.textContent = out.join("\n");
+  copyBtn.disabled = false;
+  toast("コードを生成しました（コピー可）");
+}
+
+function toast(msg) { toastEl.textContent = msg; toastEl.classList.add("show"); setTimeout(() => toastEl.classList.remove("show"), 1500); }
+
+render();
+console.log("[dialogue-editor] ready. chars:", CHAR_IDS);
+</script>
+</body>
+</html>
