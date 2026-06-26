@@ -1,23 +1,29 @@
 @echo off
-chcp 65001 >nul
 rem ============================================================
-rem  キャラ画像 オフセット調整ツールをワンクリックで開く
-rem   1) ローカル開発サーバ(node server.mjs)を起動（別ウィンドウ・最小化）
-rem   2) 既定ブラウザでツールを開く
-rem  既に起動済みならサーバ側は EADDRINUSE で即終了するだけ（既存サーバを使う）。
+rem  Open the character image offset tuner with one click.
+rem   1) Start the local dev server (node server.mjs) in a
+rem      separate, minimized window.
+rem   2) Open the tuner in the default browser.
+rem  If a server is already running, the new node just exits
+rem  with EADDRINUSE and the existing one is used.
+rem
+rem  NOTE: keep this file ASCII-only. Mixing `chcp 65001` with
+rem  non-ASCII bytes breaks cmd's batch parser mid-file.
 rem ============================================================
 setlocal
-set PORT=5173
-rem このbatの 1つ上＝リポジトリのルートへ移動（server.mjs がある場所）
+set "PORT=5173"
+set "URL=http://localhost:%PORT%/tools/offset-tuner.html"
+
+rem Move to the repo root (one level up from this tools\ folder).
 cd /d "%~dp0.."
 
-echo 開発サーバを起動中... (http://localhost:%PORT%)
+echo Starting dev server on http://localhost:%PORT% ...
 start "AI Mahjong dev server" /min cmd /c "node server.mjs"
 
-rem サーバ立ち上がりを少し待つ
+rem Give the server a moment to bind the port before opening the browser.
 timeout /t 2 /nobreak >nul
 
-echo ツールを開きます...
-start "" "http://localhost:%PORT%/tools/offset-tuner.html"
+echo Opening the tuner in your browser ...
+start "" "%URL%"
 
 endlocal
