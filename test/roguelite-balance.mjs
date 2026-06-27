@@ -279,6 +279,7 @@ function mkRun({ avatarHpMax, baseStrength, carry = [] }, seed) {
     { id: "pal2", char: { id: "pal2", abilities: [], stats: { startingPoints: avatarHpMax } }, avatarHpMax, baseStrength },
   ];
   const run = newRun(party, seed);
+  run.clusterTierCap = 2; // 流派2段目まで解放した「終盤(ショップ解禁後)」の均衡を検証する（既定の1段目はこの上位互換で必ず終了側）。
   for (const m of run.party) m.baseStrength = baseStrength;
   for (const id of carry) { const c = cardById(id); if (c) applyCard(run, c); }
   return run;

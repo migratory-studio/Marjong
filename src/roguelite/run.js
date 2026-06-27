@@ -189,6 +189,8 @@ export function newRun(party, seed, chapterId = null, bossPool = null, bossFloor
     party: members, // 先頭2人が着卓・3人目以降は控え（パッシブ能力源）
     cards: [], // 取得カードid（履歴）
     mods: freshMods(),
+    clusterTierCap: 1, // 流派シナジーの解放済み段数（1=1段目まで。宝珠ショップ「流派の極意」で2へ＝極み等が解放）。cardEffects.unlockedTiers が参照
+
     cleared: 0, // 撃破した戦数
     coins: 0,   // ラン内通貨「光貨」（ショップ/鍛冶屋）
     skillLevel: 1, // パーティ共通のスキルレベル（全員Lv1スタート・バフ/鍛冶屋でUP・能力が強化）
@@ -214,6 +216,7 @@ export function serializeRun(run) {
     v: RUN_SAVE_VERSION,
     seed: run.seed, chapterId: run.chapterId || null, bossPool: Array.isArray(run.bossPool) ? [...run.bossPool] : null, bossFloors: run.bossFloors ? { ...run.bossFloors } : null, tuning: run.tuning ? { ...run.tuning } : null, floor: run.floor, cleared: run.cleared, coins: run.coins,
     skillLevel: run.skillLevel, forgeOvercharge: run.forgeOvercharge || 0, cards: [...(run.cards || [])], items: [...(run.items || [])],
+    clusterTierCap: run.clusterTierCap ?? 1, // 流派の解放段数（中断ランの再開で失わない）
     mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
     biomeRerolls: { ...(run.biomeRerolls || {}) }, orbsEarned: run.orbsEarned || 0,
     lineup: run.lineup || null, visited: [...(run.visited || [])], eventSeen: !!run.eventSeen,
@@ -234,6 +237,7 @@ export function deserializeRun(data, resolveChar) {
   return {
     seed: String(data.seed), chapterId: data.chapterId || null, bossPool: Array.isArray(data.bossPool) ? [...data.bossPool] : null, bossFloors: data.bossFloors && typeof data.bossFloors === "object" ? { ...data.bossFloors } : null, tuning: data.tuning && typeof data.tuning === "object" ? { ...data.tuning } : null, floor: data.floor || 1, party,
     cards: [...(data.cards || [])], mods: { ...freshMods(), ...(data.mods || {}) },
+    clusterTierCap: data.clusterTierCap ?? 1, // 旧セーブ（未保存）は 1段目まで＝既定に寄せる
     cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1, forgeOvercharge: data.forgeOvercharge || 0,
     items: [...(data.items || [])], nextBattle: data.nextBattle || {}, routeReroll: data.routeReroll || 0,
     biomeRerolls: { ...(data.biomeRerolls || {}) }, orbsEarned: data.orbsEarned || 0,

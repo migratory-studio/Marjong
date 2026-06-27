@@ -677,6 +677,7 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
 
   // 集計：applyCard で clusterCount が積まれる。
   const run = newRun(party, "cluster-flush");
+  run.clusterTierCap = 2; // この節はシナジー計算式の検証＝2段目まで解放した状態（段キャップ自体の検証は別節）
   eq(run.mods.clusterCount.flush || 0, 0, "初期 flush=0");
   applyCard(run, cardById("grant-rootou"));      // flush 1
   applyCard(run, cardById("flush-omote"));        // flush 2
@@ -725,6 +726,7 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
 
   // takeCap 解決：未達=null、3枚=0.30、5枚=0.20（最も低い達成段）。
   const run = newRun(party, "cluster-guard");
+  run.clusterTierCap = 2; // 計算式検証＝2段目(不抜)まで解放
   eq(clusterTakeCapFrac(run), null, "守備0枚＝既定上限（null）");
   applyCard(run, cardById("take-down-common")); applyCard(run, cardById("take-down-common")); // 2
   eq(clusterTakeCapFrac(run), null, "守備2枚＝まだ締まらない（null）");
@@ -743,6 +745,7 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   const bare = newRun(party.map((p) => ({ ...p })), "guard-dmg-bare");
   const dmgBare = rogueliteDamageDeltas(bare, { deltas: bigLoss.slice(), roles, winnerSeat: 1, hpMax, battleMods: {} });
   const fort = newRun(party.map((p) => ({ ...p })), "guard-dmg-fort");
+  fort.clusterTierCap = 2; // 計算式検証＝2段目(不抜0.20)まで解放
   // 守備6枚（≧5）＝被ダメ上限0.20。applyCard は集計のみ（maxStacks は draft 除外で別管理）。
   for (let k = 0; k < 5; k++) applyCard(fort, cardById("take-down-common"));
   applyCard(fort, cardById("grant-danger-sense"));
@@ -859,6 +862,7 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   eq(clusterOf(cardById("gamble-odds")), "gamble", "丁か半か＝gamble");
 
   const g = newRun(party, "cluster-gamble");
+  g.clusterTierCap = 2; // 計算式検証＝2段目(一擲)まで解放
   applyCard(g, cardById("gamble-ittetsu")); applyCard(g, cardById("gamble-ittetsu")); applyCard(g, cardById("gamble-ittetsu")); // gamble 3
   eq(g.mods.clusterCount.gamble, 3, "博打3");
   // anyWin＝どんな和了でも +35%（ロンでもツモでも安手でも）。
@@ -884,6 +888,51 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   eq(CLUSTER_META.gamble.awaken, "総取り", "博打の到達呼称は総取り");
   const prog = clusterProgress(g).find((p) => p.cluster === "gamble");
   ok(prog && prog.count === 5 && prog.reached === 2, "博打進捗＝5枚/2段");
+}
+
+// ── 流派の段階解放（clusterTierCap）：初期1段目まで・ショップで2段目解放（ディレクション 2026-06-27） ──
+{
+  const party = CHARACTERS.slice(0, 3).map((c) => ({ id: c.id, hp: 1000, hpMax: 1000, baseHp: 1000 }));
+
+  // newRun の既定は 1段目まで（開眼/鉄壁等）。
+  const base = newRun(party, "tiercap-default");
+  eq(base.clusterTierCap, 1, "newRun の既定 clusterTierCap=1（1段目まで）");
+
+  // 染め5枚を積んでも、初期(cap=1)では1段目(+50%)止まり＝2段目(+110%)は効かない。
+  const flush5 = (run) => { for (let k = 0; k < 5; k++) applyCard(run, cardById("flush-omote")); return run; };
+  flush5(base);
+  eq(base.mods.clusterCount.flush, 5, "染め5枚（枚数自体は積まれる）");
+  eq(Math.round(clusterDealMul(base, { flushWin: true }) * 100), 150, "cap=1：5枚でも開眼(+50%)止まり＝極みは未解放");
+
+  // ショップ「流派の極意」解放後（cap=2）は2段目(+110%)が効く＝同じ5枚で跳ねる。
+  const unlocked = flush5(newRun(party, "tiercap-unlocked"));
+  unlocked.clusterTierCap = 2;
+  eq(Math.round(clusterDealMul(unlocked, { flushWin: true }) * 100), 210, "cap=2：5枚で極み(+110%)＝×2.1");
+
+  // 守備も同様：cap=1 は5枚でも鉄壁(0.30)止まり、cap=2 で不抜(0.20)。
+  const gd = newRun(party, "tiercap-guard"); for (let k = 0; k < 5; k++) applyCard(gd, cardById("take-down-common"));
+  eq(clusterTakeCapFrac(gd), 0.30, "cap=1：守備5枚でも鉄壁(0.30)止まり");
+  gd.clusterTierCap = 2;
+  eq(clusterTakeCapFrac(gd), 0.20, "cap=2：守備5枚で不抜(0.20)");
+
+  // legible：cap=1 では進捗の到達は1段、未解放しきい値(5)が lockedTiers に出る（玉ゲージの鍵表示の素）。
+  const prog = clusterProgress(base).find((p) => p.cluster === "flush");
+  ok(prog && prog.reached === 1 && prog.nextAt === null, "cap=1：5枚は開眼1段のみ・次の(解放済み)しきい値なし");
+  ok(prog && Array.isArray(prog.lockedTiers) && prog.lockedTiers.includes(5) && prog.fullMax === 5, "cap=1：未解放しきい値5が lockedTiers/fullMax に見える");
+
+  // 予告：cap=1 では極み(at5)への crosses を約束しない（取っても段は越えない）。
+  const pv4 = newRun(party, "tiercap-pv"); for (let k = 0; k < 4; k++) applyCard(pv4, cardById("flush-omote"));
+  const pv = clusterPickPreview(pv4, cardById("flush-omote"));
+  ok(pv && pv.from === 4 && pv.to === 5 && !pv.crosses && pv.nextAt === null, "cap=1：5枚目を取っても極みは未解放＝crossesしない");
+
+  // 継続同期：シリアライズ往復で clusterTierCap が保たれる（中断ラン再開で解放状態を失わない）。
+  const rt = newRun(party, "tiercap-roundtrip"); rt.clusterTierCap = 2;
+  const round = deserializeRun(serializeRun(rt), (id) => party.find((p) => p.id === id) || { id, hp: 1000, hpMax: 1000, baseHp: 1000 });
+  eq(round.clusterTierCap, 2, "シリアライズ往復で clusterTierCap=2 を保持");
+  // 旧セーブ（clusterTierCap 未保存）は 1 に寄せる（既定）。
+  const legacy = serializeRun(newRun(party, "tiercap-legacy")); delete legacy.clusterTierCap;
+  const restored = deserializeRun(legacy, (id) => party.find((p) => p.id === id) || { id, hp: 1000, hpMax: 1000, baseHp: 1000 });
+  eq(restored.clusterTierCap, 1, "旧セーブ（未保存）は clusterTierCap=1 に復元");
 }
 
 // ---------- 提案B：ボス記憶（bossTally）の純関数＋対局前口上の照合 ----------

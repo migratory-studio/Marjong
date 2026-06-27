@@ -5056,6 +5056,9 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-pip.brk { width: 9px; height: 9px; } /* 節目の玉は大きい＝「ここで開眼」 */
 .rl-pip.on { background: color-mix(in srgb, var(--cl, #8fd0ff) 70%, transparent); }
 .rl-pip.lit { background: var(--cl, #8fd0ff); box-shadow: 0 0 6px color-mix(in srgb, var(--cl, #8fd0ff) 75%, transparent); }
+/* 未解放の節目＝薄く（ショップ「流派の極意」で解禁待ち）。取得済みでも lit にはしない＝まだ効いていないことを示す */
+.rl-pip.locked { background: transparent; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--cl, #8fd0ff) 30%, transparent); opacity: .5; }
+.rl-clrow-lock { font-size: .82em; opacity: .85; cursor: help; }
 .rl-cluster-state b { color: #fff; }
 
 /* 楼光の館：所持パネル（3分類） */

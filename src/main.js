@@ -1989,6 +1989,8 @@ function applyShopBuffsToRun(run, shopBuffs) {
       const mul = 1 + b.perLevel * lv;
       for (const m of run.party) { m.hpMax = Math.round(m.hpMax * mul); m.baseHp = m.hpMax; m.hp = m.hpMax; }
     }
+    else if (b.kind === "clusterTier") run.clusterTierCap = 1 + lv; // 流派の極意：2段目（極み等）を解放（lv=1→cap=2）
+
   }
 }
 
@@ -2507,16 +2509,20 @@ async function persistBossTally(tally) {
   } catch { /* 永続失敗はラン内 bossTally を保持して続行 */ }
 }
 
-// 大章 踏破モーメント（提案B §3.1）：登っている記憶の clearFloor ボスを「初めて」退けた瞬間か。
-//   ・clearFloor ちょうどのボス階で踏破した（追撃でない本戦）／・このランでまだ演出していない／・既踏破でない。
-//   finishRogueliteRun の reached>=clearFloor 記録より先に確定＆祝祭する（死んでも踏破は残る・P8＝塞がない演出）。
-function isChapterClearMoment(run) {
-  if (!run || run.chapterCleared) return false;            // このランで既に演出済み
+// 大章ボス踏破か：登っている記憶の clearFloor ボスを退けた瞬間か（既踏破かは問わない）。
+//   ・clearFloor ちょうどのボス階で踏破した（追撃でない本戦）。これで「クリア＝一区切り→帰還」が毎回成立する（有限ダンジョン）。
+function isChapterClearFloorWin(run) {
+  if (!run || run.chapterCleared) return false;            // このランで既に踏破処理済み（多重発火防止）
   if (rogueliteState?.pursuing) return false;              // 追撃のおまけ戦では出さない（本戦の決着でのみ）
   const chap = chapterById(run.chapterId);
   if (!chap || chap.comingSoon) return false;
-  if (run.floor !== chap.clearFloor) return false;         // clearFloor ちょうどのボス階で退けた時だけ
-  return !(rogueliteState?.chaptersCleared || []).includes(chap.id); // 既踏破の章は再演出しない
+  return run.floor === chap.clearFloor;                    // clearFloor ちょうどのボス階で退けた時
+}
+// その踏破が「初回」か（初めてこの記憶を読み切った）。初回だけ次の記憶を解禁＆永続し、演出を「次が開かれた」フレームにする。
+function isFirstChapterClear(run) {
+  const chap = chapterById(run?.chapterId);
+  if (!chap) return false;
+  return !(rogueliteState?.chaptersCleared || []).includes(chap.id);
 }
 // 踏破を「いま」確定：このランで一度きりのフラグ＋ラン内既踏破集合＋プロフィールへ即永続。
 function markChapterClearedNow(run) {
@@ -2716,17 +2722,21 @@ function onRogueliteBattleEnd(result) {
       else proceed();
     },
   });
-  // 大章 踏破モーメント（提案B §3.1）：clearFloor の主を初めて退けたら、ドラフトの前に踏破演出を一拍挟む。
-  //   ※ ラン自体はエンドレス＝踏破はゴールでなく節目。閉じたら通常どおりドラフトへ。
-  if (isChapterClearMoment(run)) {
-    markChapterClearedNow(run);
+  // 大章 踏破モーメント（提案B §3.1 ＋ ディレクション 2026-06-27）：clearFloor の主（大章ボス）を初めて退けたら、
+  //   そこで「クリアで一区切り」＝盛大な踏破演出 → ランを締めて拠点へ帰還する（大章＝完走できる有限ダンジョン）。
+  //   ※ F10/F20 等の中ボスは clearFloor でない＝この分岐に入らず、通常どおりドラフトして登り続ける。
+  if (isChapterClearFloorWin(run)) {
+    const firstClear = isFirstChapterClear(run);     // 初回だけ「次の記憶が開かれた」＋解禁の永続
+    if (firstClear) markChapterClearedNow(run);      // chaptersCleared へ永続（次章解禁）
+    else run.chapterCleared = true;                  // 既踏破の章でも多重発火は防ぐ（ランフラグ）
     const chap = chapterById(run.chapterId);
     const lead = rlLead();
     showRogueliteChapterClear(host, {
       chapter: chap, floor: run.floor, leadChar: lead,
       leadLine: lead ? vline(lead.id, "rlChapterClear", { ...rlVoiceCtx(), rlChapter: run.chapterId }) : null,
-      nextChapter: nextChapterAfter(chap?.id), charImages,
-      onProceed: showDraft,
+      nextChapter: firstClear ? nextChapterAfter(chap?.id) : null, // 再踏破では「次が開かれた」と偽らない
+      cleared: true, // クリアで帰還＝CTAを「帰還する」に（続行でなく一区切り）
+      onProceed: () => finishRogueliteRun(run, { cleared: true }), // 踏破＝ランを締めて結果画面→拠点へ
     });
   } else {
     showDraft();
@@ -2761,18 +2771,19 @@ async function persistRogueliteResolve(choiceId) {
   } catch { /* 永続失敗は次ランに反映されないだけ */ }
 }
 
-async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}) {
+async function finishRogueliteRun(run, { wiped = false, retreated = false, cleared = false } = {}) {
   // 計測（P9）：終了時に最終ビルド全カードを記録＝offlineで「勝利ビルド出現率」(到達深度別にどのカード/流派が残るか)を出せる。
-  rlLog("run_end", { depth: run.floor, result: wiped ? "wiped" : (retreated ? "retreat" : "end"), cleared: run.cleared, cardIds: [...(run.cards || [])], ...rlBuffSnap(run) });
+  rlLog("run_end", { depth: run.floor, result: cleared ? "cleared" : wiped ? "wiped" : (retreated ? "retreat" : "end"), cleared: run.cleared, cardIds: [...(run.cards || [])], ...rlBuffSnap(run) });
   flushRlLog(); // ラン終端でSupabaseへ送信（取りこぼし低減）
-  clearSavedRogueliteRun(); // 撤退/全滅でラン終了＝一時セーブを削除（再開は出さない）
-  // 到達階層＝全滅は死んだ階(run.floor)、撤退は1つ手前。別れ際セリフの見守り(P8)にも使う。
-  const reached = wiped ? run.floor : Math.max(1, run.floor - 1);
+  clearSavedRogueliteRun(); // クリア/撤退/全滅でラン終了＝一時セーブを削除（再開は出さない）
+  // 到達階層＝全滅は死んだ階(run.floor)、クリアは退けた大章ボスの階(run.floor)、撤退は1つ手前。別れ際セリフの見守り(P8)にも使う。
+  const reached = (wiped || cleared) ? run.floor : Math.max(1, run.floor - 1);
   // 先頭キャラの別れ際の一言（rogueliteState を消す前に解決）。
   //   全滅＝罰でなく「塔から記憶として弾かれた」継続(P7)＝専用 rlWipe で前向きに送り出す（matchEnd の敗北弁は使わない）。
-  //   撤退＝引く判断への“返し”。どちらも到達深度(rlReached)を渡し、浅くても言葉が出る見守り(P8)。
+  //   撤退/クリア＝引く/読み切った判断への“返し”。どちらも到達深度(rlReached)を渡し、浅くても言葉が出る見守り(P8)。
+  //   ※クリアの感情の山は踏破演出(rlChapterClear)で済んでいる＝結果画面は持ち帰り(rlRetreat)の落ち着いた返しでよい。
   const lead = rlLead();
-  const partingLine = lead ? vline(lead.id, retreated ? "rlRetreat" : "rlWipe", { ...rlVoiceCtx(), rlReached: reached }) : null;
+  const partingLine = lead ? vline(lead.id, (retreated || cleared) ? "rlRetreat" : "rlWipe", { ...rlVoiceCtx(), rlReached: reached }) : null;
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 保存できなくても結果は見せる */ }
   const prev = profile?.roguelite || { bestFloor: 0, runs: 0, carry: [] };
@@ -2807,7 +2818,7 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false } = {}
   const acquired = [...new Set(run.cards)].map((id) => cardById(id)).filter(Boolean);
   // 双方向＝プレイヤーが返す2択（提案B §3.2-5）。「また登る/今は休む」を選ぶと相棒が返し、その手をキャラが覚える。
   showRogueliteGameOver(el("roguelite-screen"), {
-    reached, wiped, retreated, bestFloor: best,
+    reached, wiped, retreated, cleared, bestFloor: best,
     orbsEarned, orbsTotal, // アカウント通貨「宝珠」：今回の獲得＋口座残高
     carrySlots: slots, acquired, partingLine, speakerChar: lead, charImages,
     bondDeepened: coFightExp > 0, // 共闘で絆が少し深まった（数値は見せない）

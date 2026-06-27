@@ -487,16 +487,21 @@ export function clusterPanelHtml(run) {
     const clm = CLUSTER_META[p.cluster] || { label: p.cluster, color: "#9ad", awaken: "開眼" };
     const aw = clm.awaken || "開眼";
     const tierSet = new Set(p.tiers || []);
+    const lockedSet = new Set(p.lockedTiers || []); // 未解放の節目（ショップ「流派の極意」で解禁）
     const pips = [];
-    for (let i = 1; i <= (p.max || 0); i++) {
+    const pipMax = Math.max(p.max || 0, p.fullMax || 0); // 未解放の節目まで含めて見せる（解放の余地を示す）
+    for (let i = 1; i <= pipMax; i++) {
       const cls = ["rl-pip"];
-      if (tierSet.has(i)) cls.push("brk");                 // しきい値の節目は大きい玉
-      if (i <= p.count) cls.push("on");                    // 取得済み
-      if (tierSet.has(i) && i <= p.count) cls.push("lit"); // 到達した節目
+      if (tierSet.has(i) || lockedSet.has(i)) cls.push("brk");   // しきい値の節目は大きい玉
+      if (lockedSet.has(i)) cls.push("locked");                  // 未解放＝薄く鍵
+      if (i <= p.count) cls.push("on");                          // 取得済み
+      if (tierSet.has(i) && i <= p.count) cls.push("lit");       // 到達した（解放済みの）節目
       pips.push(`<i class="${cls.join(" ")}"></i>`);
     }
+    // state：解放済み段の進捗。解放済みが頭打ちで未解放段が残るときは🔒（ショップ解禁待ち）を添える。
+    const lockHint = !p.nextAt && lockedSet.size ? `・<span class="rl-clrow-lock" title="宝珠ショップ「流派の極意」で解放">🔒</span>` : "";
     const state = p.reached > 0
-      ? `<b>${aw}${p.reached > 1 ? `×${p.reached}` : ""}</b>${p.nextAt ? `・あと${p.nextAt - p.count}` : ""}`
+      ? `<b>${aw}${p.reached > 1 ? `×${p.reached}` : ""}</b>${p.nextAt ? `・あと${p.nextAt - p.count}` : lockHint}`
       : (p.nextAt ? `あと${p.nextAt - p.count}で${aw}` : "");
     const cls = ["rl-clrow"]; if (p.count > 0) cls.push("on"); if (p.reached > 0) cls.push("lit");
     return `<div class="${cls.join(" ")}" style="--cl:${clm.color}" title="${(clm.tip || "").replace(/"/g, "&quot;")}">
@@ -799,7 +804,7 @@ export function showRogueliteChapterIntro(container, opts = {}) {
 //   「第一の記憶を読み切った」を一拍見せ、相棒が一言締める。ラン自体はエンドレス＝なお登れる。
 //   ※ シナリオ本文は別途。ここは器（演出シェル）。leadLine も差し替え前提のモック。 ----
 export function showRogueliteChapterClear(container, opts = {}) {
-  const { chapter, floor = 1, leadChar = null, leadLine = null, nextChapter = null, charImages = null, onProceed } = opts;
+  const { chapter, floor = 1, leadChar = null, leadLine = null, nextChapter = null, charImages = null, cleared = false, onProceed } = opts;
   if (!container || !chapter) { onProceed?.(); return; }
   const ov = document.createElement("div");
   ov.className = `rl-overlay rl-chapclear tone-${chapter.tone || "gold"}`;
@@ -824,7 +829,7 @@ export function showRogueliteChapterClear(container, opts = {}) {
       <p class="rl-chapclear-blurb">第 ${floor} 階の主を退け、この記憶の核へ辿り着いた。</p>
       ${speak}
       ${nextNote}
-      <button type="button" class="rl-start rl-chapclear-go" id="rl-chapclear-go">記憶を胸に、なお登る ›</button>
+      <button type="button" class="rl-start rl-chapclear-go" id="rl-chapclear-go">${cleared ? "クリア！ 帰還する ›" : "記憶を胸に、なお登る ›"}</button>
     </div>`;
   container.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("is-open"));
@@ -1226,15 +1231,17 @@ export function showRogueliteShop(container, opts = {}) {
 
 // ---- ラン終了（＋引き継ぎバフ選択） ----
 export function showRogueliteGameOver(container, opts = {}) {
-  const { reached = 0, wiped = false, retreated = false, bestFloor = 0, carrySlots = 0, acquired = [], partingLine, speakerChar, bondDeepened = false, partyChars = [], orbsEarned = 0, orbsTotal = 0, onClose, resolveChoices = [], onResolve } = opts;
+  const { reached = 0, wiped = false, retreated = false, cleared = false, bestFloor = 0, carrySlots = 0, acquired = [], partingLine, speakerChar, bondDeepened = false, partyChars = [], orbsEarned = 0, orbsTotal = 0, onClose, resolveChoices = [], onResolve } = opts;
   if (!container) return;
   const ov = document.createElement("div");
-  ov.className = "rl-overlay rl-gameover" + (wiped ? " wiped" : " safe");
+  ov.className = "rl-overlay rl-gameover" + (wiped ? " wiped" : cleared ? " cleared" : " safe");
   // P7：全滅は「罰」でなく「塔から記憶として弾かれた＝継続」。没収/力尽きた等の懲罰的な語を使わない。
-  const title = wiped ? "塔に弾かれた——だが、記憶は還る" : retreated ? "撤退成功・記録を持ち帰った" : "ラン終了";
-  const sub = wiped
-    ? `第 ${reached} 階で塔は君を記憶として還した。歩いた道は消えない——また、登れる。`
-    : `第 ${reached} 階まで到達した。`;
+  const title = cleared ? "踏破成功・この記憶を読み切った" : wiped ? "塔に弾かれた——だが、記憶は還る" : retreated ? "撤退成功・記録を持ち帰った" : "ラン終了";
+  const sub = cleared
+    ? `第 ${reached} 階の主を退け、この記憶を踏破した。力は持ち帰れる——次の記憶へ。`
+    : wiped
+      ? `第 ${reached} 階で塔は君を記憶として還した。歩いた道は消えない——また、登れる。`
+      : `第 ${reached} 階まで到達した。`;
   const canCarry = carrySlots > 0 && acquired.length > 0;
   const carryHtml = canCarry ? `
     <div class="rl-carry-pick">

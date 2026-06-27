@@ -14,6 +14,9 @@ export const SHOP_BUFFS = [
   { id: "take",  name: "守りの極意", kind: "takeMul",   perLevel: 0.03, maxLevel: 5, icon: "🛡", desc: "楼光の館・開始時から被ダメージが下がる。" },
   { id: "coins", name: "軍資金",     kind: "startCoins", perLevel: 25,   maxLevel: 4, icon: "🪙", desc: "楼光の館・開始時に持つ光貨が増える。" },
   { id: "hp",    name: "鉄壁の備え", kind: "startHp",   perLevel: 0.03, maxLevel: 5, icon: "❤", desc: "楼光の館・開始時の最大HPが上がる。" },
+  // 流派の段階解放（1回購入＝恒久）。既定は各流派1段目（開眼/鉄壁等）まで。これを買うと2段目（極み等）が解放され、
+  // 同流派5枚でさらに跳ねるようになる。kind=clusterTier は applyShopBuffsToRun が run.clusterTierCap を底上げ。
+  { id: "clusterTier", name: "流派の極意", kind: "clusterTier", perLevel: 1, maxLevel: 1, icon: "🌀", desc: "楼光の館・流派の二段目（極み・疾風・不抜など）が解放される。同じ流派を5枚集めると、しきい値でさらに大きく跳ねる。" },
 ];
 
 // レベル別コスト（宝珠）。配列 index = 現在レベル（0→1段目を買う費用…）。length=maxLevel。
@@ -22,6 +25,7 @@ const BUFF_COST_TABLE = {
   take:  [8, 14, 22, 32, 44],
   coins: [6, 12, 20, 30],
   hp:    [10, 18, 28, 40, 54],
+  clusterTier: [60], // 1回購入＝流派2段目の恒久解放（節目の大きな買い物）
 };
 // 現在レベルから次の1段の費用（宝珠）。上限到達なら null。
 export function buffCost(id, currentLevel) {
@@ -31,6 +35,7 @@ export function buffCost(id, currentLevel) {
 
 // バフ効果量を人に見せる整形（+12% / +50 光貨 など）。level=現在の購入段数。
 export function buffEffectText(buff, level) {
+  if (buff.kind === "clusterTier") return level > 0 ? "二段目 解放済" : "一段目まで"; // 1回購入の解放（割合表示しない）
   if (!level) return "—";
   if (buff.kind === "startCoins") return `+${buff.perLevel * level} 光貨`;
   return `+${Math.round(buff.perLevel * level * 100)}%`;
