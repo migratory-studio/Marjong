@@ -75,8 +75,9 @@ export function lethalCapFrac(floor = 1, tuning = null) {
 }
 
 // 翻数(点数帯)→被ダメ係数。gross＝和了者が得た素点（ron=満額・ツモ=合計）。RL_TUNE.hanTier を線形補間。
-export function hanTierMul(gross = 0) {
-  const t = RL_TUNE.hanTier;
+export function hanTierMul(gross = 0, tuning = null) {
+  const t = (tuning && Array.isArray(tuning.hanTier) && tuning.hanTier.length) ? tuning.hanTier : RL_TUNE.hanTier; // 大章ごとに点数帯→被ダメ係数を上書き可
+
   const g = Math.abs(gross);
   if (g <= t[0][0]) return t[0][1];
   if (g >= t[t.length - 1][0]) return t[t.length - 1][1];
@@ -144,8 +145,20 @@ function floorEnemyLv(floor = 1, tuning = null) {
 
 // 1戦の「定められた局数」はフロア種別の baseHands が真実（マスタ駆動）。
 // この局数を耐え切るか、どちらかがトビで決着＝サクサク。未指定は通常戦闘＝1局。
-export function handsForType(floorType) {
-  return floorType?.baseHands || 1;
+export function handsForType(floorType, over = null) {
+  return (over && over.baseHands) || floorType?.baseHands || 1; // 章ごとに局数を上書き可
+}
+
+// 章ごとの経済オーバーライド（光貨収入/施設コスト）。未指定キーはグローバル既定にフォールバック。
+export function chapterEconomy(run) { return (run && run.over && run.over.economy) || null; }
+// 章ごとのフロア別オーバーライド（weight/baseHands/pursueMax/healFrac/hangoverChance）。
+export function floorOverride(run, id) { return (run && run.over && run.over.floors && run.over.floors[id]) || null; }
+// 章ごとのフロア重みマップ（drawFloorChoices 用）。weight を持つフロアだけ。無ければ null。
+export function floorWeightMap(run) {
+  const f = run && run.over && run.over.floors; if (!f) return null;
+  const m = {}; let any = false;
+  for (const id in f) if (f[id] && "weight" in f[id]) { m[id] = f[id].weight; any = true; }
+  return any ? m : null;
 }
 
 // 風の上限（外枠）。局数上限（maxHands）が先に効くので常に東風(1)で十分。
@@ -174,7 +187,7 @@ export function carrySlotsFor(bestFloor = 0) {
 // パーティ（charById で解決済みの CHARACTER 互換配列）から新規ランを作る。
 //   party: [{ id, char, avatarHpMax }] の配列（先頭=あなた）。最低1人。
 //   seed:  乱数シード（省略時は時刻）。テストは固定 seed を渡す。
-export function newRun(party, seed, chapterId = null, bossPool = null, bossFloors = null, tuning = null) {
+export function newRun(party, seed, chapterId = null, bossPool = null, bossFloors = null, tuning = null, over = null) {
   const members = (party || []).map((p) => {
     const hpMax = allyScaledHp(p.avatarHpMax ?? p.char?.stats?.startingPoints ?? 25000);
     return { id: p.id, char: p.char, hpMax, hp: hpMax, baseHp: hpMax, hungover: false }; // baseHp=館の気脈の底上げ基準（初期HP最大）
@@ -185,6 +198,7 @@ export function newRun(party, seed, chapterId = null, bossPool = null, bossFloor
     bossPool: Array.isArray(bossPool) && bossPool.length ? [...bossPool] : null, // ボス陣＝この記憶の群像id（提案B・縦軸の結びつけ）
     bossFloors: bossFloors && typeof bossFloors === "object" ? { ...bossFloors } : null, // フロア別ボス配役（floor→[castId|"$mob"]）。無いフロアは bossPool フォールバック
     tuning: tuning && typeof tuning === "object" ? { ...tuning } : null, // 大章ごとの難度オーバーライド（敵HP/被ダメ深度/一撃死上限等）。null=グローバル既定
+    over: over && typeof over === "object" ? JSON.parse(JSON.stringify(over)) : null, // 大章ごとの章別オーバーライド（floors/biome/itemPool/cardPool/rarityWeights/economy/bossHpMul/routeCount/colorSet）。null=全てグローバル既定。tools/roguelite-designer.html が生成。
     floor: 1,
     party: members, // 先頭2人が着卓・3人目以降は控え（パッシブ能力源）
     cards: [], // 取得カードid（履歴）
@@ -214,7 +228,7 @@ export function serializeRun(run) {
   if (!run || !Array.isArray(run.party)) return null;
   return {
     v: RUN_SAVE_VERSION,
-    seed: run.seed, chapterId: run.chapterId || null, bossPool: Array.isArray(run.bossPool) ? [...run.bossPool] : null, bossFloors: run.bossFloors ? { ...run.bossFloors } : null, tuning: run.tuning ? { ...run.tuning } : null, floor: run.floor, cleared: run.cleared, coins: run.coins,
+    seed: run.seed, chapterId: run.chapterId || null, bossPool: Array.isArray(run.bossPool) ? [...run.bossPool] : null, bossFloors: run.bossFloors ? { ...run.bossFloors } : null, tuning: run.tuning ? { ...run.tuning } : null, over: run.over ? JSON.parse(JSON.stringify(run.over)) : null, floor: run.floor, cleared: run.cleared, coins: run.coins,
     skillLevel: run.skillLevel, forgeOvercharge: run.forgeOvercharge || 0, cards: [...(run.cards || [])], items: [...(run.items || [])],
     clusterTierCap: run.clusterTierCap ?? 1, // 流派の解放段数（中断ランの再開で失わない）
     mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
@@ -235,7 +249,7 @@ export function deserializeRun(data, resolveChar) {
     party.push({ id: m.id, char, hp: m.hp, hpMax: m.hpMax, baseHp: m.baseHp ?? m.hpMax, hungover: !!m.hungover });
   }
   return {
-    seed: String(data.seed), chapterId: data.chapterId || null, bossPool: Array.isArray(data.bossPool) ? [...data.bossPool] : null, bossFloors: data.bossFloors && typeof data.bossFloors === "object" ? { ...data.bossFloors } : null, tuning: data.tuning && typeof data.tuning === "object" ? { ...data.tuning } : null, floor: data.floor || 1, party,
+    seed: String(data.seed), chapterId: data.chapterId || null, bossPool: Array.isArray(data.bossPool) ? [...data.bossPool] : null, bossFloors: data.bossFloors && typeof data.bossFloors === "object" ? { ...data.bossFloors } : null, tuning: data.tuning && typeof data.tuning === "object" ? { ...data.tuning } : null, over: data.over && typeof data.over === "object" ? JSON.parse(JSON.stringify(data.over)) : null, floor: data.floor || 1, party,
     cards: [...(data.cards || [])], mods: { ...freshMods(), ...(data.mods || {}) },
     clusterTierCap: data.clusterTierCap ?? 1, // 旧セーブ（未保存）は 1段目まで＝既定に寄せる
     cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1, forgeOvercharge: data.forgeOvercharge || 0,
@@ -262,13 +276,15 @@ export function rollHangover(run, chance, rng) {
 
 // ショップ在庫を決定論生成：バフ2種＋道具1種（取得済み除外）＋全回復＋HP最大+。価格はレア度/固定。
 export function shopStock(run, rng) {
-  const cards = drawCards(rng, { count: 2, exclude: excludedCardIds(run) });
-  const stock = cards.map((c) => ({ type: "card", card: c, price: SHOP_PRICE[c.rarity] || 20, name: c.name, desc: c.desc, rarity: c.rarity }));
-  // 道具1種（未所持から）。
-  const it = drawItems(rng, { count: 1, exclude: run.items })[0];
+  const e = chapterEconomy(run) || {};
+  const priceOf = (rar) => ({ common: e.shopCommon, rare: e.shopRare, epic: e.shopEpic, legendary: e.shopLegendary }[rar] ?? SHOP_PRICE[rar] ?? 20);
+  const cards = drawCards(rng, { count: 2, exclude: excludedCardIds(run), pool: run.over?.cardPool || null, rarityWeights: run.over?.rarityWeights || null });
+  const stock = cards.map((c) => ({ type: "card", card: c, price: priceOf(c.rarity), name: c.name, desc: c.desc, rarity: c.rarity }));
+  // 道具1種（未所持から）。章ごとの道具プールを尊重。
+  const it = drawItems(rng, { count: 1, exclude: run.items, pool: run.over?.itemPool || null })[0];
   if (it) stock.push({ type: "item", item: it, price: it.cost, name: it.name, desc: it.desc, rarity: "rare" });
-  stock.push({ type: "heal", price: SHOP_HEAL_PRICE, name: "気付け薬", desc: "パーティ全員のHPを50%回復する。", rarity: "common" });
-  stock.push({ type: "maxhp", price: SHOP_MAXHP_PRICE, name: "厚みの護符", desc: "HP最大値が一定値増える（深い階ほど大きい・現在HPも底上げ）。", rarity: "rare" });
+  stock.push({ type: "heal", price: e.shopHeal ?? SHOP_HEAL_PRICE, name: "気付け薬", desc: "パーティ全員のHPを50%回復する。", rarity: "common" });
+  stock.push({ type: "maxhp", price: e.shopMaxhp ?? SHOP_MAXHP_PRICE, name: "厚みの護符", desc: "HP最大値が一定値増える（深い階ほど大きい・現在HPも底上げ）。", rarity: "rare" });
   return stock;
 }
 
@@ -415,7 +431,7 @@ export function previewBossChars(run, floorType = null, salt = "") {
 export function enemyUnitForFloor(run, floorType = null, salt = "") {
   const floor = run.floor;
   const kind = floorType?.enemy || (isBossFloor(floor) ? "boss" : "mob");
-  const hpMul = kind === "boss" ? 1.3 : kind === "named" ? 1.2 : 1;
+  const hpMul = (kind === "boss" ? 1.3 : kind === "named" ? 1.2 : 1) * (kind === "boss" ? (run.over?.bossHpMul || 1) : 1); // 章ごとボスHP倍率
   const lvBump = kind === "boss" ? 2 : kind === "named" ? 1 : 0;
   const hp = Math.round(floorEnemyHp(floor, run.tuning) * hpMul);
   const lv = Math.min(10, floorEnemyLv(floor, run.tuning) + lvBump + (biomeMods(run).enemyLvAdd || 0)); // 層で強敵化（喧噪の都）
@@ -526,7 +542,7 @@ function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}, deltas = 
     fdm,
     deal: dealDepthMul(run.floor || 1, run.tuning) * (bm.dmgDealMul || 1), // 層の与ダメ係数（黄昏=攻め映え）
     friendlyMul: RL_TUNE.friendlyMul,
-    tierMul: hanTierMul(winnerGross), // 安手は軽く・跳満以上は重く
+    tierMul: hanTierMul(winnerGross, run.tuning), // 安手は軽く・跳満以上は重く（章で hanTier 上書き可）
     isTsumo,
     lethalCapFrac: cap,
     tsumoCapFrac: cap * RL_TUNE.tsumoCapMul, // ツモは席あたり上限を一段下げる＝トビにくい
@@ -608,8 +624,10 @@ export function excludedCardIds(run) {
 // HPがほぼ満タンなら純回復カード（kind:"heal"）は無駄なので候補から外す（偏り/死に札の解消）。
 export function rollDraft(run, perf = {}) {
   const rng = makeRng(`${run.seed}:draft:${run.floor}:${run.cleared}`);
+  const pool = run.over?.cardPool || null;          // 章ごとに配置カードを絞る（流派縛り等）
+  const rarityWeights = run.over?.rarityWeights || null; // 章ごとにレア度確率を上書き
   // 役満ご祝儀：オールレジェンダリー（在庫が足りなければ epic でフォールバック）。
-  if (perf.allLegendary) return drawCards(rng, { count: 3, forceRarity: "legendary", exclude: excludedCardIds(run) });
+  if (perf.allLegendary) return drawCards(rng, { count: 3, forceRarity: "legendary", exclude: excludedCardIds(run), pool });
   const base = perf.bias != null ? perf.bias : rarityBiasFor({ ...perf, floor: run.floor });
   const rarityBias = Math.max(0, Math.min(1, base + itemMods(run).draftRarityBonus + (biomeMods(run).draftBias || 0))); // 強運の根付＋層(喧噪の都)で底上げ
   const exclude = excludedCardIds(run);
@@ -617,7 +635,7 @@ export function rollDraft(run, perf = {}) {
   if (minFrac > 0.85) {
     for (const c of ROGUELITE_CARD_MASTER) if (c.effect?.kind === "heal") exclude.push(c.id);
   }
-  return drawCards(rng, { count: 3, rarityBias, exclude });
+  return drawCards(rng, { count: 3, rarityBias, exclude, pool, rarityWeights });
 }
 
 // ---- ドラフトのレア度バイアス ----

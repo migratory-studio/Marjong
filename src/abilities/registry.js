@@ -116,6 +116,13 @@ export class AbilityManager {
     return Array.isArray(out) ? out : null;
   }
 
+  // Collect 牌効率トップ3の打牌候補（模範解答）for UI rendering. array<{kind,rank}> or null.
+  bestDiscards(player) {
+    const ctx = { player };
+    const out = this.modifyForPlayer(Hooks.PROVIDE_BEST_DISCARDS, player, ctx, null);
+    return Array.isArray(out) ? out : null;
+  }
+
   // Let abilities tweak a score result.
   modifyScore(winner, result) {
     const ctx = { winner, result };

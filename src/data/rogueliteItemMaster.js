@@ -127,13 +127,14 @@ export function itemById(id) {
 }
 
 // このランで未所持の道具からランダム抽選（報酬用）。exclude（所持中id）は避ける。
-export function drawItems(rng, { count = 1, exclude = [] } = {}) {
+export function drawItems(rng, { count = 1, exclude = [], pool = null } = {}) {
   const ex = new Set(exclude);
-  const pool = ROGUELITE_ITEM_MASTER.filter((it) => !ex.has(it.id));
+  const allow = Array.isArray(pool) ? new Set(pool) : null; // 章ごとの道具プール（allowlist）。null=全種。
+  const items = ROGUELITE_ITEM_MASTER.filter((it) => !ex.has(it.id) && (!allow || allow.has(it.id)));
   const out = [];
   const used = new Set();
-  while (out.length < count && used.size < pool.length) {
-    const list = pool.filter((it) => !used.has(it.id));
+  while (out.length < count && used.size < items.length) {
+    const list = items.filter((it) => !used.has(it.id));
     if (!list.length) break;
     const it = list[Math.floor(rng() * list.length) % list.length];
     used.add(it.id); out.push(it);

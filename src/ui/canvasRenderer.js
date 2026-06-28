@@ -54,11 +54,12 @@ export class CanvasRenderer {
     // 右サイドの相棒ボードに集約済みで、卓上にはHPバーを描かない。
   }
 
-  setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false } = {}) {
+  setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false, best = null } = {}) {
     this.riichiMode = riichiMode;
     this.riichiKinds = riichiKinds;
     this.danger = danger; // Map kind -> level
     this.recallMode = recallMode; // リコール・ディール: 自分の河の牌を選択中
+    this.best = best; // 模範解答: Map kind -> rank(1..3)。null=非表示
   }
 
   render() {
@@ -458,6 +459,7 @@ export class CanvasRenderer {
       if (canPick) { anyPickable = true; this._pickGlow(x, ty, tw, th, hovered || selected); }
       this._tile(x, ty, t.kind, { red: t.red, danger: dangerLevel, dim, scale: s });
       if (doraKinds.has(t.kind) || t.red) this._doraStar(x, ty, tw, dim);
+      if (this.best && !dim) { const r = this.best.get(t.kind); if (r) this._bestMark(x, ty, tw, th, r); }
       if (selected) this._selectOutline(x, ty, tw, th); // 「次のタップで切る」武装中の牌を縁取り
       this.handHitboxes.push({ tileId: t.id, kind: t.kind, x, y: ty, w: tw, h: th, enabled: canPick });
       x += tw + gap;
@@ -506,6 +508,29 @@ export class CanvasRenderer {
     ctx.strokeText("★", x + w / 2, y - 2);
     ctx.fillStyle = "#f6d24a";
     ctx.fillText("★", x + w / 2, y - 2);
+    ctx.restore();
+  }
+
+  // 模範解答（灯子）— 牌効率トップ3の打牌候補に ①②③ を灯す。先生の助言＝落ち着いた
+  // 翠のバッジを牌の左上角に重ねる。danger(右上系)・doraStar(上中央)とは位置で住み分ける。
+  _bestMark(x, y, w, h, rank) {
+    const ctx = this.ctx;
+    const r = 9;
+    const cx = x + r - 3;
+    const cy = y + r - 3;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fillStyle = "#2f9e7e"; // 翠（先生の色）
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = "#ffffff";
+    ctx.stroke();
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 12px sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(String(rank), cx, cy + 0.5);
     ctx.restore();
   }
 

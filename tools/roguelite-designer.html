@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>楼光の館 デザイナー（大章バランス／確率／配置／カラー）</title>
+<style>
+  :root{
+    --bg:#0e0c14; --panel:#191622; --panel2:#13111b; --ink:#ece7f2; --muted:#9b93ad;
+    --accent:#e8c45d; --accent2:#8fb6ff; --warn:#ffcf6c; --err:#ff7a7a; --ok:#7ee0a5; --line:#2c2738;
+    --def:#5a5470; /* default(baseline) curve color */
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:radial-gradient(120% 90% at 50% -10%,#1a1526 0%,var(--bg) 60%);color:var(--ink);
+       font:13.5px/1.5 system-ui,"Segoe UI",sans-serif;}
+  header{padding:9px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+         background:linear-gradient(180deg,rgba(232,196,93,.06),transparent);}
+  header h1{font-size:15px;margin:0 6px 0 0;font-weight:800;letter-spacing:.03em;color:var(--accent);}
+  header h1 small{color:var(--muted);font-weight:500;font-size:11px;letter-spacing:.18em;margin-left:6px;}
+  .row{display:flex;align-items:center;gap:8px;}
+  label{color:var(--muted);}
+  select,input[type=text],input[type=number],textarea{
+    background:#100e18;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:5px 7px;font:inherit;}
+  input[type=number]{width:88px;}
+  input.set{border-color:var(--accent);box-shadow:0 0 0 1px rgba(232,196,93,.25) inset;}
+  input[type=color]{width:34px;height:26px;padding:1px;border-radius:6px;border:1px solid var(--line);background:#100e18;cursor:pointer;}
+  input[type=range]{accent-color:var(--accent);}
+  button{background:var(--accent);color:#231a06;border:none;border-radius:6px;padding:6px 12px;font-weight:700;cursor:pointer;}
+  button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;}
+  button.mini{padding:3px 8px;font-size:12px;}
+  button.x{background:transparent;color:var(--err);border:1px solid var(--line);padding:2px 7px;font-size:12px;}
+  button:disabled{opacity:.4;cursor:not-allowed;}
+  .pill{padding:2px 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px;}
+  .pill.on{color:var(--accent);border-color:var(--accent);}
+  main{display:grid;grid-template-columns:1fr 440px;height:calc(100vh - 50px);}
+  .left{overflow:auto;padding:0 0 40px;}
+  .right{border-left:1px solid var(--line);background:var(--panel2);overflow:auto;padding:14px 14px 40px;}
+  .tabs{display:flex;gap:3px;flex-wrap:wrap;padding:10px 14px 0;position:sticky;top:0;background:var(--bg);z-index:3;border-bottom:1px solid var(--line);}
+  .tab{padding:6px 12px;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;background:var(--panel2);color:var(--muted);cursor:pointer;font-size:12.5px;}
+  .tab.on{background:var(--panel);color:var(--ink);font-weight:700;box-shadow:inset 0 2px 0 var(--accent);}
+  .pane{padding:14px 16px;display:none;}
+  .pane.on{display:block;}
+  .sec{margin-bottom:20px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;}
+  .sec h2{font-size:12.5px;color:var(--accent);margin:0 0 4px;letter-spacing:.04em;}
+  .sec .desc{color:var(--muted);font-size:11.5px;margin:0 0 10px;}
+  .knob{display:grid;grid-template-columns:200px 100px 1fr auto;gap:10px;align-items:center;padding:5px 0;border-top:1px solid rgba(255,255,255,.04);}
+  .knob:first-of-type{border-top:none;}
+  .knob .k-name{font-weight:600;}
+  .knob .k-name small{display:block;color:var(--muted);font-weight:400;font-size:11px;line-height:1.35;}
+  .knob .k-def{color:var(--muted);font-size:11.5px;font-family:ui-monospace,monospace;}
+  .knob .k-def b{color:var(--def);}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;}
+  .chk{display:flex;flex-wrap:wrap;gap:6px;}
+  .chk .c{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;cursor:pointer;font-size:12px;background:var(--panel2);user-select:none;}
+  .chk .c.on{border-color:var(--accent);color:var(--accent);background:rgba(232,196,93,.08);}
+  .chk .c .dot{width:8px;height:8px;border-radius:50%;}
+  .tbl{width:100%;border-collapse:collapse;font-size:12.5px;}
+  .tbl th,.tbl td{padding:4px 6px;border-bottom:1px solid var(--line);text-align:left;}
+  .tbl th{color:var(--muted);font-weight:600;}
+  .barrow{display:grid;grid-template-columns:120px 70px 1fr;gap:8px;align-items:center;padding:3px 0;}
+  .bar{height:10px;border-radius:5px;background:#2a2538;overflow:hidden;}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));}
+  .chartbox{background:#0b0a11;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:12px;}
+  .chartbox h3{font-size:11.5px;margin:0 0 2px;color:var(--ink);letter-spacing:.03em;}
+  .chartbox .legend{font-size:10.5px;color:var(--muted);margin-bottom:4px;}
+  .chartbox .legend b.s{color:var(--accent);} .chartbox .legend b.d{color:var(--def);}
+  svg{display:block;width:100%;height:auto;}
+  .verdict{font-size:13px;font-weight:700;padding:6px 10px;border-radius:8px;margin-bottom:10px;}
+  .verdict.good{background:rgba(126,224,165,.12);color:var(--ok);border:1px solid rgba(126,224,165,.3);}
+  .verdict.warn{background:rgba(255,207,108,.12);color:var(--warn);border:1px solid rgba(255,207,108,.3);}
+  .verdict.bad{background:rgba(255,122,122,.12);color:var(--err);border:1px solid rgba(255,122,122,.3);}
+  .codebox{width:100%;min-height:160px;background:#08070d;color:#d6e6ff;font:11.5px/1.55 ui-monospace,"Cascadia Code",monospace;
+           border:1px solid var(--line);border-radius:8px;padding:10px;white-space:pre;overflow:auto;}
+  .swatch{display:inline-block;width:16px;height:16px;border-radius:4px;border:1px solid rgba(255,255,255,.2);vertical-align:middle;}
+  .colorline{display:grid;grid-template-columns:120px auto 110px;gap:10px;align-items:center;padding:4px 0;}
+  .toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ok);color:#062014;padding:9px 18px;border-radius:999px;font-weight:700;opacity:0;transition:.2s;pointer-events:none;z-index:10;}
+  .toast.show{opacity:1;}
+  .hint{color:var(--muted);font-size:11.5px;}
+  .miniNote{color:var(--muted);font-size:11px;font-style:italic;}
+  .resetwrap{margin-left:auto;}
+  .preview-tone{display:inline-flex;gap:4px;align-items:center;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin-top:8px;background:var(--panel2);}
+</style>
+</head>
+<body>
+<header>
+  <h1>楼光の館 デザイナー<small>大章バランス／確率／配置／カラー</small></h1>
+  <div class="row"><label>大章</label><select id="chapSel"></select></div>
+  <div class="row"><span class="pill" id="ovStat">—</span></div>
+  <div class="resetwrap row">
+    <button class="ghost mini" id="resetChap">この大章の上書きを全消去</button>
+  </div>
+</header>
+
+<main>
+  <div class="left">
+    <div class="tabs" id="tabs"></div>
+    <div id="panes"></div>
+  </div>
+
+  <div class="right">
+    <div class="chartbox">
+      <h3>クリア率プレビュー（簡易HP推移モデル）</h3>
+      <div class="legend">想定ビルドでHPがどこまで保つかの<b>推定</b>。厳密値は下のCLIで。</div>
+      <div class="row" style="gap:6px;flex-wrap:wrap;margin-bottom:6px">
+        <label>ビルド</label>
+        <select id="simBuild"><option value="weak">弱(無策)</option><option value="mid" selected>中(標準)</option><option value="strong">強(最適化)</option></select>
+        <label>想定点数帯</label><input type="number" id="simGross" value="5200" step="100" style="width:80px">
+      </div>
+      <div class="row" style="gap:10px;flex-wrap:wrap;margin-bottom:6px">
+        <label class="hint">被弾係数K <input type="range" id="simK" min="0.04" max="0.30" step="0.01" value="0.12"></label>
+        <span class="hint" id="simKv">0.12</span>
+      </div>
+      <div class="verdict" id="simVerdict">—</div>
+      <div id="chartClear"></div>
+    </div>
+
+    <div class="chartbox"><h3>敵HP（1人あたり）× 階層</h3>
+      <div class="legend"><b class="s">━ この章</b> ／ <b class="d">┄ 既定</b></div><div id="chartEnemyHp"></div></div>
+    <div class="chartbox"><h3>被ダメ深度倍率 × 階層</h3>
+      <div class="legend"><b class="s">━ この章</b> ／ <b class="d">┄ 既定</b></div><div id="chartDepth"></div></div>
+    <div class="chartbox"><h3>一撃死上限（最大HP比）× 階層</h3>
+      <div class="legend"><b class="s">━ この章</b> ／ <b class="d">┄ 既定</b></div><div id="chartLethal"></div></div>
+    <div class="chartbox"><h3>与ダメ深度倍率 × 階層</h3>
+      <div class="legend"><b class="s">━ この章</b> ／ <b class="d">┄ 既定</b></div><div id="chartDeal"></div></div>
+    <div class="chartbox"><h3>翻数(点数帯)→ 被ダメ係数</h3>
+      <div class="legend"><b class="s">━ この章</b> ／ <b class="d">┄ 既定</b></div><div id="chartHan"></div></div>
+    <div class="chartbox"><h3>進路フロアの出現確率</h3>
+      <div class="legend">重み → 出現%（戦闘以外。1枠目は必ず戦闘系）</div><div id="chartFloors"></div></div>
+    <div class="chartbox"><h3>バイオーム（層）の出現傾向</h3>
+      <div class="legend">深い帯ほど中立が減り特殊層が増える</div><div id="chartBiome"></div></div>
+
+    <div class="chartbox">
+      <h3>コード生成（貼り戻し用）</h3>
+      <div class="legend">マスタは<b>上書きされません</b>。下を <code>rogueliteChapterMaster.js</code> の該当大章へマージ。</div>
+      <div class="row" style="gap:6px;margin-bottom:8px">
+        <button id="genBtn" class="mini">生成</button>
+        <button id="copyBtn" class="ghost mini" disabled>コピー</button>
+      </div>
+      <div class="codebox" id="codeOut">（未生成）</div>
+      <div class="legend" style="margin-top:8px">厳密なクリア率は CLI で：<br>
+        <code>CLEARFLOOR=&lt;到達階&gt; node test/roguelite-balance.mjs --clearrate</code></div>
+    </div>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { ROGUELITE_CHAPTER_MASTER } from '../src/data/rogueliteChapterMaster.js';
+import { ROGUELITE_FLOOR_MASTER, RECRUIT_COST, SHOP_PRICE, SHOP_HEAL_PRICE, SHOP_MAXHP_PRICE } from '../src/data/rogueliteFloorMaster.js';
+import { ROGUELITE_BIOME_MASTER } from '../src/data/rogueliteBiomeMaster.js';
+import { ROGUELITE_ITEM_MASTER, ITEM_KIND_META } from '../src/data/rogueliteItemMaster.js';
+import { ROGUELITE_CARD_MASTER, RARITY_WEIGHTS, RARITY_META, CLUSTER_META } from '../src/data/rogueliteCardMaster.js';
+import { RL_TUNE, ROGUELITE_BASE_ENEMY_HP, allyScaledHp, floorEnemyHp, floorDamageMul, lethalCapFrac, dealDepthMul } from '../src/roguelite/run.js';
+
+// ── 既定値（グローバル＝大章で上書きしない場合の挙動）。run.js の RL_TUNE と敵定数を参照。
+//    enemyHpSlope/enemyHpCapFloor/enemyLvSlope は run.js で未export のため既知の既定値をここに写経。
+const DEF = {
+  baseEnemyHp: ROGUELITE_BASE_ENEMY_HP, enemyHpSlope: 0.08, enemyHpCapFloor: 30, enemyLvSlope: 0.6,
+  floorDmgStart: RL_TUNE.floorDmgStart, floorDmgSlope: RL_TUNE.floorDmgSlope, floorDmgKnee: RL_TUNE.floorDmgKnee, floorDmgAccel: RL_TUNE.floorDmgAccel,
+  lethalCapBase: RL_TUNE.lethalCapBase, lethalCapFadeStart: RL_TUNE.lethalCapFadeStart, lethalCapFadeSlope: RL_TUNE.lethalCapFadeSlope,
+  dealDepthStart: RL_TUNE.dealDepthStart, dealDepthSlope: RL_TUNE.dealDepthSlope, regenFrac: RL_TUNE.regenFrac,
+};
+const DEF_HANTIER = RL_TUNE.hanTier.map(([g,m])=>[g,m]);
+const DEF_ECON = { coinBase:10, coinFloorMul:0.7, bossMul:3, namedMul:1.6, koAdd:4, pursueMul:1.3, forgeBase:10, forgeQuad:3,
+                   recruitCost:RECRUIT_COST, shopCommon:SHOP_PRICE.common, shopRare:SHOP_PRICE.rare, shopEpic:SHOP_PRICE.epic, shopLegendary:SHOP_PRICE.legendary, shopHeal:SHOP_HEAL_PRICE, shopMaxhp:SHOP_MAXHP_PRICE };
+const TONE_PRESETS = { gold:'#e8c45d', jade:'#6f9b8e', ember:'#c0563a', ash:'#6b6675' };
+const DEF_COLORSET = { tc:'#e8c45d', gold:'#e8c45d', ink:'#f3ece0', edge:'#e8c45d', ember:'#c0563a' };
+
+// ── 状態：大章ごとの「上書きオブジェクト」。既存マスタのフィールドから種を作る（貼り戻しで現状を再現）。
+const state = { chapId: ROGUELITE_CHAPTER_MASTER[0].id, ov:{}, tab:'curve', sim:{build:'mid',gross:5200,K:0.12} };
+for (const c of ROGUELITE_CHAPTER_MASTER) {
+  state.ov[c.id] = {
+    tuning: c.tuning ? clone(c.tuning) : {},
+    bossFloors: c.bossFloors ? clone(c.bossFloors) : null,
+    bossHpMul: c.bossHpMul ?? null,
+    clearFloor: c.clearFloor ?? 10,
+    routeCount: c.routeCount ?? null,
+    floors: c.floors ? clone(c.floors) : {},
+    biome: c.biome ? clone(c.biome) : {},
+    itemPool: c.itemPool ? [...c.itemPool] : null,
+    cardPool: c.cardPool ? [...c.cardPool] : null,
+    rarityWeights: c.rarityWeights ? clone(c.rarityWeights) : {},
+    economy: c.economy ? clone(c.economy) : {},
+    colorSet: c.colorSet ? clone(c.colorSet) : {},
+    tone: c.tone || 'gold',
+    comingSoon: !!c.comingSoon,
+  };
+}
+function clone(o){ return JSON.parse(JSON.stringify(o)); }
+const cur = () => state.ov[state.chapId];
+const chapDef = () => ROGUELITE_CHAPTER_MASTER.find(c=>c.id===state.chapId);
+
+// ── 有効tuning（既定にこの章の上書きを重ねたもの）。チャート/シムに渡す。
+function effTuning(){ return { ...DEF, ...cur().tuning }; }
+function effHanTier(){
+  const t = cur().tuning.hanTier;
+  return (Array.isArray(t) && t.length) ? t : DEF_HANTIER;
+}
+function hanInterp(gross, table){
+  const g = Math.abs(gross), t = table;
+  if (g<=t[0][0]) return t[0][1];
+  if (g>=t[t.length-1][0]) return t[t.length-1][1];
+  for (let i=1;i<t.length;i++){ if (g<=t[i][0]){ const [g0,m0]=t[i-1],[g1,m1]=t[i]; return m0+(m1-m0)*(g-g0)/(g1-g0); } }
+  return t[t.length-1][1];
+}
+
+// ════════════════ UI 骨格 ════════════════
+const TABS = [
+  ['curve','難易度曲線'],['han','翻数→被ダメ'],['route','進路/ボス'],
+  ['floors','フロア確率/局数'],['biome','バイオーム'],['draft','配置アイテム/カード'],
+  ['econ','経済'],['color','カラーセット'],
+];
+const chapSel = document.getElementById('chapSel');
+ROGUELITE_CHAPTER_MASTER.forEach(c=>{ const o=document.createElement('option'); o.value=c.id; o.textContent=`${c.index}. ${c.title}`+(c.comingSoon?'（未綴）':''); chapSel.appendChild(o); });
+chapSel.value = state.chapId;
+chapSel.onchange = ()=>{ state.chapId=chapSel.value; renderAll(); };
+document.getElementById('resetChap').onclick = ()=>{
+  if (!confirm('この大章の上書きを全て既定へ戻します。よろしいですか？')) return;
+  const c = chapDef();
+  state.ov[state.chapId] = { tuning:{}, bossFloors:null, bossHpMul:null, clearFloor:c.clearFloor??10, routeCount:null,
+    floors:{}, biome:{}, itemPool:null, cardPool:null, rarityWeights:{}, economy:{}, colorSet:{}, tone:c.tone||'gold', comingSoon:!!c.comingSoon };
+  renderAll(); toast('既定へ戻しました');
+};
+
+const tabsEl = document.getElementById('tabs');
+TABS.forEach(([id,label])=>{ const b=document.createElement('div'); b.className='tab'; b.dataset.tab=id; b.textContent=label; b.onclick=()=>{ state.tab=id; renderAll(); }; tabsEl.appendChild(b); });
+const panesEl = document.getElementById('panes');
+
+// ── path helpers（cur() に対する set/del。既定一致なら削除＝スパース維持）
+function setNum(obj, key, raw, def){
+  if (raw==='' || raw==null){ delete obj[key]; return; }
+  const v = Number(raw);
+  if (!isFinite(v)){ delete obj[key]; return; }
+  if (def!=null && v===def) delete obj[key]; else obj[key]=v;
+}
+
+// 数値ノブ行
+function knob(obj, key, def, label, hint, step){
+  const set = (key in obj) && obj[key]!==undefined;
+  const val = set ? obj[key] : '';
+  return `<div class="knob">
+    <div class="k-name">${label}${hint?`<small>${hint}</small>`:''}</div>
+    <input type="number" step="${step||'any'}" data-kind="num" data-key="${key}" data-def="${def}" value="${val}" placeholder="${def}" class="${set?'set':''}">
+    <div></div>
+    <div class="k-def">既定 <b>${def}</b></div>
+  </div>`;
+}
+
+// ════════════════ 各タブのレンダリング ════════════════
+function paneCurve(){
+  const t = cur().tuning;
+  return `<div class="pane ${state.tab==='curve'?'on':''}">
+    <div class="sec"><h2>敵の強化曲線</h2><p class="desc">階層が深いほど敵が硬く・強くなる傾きを大章ごとに変えられます。空欄＝既定。</p>
+      ${knob(t,'baseEnemyHp',DEF.baseEnemyHp,'F1の敵HP','1人あたり初期HP。満貫1発で約半分が目安','10')}
+      ${knob(t,'enemyHpSlope',DEF.enemyHpSlope,'敵HP傾き','1階あたりHP増（線形・対base比）','0.01')}
+      ${knob(t,'enemyHpCapFloor',DEF.enemyHpCapFloor,'敵HP頭打ち階','この階でHP成長が止まる（青天井回避）','1')}
+      ${knob(t,'enemyLvSlope',DEF.enemyLvSlope,'敵Lv傾き','1階あたり敵Lv増（最大10で頭打ち）','0.05')}
+    </div>
+    <div class="sec"><h2>被ダメ深度（味方が受ける痛さ）</h2><p class="desc">深層ほど味方の失点が増える曲線。kneeから二次加速＝最適化ビルドも必ず終わる壁。</p>
+      ${knob(t,'floorDmgStart',DEF.floorDmgStart,'立ち上がり階','この階までは地力で抜けられる','1')}
+      ${knob(t,'floorDmgSlope',DEF.floorDmgSlope,'線形傾き','1階あたり被ダメ増（緩やか）','0.01')}
+      ${knob(t,'floorDmgKnee',DEF.floorDmgKnee,'二次加速の階','この階から壁が立つ','1')}
+      ${knob(t,'floorDmgAccel',DEF.floorDmgAccel,'二次加速係数','(階-knee)²に乗る','0.01')}
+    </div>
+    <div class="sec"><h2>一撃死上限（トビ防止）</h2><p class="desc">1局で失うHPの上限（最大HP比）。中盤まで固定で守り、深層で漸近的に開く。</p>
+      ${knob(t,'lethalCapBase',DEF.lethalCapBase,'基本上限','F1〜固定階はこの割合で頭打ち','0.01')}
+      ${knob(t,'lethalCapFadeStart',DEF.lethalCapFadeStart,'固定する階','この階まで満タン一撃死なし','1')}
+      ${knob(t,'lethalCapFadeSlope',DEF.lethalCapFadeSlope,'緩む傾き','1階あたり上限が開く量','0.005')}
+    </div>
+    <div class="sec"><h2>与ダメ深度・踏破回復</h2><p class="desc">味方の攻めの伸びと、1階踏破ごとの回復量。</p>
+      ${knob(t,'dealDepthStart',DEF.dealDepthStart,'与ダメ立上り階','','1')}
+      ${knob(t,'dealDepthSlope',DEF.dealDepthSlope,'与ダメ傾き','敵HP成長への追従','0.01')}
+      ${knob(t,'regenFrac',DEF.regenFrac,'踏破回復率','1階踏破で回復する最大HP比','0.01')}
+    </div>
+  </div>`;
+}
+
+function paneHan(){
+  const t = effHanTier();
+  const isSet = Array.isArray(cur().tuning.hanTier);
+  const rows = t.map((p,i)=>`<tr>
+    <td><input type="number" data-kind="han" data-row="${i}" data-col="0" value="${p[0]}" step="100" style="width:90px"></td>
+    <td><input type="number" data-kind="han" data-row="${i}" data-col="1" value="${p[1]}" step="0.05" style="width:70px"></td>
+    <td><button class="x" data-kind="han-del" data-row="${i}">削除</button></td></tr>`).join('');
+  return `<div class="pane ${state.tab==='han'?'on':''}">
+    <div class="sec"><h2>翻数(点数帯)→ 被ダメ係数 ${isSet?'<span class="pill on">章で上書き中</span>':'<span class="pill">既定</span>'}</h2>
+      <p class="desc">麻雀の手の重さ→HPダメージの中核テーブル。<b>素点しきい値</b>と<b>係数</b>を線形補間します。安手を和らげ・跳満以上で跳ねさせるのが基本。</p>
+      <table class="tbl"><thead><tr><th>素点しきい値(gross)</th><th>被ダメ係数</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="row" style="margin-top:8px;gap:6px">
+        <button class="mini" data-kind="han-add">行を追加</button>
+        <button class="ghost mini" data-kind="han-reset">既定に戻す</button>
+      </div>
+      <p class="miniNote" style="margin-top:6px">右のグラフで既定との差を確認できます。</p>
+    </div>
+  </div>`;
+}
+
+function paneRoute(){
+  const o = cur(); const cd = chapDef();
+  const cast = cd.cast||[];
+  const castOptions = ['$mob', ...cast.map(c=>c.id)];
+  const bf = o.bossFloors || {};
+  const bfRows = Object.keys(bf).sort((a,b)=>a-b).map(f=>{
+    const arr = bf[f]||[];
+    const slots = arr.map((id,idx)=>`<select data-kind="boss-slot" data-floor="${f}" data-idx="${idx}">
+      ${castOptions.map(cid=>`<option value="${cid}" ${cid===id?'selected':''}>${cid==='$mob'?'（モブ門番）':(cast.find(c=>c.id===cid)?.name||cid)}</option>`).join('')}
+    </select>`).join(' ');
+    return `<tr><td>F${f}</td><td>${slots}
+      <button class="mini ghost" data-kind="boss-slot-add" data-floor="${f}">＋枠</button>
+      <button class="x" data-kind="boss-slot-del" data-floor="${f}">－枠</button></td>
+      <td><button class="x" data-kind="boss-floor-del" data-floor="${f}">行削除</button></td></tr>`;
+  }).join('');
+  return `<div class="pane ${state.tab==='route'?'on':''}">
+    <div class="sec"><h2>踏破・進路</h2>
+      <div class="knob"><div class="k-name">踏破階(clearFloor)<small>このボス階に届けば「読み切った」＝次章解禁</small></div>
+        <input type="number" data-kind="num" data-key="clearFloor" data-def="" value="${o.clearFloor}" step="1" class="set"><div></div><div class="k-def">現在 <b>${o.clearFloor}</b></div></div>
+      ${knob(o,'routeCount',3,'進路の選択肢数','空欄＝既定(序盤F1-2は2択/以降3択)','1')}
+      ${knob(o,'bossHpMul',1,'ボスHP倍率','ボス階の敵HPに乗る（1=既定）','0.05')}
+    </div>
+    <div class="sec"><h2>ボス階の配役（bossFloors）</h2>
+      <p class="desc">10階ごとのボスに誰を立てるか。$mob＝ネームドモブ門番。ここに無い深層ボスはcastから決定論ランダム。</p>
+      <table class="tbl"><thead><tr><th>階</th><th>配役</th><th></th></tr></thead><tbody>${bfRows||'<tr><td colspan=3 class="hint">未設定（cast決定論ランダム）</td></tr>'}</tbody></table>
+      <div class="row" style="margin-top:8px;gap:6px">
+        <label>追加する階</label><input type="number" id="bfNewFloor" value="${(o.clearFloor||30)}" step="10" style="width:80px">
+        <button class="mini" data-kind="boss-floor-add">ボス階を追加</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function paneFloors(){
+  const o = cur();
+  const editable = ROGUELITE_FLOOR_MASTER.filter(f=>f.id!=='boss');
+  const rows = editable.map(f=>{
+    const ov = (o.floors&&o.floors[f.id])||{};
+    const w = ('weight' in ov)?ov.weight:f.weight;
+    const bh = ('baseHands' in ov)?ov.baseHands:(f.baseHands??'');
+    const pm = ('pursueMax' in ov)?ov.pursueMax:(f.pursueMax??'');
+    const heal = ('healFrac' in ov)?ov.healFrac:(f.healFrac??'');
+    const hang = ('hangoverChance' in ov)?ov.hangoverChance:(f.hangoverChance??'');
+    const hasHands = f.kind==='battle'||f.kind==='gamble';
+    return `<tr>
+      <td><b>${f.name}</b><br><span class="hint">${f.kind}</span></td>
+      <td><input type="number" data-kind="floor" data-id="${f.id}" data-field="weight" data-def="${f.weight}" value="${('weight'in ov)?w:''}" placeholder="${f.weight}" step="1" style="width:60px" class="${('weight'in ov)?'set':''}"></td>
+      <td>${hasHands?`<input type="number" data-kind="floor" data-id="${f.id}" data-field="baseHands" data-def="${f.baseHands??''}" value="${('baseHands'in ov)?bh:''}" placeholder="${f.baseHands??'-'}" step="1" style="width:48px" class="${('baseHands'in ov)?'set':''}">`:'<span class="hint">—</span>'}</td>
+      <td>${hasHands?`<input type="number" data-kind="floor" data-id="${f.id}" data-field="pursueMax" data-def="${f.pursueMax??''}" value="${('pursueMax'in ov)?pm:''}" placeholder="${f.pursueMax??'-'}" step="1" style="width:48px" class="${('pursueMax'in ov)?'set':''}">`:'<span class="hint">—</span>'}</td>
+      <td>${(f.kind==='rest'||f.kind==='banquet')?`<input type="number" data-kind="floor" data-id="${f.id}" data-field="healFrac" data-def="${f.healFrac??''}" value="${('healFrac'in ov)?heal:''}" placeholder="${f.healFrac??'-'}" step="0.05" style="width:56px" class="${('healFrac'in ov)?'set':''}">`:'<span class="hint">—</span>'}</td>
+      <td>${(f.kind==='banquet')?`<input type="number" data-kind="floor" data-id="${f.id}" data-field="hangoverChance" data-def="${f.hangoverChance??''}" value="${('hangoverChance'in ov)?hang:''}" placeholder="${f.hangoverChance??'-'}" step="0.05" style="width:56px" class="${('hangoverChance'in ov)?'set':''}">`:'<span class="hint">—</span>'}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="pane ${state.tab==='floors'?'on':''}">
+    <div class="sec"><h2>フロアの確率重み・局数・回復</h2>
+      <p class="desc">進路抽選の重み（0＝出さない）、戦闘の局数、休息/宴会の回復・二日酔い率を大章ごとに。空欄＝既定。</p>
+      <table class="tbl"><thead><tr><th>フロア</th><th>重み</th><th>基本局数</th><th>追撃Max</th><th>回復率</th><th>二日酔い率</th></tr></thead>
+      <tbody>${rows}</tbody></table>
+      <p class="miniNote" style="margin-top:6px">右のグラフで実際の出現%を確認できます（ボスは10階ごと強制で抽選外）。</p>
+    </div>
+  </div>`;
+}
+
+function paneBiome(){
+  const o = cur(); const b = o.biome||{};
+  const rows = ROGUELITE_BIOME_MASTER.map((bi,i)=>{
+    const isNeutral = i===0;
+    const wOv = b.weights&&(bi.id in b.weights);
+    const mOv = b.minBands&&(bi.id in b.minBands);
+    return `<tr>
+      <td><span class="swatch" style="background:${bi.color}"></span> <b>${bi.name}</b><br><span class="hint">${bi.glyph||''} ${isNeutral?'中立(帯0固定)':''}</span></td>
+      <td>${isNeutral?'<span class="hint">自動減衰</span>':`<input type="number" data-kind="biome" data-id="${bi.id}" data-field="weight" data-def="${bi.weight??1}" value="${wOv?b.weights[bi.id]:''}" placeholder="${bi.weight??1}" step="0.1" style="width:56px" class="${wOv?'set':''}">`}</td>
+      <td>${isNeutral?'<span class="hint">0</span>':`<input type="number" data-kind="biome" data-id="${bi.id}" data-field="minBand" data-def="${bi.minBand??0}" value="${mOv?b.minBands[bi.id]:''}" placeholder="${bi.minBand??0}" step="1" style="width:48px" class="${mOv?'set':''}">`}</td>
+      <td class="hint">${chipsForMods(bi.mods)}</td>
+    </tr>`;
+  }).join('');
+  return `<div class="pane ${state.tab==='biome'?'on':''}">
+    <div class="sec"><h2>バイオーム（10階＝1層）の出現</h2>
+      <p class="desc">層の出現重みと「この帯以降でしか出ない」最小帯を大章ごとに。効果(mods)自体はグローバル定義（層は全章共通の素性）。重み0＝この章では出さない。</p>
+      <div class="grid2" style="margin-bottom:10px">
+        ${knobInline(b,'neutralBase',2.6,'中立の基本重み','深い帯ほど減衰の起点')}
+        ${knobInline(b,'neutralFade',0.55,'中立の減衰/帯','帯ごとに中立が出にくくなる量')}
+      </div>
+      <table class="tbl"><thead><tr><th>層</th><th>重み</th><th>最小帯</th><th>効果</th></tr></thead><tbody>${rows}</tbody></table>
+    </div>
+  </div>`;
+}
+function knobInline(obj,key,def,label,hint){
+  const set=key in obj;
+  return `<div class="knob" style="grid-template-columns:1fr 90px"><div class="k-name">${label}<small>${hint||''}・既定${def}</small></div>
+    <input type="number" data-kind="biomeglob" data-key="${key}" data-def="${def}" value="${set?obj[key]:''}" placeholder="${def}" step="0.05" class="${set?'set':''}"></div>`;
+}
+function chipsForMods(m){
+  if(!m||!Object.keys(m).length) return '—';
+  const out=[]; const pct=v=>Math.round(Math.abs(v-1)*100);
+  if(m.hpMul) out.push(`HP器×${m.hpMul}`); if(m.dmgTakenMul) out.push(`被ダメ${m.dmgTakenMul>1?'+':'−'}${pct(m.dmgTakenMul)}%`);
+  if(m.dmgDealMul) out.push(`与ダメ+${pct(m.dmgDealMul)}%`); if(m.coinMul) out.push(`光貨×${m.coinMul}`);
+  if(m.regenMul) out.push(`回復+${pct(m.regenMul)}%`); if(m.enemyLvAdd) out.push(`敵Lv${m.enemyLvAdd>0?'+':''}${m.enemyLvAdd}`);
+  if(m.draftBias) out.push('レア度UP');
+  return out.join(' / ');
+}
+
+function paneDraft(){
+  const o = cur();
+  const itemAll = o.itemPool==null;
+  const itemChips = ROGUELITE_ITEM_MASTER.map(it=>{
+    const on = itemAll || o.itemPool.includes(it.id);
+    const km = ITEM_KIND_META[it.kind]||{};
+    return `<span class="c ${on?'on':''}" data-kind="item-tog" data-id="${it.id}"><span class="dot" style="background:${km.color||'#888'}"></span>${it.name}</span>`;
+  }).join('');
+  const cardAll = o.cardPool==null;
+  const byRar = {};
+  ROGUELITE_CARD_MASTER.forEach(c=>{ (byRar[c.rarity]=byRar[c.rarity]||[]).push(c); });
+  const cardGroups = ['common','rare','epic','legendary'].filter(r=>byRar[r]).map(r=>{
+    const rm = RARITY_META[r]||{};
+    const chips = byRar[r].map(c=>{
+      const on = cardAll || o.cardPool.includes(c.id);
+      return `<span class="c ${on?'on':''}" data-kind="card-tog" data-id="${c.id}"><span class="dot" style="background:${rm.color}"></span>${c.name}</span>`;
+    }).join('');
+    return `<div style="margin-bottom:8px"><div class="hint" style="color:${rm.color};margin-bottom:4px">${rm.label}</div><div class="chk">${chips}</div></div>`;
+  }).join('');
+  const rw = o.rarityWeights||{};
+  const rwRows = ['common','rare','epic','legendary'].map(r=>{
+    const set=r in rw; const rm=RARITY_META[r]||{};
+    return `<div class="knob" style="grid-template-columns:120px 90px 1fr"><div class="k-name" style="color:${rm.color}">${rm.label}</div>
+      <input type="number" data-kind="rarw" data-key="${r}" data-def="${RARITY_WEIGHTS[r]}" value="${set?rw[r]:''}" placeholder="${RARITY_WEIGHTS[r]}" step="1" class="${set?'set':''}">
+      <div class="k-def">既定 <b>${RARITY_WEIGHTS[r]}</b></div></div>`;
+  }).join('');
+  return `<div class="pane ${state.tab==='draft'?'on':''}">
+    <div class="sec"><h2>配置アイテム（道具プール）${itemAll?'<span class="pill">全て出現</span>':`<span class="pill on">${o.itemPool.length}種に限定</span>`}</h2>
+      <p class="desc">この大章で出る道具を絞り込めます。全ON＝全種出現（既定）。クリックで切替。</p>
+      <div class="chk">${itemChips}</div>
+      <div class="row" style="margin-top:8px;gap:6px"><button class="ghost mini" data-kind="item-all">全部出す（既定）</button><button class="ghost mini" data-kind="item-none">全部外す</button></div>
+    </div>
+    <div class="sec"><h2>配置カード（ドラフトプール）${cardAll?'<span class="pill">全て出現</span>':`<span class="pill on">${o.cardPool.length}種に限定</span>`}</h2>
+      <p class="desc">バフ/必殺技ドラフトに出るカードを絞り込めます。流派を縛った大章を作れます。</p>
+      ${cardGroups}
+      <div class="row" style="margin-top:4px;gap:6px"><button class="ghost mini" data-kind="card-all">全部出す（既定）</button><button class="ghost mini" data-kind="card-none">全部外す</button></div>
+    </div>
+    <div class="sec"><h2>レア度の出現重み</h2><p class="desc">ドラフトの基本レア度確率。空欄＝既定。深層/層バイアスで動的に上振れします。</p>${rwRows}</div>
+  </div>`;
+}
+
+function paneEcon(){
+  const e = cur().economy||{};
+  const K = (key,def,label,hint,step)=>knobE(e,key,def,label,hint,step);
+  return `<div class="pane ${state.tab==='econ'?'on':''}">
+    <div class="sec"><h2>光貨の収入カーブ</h2><p class="desc">1戦踏破で得る光貨。深いほど・強敵/ボス・撃破・追撃で増えます。</p>
+      ${K('coinBase',DEF_ECON.coinBase,'基本収入','floor0時の基礎','1')}
+      ${K('coinFloorMul',DEF_ECON.coinFloorMul,'階層係数','floor×この値を加算','0.05')}
+      ${K('bossMul',DEF_ECON.bossMul,'ボス倍率','','0.1')}
+      ${K('namedMul',DEF_ECON.namedMul,'強敵倍率','','0.1')}
+      ${K('koAdd',DEF_ECON.koAdd,'撃破ボーナス','','1')}
+      ${K('pursueMul',DEF_ECON.pursueMul,'追撃倍率','','0.05')}
+    </div>
+    <div class="sec"><h2>施設コスト</h2><p class="desc">鍛冶屋・流派の門・ショップの価格。光貨シンクの強さを大章ごとに。</p>
+      ${K('forgeBase',DEF_ECON.forgeBase,'鍛冶 基本費','10+Lv²×係数 の基本','1')}
+      ${K('forgeQuad',DEF_ECON.forgeQuad,'鍛冶 二次係数','Lv²に乗る','1')}
+      ${K('recruitCost',DEF_ECON.recruitCost,'流派の門 費用','仲間交代','5')}
+      ${K('shopCommon',DEF_ECON.shopCommon,'ショップ コモン','','1')}
+      ${K('shopRare',DEF_ECON.shopRare,'ショップ レア','','1')}
+      ${K('shopEpic',DEF_ECON.shopEpic,'ショップ エピック','','1')}
+      ${K('shopLegendary',DEF_ECON.shopLegendary,'ショップ レジェンダリ','','1')}
+      ${K('shopHeal',DEF_ECON.shopHeal,'ショップ 全回復','','1')}
+      ${K('shopMaxhp',DEF_ECON.shopMaxhp,'ショップ HP最大+','','1')}
+    </div>
+  </div>`;
+}
+function knobE(obj,key,def,label,hint,step){
+  const set=key in obj;
+  return `<div class="knob"><div class="k-name">${label}${hint?`<small>${hint}</small>`:''}</div>
+    <input type="number" step="${step||'any'}" data-kind="econ" data-key="${key}" data-def="${def}" value="${set?obj[key]:''}" placeholder="${def}" class="${set?'set':''}">
+    <div></div><div class="k-def">既定 <b>${def}</b></div></div>`;
+}
+
+function paneColor(){
+  const o = cur(); const cs = o.colorSet||{}; const tone = o.tone||'gold';
+  const eff = k => (k in cs)?cs[k]:(k==='tc'||k==='gold'||k==='edge'?(TONE_PRESETS[tone]||DEF_COLORSET[k]):DEF_COLORSET[k]);
+  const line = (k,label,hint)=>{
+    const set=k in cs; const v=eff(k);
+    return `<div class="colorline"><div class="k-name">${label}<small style="display:block;color:var(--muted);font-weight:400">${hint||''}</small></div>
+      <div><span class="swatch" style="background:${v}"></span> <input type="color" data-kind="color" data-key="${k}" value="${toHex(v)}"> <input type="text" data-kind="colortext" data-key="${k}" value="${set?cs[k]:''}" placeholder="${v}" style="width:90px" class="${set?'set':''}"></div>
+      <div>${set?`<button class="x" data-kind="color-clear" data-key="${k}">既定へ</button>`:'<span class="hint">既定</span>'}</div></div>`;
+  };
+  return `<div class="pane ${state.tab==='color'?'on':''}">
+    <div class="sec"><h2>トーン（章の基調色プリセット）</h2>
+      <p class="desc">章紹介・踏破演出・地層UIの基調色。プリセットを選ぶか、下で個別に上書きできます。</p>
+      <div class="chk">${Object.keys(TONE_PRESETS).map(t=>`<span class="c ${tone===t?'on':''}" data-kind="tone" data-id="${t}"><span class="dot" style="background:${TONE_PRESETS[t]}"></span>${t}</span>`).join('')}</div>
+      <div class="preview-tone" id="tonePrev"></div>
+    </div>
+    <div class="sec"><h2>カラーセット（個別上書き・任意）</h2>
+      <p class="desc">トーンより細かく演出パネルの色を指定したいときに。空欄＝トーン/既定。</p>
+      ${line('tc','基調色 (tc)','章の主役色（見出し・縁）')}
+      ${line('gold','金 (gold)','ハブ/ボタンのアクセント')}
+      ${line('ink','文字 (ink)','本文の色')}
+      ${line('edge','縁 (edge)','区切り線・枠')}
+      ${line('ember','緋 (ember)','ボス/危険の色')}
+    </div>
+  </div>`;
+}
+function toHex(c){ if(!c) return '#000000'; if(c[0]==='#'){ if(c.length===4) return '#'+c.slice(1).split('').map(x=>x+x).join(''); return c.slice(0,7);} return '#000000'; }
+
+function renderPanes(){
+  panesEl.innerHTML = paneCurve()+paneHan()+paneRoute()+paneFloors()+paneBiome()+paneDraft()+paneEcon()+paneColor();
+  // tone preview swatch row
+  const tp = document.getElementById('tonePrev');
+  if (tp){ const cs=cur().colorSet||{}; const tone=cur().tone||'gold';
+    const eff=k=>(k in cs)?cs[k]:(k==='tc'||k==='gold'||k==='edge'?(TONE_PRESETS[tone]||DEF_COLORSET[k]):DEF_COLORSET[k]);
+    ['tc','gold','ink','edge','ember'].forEach(k=>{ const s=document.createElement('span'); s.className='swatch'; s.style.background=eff(k); s.title=k; tp.appendChild(s); });
+    tp.insertAdjacentHTML('beforeend',`<span class="hint" style="margin-left:6px">プレビュー</span>`);
+  }
+}
+
+// ════════════════ イベント（委譲）════════════════
+panesEl.addEventListener('input', onEdit);
+panesEl.addEventListener('change', onEdit);
+panesEl.addEventListener('click', onClick);
+
+function onEdit(e){
+  const el = e.target; const kind = el.dataset.kind; if(!kind) return;
+  const o = cur();
+  if (kind==='num'){
+    const key=el.dataset.key; const def=el.dataset.def===''?null:Number(el.dataset.def);
+    if (key==='clearFloor'){ o.clearFloor=Math.max(1,Number(el.value)||10); }
+    else { const tgt = (key in o)?o:o.tuning; // routeCount/bossHpMul live on o; tuning keys on o.tuning
+           if (key==='routeCount'||key==='bossHpMul') setNum(o,key,el.value,def); else setNum(o.tuning,key,el.value,def); }
+  }
+  else if (kind==='han'){ const r=+el.dataset.row,c=+el.dataset.col; const t=ensureHan(o); t[r][c]=Number(el.value)||0; }
+  else if (kind==='floor'){ const id=el.dataset.id, field=el.dataset.field, def=el.dataset.def===''?null:Number(el.dataset.def);
+    o.floors=o.floors||{}; o.floors[id]=o.floors[id]||{};
+    setNum(o.floors[id],field,el.value,def); if(!Object.keys(o.floors[id]).length) delete o.floors[id]; }
+  else if (kind==='biome'){ const id=el.dataset.id, field=el.dataset.field, def=Number(el.dataset.def);
+    o.biome=o.biome||{}; const bag=field==='weight'?'weights':'minBands'; o.biome[bag]=o.biome[bag]||{};
+    if(el.value===''||Number(el.value)===def) delete o.biome[bag][id]; else o.biome[bag][id]=Number(el.value);
+    if(o.biome[bag]&&!Object.keys(o.biome[bag]).length) delete o.biome[bag]; }
+  else if (kind==='biomeglob'){ const key=el.dataset.key,def=Number(el.dataset.def); o.biome=o.biome||{}; setNum(o.biome,key,el.value,def); }
+  else if (kind==='rarw'){ const key=el.dataset.key,def=Number(el.dataset.def); o.rarityWeights=o.rarityWeights||{}; setNum(o.rarityWeights,key,el.value,def); }
+  else if (kind==='econ'){ const key=el.dataset.key,def=Number(el.dataset.def); o.economy=o.economy||{}; setNum(o.economy,key,el.value,def); }
+  else if (kind==='boss-slot'){ const f=el.dataset.floor,idx=+el.dataset.idx; o.bossFloors[f][idx]=el.value; }
+  else if (kind==='color'||kind==='colortext'){ const key=el.dataset.key; o.colorSet=o.colorSet||{};
+    let v=el.value.trim(); if(kind==='color'){ /* keep existing text override behavior: set hex */ }
+    if(v==='') delete o.colorSet[key]; else o.colorSet[key]=v;
+    if(!Object.keys(o.colorSet).length) delete o.colorSet;
+  }
+  // light update (no full re-render to keep focus) + charts/code
+  refreshLight();
+}
+
+function onClick(e){
+  const el=e.target.closest('[data-kind]'); if(!el) return; const kind=el.dataset.kind; const o=cur();
+  let full=true;
+  switch(kind){
+    case 'han-add':{ const t=ensureHan(o); const last=t[t.length-1]||[0,0.5]; t.push([last[0]+4000, +(last[1]+0.2).toFixed(2)]); break; }
+    case 'han-del':{ const t=ensureHan(o); t.splice(+el.dataset.row,1); if(t.length<2){ /*keep*/ } break; }
+    case 'han-reset':{ delete o.tuning.hanTier; break; }
+    case 'boss-floor-add':{ const f=Number(document.getElementById('bfNewFloor').value)||o.clearFloor; o.bossFloors=o.bossFloors||{}; if(!o.bossFloors[f]) o.bossFloors[f]=['$mob']; break; }
+    case 'boss-floor-del':{ delete o.bossFloors[el.dataset.floor]; if(o.bossFloors&&!Object.keys(o.bossFloors).length) o.bossFloors=null; break; }
+    case 'boss-slot-add':{ o.bossFloors[el.dataset.floor].push('$mob'); break; }
+    case 'boss-slot-del':{ const a=o.bossFloors[el.dataset.floor]; if(a.length>1) a.pop(); break; }
+    case 'item-tog':{ togglePool(o,'itemPool',ROGUELITE_ITEM_MASTER,el.dataset.id); break; }
+    case 'item-all':{ o.itemPool=null; break; }
+    case 'item-none':{ o.itemPool=[]; break; }
+    case 'card-tog':{ togglePool(o,'cardPool',ROGUELITE_CARD_MASTER,el.dataset.id); break; }
+    case 'card-all':{ o.cardPool=null; break; }
+    case 'card-none':{ o.cardPool=[]; break; }
+    case 'tone':{ o.tone=el.dataset.id; break; }
+    case 'color-clear':{ if(o.colorSet){ delete o.colorSet[el.dataset.key]; if(!Object.keys(o.colorSet).length) delete o.colorSet; } break; }
+    default: full=false;
+  }
+  if(full){ renderAll(); }
+}
+
+function ensureHan(o){ if(!Array.isArray(o.tuning.hanTier)) o.tuning.hanTier = effHanTier().map(p=>[p[0],p[1]]); return o.tuning.hanTier; }
+function togglePool(o,key,master,id){
+  if (o[key]==null){ o[key]=master.map(x=>x.id); } // 全→個別管理に切替
+  const i=o[key].indexOf(id);
+  if(i>=0) o[key].splice(i,1); else o[key].push(id);
+  if(o[key].length===master.length) o[key]=null; // 全部ON＝既定(null)へ畳む
+}
+
+// ════════════════ チャート ════════════════
+function lineChart(el, series, opts={}){
+  // series: [{pts:[[x,y]...], color, dash}], opts:{w,h,xmax,ymax,ymin,xlab,ylab,markX,markLabel,fmtY}
+  const w=opts.w||400,h=opts.h||120,pad=28;
+  const xmax=opts.xmax, xmin=opts.xmin||0;
+  let ymax=opts.ymax, ymin=opts.ymin||0;
+  if(ymax==null){ ymax=0; series.forEach(s=>s.pts.forEach(p=>ymax=Math.max(ymax,p[1]))); ymax*=1.1||1; }
+  const X=x=>pad+(x-xmin)/(xmax-xmin)*(w-pad-6);
+  const Y=y=>h-22-(y-ymin)/((ymax-ymin)||1)*(h-22-8);
+  const grid=[]; for(let i=0;i<=4;i++){ const gy=ymin+(ymax-ymin)*i/4; grid.push(`<line x1="${pad}" y1="${Y(gy)}" x2="${w-6}" y2="${Y(gy)}" stroke="#221d30"/><text x="2" y="${Y(gy)+3}" fill="#6a6480" font-size="9">${opts.fmtY?opts.fmtY(gy):Math.round(gy*100)/100}</text>`); }
+  const paths=series.map(s=>{ const d=s.pts.map((p,i)=>`${i?'L':'M'}${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join(' ');
+    return `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.width||1.8}" ${s.dash?`stroke-dasharray="4 3"`:''}/>`; }).join('');
+  let mark='';
+  if(opts.markX!=null){ const mx=X(opts.markX); mark=`<line x1="${mx}" y1="6" x2="${mx}" y2="${h-22}" stroke="#e8c45d" stroke-dasharray="2 3" opacity=".7"/><text x="${mx+2}" y="14" fill="#e8c45d" font-size="9">${opts.markLabel||''}</text>`; }
+  const xlabs=[xmin,Math.round((xmin+xmax)/2),xmax].map(x=>`<text x="${X(x)}" y="${h-8}" fill="#6a6480" font-size="9" text-anchor="middle">${x}</text>`).join('');
+  el.innerHTML=`<svg viewBox="0 0 ${w} ${h}">${grid.join('')}${mark}${paths}${xlabs}</svg>`;
+}
+function barChart(el, items, opts={}){
+  // items:[{label,val,color,pctText}]
+  const max=Math.max(0.0001,...items.map(i=>i.val));
+  el.innerHTML=items.map(i=>`<div class="barrow"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${i.label}</span>
+    <span class="hint">${i.pctText??i.val}</span><div class="bar"><i style="width:${(i.val/max*100).toFixed(1)}%;${i.color?`background:${i.color}`:''}"></i></div></div>`).join('');
+}
+
+function renderCharts(){
+  const tn=effTuning(); const o=cur(); const N=Math.max(40, (o.clearFloor||30)+10);
+  const fl=n=>{const a=[];for(let f=1;f<=N;f++)a.push(f);return a;};
+  // enemy hp
+  lineChart(document.getElementById('chartEnemyHp'),[
+    {pts:fl().map(f=>[f,floorEnemyHp(f,DEF)]),color:'#5a5470',dash:1},
+    {pts:fl().map(f=>[f,floorEnemyHp(f,tn)]),color:'#e8c45d'},
+  ],{xmax:N,markX:o.clearFloor,markLabel:'踏破',fmtY:v=>Math.round(v)});
+  // depth dmg
+  lineChart(document.getElementById('chartDepth'),[
+    {pts:fl().map(f=>[f,floorDamageMul(f,DEF)]),color:'#5a5470',dash:1},
+    {pts:fl().map(f=>[f,floorDamageMul(f,tn)]),color:'#e8c45d'},
+  ],{xmax:N,markX:o.clearFloor,markLabel:'踏破',ymin:1});
+  // lethal cap
+  lineChart(document.getElementById('chartLethal'),[
+    {pts:fl().map(f=>[f,lethalCapFrac(f,DEF)]),color:'#5a5470',dash:1},
+    {pts:fl().map(f=>[f,lethalCapFrac(f,tn)]),color:'#e8c45d'},
+  ],{xmax:N,ymax:1,markX:o.clearFloor,markLabel:'踏破'});
+  // deal depth
+  lineChart(document.getElementById('chartDeal'),[
+    {pts:fl().map(f=>[f,dealDepthMul(f,DEF)]),color:'#5a5470',dash:1},
+    {pts:fl().map(f=>[f,dealDepthMul(f,tn)]),color:'#e8c45d'},
+  ],{xmax:N,ymin:1,markX:o.clearFloor,markLabel:'踏破'});
+  // hanTier
+  const hg=[]; for(let g=0;g<=32000;g+=1000)hg.push(g);
+  lineChart(document.getElementById('chartHan'),[
+    {pts:hg.map(g=>[g,hanInterp(g,DEF_HANTIER)]),color:'#5a5470',dash:1},
+    {pts:hg.map(g=>[g,hanInterp(g,effHanTier())]),color:'#e8c45d'},
+  ],{xmin:0,xmax:32000,ymin:0});
+  // floor weights -> %
+  renderFloorBar();
+  renderBiomeBar();
+  renderClear();
+}
+function effFloorWeight(f){ const ov=cur().floors&&cur().floors[f.id]; return (ov&&'weight'in ov)?ov.weight:f.weight; }
+function renderFloorBar(){
+  const pool=ROGUELITE_FLOOR_MASTER.filter(f=>f.id!=='boss').map(f=>({f,w:effFloorWeight(f)})).filter(x=>x.w>0);
+  const tot=pool.reduce((a,x)=>a+x.w,0)||1;
+  barChart(document.getElementById('chartFloors'), pool.map(x=>({label:x.f.name,val:x.w,pctText:`${(x.w/tot*100).toFixed(0)}%`,color:x.f.kind==='battle'?'#ff8f6b':undefined})));
+}
+function renderBiomeBar(){
+  const o=cur(); const band=3; // 代表帯（深層）で傾向表示
+  const bw=o.biome&&o.biome.weights;
+  const items=ROGUELITE_BIOME_MASTER.slice(1).map(bi=>{
+    const w=(bw&&bi.id in bw)?bw[bi.id]:(bi.weight??1);
+    const mb=(o.biome&&o.biome.minBands&&bi.id in o.biome.minBands)?o.biome.minBands[bi.id]:(bi.minBand??0);
+    const active = mb<=band && w>0;
+    return {label:bi.name,val:active?w:0,color:bi.color,pctText:active?w:'封'};
+  });
+  barChart(document.getElementById('chartBiome'), items);
+}
+
+// 簡易クリア率（HP推移）モデル
+function renderClear(){
+  const tn=effTuning(); const o=cur(); const N=Math.max(40,(o.clearFloor||30)+15);
+  const builds={weak:{hp:20000,deal:1.0,take:1.0},mid:{hp:35000,deal:1.35,take:0.85},strong:{hp:60000,deal:1.7,take:0.7}};
+  const b=builds[state.sim.build]||builds.mid;
+  const partyMax=3*allyScaledHp(b.hp);
+  const gross=state.sim.gross; const K=state.sim.K;
+  const tier=hanInterp(gross,effHanTier());
+  let hp=partyMax; const pts=[[1,100]]; let fell=null;
+  for(let f=1;f<=N;f++){
+    const depth=floorDamageMul(f,tn); const cap=lethalCapFrac(f,tn);
+    // 1階で受ける痛み（最大HP比）。深度×翻数係数×ビルド被ダメ。一撃死上限でクランプ。
+    let lossFrac=Math.min(cap, K*depth*tier*b.take);
+    hp-=lossFrac*(partyMax/3)*2; // ざっくり「2発分」を1階の被弾とみなす
+    const regen=(o.tuning.regenFrac??DEF.regenFrac)*partyMax*0.5;
+    hp=Math.min(partyMax, hp+regen);
+    pts.push([f,Math.max(0,hp/partyMax*100)]);
+    if(hp<=0&&fell==null){ fell=f; break; }
+  }
+  lineChart(document.getElementById('chartClear'),[{pts,color:'#7ee0a5',width:2}],{xmax:N,ymax:100,markX:o.clearFloor,markLabel:`踏破F${o.clearFloor}`,fmtY:v=>v+'%'});
+  const v=document.getElementById('simVerdict');
+  const reach=fell?fell-1:N;
+  if(reach>=o.clearFloor){ v.className='verdict good'; v.textContent=`想定到達 F${reach}（≥踏破F${o.clearFloor}）— このビルドは踏破圏内`; }
+  else if(reach>=o.clearFloor*0.7){ v.className='verdict warn'; v.textContent=`想定到達 F${reach}（踏破F${o.clearFloor}に届かず）— やや厳しい`; }
+  else { v.className='verdict bad'; v.textContent=`想定到達 F${reach}（踏破F${o.clearFloor}に大きく届かず）— 難しすぎる可能性`; }
+}
+
+// ════════════════ コード生成 ════════════════
+function genCode(){
+  const o=cur(); const cd=chapDef(); const out={};
+  // tuning（hanTier含む・スパース）
+  const tun={}; for(const k of Object.keys(DEF)){ if(k in o.tuning && o.tuning[k]!==DEF[k]) tun[k]=o.tuning[k]; }
+  if(Array.isArray(o.tuning.hanTier)) tun.hanTier=o.tuning.hanTier;
+  if(Object.keys(tun).length) out.tuning=tun;
+  if(o.clearFloor!==(cd.clearFloor??10)) out.clearFloor=o.clearFloor;
+  if(o.routeCount!=null) out.routeCount=o.routeCount;
+  if(o.bossHpMul!=null) out.bossHpMul=o.bossHpMul;
+  if(o.bossFloors) out.bossFloors=o.bossFloors;
+  if(o.floors&&Object.keys(o.floors).length) out.floors=o.floors;
+  if(o.biome&&Object.keys(o.biome).length) out.biome=o.biome;
+  if(o.itemPool!=null) out.itemPool=o.itemPool;
+  if(o.cardPool!=null) out.cardPool=o.cardPool;
+  if(o.rarityWeights&&Object.keys(o.rarityWeights).length) out.rarityWeights=o.rarityWeights;
+  if(o.economy&&Object.keys(o.economy).length) out.economy=o.economy;
+  if(o.colorSet&&Object.keys(o.colorSet).length) out.colorSet=o.colorSet;
+  if(o.tone&&o.tone!==(cd.tone||'gold')) out.tone=o.tone;
+  return out;
+}
+function fmtVal(v,ind){
+  if(Array.isArray(v)){
+    if(v.length&&Array.isArray(v[0])) return '['+v.map(x=>`[${x.join(', ')}]`).join(', ')+']';
+    if(v.every(x=>typeof x==='string')) return '['+v.map(x=>JSON.stringify(x)).join(', ')+']';
+    return '['+v.join(', ')+']';
+  }
+  if(v&&typeof v==='object') return fmtObj(v,ind+'  ');
+  return JSON.stringify(v);
+}
+function fmtObj(obj,ind='  '){
+  const keys=Object.keys(obj); if(!keys.length) return '{}';
+  return '{\n'+keys.map(k=>`${ind}${/^[a-zA-Z_$][\w$]*$/.test(k)?k:JSON.stringify(k)}: ${fmtVal(obj[k],ind)},`).join('\n')+'\n'+ind.slice(2)+'}';
+}
+document.getElementById('genBtn').onclick=()=>{
+  const out=genCode(); const cd=chapDef();
+  const body=Object.keys(out).map(k=>`    ${k}: ${fmtVal(out[k],'    ')},`).join('\n');
+  const code=`// ▼ rogueliteChapterMaster.js の「${cd.title}」(id:"${cd.id}") へマージ\n`+
+    (body?`    // ↓この大章エントリ { ... } 内へ貼り足し（既存 tone/clearFloor 等は置換）\n${body}\n`:'    // （既定のまま＝上書きなし）\n')+
+    `// ※ 全項目を本体が読むには「章別オーバーライド結線」が必要（同梱の実装で対応）。`;
+  const box=document.getElementById('codeOut'); box.textContent=code;
+  const cp=document.getElementById('copyBtn'); cp.disabled=false; cp.onclick=()=>{ navigator.clipboard.writeText(code); toast('コピーしました'); };
+};
+
+// ════════════════ 反映 ════════════════
+function statusText(){
+  const o=cur(); let n=0;
+  if(Object.keys(o.tuning).length)n++; if(o.bossFloors)n++; if(o.bossHpMul!=null)n++; if(o.routeCount!=null)n++;
+  if(o.floors&&Object.keys(o.floors).length)n++; if(o.biome&&Object.keys(o.biome).length)n++;
+  if(o.itemPool!=null)n++; if(o.cardPool!=null)n++; if(o.rarityWeights&&Object.keys(o.rarityWeights).length)n++;
+  if(o.economy&&Object.keys(o.economy).length)n++; if(o.colorSet&&Object.keys(o.colorSet).length)n++;
+  const st=document.getElementById('ovStat');
+  if(chapDef().comingSoon){ st.textContent='未綴の章（封）'; st.className='pill'; return; }
+  st.textContent=n?`上書き ${n}カテゴリ`:'既定（上書きなし）'; st.className=n?'pill on':'pill';
+}
+function refreshLight(){ statusText(); renderCharts(); }
+function renderAll(){
+  chapSel.value=state.chapId;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.tab===state.tab));
+  renderPanes();
+  document.querySelectorAll('.pane').forEach(p=>{});
+  statusText(); renderCharts();
+}
+
+// sim controls
+document.getElementById('simBuild').onchange=e=>{state.sim.build=e.target.value;renderClear();};
+document.getElementById('simGross').oninput=e=>{state.sim.gross=Number(e.target.value)||5200;renderClear();};
+document.getElementById('simK').oninput=e=>{state.sim.K=Number(e.target.value);document.getElementById('simKv').textContent=state.sim.K.toFixed(2);renderClear();};
+
+function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1400); }
+
+renderAll();
+</script>
+</body>
+</html>

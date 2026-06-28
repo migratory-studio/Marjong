@@ -25,6 +25,20 @@
 //                     例（殺意高めの記憶）: tuning: { baseEnemyHp: 900, floorDmgSlope: 0.4, lethalCapFadeStart: 30 }
 //                     例（やさしい入門の記憶）: tuning: { regenFrac: 0.4, floorDmgStart: 14 }
 //                     ※ 章ごとに難度を変えたら、その章のクリア率を CLEARFLOOR=○ node test/roguelite-balance.mjs --clearrate で要確認。
+//   tuning.hanTier? … 翻数(点数帯)→被ダメ係数テーブル [[gross,係数],...] も章別に上書き可（未指定=RL_TUNE.hanTier）。
+//
+// ── 章別オーバーライド（提案：tools/roguelite-designer.html がGUIで生成）。すべて任意・スパース：
+//    書いたキーだけ上書き＝未指定は全てグローバル既定（マスタ）にフォールバック＝後方互換。本体は newRun→run.over 経由で参照。
+//   floors?       … フロア別上書き { [floorId]: { weight?, baseHands?, pursueMax?, healFrac?, hangoverChance? } }
+//                   weight=0 でその章ではそのマスを出さない。drawFloorChoices/handsForType/休息宴会回復が参照。
+//   routeCount?   … 進路の選択肢数（未指定=序盤F1-2は2択/以降3択）。
+//   bossHpMul?    … ボス階の敵HP倍率（1=既定）。
+//   biome?        … 層の出現上書き { weights:{[id]:w}, minBands:{[id]:band}, neutralBase?, neutralFade? }。効果(mods)自体は全章共通。
+//   itemPool?     … 配置道具の allowlist（idの配列）。未指定=全種。
+//   cardPool?     … 配置カード（ドラフト）の allowlist（idの配列）。未指定=全種＝流派縛りに使える。
+//   rarityWeights?… ドラフトのレア度基本重み { common,rare,epic,legendary }（未指定=RARITY_WEIGHTS）。
+//   economy?      … 光貨/コスト { coinBase,coinFloorMul,bossMul,namedMul,koAdd,pursueMul, forgeBase,forgeQuad, recruitCost, shopCommon/Rare/Epic/Legendary/Heal/Maxhp }。
+//   colorSet?     … 演出カラー { tc?,gold?,ink?,edge?,ember? }。ハブ/章紹介/踏破演出にインライン適用（tone より優先）。
 
 export const ROGUELITE_CHAPTER_MASTER = [
   {

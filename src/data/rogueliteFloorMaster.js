@@ -65,8 +65,9 @@ export const RECRUIT_COST = 50; // 流派の門：交代に要する光貨（大
 // 鍛冶屋：スキルレベル+1の費用（光貨）。レベルが上がるほど高くなる。上限Lv10。
 // 傾斜は二次カーブ：序盤は安く手が届き、深層ほど指数的に重くなる（鍛え切るには相応の蓄積が要る）。
 export const SKILL_LEVEL_CAP = 10;
-export function forgeCost(skillLevel = 1) {
-  return Math.round(10 + skillLevel * skillLevel * 3);
+export function forgeCost(skillLevel = 1, econ = null) {
+  const base = econ?.forgeBase ?? 10, quad = econ?.forgeQuad ?? 3; // 章ごとに鍛冶コストカーブを上書き可
+  return Math.round(base + skillLevel * skillLevel * quad);
 }
 
 // 鍛冶屋・限界突破：スキルLvが上限(10)に達した後も、光貨を大量に払えば「攻撃力」を鍛え続けられる。
@@ -78,12 +79,13 @@ export function forgeOverchargeCost(count = 0) {
 
 // ラン内通貨「光貨」の経済（第2弾）。
 // 1戦踏破で得る光貨（深いほど・強敵/ボス/撃破/追撃で増す）。
-export function coinsForClear({ floor = 1, kind = "mob", ko = false, pursue = false } = {}) {
-  let c = 10 + Math.floor(floor * 0.7); // 収入を底上げ（鍛冶/ショップを実用域に）
-  if (kind === "boss") c *= 3; else if (kind === "named") c = Math.round(c * 1.6);
-  if (ko) c += 4;
-  if (pursue) c = Math.round(c * 1.3);
-  return c;
+export function coinsForClear({ floor = 1, kind = "mob", ko = false, pursue = false, econ = null } = {}) {
+  const e = econ || {}; // 章ごとに光貨収入カーブを上書き可（未指定キーは既定）
+  let c = (e.coinBase ?? 10) + Math.floor(floor * (e.coinFloorMul ?? 0.7)); // 収入を底上げ（鍛冶/ショップを実用域に）
+  if (kind === "boss") c *= (e.bossMul ?? 3); else if (kind === "named") c = Math.round(c * (e.namedMul ?? 1.6));
+  if (ko) c += (e.koAdd ?? 4);
+  if (pursue) c = Math.round(c * (e.pursueMul ?? 1.3));
+  return Math.round(c);
 }
 
 // ショップの値付け（レア度→光貨）。回復/最大HPは固定枠。
@@ -106,9 +108,12 @@ function routePool() {
 //   rng … makeRng() の戻り（0..1）
 //   force … 必ず候補に含めたいフロアid配列（例：序盤の遭遇イベント確定枠）。
 // 戦闘が主・特殊は稀。最低1つは戦闘系を含める（手詰まり回避）。
-export function drawFloorChoices(rng, { count = 3, exclude = [], force = [] } = {}) {
+export function drawFloorChoices(rng, { count = 3, exclude = [], force = [], weights = null } = {}) {
   const ex = new Set(exclude);
-  const pool = routePool().filter((f) => !ex.has(f.id));
+  // 章ごとの重み上書き：weights[id] があればそれを、無ければマスタの weight を採用。重み0は抽選プール外。
+  const wOf = (f) => (weights && weights[f.id] != null) ? weights[f.id] : f.weight;
+  const eff = ROGUELITE_FLOOR_MASTER.map((f) => ({ ...f, weight: wOf(f) }));
+  const pool = eff.filter((f) => (f.weight || 0) > 0 && !ex.has(f.id));
   const out = [];
   const used = new Set();
   const pickFrom = (cands) => {

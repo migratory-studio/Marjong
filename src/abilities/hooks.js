@@ -54,6 +54,11 @@ export const Hooks = {
   //   ctx: { player }  -> return array of { kind, level } (level 0..1) or undefined.
   PROVIDE_DANGER_INFO: "provideDangerInfo",
 
+  // Provide 牌効率トップ3の打牌候補 for the UI (模範解答). Only meaningful on the
+  // owner's own discard turn (14-tile hand) and 2シャンテン以上.
+  //   ctx: { player }  -> return array of { kind, rank:1..3 } or undefined.
+  PROVIDE_BEST_DISCARDS: "provideBestDiscards",
+
   // ---- notify hooks ----
   ON_HAND_START: "onHandStart", // new hand dealt
   ON_TURN_START: "onTurnStart", // { player }

@@ -19,6 +19,17 @@ import { portraitStyleAttr } from "../data/imagePos.js";
 
 const MAX_PARTY = 3;
 
+// 章ごとのカラーセット（tools/roguelite-designer.html が chapter.colorSet を生成）を
+// 演出パネルへインライン適用。指定キーだけ上書き＝未指定は CSS 既定/tone のまま。
+export function applyChapterColorSet(el, cs) {
+  if (!el || !cs || typeof cs !== "object") return;
+  if (cs.gold) el.style.setProperty("--rl-gold", cs.gold);
+  if (cs.ink) el.style.setProperty("--rl-ink", cs.ink);
+  if (cs.edge) el.style.setProperty("--rl-edge", cs.edge);
+  if (cs.ember) el.style.setProperty("--rl-ember", cs.ember);
+  if (cs.tc) el.style.setProperty("--tc", cs.tc);
+}
+
 // 編成カード用：能力名と「丈夫さ」目安（持ち点＝HPの厚み）。
 const ROLE_LABEL = { attacker: "アタッカー", blocker: "ブロッカー", gambler: "ギャンブラー", support: "サポート" };
 function charAbilityName(c) {
@@ -538,6 +549,7 @@ export function showRogueliteRoute(container, opts = {}) {
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-route rl-hub" + (boss ? " is-boss" : "");
+  applyChapterColorSet(ov, run?.over?.colorSet); // 章ごとのカラーセット（任意）
   // 進路カード（ヒーロー＝大胆さを集中する1点）。ボス階は単一の大カード。
   const cardEntries = boss
     ? [{ kind: "boss", name: "館の主との対決", blurb: `第 ${floor} 階・逃げ場はない大一番。`, _boss: true }]
@@ -778,6 +790,7 @@ export function showRogueliteChapterIntro(container, opts = {}) {
   if (!container || !chapter) { onProceed?.(); return; }
   const ov = document.createElement("div");
   ov.className = `rl-overlay rl-chapintro tone-${chapter.tone || "gold"}`;
+  applyChapterColorSet(ov, chapter.colorSet);
   let speak = "";
   if (leadChar && leadLine) {
     const u = charImages?.url?.(leadChar, "portrait") || charImages?.url?.(leadChar, "icon") || "";
@@ -808,6 +821,7 @@ export function showRogueliteChapterClear(container, opts = {}) {
   if (!container || !chapter) { onProceed?.(); return; }
   const ov = document.createElement("div");
   ov.className = `rl-overlay rl-chapclear tone-${chapter.tone || "gold"}`;
+  applyChapterColorSet(ov, chapter.colorSet);
   let speak = "";
   if (leadChar && leadLine) {
     const u = charImages?.url?.(leadChar, "portrait") || charImages?.url?.(leadChar, "icon") || "";

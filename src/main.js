@@ -54,7 +54,7 @@ import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
-import { newRun, enemyUnitForFloor, previewBossChars, seatedAllies, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp } from "./roguelite/run.js";
+import { newRun, enemyUnitForFloor, previewBossChars, seatedAllies, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp, floorOverride, floorWeightMap, chapterEconomy } from "./roguelite/run.js";
 import { bossMemoryTier, readBossTally, recordBossOutcome, withBossTally } from "./roguelite/bossMemory.js";
 import { chaptersWithState, chapterById, firstChapterId, canOrbUnlock, nextChapterAfter } from "./data/rogueliteChapterMaster.js";
 import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from "./data/rogueliteBiomeMaster.js";
@@ -78,6 +78,7 @@ import { MeldType } from "./core/meld.js";
 import { kindLabel } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
 import { shanten } from "./core/rules/shanten.js";
+import { bestDiscardRanking } from "./abilities/builtins/teacherAbility.js";
 import { pickVoiceLine } from "./data/voiceLines.js";
 import { makeMobRoster, mobSilhouettePaths } from "./data/mobMaster.js";
 import { rivalUnits, rivalIntroLineFor } from "./data/tournamentRivalMaster.js";
@@ -2002,7 +2003,13 @@ async function startRogueliteRun(partyChars, chapterId = null) {
   const chap = chapterById(chapterId || firstChapterId()); // 登る記憶（大章）
   // ボス陣＝この記憶の群像（章の cast）から立ちはだかる（提案B・縦軸の結びつけ）。
   const bossPool = (chap?.cast || []).map((c) => c.id).filter(Boolean);
-  const run = newRun(party, undefined, chap?.id || null, bossPool, chap?.bossFloors || null, chap?.tuning || null);
+  // 章別オーバーライド（tools/roguelite-designer.html が生成）。指定キーだけ上書き＝未指定はグローバル既定。
+  const chapOver = chap ? {
+    floors: chap.floors || null, biome: chap.biome || null, itemPool: chap.itemPool || null,
+    cardPool: chap.cardPool || null, rarityWeights: chap.rarityWeights || null, economy: chap.economy || null,
+    bossHpMul: chap.bossHpMul ?? null, routeCount: chap.routeCount ?? null, colorSet: chap.colorSet || null,
+  } : null;
+  const run = newRun(party, undefined, chap?.id || null, bossPool, chap?.bossFloors || null, chap?.tuning || null, chapOver);
   rlLog("chapter_start", { chapter: run.chapterId, bossPool: run.bossPool });
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 引き継ぎ無しで開始 */ }
@@ -2218,19 +2225,19 @@ function enterFloor(run, floorType) {
   { const bi = biomeOf(run); rlLog("floor", { floor: run.floor, kind: floorType?.kind, enemy: floorType?.enemy || null, biome: bi?.id, biomeMods: bi?.mods || {}, ...rlBuffSnap(run) }); }
   switch (floorType?.kind) {
     case "battle":
-      rogueliteState.pursueRemaining = floorType.pursueMax || 0;
+      rogueliteState.pursueRemaining = (floorOverride(run, floorType.id)?.pursueMax ?? floorType.pursueMax) || 0;
       rogueliteState.pursuing = false;
       if (floorType?.enemy === "boss") showBossIntroThenBattle(run, floorType);
       else launchRogueliteBattle(run, floorType);
       break;
     case "rest":
-      healParty(run, floorType.healFrac ?? 0.3);
+      healParty(run, floorOverride(run, floorType.id)?.healFrac ?? floorType.healFrac ?? 0.3);
       showRogueliteRest(host, { kind: "rest", floor: run.floor, run, charImages, onDone: () => maybePlayBanter(run, () => advanceRoguelite(run)) });
       break;
     case "banquet": {
-      healParty(run, floorType.healFrac ?? 1);
+      healParty(run, floorOverride(run, floorType.id)?.healFrac ?? floorType.healFrac ?? 1);
       const rng = makeRng(`${run.seed}:banquet:${run.floor}`);
-      rollHangover(run, floorType.hangoverChance ?? 0.35, rng);
+      rollHangover(run, floorOverride(run, floorType.id)?.hangoverChance ?? floorType.hangoverChance ?? 0.35, rng);
       // 酔い止め（道具）：誰かが酔ったら身代わりに割れて全員の二日酔いを防ぐ（消費）。
       let soberUsed = false;
       if (run.party.some((m) => m.hungover) && consumeBanquetCharm(run)) { for (const m of run.party) m.hungover = false; soberUsed = true; }
@@ -2241,7 +2248,7 @@ function enterFloor(run, floorType) {
     case "treasure": {
       // 宝箱は「バフ」か「道具」のどちらか（決定論抽選）。道具側は未所持から1つ授ける。
       const trng = makeRng(`${run.seed}:treasure:${run.floor}`);
-      const items = drawItems(trng, { count: 1, exclude: run.items });
+      const items = drawItems(trng, { count: 1, exclude: run.items, pool: run.over?.itemPool || null });
       if (items.length && trng() < 0.5) {
         const it = items[0];
         showRogueliteDraft(host, {
@@ -2315,10 +2322,10 @@ function enterFloor(run, floorType) {
       // 鍛冶屋：光貨を払ってパーティのスキルレベルを+1（能力強化）。上限Lv10。
       // Lv上限に達した後は「限界突破」＝光貨を大量に払って攻撃力(与ダメ)を鍛え続けられる。
       showRogueliteForge(host, {
-        floor: run.floor, run, cap: SKILL_LEVEL_CAP, costOf: forgeCost,
+        floor: run.floor, run, cap: SKILL_LEVEL_CAP, costOf: (lv) => forgeCost(lv, chapterEconomy(run)),
         overchargeCostOf: forgeOverchargeCost, overchargeDeal: FORGE_OVERCHARGE_DEAL,
         onForge: () => {
-          const cost = forgeCost(run.skillLevel);
+          const cost = forgeCost(run.skillLevel, chapterEconomy(run));
           if ((run.coins || 0) >= cost && run.skillLevel < SKILL_LEVEL_CAP) { run.coins -= cost; run.skillLevel += 1; return true; }
           return false;
         },
@@ -2340,14 +2347,15 @@ function enterFloor(run, floorType) {
     case "recruit": {
       // 流派の門：光貨を多く払い、候補3人から1人を迎え1人を送り出す（PTは3人のまま）。
       const cands = recruitCandidates(run, 3);
+      const recCost = chapterEconomy(run)?.recruitCost ?? RECRUIT_COST; // 章ごとに流派の門の費用を上書き可
       charImages.load(cands.filter((c) => !c.isMob)).then(() => {
         showRogueliteRecruit(host, {
-          run, candidates: cands, cost: RECRUIT_COST, charImages,
+          run, candidates: cands, cost: recCost, charImages,
           onSwap: (ci, ri) => {
             const inId = cands[ci]?.id, outId = run.party[ri]?.id;
-            run.coins = Math.max(0, (run.coins || 0) - RECRUIT_COST);
+            run.coins = Math.max(0, (run.coins || 0) - recCost);
             swapPartyMember(run, cands[ci], ri);
-            rlLog("recruit", { floor: run.floor, in: inId, out: outId, cost: RECRUIT_COST });
+            rlLog("recruit", { floor: run.floor, in: inId, out: outId, cost: recCost });
             advanceRoguelite(run);
           },
           onSkip: () => advanceRoguelite(run),
@@ -2371,7 +2379,7 @@ function applyEventOutcome(run, outcome) {
   if (outcome.cardId) { const c = cardById(outcome.cardId); if (c) applyCard(run, c); }
   // 道具報酬（特定id or 未所持からランダム）。満杯なら入れ替えモーダル。
   if (outcome.item) grantRogueliteItem(run, outcome.item, () => {});
-  if (outcome.itemRandom) { const it = drawItems(makeRng(`${run.seed}:evitem:${run.floor}`), { count: 1, exclude: run.items })[0]; if (it) grantRogueliteItem(run, it.id, () => {}); }
+  if (outcome.itemRandom) { const it = drawItems(makeRng(`${run.seed}:evitem:${run.floor}`), { count: 1, exclude: run.items, pool: run.over?.itemPool || null })[0]; if (it) grantRogueliteItem(run, it.id, () => {}); }
   if (outcome.draft) { // 無料ドラフト（イベント内即時）
     const host = el("roguelite-screen");
     showRogueliteDraft(host, { floor: run.floor, title: "餞別：1枚選ぶ", cards: rollDraft(run, { hpRatio: 1 }), charImages, coins: run.coins || 0, run, onPick: (card) => { if (card) applyCard(run, card); enforceGrantCap(run, () => {}); } });
@@ -2400,7 +2408,7 @@ function renderRoute(run) {
     enterRogueliteAmbience(); // 背景を新しい層へ切り替え
     const showBiome = () => {
       // 先見の札を持っていれば次の層を見通せる（最終帯の先は無し）。
-      const nextBiome = hasForesight(run) ? biomeForBand(run.seed, band + 1) : null;
+      const nextBiome = hasForesight(run) ? biomeForBand(run.seed, band + 1, 0, run.over?.biome || null) : null;
       showRogueliteBiomeIntro(host, {
         biome: biomeOf(run), floor: run.floor, orbGain, orbTotal: run.orbsEarned || 0, nextBiome,
         // 巡りの賽を持っていれば「踏み入る」前にこの層を引き直せる（使うと消える）。
@@ -2433,7 +2441,8 @@ function renderRoute(run) {
   // ボス直前（次が10階ごとのボス＝floor%10===9）は、休息かショップを必ず1枠出す＝整える余地を保証
   // （初ボスの「回復を引けず瀕死突入」運ゲーを緩和）。
   if (run.floor % 10 === 9) force.push(rng() < 0.5 ? "rest" : "shop");
-  const choices = drawFloorChoices(rng, { count: run.floor <= 2 ? 2 : 3, exclude: rogueliteState.lastFloorId ? [rogueliteState.lastFloorId] : [], force });
+  const routeCount = run.over?.routeCount || (run.floor <= 2 ? 2 : 3); // 章ごとに進路の選択肢数を上書き可（無指定=序盤2/以降3）
+  const choices = drawFloorChoices(rng, { count: routeCount, exclude: rogueliteState.lastFloorId ? [rogueliteState.lastFloorId] : [], force, weights: floorWeightMap(run) });
   showRogueliteRoute(host, {
     floor: run.floor, choices, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, charImages, onSwap,
     onItems: () => openRogueliteItems(run), // 道具パネル
@@ -2550,7 +2559,7 @@ async function persistChapterCleared(chapId) {
 async function launchRogueliteBattle(run, floorType, opts = {}) {
   teamBattleData = null; humanIndex = 0; selectedRounds = 1; // 東風を外枠に、局数上限で短く決着
   rogueliteState.pursuing = !!opts.pursue;
-  rogueliteHandLimit = opts.pursue ? 1 : handsForType(floorType); // 追撃は1局ずつ
+  rogueliteHandLimit = opts.pursue ? 1 : handsForType(floorType, floorOverride(run, floorType.id)); // 追撃は1局ずつ（章ごとに局数上書き可）
   const allies = seatedAllies(run); // 並び順で上から生存2人（席0=あなた優先）。自動入れ替えなし。
   rogueliteState.seated = allies; // 決着時にこの2人へHPを戻す（同定）
   // 道具の「次の1戦だけ」効果を取り出す（本戦のみ。追撃には持ち越さない＝消費済み）。
@@ -2671,7 +2680,7 @@ function onRogueliteBattleEnd(result) {
   // 光貨を獲得（深いほど・強敵/ボス/撃破/追撃で増す。賭場勝利は2倍）。
   const isGamble = !!rogueliteState.gamble; rogueliteState.gamble = false;
   const pursued = !!rogueliteState.pursuing;
-  let coins = coinsForClear({ floor: run.floor, kind: rogueliteState.floorType?.enemy || "mob", ko: !!result.koAny, pursue: pursued });
+  let coins = coinsForClear({ floor: run.floor, kind: rogueliteState.floorType?.enemy || "mob", ko: !!result.koAny, pursue: pursued, econ: chapterEconomy(run) });
   if (isGamble) coins *= 2;
   // ※ 旧「制圧ボーナス」（合計HPで勝つと光貨上乗せ＋レア度UP）は撤廃。HPで勝つ意義は
   //   「ボーナスを得る」ではなく「ペナルティ（合計HP敗北で全員30%ダメージ）を避ける」側へ反転した。
@@ -4723,6 +4732,7 @@ function refreshHighlights() {
     riichiKinds: riichiKindsNow(),
     danger: currentDanger(),
     recallMode,
+    best: currentBest(),
   });
 }
 
@@ -4742,12 +4752,42 @@ function currentDanger() {
   return map;
 }
 
+// 模範解答（篠宮 栞）— 牌効率トップ3の打牌候補（kind→rank）。
+// オフラインは能力エンジン経由。オンラインはレプリカで能力を回さないため、自分の手牌だけから
+// ローカル計算する（盤面に影響しない・相手に見えない純クライアントUIヒントなのでサーバ不要）。
+function currentBest() {
+  const p = game.players?.[humanIndex];
+  if (!p) return null;
+  const info = online ? localModelAnswer(p) : game.abilities.bestDiscards(p);
+  if (!info) return null;
+  const map = new Map();
+  for (const b of info) map.set(b.kind, b.rank);
+  return map;
+}
+
+// オンライン用ローカル計算。模範解答を持つキャラのときだけ、自分の手牌（14枚相当＝打牌局面）
+// から牌効率トップ3を出す。ability の発火条件（2シャンテン以上）と揃える。
+function localModelAnswer(p) {
+  const hasMA = p?.character?.abilities?.some((a) => a.abilityId === "model-answer");
+  if (!hasMA || !Array.isArray(p.hand)) return null;
+  const counts = new Array(34).fill(0);
+  for (const t of p.hand) if (t && typeof t.kind === "number") counts[t.kind]++;
+  let total = 0;
+  for (const n of counts) total += n;
+  if (total % 3 !== 2) return null; // 打牌を決める局面（ツモ番）でのみ
+  const numMelds = Array.isArray(p.melds) ? p.melds.length : 0;
+  const ranked = bestDiscardRanking(counts, numMelds);
+  if (!ranked.length || ranked[0].shanten < 2) return null; // イーシャンテン以下では消える
+  return ranked.slice(0, 3).map((e, i) => ({ kind: e.kind, rank: i + 1 }));
+}
+
 function render() {
   renderer.setHighlights({
     riichiMode,
     riichiKinds: riichiKindsNow(),
     danger: currentDanger(),
     recallMode,
+    best: currentBest(),
   });
   renderer.render();
   updateHpBoard(); // 右側の相棒ボードのHP/手番ハイライトを最新状態に同期

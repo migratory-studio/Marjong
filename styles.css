@@ -4758,7 +4758,9 @@ button.primary.danger:hover { color: #ffbcbc; }
 /* 弟子セクションぶんロスターが伸びても固定ステージ(720)を割らないよう、③のロスター列だけ
    上限を設けて内部スクロールに逃がす（vh/vw 不使用＝stage基準の固定値。不変条件の許容パターン）。
    弟子0〜数枠なら上限未満で従来どおりスクロールは出ない。 */
-#select-screen .wiz-pane[data-pane="3"] .char-list { max-height: 590px; min-height: 0; overflow-y: auto; padding-right: 4px; }
+#select-screen .wiz-pane[data-pane="3"] #seat-bar { flex: 0 0 auto; }
+#select-screen .wiz-pane[data-pane="3"] .select-layout { flex: 1 1 auto; min-height: 0; align-items: stretch; }
+#select-screen .wiz-pane[data-pane="3"] .char-list { min-height: 0; max-height: none; height: 100%; overflow-y: auto; padding-right: 4px; }
 
 /* ===================================================================== F7 ローグライト
    対戦ホーム→ローグライト。固定ステージ(1280×720)・ロスターのみ内部スクロールに逃がす。

@@ -62,20 +62,26 @@ const NEUTRAL = ROGUELITE_BIOME_MASTER[0];
 // 階→帯番号（0始まり）。F1-10=帯0 / F11-20=帯1 …
 export function bandOfFloor(floor = 1) { return Math.floor((Math.max(1, floor) - 1) / 10); }
 
-// 中立(通常)層の抽選重み：深いほど下がる（後半ほど"何もなし"が出にくい）。
-function neutralWeight(band) { return Math.max(0.4, 2.6 - band * 0.55); }
+// 中立(通常)層の抽選重み：深いほど下がる（後半ほど"何もなし"が出にくい）。章で base/fade を上書き可。
+function neutralWeight(band, cfg = null) {
+  const base = cfg?.neutralBase ?? 2.6, fade = cfg?.neutralFade ?? 0.55;
+  return Math.max(0.4, base - band * fade);
+}
 
 // 帯→その層（決定論：seed×帯）。帯0は必ず中立。minBand ゲート＋通常層の深度減衰＋直前帯と被り回避。
 // reroll：巡りの賽で引き直した回数（>0 で別の層になる）。0 は従来と同一の seed 文字列＝後方互換。
-export function biomeForBand(seed, band, reroll = 0) {
+// cfg：章ごとのバイオーム上書き { weights:{id:w}, minBands:{id:band}, neutralBase, neutralFade }。null=グローバル既定。
+export function biomeForBand(seed, band, reroll = 0, cfg = null) {
   if (band <= 0) return NEUTRAL;
   const rng = makeRng(`${seed}:biome:${band}${reroll ? `:r${reroll}` : ""}`);
-  const prev = band > 1 ? biomeForBand(seed, band - 1) : null;
+  const prev = band > 1 ? biomeForBand(seed, band - 1, 0, cfg) : null;
   const cand = [];
+  const minBandOf = (b) => (cfg?.minBands && b.id in cfg.minBands) ? cfg.minBands[b.id] : (b.minBand || 0);
+  const weightOf = (b) => (cfg?.weights && b.id in cfg.weights) ? cfg.weights[b.id] : (b.weight != null ? b.weight : 1);
   for (const b of ROGUELITE_BIOME_MASTER) {
-    if ((b.minBand || 0) > band) continue;          // 出現帯ゲート（影響大の層は深層限定）
+    if (minBandOf(b) > band) continue;               // 出現帯ゲート（影響大の層は深層限定）
     if (prev && b.id === prev.id) continue;          // 直前帯と同じ層は避ける（連続回避）
-    const w = b.id === NEUTRAL.id ? neutralWeight(band) : (b.weight != null ? b.weight : 1);
+    const w = b.id === NEUTRAL.id ? neutralWeight(band, cfg) : weightOf(b);
     if (w > 0) cand.push({ b, w });
   }
   if (!cand.length) return NEUTRAL;
@@ -85,11 +91,11 @@ export function biomeForBand(seed, band, reroll = 0) {
   return cand[cand.length - 1].b;
 }
 
-export function biomeForFloor(seed, floor = 1, reroll = 0) { return biomeForBand(seed, bandOfFloor(floor), reroll); }
+export function biomeForFloor(seed, floor = 1, reroll = 0, cfg = null) { return biomeForBand(seed, bandOfFloor(floor), reroll, cfg); }
 export function biomeOf(run) {
   const band = bandOfFloor(run?.floor || 1);
   const reroll = run?.biomeRerolls?.[band] || 0; // 巡りの賽で引き直した回数（帯ごと）
-  return biomeForFloor(run?.seed, run?.floor || 1, reroll);
+  return biomeForFloor(run?.seed, run?.floor || 1, reroll, run?.over?.biome || null);
 }
 export function biomeMods(run) { return biomeOf(run)?.mods || {}; }
 

@@ -69,6 +69,15 @@ export const ABILITY_MASTER = {
     maxCharges: Infinity,
     cooldown: 0,
   },
+  "model-answer": {
+    name: "模範解答",
+    desc: "常時発動。手牌が2シャンテン以上のとき、牌効率上もっとも有効な打牌の候補トップ3を手牌に①②③で指し示す。イーシャンテン／聴牌になると消え、手が崩れて2シャンテン以下に戻ると再び現れる。",
+    blurb: "模範解答 — 常時 牌効率トップ3の打牌を指し示す（イーシャンテンで消える）",
+    activation: "passive",
+    chargeScope: "hand",
+    maxCharges: Infinity,
+    cooldown: 0,
+  },
   "rootou": {
     name: "老頭ツモ",
     desc: "発動した局はツモが高確率で么九牌（1・9・字牌）になる。1ゲーム2局まで。",

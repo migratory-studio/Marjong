@@ -446,13 +446,15 @@ export function cardCategory(card) {
 }
 
 // rarityBias（0..1）でレア以上に重みを寄せたコピーを返す。飛ばし/点差/階層で上振れさせる燃料。
-function biasedWeights(bias = 0) {
+function biasedWeights(bias = 0, base = null) {
   const b = Math.max(0, Math.min(1, bias));
+  const w = base || RARITY_WEIGHTS; // 章ごとにレア度の基本重みを上書き可（未指定キーは既定）
+  const v = (k) => (w[k] != null ? w[k] : RARITY_WEIGHTS[k]);
   return {
-    common:    RARITY_WEIGHTS.common * (1 - b * 0.7),
-    rare:      RARITY_WEIGHTS.rare * (1 + b * 0.5),
-    epic:      RARITY_WEIGHTS.epic * (1 + b * 2.0),
-    legendary: RARITY_WEIGHTS.legendary * (1 + b * 5.0),
+    common:    v("common") * (1 - b * 0.7),
+    rare:      v("rare") * (1 + b * 0.5),
+    epic:      v("epic") * (1 + b * 2.0),
+    legendary: v("legendary") * (1 + b * 5.0),
   };
 }
 
@@ -478,29 +480,31 @@ const RARITY_DESC = ["legendary", "epic", "rare", "common"];
 export function drawCards(rng, opts = {}) {
   const count = opts.count ?? 3;
   const exclude = new Set(opts.exclude || []);
+  const allow = Array.isArray(opts.pool) ? new Set(opts.pool) : null; // 章ごとの配置カード（allowlist）。null=全種。
+  const inPool = (c) => !allow || allow.has(c.id);
   // ご祝儀など：指定レア度だけから引く（足りなければ1つ下のレア度へフォールバック）。
   if (opts.forceRarity) {
     const start = Math.max(0, RARITY_DESC.indexOf(opts.forceRarity));
     const out = []; const used = new Set();
     for (let oi = start; oi < RARITY_DESC.length && out.length < count; oi++) {
-      const pool = ROGUELITE_CARD_MASTER.filter((c) => c.rarity === RARITY_DESC[oi] && !used.has(c.id) && !exclude.has(c.id));
+      const pool = ROGUELITE_CARD_MASTER.filter((c) => c.rarity === RARITY_DESC[oi] && !used.has(c.id) && !exclude.has(c.id) && inPool(c));
       while (pool.length && out.length < count) { const c = pool.splice(Math.floor(rng() * pool.length), 1)[0]; used.add(c.id); out.push(c); }
     }
     return out;
   }
-  const weights = biasedWeights(opts.rarityBias || 0);
+  const weights = biasedWeights(opts.rarityBias || 0, opts.rarityWeights || null);
   const out = [];
   const used = new Set();
   let guard = 0;
   while (out.length < count && guard++ < 200) {
     const rar = pickRarity(rng, weights);
     const pool = ROGUELITE_CARD_MASTER.filter(
-      (c) => c.rarity === rar && !used.has(c.id) && !exclude.has(c.id)
+      (c) => c.rarity === rar && !used.has(c.id) && !exclude.has(c.id) && inPool(c)
     );
     let card = pool.length ? pool[Math.floor(rng() * pool.length)] : null;
     if (!card) {
       // そのレア度が払底＝全プールから未使用を補完（プールが尽きたら打ち切り）。
-      const rest = ROGUELITE_CARD_MASTER.filter((c) => !used.has(c.id) && !exclude.has(c.id));
+      const rest = ROGUELITE_CARD_MASTER.filter((c) => !used.has(c.id) && !exclude.has(c.id) && inPool(c));
       if (!rest.length) break;
       card = rest[Math.floor(rng() * rest.length)];
     }
