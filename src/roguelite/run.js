@@ -186,6 +186,16 @@ export function rollTableSize(rng, dist) {
 export function tableSizeLabel(size = 4) { return size === 2 ? "二麻" : size === 3 ? "三麻" : "四麻"; }
 export function isSoloTable(size = 4) { return size === 2 || size === 3; }
 
+// ソロ卓（三麻/二麻）の着順ペナルティ（最大HP比・撃墜あり・救済なし）。1位は常に無傷。
+//   三麻: 2位=10% / 3位=30%　二麻: 2位(ラス)=40%。ペア(4麻)は別ロジック（合計HP競り負け20%）。
+export const ROGUELITE_SOLO_PENALTY = { 3: { 2: 0.10, 3: 0.30 }, 2: { 2: 0.40 } };
+// UI用の短いヒント（出陣編成/進路カード）。
+export function soloPenaltyHint(size = 4) {
+  if (size === 3) return "2位 -10% / 3位 -30%";
+  if (size === 2) return "ラス -40%";
+  return "";
+}
+
 // ---- 能力の源（インゲーム前に1個消費して「能力を使って打つ」リソース）----
 // 初期1・上限3。休息で+1・ショップで+1（いずれも上限超過なし）。発動しどころを選ぶゲーム性の核。
 export const ABILITY_SOURCE_MAX = 3;

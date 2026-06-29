@@ -14,7 +14,7 @@ import { clusterProgress, clusterPickPreview } from "../roguelite/cardEffects.js
 import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { biomeEffectChips, biomeOf } from "../data/rogueliteBiomeMaster.js";
-import { tableSizeLabel, isSoloTable, ABILITY_SOURCE_MAX } from "../roguelite/run.js";
+import { tableSizeLabel, isSoloTable, ABILITY_SOURCE_MAX, soloPenaltyHint } from "../roguelite/run.js";
 import { bgDef } from "../data/backgroundMaster.js";
 import { portraitStyleAttr } from "../data/imagePos.js";
 
@@ -579,7 +579,7 @@ export function showRogueliteRoute(container, opts = {}) {
       <span class="rl-route-name">${f.name}</span>
       ${sizeChip(f.tableSize)}
       <span class="rl-route-blurb">${f.blurb}</span>
-      ${solo ? `<span class="rl-route-solonote">相棒なし・点負けで被ダメ2倍</span>` : ""}
+      ${solo ? `<span class="rl-route-solonote">相棒なし・着順ペナルティ（${soloPenaltyHint(f.tableSize)}）</span>` : ""}
       <span class="rl-route-go">この道へ ›</span>
     </button>`;
   }).join("");
@@ -612,6 +612,7 @@ export function showRogueliteRoute(container, opts = {}) {
           <div class="rl-hub-res">
             <span class="rl-hub-res-i"><span class="rl-hub-res-k">光貨</span><b>${coins | 0}</b></span>
             <span class="rl-hub-res-i"><span class="rl-hub-res-k">スキルLv</span><b>${skillLevel || 1}</b></span>
+            ${run ? `<span class="rl-hub-res-i" title="出陣編成で「能力を使って打つ」を選ぶと1個消費。休息/ショップで補充（上限${ABILITY_SOURCE_MAX}）"><span class="rl-hub-res-k">能力の源</span><b>${run.abilitySource ?? 0}/${ABILITY_SOURCE_MAX}</b></span>` : ""}
           </div>
           ${manageBtns}
         </div>
@@ -720,7 +721,7 @@ export function showRogueliteDeploy(container, opts = {}) {
   const battleLabel = `${sizeName}・${baseLabel}`;
   const enemyNote = isBoss
     ? (solo ? `館の主が待つ。${sizeName}・一人で挑む大一番。` : "館の主が待つ。逃げ場のない大一番。")
-    : (solo ? `${sizeName}・相棒なしの一人打ち。点負けで被ダメ2倍。` : (floorType?.blurb || "卓に着く二人で挑む。"));
+    : (solo ? `${sizeName}・相棒なしの一人打ち。着順ペナルティ（${soloPenaltyHint(tableSize)}）。` : (floorType?.blurb || "卓に着く二人で挑む。"));
   const src = run.abilitySource ?? 0;
 
   // 出場順（lineupが無ければparty順）。上2人＝着卓・先頭=操作。
@@ -758,14 +759,15 @@ export function showRogueliteDeploy(container, opts = {}) {
       </main>
       <footer class="rl-deploy-foot">
         <button type="button" class="rl-retreat" id="rl-deploy-back">← 進路へ戻る</button>
-        <div class="rl-deploy-source">
-          <span class="rl-deploy-source-k">能力の源</span>
-          <span class="rl-deploy-source-pips">${Array.from({ length: ABILITY_SOURCE_MAX }, (_, i) => `<i class="rl-src-pip${i < src ? " on" : ""}"></i>`).join("")}</span>
-          <span class="rl-deploy-source-n">${src}/${ABILITY_SOURCE_MAX}</span>
-        </div>
+        <span class="rl-deploy-hint">戦うのは上の${solo ? "一人" : "二人"}だけ。控えは倒れた時に繰り上がる。</span>
         <div class="rl-deploy-actions">
           <button type="button" class="rl-start ghost" id="rl-deploy-plain">能力を使わず打つ<small>源を温存</small></button>
-          <button type="button" class="rl-start armed" id="rl-deploy-armed" ${src > 0 ? "" : "disabled"}>⚡ 能力を使って打つ<small>${src > 0 ? "能力の源 −1" : "源が足りない"}</small></button>
+          <button type="button" class="rl-start armed" id="rl-deploy-armed" ${src > 0 ? "" : "disabled"}>
+            <span class="rl-armed-main">⚡ 能力を使って打つ</span>
+            <span class="rl-armed-src">${src > 0
+              ? `${Array.from({ length: ABILITY_SOURCE_MAX }, (_, i) => `<i class="rl-src-pip${i < src ? " on" : ""}"></i>`).join("")}<b>能力の源 残り ${src}</b>（−1）`
+              : "能力の源が足りない"}</span>
+          </button>
         </div>
       </footer>
     </div>`;

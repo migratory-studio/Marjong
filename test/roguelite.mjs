@@ -12,6 +12,7 @@ import {
   carrySlotsFor, excludedCardIds, rollDraft, allPartyDown, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers,
   rollTableSize, tableSizeLabel, isSoloTable, TABLE_SIZE_DIST, ABILITY_SOURCE_MAX, gainAbilitySource, spendAbilitySource,
+  ROGUELITE_SOLO_PENALTY, soloPenaltyHint,
 } from "../src/roguelite/run.js";
 import { ROGUELITE_FLOOR_MASTER, floorTypeById, drawFloorChoices, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "../src/data/rogueliteFloorMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "../src/data/rogueliteItemMaster.js";
@@ -1230,6 +1231,12 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   eq(tableSizeLabel(3), "三麻", "卓サイズ表記3");
   eq(tableSizeLabel(2), "二麻", "卓サイズ表記2");
   ok(!isSoloTable(4) && isSoloTable(3) && isSoloTable(2), "ソロ判定（3/2のみ）");
+  // 着順ペナルティ：三麻=2位10%/3位30%、二麻=ラス40%。1位は無傷（表に無い＝0）。
+  eq(ROGUELITE_SOLO_PENALTY[3][2], 0.10, "三麻2位ペナルティ10%");
+  eq(ROGUELITE_SOLO_PENALTY[3][3], 0.30, "三麻3位ペナルティ30%");
+  eq(ROGUELITE_SOLO_PENALTY[2][2], 0.40, "二麻ラスペナルティ40%");
+  ok(!ROGUELITE_SOLO_PENALTY[3][1] && !ROGUELITE_SOLO_PENALTY[2][1], "ソロ1位は無傷（表に無い）");
+  ok(soloPenaltyHint(3).includes("2位") && soloPenaltyHint(2).includes("ラス"), "ペナルティヒント文言");
   // 分布 6:3:1 を多数試行で概ね満たす（決定論rng）。
   const rng = makeRng("size");
   const cnt = { 2: 0, 3: 0, 4: 0 };

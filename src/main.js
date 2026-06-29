@@ -54,7 +54,7 @@ import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
-import { newRun, enemyUnitForFloor, previewBossChars, seatedAllies, partyOrder, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp, floorOverride, floorWeightMap, chapterEconomy, rollTableSize, tableSizeLabel, isSoloTable, TABLE_SIZE_DIST, gainAbilitySource, spendAbilitySource, ABILITY_SOURCE_MAX } from "./roguelite/run.js";
+import { newRun, enemyUnitForFloor, previewBossChars, seatedAllies, partyOrder, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp, floorOverride, floorWeightMap, chapterEconomy, rollTableSize, tableSizeLabel, isSoloTable, TABLE_SIZE_DIST, gainAbilitySource, spendAbilitySource, ABILITY_SOURCE_MAX, ROGUELITE_SOLO_PENALTY } from "./roguelite/run.js";
 import { bossMemoryTier, readBossTally, recordBossOutcome, withBossTally } from "./roguelite/bossMemory.js";
 import { chaptersWithState, chapterById, firstChapterId, canOrbUnlock, nextChapterAfter } from "./data/rogueliteChapterMaster.js";
 import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from "./data/rogueliteBiomeMaster.js";
@@ -226,7 +226,7 @@ let rogueliteState = null;       // ローグライト・ラン進行中の状�
 let rogueliteHandLimit = null;   // 楼光の館：この1戦の「定められた局数」(maxHands)。null = 非ローグライト
 const ROGUELITE_RIICHI_FRAC = 0.05; // 楼光の館：リーチ宣言で最大HPの5%を消費（緊張感のあるギャンブル）
 const ROGUELITE_NOTEN_FRAC = 0.20;  // 楼光の館：荒牌平局でノーテン席が最大HPの20%ダメージ
-const ROGUELITE_HP_LOSS_PENALTY_FRAC = 0.20; // 楼光の館：1戦の合計HPで負けたら全員 最大HPのこの割合だけダメージ（撃墜あり・救済なし）。緊張感の調整レバー。
+const ROGUELITE_HP_LOSS_PENALTY_FRAC = 0.20; // 楼光の館（ペア戦）：合計HPで競り負けたら着卓2人に 最大HPのこの割合だけダメージ（撃墜あり・救済なし）。
 const CHARYBDIS_NOTEN_MUL = 3;      // カリュブディス（淵の蒐集）在卓ならノーテン罰符が3倍
 // アカウント共通通貨「宝珠」：層（帯）に到達するたび段階的に獲得（深いほど多い）。用途は別途。
 const ORB_BASE = 5, ORB_STEP = 3;
@@ -2719,9 +2719,13 @@ function onRogueliteBattleEnd(result) {
   const enemyEndHp = roles.reduce((a, ro, i) => a + (ro === "enemy" ? (hpArr[i] ?? 0) : 0), 0);
   const enemyTopHp = roles.reduce((a, ro, i) => (ro === "enemy" ? Math.max(a, hpArr[i] ?? 0) : a), 0);
   const dominated = allyEndHp > enemyEndHp; // 自パーティのHP合計が相手を上回って決着したか（計測ログ用）
-  // 点負け：ペア=合計HPで競り負け / ソロ=1位を取れない（自HP < 敵の最高HP）＝全員にペナルティ（緊張感の主動力）。
-  const outHpRace = solo ? ((hpArr[0] ?? 0) < enemyTopHp) : (allyEndHp < enemyEndHp);
-  const penaltyFrac = ROGUELITE_HP_LOSS_PENALTY_FRAC * (solo ? 2 : 1); // ソロ(三麻/二麻)は点負けダメージ2倍（40%）
+  // 点負け：ペア=合計HPで競り負け / ソロ=「着順」で段階ペナルティ（1位=無傷・下位ほど痛い）。
+  //   ソロ着順 = 1 + 自分よりHPが多い敵の数（同点は自分を上位扱い＝1位なら無傷）。
+  const soloRank = solo ? 1 + roles.reduce((a, ro, i) => a + (ro === "enemy" && (hpArr[i] ?? 0) > (hpArr[0] ?? 0) ? 1 : 0), 0) : 0;
+  const penaltyFrac = solo
+    ? (ROGUELITE_SOLO_PENALTY[pairBattleData?.tableSize]?.[soloRank] || 0)
+    : ROGUELITE_HP_LOSS_PENALTY_FRAC;
+  const outHpRace = solo ? (penaltyFrac > 0) : (allyEndHp < enemyEndHp);
   // 競り守りの護符（trigger/on=hpRace）：点負けの痛手をラン中1回だけ無効化。持っていれば自動発動して消える。
   const warded = outHpRace && consumeHpRaceSaver(run);
   const applyPenalty = outHpRace && !warded; // 実際にペナルティを与えるか（護符で防げば与えない）
@@ -2794,7 +2798,7 @@ function onRogueliteBattleEnd(result) {
       : warded ? { label: "競り守り", note: "競り守りの護符が割れ、競り負けの痛手を防いだ。" }
       : null,
     // 合計HPで競り負けたら被弾を明示（次画面でHPバーが下がる理由を legible に）。割合は定数に追従。
-    penalty: applyPenalty ? { label: "競り負け", note: `${solo ? "1位を取れず" : "合計HPで及ばず"} — 着卓していた味方に 最大HPの${Math.round(penaltyFrac * 100)}%ダメージ` } : null,
+    penalty: applyPenalty ? { label: solo ? `${soloRank}位` : "競り負け", note: `${solo ? `${soloRank}位で決着` : "合計HPで及ばず"} — 着卓していた味方に 最大HPの${Math.round(penaltyFrac * 100)}%ダメージ` } : null,
     onPick: (card) => {
       // 計測（P9）：提示3枚(offered)と選択(picked)を必ず記録＝offlineで「カード別pick率」を出せる。
       // 提示時に未取得カードを把握 → 選ばれた率を見て「居場所のないカード(pick率が極端に低い)」を炙る。
