@@ -2488,8 +2488,8 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 .self-talk {
   position: absolute; left: 8px; right: 8px; bottom: 8px; z-index: 2;
   background: #0b1410f2; border: 1px solid color-mix(in srgb, var(--accent) 35%, #2f4a3b);
-  border-radius: 10px; padding: 9px 11px; box-shadow: 0 8px 20px #000a;
-  font-size: 13px; line-height: 1.5; color: #eef3ef;
+  border-radius: 10px; padding: 10px 12px; box-shadow: 0 8px 20px #000a;
+  font-size: 14px; line-height: 1.55; color: #eef3ef;
   opacity: 0; visibility: hidden; transform: translateY(6px);
   transition: opacity .2s ease, transform .2s ease, visibility .2s;
 }

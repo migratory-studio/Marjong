@@ -493,8 +493,11 @@ function buildSelectScreen() {
     for (const [id, card] of cardById) {
       const locked = isCharLocked(charById(id));
       card.classList.toggle("locked", locked);
+      // 未解禁カードは hover で即「どうすれば使えるか」が分かるよう native ツールチップを付ける
+      // （詳細パネルの解禁注記に加えての即時ヒント。UXテスト＝鍵の条件が分からない、への対処）。
+      card.title = locked ? "🔒 宝珠ショップで解禁すると選べます" : "";
       const lock = card.querySelector(".card-lock");
-      if (lock) lock.classList.toggle("hidden", !locked);
+      if (lock) { lock.classList.toggle("hidden", !locked); lock.title = "宝珠ショップで解禁すると選べます"; }
       const label = locked ? null : seatLabelOf(id); // 未解禁は着席しないので選択ハイライトも出さない
       card.classList.toggle("selected", label !== null);
       const badge = card.querySelector(".card-seat-badge");
@@ -7756,13 +7759,18 @@ let selfTalkTimer = null;
 let matchTalk = null; // 1局ぶんの検出ステート（resetMatchTalk で作る）
 
 // セリフ枠にテキストを出して一定時間で引っ込める。空文字/未定義なら何もしない。
-function showSelfTalk(text, ms = 4200) {
+// 表示尺は文字数で伸縮（短文≈4.2s〜長文は最大8s）。牌に集中していても読み切れるように
+// ＝「相棒の声が一瞬で消える」を防ぐ（共在感の核。UXテストでの最重要指摘）。ms 明示で固定も可。
+function talkDwellMs(text) {
+  return Math.min(8000, 3200 + (text?.length || 0) * 110);
+}
+function showSelfTalk(text, ms) {
   const box = el("self-talk");
   if (!box || !text) return false;
   box.textContent = text;
   box.classList.add("show");
   clearTimeout(selfTalkTimer);
-  selfTalkTimer = setTimeout(() => box.classList.remove("show"), ms);
+  selfTalkTimer = setTimeout(() => box.classList.remove("show"), ms ?? talkDwellMs(text));
   if (matchTalk) matchTalk.lastAt = performance.now();
   return true;
 }
@@ -7809,7 +7817,7 @@ function drainPartnerAbilityRequests(game, seat) {
   }
   return out;
 }
-function showPartnerTalk(text, ms = 4200) {
+function showPartnerTalk(text, ms) {
   if (!text || !pairHpCells || !pairBattleData) return;
   const myPair = pairBattleData.pairOf[humanIndex];
   const bubble = pairHpCells[myPair]?.talkBubble;
@@ -7817,7 +7825,7 @@ function showPartnerTalk(text, ms = 4200) {
   bubble.textContent = text;
   bubble.classList.remove("hidden");
   clearTimeout(partnerTalkTimer);
-  partnerTalkTimer = setTimeout(() => bubble.classList.add("hidden"), ms);
+  partnerTalkTimer = setTimeout(() => bubble.classList.add("hidden"), ms ?? talkDwellMs(text)); // 文字数で伸縮（相方の声も読み切れる）
 }
 // 相方の ally* セリフを引いて吹き出しに出す。未記入テンプレ（［テンプレ］）は黙る。
 function firePartnerTalk(event, ctx = {}) {
