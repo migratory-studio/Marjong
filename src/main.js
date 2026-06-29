@@ -964,7 +964,14 @@ async function renderBattleHome() {
     onShop: () => { audio.playClick?.(); goScreen("shop-screen"); },
     onBack: () => { audio.playClick?.(); goScreen("home-screen"); },
   });
+  // 初回の対戦ホーム到達で、詩玥の出迎えが出てから少し遅れて認証おすすめを出す（セッション1回だけ予約）。
+  // maybeShowAuthPrompt 自体が「未ログイン＆未提示」を自己ガードするので、既に選択済みなら何も出ない。
+  if (!authPromptScheduled) {
+    authPromptScheduled = true;
+    setTimeout(() => { maybeShowAuthPrompt(); }, 1500);
+  }
 }
+let authPromptScheduled = false; // 認証おすすめモーダルの予約フラグ（セッション内1回）
 
 // 宝珠ショップ：恒久強化・解禁のハブ（当面は対戦ホームから。将来は楼光の館トップへ）。
 function renderShop() {
@@ -3340,7 +3347,8 @@ function bootHome() {
       // ほんの一拍 100% を見せてからホームへ（一瞬で消えてチラつくのを防ぐ）。
       setTimeout(() => {
         goScreen("home-screen");
-        maybeShowAuthPrompt(); // 初回起動時に認証をおすすめ（未ログイン＆未提示のときだけ）
+        // 認証おすすめは「相棒（詩玥）と出会った後」に出す＝第一印象を機能説明でなくキャラ接触に
+        // （初回の対戦ホーム表示後に遅延フェードイン。renderBattleHome 側で発火）。UXテスト指摘。
       }, 240);
     });
   // Browsers block audio before the first user gesture, so the home BGM may not
