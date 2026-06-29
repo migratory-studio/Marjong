@@ -76,10 +76,8 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
   const deshiGrid = elt("div", "av-deshi-grid");
   deshiWrap.appendChild(deshiGrid);
   lookField.appendChild(deshiWrap);
-  // 個別設定（アイコン/立ち絵を別々に差し替え）は画像アップロード対応で解禁予定。開発中はグレーアウト。
-  lookField.appendChild(elt("p", "av-look-note", {
-    textContent: "アイコン・立ち絵の個別設定は画像アップロード対応で解禁予定（開発中）",
-  }));
+  // ※ 個別設定（アイコン/立ち絵の差し替え）は将来の画像アップロード対応で解禁予定だが、
+  //   募集前は「開発中」表記が未完成の印象を与えるため出さない（実装時にここへ導線を戻す）。
 
   const lookGrid = elt("div", "av-look-grid");
   lookField.appendChild(lookGrid);

@@ -28,27 +28,22 @@ export function showAuthPrompt({ onLogin, onLocal } = {}) {
   modal.appendChild(
     elt("p", "auth-modal-rec", {
       textContent:
-        "おすすめは Googleログイン だよ。育てた弟子がクラウドに保存されるから、スマホでもPCでも続きから打てるんだ。",
+        "おすすめは Googleログイン。育てた弟子がクラウドに残るから、別の端末でも続きから打てるよ。",
     })
   );
 
-  // ゆるいけど正直な注意書き
+  // ゆるいけど正直な注意書き（1画面に収めるため要点3つに圧縮・スクロール解消）。
   const warn = elt("div", "auth-modal-warn");
   warn.appendChild(elt("p", "auth-modal-warn-h", { textContent: "ログインなしでも遊べるけど…" }));
   const ul = elt("ul", "auth-modal-warn-list");
   for (const line of [
-    "弟子データは“このブラウザ”だけに保存されるよ（ローカルストレージ）",
+    "弟子データはこのブラウザだけに保存（履歴やキャッシュを消すと消えちゃう）",
     "別の端末には引き継げない",
-    "履歴やキャッシュを消すと弟子も消えちゃう",
-    "シークレットモードだと保存されないことも…",
-    "あとからクラウドへ引っ越すのも、ちょっと手間",
+    "あとからログインへ引っ越すのは少し手間",
   ]) {
     ul.appendChild(elt("li", null, { textContent: line }));
   }
   warn.appendChild(ul);
-  warn.appendChild(
-    elt("p", "auth-modal-warn-f", { textContent: "…というわけで、最初にログインしとくのが一番ラクだよ〜！" })
-  );
   modal.appendChild(warn);
 
   // ボタン

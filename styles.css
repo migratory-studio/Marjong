@@ -249,6 +249,15 @@ body {
   padding: 4px 18px; font-size: 13px; cursor: pointer; transition: .12s;
 }
 .bh-change:hover { color: var(--accent); border-image-source: url("graphic/ui/sc/btn_hover.png"); }
+/* 相棒のネームプレート（紙芝居風の話者名タブ）。メッセージ窓の上に出し、立ち絵の主が誰か即わかる。 */
+.bh-charname {
+  position: absolute; left: 22px; bottom: 92px; z-index: 2;
+  font-size: 17px; font-weight: 800; letter-spacing: .05em; color: var(--name-c, var(--accent));
+  padding: 4px 16px; border-radius: 8px; pointer-events: none;
+  background: rgba(8,10,8,.82); border: 1px solid color-mix(in srgb, var(--name-c, var(--accent)) 52%, #2f4a3b);
+  box-shadow: 0 4px 14px rgba(0,0,0,.5); backdrop-filter: blur(2px);
+}
+.bh-charname:empty { display: none; }
 
 /* 右カラム: 情報カード / 導線 / 戻る を縦に積む（スリム＝立ち絵を邪魔しない） */
 .bh-side { flex: 0 0 332px; max-width: 332px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }

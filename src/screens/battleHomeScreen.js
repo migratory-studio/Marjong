@@ -153,6 +153,7 @@ export async function showBattleHome(container, opts = {}) {
     <div class="battle-home">
       <div class="bh-stage">
         <div class="bh-talk" id="bh-talk" aria-live="polite"></div>
+        <div class="bh-charname" id="bh-charname"></div>
         <div class="bh-portrait-wrap" id="bh-portrait-wrap" title="タップで話しかけられるよ"></div>
         <button type="button" class="bh-change" id="bh-change">相棒をかえる</button>
       </div>
@@ -199,6 +200,7 @@ export async function showBattleHome(container, opts = {}) {
   const bondFillEl = container.querySelector("#bh-bond-fill");
   const togetherEl = container.querySelector("#bh-together");
   const setTalk = (t) => { if (talkEl) talkEl.textContent = t || "……。"; };
+  const nameplateEl = container.querySelector("#bh-charname");
 
   const bgNameEl = container.querySelector("#bh-bg-name");
   const bgmNameEl = container.querySelector("#bh-bgm-name");
@@ -245,6 +247,11 @@ export async function showBattleHome(container, opts = {}) {
   function paint() {
     wrap.innerHTML = "";
     wrap.appendChild(portraitNode(current));
+    // 立ち絵のそばに相棒の名前を出す（「このキャラ誰？」を解消・UXテスト指摘）。色はキャラ固有色。
+    if (nameplateEl) {
+      nameplateEl.textContent = current?.name || "";
+      nameplateEl.style.setProperty("--name-c", current?.color || "var(--accent)");
+    }
     if (partnerEl) partnerEl.textContent = current?.name || "—";
     // 「一緒に」(キャラ別局数)・絆。未ログイン時もダッシュ(—)ではなく“始まりの言葉”で見せる
     // （数値レス方針 [[bond-display-hybrid-policy]]。ダッシュは「意味不明」とUXテストで指摘されたため、
