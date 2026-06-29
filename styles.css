@@ -1911,6 +1911,17 @@ body {
   background: #1c2c24; border-color: var(--accent);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 32%, transparent);
 }
+/* クイックスタート（pane①下部）。細かい設定を飛ばして即対局＝FTUEの摩擦軽減。 */
+.wiz-quickstart {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  width: 100%; max-width: 820px; margin-top: 18px; padding: 13px 24px;
+  font-size: 19px; font-weight: 800; letter-spacing: .03em; cursor: pointer;
+  color: #20140a; background: var(--accent, #f6b352); border: 2px solid #0003; border-radius: 14px;
+  box-shadow: 0 6px 18px #0006;
+}
+.wiz-quickstart small { font-size: 12px; font-weight: 700; opacity: .8; letter-spacing: 0; }
+.wiz-quickstart:hover { filter: brightness(1.07); transform: translateY(-1px); }
+
 .battle-card-icon { font-size: 46px; line-height: 1; flex: none; width: 56px; text-align: center; }
 .battle-card-text { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .battle-card-title { font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }

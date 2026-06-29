@@ -807,6 +807,18 @@ function buildSelectScreen() {
   el("wiz-back").onclick = () => { audio.playClick?.(); gotoStep(wizStep - 1); };
   el("wiz-next").onclick = () => { audio.playClick?.(); gotoStep(wizStep + 1); };
   el("start-btn").onclick = startGame;
+  // クイックスタート：4ステップを飛ばし通常4人戦を即開始（ウィザードが重い＝UXテスト全視点指摘）。
+  // 席0が未選択/未解禁なら主役・詩玥で。CPUはおまかせ（ランダム）。
+  function quickStart() {
+    selectedTeamBattle = false; selectedPairBattle = false; selectedPlayers = 4;
+    const cur = selectedChar();
+    if (!cur || isCharLocked(cur)) {
+      const def = CHARACTERS.find((c) => c.id === "shiyue") || CHARACTERS.find((c) => !isCharLocked(c)) || CHARACTERS[0];
+      selectedCharId = def?.id || null;
+    }
+    startGame();
+  }
+  el("wiz-quickstart")?.addEventListener("click", () => { audio.playClick?.(); quickStart(); });
   // デバッグ専用: 選択キャラ vs モブ3体で即開戦。?debug=合言葉 のときだけ出す。
   const debugMobBtn = el("debug-mob-btn"); // 表示制御は updateWizNav 側（step3×デバッグ時）
   if (debugMobBtn) debugMobBtn.onclick = () => { audio.playClick?.(); startDebugMobMatch(); };
