@@ -274,6 +274,7 @@ export const CHARACTER_MASTER = [
     reading: "しのみや しおり",
     color: "#2f9e7e",
     role: "attacker",
+    locked: true, // 初期は未解禁。宝珠ショップ（char-teacher）で買うと profile.unlockedCharacters に積まれ、選択導線で解放される。
     bio: "牌効率の最善手を指し示す家庭教師型。2シャンテン以上の局面で、有効打牌トップ3を手牌に栞のように示す。",
     profile: "「だいじょうぶ、ゆっくりでいいですよ」と寄り添う家庭教師。迷える手にそっと最善の一打を指し示し、次の一歩に栞を挟む。——けれど、模範解答を教え続けた彼女自身は、まだ“正解のない一打”の前で立ち止まったことがない。",
     stats: { startingPoints: 25000 }, // 助言型・HPは標準（点棒を増減させる能力ではない）。

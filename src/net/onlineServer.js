@@ -28,7 +28,8 @@ export function buildSeatedGame(charIds) {
   const ids = (Array.isArray(charIds) ? charIds : [charIds]).slice(0, CAPACITY);
   const humans = ids.map((id) => CHARACTERS.find((c) => c.id === id) || CHARACTERS[0]);
   const used = new Set(humans.map((c) => c.id));
-  const cpuPool = shuffled(CHARACTERS.filter((c) => !used.has(c.id)));
+  // 解禁制キャラ（locked）はCPU補填に出さない（アカウント解禁コンテンツなので汎用CPUにしない）。
+  const cpuPool = shuffled(CHARACTERS.filter((c) => !used.has(c.id) && !c.locked));
   const chars = humans.slice();
   while (chars.length < CAPACITY) chars.push(cpuPool.shift() || CHARACTERS[chars.length % CHARACTERS.length]);
   const seated = chars.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
@@ -42,7 +43,8 @@ export function buildSeatedGameFromSlots(slots) {
   const resolve = (id) => CHARACTERS.find((c) => c.id === id) || CHARACTERS[0];
   const used = new Set();
   for (const s of slots) if (s.type === "human") used.add(resolve(s.charId).id);
-  const cpuPool = shuffled(CHARACTERS.filter((c) => !used.has(c.id)));
+  // 解禁制キャラ（locked）はCPU補填に出さない（アカウント解禁コンテンツなので汎用CPUにしない）。
+  const cpuPool = shuffled(CHARACTERS.filter((c) => !used.has(c.id) && !c.locked));
   const chars = slots.map((s, i) => {
     if (s.type === "human") return resolve(s.charId);
     const c = cpuPool.shift() || CHARACTERS[i % CHARACTERS.length];

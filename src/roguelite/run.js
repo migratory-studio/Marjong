@@ -379,7 +379,8 @@ function pickBossChars(run, rng, n) {
   const planned = plannedBossSlots(run, run.floor, exclude);
   if (planned) return planned.filter((s) => s.kind === "char").map((s) => s.char);
   const pool = Array.isArray(run.bossPool) && run.bossPool.length ? new Set(run.bossPool) : null;
-  const eligible = (c) => c && c.id && !c.isMob && !exclude.has(c.id);
+  // 解禁制キャラ（locked）はランダムなボス枠に出さない（敵＝汎用キャスト扱い／明示配役 plannedBossSlots は別途尊重）。
+  const eligible = (c) => c && c.id && !c.isMob && !c.locked && !exclude.has(c.id);
   let avail = CHARACTER_MASTER.filter((c) => eligible(c) && (!pool || pool.has(c.id)));
   if (avail.length < n) avail = CHARACTER_MASTER.filter(eligible); // 群像が足りなければ全体から
   const chosen = [];
@@ -487,7 +488,8 @@ export function enemyUnitForFloor(run, floorType = null, salt = "") {
 // 流派の門（交代マス）：編成中＋弟子を除くプレイアブルキャラから候補 n 人（決定論）。
 export function recruitCandidates(run, n = 3) {
   const exclude = new Set((run.party || []).map((m) => m.id));
-  const avail = CHARACTER_MASTER.filter((c) => c && c.id && !c.isMob && !exclude.has(c.id));
+  // 解禁制キャラ（locked）は流派の門の候補に出さない（連れて行くなら編成画面から・宝珠ショップ解禁が前提）。
+  const avail = CHARACTER_MASTER.filter((c) => c && c.id && !c.isMob && !c.locked && !exclude.has(c.id));
   const rng = makeRng(`${run.seed}:recruit:${run.floor}:${run.routeReroll || 0}`);
   const out = [];
   while (out.length < n && avail.length) out.push(avail.splice(Math.floor(rng() * avail.length), 1)[0]);

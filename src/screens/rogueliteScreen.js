@@ -146,8 +146,10 @@ export function showRogueliteChapterSelect(container, opts = {}) {
 }
 
 export function showRoguelite(container, opts = {}) {
-  const { deshiRoster = [], characters = [], charImages, bestFloor = 0, carry = [], onBack, onStart, backLabel = "← 対戦ホームへ" } = opts;
+  const { deshiRoster = [], characters = [], unlockedIds = null, charImages, bestFloor = 0, carry = [], onBack, onStart, backLabel = "← 対戦ホームへ" } = opts;
   if (!container) return;
+  // 未解禁キャラ（characterMaster で locked:true ＆ 宝珠ショップ未購入）。鍵・非アクティブで出す。
+  const isLocked = (c) => !!(c && c.locked) && !(unlockedIds && unlockedIds.has(c.id));
   // 候補：修行完了弟子（先頭）＋通常キャラ。id 重複は弟子優先。
   const seen = new Set();
   const pool = [];
@@ -220,11 +222,12 @@ export function showRoguelite(container, opts = {}) {
   const renderGrid = () => {
     gridEl.innerHTML = "";
     for (const c of pool) {
+      const locked = isLocked(c);
       const inParty = party.some((p) => p.id === c.id);
       const cell = document.createElement("button");
       cell.type = "button";
-      cell.className = "rl-cell" + (inParty ? " picked" : "") + (c.isCompletedAvatar ? " deshi" : "");
-      cell.disabled = !inParty && party.length >= MAX_PARTY;
+      cell.className = "rl-cell" + (inParty ? " picked" : "") + (c.isCompletedAvatar ? " deshi" : "") + (locked ? " locked" : "");
+      cell.disabled = locked || (!inParty && party.length >= MAX_PARTY);
       cell.appendChild(faceNode(charImages, c, "rl-cell-face"));
       const nm = document.createElement("div");
       nm.className = "rl-cell-name";
@@ -251,6 +254,12 @@ export function showRoguelite(container, opts = {}) {
         const b = document.createElement("span");
         b.className = "rl-cell-badge"; b.textContent = "弟子";
         cell.appendChild(b);
+      }
+      if (locked) { // 宝珠ショップで解禁前＝鍵を表示し、ホバーで解禁先を案内
+        const lk = document.createElement("span");
+        lk.className = "rl-cell-lock"; lk.textContent = "🔒";
+        cell.appendChild(lk);
+        cell.title = `${c.name}｜未解禁\n宝珠ショップで解禁すると連れて行けます`;
       }
       if (inParty) { // 選択済みの明示（ロスターでも分かるように）
         const chk = document.createElement("span");

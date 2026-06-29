@@ -283,7 +283,7 @@ export async function showBattleHome(container, opts = {}) {
 
   // 「相棒をかえる」ピッカー（モーダル）。選んだら favoriteCharId を保存して即反映。
   container.querySelector("#bh-change")?.addEventListener("click", () => {
-    openPicker(container, current?.id, async (picked) => {
+    openPicker(container, current?.id, profile, async (picked) => {
       current = charById(picked) || current;
       // 保存は最新プロフィールを読み直してから（他の更新を踏まない）。
       try {
@@ -297,17 +297,25 @@ export async function showBattleHome(container, opts = {}) {
   });
 }
 
+// キャラが解禁済みか（locked でなければ常に true／locked は宝珠ショップ購入で profile.unlockedCharacters に積まれる）。
+function isCharUnlocked(c, profile) {
+  if (!c?.locked) return true;
+  return (profile?.unlockedCharacters || []).includes(c.id);
+}
+
 // お気に入りキャラ選択モーダル（アイコングリッド）。スクリム/✕/Esc で閉じる。
-function openPicker(container, currentId, onPick) {
+// 未解禁キャラ（宝珠ショップ前）は鍵・非アクティブで表示し、選べないようにする。
+function openPicker(container, currentId, profile, onPick) {
   const ov = document.createElement("div");
   ov.className = "bh-picker";
   const cells = selectableChars().map((c) => {
     const icon = c.assets?.icon || c.assets?.portrait || "";
+    const ok = isCharUnlocked(c, profile);
     const face = icon
       ? `<img class="bh-pick-face" src="${icon}" alt="">`
       : `<span class="bh-pick-face bh-pick-fallback" style="background:${c.color || "#444"}">${esc((c.name || "?").slice(0, 1))}</span>`;
-    return `<button type="button" class="bh-pick${c.id === currentId ? " is-active" : ""}" data-id="${esc(c.id)}">
-      ${face}<span class="bh-pick-name">${esc(c.name)}</span></button>`;
+    return `<button type="button" class="bh-pick${c.id === currentId ? " is-active" : ""}${ok ? "" : " is-locked"}" data-id="${esc(c.id)}"${ok ? "" : " disabled"}>
+      ${face}<span class="bh-pick-name">${esc(c.name)}${ok ? "" : " 🔒"}</span></button>`;
   }).join("");
   ov.innerHTML =
     `<div class="bh-picker-scrim"></div>` +

@@ -52,8 +52,9 @@ export const SHOP_UNLOCKS = [
   { id: "bgm-kengeki", type: "bgm", key: "kengeki", name: "BGM・剣戟",   cost: 25, desc: "対戦ホームのBGMに「剣戟」を追加する。" },
   { id: "bgm-epic",    type: "bgm", key: "epic",    name: "BGM・勇壮",   cost: 25, desc: "対戦ホームのBGMに「勇壮」を追加する。" },
   { id: "bgm-otogi4",  type: "bgm", key: "otogi4",  name: "BGM・おとぎ4", cost: 25, desc: "対戦ホームのBGMに「おとぎ4」を追加する。" },
-  // ── キャラ解禁の受け皿（プラグ）。実キャラを売り出すときは下記の形で1行足すだけ：
-  //   { id:"char-xxx", type:"char", key:"<charId>", name:"○○", cost:80, desc:"…", img:"<icon/portrait>" },
+  // キャラ解禁。key は charId。買うと profile.unlockedCharacters に積まれ、characterMaster で locked:true の
+  // キャラが選択導線（フリー対戦など）で選べるようになる。実キャラを売り出すときは下記の形で1行足すだけ。
+  { id: "char-teacher", type: "char", key: "teacher", name: "篠宮 栞", cost: 80, img: "graphic/chars/teacher/portrait.png", desc: "家庭教師型「篠宮 栞」を仲間に。能力『模範解答』でフリー対戦などに連れていける。" },
 ];
 
 // profile から解禁配列名（type→profileキー）。新規typeを足すときはここに対応を1行。

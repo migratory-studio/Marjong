@@ -352,6 +352,8 @@ body {
 }
 .bh-pick:hover { border-image-source: url("graphic/ui/sc/btn_hover.png"); transform: translateY(-2px); }
 .bh-pick.is-active { border-image-source: url("graphic/ui/sc/btn_hover.png"); box-shadow: 0 0 0 2px var(--accent) inset; }
+.bh-pick.is-locked { opacity: .4; cursor: default; filter: grayscale(.7); }
+.bh-pick.is-locked:hover { transform: none; border-image-source: url("graphic/ui/sc/btn.png"); }
 .bh-pick-face {
   width: 60px; height: 60px; border-radius: 50%; object-fit: cover;
   display: flex; align-items: center; justify-content: center;
@@ -2153,6 +2155,19 @@ body {
   color: #20140a; background: var(--accent); border-radius: 8px; padding: 2px 7px; white-space: nowrap;
 }
 .card-seat-badge.hidden { display: none; }
+
+/* 未解禁キャラのカード（宝珠ショップで解禁前）。グレーアウト＋鍵で「選べない」を示す。 */
+.char-card.locked { opacity: .5; filter: grayscale(.7); cursor: not-allowed; }
+.char-card.locked:hover { transform: none; border-color: color-mix(in srgb, var(--role) 45%, #2a3f34); box-shadow: none; }
+.card-lock { margin-left: auto; flex-shrink: 0; font-size: 18px; line-height: 1; filter: none; }
+.card-lock.hidden { display: none; }
+/* 詳細パネルの解禁案内（未解禁キャラ選択時）。 */
+.detail-lock-note {
+  margin: 0 0 8px; padding: 6px 10px; border-radius: 9px;
+  background: #3a2f1c; border: 1px solid #f6b35255; color: #f6d59a;
+  font-size: 12.5px; font-weight: 700; text-align: center;
+}
+.detail-lock-note b { color: #ffe39a; }
 
 button.primary {
   margin-top: 20px; background: var(--accent); color: #20140a; border: none;
@@ -4797,6 +4812,8 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-cell.deshi { border-color: rgba(224,184,90,.5); }
 .rl-cell-face { width: 64px; height: 64px; }
 .rl-cell-name { font-size: 12px; text-align: center; line-height: 1.2; }
+.rl-cell.locked { filter: grayscale(.75); } /* 未解禁＝鍵・非アクティブ（:disabled の dim と併用） */
+.rl-cell-lock { position: absolute; top: 4px; left: 4px; font-size: 15px; line-height: 1; filter: none; }
 .rl-cell-badge { position: absolute; top: 4px; right: 4px; font-size: 10px; padding: 1px 5px;
   background: #e0b85a; color: #2a1f08; border-radius: 6px; font-weight: 700; }
 .rl-face-fb { display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 24px;
@@ -5550,12 +5567,39 @@ button.primary.danger:hover { color: #ffbcbc; }
 .shop-title { margin: 0; font-size: 30px; font-weight: 800; color: #f6d59a; letter-spacing: .04em; }
 .shop-orbs { font-size: 17px; color: #e9f3ec; }
 .shop-orbs b { color: #ffe39a; font-size: 23px; margin-left: 4px; }
-.shop-lead { margin: 5px 0 10px; color: #c8baa1; font-size: 13.5px; }
-.shop-body { flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow: hidden; }
-.shop-sec { display: flex; flex-direction: column; gap: 9px; }
+.shop-lead { margin: 5px 0 8px; color: #c8baa1; font-size: 13.5px; }
+
+/* カテゴリタブ。ジャンルが増えても横に並べ、入り切らなければ横スクロール（はみ出しても枠は崩さない）。 */
+.shop-tabs {
+  flex: 0 0 auto; display: flex; gap: 8px; align-items: stretch;
+  border-bottom: 1px solid #f6b35226; padding-bottom: 8px; margin-bottom: 2px;
+  overflow-x: auto; overflow-y: hidden; scrollbar-width: thin;
+}
+.shop-tab {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 7px;
+  font-size: 14px; font-weight: 800; color: #cdbfa6; cursor: pointer;
+  background: #1b261f; border: 2px solid #f6b35226; border-radius: 999px; padding: 7px 14px;
+  white-space: nowrap; transition: color .12s, border-color .12s, background .12s;
+}
+.shop-tab:hover { color: #f3ead9; border-color: #f6b35255; }
+.shop-tab.is-on { color: #20140a; background: var(--accent, #f6b352); border-color: #0003; }
+.shop-tab-count {
+  font-size: 11.5px; font-weight: 800; line-height: 1; padding: 3px 7px; border-radius: 999px;
+  background: #233b30; color: #bfe0cf;
+}
+.shop-tab.is-on .shop-tab-count { background: #00000026; color: #20140a; }
+
+/* 本体だけ縦スクロール（ヘッダー／タブ／フッターは固定）。件数が増えてもここで吸収する。 */
+.shop-body {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overflow-x: hidden;
+  padding: 8px 4px 4px; scrollbar-width: thin; scrollbar-color: #f6b35266 transparent;
+}
+.shop-body::-webkit-scrollbar { width: 10px; }
+.shop-body::-webkit-scrollbar-thumb { background: #f6b35255; border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
+.shop-body::-webkit-scrollbar-track { background: transparent; }
 .shop-sec-h { font-size: 18px; font-weight: 800; color: #f6d59a; }
-.shop-sec-sub { font-size: 13px; font-weight: 600; color: #9fb3a7; margin-left: 8px; }
-.shop-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.shop-sec-sub { font-size: 13px; font-weight: 600; color: #9fb3a7; margin: 0 0 10px 2px; }
+.shop-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; align-content: start; }
 
 .shop-card {
   background: #1b261f; border: 2px solid #f6b35233; border-radius: 12px;

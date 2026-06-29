@@ -51,6 +51,13 @@ export async function showMentorSelect(container, { repository, draft, onBack, o
   ensureStyle();
   draft = draft || {};
 
+  // 宝珠ショップ解禁状態。未解禁(locked & 未購入)キャラは師匠選択の母集団から除外する。
+  // ※解禁しても師匠シナリオ/能力テンプレが無ければ師匠にはなれない（mentorReady）。「準備中」表示で
+  //   「解禁すれば師匠にできる」と誤認させないため、未解禁の時点で出さない（解禁後は通常の準備中ゲートに合流）。
+  let unlockedChars = new Set();
+  try { const p = await repository?.loadProfile?.(); unlockedChars = new Set(p?.unlockedCharacters || []); } catch { /* 未ログインは未解禁扱い */ }
+  const isMentorLocked = (c) => !!(c && c.locked) && !unlockedChars.has(c.id);
+
   const state = {
     // 既定はシナリオ実装済みの先頭師匠（未実装師匠が先頭でも選択不可状態で始めない）。
     mentorCharacterId: INITIAL_MENTOR_IDS.find(mentorReady) || INITIAL_MENTOR_IDS[0],
@@ -163,7 +170,7 @@ export async function showMentorSelect(container, { repository, draft, onBack, o
 
     const roles = elt("div", "av-mentor-picker-roles");
     for (const role of MENTOR_ROLES) {
-      const members = CHARACTER_MASTER.filter((c) => c.role === role.id);
+      const members = CHARACTER_MASTER.filter((c) => c.role === role.id && !isMentorLocked(c));
       if (members.length === 0) continue;
       const group = elt("div", "av-mentor-role-group");
       group.style.setProperty("--role", role.color);

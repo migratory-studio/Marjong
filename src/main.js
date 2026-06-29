@@ -198,6 +198,11 @@ let selectedCharId = null;
 // フリー対戦で席0（あなた）に選べる「修行完了弟子」（completedAvatarToChar 済みの CHARACTER 互換）。
 // select-screen を開くたびにプロフィールから読み直す（F6）。CPU 席には出さない＝席0専用。
 let completedRoster = [];
+// 宝珠ショップで解禁済みのキャラ id 集合。select-screen を開くたび loadCompletedRoster で読み直す。
+// characterMaster で locked:true のキャラは、この集合に入るまで選択導線で「鍵・非アクティブ」になる。
+let unlockedCharIds = new Set();
+// キャラが未解禁か（locked かつ未購入）。解禁キャラ以外は常に false。
+const isCharLocked = (c) => !!(c && c.locked) && !unlockedCharIds.has(c.id);
 // キャラ ID 解決：通常ロスター（CHARACTERS）＋修行完了弟子（completedRoster）を一つの窓口で引く。
 // 弟子 ID（completed-*）は CHARACTERS に無いので、これを通すことで席割り/開始/確認が弟子も扱える。
 const charById = (id) => CHARACTERS.find((c) => c.id === id) || completedRoster.find((c) => c.id === id) || null;
@@ -429,9 +434,12 @@ function renderCharDetail(c) {
   const flavor = `${c.bio ? `<div class="detail-bio">${c.bio}</div>` : ""}${c.profile ? `<div class="detail-profile">${c.profile}</div>` : ""}`;
   const sp = c.stats.startingPoints;
   const role = roleDef(c.role);
+  const locked = isCharLocked(c); // 未解禁キャラは解禁案内を出し、選べない旨を示す
+  detail.classList.toggle("locked", locked);
   detail.innerHTML = `
     <div class="detail-portrait-wrap"></div>
     <div class="detail-body">
+      ${locked ? `<div class="detail-lock-note">🔒 未解禁　<b>宝珠ショップ</b>で解禁すると選べます</div>` : ""}
       <div class="detail-reading">${c.reading || ""}</div>
       <div class="detail-name-wrap">
         <span class="detail-name" style="color:${c.color}">${c.name}</span>
@@ -483,7 +491,11 @@ function buildSelectScreen() {
   // カードのハイライト＋席バッジを現在の席割りに合わせて更新。
   function refreshCards() {
     for (const [id, card] of cardById) {
-      const label = seatLabelOf(id);
+      const locked = isCharLocked(charById(id));
+      card.classList.toggle("locked", locked);
+      const lock = card.querySelector(".card-lock");
+      if (lock) lock.classList.toggle("hidden", !locked);
+      const label = locked ? null : seatLabelOf(id); // 未解禁は着席しないので選択ハイライトも出さない
       card.classList.toggle("selected", label !== null);
       const badge = card.querySelector(".card-seat-badge");
       badge.textContent = label || "";
@@ -510,6 +522,7 @@ function buildSelectScreen() {
   // アクティブ席にキャラを着席させる。同キャラが他席にいれば自動で外す（重複防止）。
   // 修行完了弟子（completed-*）は「あなた席（席0）」専用＝CPU/相方/チームには出さない（F6）。
   function assignToActiveSeat(c) {
+    if (isCharLocked(c)) { renderCharDetail(c); return; } // 未解禁キャラはどの席にも着けない（鍵・非アクティブ）
     if (c.isCompletedAvatar) {
       if (selectedTeamBattle || selectedPairBattle) return; // 弟子は通常フリー対戦の席0だけ
       activeSeat = 0;
@@ -610,6 +623,11 @@ function buildSelectScreen() {
     const badge = document.createElement("span");
     badge.className = "card-seat-badge hidden";
     card.appendChild(badge);
+    // 未解禁キャラの鍵オーバーレイ（表示の出し分けは refreshCards で解禁状態に同期）。
+    const lock = document.createElement("span");
+    lock.className = "card-lock hidden";
+    lock.textContent = "🔒";
+    card.appendChild(lock);
     card.onmouseenter = () => { audio.playClick(); renderCharDetail(c); };
     card.onclick = () => assignToActiveSeat(c);
     cardById.set(c.id, card);
@@ -905,6 +923,7 @@ function goScreen(id) {
 async function loadCompletedRoster() {
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 未ログイン/読込失敗は弟子なし */ }
+  unlockedCharIds = new Set(profile?.unlockedCharacters || []); // 宝珠ショップの解禁状態を反映（鍵カードの解放）
   completedRoster = (profile?.completedAvatars || []).map((ca) => completedAvatarToChar(ca));
   // 選択中の弟子が（入替などで）消えていたら選択解除＝stale な selectedCharId を残さない。
   if (selectedCharId && !charById(selectedCharId)) selectedCharId = null;
@@ -1901,6 +1920,7 @@ async function openRoguelite() {
   audio.playSelectBgm();   // 選択画面のBGMへ戻す
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 未ログインでも遊べる */ }
+  unlockedCharIds = new Set(profile?.unlockedCharacters || []); // 宝珠ショップの解禁状態（鍵カードの解放）
   const roster = (profile?.completedAvatars || []).map((ca) => completedAvatarToChar(ca));
   if (roster.length) {
     try { await charImages.load(roster); } catch { /* 画像無しはフォールバック */ }
@@ -1935,6 +1955,7 @@ async function openRoguelite() {
     showRoguelite(el("roguelite-screen"), {
       deshiRoster: roster,
       characters: CHARACTERS,
+      unlockedIds: unlockedCharIds, // 未解禁キャラ（locked）はパーティ候補で鍵・非アクティブに
       charImages,
       bestFloor: best,
       carry: carryCards, // 引き継ぎ中のバフ（表示用）
@@ -3331,7 +3352,8 @@ async function startGame() {
   if (!human) return; // 弟子ロスター読込前の競合等で未解決なら開始しない（クラッシュ防止）
   const picks = cpuPicks.slice(0, selectedPlayers - 1);
   const usedIds = new Set([human.id, ...picks.filter(Boolean)]);
-  const randomPool = shuffled(CHARACTERS.filter((c) => !usedIds.has(c.id)));
+  // 未解禁キャラ（宝珠ショップ前）はCPU相手の母集団にも出さない（解禁前のお披露目もしない）。
+  const randomPool = shuffled(CHARACTERS.filter((c) => !usedIds.has(c.id) && !isCharLocked(c)));
   const cpus = picks.map((id) =>
     id ? CHARACTERS.find((c) => c.id === id) : randomPool.shift()
   );
@@ -3473,7 +3495,7 @@ function startOnlineMatch(charId) {
   selectedPlayers = 4;
   selectedRounds = 1; // テスト中は東風戦固定
   const human = CHARACTERS.find((c) => c.id === charId) || CHARACTERS[0];
-  const cpus = shuffled(CHARACTERS.filter((c) => c.id !== human.id)).slice(0, 3);
+  const cpus = shuffled(CHARACTERS.filter((c) => c.id !== human.id && !isCharLocked(c))).slice(0, 3); // 未解禁キャラはCPU相手に出さない
   const order = [human, ...cpus];
   const seated = order.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
   for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
@@ -3925,9 +3947,9 @@ function startTeamBattleGame() {
   const myMembers = [selectedCharId, cpuPicks[0], cpuPicks[1]]
     .map((id) => CHARACTERS.find((c) => c.id === id));
 
-  // CPU チームを残りキャラからランダム割り当て（1チーム3人）。
+  // CPU チームを残りキャラからランダム割り当て（1チーム3人）。未解禁キャラは出さない。
   const usedIds = new Set(myMembers.map((c) => c.id));
-  const pool = shuffled(CHARACTERS.filter((c) => !usedIds.has(c.id)));
+  const pool = shuffled(CHARACTERS.filter((c) => !usedIds.has(c.id) && !isCharLocked(c)));
   const cpuTeams = [];
   for (let t = 0; t < selectedTeamCount - 1; t++) {
     cpuTeams.push(pool.splice(0, 3));
@@ -3993,9 +4015,9 @@ function startPairBattleGame(partnerId) {
   // 相方が未指名（おまかせ）なら残りからランダムに1人。
   let partner = partnerId ? CHARACTERS.find((c) => c.id === partnerId) : null;
 
-  // 敵ペア2人＋（必要なら相方）を、自分と被らないようランダム割り当て。
+  // 敵ペア2人＋（必要なら相方）を、自分と被らないようランダム割り当て。未解禁キャラは出さない。
   const usedIds = new Set([me.id, ...(partner ? [partner.id] : [])]);
-  const pool = shuffled(CHARACTERS.filter((c) => !usedIds.has(c.id)));
+  const pool = shuffled(CHARACTERS.filter((c) => !usedIds.has(c.id) && !isCharLocked(c)));
   if (!partner) partner = pool.shift();
   const enemyA = pool.shift();
   const enemyB = pool.shift();
