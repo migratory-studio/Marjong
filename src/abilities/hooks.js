@@ -54,10 +54,20 @@ export const Hooks = {
   //   ctx: { player }  -> return array of { kind, level } (level 0..1) or undefined.
   PROVIDE_DANGER_INFO: "provideDangerInfo",
 
-  // Provide 牌効率トップ3の打牌候補 for the UI (模範解答). Only meaningful on the
-  // owner's own discard turn (14-tile hand) and 2シャンテン以上.
-  //   ctx: { player }  -> return array of { kind, rank:1..3 } or undefined.
+  // Provide 牌効率トップNの打牌候補 for the UI (模範解答). Only meaningful on the
+  // owner's own discard turn (14-tile hand) and shantenThreshold 以上.
+  //   ctx: { player }  -> return array of { kind, rank:1..N } or undefined.
   PROVIDE_BEST_DISCARDS: "provideBestDiscards",
+
+  // Provide トップ捲り条件 for the UI (模範解答 Lv7+). 卓上HUD に「首位を捲るには
+  // どんな和了が要るか」を板書するための材料。盤面のスコアから算出する。
+  //   ctx: { player }  -> return { leading, gapToTop, lines:[...] } or undefined.
+  PROVIDE_COMEBACK_PLAN: "provideComebackPlan",
+
+  // Provide 「押すべき/オリるべき」状況判断 for the UI (模範解答 Lv10). 自分のシャンテン・
+  // 相手の脅威・点況・残り山から、押し引きの指針を一言で示す。
+  //   ctx: { player }  -> return { verdict:'push'|'fold'|'hold', label, reason } or undefined.
+  PROVIDE_PUSHFOLD: "providePushFold",
 
   // ---- notify hooks ----
   ON_HAND_START: "onHandStart", // new hand dealt

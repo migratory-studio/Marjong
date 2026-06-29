@@ -199,11 +199,60 @@ const IRON_GUARD_LEVELS = [
     unlockDescription: "身代わりの火——守りが、攻めに変わる。焔から託された火が、ビビ自身の手に灯る殻破りの極み。満貫以上の和了が1.5倍。" },
 ];
 
+// 模範解答（篠宮 栞・lv-model-answer）— 牌効率トップ候補を手牌に灯す家庭教師型。
+// 基準帯 Lv1〜5 ＝「指し示す精度の完成」: 灯す候補数 candidateCount が 1→3 へ、
+// 効果が残る局面の閾値 shantenThreshold が 3→2 へ下がる（Lv5＝フリー対戦の栞＝
+// ModelAnswerAbility 既定値と完全一致：候補3・2シャンテン以上で点灯／イーシャンテンで消える）。
+// 超越帯 Lv6〜10 ＝「読みが言葉になる」: 効果がイーシャンテンまで残り（threshold=1）、
+// Lv7 で“トップ捲り条件”を卓上に板書し（showComeback）、Lv9 で候補が5つに、
+// Lv10 で“押すべき/オリるべき”の状況判断まで示す（showPushFold）——黒板の前で最善を
+// いくらでも示せた教師が、勝負所の判断そのものを言葉にできるようになる到達。
+// runtimeParams の契約は ModelAnswerAbility のコンストラクタと対応:
+//   candidateCount    … 手牌に灯す打牌候補の数（①②③…・1〜5）
+//   shantenThreshold  … 効果が残る最小シャンテン（実シャンテンが これ以上＝手が深いほど 点灯。
+//                        3=サンシャンテン以上／2=リャンシャンテン以上／1=イーシャンテン以上＝聴牌の手前まで。
+//                        既存能力 abilityMaster の正典表記「2シャンテン以上で点灯」と同じ向き）
+//   showComeback      … トップ捲り条件を卓上HUDに板書（Lv7+）
+//   showPushFold      … 「押すべき/オリるべき」の状況判断を表示（Lv10）
+const MODEL_ANSWER_LEVELS = [
+  { skillLevel: 1,  soulCost: 0,    runtimeParams: { candidateCount: 1, shantenThreshold: 3, showComeback: false, showPushFold: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "サンシャンテン以上のとき、最善の打牌1つを手牌に灯す（テンパイへ近づくと消える）。",
+    unlockDescription: "習得。手が大きく崩れた局面で、最善の一打だけをそっと指し示す。" },
+  { skillLevel: 2,  soulCost: 400,  runtimeParams: { candidateCount: 1, shantenThreshold: 2, showComeback: false, showPushFold: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "リャンシャンテン以上のとき、最善の打牌1つを灯す。",
+    unlockDescription: "寄り添える局面が広がる。リャンシャンテンでも最善手が見えるように。" },
+  { skillLevel: 3,  soulCost: 800,  runtimeParams: { candidateCount: 2, shantenThreshold: 3, showComeback: false, showPushFold: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "サンシャンテン以上のとき、有効な打牌の候補トップ2を灯す。",
+    unlockDescription: "示せる候補が2つに。迷いどころの比較がしやすくなる。" },
+  { skillLevel: 4,  soulCost: 1400, runtimeParams: { candidateCount: 2, shantenThreshold: 2, showComeback: false, showPushFold: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "リャンシャンテン以上のとき、候補トップ2を灯す。",
+    unlockDescription: "リャンシャンテンでも候補2つを示せる。寄り添いの精度が上がる。" },
+  { skillLevel: 5,  soulCost: 2200, runtimeParams: { candidateCount: 3, shantenThreshold: 2, showComeback: false, showPushFold: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "リャンシャンテン以上のとき、候補トップ3を灯す（フリー対戦の栞と同等）。",
+    unlockDescription: "完成基準。候補トップ3を①②③で板書する、家庭教師の指し示しの完成。" },
+  { skillLevel: 6,  soulCost: 2800, runtimeParams: { candidateCount: 3, shantenThreshold: 1, showComeback: false, showPushFold: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "イーシャンテンまで候補トップ3が残る（勝負所の手前まで寄り添う）。",
+    unlockDescription: "超越域へ。イーシャンテンまで助言が消えない——最後の一歩まで隣にいる。" },
+  { skillLevel: 7,  soulCost: 3600, runtimeParams: { candidateCount: 3, shantenThreshold: 1, showComeback: true, showPushFold: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "候補トップ3（イーシャンテンまで）。さらにトップ捲りの条件（満貫直撃・〇〇点ツモ等）を卓上に板書する。",
+    unlockDescription: "勝ち筋を言葉に。首位を捲るための条件を、その都度たしかめて示してくれる。" },
+  { skillLevel: 8,  soulCost: 4600, runtimeParams: { candidateCount: 4, shantenThreshold: 1, showComeback: true, showPushFold: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "候補トップ4（イーシャンテンまで）。トップ捲り条件を板書。",
+    unlockDescription: "示せる候補が4つに。広い選択肢から最善を見比べられる。" },
+  { skillLevel: 9,  soulCost: 5800, runtimeParams: { candidateCount: 5, shantenThreshold: 1, showComeback: true, showPushFold: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "候補トップ5（イーシャンテンまで）。トップ捲り条件を板書。",
+    unlockDescription: "示せる候補が5つに。手なりの最善が、ほぼ余さず見える。" },
+  { skillLevel: 10, soulCost: 7200, runtimeParams: { candidateCount: 5, shantenThreshold: 1, showComeback: true, showPushFold: true }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "候補トップ5・トップ捲り条件に加え、「押すべき／オリるべき」の状況判断まで示す——模範解答の極み。",
+    unlockDescription: "最終解。最善手も勝ち筋も、そして“いま押すか退くか”までも言葉になる。教壇の達観が、勝負の場に降りてくる。" },
+];
+
 export const SKILL_LEVEL_MASTER = {
   "lv-lucky-draw": LUCKY_DRAW_LEVELS,
   "lv-gamble-bet": GAMBLE_BET_LEVELS,
   "lv-amber-shield": AMBER_SHIELD_LEVELS,
   "lv-iron-guard": IRON_GUARD_LEVELS,
+  "lv-model-answer": MODEL_ANSWER_LEVELS,
   "lv-chunchan": buildTable([
     "中張牌の速攻が発動する基礎。",
     "タンヤオ移行が安定する。",

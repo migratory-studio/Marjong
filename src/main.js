@@ -1,7 +1,7 @@
 // Controller: select screen -> game loop. Drives CPU turns on timers and routes
 // human input. Engine stays synchronous; this file owns orchestration & timing.
 import { Game, Phase, Events } from "./core/game.js";
-import { CHARACTERS, instantiateAbilities } from "./characters/characters.js";
+import { CHARACTERS, instantiateAbilities, setModelAnswerLevelOverride, getModelAnswerLevelOverride } from "./characters/characters.js";
 import { CHARACTER_MASTER, ROLE_MASTER } from "./data/characterMaster.js";
 import { applyPortraitCrop, installIconPosStyles } from "./data/imagePos.js";
 import { abilityDef } from "./data/abilityMaster.js";
@@ -4803,6 +4803,32 @@ function localModelAnswer(p) {
   return ranked.slice(0, 3).map((e, i) => ({ kind: e.kind, rank: i + 1 }));
 }
 
+// 模範解答（栞 Lv7+/Lv10）の卓上HUD。トップ捲り条件（comebackPlan）と押し引き判断
+// （pushFoldAdvice）を左上に板書する。能力が該当Lvでないときは両者 null ＝HUDは隠れる。
+// オフラインのみ（オンラインのレプリカでは能力を回さない＝栞は Lv5 想定で対象外）。
+function updateModelAnswerHud() {
+  const host = el("model-advice");
+  if (!host) return;
+  const me = !online && game ? game.players?.[humanIndex] : null;
+  const plan = me ? game.abilities.comebackPlan(me) : null;
+  const pf = me ? game.abilities.pushFoldAdvice(me) : null;
+  if (!plan && !pf) { host.classList.add("hidden"); host.innerHTML = ""; return; }
+  let html = "";
+  if (plan) {
+    html += `<div class="ma-block ${plan.leading ? "ma-lead" : "ma-comeback"}">` +
+      `<div class="ma-title">栞の板書 — トップ捲り</div>` +
+      plan.lines.map((l) => `<div class="ma-line">${l}</div>`).join("") + `</div>`;
+  }
+  if (pf) {
+    html += `<div class="ma-block ma-pf ma-${pf.verdict}">` +
+      `<div class="ma-title">押し引き</div>` +
+      `<div class="ma-verdict">${pf.label}</div>` +
+      `<div class="ma-reason">${pf.reason}</div></div>`;
+  }
+  host.innerHTML = html;
+  host.classList.remove("hidden");
+}
+
 function render() {
   renderer.setHighlights({
     riichiMode,
@@ -4813,6 +4839,7 @@ function render() {
   });
   renderer.render();
   updateHpBoard(); // 右側の相棒ボードのHP/手番ハイライトを最新状態に同期
+  updateModelAnswerHud(); // 栞 Lv7+/Lv10 の卓上HUD（捲り条件・押し引き）を同期
 }
 
 // ----------------------------------------------------------------- results
@@ -6186,7 +6213,12 @@ function showDebugMenu() {
       <div class="dbg-row"><label>役満 特別演出</label><select class="dbg-ymtitle">${opts(DBG_YM_TITLE)}</select><select class="dbg-ym">${opts(DBG_YAKUMAN)}</select>
         <button type="button" class="dbg-btn dbg-mini" data-fx="yakuman-ron">ロン</button>
         <button type="button" class="dbg-btn dbg-mini" data-fx="yakuman-tsumo">ツモ</button></div>
-      <div class="dbg-note">※ ?debug=tsumoreba 起動時のみ表示</div>
+      <div class="dbg-sec">栞 模範解答スキルLv</div>
+      <div class="dbg-row"><label>Lv（次の対局から）</label><select class="dbg-ma-lv">
+        <option value="">既定（Lv5）</option>
+        ${[1,2,3,4,5,6,7,8,9,10].map((n) => `<option value="${n}">Lv${n}</option>`).join("")}
+      </select></div>
+      <div class="dbg-note">※ ?debug=tsumoreba 起動時のみ表示／栞でフリー対戦すると反映</div>
     </div>
     <div class="naki-fx" id="dbg-naki-host"></div>
     <div class="ability-cutin hidden" id="dbg-cutin-host"></div>`;
@@ -6197,6 +6229,14 @@ function showDebugMenu() {
   const ymTitleSel = ov.querySelector(".dbg-ymtitle");
   const cutinHost = ov.querySelector("#dbg-cutin-host");
   const nakiHost = ov.querySelector("#dbg-naki-host");
+
+  // 栞 模範解答スキルLv の強制（次の対局から反映）。現在値を初期選択に反映。
+  const maLvSel = ov.querySelector(".dbg-ma-lv");
+  if (maLvSel) {
+    const cur = getModelAnswerLevelOverride();
+    maLvSel.value = cur == null ? "" : String(cur);
+    maLvSel.onchange = () => setModelAnswerLevelOverride(maLvSel.value === "" ? null : Number(maLvSel.value));
+  }
   const CENTER = { left: "50%", top: "50%" };
   const curChar = () => CHARACTER_MASTER.find((c) => c.id === charSel.value) || CHARACTER_MASTER[0];
 

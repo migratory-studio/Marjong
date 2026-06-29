@@ -2259,6 +2259,37 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   pointer-events: none;
 }
 
+/* 模範解答（栞 Lv7+/Lv10）の卓上HUD。卓の左上に小さな黒板風パネルで板書する。
+   手牌は卓の下端なので上部に置いて被らせない。pointer-events:none で打牌操作を妨げない。 */
+.model-advice {
+  position: absolute; top: 10px; left: 10px; z-index: 24;
+  display: flex; flex-direction: column; gap: 6px;
+  max-width: 220px; pointer-events: none;
+  font-size: 12px; line-height: 1.35;
+}
+.model-advice.hidden { display: none; }
+.model-advice .ma-block {
+  background: linear-gradient(180deg, #14302a, #0e231f);
+  border: 1px solid #2f9e7e; border-radius: 8px;
+  padding: 6px 9px; color: #eaf6f1;
+  box-shadow: 0 3px 10px #0007;
+}
+.model-advice .ma-title {
+  font-size: 10px; font-weight: 800; letter-spacing: .04em;
+  color: #7fe0c2; margin-bottom: 3px;
+}
+.model-advice .ma-line { white-space: nowrap; }
+.model-advice .ma-comeback .ma-line:first-of-type { color: #f6d24a; font-weight: 700; }
+.model-advice .ma-lead .ma-line { color: #f6d24a; white-space: normal; }
+.model-advice .ma-pf .ma-verdict { font-size: 18px; font-weight: 900; letter-spacing: .06em; }
+.model-advice .ma-pf .ma-reason { font-size: 11px; color: #cfe7df; white-space: normal; margin-top: 2px; }
+.model-advice .ma-push { border-color: #e0533a; }
+.model-advice .ma-push .ma-verdict { color: #ff8a6b; }
+.model-advice .ma-fold { border-color: #5b8def; }
+.model-advice .ma-fold .ma-verdict { color: #9fc0ff; }
+.model-advice .ma-hold { border-color: #f6c14a; }
+.model-advice .ma-hold .ma-verdict { color: #ffd96b; }
+
 .side { width: 320px; flex: 0 0 320px; display: flex; flex-direction: column; min-height: 0; }
 .side h3 { margin: 8px 0; color: var(--muted); font-size: 14px; text-transform: uppercase; letter-spacing: .08em; }
 

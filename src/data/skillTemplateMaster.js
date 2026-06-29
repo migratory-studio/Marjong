@@ -105,6 +105,25 @@ export const SKILL_TEMPLATE_MASTER = [
   // 育成テンプレ。フリー対戦の凌雲は characterMaster の params:{}＝コンストラクタ既定値(=Lv5)で
   // 動くため現挙動には影響しない。これは育成（凌雲師匠化／マイキャラがこの能力を選ぶ）で
   // lv-amber-shield の Lv 差分（超越帯 Lv6〜10＝天衣無縫）へ到達させるための結線。
+  // ---- 篠宮 栞（補助・支援系／宝珠ショップ解禁の家庭教師）----
+  // 育成テンプレ。フリー対戦の栞は characterMaster の params:{}＝コンストラクタ既定値(=Lv5)で
+  // 動くため現挙動には影響しない。これは育成（栞のスキルLvを上げる導線が将来できたとき）で
+  // lv-model-answer の Lv 差分（超越帯 Lv6〜10＝トップ捲り条件・押し引き判断）へ到達させるための
+  // 結線。栞は INITIAL_MENTOR_IDS に居ないため、現状どの師匠ピッカーにも出ない（足場のみ）。
+  {
+    skillTemplateId: "tmpl-model-answer",
+    runtimeAbilityId: "model-answer",
+    name: "模範解答",
+    description: "牌効率の最善手を手牌に①②③で指し示す家庭教師型。シャンテンが深い局面ほど寄り添い、勝負所は自分で打たせる。",
+    familyId: "support",
+    paramAffinity: ["read", "speed"], // 最善手を読む＝読み(主)・速度(副)
+    rarity: "rare",
+    mentorCharacterIds: ["teacher"],
+    integrationTier: "hook_only",
+    levelTableId: "lv-model-answer",
+    initialSkillLevel: 1,
+    isEnabled: true,
+  },
   {
     skillTemplateId: "tmpl-amber-shield",
     runtimeAbilityId: "amber-shield",
