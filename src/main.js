@@ -4604,19 +4604,26 @@ function showHumanActions() {
   // オンラインは権威が送った abilityStatus を表示する。手動発動はテスト中は未対応（intent 化は後段）
   // ＝発動ボタンは出さずチップ表示のみ。受動能力は権威側で従来どおり効く。
   const abilityList = online ? (online.opts?.abilityStatus || []) : game.abilityStatus(idx);
+  // 能力名だけだと初見は「何が起きてるか」が分からない（UXテスト指摘）。説明を native ツールチップで添える。
+  const abDesc = (x) => { const d = abilityDef(x.id); return d ? `${d.name}：${d.desc}` : (x.name || ""); };
   for (const a of abilityList) {
     // visible===false の能力はボタン自体を描画しない（zero-search の1シャンテン外など）。
     if (a.visible === false) continue;
     if (a.activation === "passive") {
       const chip = mkPassiveIndicator(a);
       chip.classList.add("ability-chip", "passive");
+      chip.title = abDesc(a);
       abilityBar.appendChild(chip);
     } else if (a.active) {
-      abilityBar.appendChild(mkChip(`発動中: ${a.name}`, "ability-chip active"));
+      const chip = mkChip(`発動中: ${a.name}`, "ability-chip active");
+      chip.title = abDesc(a);
+      abilityBar.appendChild(chip);
     } else {
       // remaining-count UI sits above the activation button (not inline in it).
       if (a.maxCharges !== Infinity) {
-        abilityBar.appendChild(mkChip(`${a.name}　残り ${a.charges}/${a.maxCharges}`, "ability-remain"));
+        const rc = mkChip(`${a.name}　残り ${a.charges}/${a.maxCharges}`, "ability-remain");
+        rc.title = abDesc(a);
+        abilityBar.appendChild(rc);
       }
       const btn = mkBtn(`発動: ${a.name}`, "btn-ability", () => {
         // recall-deal needs a target: enter a "pick a river tile" selection mode
@@ -4655,6 +4662,7 @@ function showHumanActions() {
         fireAbility(idx, a.id); // 無対象能力: 即発動（オンラインは intent.ability）
       });
       if (!a.canActivate) btn.disabled = true;
+      btn.title = abDesc(a); // 何の能力かをホバーで説明（初見の「これ何？」を解消）
       // ゼロ・リサーチが表示中だが発動不可＝生有効牌0（グレーアウト）の合図。
       if (a.id === "zero-search" && a.visible && !a.canActivate) luxGrayHint = true;
       abilityBar.appendChild(btn);
