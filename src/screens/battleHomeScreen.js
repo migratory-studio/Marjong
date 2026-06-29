@@ -246,10 +246,12 @@ export async function showBattleHome(container, opts = {}) {
     wrap.innerHTML = "";
     wrap.appendChild(portraitNode(current));
     if (partnerEl) partnerEl.textContent = current?.name || "—";
-    // 「一緒に」(キャラ別局数)・絆は連携時のみ。未連携は「—」（計上もしない方針 [[companion-bond-system]]）。
+    // 「一緒に」(キャラ別局数)・絆。未ログイン時もダッシュ(—)ではなく“始まりの言葉”で見せる
+    // （数値レス方針 [[bond-display-hybrid-policy]]。ダッシュは「意味不明」とUXテストで指摘されたため、
+    //   これから関係が育つことを言葉で伝える。計上は連携時のみ＝ [[companion-bond-system]] は不変）。
     const b = profile?.companionBonds?.[current.id];
-    if (togetherEl) togetherEl.textContent = loggedIn ? `${b?.matches ?? 0} 局` : "—";
-    if (bondEl) bondEl.textContent = loggedIn ? bondBandLabel(b?.level ?? 1) : "—";
+    if (togetherEl) togetherEl.textContent = loggedIn ? `${b?.matches ?? 0} 局` : "これから";
+    if (bondEl) bondEl.textContent = loggedIn ? bondBandLabel(b?.level ?? 1) : "出会ったばかり";
     // 数値なしの細ゲージ＝次の絆までの進捗（連携時のみ。未連携は隠す）。
     if (bondGaugeEl && bondFillEl) {
       bondGaugeEl.hidden = !loggedIn;

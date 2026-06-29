@@ -5600,6 +5600,7 @@ button.primary.danger:hover { color: #ffbcbc; }
 .shop-orbs { font-size: 17px; color: #e9f3ec; }
 .shop-orbs b { color: #ffe39a; font-size: 23px; margin-left: 4px; }
 .shop-lead { margin: 5px 0 8px; color: #c8baa1; font-size: 13.5px; }
+.shop-lead-hint { color: #f6d59a; font-weight: 700; margin-left: 6px; }
 
 /* カテゴリタブ。ジャンルが増えても横に並べ、入り切らなければ横スクロール（はみ出しても枠は崩さない）。 */
 .shop-tabs {

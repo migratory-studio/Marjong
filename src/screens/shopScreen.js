@@ -79,7 +79,7 @@ export async function showShop(container, opts = {}) {
         <h1 class="shop-title">宝珠ショップ</h1>
         <div class="shop-orbs">所持 宝珠 <b id="shop-orbs">0</b></div>
       </header>
-      <p class="shop-lead">宝珠を捧げ、楼光の館に挑む力を恒久に養う。背景やBGMの解禁もここで。</p>
+      <p class="shop-lead">宝珠を捧げ、楼光の館に挑む力を恒久に養う。背景やBGMの解禁もここで。<span class="shop-lead-hint">宝珠は「楼光の館」を踏破すると手に入る。</span></p>
       <nav class="shop-tabs" id="shop-tabs" role="tablist" aria-label="ショップ カテゴリ"></nav>
       <div class="shop-body" id="shop-body">
         <div class="shop-sec-sub" id="shop-sec-sub"></div>
