@@ -6432,7 +6432,11 @@ function showGameOver() {
     btns.appendChild(mkBtn("ロビーに戻る", "btn-tsumo", () => leave("online-screen")));
     btns.appendChild(mkBtn("トップへ", "btn-skip", () => leave("home-screen")));
   } else {
-    overlay.querySelector(".go-buttons").appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+    // フリー対戦の対局後は「相棒のいる対戦ホーム」へ戻せる＝loopを閉じる（UXテスト最重要指摘）。
+    // 戻ると renderBattleHome が絆帯/出迎えセリフを引き直す＝「一緒に打った結果」が相棒に滲んで見える。
+    const btns = overlay.querySelector(".go-buttons");
+    btns.appendChild(mkBtn("🏠 対戦ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
+    btns.appendChild(mkBtn("もう一度", "btn-skip", () => location.reload()));
   }
 }
 
@@ -6689,7 +6693,8 @@ function showTeamBattleGameOver() {
     btnsT.parentElement.insertBefore(note, btnsT);
     btnsT.appendChild(mkBtn("順位表へ", "btn-tsumo", () => { overlay.classList.add("hidden"); ctx.onResult?.(result, "continue"); }));
   } else {
-    btnsT.appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+    btnsT.appendChild(mkBtn("🏠 対戦ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
+    btnsT.appendChild(mkBtn("もう一度", "btn-skip", () => location.reload()));
   }
 }
 
@@ -6846,7 +6851,8 @@ function showPairBattleGameOver() {
     btnsP.parentElement.insertBefore(note, btnsP);
     btnsP.appendChild(mkBtn("順位表へ", "btn-tsumo", () => { overlay.classList.add("hidden"); ctx.onResult?.(result, "continue"); }));
   } else {
-    btnsP.appendChild(mkBtn("もう一度", "btn-tsumo", () => location.reload()));
+    btnsP.appendChild(mkBtn("🏠 対戦ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
+    btnsP.appendChild(mkBtn("もう一度", "btn-skip", () => location.reload()));
   }
 }
 
