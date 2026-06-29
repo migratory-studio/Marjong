@@ -11,6 +11,7 @@ import {
   enemyUnitForFloor, rogueliteDamageDeltas, explainRogueliteDamage, lethalCapFrac, hanTierMul, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, serializeRun, deserializeRun, DAMAGE_SCALE,
   carrySlotsFor, excludedCardIds, rollDraft, allPartyDown, healParty, rollHangover,
   shopStock, buyShopItem, shrineOffers,
+  rollTableSize, tableSizeLabel, isSoloTable, TABLE_SIZE_DIST, ABILITY_SOURCE_MAX, gainAbilitySource, spendAbilitySource,
 } from "../src/roguelite/run.js";
 import { ROGUELITE_FLOOR_MASTER, floorTypeById, drawFloorChoices, coinsForClear, forgeCost, SKILL_LEVEL_CAP } from "../src/data/rogueliteFloorMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "../src/data/rogueliteItemMaster.js";
@@ -255,8 +256,9 @@ ok(coinsForClear({ floor: 5, kind: "named" }) > coinsForClear({ floor: 5, kind: 
 {
   const r = newRun(party, "shop");
   const stock = shopStock(r, makeRng("s"));
-  eq(stock.length, 5, "ショップ在庫＝バフ3＋回復＋最大HP");
+  eq(stock.length, 6, "ショップ在庫＝バフ2＋道具1＋回復＋最大HP＋能力の源");
   ok(stock.some((it) => it.type === "heal") && stock.some((it) => it.type === "maxhp"), "回復/最大HP商品あり");
+  ok(stock.some((it) => it.type === "source"), "能力の源が並ぶ（上限未満）");
   ok(stock.every((it) => it.price > 0), "全商品に値段");
   r.coins = 0;
   ok(!buyShopItem(r, stock[0]), "光貨不足は購入不可");
@@ -1220,6 +1222,48 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   if (realComing) ok(!canOrbUnlock(realComing, [firstChapterId()], [], 99999), "実マスタ大2は宝珠でも開けない");
   // chaptersWithState は orbUnlocked フラグを付ける。
   ok("orbUnlocked" in chaptersWithState([], [])[0], "chaptersWithState が orbUnlocked を付与");
+}
+
+// ---------- 卓サイズ（4麻/3麻/2麻）----------
+{
+  eq(tableSizeLabel(4), "四麻", "卓サイズ表記4");
+  eq(tableSizeLabel(3), "三麻", "卓サイズ表記3");
+  eq(tableSizeLabel(2), "二麻", "卓サイズ表記2");
+  ok(!isSoloTable(4) && isSoloTable(3) && isSoloTable(2), "ソロ判定（3/2のみ）");
+  // 分布 6:3:1 を多数試行で概ね満たす（決定論rng）。
+  const rng = makeRng("size");
+  const cnt = { 2: 0, 3: 0, 4: 0 };
+  for (let i = 0; i < 6000; i++) cnt[rollTableSize(rng, TABLE_SIZE_DIST.battle)]++;
+  ok(cnt[4] > cnt[3] && cnt[3] > cnt[2], "4麻 > 3麻 > 2麻 の出現頻度");
+  ok(cnt[4] > 2500 && cnt[4] < 3700, "4麻 ≒ 6/10");
+  // ボス分布は 4 or 3 のみ（2は出ない）。
+  const brng = makeRng("boss");
+  let boss2 = 0;
+  for (let i = 0; i < 2000; i++) if (rollTableSize(brng, TABLE_SIZE_DIST.boss) === 2) boss2++;
+  eq(boss2, 0, "ボスは二麻にならない");
+}
+
+// ---------- 能力の源（初期1・上限3・休息/ショップ回復）----------
+{
+  const r = newRun(party, "src");
+  eq(r.abilitySource, 1, "初期は1個");
+  eq(gainAbilitySource(r, 1), 2, "回復で+1");
+  eq(gainAbilitySource(r, 5), ABILITY_SOURCE_MAX, "上限3を超えない");
+  ok(spendAbilitySource(r, 1), "消費成立");
+  eq(r.abilitySource, 2, "消費で-1");
+  r.abilitySource = 0;
+  ok(!spendAbilitySource(r, 1), "0個では消費不可");
+  // serialize 往復で保持。
+  r.abilitySource = 2;
+  const back = deserializeRun(serializeRun(r), (id) => party.find((p) => p.id === id)?.char || party[0].char);
+  eq(back.abilitySource, 2, "セーブ往復で能力の源を保持");
+  // 上限到達ならショップ在庫に源は並ばない。
+  const full = newRun(party, "full"); full.abilitySource = ABILITY_SOURCE_MAX;
+  ok(!shopStock(full, makeRng("x")).some((it) => it.type === "source"), "上限なら源は売り場に出ない");
+  // 上限到達で買おうとしても光貨を払わない。
+  full.coins = 999;
+  ok(!buyShopItem(full, { type: "source", price: 30 }), "上限では源を購入不可");
+  eq(full.coins, 999, "購入不可なら光貨は減らない");
 }
 
 console.log(`roguelite.mjs: ${n} checks passed`);

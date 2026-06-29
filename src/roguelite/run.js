@@ -14,7 +14,7 @@ import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { paramsFromLv, makeRng } from "../autobattle/autoBattle.js";
 import { freshMods, applyCard, clusterTakeCapFrac, clusterTakeRaiseFrac } from "./cardEffects.js";
 import { ROGUELITE_CARD_MASTER, drawCards, cardById } from "../data/rogueliteCardMaster.js";
-import { SHOP_PRICE, SHOP_HEAL_PRICE, SHOP_MAXHP_PRICE } from "../data/rogueliteFloorMaster.js";
+import { SHOP_PRICE, SHOP_HEAL_PRICE, SHOP_MAXHP_PRICE, SHOP_SOURCE_PRICE } from "../data/rogueliteFloorMaster.js";
 import { itemMods } from "./itemEffects.js";
 import { drawItems } from "../data/rogueliteItemMaster.js";
 import { biomeMods } from "../data/rogueliteBiomeMaster.js";
@@ -170,6 +170,36 @@ export function isBossFloor(floor = 1) {
   return floor % BOSS_EVERY === 0;
 }
 
+// ---- 卓サイズ（同卓人数）----
+// 4=ペア戦(2v2・相棒と着卓) / 3=三麻ソロ(1人で2敵) / 2=二麻ソロ(1人で1敵)。
+// 戦闘マスは「別マス」として 4麻/3麻/2麻 が進路に並ぶ（分布 6:3:1）。ボスは 4 or 3。
+// ソロ(3/2)は相棒がいない代わりに、点負け(=1位を取れない)ペナルティが2倍になる。
+export const TABLE_SIZE_DIST = { battle: { 4: 6, 3: 3, 2: 1 }, boss: { 4: 6, 3: 3 } };
+export function rollTableSize(rng, dist) {
+  const entries = Object.entries(dist || TABLE_SIZE_DIST.battle).map(([k, w]) => [Number(k), Number(w) || 0]);
+  const total = entries.reduce((a, [, w]) => a + w, 0);
+  if (total <= 0) return 4;
+  let r = rng() * total;
+  for (const [size, w] of entries) if ((r -= w) < 0) return size;
+  return entries[0][0];
+}
+export function tableSizeLabel(size = 4) { return size === 2 ? "二麻" : size === 3 ? "三麻" : "四麻"; }
+export function isSoloTable(size = 4) { return size === 2 || size === 3; }
+
+// ---- 能力の源（インゲーム前に1個消費して「能力を使って打つ」リソース）----
+// 初期1・上限3。休息で+1・ショップで+1（いずれも上限超過なし）。発動しどころを選ぶゲーム性の核。
+export const ABILITY_SOURCE_MAX = 3;
+export function gainAbilitySource(run, n = 1) {
+  if (!run) return 0;
+  run.abilitySource = Math.max(0, Math.min(ABILITY_SOURCE_MAX, (run.abilitySource ?? 0) + n));
+  return run.abilitySource;
+}
+export function spendAbilitySource(run, n = 1) {
+  if (!run || (run.abilitySource ?? 0) < n) return false;
+  run.abilitySource -= n;
+  return true;
+}
+
 // ---- メタ進行（ローグライク引継ぎ） ----
 //
 // 到達記録（bestFloor）が深いほど次ランへ引き継げるバフ枠が増える＝正のフィードバック。
@@ -207,6 +237,8 @@ export function newRun(party, seed, chapterId = null, bossPool = null, bossFloor
 
     cleared: 0, // 撃破した戦数
     coins: 0,   // ラン内通貨「光貨」（ショップ/鍛冶屋）
+    abilitySource: 1, // 能力の源（インゲーム前に消費して能力を使って打つ）。初期1・上限3
+
     skillLevel: 1, // パーティ共通のスキルレベル（全員Lv1スタート・バフ/鍛冶屋でUP・能力が強化）
     forgeOvercharge: 0, // 鍛冶屋・限界突破の購入回数（Lv上限後に攻撃力を鍛えた段数。コスト急騰の基準）
     items: [],     // 道具スロット（最大3。active=フロア選択で使う / passive=常設 / trigger=自動）
@@ -229,7 +261,7 @@ export function serializeRun(run) {
   return {
     v: RUN_SAVE_VERSION,
     seed: run.seed, chapterId: run.chapterId || null, bossPool: Array.isArray(run.bossPool) ? [...run.bossPool] : null, bossFloors: run.bossFloors ? { ...run.bossFloors } : null, tuning: run.tuning ? { ...run.tuning } : null, over: run.over ? JSON.parse(JSON.stringify(run.over)) : null, floor: run.floor, cleared: run.cleared, coins: run.coins,
-    skillLevel: run.skillLevel, forgeOvercharge: run.forgeOvercharge || 0, cards: [...(run.cards || [])], items: [...(run.items || [])],
+    skillLevel: run.skillLevel, forgeOvercharge: run.forgeOvercharge || 0, abilitySource: run.abilitySource ?? 1, cards: [...(run.cards || [])], items: [...(run.items || [])],
     clusterTierCap: run.clusterTierCap ?? 1, // 流派の解放段数（中断ランの再開で失わない）
     mods: run.mods, nextBattle: run.nextBattle || {}, routeReroll: run.routeReroll || 0,
     biomeRerolls: { ...(run.biomeRerolls || {}) }, orbsEarned: run.orbsEarned || 0,
@@ -252,7 +284,7 @@ export function deserializeRun(data, resolveChar) {
     seed: String(data.seed), chapterId: data.chapterId || null, bossPool: Array.isArray(data.bossPool) ? [...data.bossPool] : null, bossFloors: data.bossFloors && typeof data.bossFloors === "object" ? { ...data.bossFloors } : null, tuning: data.tuning && typeof data.tuning === "object" ? { ...data.tuning } : null, over: data.over && typeof data.over === "object" ? JSON.parse(JSON.stringify(data.over)) : null, floor: data.floor || 1, party,
     cards: [...(data.cards || [])], mods: { ...freshMods(), ...(data.mods || {}) },
     clusterTierCap: data.clusterTierCap ?? 1, // 旧セーブ（未保存）は 1段目まで＝既定に寄せる
-    cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1, forgeOvercharge: data.forgeOvercharge || 0,
+    cleared: data.cleared || 0, coins: data.coins || 0, skillLevel: data.skillLevel || 1, forgeOvercharge: data.forgeOvercharge || 0, abilitySource: data.abilitySource ?? 1,
     items: [...(data.items || [])], nextBattle: data.nextBattle || {}, routeReroll: data.routeReroll || 0,
     biomeRerolls: { ...(data.biomeRerolls || {}) }, orbsEarned: data.orbsEarned || 0,
     lineup: Array.isArray(data.lineup) ? data.lineup : undefined, visited: [...(data.visited || [])],
@@ -285,6 +317,10 @@ export function shopStock(run, rng) {
   if (it) stock.push({ type: "item", item: it, price: it.cost, name: it.name, desc: it.desc, rarity: "rare" });
   stock.push({ type: "heal", price: e.shopHeal ?? SHOP_HEAL_PRICE, name: "気付け薬", desc: "パーティ全員のHPを50%回復する。", rarity: "common" });
   stock.push({ type: "maxhp", price: e.shopMaxhp ?? SHOP_MAXHP_PRICE, name: "厚みの護符", desc: "HP最大値が一定値増える（深い階ほど大きい・現在HPも底上げ）。", rarity: "rare" });
+  // 能力の源（上限3未満のときだけ並ぶ）。インゲーム前に使うと能力で打てる。
+  if ((run.abilitySource ?? 0) < ABILITY_SOURCE_MAX) {
+    stock.push({ type: "source", price: e.shopSource ?? SHOP_SOURCE_PRICE, name: "能力の源", desc: "能力の源を1つ補充する（上限3）。出陣前に使えば能力・必殺技で打てる。", rarity: "rare" });
+  }
   return stock;
 }
 
@@ -296,10 +332,13 @@ export function buyShopItem(run, item) {
     if ((run.items || []).length >= 3) return false;
     run.coins -= item.price; run.items.push(item.item.id); return true;
   }
+  // 能力の源は上限(3)に達していたら買えない（光貨を払わせない）。
+  if (item.type === "source" && (run.abilitySource ?? 0) >= ABILITY_SOURCE_MAX) return false;
   run.coins -= item.price;
   if (item.type === "card") applyCard(run, item.card);
   else if (item.type === "heal") healParty(run, 0.5);
   else if (item.type === "maxhp") applyCard(run, { id: "_shop-maxhp", effect: { kind: "maxHpAdd", add: 200 } }); // 絶対値（複利インフレ防止・買い増しは線形）
+  else if (item.type === "source") gainAbilitySource(run, 1);
   return true;
 }
 

@@ -54,7 +54,7 @@ import { presetById } from "./data/avatarPresetMaster.js";
 import { dayInfo, CONDITIONS, parlorState, visitParlor, applyHonestResult, applyDuoResult, tournamentGate, applyLeagueResult, recordRivalEncounters, mentorGrowthFor } from "./progression/progressionService.js";
 import { tournamentRunConfig, oppHpForLv, treasureRankFor, TREASURE_TOURNAMENTS } from "./data/tournamentMaster.js";
 import { createAbility } from "./abilities/registry.js";
-import { newRun, enemyUnitForFloor, previewBossChars, seatedAllies, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp, floorOverride, floorWeightMap, chapterEconomy } from "./roguelite/run.js";
+import { newRun, enemyUnitForFloor, previewBossChars, seatedAllies, partyOrder, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp, floorOverride, floorWeightMap, chapterEconomy, rollTableSize, tableSizeLabel, isSoloTable, TABLE_SIZE_DIST, gainAbilitySource, spendAbilitySource, ABILITY_SOURCE_MAX } from "./roguelite/run.js";
 import { bossMemoryTier, readBossTally, recordBossOutcome, withBossTally } from "./roguelite/bossMemory.js";
 import { chaptersWithState, chapterById, firstChapterId, canOrbUnlock, nextChapterAfter } from "./data/rogueliteChapterMaster.js";
 import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from "./data/rogueliteBiomeMaster.js";
@@ -2051,6 +2051,7 @@ async function startRogueliteRun(partyChars, chapterId = null) {
     floors: chap.floors || null, biome: chap.biome || null, itemPool: chap.itemPool || null,
     cardPool: chap.cardPool || null, rarityWeights: chap.rarityWeights || null, economy: chap.economy || null,
     bossHpMul: chap.bossHpMul ?? null, routeCount: chap.routeCount ?? null, colorSet: chap.colorSet || null,
+    tableSizeDist: chap.tableSizeDist || null, // 章別の卓サイズ分布（戦闘4/3/2・ボス4/3の重み）
   } : null;
   const run = newRun(party, undefined, chap?.id || null, bossPool, chap?.bossFloors || null, chap?.tuning || null, chapOver);
   rlLog("chapter_start", { chapter: run.chapterId, bossPool: run.bossPool });
@@ -2272,14 +2273,22 @@ function enterFloor(run, floorType) {
       rogueliteState.pursuing = false;
       // 対局突入の直前に「出陣編成」を1枚挟む（誰を卓に出すか＋HP/携えるもの確認 → 出陣で対局）。
       // 戻れば進路へ。ボスは編成確認のあとボス導入演出→対局。
-      const launch = () => { if (floorType?.enemy === "boss") showBossIntroThenBattle(run, floorType); else launchRogueliteBattle(run, floorType); };
+      const launch = (armed) => {
+        if (armed) spendAbilitySource(run, 1); // 能力の源を1個消費（インゲームで能力/必殺技/相方指示が有効化）
+        rogueliteState.armed = !!armed;
+        saveRogueliteRun(run);
+        if (floorType?.enemy === "boss") showBossIntroThenBattle(run, floorType); else launchRogueliteBattle(run, floorType);
+      };
       showRogueliteDeploy(host, { run, floorType, charImages, onConfirm: launch, onBack: () => renderRoute(run) });
       break;
     }
-    case "rest":
+    case "rest": {
       healParty(run, floorOverride(run, floorType.id)?.healFrac ?? floorType.healFrac ?? 0.3);
-      showRogueliteRest(host, { kind: "rest", floor: run.floor, run, charImages, onDone: () => maybePlayBanter(run, () => advanceRoguelite(run)) });
+      const before = run.abilitySource ?? 0;
+      gainAbilitySource(run, 1); // 休息で能力の源を1回復（上限3は超えない）
+      showRogueliteRest(host, { kind: "rest", floor: run.floor, run, charImages, sourceRestored: (run.abilitySource ?? 0) > before, onDone: () => maybePlayBanter(run, () => advanceRoguelite(run)) });
       break;
+    }
     case "banquet": {
       healParty(run, floorOverride(run, floorType.id)?.healFrac ?? floorType.healFrac ?? 1);
       const rng = makeRng(`${run.seed}:banquet:${run.floor}`);
@@ -2352,6 +2361,7 @@ function enterFloor(run, floorType) {
       break;
     case "gamble":
       rogueliteState.gamble = true; rogueliteState.pursueRemaining = 0;
+      rogueliteState.armed = true; // 賭場は一局の大勝負＝編成を経ず能力ありで打つ（源は消費しない）
       launchRogueliteBattle(run, floorType);
       break;
     case "shrine": {
@@ -2477,7 +2487,11 @@ function renderRoute(run) {
   // 編成モーダル：任意のタイミングで出場順を入れ替え→閉じたら同じ進路を再描画。
   const onSwap = () => showRogueliteSwap(host, { run, charImages, onClose: () => renderRoute(run) });
   if (run.floor % 10 === 0) { // 10階ごとにボス（強制）
-    showRogueliteRoute(host, { boss: true, floor: run.floor, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, charImages, onSwap, onPick: () => enterFloor(run, BOSS_FLOOR), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
+    // ボスの卓サイズ＝4麻 or 3麻（決定論・章で分布上書き可）。
+    const bossDist = run.over?.tableSizeDist?.boss || TABLE_SIZE_DIST.boss;
+    const bossSize = rollTableSize(makeRng(`${run.seed}:bosssize:${run.floor}`), bossDist);
+    const bossFloor = { ...BOSS_FLOOR, tableSize: bossSize };
+    showRogueliteRoute(host, { boss: true, bossTableSize: bossSize, floor: run.floor, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, charImages, onSwap, onPick: () => enterFloor(run, bossFloor), onRetreat: () => finishRogueliteRun(run, { wiped: false, retreated: true }) });
     return;
   }
   // 地図の写し（道具）で引き直した回数を seed に混ぜる＝選択肢が変わる。
@@ -2489,6 +2503,9 @@ function renderRoute(run) {
   if (run.floor % 10 === 9) force.push(rng() < 0.5 ? "rest" : "shop");
   const routeCount = run.over?.routeCount || (run.floor <= 2 ? 2 : 3); // 章ごとに進路の選択肢数を上書き可（無指定=序盤2/以降3）
   const choices = drawFloorChoices(rng, { count: routeCount, exclude: rogueliteState.lastFloorId ? [rogueliteState.lastFloorId] : [], force, weights: floorWeightMap(run) });
+  // 戦闘マスは「別マス」として 4麻/3麻/2麻 を出す（分布 6:3:1。章で上書き可）。決定論：同じ進路rngで再現。
+  const battleDist = run.over?.tableSizeDist?.battle || TABLE_SIZE_DIST.battle;
+  for (const ch of choices) if (ch.kind === "battle") ch.tableSize = rollTableSize(rng, battleDist);
   showRogueliteRoute(host, {
     floor: run.floor, choices, coins: run.coins || 0, skillLevel: run.skillLevel, held, run, charImages, onSwap,
     onItems: () => openRogueliteItems(run), // 道具パネル
@@ -2606,8 +2623,19 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
   teamBattleData = null; humanIndex = 0; selectedRounds = 1; // 東風を外枠に、局数上限で短く決着
   rogueliteState.pursuing = !!opts.pursue;
   rogueliteHandLimit = opts.pursue ? 1 : handsForType(floorType, floorOverride(run, floorType.id)); // 追撃は1局ずつ（章ごとに局数上書き可）
-  const allies = seatedAllies(run); // 並び順で上から生存2人（席0=あなた優先）。自動入れ替えなし。
-  rogueliteState.seated = allies; // 決着時にこの2人へHPを戻す（同定）
+  // 卓サイズ（4=ペア2v2 / 3=三麻ソロ1v2 / 2=二麻ソロ1v1）。追撃は本戦と同じ卓を継ぐ。
+  const tableSize = opts.pursue ? (rogueliteState.tableSize || 4) : (floorType?.tableSize || 4);
+  rogueliteState.tableSize = tableSize;
+  const solo = isSoloTable(tableSize);
+  const enemyCount = solo ? tableSize - 1 : 2; // 三麻=2敵 / 二麻=1敵 / ペア=2敵
+  const armed = !!rogueliteState.armed; // 出陣編成で「能力を使って打つ」を選んだか（追撃も同じ武装を継承）
+  // 着卓する味方：ペア=上から生存2人 / ソロ=上から生存1人（先頭=あなた優先）。
+  const allies = solo
+    ? [partyOrder(run).find((m) => m.hp > 0) || run.party[0]]
+    : seatedAllies(run);
+  rogueliteState.seated = allies; // 決着時にこの味方へHPを戻す（同定）
+  const allySeatList = solo ? [0] : [0, 2]; // 味方が座る席
+  rogueliteState.allySeats = allySeatList;
   // 道具の「次の1戦だけ」効果を取り出す（本戦のみ。追撃には持ち越さない＝消費済み）。
   if (!opts.pursue) rogueliteState.battleMods = takeNextBattle(run);
   const battleMods = rogueliteState.battleMods || {};
@@ -2624,46 +2652,57 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
   const biomeHpMul = biomeMods(run).hpMul || 1;
   const allyMaxOf = (m) => Math.max(1, Math.round(m.hpMax * biomeHpMul));
   const allyChar = (m) => ({ ...m.char, stats: { ...(m.char.stats || {}), startingPoints: allyMaxOf(m) } });
-  const a0 = allyChar(allies[0]);
-  const a1 = allies[1] === allies[0]
-    ? { ...allyChar(allies[0]), id: allies[0].char.id + "#2" } // ソロは影武者（同ステの2人目）
-    : allyChar(allies[1]);
-  const order = [a0, enemy.members[0], a1, enemy.members[1]];
-  // 席: 0=あなた / 1=敵A / 2=相棒 / 3=敵B。
+  const enemyChars = enemy.members.slice(0, enemyCount);
+  // 席並び・役割・グループを卓サイズで決める。ソロは「1人グループ×N」（pairBattleData を一般化して流用）。
+  let order, seatRoles, pairs, pairOf;
+  if (solo) {
+    order = [allyChar(allies[0]), ...enemyChars]; // [あなた, 敵A(, 敵B)]
+    seatRoles = order.map((_, i) => (i === 0 ? "ally" : "enemy"));
+    pairs = order.map((_, i) => ({ seats: [i] }));
+    pairOf = order.map((_, i) => i);
+  } else {
+    const a0 = allyChar(allies[0]);
+    const a1 = allies[1] === allies[0]
+      ? { ...allyChar(allies[0]), id: allies[0].char.id + "#2" } // ソロPTは影武者（同ステの2人目）
+      : allyChar(allies[1]);
+    order = [a0, enemyChars[0], a1, enemyChars[1]]; // 席: 0=あなた / 1=敵A / 2=相棒 / 3=敵B
+    seatRoles = ["ally", "enemy", "ally", "enemy"];
+    pairs = [{ seats: [0, 2] }, { seats: [1, 3] }];
+    pairOf = [0, 1, 0, 1];
+  }
   await charImages.load(order.filter((c) => !c.isMob));
   const seated = order.map((c) => ({ character: c, abilities: instantiateAbilities(c) }));
-  // 味方席の能力をスキルレベル反映で組み直す（レベルテーブルを持つ能力は params が強化される）。
-  //   着卓する2人（あなた＝席0／対面の相方＝席2）はどちらも「自分の固有能力＋ストックした必殺技」のみ。
-  //   控え（3人目以降）の固有能力は使えない（控えは戦死時の繰り上がり＋共闘要員）。
-  // 二日酔いなら能力は封印（空＝この1戦は能力使用不可・戦後に解除）。
-  const stockedIds = run.mods.grantedAbilityIds; // ストックした必殺技（着卓2人で共有して使える）
-  [allies[0], allies[1]].forEach((m, i) => {
-    const seatIdx = i === 0 ? 0 : 2;
-    if (m.hungover) { seated[seatIdx].abilities = []; return; } // 二日酔い＝能力封印
+  // 味方席の能力：武装(armed)時のみ「固有能力＋ストックした必殺技」を注入。非武装は能力なしで打つ
+  //   （能力・必殺技・相方指示すべて無効＝「能力の源」を温存した対局）。二日酔いも封印。
+  const stockedIds = armed ? (run.mods.grantedAbilityIds || []) : [];
+  allies.forEach((m, k) => {
+    const seatIdx = allySeatList[k];
+    if (seatIdx == null) return;
+    if (!armed || m.hungover) { seated[seatIdx].abilities = []; return; }
     const abilities = [];
-    // 着卓キャラ自身の固有能力。
     for (const a of (m.char.abilities || [])) { const ab = skilledAbility(a.abilityId, a.params, run.skillLevel); if (ab) abilities.push(ab); }
-    // ＋ストックした必殺技（控えの能力は注入しない）。
     for (const abId of stockedIds) { const ab = skilledAbility(abId, {}, run.skillLevel); if (ab) abilities.push(ab); }
     seated[seatIdx].abilities = abilities;
   });
   for (const c of order) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
   // 層でHP上限が縮むときは、出場HPもその上限までクランプ（満タン超過を防ぐ）。
-  const hp = [Math.min(allies[0].hp, allyMaxOf(allies[0])), enemy.members[0].stats.startingPoints,
-              Math.min(allies[1].hp, allyMaxOf(allies[1])), enemy.members[1].stats.startingPoints];
+  const hp = order.map((c, i) => {
+    if (seatRoles[i] === "enemy") return c.stats.startingPoints;
+    const m = allies[allySeatList.indexOf(i)];
+    return Math.min(m.hp, allyMaxOf(m));
+  });
   pairBattleData = {
-    pairOf: [0, 1, 0, 1], pairs: [{ seats: [0, 2] }, { seats: [1, 3] }], chars: order,
-    hp: [...hp],
-    pairScore: [hp[0] + hp[2], hp[1] + hp[3]],
-    isRoguelite: true, seatRoles: ["ally", "enemy", "ally", "enemy"], floor: run.floor, enemy,
+    pairOf, pairs, chars: order, hp: [...hp],
+    pairScore: pairs.map((p) => p.seats.reduce((a, s) => a + hp[s], 0)),
+    isRoguelite: true, solo, tableSize, seatRoles, floor: run.floor, enemy,
   };
   honestCtx = { isRoguelite: true, onResult: (result) => onRogueliteBattleEnd(result), matchLabel: `第${run.floor}階` };
   honestAutoPlay = rogueliteAutoPref(); // オート設定を保持＝毎戦ONにし直さなくてよい
   const dealerIndex = Math.floor(Math.random() * seated.length);
   showScreen("match-intro-screen");
   showMatchIntro(el("match-intro-screen"), {
-    seated, humanIndex, mode: { rounds: selectedRounds, players: 4 }, dealerIndex, audio,
-    pairs: pairBattleData.pairs.map((p) => ({ seats: p.seats, chars: p.seats.map((s) => order[s]) })),
+    seated, humanIndex, mode: { rounds: selectedRounds, players: order.length }, dealerIndex, audio,
+    pairs: solo ? null : pairBattleData.pairs.map((p) => ({ seats: p.seats, chars: p.seats.map((s) => order[s]) })),
     tournament: { name: opts.pursue ? `第 ${run.floor} 階・追撃` : `第 ${run.floor} 階`, section: enemy.label },
     onComplete: () => beginGame(seated, dealerIndex),
   });
@@ -2672,24 +2711,30 @@ async function launchRogueliteBattle(run, floorType, opts = {}) {
 // 1戦の決着 → HPを run へ戻し、踏破ならバフドラフト→（追撃 or 前進）。全員トビでラン終了。
 function onRogueliteBattleEnd(result) {
   const run = rogueliteState?.run; if (!run) return;
-  // 制圧判定：決着時に「自ペアの合計HP > 敵ペアの合計HP」だったか（pairBattleData を消す前に確保）。
-  const allyEndHp = (pairBattleData?.hp?.[0] ?? 0) + (pairBattleData?.hp?.[2] ?? 0);
-  const enemyEndHp = (pairBattleData?.hp?.[1] ?? 0) + (pairBattleData?.hp?.[3] ?? 0);
+  // 制圧判定（pairBattleData を消す前に確保）。役割配列で味方/敵を合算＝卓サイズに依らず一般化。
+  const roles = pairBattleData?.seatRoles || ["ally", "enemy", "ally", "enemy"];
+  const hpArr = pairBattleData?.hp || [];
+  const solo = !!pairBattleData?.solo;
+  const allyEndHp = roles.reduce((a, ro, i) => a + (ro === "ally" ? (hpArr[i] ?? 0) : 0), 0);
+  const enemyEndHp = roles.reduce((a, ro, i) => a + (ro === "enemy" ? (hpArr[i] ?? 0) : 0), 0);
+  const enemyTopHp = roles.reduce((a, ro, i) => (ro === "enemy" ? Math.max(a, hpArr[i] ?? 0) : a), 0);
   const dominated = allyEndHp > enemyEndHp; // 自パーティのHP合計が相手を上回って決着したか（計測ログ用）
-  const outHpRace = allyEndHp < enemyEndHp; // 合計HPで競り負け＝全員にペナルティ（緊張感の主動力）
+  // 点負け：ペア=合計HPで競り負け / ソロ=1位を取れない（自HP < 敵の最高HP）＝全員にペナルティ（緊張感の主動力）。
+  const outHpRace = solo ? ((hpArr[0] ?? 0) < enemyTopHp) : (allyEndHp < enemyEndHp);
+  const penaltyFrac = ROGUELITE_HP_LOSS_PENALTY_FRAC * (solo ? 2 : 1); // ソロ(三麻/二麻)は点負けダメージ2倍（40%）
   // 競り守りの護符（trigger/on=hpRace）：点負けの痛手をラン中1回だけ無効化。持っていれば自動発動して消える。
   const warded = outHpRace && consumeHpRaceSaver(run);
   const applyPenalty = outHpRace && !warded; // 実際にペナルティを与えるか（護符で防げば与えない）
-  // 着卓していた2人へHPを戻す（同定）。ソロ(影武者)は2席の低い方をその1人のHPに。
+  // 着卓していた味方へHPを戻す（同定）。allySeats=味方の座席。ペアの影武者(同一参照×2席)は低い方を採用。
   const seated = rogueliteState?.seated || seatedAllies(run);
-  if (seated[1] === seated[0]) {
-    seated[0].hp = Math.max(0, Math.min(pairBattleData?.hp?.[0] ?? seated[0].hp, pairBattleData?.hp?.[2] ?? seated[0].hp));
+  const allySeats = rogueliteState?.allySeats || [0, 2];
+  if (seated.length >= 2 && seated[1] === seated[0]) {
+    seated[0].hp = Math.max(0, Math.min(hpArr[allySeats[0]] ?? seated[0].hp, hpArr[allySeats[1]] ?? seated[0].hp));
   } else {
-    seated[0].hp = Math.max(0, pairBattleData?.hp?.[0] ?? seated[0].hp);
-    seated[1].hp = Math.max(0, pairBattleData?.hp?.[2] ?? seated[1].hp);
+    seated.forEach((m, k) => { m.hp = Math.max(0, hpArr[allySeats[k]] ?? m.hp); });
   }
-  // 二日酔いは着卓した2人ぶん、この1戦で解除。
-  seated[0].hungover = false; if (seated[1] !== seated[0]) seated[1].hungover = false;
+  // 二日酔いは着卓した味方ぶん、この1戦で解除。
+  for (const m of seated) m.hungover = false;
   rogueliteState.battleMods = null; rogueliteState.enduredSeats = null; // 「次の1戦だけ」効果は終了
   pairBattleData = null; honestCtx = null;
   // 合計HP敗北ペナルティ対象（着卓2人・生存のみ）。被弾演出は #game-screen がまだ可視のうちに出す。
@@ -2697,7 +2742,7 @@ function onRogueliteBattleEnd(result) {
   //    入り、「SEだけ鳴って何も見えない・HPも減って見えない」状態になる（過去はそれで全回復に見えた）。
   const seatedPenTargets = [...new Set(seated)].filter((m) => m && m.hp > 0); // 着卓2人（ソロは重複排除）・生存のみ
   const penTargets = applyPenalty
-    ? seatedPenTargets.map((m) => ({ m, before: m.hp, after: Math.max(0, m.hp - Math.round(m.hpMax * ROGUELITE_HP_LOSS_PENALTY_FRAC)) }))
+    ? seatedPenTargets.map((m) => ({ m, before: m.hp, after: Math.max(0, m.hp - Math.round(m.hpMax * penaltyFrac)) }))
     : [];
   // 競り負けでダメージを受けた着卓2人は、この1戦の踏破回復から除外（ペナルティを直後の回復で打ち消さない）。
   // ※ さもないと「ペナルティ20%」を直後の踏破回復(最大41%超)が打ち消し、競り負けたのに全回復して見える。
@@ -2749,7 +2794,7 @@ function onRogueliteBattleEnd(result) {
       : warded ? { label: "競り守り", note: "競り守りの護符が割れ、競り負けの痛手を防いだ。" }
       : null,
     // 合計HPで競り負けたら被弾を明示（次画面でHPバーが下がる理由を legible に）。割合は定数に追従。
-    penalty: applyPenalty ? { label: "競り負け", note: `合計HPで及ばず — 着卓していた味方に 最大HPの${Math.round(ROGUELITE_HP_LOSS_PENALTY_FRAC * 100)}%ダメージ` } : null,
+    penalty: applyPenalty ? { label: "競り負け", note: `${solo ? "1位を取れず" : "合計HPで及ばず"} — 着卓していた味方に 最大HPの${Math.round(penaltyFrac * 100)}%ダメージ` } : null,
     onPick: (card) => {
       // 計測（P9）：提示3枚(offered)と選択(picked)を必ず記録＝offlineで「カード別pick率」を出せる。
       // 提示時に未取得カードを把握 → 選ばれた率を見て「居場所のないカード(pick率が極端に低い)」を炙る。
@@ -5935,7 +5980,9 @@ function showPairBattleDamageFx(r, onDone) {
     const isWin = i === r.winner;
     const down = !isWin && after <= 0; // 着席ダウン（脱落ではない）
     const fc = after <= full * 0.25 ? "low" : after <= full * 0.5 ? "mid" : "high";
-    const tag = pairBattleData.pairOf[i] === myPair ? "自ペア" : "相手ペア";
+    const tag = pairBattleData.solo
+      ? (roles[i] === "ally" ? "あなた" : "敵")
+      : (pairBattleData.pairOf[i] === myPair ? "自ペア" : "相手ペア");
     const deltaHtml = isWin
       ? (isRl
           ? (winnerIsAlly
@@ -5956,7 +6003,7 @@ function showPairBattleDamageFx(r, onDone) {
   // ペア点数（合算）でランキング表示。
   const totalHtml = pairBattleData.pairScore.map((tot, pid) => {
     const isMe = pid === myPair;
-    const lbl = isMe ? "自ペア" : "相手ペア";
+    const lbl = pairBattleData.solo ? (isMe ? "あなた" : "敵") : (isMe ? "自ペア" : "相手ペア");
     return `<div class="tb-tot-item${isMe ? " mine" : ""}">
       <div class="tb-tot-label">${lbl}</div>
       <div class="tb-tot-val" style="${isMe ? "color:var(--accent)" : tot < 10000 ? "color:var(--danger)" : ""}">${tot.toLocaleString()}</div>
@@ -6745,7 +6792,7 @@ function showPairBattleGameOver() {
   const N = order.length;
   const top = Math.max(...order.map((pid) => totalOf(pid)), 1);
   const reveal = (i) => (N - 1 - i) * 0.45;
-  const pairLabelOf = (pid) => (pid === myPair ? "自ペア" : "相手ペア");
+  const pairLabelOf = (pid) => pairBattleData.solo ? (pid === myPair ? "あなた" : "敵") : (pid === myPair ? "自ペア" : "相手ペア");
   // ペア内代表（HP高い方）。立ち絵＆セリフ主に使う。
   const repSeatOf = (pid) => pairs[pid].seats.reduce((b, s) => (pairBattleData.hp[s] > pairBattleData.hp[b] ? s : b), pairs[pid].seats[0]);
   // ペアの2人の小顔（HP0は灰色）。HP高い方を先に。
@@ -6808,10 +6855,10 @@ function showPairBattleGameOver() {
         <div class="go-crown">👑</div>
         ${champDuoArt}
         <div class="go-champ-tag">
-          <span class="go-champ-badge">優勝ペア</span>
+          <span class="go-champ-badge">${pairBattleData.solo ? "1位" : "優勝ペア"}</span>
           <span class="go-champ-name go-champ-pairname">${champNamesHtml}</span>
         </div>
-        <div class="go-champ-sub">${pairLabelOf(champPid)}・共闘優勝</div>
+        <div class="go-champ-sub">${pairBattleData.solo ? pairLabelOf(champPid) : `${pairLabelOf(champPid)}・共闘優勝`}</div>
       </div>
       <div class="go-ranks">${rows}</div>
       <div class="win-buttons go-buttons"></div>
@@ -6844,20 +6891,23 @@ function showPairBattleGameOver() {
   if (pairBattleData.isRoguelite && honestCtx?.isRoguelite) {
     // 楼光の館＝生存レース：パーティ全員がトビでなければ踏破（次の階へ）。控えが居れば全滅しても続行。
     // 撃破（敵ペア全滅）は早期決着＋高レアの燃料（koAny）。最終判定は onRogueliteBattleEnd（HP同期後）。
-    const enemyPair = 1 - myPair;
-    // ゲームオーバー＝生存メンバーが1人以下（runWiped と一致させる）。着卓2人のHPは未同期なので
+    // 味方/敵の席を役割で集約（卓サイズに依らず一般化＝ソロの三麻=敵2グループも正しく数える）。
+    const roles = pairBattleData.seatRoles || [];
+    const allySeatsGO = pairBattleData.chars.map((_, s) => s).filter((s) => roles[s] === "ally");
+    const enemySeatsGO = pairBattleData.chars.map((_, s) => s).filter((s) => roles[s] === "enemy");
+    // ゲームオーバー＝生存メンバーが1人以下（runWiped と一致させる）。着卓のHPは未同期なので
     // pairBattleData.hp で、控えは run.party の現HPで数える。ソロランのみ全滅(0)まで続行。
-    const seatedSurvivors = pairs[myPair].seats.filter((s) => pairBattleData.hp[s] > 0).length;
+    const seatedSurvivors = allySeatsGO.filter((s) => pairBattleData.hp[s] > 0).length;
     const benchAliveCount = rogueliteState?.run?.party?.filter((m) => !rogueliteState.seated?.includes(m) && m.hp > 0).length || 0;
     const totalSurvivors = seatedSurvivors + benchAliveCount;
     const partyLen = rogueliteState?.run?.party?.length || 0;
     const runEnds = partyLen <= 1 ? totalSurvivors === 0 : totalSurvivors <= 1;
-    const koAny = pairs[enemyPair].seats.some((s) => pairBattleData.hp[s] <= 0);
-    const enemyAllDown = pairs[enemyPair].seats.every((s) => pairBattleData.hp[s] <= 0);
-    const allyHp = pairs[myPair].seats.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
-    const allyFull = pairs[myPair].seats.reduce((a, s) => a + (pairBattleData.chars[s].stats.startingPoints || MAX_HP), 0);
-    const enemyHp = pairs[enemyPair].seats.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
-    const enemyFull = pairs[enemyPair].seats.reduce((a, s) => a + (pairBattleData.chars[s].stats.startingPoints || MAX_HP), 0);
+    const koAny = enemySeatsGO.some((s) => pairBattleData.hp[s] <= 0);
+    const enemyAllDown = enemySeatsGO.every((s) => pairBattleData.hp[s] <= 0);
+    const allyHp = allySeatsGO.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
+    const allyFull = allySeatsGO.reduce((a, s) => a + (pairBattleData.chars[s].stats.startingPoints || MAX_HP), 0);
+    const enemyHp = enemySeatsGO.reduce((a, s) => a + Math.max(0, pairBattleData.hp[s]), 0);
+    const enemyFull = enemySeatsGO.reduce((a, s) => a + (pairBattleData.chars[s].stats.startingPoints || MAX_HP), 0);
     const survivors = totalSurvivors; // 表示用＝控えも含めた生存数
     const result = { cleared: !runEnds, koAny, hpRatio: allyFull ? allyHp / allyFull : 0 };
     const ctx = honestCtx; honestCtx = null;
@@ -6960,8 +7010,9 @@ function clearActions() {
 //  ・各能力の「発動要請」ボタン … OFF時のみ有効。パッシブは常時表示で要請不可、要件未達はグレー。
 function renderPairCommandPanel(abilityBar) {
   if (!pairBattleData || online || !game) return;
+  if (pairBattleData.isRoguelite && !rogueliteState?.armed) return; // 非武装(能力の源を温存)＝相方指示も出さない
   const seat = pairPartnerSeat();
-  if (seat < 0) return;
+  if (seat < 0) return; // ソロ卓は相方なし＝指示なし
   const list = game.abilityStatus(seat);
   const name = pairBattleData.chars?.[seat]?.name || game.players[seat]?.character?.name || "相方";
 
@@ -7466,7 +7517,7 @@ function buildPairBattleHpBoard(board) {
     rankEl.className = "tb-rank";
     const labelSpan = document.createElement("span");
     labelSpan.className = "tb-label";
-    labelSpan.textContent = isMine ? "▶ 自ペア" : "相手ペア";
+    labelSpan.textContent = pairBattleData.solo ? (isMine ? "▶ あなた" : "敵") : (isMine ? "▶ 自ペア" : "相手ペア");
     headLeft.appendChild(rankEl);
     headLeft.appendChild(labelSpan);
     const totalEl = document.createElement("span");
@@ -7509,7 +7560,7 @@ function buildPairBattleHpBoard(board) {
       passives = document.createElement("div");
       passives.className = "tb-passives";
       block.appendChild(passives);
-      block.appendChild(buildPairWinPolicyToggles()); // 和了抑止トグル（自陣の被弾回避）
+      if (!pairBattleData.solo) block.appendChild(buildPairWinPolicyToggles()); // 和了抑止トグル（相方がいるペア戦のみ）
     }
     // セリフ吹き出し（自ペアのみ・Phase3で発火）
     let talkBubble = null;

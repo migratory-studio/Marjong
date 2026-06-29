@@ -4920,8 +4920,33 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-deploy-side { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow-y: auto;
   border-left: 1px solid var(--rl-edge); padding-left: 20px; }
 .rl-deploy-side-h { font-size: 12px; letter-spacing: .22em; color: var(--rl-gold); }
-.rl-deploy-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--rl-edge); }
+.rl-deploy-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; border-top: 1px solid var(--rl-edge); }
 .rl-deploy-hint { font-size: 11.5px; color: var(--muted); text-align: center; flex: 1; padding: 0 12px; }
+/* 能力の源メーター（出陣編成） */
+.rl-deploy-source { display: flex; align-items: center; gap: 8px; flex: 1; justify-content: center; }
+.rl-deploy-source-k { font-size: 11.5px; letter-spacing: .12em; color: var(--rl-gold); }
+.rl-deploy-source-pips { display: inline-flex; gap: 4px; }
+.rl-src-pip { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--rl-gold);
+  background: transparent; box-shadow: inset 0 0 0 2px rgba(0,0,0,.25); opacity: .5; }
+.rl-src-pip.on { background: radial-gradient(circle at 38% 32%, #fff3c8, var(--rl-gold)); opacity: 1;
+  box-shadow: 0 0 8px rgba(232,196,93,.6); }
+.rl-deploy-source-n { font-size: 13px; font-weight: 800; color: var(--rl-ink); }
+/* 出陣ボタン2種（能力を使う／温存） */
+.rl-deploy-actions { display: flex; gap: 10px; align-items: stretch; }
+.rl-deploy-actions .rl-start { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 18px; line-height: 1.2; }
+.rl-deploy-actions .rl-start small { font-size: 10.5px; font-weight: 600; opacity: .75; }
+.rl-start.ghost { background: transparent; color: var(--rl-ink); border: 1px solid var(--rl-edge); box-shadow: none; }
+.rl-start.ghost:hover:not(:disabled) { background: rgba(232,196,93,.08); box-shadow: none; }
+.rl-start.armed { background: linear-gradient(180deg, #ffe49a, #f0b94a); box-shadow: 0 4px 16px rgba(240,185,74,.42); }
+.rl-start.armed small { opacity: .85; }
+/* 進路カードの卓サイズバッジ（4麻/3麻/2麻） */
+.rl-route-size { display: inline-flex; flex-direction: column; align-items: center; line-height: 1.1;
+  align-self: center; padding: 3px 12px; border-radius: 999px; font-weight: 800; font-size: 14px; letter-spacing: .04em;
+  border: 1px solid currentColor; }
+.rl-route-size small { font-size: 9.5px; font-weight: 600; letter-spacing: .02em; opacity: .85; }
+.rl-route-size.pair { color: #7fc8b0; }
+.rl-route-size.solo { color: #e8b85d; background: rgba(232,184,93,.1); }
+.rl-route-solonote { font-size: 11px; font-weight: 700; color: #e0a89c; letter-spacing: .02em; }
 
 /* オーバーレイ（ドラフト/継続/結果/各モーダル）。ステージ内に被せる。楼光パレットを供給。 */
 .rl-overlay { --rl-gold:#e8c45d; --rl-ink:#f3ece0; --rl-edge:rgba(232,196,93,0.26); --rl-ember:#c0563a;

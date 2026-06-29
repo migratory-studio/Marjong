@@ -14,6 +14,7 @@ import { clusterProgress, clusterPickPreview } from "../roguelite/cardEffects.js
 import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { biomeEffectChips, biomeOf } from "../data/rogueliteBiomeMaster.js";
+import { tableSizeLabel, isSoloTable, ABILITY_SOURCE_MAX } from "../roguelite/run.js";
 import { bgDef } from "../data/backgroundMaster.js";
 import { portraitStyleAttr } from "../data/imagePos.js";
 
@@ -554,22 +555,31 @@ export function showRogueliteSpeak(container, { char, charImages, line } = {}) {
 
 // ---- 進路選択（次フロアを2〜3択／ボス階は強制）＋撤退 ----
 export function showRogueliteRoute(container, opts = {}) {
-  const { floor = 1, choices = [], boss = false, coins = 0, skillLevel = 0, held = [], run = null, charImages = null, onPick, onRetreat, onSwap, onItems } = opts;
+  const { floor = 1, choices = [], boss = false, bossTableSize = 4, coins = 0, skillLevel = 0, held = [], run = null, charImages = null, onPick, onRetreat, onSwap, onItems } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-route rl-hub" + (boss ? " is-boss" : "");
   applyChapterColorSet(ov, run?.over?.colorSet); // 章ごとのカラーセット（任意）
   // 進路カード（ヒーロー＝大胆さを集中する1点）。ボス階は単一の大カード。
   const cardEntries = boss
-    ? [{ kind: "boss", name: "館の主との対決", blurb: `第 ${floor} 階・逃げ場はない大一番。`, _boss: true }]
-    : choices.map((f) => ({ kind: f.kind, name: f.name, blurb: f.blurb || "", id: f.id }));
+    ? [{ kind: "boss", name: "館の主との対決", blurb: `第 ${floor} 階・逃げ場はない大一番。`, _boss: true, tableSize: bossTableSize }]
+    : choices.map((f) => ({ kind: f.kind, name: f.name, blurb: f.blurb || "", id: f.id, tableSize: f.tableSize }));
+  // 戦闘マスの卓サイズ（4麻=相棒と2v2 / 3麻・2麻=一人で挑む）をバッジで明示。ソロは点負けダメージ2倍。
+  const sizeChip = (sz) => {
+    if (!sz) return "";
+    const solo = isSoloTable(sz);
+    return `<span class="rl-route-size ${solo ? "solo" : "pair"}">${tableSizeLabel(sz)}<small>${solo ? "一人で挑む" : "相棒と2対2"}</small></span>`;
+  };
   const cardsHtml = cardEntries.map((f, i) => {
     const m = FLOOR_KIND_META[f.kind] || FLOOR_KIND_META.battle;
+    const solo = isSoloTable(f.tableSize);
     return `<button type="button" class="rl-route-card${f._boss ? " boss" : ""}" data-i="${i}" style="--mark:${m.color}">
       <span class="rl-route-spark"></span>
       <span class="rl-route-mark">${m.mark}</span>
       <span class="rl-route-name">${f.name}</span>
+      ${sizeChip(f.tableSize)}
       <span class="rl-route-blurb">${f.blurb}</span>
+      ${solo ? `<span class="rl-route-solonote">相棒なし・点負けで被ダメ2倍</span>` : ""}
       <span class="rl-route-go">この道へ ›</span>
     </button>`;
   }).join("");
@@ -699,11 +709,19 @@ export function showRogueliteSwap(container, opts = {}) {
 // 着卓の入替は showRogueliteSwap と同じ lineup ロジック（上2人＝着卓・先頭=操作／▲▼で並べ替え・run.lineupへ保存）。
 export function showRogueliteDeploy(container, opts = {}) {
   const { run, floorType, charImages, onConfirm, onBack } = opts;
-  if (!container || !run) { onConfirm?.(); return; }
+  if (!container || !run) { onConfirm?.(false); return; }
   const isBoss = floorType?.enemy === "boss";
   const tone = isBoss ? "boss" : (floorType?.elite ? "elite" : "normal");
-  const battleLabel = isBoss ? "ボス戦" : (floorType?.elite ? "強敵戦" : (floorType?.name || "戦闘"));
-  const enemyNote = isBoss ? "館の主が待つ。逃げ場のない大一番。" : (floorType?.blurb || "卓に着く二人で挑む。");
+  const tableSize = floorType?.tableSize || 4;
+  const solo = isSoloTable(tableSize);
+  const seatCount = solo ? 1 : 2;
+  const sizeName = tableSizeLabel(tableSize); // 四麻/三麻/二麻
+  const baseLabel = isBoss ? "ボス戦" : (floorType?.elite ? "強敵戦" : (floorType?.name || "戦闘"));
+  const battleLabel = `${sizeName}・${baseLabel}`;
+  const enemyNote = isBoss
+    ? (solo ? `館の主が待つ。${sizeName}・一人で挑む大一番。` : "館の主が待つ。逃げ場のない大一番。")
+    : (solo ? `${sizeName}・相棒なしの一人打ち。点負けで被ダメ2倍。` : (floorType?.blurb || "卓に着く二人で挑む。"));
+  const src = run.abilitySource ?? 0;
 
   // 出場順（lineupが無ければparty順）。上2人＝着卓・先頭=操作。
   const orderIds = (Array.isArray(run.lineup) && run.lineup.length)
@@ -726,7 +744,7 @@ export function showRogueliteDeploy(container, opts = {}) {
           <span class="rl-hub-res-i"><span class="rl-hub-res-k">スキルLv</span><b>${run.skillLevel || 1}</b></span>
         </div>
       </header>
-      <div class="rl-deploy-choose"><span>卓に出す二人を選ぶ</span></div>
+      <div class="rl-deploy-choose"><span>${solo ? "卓に出す一人を選ぶ" : "卓に出す二人を選ぶ"}</span></div>
       <main class="rl-deploy-main">
         <section class="rl-deploy-lineup">
           <div class="rl-deploy-lineup-head">出陣　<small>${enemyNote}</small></div>
@@ -740,8 +758,15 @@ export function showRogueliteDeploy(container, opts = {}) {
       </main>
       <footer class="rl-deploy-foot">
         <button type="button" class="rl-retreat" id="rl-deploy-back">← 進路へ戻る</button>
-        <span class="rl-deploy-hint">戦うのは上の二人だけ。控えは倒れた時に繰り上がる。</span>
-        <button type="button" class="rl-start" id="rl-deploy-go">出陣する ›</button>
+        <div class="rl-deploy-source">
+          <span class="rl-deploy-source-k">能力の源</span>
+          <span class="rl-deploy-source-pips">${Array.from({ length: ABILITY_SOURCE_MAX }, (_, i) => `<i class="rl-src-pip${i < src ? " on" : ""}"></i>`).join("")}</span>
+          <span class="rl-deploy-source-n">${src}/${ABILITY_SOURCE_MAX}</span>
+        </div>
+        <div class="rl-deploy-actions">
+          <button type="button" class="rl-start ghost" id="rl-deploy-plain">能力を使わず打つ<small>源を温存</small></button>
+          <button type="button" class="rl-start armed" id="rl-deploy-armed" ${src > 0 ? "" : "disabled"}>⚡ 能力を使って打つ<small>${src > 0 ? "能力の源 −1" : "源が足りない"}</small></button>
+        </div>
       </footer>
     </div>`;
   container.appendChild(ov);
@@ -751,7 +776,7 @@ export function showRogueliteDeploy(container, opts = {}) {
   const renderList = () => {
     listEl.innerHTML = "";
     order.forEach((m, i) => {
-      const seated = i < 2;
+      const seated = i < seatCount;
       const pct = Math.max(0, Math.min(100, (m.hp / (m.hpMax || 1)) * 100));
       const tier = pct <= 25 ? "low" : pct <= 50 ? "mid" : "high";
       const isYou = m.id === youId;
@@ -767,7 +792,7 @@ export function showRogueliteDeploy(container, opts = {}) {
         <div class="rl-deploy-face-wrap" data-face="${m.id}"></div>
         <div class="rl-deploy-info">
           <div class="rl-deploy-name" style="color:${m.char?.color || "#eadfce"}">${m.char?.name || "?"}${m.hungover ? " 🍶" : ""}
-            <span class="rl-deploy-tag ${seated ? "active" : "bench"}">${seated ? (isYou ? "操作" : "出場") : "控え"}</span>
+            <span class="rl-deploy-tag ${seated ? "active" : "bench"}">${seated ? (isYou ? "操作" : (solo ? "出陣" : "出場")) : "控え"}</span>
             ${ab ? `<span class="rl-deploy-ab">${ab}</span>` : ""}
           </div>
           <div class="rl-hp-bar"><span class="rl-hp-fill ${tier}" style="width:${pct}%"></span></div>
@@ -776,10 +801,10 @@ export function showRogueliteDeploy(container, opts = {}) {
       listEl.appendChild(row);
       const slot = row.querySelector(`[data-face="${m.id}"]`);
       if (slot && m.char) slot.appendChild(faceNode(charImages, m.char, "rl-deploy-face"));
-      if (i === 1 && order.length > 2) {
+      if (i === seatCount - 1 && order.length > seatCount) {
         const div = document.createElement("div");
         div.className = "rl-deploy-divider";
-        div.innerHTML = "<span>― ここまで着卓（戦う二人）／下は控え ―</span>";
+        div.innerHTML = `<span>― ここまで着卓（戦う${solo ? "一人" : "二人"}）／下は控え ―</span>`;
         listEl.appendChild(div);
       }
     });
@@ -798,7 +823,8 @@ export function showRogueliteDeploy(container, opts = {}) {
   run.lineup = order.map((m) => m.id); // 並べ替えずに出陣しても現順を確定保存
 
   ov.querySelector("#rl-deploy-back")?.addEventListener("click", () => { ov.remove(); onBack?.(); });
-  ov.querySelector("#rl-deploy-go")?.addEventListener("click", () => { ov.remove(); onConfirm?.(); });
+  ov.querySelector("#rl-deploy-plain")?.addEventListener("click", () => { ov.remove(); onConfirm?.(false); });
+  ov.querySelector("#rl-deploy-armed")?.addEventListener("click", () => { if ((run.abilitySource ?? 0) <= 0) return; ov.remove(); onConfirm?.(true); });
 }
 
 // ---- 流派の門（交代マス）：光貨で1人を迎え、1人を送り出す（PTは3人のまま） ----
@@ -1028,13 +1054,14 @@ export function showRogueliteBanter(container, opts = {}) {
 
 // ---- 休息 / 宴会（回復演出） ----
 export function showRogueliteRest(container, opts = {}) {
-  const { kind = "rest", floor = 1, run, charImages = null, hungover = [], soberUsed = false, onDone } = opts;
+  const { kind = "rest", floor = 1, run, charImages = null, hungover = [], soberUsed = false, sourceRestored = false, onDone } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-rest";
   const isBanquet = kind === "banquet";
   const head = isBanquet ? "宴会フロア — 大盤振る舞い！" : "休息フロア — ひと息つく";
   const note = isBanquet ? "生存している味方のHPが全回復した。" : "生存している味方のHPが回復した。";
+  const srcNote = sourceRestored ? `<p class="rl-rest-hung" style="color:var(--rl-gold)">⚡ 能力の源が1つ回復した（${run?.abilitySource ?? 0}/${ABILITY_SOURCE_MAX}）。</p>` : "";
   const soberNote = soberUsed ? `<p class="rl-rest-hung" style="color:#6fe08a">◆ 酔い止めが割れて、二日酔いを防いだ。</p>` : "";
   const hungNote = hungover.length ? `<p class="rl-rest-hung">🍶 ${hungover.join("・")} は酔ってしまった……次の1戦は能力が使えない。</p>` : "";
   ov.innerHTML = `
@@ -1042,6 +1069,7 @@ export function showRogueliteRest(container, opts = {}) {
       <div class="rl-modal-head">${head}${coinBadge(run?.coins || 0)}</div>
       <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
       <p class="rl-continue-note">${note}</p>
+      ${srcNote}
       ${soberNote}
       ${hungNote}
       <button type="button" class="rl-start" id="rl-rest-go">先へ進む</button>

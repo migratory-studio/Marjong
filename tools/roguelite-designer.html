@@ -175,6 +175,7 @@ for (const c of ROGUELITE_CHAPTER_MASTER) {
     bossHpMul: c.bossHpMul ?? null,
     clearFloor: c.clearFloor ?? 10,
     routeCount: c.routeCount ?? null,
+    tableSizeDist: c.tableSizeDist ? clone(c.tableSizeDist) : null,
     floors: c.floors ? clone(c.floors) : {},
     biome: c.biome ? clone(c.biome) : {},
     itemPool: c.itemPool ? [...c.itemPool] : null,
@@ -187,6 +188,8 @@ for (const c of ROGUELITE_CHAPTER_MASTER) {
   };
 }
 function clone(o){ return JSON.parse(JSON.stringify(o)); }
+// 卓サイズ分布の既定（src/roguelite/run.js TABLE_SIZE_DIST と一致）。battle=4麻/3麻/2麻、boss=4麻/3麻。
+const TSIZE_DEF = { battle: { 4: 6, 3: 3, 2: 1 }, boss: { 4: 6, 3: 3 } };
 const cur = () => state.ov[state.chapId];
 const chapDef = () => ROGUELITE_CHAPTER_MASTER.find(c=>c.id===state.chapId);
 
@@ -241,6 +244,19 @@ function knob(obj, key, def, label, hint, step){
   return `<div class="knob">
     <div class="k-name">${label}${hint?`<small>${hint}</small>`:''}</div>
     <input type="number" step="${step||'any'}" data-kind="num" data-key="${key}" data-def="${def}" value="${val}" placeholder="${def}" class="${set?'set':''}">
+    <div></div>
+    <div class="k-def">既定 <b>${def}</b></div>
+  </div>`;
+}
+
+// 卓サイズ分布の1入力（grp=battle|boss, size=4|3|2）。空欄＝既定（TSIZE_DEF）。
+function tsizeKnob(o, grp, size, label){
+  const def = TSIZE_DEF[grp][size];
+  const cur2 = o.tableSizeDist && o.tableSizeDist[grp] && (size in o.tableSizeDist[grp]);
+  const val = cur2 ? o.tableSizeDist[grp][size] : '';
+  return `<div class="knob" style="min-width:150px">
+    <div class="k-name">${label}</div>
+    <input type="number" step="1" min="0" data-kind="tsize" data-grp="${grp}" data-size="${size}" data-def="${def}" value="${val}" placeholder="${def}" class="${cur2?'set':''}">
     <div></div>
     <div class="k-def">既定 <b>${def}</b></div>
   </div>`;
@@ -316,6 +332,16 @@ function paneRoute(){
         <input type="number" data-kind="num" data-key="clearFloor" data-def="" value="${o.clearFloor}" step="1" class="set"><div></div><div class="k-def">現在 <b>${o.clearFloor}</b></div></div>
       ${knob(o,'routeCount',3,'進路の選択肢数','空欄＝既定(序盤F1-2は2択/以降3択)','1')}
       ${knob(o,'bossHpMul',1,'ボスHP倍率','ボス階の敵HPに乗る（1=既定）','0.05')}
+    </div>
+    <div class="sec"><h2>卓サイズ分布（4麻/3麻/2麻）</h2>
+      <p class="desc">戦闘マスを引いたとき、各サイズが出る相対重み（既定 戦闘=6:3:1／ボス=6:3）。3麻・2麻は相棒なしの一人打ち＝点負け被ダメ2倍。ボスは2麻にならない。空欄＝既定。</p>
+      <div class="row" style="gap:14px;flex-wrap:wrap">
+        ${tsizeKnob(o,'battle',4,'戦闘 四麻')}
+        ${tsizeKnob(o,'battle',3,'戦闘 三麻')}
+        ${tsizeKnob(o,'battle',2,'戦闘 二麻')}
+        ${tsizeKnob(o,'boss',4,'ボス 四麻')}
+        ${tsizeKnob(o,'boss',3,'ボス 三麻')}
+      </div>
     </div>
     <div class="sec"><h2>ボス階の配役（bossFloors）</h2>
       <p class="desc">10階ごとのボスに誰を立てるか。$mob＝ネームドモブ門番。ここに無い深層ボスはcastから決定論ランダム。</p>
@@ -533,6 +559,11 @@ function onEdit(e){
   else if (kind==='biomeglob'){ const key=el.dataset.key,def=Number(el.dataset.def); o.biome=o.biome||{}; setNum(o.biome,key,el.value,def); }
   else if (kind==='rarw'){ const key=el.dataset.key,def=Number(el.dataset.def); o.rarityWeights=o.rarityWeights||{}; setNum(o.rarityWeights,key,el.value,def); }
   else if (kind==='econ'){ const key=el.dataset.key,def=Number(el.dataset.def); o.economy=o.economy||{}; setNum(o.economy,key,el.value,def); }
+  else if (kind==='tsize'){ const grp=el.dataset.grp,size=el.dataset.size,def=Number(el.dataset.def);
+    o.tableSizeDist=o.tableSizeDist||{}; const bag=o.tableSizeDist[grp]=o.tableSizeDist[grp]||{};
+    if(el.value===''||Number(el.value)===def) delete bag[size]; else bag[size]=Math.max(0,Number(el.value)||0);
+    if(!Object.keys(bag).length) delete o.tableSizeDist[grp];
+    if(!Object.keys(o.tableSizeDist).length) o.tableSizeDist=null; }
   else if (kind==='boss-slot'){ const f=el.dataset.floor,idx=+el.dataset.idx; o.bossFloors[f][idx]=el.value; }
   else if (kind==='color'||kind==='colortext'){ const key=el.dataset.key; o.colorSet=o.colorSet||{};
     let v=el.value.trim(); if(kind==='color'){ /* keep existing text override behavior: set hex */ }
@@ -688,6 +719,12 @@ function genCode(){
   if(o.clearFloor!==(cd.clearFloor??10)) out.clearFloor=o.clearFloor;
   if(o.routeCount!=null) out.routeCount=o.routeCount;
   if(o.bossHpMul!=null) out.bossHpMul=o.bossHpMul;
+  // 卓サイズ分布：触られたグループは既定にマージして「全サイズ揃った完全な分布」で出す（部分指定の事故回避）。
+  if(o.tableSizeDist){
+    const ts={};
+    for(const grp of ['battle','boss']) if(o.tableSizeDist[grp]&&Object.keys(o.tableSizeDist[grp]).length) ts[grp]={...TSIZE_DEF[grp], ...o.tableSizeDist[grp]};
+    if(Object.keys(ts).length) out.tableSizeDist=ts;
+  }
   if(o.bossFloors) out.bossFloors=o.bossFloors;
   if(o.floors&&Object.keys(o.floors).length) out.floors=o.floors;
   if(o.biome&&Object.keys(o.biome).length) out.biome=o.biome;
@@ -726,6 +763,7 @@ document.getElementById('genBtn').onclick=()=>{
 function statusText(){
   const o=cur(); let n=0;
   if(Object.keys(o.tuning).length)n++; if(o.bossFloors)n++; if(o.bossHpMul!=null)n++; if(o.routeCount!=null)n++;
+  if(o.tableSizeDist&&Object.keys(o.tableSizeDist).length)n++;
   if(o.floors&&Object.keys(o.floors).length)n++; if(o.biome&&Object.keys(o.biome).length)n++;
   if(o.itemPool!=null)n++; if(o.cardPool!=null)n++; if(o.rarityWeights&&Object.keys(o.rarityWeights).length)n++;
   if(o.economy&&Object.keys(o.economy).length)n++; if(o.colorSet&&Object.keys(o.colorSet).length)n++;

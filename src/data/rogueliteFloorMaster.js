@@ -92,6 +92,7 @@ export function coinsForClear({ floor = 1, kind = "mob", ko = false, pursue = fa
 export const SHOP_PRICE = { common: 12, rare: 24, epic: 44, legendary: 78 };
 export const SHOP_HEAL_PRICE = 28;   // 全回復
 export const SHOP_MAXHP_PRICE = 40;  // HP最大+20%
+export const SHOP_SOURCE_PRICE = 30; // 能力の源+1（上限3）
 
 export function floorTypeById(id) {
   return ROGUELITE_FLOOR_MASTER.find((f) => f.id === id) || null;

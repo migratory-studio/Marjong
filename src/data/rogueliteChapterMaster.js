@@ -39,6 +39,8 @@
 //   rarityWeights?… ドラフトのレア度基本重み { common,rare,epic,legendary }（未指定=RARITY_WEIGHTS）。
 //   economy?      … 光貨/コスト { coinBase,coinFloorMul,bossMul,namedMul,koAdd,pursueMul, forgeBase,forgeQuad, recruitCost, shopCommon/Rare/Epic/Legendary/Heal/Maxhp }。
 //   colorSet?     … 演出カラー { tc?,gold?,ink?,edge?,ember? }。ハブ/章紹介/踏破演出にインライン適用（tone より優先）。
+//   tableSizeDist?… 戦闘マスの卓サイズ分布 { battle:{4,3,2}, boss:{4,3} }（相対重み・未指定=既定6:3:1/6:3）。
+//                   4=ペア(相棒と2v2)/3=三麻ソロ/2=二麻ソロ。ソロは点負け被ダメ2倍。drawFloorChoices時に rollTableSize が参照。
 
 export const ROGUELITE_CHAPTER_MASTER = [
   {
@@ -65,6 +67,10 @@ export const ROGUELITE_CHAPTER_MASTER = [
       10: ["mamori", "$mob"],
       20: ["shiyue", "kuidoshi"],
       30: ["yao_chu", "chun_chan"],
+    },
+    // 卓サイズ分布（戦闘マス）。この記憶は二麻ソロをやや多めに（4麻6:3麻3:2麻4）＝師との一騎打ち感を増やす。
+    tableSizeDist: {
+      battle: { 2: 4, 3: 3, 4: 6 },
     },
     tone: "gold",
   },
