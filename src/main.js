@@ -68,7 +68,7 @@ import { bgDef } from "./data/backgroundMaster.js";
 import { drawFloorChoices, floorTypeById, BOSS_FLOOR, coinsForClear, forgeCost, forgeOverchargeCost, FORGE_OVERCHARGE_DEAL, SKILL_LEVEL_CAP, RECRUIT_COST } from "./data/rogueliteFloorMaster.js";
 import { pickEvent } from "./data/rogueliteEventMaster.js";
 import { makeRng } from "./autobattle/autoBattle.js";
-import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume, showRogueliteBiomeIntro, showRogueliteRecruit, showRogueliteBossIntro, showRogueliteBanter, showRogueliteChapterSelect, showRogueliteChapterIntro, showRogueliteChapterClear, showRogueliteClusterLevelUp } from "./screens/rogueliteScreen.js";
+import { showRoguelite, showRogueliteDraft, showRogueliteGameOver, showRogueliteRoute, showRoguelitePursue, showRogueliteRest, showRogueliteEvent, showRogueliteShop, showRogueliteSpeak, showRogueliteForge, showRogueliteSwap, showRogueliteDeploy, showRogueliteForget, showRogueliteDamageBreakdown, showRogueliteItems, showRogueliteItemSwap, showRogueliteResume, showRogueliteBiomeIntro, showRogueliteRecruit, showRogueliteBossIntro, showRogueliteBanter, showRogueliteChapterSelect, showRogueliteChapterIntro, showRogueliteChapterClear, showRogueliteClusterLevelUp } from "./screens/rogueliteScreen.js";
 import { nextTreasureStep, campaignFor, mentorSkillLevel, isMentorEpilogue } from "./data/mentorCampaignMaster.js";
 import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMaster.js";
 import { showCreditsRoll } from "./screens/creditsRoll.js";
@@ -2267,12 +2267,15 @@ function enterFloor(run, floorType) {
   // 調整ログ：フロア入場（種別・バイオーム・現バフ/HP状況）。
   { const bi = biomeOf(run); rlLog("floor", { floor: run.floor, kind: floorType?.kind, enemy: floorType?.enemy || null, biome: bi?.id, biomeMods: bi?.mods || {}, ...rlBuffSnap(run) }); }
   switch (floorType?.kind) {
-    case "battle":
+    case "battle": {
       rogueliteState.pursueRemaining = (floorOverride(run, floorType.id)?.pursueMax ?? floorType.pursueMax) || 0;
       rogueliteState.pursuing = false;
-      if (floorType?.enemy === "boss") showBossIntroThenBattle(run, floorType);
-      else launchRogueliteBattle(run, floorType);
+      // 対局突入の直前に「出陣編成」を1枚挟む（誰を卓に出すか＋HP/携えるもの確認 → 出陣で対局）。
+      // 戻れば進路へ。ボスは編成確認のあとボス導入演出→対局。
+      const launch = () => { if (floorType?.enemy === "boss") showBossIntroThenBattle(run, floorType); else launchRogueliteBattle(run, floorType); };
+      showRogueliteDeploy(host, { run, floorType, charImages, onConfirm: launch, onBack: () => renderRoute(run) });
       break;
+    }
     case "rest":
       healParty(run, floorOverride(run, floorType.id)?.healFrac ?? floorType.healFrac ?? 0.3);
       showRogueliteRest(host, { kind: "rest", floor: run.floor, run, charImages, onDone: () => maybePlayBanter(run, () => advanceRoguelite(run)) });

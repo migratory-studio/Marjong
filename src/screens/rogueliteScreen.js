@@ -693,6 +693,114 @@ export function showRogueliteSwap(container, opts = {}) {
   ov.querySelector("#rl-swap-close")?.addEventListener("click", () => { ov.remove(); onClose?.(); });
 }
 
+// ---- 出陣編成（戦闘フロア突入の直前・フルスクリーン）----
+// 進路で戦闘(通常/強敵/ボス)を選んで押した直後に1枚挟む確認画面。「卓に出す二人」を決め、
+// 各自のHP・携えるもの(バフ/必殺技/道具/流派)を一望して「出陣する」で対局へ。戻れば進路へ。
+// 着卓の入替は showRogueliteSwap と同じ lineup ロジック（上2人＝着卓・先頭=操作／▲▼で並べ替え・run.lineupへ保存）。
+export function showRogueliteDeploy(container, opts = {}) {
+  const { run, floorType, charImages, onConfirm, onBack } = opts;
+  if (!container || !run) { onConfirm?.(); return; }
+  const isBoss = floorType?.enemy === "boss";
+  const tone = isBoss ? "boss" : (floorType?.elite ? "elite" : "normal");
+  const battleLabel = isBoss ? "ボス戦" : (floorType?.elite ? "強敵戦" : (floorType?.name || "戦闘"));
+  const enemyNote = isBoss ? "館の主が待つ。逃げ場のない大一番。" : (floorType?.blurb || "卓に着く二人で挑む。");
+
+  // 出場順（lineupが無ければparty順）。上2人＝着卓・先頭=操作。
+  const orderIds = (Array.isArray(run.lineup) && run.lineup.length)
+    ? [...run.lineup, ...run.party.map((m) => m.id).filter((id) => !run.lineup.includes(id))]
+    : run.party.map((m) => m.id);
+  let order = orderIds.map((id) => run.party.find((m) => m.id === id)).filter(Boolean);
+
+  const ov = document.createElement("div");
+  ov.className = `rl-overlay rl-deploy is-open tone-${tone}`;
+  applyChapterColorSet(ov, run?.over?.colorSet);
+  ov.innerHTML = `
+    <div class="rl-deploy-wrap">
+      <header class="rl-deploy-top">
+        <div class="rl-deploy-floor">
+          <span class="rl-hub-eyebrow">楼光の館 ・ 第 ${run.floor} 階</span>
+          <span class="rl-deploy-battle">${battleLabel}</span>
+        </div>
+        <div class="rl-hub-res">
+          <span class="rl-hub-res-i"><span class="rl-hub-res-k">光貨</span><b>${run.coins | 0}</b></span>
+          <span class="rl-hub-res-i"><span class="rl-hub-res-k">スキルLv</span><b>${run.skillLevel || 1}</b></span>
+        </div>
+      </header>
+      <div class="rl-deploy-choose"><span>卓に出す二人を選ぶ</span></div>
+      <main class="rl-deploy-main">
+        <section class="rl-deploy-lineup">
+          <div class="rl-deploy-lineup-head">出陣　<small>${enemyNote}</small></div>
+          <div class="rl-deploy-list" id="rl-deploy-list"></div>
+        </section>
+        <aside class="rl-deploy-side">
+          <div class="rl-deploy-side-h">携えるもの</div>
+          ${buffTotalsHtml(run)}
+          ${clusterPanelHtml(run)}
+        </aside>
+      </main>
+      <footer class="rl-deploy-foot">
+        <button type="button" class="rl-retreat" id="rl-deploy-back">← 進路へ戻る</button>
+        <span class="rl-deploy-hint">戦うのは上の二人だけ。控えは倒れた時に繰り上がる。</span>
+        <button type="button" class="rl-start" id="rl-deploy-go">出陣する ›</button>
+      </footer>
+    </div>`;
+  container.appendChild(ov);
+
+  const listEl = ov.querySelector("#rl-deploy-list");
+  const youId = run.party[0]?.id;
+  const renderList = () => {
+    listEl.innerHTML = "";
+    order.forEach((m, i) => {
+      const seated = i < 2;
+      const pct = Math.max(0, Math.min(100, (m.hp / (m.hpMax || 1)) * 100));
+      const tier = pct <= 25 ? "low" : pct <= 50 ? "mid" : "high";
+      const isYou = m.id === youId;
+      const dead = m.hp <= 0;
+      const ab = charAbilityName(m.char);
+      const row = document.createElement("div");
+      row.className = `rl-deploy-row${seated ? " seated" : " bench"}${dead ? " is-down" : ""}`;
+      row.innerHTML = `
+        <div class="rl-deploy-move">
+          <button type="button" class="rl-swap-up" data-id="${m.id}" ${i === 0 ? "disabled" : ""} aria-label="上へ">▲</button>
+          <button type="button" class="rl-swap-down" data-id="${m.id}" ${i === order.length - 1 ? "disabled" : ""} aria-label="下へ">▼</button>
+        </div>
+        <div class="rl-deploy-face-wrap" data-face="${m.id}"></div>
+        <div class="rl-deploy-info">
+          <div class="rl-deploy-name" style="color:${m.char?.color || "#eadfce"}">${m.char?.name || "?"}${m.hungover ? " 🍶" : ""}
+            <span class="rl-deploy-tag ${seated ? "active" : "bench"}">${seated ? (isYou ? "操作" : "出場") : "控え"}</span>
+            ${ab ? `<span class="rl-deploy-ab">${ab}</span>` : ""}
+          </div>
+          <div class="rl-hp-bar"><span class="rl-hp-fill ${tier}" style="width:${pct}%"></span></div>
+        </div>
+        <div class="rl-deploy-hp">${dead ? "ダウン" : `${Math.max(0, Math.round(m.hp))}<small>/${m.hpMax}</small>`}</div>`;
+      listEl.appendChild(row);
+      const slot = row.querySelector(`[data-face="${m.id}"]`);
+      if (slot && m.char) slot.appendChild(faceNode(charImages, m.char, "rl-deploy-face"));
+      if (i === 1 && order.length > 2) {
+        const div = document.createElement("div");
+        div.className = "rl-deploy-divider";
+        div.innerHTML = "<span>― ここまで着卓（戦う二人）／下は控え ―</span>";
+        listEl.appendChild(div);
+      }
+    });
+    const move = (id, dir) => {
+      const idx = order.findIndex((m) => m.id === id);
+      const j = idx + dir;
+      if (idx < 0 || j < 0 || j >= order.length) return;
+      [order[idx], order[j]] = [order[j], order[idx]];
+      run.lineup = order.map((m) => m.id); // 保存（seatedAllies が尊重）
+      renderList();
+    };
+    listEl.querySelectorAll(".rl-swap-up").forEach((b) => b.addEventListener("click", () => move(b.dataset.id, -1)));
+    listEl.querySelectorAll(".rl-swap-down").forEach((b) => b.addEventListener("click", () => move(b.dataset.id, +1)));
+  };
+  renderList();
+  run.lineup = order.map((m) => m.id); // 並べ替えずに出陣しても現順を確定保存
+
+  ov.querySelector("#rl-deploy-back")?.addEventListener("click", () => { ov.remove(); onBack?.(); });
+  ov.querySelector("#rl-deploy-go")?.addEventListener("click", () => { ov.remove(); onConfirm?.(); });
+}
+
 // ---- 流派の門（交代マス）：光貨で1人を迎え、1人を送り出す（PTは3人のまま） ----
 export function showRogueliteRecruit(container, opts = {}) {
   const { run, candidates = [], cost = 50, charImages = null, onSwap, onSkip } = opts;

@@ -4873,6 +4873,47 @@ button.primary.danger:hover { color: #ffbcbc; }
   background: transparent; border: 1px solid rgba(255,120,100,.42); border-radius: 11px; cursor: pointer; transition: .14s; }
 .rl-retreat:hover { background: rgba(255,80,60,.1); border-color: var(--danger); color: #ffcec5; }
 
+/* ===== 出陣編成（戦闘突入の直前・フルスクリーン）===== 楼光ハブと同じ世界観トークン。 */
+.rl-deploy { align-items: stretch; } /* rl-overlay の中央寄せを解除し wrap で全面を使う */
+.rl-deploy-wrap { margin: auto; width: min(1080px, 94%); height: 100%; display: flex; flex-direction: column;
+  padding: 18px 0 14px; gap: 10px; color: var(--rl-ink); }
+.rl-deploy-top { display: flex; align-items: flex-end; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--rl-edge); }
+.rl-deploy-battle { display: block; font-family: var(--font-min, "Shippori Mincho", serif); font-size: 30px; letter-spacing: .06em; color: var(--rl-ink); margin-top: 2px; }
+.rl-deploy.tone-elite .rl-deploy-battle { color: #f0b86a; text-shadow: 0 2px 14px rgba(240,184,106,.35); }
+.rl-deploy.tone-boss .rl-deploy-battle { color: #ff8a72; text-shadow: 0 2px 16px rgba(255,84,80,.4); }
+.rl-deploy-choose { display: flex; align-items: center; justify-content: center; gap: 16px; }
+.rl-deploy-choose span { font-family: var(--font-min, serif); font-size: 18px; letter-spacing: .26em; color: var(--rl-ink); }
+.rl-deploy-choose::before, .rl-deploy-choose::after { content: ""; height: 1px; width: 110px; background: linear-gradient(90deg, transparent, var(--rl-edge)); }
+.rl-deploy-choose::after { background: linear-gradient(90deg, var(--rl-edge), transparent); }
+.rl-deploy-main { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+.rl-deploy-lineup { display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+.rl-deploy-lineup-head { font-size: 13px; letter-spacing: .04em; color: var(--rl-gold); }
+.rl-deploy-lineup-head small { color: var(--muted); font-weight: 400; margin-left: 8px; letter-spacing: 0; }
+.rl-deploy-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; min-height: 0; padding-right: 4px; }
+.rl-deploy-row { display: grid; grid-template-columns: auto 60px 1fr auto; align-items: center; gap: 14px;
+  padding: 12px 16px; border-radius: 14px; border: 1px solid var(--rl-edge);
+  background: linear-gradient(180deg, rgba(30,24,40,.6), rgba(13,9,19,.62)); transition: border-color .12s, opacity .12s; }
+.rl-deploy-row.seated { border-color: var(--rl-gold); box-shadow: inset 0 0 0 1px rgba(232,196,93,.22); }
+.rl-deploy-row.bench { opacity: .8; }
+.rl-deploy-row.is-down { opacity: .45; filter: grayscale(.6); }
+.rl-deploy-move { display: flex; flex-direction: column; gap: 4px; }
+.rl-deploy-face { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; object-position: top center; }
+.rl-deploy-face.rl-face-fb { display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 24px; background: var(--c, #555); color: #fff; }
+.rl-deploy-info { min-width: 0; display: flex; flex-direction: column; gap: 7px; }
+.rl-deploy-name { font-size: 17px; font-weight: 800; display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+.rl-deploy-tag { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+.rl-deploy-tag.active { background: rgba(232,196,93,.18); color: var(--rl-gold); }
+.rl-deploy-tag.bench { background: rgba(255,255,255,.08); color: var(--muted); }
+.rl-deploy-ab { font-size: 11px; font-weight: 600; color: #cdbfa6; background: rgba(0,0,0,.28); border: 1px solid var(--rl-edge); padding: 2px 8px; border-radius: 7px; }
+.rl-deploy-hp { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; color: var(--rl-ink); text-align: right; }
+.rl-deploy-hp small { font-size: 12px; opacity: .55; font-weight: 600; }
+.rl-deploy-divider { text-align: center; font-size: 11px; color: var(--muted); letter-spacing: .08em; padding: 1px 0; }
+.rl-deploy-side { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow-y: auto;
+  border-left: 1px solid var(--rl-edge); padding-left: 20px; }
+.rl-deploy-side-h { font-size: 12px; letter-spacing: .22em; color: var(--rl-gold); }
+.rl-deploy-foot { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--rl-edge); }
+.rl-deploy-hint { font-size: 11.5px; color: var(--muted); text-align: center; flex: 1; padding: 0 12px; }
+
 /* オーバーレイ（ドラフト/継続/結果/各モーダル）。ステージ内に被せる。楼光パレットを供給。 */
 .rl-overlay { --rl-gold:#e8c45d; --rl-ink:#f3ece0; --rl-edge:rgba(232,196,93,0.26); --rl-ember:#c0563a;
   position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
