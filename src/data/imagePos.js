@@ -61,6 +61,35 @@ export function applyPortraitCrop(img, c) {
   if (tr) img.style.transformOrigin = "center";
 }
 
+// 宝珠ショップ「キャラ解禁カード」の立ち絵クロップ（cover枠）。横長カードに顔/バストを見せる用途別オフセット。
+//   imagePos.shop（object-position）/ shopZoom / shopOffset を見る。すべて任意で portrait とは独立。
+//   既定は "top center"（＝顔出し。未調整でも胴体だけにならない）。値は offset-tuner の「宝珠ショップ カード」で調整。
+export function shopPosOf(c) {
+  return c?.imagePos?.shop || DEFAULT_OBJPOS;
+}
+// ショップカードのズーム（拡大率）。imagePos.shopZoom（任意）。既定 1。
+export function shopZoomOf(c) {
+  const z = Number(c?.imagePos?.shopZoom);
+  return z > 0 ? z : 1;
+}
+// ショップカードの移動オフセット { x, y }（translate%）。imagePos.shopOffset（任意）。
+export function shopOffsetOf(c) {
+  const o = c?.imagePos?.shopOffset;
+  if (!o) return null;
+  const x = o.x || "0%", y = o.y || "0%";
+  if ((x === "0%" || !o.x) && (y === "0%" || !o.y)) return null;
+  return { x, y };
+}
+// ショップカード <img>（cover枠）に効かせる style 値（object-position[＋translate＋scale]）。
+export function shopStyleAttr(c) {
+  let s = `object-position:${shopPosOf(c)}`;
+  const parts = [];
+  const o = shopOffsetOf(c); if (o) parts.push(`translate(${o.x}, ${o.y})`);
+  const z = shopZoomOf(c); if (z !== 1) parts.push(`scale(${z})`);
+  if (parts.length) s += `;transform:${parts.join(" ")}`;
+  return s;
+}
+
 // icon.png の顔アイコンの object-position（rl顔 / HPボード / autobattle席 など全アイコン共通）。
 //   imagePos.icon → 既定 "top center"。立ち絵とは別ソース画像なので portraitPos へはフォールバックしない。
 export function iconPosOf(c) {

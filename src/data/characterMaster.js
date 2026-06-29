@@ -279,8 +279,8 @@ export const CHARACTER_MASTER = [
     profile: "「だいじょうぶ、ゆっくりでいいですよ」と寄り添う家庭教師。迷える手にそっと最善の一打を指し示し、次の一歩に栞を挟む。——けれど、模範解答を教え続けた彼女自身は、まだ“正解のない一打”の前で立ち止まったことがない。",
     stats: { startingPoints: 25000 }, // 助言型・HPは標準（点棒を増減させる能力ではない）。
     assets: assetsFor("teacher"),
-    imagePos: { portraitZoom: 1.12 },
-    emotePos: { side: "right", x: -120, y: -48 },
+    imagePos: { portraitZoom: 1.12, scenario: { x: "-7.4%", y: "-17.1%", zoom: 1.79 }, shopOffset: { x: "-5.1%", y: "-9.7%" } },
+    emotePos: { side: "right", x: -284, y: -42 },
     params: { attack: 3, defense: 2, quirk: 2, difficulty: 1 },
     abilities: [{ abilityId: "model-answer", params: {} }],
   },

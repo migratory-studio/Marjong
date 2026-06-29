@@ -14,6 +14,16 @@ import {
   SHOP_BUFFS, SHOP_UNLOCKS, UNLOCK_FIELD,
   buffCost, buffEffectText, isShopUnlocked,
 } from "../data/shopMaster.js";
+import { CHARACTER_MASTER } from "../data/characterMaster.js";
+import { shopStyleAttr } from "../data/imagePos.js";
+
+// 解禁タイプ別の見せ方（モーダルのアイコン／完了文）。新typeを足すときはここにも1行。
+const UNLOCK_ICON = { bg: "🖼", bgm: "🎵", char: "🤝" };
+const UNLOCK_DONE = {
+  bg: "対戦ホームの背景で選べるようになった。",
+  bgm: "対戦ホームのBGMで選べるようになった。",
+  char: "仲間に加わった。フリー対戦などで連れていける。",
+};
 
 function esc(s) {
   return String(s ?? "").replace(/[&<>"']/g, (c) =>
@@ -78,6 +88,7 @@ export async function showShop(container, opts = {}) {
       <footer class="shop-foot">
         <button type="button" class="ghost-back" id="shop-back">← 対戦ホームへ</button>
       </footer>
+      <div class="shop-modal" id="shop-modal" hidden></div>
     </div>`;
 
   const orbsEl = container.querySelector("#shop-orbs");
@@ -129,13 +140,24 @@ export async function showShop(container, opts = {}) {
   }
 
   // 解禁1枚。
+  //  - char … キャラ立ち絵を <img>(cover) で被せ、用途別オフセット(shop)で顔/バストを見せる（胴体だけにしない）。
+  //  - bg/bgm … サムネ画像を background-image で敷く（横長サムネは cover/center のままで自然）。
   function unlockCardHtml(it) {
     const owned = isShopUnlocked(it, profile);
     const afford = (profile.orbs | 0) >= it.cost;
-    const cls = "shop-card shop-card--unlock" + (owned ? " owned" : afford ? "" : " poor");
-    const bg = it.img ? ` style="background-image:url('${esc(it.img)}')"` : "";
+    const isChar = it.type === "char";
+    const cls = "shop-card shop-card--unlock" + (isChar ? " shop-card--char" : "")
+      + (owned ? " owned" : afford ? "" : " poor");
     const tag = owned ? "解禁済" : afford ? `宝珠 ${it.cost}` : `宝珠 ${it.cost}（不足）`;
+    let media = "", bg = "";
+    if (isChar && it.img) {
+      const c = CHARACTER_MASTER.find((x) => x.id === it.key);
+      media = `<img class="shop-card-img" src="${esc(it.img)}" alt="" style="${esc(shopStyleAttr(c))}">`;
+    } else if (it.img) {
+      bg = ` style="background-image:url('${esc(it.img)}')"`;
+    }
     return `<div class="${cls}"${bg}>
+      ${media}
       <div class="shop-card-veil">
         <span class="shop-card-name">${esc(it.name)}</span>
         <div class="shop-card-desc">${esc(it.desc)}</div>
@@ -165,32 +187,130 @@ export async function showShop(container, opts = {}) {
 
   function rerender() { renderOrbs(); renderTabs(); renderBody(); }
 
+  // ===== 購入導線：確認モーダル → 実行 → 完了モーダルの2段（即時購入はしない＝押し間違い防止＋達成感） =====
+  const modalEl = container.querySelector("#shop-modal");
+  let onModalKey = null;
+
+  function closeModal() {
+    modalEl.hidden = true;
+    modalEl.innerHTML = "";
+    if (onModalKey) { document.removeEventListener("keydown", onModalKey); onModalKey = null; }
+  }
+  function openModal(html, wire) {
+    modalEl.innerHTML = html;
+    modalEl.hidden = false;
+    wire?.();
+    modalEl.querySelector(".shop-modal-scrim")?.addEventListener("click", () => { audio?.playClick?.(); closeModal(); });
+    onModalKey = (e) => { if (e.key === "Escape") { e.preventDefault(); closeModal(); } };
+    document.addEventListener("keydown", onModalKey);
+    modalEl.querySelector(".shop-modal-go, .shop-modal-ok")?.focus();
+  }
+
+  // 確認モーダル。intent = { kind, id, icon, name, cost, effect, doneText }
+  function openConfirm(intent) {
+    if (!intent) return;
+    const have = profile.orbs | 0;
+    const after = have - intent.cost;
+    openModal(`
+      <div class="shop-modal-scrim"></div>
+      <div class="shop-modal-card" role="dialog" aria-modal="true" aria-label="購入の確認">
+        <div class="shop-modal-h">購入の確認</div>
+        <div class="shop-modal-item">
+          <span class="shop-modal-ico">${esc(intent.icon)}</span>
+          <div class="shop-modal-itxt">
+            <div class="shop-modal-name">${esc(intent.name)}</div>
+            <div class="shop-modal-eff">${esc(intent.effect)}</div>
+          </div>
+        </div>
+        <div class="shop-modal-cost">
+          <span>宝珠 <b>${intent.cost}</b> を捧げますか？</span>
+          <span class="shop-modal-bal">所持 ${have} → <b>${after}</b></span>
+        </div>
+        <div class="shop-modal-btns">
+          <button type="button" class="shop-modal-cancel" id="shop-m-cancel">やめる</button>
+          <button type="button" class="shop-modal-go" id="shop-m-go">購入する</button>
+        </div>
+      </div>`, () => {
+      modalEl.querySelector("#shop-m-cancel").addEventListener("click", () => { audio?.playClick?.(); closeModal(); });
+      modalEl.querySelector("#shop-m-go").addEventListener("click", () => {
+        const ok = intent.kind === "buff" ? commitBuff(intent.id) : commitUnlock(intent.id);
+        if (ok) openComplete(intent); else closeModal();
+      });
+    });
+  }
+
+  // 完了モーダル（残高は commit 反映後の profile を見る）。
+  function openComplete(intent) {
+    openModal(`
+      <div class="shop-modal-scrim"></div>
+      <div class="shop-modal-card shop-modal-card--done" role="dialog" aria-modal="true" aria-label="購入完了">
+        <div class="shop-modal-badge">購入完了</div>
+        <div class="shop-modal-item">
+          <span class="shop-modal-ico">${esc(intent.icon)}</span>
+          <div class="shop-modal-itxt">
+            <div class="shop-modal-name">${esc(intent.name)}</div>
+            <div class="shop-modal-eff">${esc(intent.doneText)}</div>
+          </div>
+        </div>
+        <div class="shop-modal-cost"><span class="shop-modal-bal">残り 宝珠 <b>${profile.orbs | 0}</b></span></div>
+        <div class="shop-modal-btns">
+          <button type="button" class="shop-modal-ok" id="shop-m-ok">閉じる</button>
+        </div>
+      </div>`, () => {
+      modalEl.querySelector("#shop-m-ok").addEventListener("click", () => { audio?.playClick?.(); closeModal(); });
+    });
+  }
+
+  // クリック＝確認を開く（intent 組み立て）。実購入は commit*（確認後）に分離。
   function buyBuff(id) {
     const b = SHOP_BUFFS.find((x) => x.id === id);
     if (!b) return;
     const lv = buffs[id] | 0;
     const cost = buffCost(id, lv);
     if (cost == null || (profile.orbs | 0) < cost) return;
-    profile.orbs = (profile.orbs | 0) - cost;
-    buffs[id] = lv + 1; // buffs は profile.rogueliteShopBuffs の参照
     audio?.playClick?.();
-    // 購入後はカード状態だけ更新（残高・本体）。タブの件数は不変なのでタブは触らない＝スクロール位置を保つ。
-    renderOrbs();
-    renderBody();
-    queueSave();
+    openConfirm({
+      kind: "buff", id, icon: b.icon || "★", name: b.name, cost,
+      effect: `${buffEffectText(b, lv)} → ${buffEffectText(b, lv + 1)}（Lv ${lv} → ${lv + 1}）`,
+      doneText: `${b.name} が Lv ${lv + 1} になった。`,
+    });
   }
-
   function buyUnlock(id) {
     const it = SHOP_UNLOCKS.find((x) => x.id === id);
     if (!it || isShopUnlocked(it, profile) || (profile.orbs | 0) < it.cost) return;
-    const field = UNLOCK_FIELD[it.type];
-    if (!field) return;
-    profile.orbs = (profile.orbs | 0) - it.cost;
-    if (!profile[field].includes(it.key)) profile[field].push(it.key);
     audio?.playClick?.();
+    openConfirm({
+      kind: "unlock", id, icon: UNLOCK_ICON[it.type] || "🎁", name: it.name, cost: it.cost,
+      effect: it.desc,
+      doneText: UNLOCK_DONE[it.type] || "解禁しました。",
+    });
+  }
+
+  // 実購入（残高再検証つき。成功で true）。状態更新＝残高・本体のみ（タブ件数は不変＝スクロール位置を保つ）。
+  function commitBuff(id) {
+    const b = SHOP_BUFFS.find((x) => x.id === id);
+    if (!b) return false;
+    const lv = buffs[id] | 0;
+    const cost = buffCost(id, lv);
+    if (cost == null || (profile.orbs | 0) < cost) return false;
+    profile.orbs = (profile.orbs | 0) - cost;
+    buffs[id] = lv + 1; // buffs は profile.rogueliteShopBuffs の参照
     renderOrbs();
     renderBody();
     queueSave();
+    return true;
+  }
+  function commitUnlock(id) {
+    const it = SHOP_UNLOCKS.find((x) => x.id === id);
+    if (!it || isShopUnlocked(it, profile) || (profile.orbs | 0) < it.cost) return false;
+    const field = UNLOCK_FIELD[it.type];
+    if (!field) return false;
+    profile.orbs = (profile.orbs | 0) - it.cost;
+    if (!profile[field].includes(it.key)) profile[field].push(it.key);
+    renderOrbs();
+    renderBody();
+    queueSave();
+    return true;
   }
 
   rerender();

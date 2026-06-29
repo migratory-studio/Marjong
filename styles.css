@@ -5593,6 +5593,7 @@ button.primary.danger:hover { color: #ffbcbc; }
 .shop-screen {
   width: 100%; height: 100%; box-sizing: border-box; padding: 18px 30px;
   display: flex; flex-direction: column; color: #f3ead9; overflow: hidden;
+  position: relative; /* 購入確認/完了モーダルの絶対配置アンカー */
 }
 .shop-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
 .shop-title { margin: 0; font-size: 30px; font-weight: 800; color: #f6d59a; letter-spacing: .04em; }
@@ -5668,5 +5669,43 @@ button.primary.danger:hover { color: #ffbcbc; }
 .shop-card--unlock .shop-card-name { font-size: 15px; }
 .shop-card--unlock .shop-card-desc { flex: 0 0 auto; }
 .shop-empty { color: #9fb3a7; font-size: 14px; padding: 10px 2px; }
+
+/* キャラ解禁カードは立ち絵を <img>(cover) で被せ、用途別オフセット(shop)で顔/バストを見せる（胴体だけにしない）。
+   立ち絵は絶対配置で背面、ベール(名前/説明/ボタン)は前面。背が高めなので顔出しの余白を確保。 */
+.shop-card--char { min-height: 196px; }
+.shop-card-img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: top center; transform-origin: center; z-index: 0;
+}
+.shop-card--char .shop-card-veil { position: relative; z-index: 1; }
+
+/* 購入確認 / 完了モーダル（shop-screen 内オーバーレイ）。 */
+.shop-modal { position: absolute; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; }
+.shop-modal[hidden] { display: none; }
+.shop-modal-scrim { position: absolute; inset: 0; background: rgba(6,8,7,.72); backdrop-filter: blur(2px); }
+.shop-modal-card {
+  position: relative; z-index: 1; width: min(420px, 86%);
+  background: #1b261f; border: 2px solid #f6b35266; border-radius: 16px; padding: 20px 22px;
+  display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 60px #000a;
+}
+.shop-modal-h { font-size: 19px; font-weight: 800; color: #f6d59a; letter-spacing: .03em; }
+.shop-modal-badge {
+  align-self: center; font-size: 15px; font-weight: 800; color: #06281d;
+  background: #6fe0a0; border-radius: 999px; padding: 5px 18px; letter-spacing: .06em;
+}
+.shop-modal-item { display: flex; align-items: center; gap: 12px; }
+.shop-modal-ico { font-size: 30px; flex: 0 0 auto; }
+.shop-modal-itxt { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.shop-modal-name { font-size: 16px; font-weight: 800; color: #f3ead9; }
+.shop-modal-eff { font-size: 12.5px; line-height: 1.45; color: #cdbfa6; }
+.shop-modal-cost { display: flex; flex-direction: column; gap: 4px; font-size: 14px; color: #e9f3ec; }
+.shop-modal-cost b { color: #ffe39a; }
+.shop-modal-bal { font-size: 12.5px; color: #9fb3a7; }
+.shop-modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 2px; }
+.shop-modal-btns button { font-size: 14px; font-weight: 800; padding: 9px 18px; border-radius: 10px; cursor: pointer; border: 2px solid #0003; }
+.shop-modal-go, .shop-modal-ok { background: var(--accent, #f6b352); color: #20140a; }
+.shop-modal-go:hover, .shop-modal-ok:hover { filter: brightness(1.08); }
+.shop-modal-cancel { background: #2a352d; color: #d8cdb8; border-color: #ffffff14; }
+.shop-modal-cancel:hover { background: #32402f; }
 
 .shop-foot { margin-top: 10px; flex: 0 0 auto; }

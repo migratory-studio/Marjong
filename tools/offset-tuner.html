@@ -106,7 +106,7 @@ const asset = (p) => p ? ("../" + p) : "";
 const LS_KEY = "offsetTuner.v1";
 
 // ---- defaults / parse / format -------------------------------------------
-const DEF = { portrait:{x:50,y:0,zoom:1,ox:0,oy:0}, icon:{x:50,y:0}, home:{x:0,y:0,zoom:1}, scenario:{x:0,y:0,zoom:1} };
+const DEF = { portrait:{x:50,y:0,zoom:1,ox:0,oy:0}, icon:{x:50,y:0}, home:{x:0,y:0,zoom:1}, scenario:{x:0,y:0,zoom:1}, shop:{x:50,y:0,zoom:1,ox:0,oy:0} };
 const EMO_DEF = { side:"left", x:67, y:3 }; // 未設定キャラの初期エモート位置（描画既定 size*0.42 / size*0.02 相当）
 const KW = { left:0, right:100, top:0, bottom:100, center:50 };
 // エモート可視化に使う代表スプライト（notice / STD: 400px枠・5×8）。本物の見え方を確認するため実画像を使う。
@@ -144,11 +144,15 @@ function initialState(c){
   const home = { x: parsePct(h.x,0), y: parsePct(h.y,0), zoom: (h.zoom!=null? Number(h.zoom):1) };
   const sc = ip.scenario || {};
   const scenario = { x: parsePct(sc.x,0), y: parsePct(sc.y,0), zoom: (sc.zoom!=null? Number(sc.zoom):1) };
+  const shop = parseObjPos(ip.shop) || {...DEF.shop};
+  shop.zoom = (ip.shopZoom!=null && Number(ip.shopZoom)>0) ? Number(ip.shopZoom) : 1;
+  const sho = ip.shopOffset || {};
+  shop.ox = parsePct(sho.x,0); shop.oy = parsePct(sho.y,0);
   const em = c.emotePos;
   const emote = em
     ? { side: em.side==="right"?"right":"left", x: parsePct(em.x,EMO_DEF.x), y: parsePct(em.y,EMO_DEF.y), set:true }
     : { ...EMO_DEF, set:false }; // 未設定キャラはドラッグするまで出力に含めない
-  return { portrait, icon, home, scenario, emote };
+  return { portrait, icon, home, scenario, shop, emote };
 }
 
 // 既定一致か（出力時に省略するため）
@@ -174,6 +178,12 @@ function toImagePos(st){
   if(Math.abs(st.scenario.y)>=0.05) s.y = num(st.scenario.y)+"%";
   if(Math.abs(st.scenario.zoom-1)>=0.005) s.zoom = Math.round(st.scenario.zoom*100)/100;
   if(Object.keys(s).length) out.scenario = s;
+  if(!eqXY(st.shop,DEF.shop)) out.shop = objPosStr(st.shop);
+  if(Math.abs((st.shop.zoom||1)-1)>=0.005) out.shopZoom = Math.round(st.shop.zoom*100)/100;
+  const sho={};
+  if(Math.abs(st.shop.ox||0)>=0.05) sho.x = num(st.shop.ox)+"%";
+  if(Math.abs(st.shop.oy||0)>=0.05) sho.y = num(st.shop.oy)+"%";
+  if(Object.keys(sho).length) out.shopOffset = sho;
   return Object.keys(out).length ? out : null;
 }
 // エモート位置の出力（set のときだけ）。emotePos は characterMaster の独立フィールド。
@@ -208,6 +218,14 @@ function imagePosLiteral(ip){
     if(ip.scenario.y) sp.push(`y: ${JSON.stringify(ip.scenario.y)}`);
     if(ip.scenario.zoom!=null) sp.push(`zoom: ${ip.scenario.zoom}`);
     parts.push(`scenario: { ${sp.join(", ")} }`);
+  }
+  if(ip.shop) parts.push(`shop: ${JSON.stringify(ip.shop)}`);
+  if(ip.shopZoom!=null) parts.push(`shopZoom: ${ip.shopZoom}`);
+  if(ip.shopOffset){
+    const op=[];
+    if(ip.shopOffset.x) op.push(`x: ${JSON.stringify(ip.shopOffset.x)}`);
+    if(ip.shopOffset.y) op.push(`y: ${JSON.stringify(ip.shopOffset.y)}`);
+    parts.push(`shopOffset: { ${op.join(", ")} }`);
   }
   return `imagePos: { ${parts.join(", ")} },`;
 }
@@ -314,6 +332,7 @@ function renderMain(){
 
   const cards=document.createElement("div"); cards.className="cards";
   cards.appendChild(portraitCard(c,st));
+  cards.appendChild(shopCard(c,st));
   cards.appendChild(iconCard(c,st));
   cards.appendChild(homeCard(c,st));
   cards.appendChild(scenarioCard(c,st));
@@ -360,6 +379,50 @@ function portraitCard(c,st){
     apply();
   });
   attachWheelZoom(frame, ()=>st.portrait.zoom, (z)=>st.portrait.zoom=z, apply);
+  img.complete ? apply() : img.addEventListener("load",apply);
+  apply();
+  return card;
+}
+
+// --- shop (宝珠ショップ・キャラ解禁カード, cover横長) ---
+// 解禁カード(width≈294 / 顔出し用に高さ196)に portrait.png を cover で被せ、shop オフセットで顔/バストを見せる。
+// 下部ベール(名前/説明/ボタン帯)を可視化して、隠れる範囲ぶんも込みで見え方を確認する。ゲーム側 shopStyleAttr と一致。
+function shopCard(c,st){
+  const card=document.createElement("div"); card.className="card";
+  card.innerHTML=`<h2>宝珠ショップ カード <span class="tag">portrait.png / cover・解禁カードの顔出し / ドラッグ＝移動・スクロール＝ズーム</span></h2>`;
+  const frame=document.createElement("div"); frame.className="frame cover";
+  const FW=294, FH=196; frame.style.width=FW+"px"; frame.style.height=FH+"px";
+  const img=document.createElement("img"); img.src=asset(c.assets?.portrait);
+  img.onerror=()=>{ frame.style.opacity=.3; };
+  const grid=document.createElement("div"); grid.className="grid";
+  // 下部ベール（名前/説明/価格帯）を実物に寄せて可視化（pointerはドラッグ用に透過）
+  const veil=document.createElement("div");
+  veil.style.cssText="position:absolute;left:0;right:0;bottom:0;height:96px;pointer-events:none;"
+    +"display:flex;flex-direction:column;justify-content:flex-end;gap:4px;padding:8px 11px;"
+    +"background:linear-gradient(180deg,#0b0f0c00 0%,#0b0f0ce0 46%,#0b0f0cf2 100%)";
+  veil.innerHTML=`<div style="font-size:13px;font-weight:800;color:#f3ead9">${c.name}</div>
+    <div style="font-size:10px;line-height:1.35;color:#cdbfa6">能力で仲間にできる解禁カード…</div>
+    <div style="align-self:stretch;text-align:center;font-size:11px;font-weight:800;color:#20140a;background:#f6b352;border-radius:7px;padding:4px 0">宝珠 ◯◯</div>`;
+  frame.appendChild(img); frame.appendChild(grid); frame.appendChild(veil); card.appendChild(frame);
+  const apply=()=>{
+    const p=st.shop; const ox=p.ox||0, oy=p.oy||0, zoom=p.zoom||1;
+    img.style.objectPosition=objPosStr(p);
+    const parts=[]; if(ox||oy) parts.push(`translate(${num(ox)}%, ${num(oy)}%)`); if(zoom!==1) parts.push(`scale(${zoom})`);
+    img.style.transform=parts.join(" "); img.style.transformOrigin="center";
+    read.textContent=`移動 x:${num(ox)}% y:${num(oy)}%  zoom:${Math.round(zoom*100)/100}`;
+  };
+  const ctl=document.createElement("div"); ctl.className="ctl";
+  ctl.innerHTML=`<div class="row"><b class="read"></b><button class="mini">既定に戻す</button></div>`;
+  const read=ctl.querySelector(".read");
+  ctl.querySelector("button").onclick=()=>{ st.shop={...DEF.shop}; apply(); persist(); renderOutput(); };
+  card.appendChild(ctl);
+  let s0;
+  attachDrag(frame, ()=>{ s0={...st.shop}; }, (dx,dy)=>{
+    st.shop.ox=clamp((s0.ox||0) + dx*100/FW, -100, 100);
+    st.shop.oy=clamp((s0.oy||0) + dy*100/FH, -100, 100);
+    apply();
+  });
+  attachWheelZoom(frame, ()=>st.shop.zoom, (z)=>st.shop.zoom=z, apply);
   img.complete ? apply() : img.addEventListener("load",apply);
   apply();
   return card;
