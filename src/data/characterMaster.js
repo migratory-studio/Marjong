@@ -38,10 +38,15 @@ const voicesFor = (id) => ({
   tsumo: `sound/voice/${id}/tsumo.mp3`,
   ron: `sound/voice/${id}/ron.mp3`,
 });
+// 対局ボイス（pon/chi/kan/riichi/tsumo/ron）を実装済みのキャラ id を列挙する。
+// ※ 現状 sound/voice/ に素材が無く、パスを張ると全件 404 がコンソールを埋め「壊れている」印象になる。
+//   素材を sound/voice/<id>/*.mp3 に置いたら、その id をここへ足すだけで実ボイスが鳴る（空の間は SE フォールバックで鳴り、404は出ない）。
+//   再生側 AudioManager.playVoice は未登録キーを naki/chime/win-jingle へフォールバックするので、空でも“無音”にはならない。
+const VOICED_CHARS = new Set();
 const assetsFor = (id) => ({
   icon: `graphic/chars/${id}/icon.png`,
   portrait: `graphic/chars/${id}/portrait.png`,
-  voices: voicesFor(id),
+  voices: VOICED_CHARS.has(id) ? voicesFor(id) : {},
 });
 
 // ロール（種別）マスタ。選択画面のグルーピング順・ラベル・配色の単一の出どころ。
