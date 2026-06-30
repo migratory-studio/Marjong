@@ -178,6 +178,33 @@ body {
   border-radius: 10px; padding: 8px 18px; font-size: 14px; cursor: pointer; transition: .12s;
 }
 .ghost-back:hover { color: var(--ink); border-color: rgba(255,255,255,.4); }
+
+/* ---- home top: 起動ごとのランダム立ち絵（左右の出迎え） ----
+   中央メニュー(幅560px)とは被らせず、左右ガター(各〜360px)に全身立ち絵を大きく置く。
+   装飾なのでクリックは透過し、メニューより必ず背面に回す。 */
+/* ホームだけは全幅にして左右ガターを確保（中身は flex 中央寄せのまま）。
+   既定の .menu-screen は max-width:560px で中央に絞られ、絶対配置の立ち絵が
+   その箱に閉じ込められて中央メニューに被るため、ここで全幅へ戻す。 */
+#home-screen.menu-screen { max-width: none; }
+.home-cast { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+#home-screen > .menu-head,
+#home-screen > .menu-list,
+#home-screen > #debug-menu-btn { position: relative; z-index: 1; }
+.home-cast-fig {
+  position: absolute; bottom: 0; width: 340px; height: 100%;
+  opacity: 0; animation: home-cast-in .6s ease forwards;
+}
+.home-cast-fig.is-left  { left: 6px; }
+.home-cast-fig.is-right { right: 6px; }
+.home-cast-fig img {
+  display: block; width: 100%; height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 22px rgba(0,0,0,.5));
+}
+/* contain で生じる横の余白ぶん、人物を画面の外縁側へ寄せて中央メニューとの間を空ける。 */
+.home-cast-fig.is-left  img { object-position: bottom left; }
+.home-cast-fig.is-right img { object-position: bottom right; }
+@keyframes home-cast-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 .coming-soon { text-align: center; color: var(--muted); }
 .coming-soon-badge {
   display: inline-block; font-size: 22px; font-weight: 800; letter-spacing: .08em;

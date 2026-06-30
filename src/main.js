@@ -29,6 +29,7 @@ import { showAccount } from "./screens/accountScreen.js";
 import { buildPrologueLines } from "./data/prologueScenario.js";
 import { showMentorHome } from "./screens/mentorHomeScreen.js";
 import { showBattleHome } from "./screens/battleHomeScreen.js";
+import { mountHomeCast } from "./screens/homeCast.js";
 import { showShop } from "./screens/shopScreen.js";
 import { SHOP_BUFFS } from "./data/shopMaster.js";
 import { showRest } from "./screens/restScreen.js";
@@ -3363,6 +3364,8 @@ async function enterOnline() {
   goScreen("online-screen");
 }
 function bootHome() {
+  // トップの左右に起動ごとのランダム立ち絵を“出迎え”として置く（寂しさ解消・共在感）。
+  mountHomeCast(el("home-screen"));
   for (const btn of document.querySelectorAll("[data-nav]")) {
     btn.addEventListener("click", () => { audio.playClick?.(); navigate(btn.dataset.nav); });
   }
