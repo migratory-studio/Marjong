@@ -174,11 +174,12 @@ export const CHARACTER_MASTER = [
     reading: "エージェント・アールイー",
     color: "#7f8c99",
     role: "blocker",
+    locked: true, // 初期は未解禁。宝珠ショップ（char-agentRE）で買うと profile.unlockedCharacters に積まれ、選択導線で解放される。
     bio: "捨て牌を回収する諜報型。1局1回、ツモ牌を安全に河へ捨てつつ過去の捨て牌を取り戻す。",
     profile: "あらゆる情報を「回収（リコール）」する寡黙なエージェント。一度手放した牌すら取引材料に変える老獪な打ち回しで、攻めにも守りにも化ける器用さを持つ。",
     stats: { startingPoints: 15000 }, // 1局1回の小回り能力。標準的なHP。
     assets: assetsFor("agentRE"),
-    imagePos: { portraitZoom: 2.69, portraitOffset: { x: "11.6%", y: "80.2%" }, home: { x: "3.6%", y: "-0.9%" }, scenario: { x: "1.9%", y: "-22.4%", zoom: 2.01 }, topCast: { x: "4%", zoom: 1.5 } },
+    imagePos: { portraitZoom: 2.69, portraitOffset: { x: "11.6%", y: "80.2%" }, home: { x: "3.6%", y: "-0.9%" }, scenario: { x: "1.9%", y: "-22.4%", zoom: 2.01 }, topCast: { x: "4%", zoom: 1.5 }, shopZoom: 2.54, shopOffset: { x: "9.9%", y: "45.4%" } },
     emotePos: { side: "left", x: -7, y: -29 },
     params: { attack: 3, defense: 4, quirk: 3, difficulty: 3 },
     abilities: [{ abilityId: "recall-deal", params: {} }],

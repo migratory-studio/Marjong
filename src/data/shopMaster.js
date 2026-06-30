@@ -84,6 +84,7 @@ export const SHOP_UNLOCKS = [
   // キャラ解禁。key は charId。買うと profile.unlockedCharacters に積まれ、characterMaster で locked:true の
   // キャラが選択導線（フリー対戦など）で選べるようになる。実キャラを売り出すときは下記の形で1行足すだけ。
   { id: "char-teacher", type: "char", key: "teacher", name: "篠宮 栞", cost: 150, img: "graphic/chars/teacher/portrait.png", desc: "学校教師「篠宮 栞」を仲間に。能力『模範解答』で麻雀のサポートをしてくれる。" },
+  { id: "char-agentRE", type: "char", key: "agentRE", name: "エージェント・RE", cost: 150, img: "graphic/chars/agentRE/portrait.png", desc: "寡黙な諜報の打ち手「エージェント・RE」を仲間に。能力『リコール』で一度手放した牌すら取引材料に変える。" },
 ];
 
 // profile から解禁配列名（type→profileキー）。新規typeを足すときはここに対応を1行。
