@@ -200,14 +200,16 @@ export async function showBattleHome(container, opts = {}) {
             <span class="menu-btn-sub fallback">弟子を連れて階層を登る・撤退と継続の冒険</span>
             <span class="menu-btn-tip">雀士たちと階層を登る冒険譚</span>
           </button>
-          <button type="button" class="menu-btn" id="bh-free">
-            <span class="menu-btn-title">フリー対戦</span>
-            <span class="menu-btn-sub">CPU対戦 / オンライン対戦</span>
-          </button>
-          <button type="button" class="menu-btn" id="bh-shop" title="宝珠で恒久強化・解禁">
-            <span class="menu-btn-title">宝珠ショップ</span>
-            <span class="menu-btn-sub">宝珠で恒久強化・背景やBGMを解禁</span>
-          </button>
+          <div class="bh-route-duo">
+            <button type="button" class="menu-btn menu-btn--duo" id="bh-free">
+              <span class="menu-btn-title">フリー対戦</span>
+              <span class="menu-btn-sub">CPU / オンライン</span>
+            </button>
+            <button type="button" class="menu-btn menu-btn--duo" id="bh-shop" title="宝珠で恒久強化・背景やBGMを解禁">
+              <span class="menu-btn-title">宝珠ショップ</span>
+              <span class="menu-btn-sub">恒久強化・解禁</span>
+            </button>
+          </div>
         </nav>
         <button type="button" class="ghost-back bh-back" id="bh-back">← ホームへ</button>
       </div>

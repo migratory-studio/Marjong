@@ -260,7 +260,7 @@ body {
 .bh-charname:empty { display: none; }
 
 /* 右カラム: 情報カード / 導線 / 戻る を縦に積む（スリム＝立ち絵を邪魔しない） */
-.bh-side { flex: 0 0 332px; max-width: 332px; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+.bh-side { flex: 0 0 332px; max-width: 332px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
 .bh-card {
   border: 14px solid transparent;
   border-image: url("graphic/ui/sc/panel.png") 18 / 14px / 0 stretch; border-radius: 0;
@@ -332,7 +332,12 @@ body {
 .bh-amb-row-cue { color: var(--muted); font-size: 11px; }
 .bh-amb-tile.is-locked, .bh-amb-row.is-locked { opacity: .4; cursor: default; filter: grayscale(.7); }
 .bh-amb-tile.is-locked:hover, .bh-amb-row.is-locked:hover { transform: none; border-image-source: url("graphic/ui/sc/btn.png"); }
-.bh-routes { display: flex; flex-direction: column; gap: 12px; }
+.bh-routes { display: flex; flex-direction: column; gap: 10px; }
+/* フリー対戦・宝珠ショップは横2カラム（楼光の館＝主役の下に小さく並べ、固定ステージ720pxに収める）。 */
+.bh-route-duo { display: flex; gap: 10px; }
+.menu-btn--duo { flex: 1 1 0; min-width: 0; align-items: center; text-align: center; gap: 2px; padding: 10px 10px; }
+.menu-btn--duo .menu-btn-title { font-size: 17px; }
+.menu-btn--duo .menu-btn-sub { font-size: 11px; white-space: nowrap; }
 .bh-back { align-self: center; }
 
 /* お気に入りキャラ選択モーダル（金縁パネルで統一） */
