@@ -14,6 +14,12 @@
 
 import { CLUSTER_SYNERGY, CLUSTER_META, clusterOf, cardById } from "../data/rogueliteCardMaster.js";
 
+// 楼光の館で扱うHPの「桁」。1=旧スケール（25000点→1000HP）。100=ゼロ2つ増し（25000点→100000HP）。
+// HPの絶対値（味方初期HP・敵HP・1ハンド被ダメ・絶対値バフ maxHpAdd）すべてに一貫適用し、
+// 割合系（heal/maxHpUp/dealMul/takeReduce/regen）は係数なので桁を上げても比が保たれる＝バランス不変。
+// run.js が DAMAGE_SCALE / ROGUELITE_BASE_ENEMY_HP / 初期HP下限へ、ここが maxHpAdd へ掛ける（単一情報源）。
+export const HP_SCALE = 100;
+
 // バフ成長の上限（test/roguelite-balance.mjs で調整／本番は既定）。攻撃(dealCap)・防御(takeFloor)は
 // run.js 側で天井あり。HP は上限なし（青天井）＝取れば必ず伸びる（「+90%で凍結＝壊れて見える」対策）。
 // ランが必ず終わるのは被ダメ青天井(floorDamageMul)が担保する＝HP上限は不要（バランス実測：上限を外しても
@@ -51,9 +57,10 @@ export function applyEffect(run, effect) {
     }
     case "maxHpAdd": {
       // 絶対値（固定HP点）でHP最大を底上げ。深度値上がりで額は増えるが線形＝複利爆発しない。
-      // add は基礎HPスケール(allyScaledHp 基準＝25000点が1000HP)での点数。割合(maxHpUp)と棲み分け：
-      // common/rare はこちら（積んでも指数的に膨らまない地力）、epic+ は maxHpUp（希少な割合スパイク）。
-      const add = Math.round((effect.add ?? 0) * depthScale(run.floor));
+      // add は旧基礎HPスケール(allyScaledHp 基準＝25000点が1000HP)での点数。HP桁上げ(HP_SCALE)を掛けて
+      // 現行スケールへ写す＝味方初期HP/敵HP/被ダメと同じ桁で効く（絶対値バフだけ薄まる事故を防ぐ）。
+      // 割合(maxHpUp)と棲み分け：common/rare はこちら（線形の地力）、epic+ は maxHpUp（希少な割合スパイク）。
+      const add = Math.round((effect.add ?? 0) * depthScale(run.floor) * HP_SCALE);
       if (add > 0) {
         m.hpAdd = (m.hpAdd || 0) + add; // 累積（バフ合計UI表示用）
         for (const p of run.party) { p.hpMax += add; p.hp += add; } // 現在HPも同量底上げ（取得が即得）

@@ -12,16 +12,17 @@
 import { makeMob } from "../data/mobMaster.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { paramsFromLv, makeRng } from "../autobattle/autoBattle.js";
-import { freshMods, applyCard, clusterTakeCapFrac, clusterTakeRaiseFrac } from "./cardEffects.js";
+import { freshMods, applyCard, clusterTakeCapFrac, clusterTakeRaiseFrac, HP_SCALE } from "./cardEffects.js";
 import { ROGUELITE_CARD_MASTER, drawCards, cardById } from "../data/rogueliteCardMaster.js";
 import { SHOP_PRICE, SHOP_HEAL_PRICE, SHOP_MAXHP_PRICE, SHOP_SOURCE_PRICE } from "../data/rogueliteFloorMaster.js";
 import { itemMods } from "./itemEffects.js";
 import { drawItems } from "../data/rogueliteItemMaster.js";
 import { biomeMods } from "../data/rogueliteBiomeMaster.js";
 
-// 点棒→HP の写像係数（25000点 → 1000HP）。味方HP・与被ダメ双方に一貫適用。
-export const DAMAGE_SCALE = 1000 / 25000; // = 0.04
-export const ROGUELITE_BASE_ENEMY_HP = 700; // 階層1の敵HP。硬すぎ＝アガリ不発の体感を緩和（1000→700。満貫1発で約半分削れ、2発で撃破）。
+// 点棒→HP の写像係数（25000点 → 100000HP＝HP_SCALE適用後）。味方HP・与被ダメ双方に一貫適用。
+// HP_SCALE で桁を上げる：初期HPもダメージも同じ係数で増えるので「数字が大きいだけ」でバランスは不変。
+export const DAMAGE_SCALE = (1000 / 25000) * HP_SCALE; // = 0.04 × 100 = 4.0
+export const ROGUELITE_BASE_ENEMY_HP = 700 * HP_SCALE; // 階層1の敵HP（旧700×桁上げ）。満貫1発で約半分削れ、2発で撃破の体感は不変。
 // 敵HPは「線形」成長（複利の暴騰＝深層で硬すぎる体感を断つ）。1階ごとに BASE のこの割合ずつ増える。
 const ENEMY_HP_SLOPE = 0.08;
 const ENEMY_HP_CAP_FLOOR = 30; // この階層で頭打ち（青天井回避）
@@ -113,7 +114,7 @@ export function dealDepthMul(floor = 1, tuning = null) {
 
 // 味方の avatarHpMax（点棒スケール）→ ローグライトHP。
 export function allyScaledHp(avatarHpMax = 25000) {
-  return Math.max(200, Math.round((avatarHpMax || 25000) * DAMAGE_SCALE));
+  return Math.max(200 * HP_SCALE, Math.round((avatarHpMax || 25000) * DAMAGE_SCALE));
 }
 
 // 館の気脈：フロアを進むほど味方の最大HPも緩やかに底上げ（基礎HP比・線形＝複利爆発しない）。
@@ -417,7 +418,12 @@ export function benchAbilityIds(run) {
 // この階層の敵ユニット（2人）をフロア種別に応じて決定論生成。
 //   floorType.enemy: 'mob'（通常）/ 'named'（強敵＝名前＋能力のモブ）/ 'boss'（ボス＝キャラ）
 //   未指定は floor のボス判定にフォールバック（後方互換）。強敵/ボスはHP・Lvを上乗せ。
-const ELITE_ABILITIES = ["lucky-draw", "chunchan", "dora-pull", "danger-sense"];
+const ELITE_ABILITIES = [
+  "lucky-draw", "chunchan", "dora-pull", "danger-sense",
+  // 宝珠解禁キャラ由来の必殺技（味方の grantAbility 札と同じ能力）。敵もこれらを携えて立ちはだかる。
+  // いずれも CPU 側に発動ロジックがある（simpleAI.decideAbilityActivations / amber-shield は passive）。
+  "bibi", "amber-shield", "zero-search", "homura", "jane-doe", "kakeha-bet", "recall-deal",
+];
 
 // ボス＝プレイアブルキャラ（編成中＋弟子を除く）から決定論で n 人選ぶ。
 // 弟子(CompletedAvatar)は CHARACTER_MASTER に居ないので自然に除外。編成中キャラは id で除外。
@@ -610,7 +616,7 @@ function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}, deltas = 
 function seatDamage(d, role, i, ctx, guardRef) {
   if (!(d < 0)) return { value: 0, steps: [], capped: false };
   let scaled = d * DAMAGE_SCALE;
-  const steps = [{ k: "素点", v: d }, { k: "HP変換 ×0.04", v: Math.round(scaled) }];
+  const steps = [{ k: "素点", v: d }, { k: `HP変換 ×${DAMAGE_SCALE}`, v: Math.round(scaled) }];
   if (role === "enemy") {
     // 敵への与ダメ（味方が和了したときのみ）。
     if (ctx.winnerIsAlly) {

@@ -5,7 +5,7 @@ import {
   ROGUELITE_CARD_MASTER, RARITY_WEIGHTS, RARITY_META, cardById, drawCards, isGrantCard,
   cardCategory, CARD_CATEGORY, CLUSTER_SYNERGY, CLUSTER_META, clusterOf,
 } from "../src/data/rogueliteCardMaster.js";
-import { applyEffect, applyCard, freshMods, clusterDealMul, clusterProgress, clusterTakeCapFrac, clusterTakeRaiseFrac, clusterPickPreview, recomputeClusterCount } from "../src/roguelite/cardEffects.js";
+import { applyEffect, applyCard, freshMods, clusterDealMul, clusterProgress, clusterTakeCapFrac, clusterTakeRaiseFrac, clusterPickPreview, recomputeClusterCount, HP_SCALE } from "../src/roguelite/cardEffects.js";
 import {
   newRun, allyScaledHp, floorEnemyHp, floorDamageMul, tv, handsForType, isBossFloor,
   enemyUnitForFloor, rogueliteDamageDeltas, explainRogueliteDamage, lethalCapFrac, hanTierMul, rarityBiasFor, seatedAllies, benchAbilityIds, runWiped, survivorCount, serializeRun, deserializeRun, DAMAGE_SCALE,
@@ -67,8 +67,8 @@ ok(isGrantCard(cardById("grant-lucky-draw")), "grant 判定");
 ok(!isGrantCard(cardById("heal-small")), "非grant 判定");
 
 // ---------- HP スケール ----------
-eq(allyScaledHp(25000), 1000, "25000点→1000HP");
-eq(floorEnemyHp(1), 700, "階層1の敵HP=700（硬すぎ緩和）");
+eq(allyScaledHp(25000), 1000 * HP_SCALE, "25000点→100000HP（HP桁上げ後）");
+eq(floorEnemyHp(1), 700 * HP_SCALE, "階層1の敵HP=70000（旧700×桁上げ）");
 ok(floorEnemyHp(5) > floorEnemyHp(1), "深い階ほど敵HP増");
 ok(floorEnemyHp(99) === floorEnemyHp(30), "30階で頭打ち（青天井回避）");
 eq(handsForType(floorTypeById("normal")), 2, "通常戦闘=東2局まで(追撃込み上限2)");
@@ -158,7 +158,7 @@ const party = [
 let run = newRun(party, "seed-1");
 eq(run.floor, 1, "初期階層1");
 eq(run.party.length, 2, "パーティ2人");
-eq(run.party[0].hp, 1000, "あなたHP=1000");
+eq(run.party[0].hp, 1000 * HP_SCALE, "あなたHP=100000");
 eq(run.party[1].hpMax, allyScaledHp(12000), "相棒HPMax正規化");
 eq(run.mods.dealMul, 1, "初期 dealMul=1");
 
@@ -223,7 +223,7 @@ ok(enemyUnitForFloor(run, NORMAL, ":p1").members[0].name !== undefined, "salt付
   const r = newRun(party, "heal");
   r.party[0].hp = 200; r.party[1].hp = 100;
   healParty(r, 0.3);
-  eq(r.party[0].hp, 200 + Math.round(1000 * 0.3), "休息30%回復");
+  eq(r.party[0].hp, 200 + Math.round(1000 * HP_SCALE * 0.3), "休息30%回復");
   ok(!allPartyDown(r), "生存中は allPartyDown=false");
   r.party.forEach((m) => (m.hp = 0));
   ok(allPartyDown(r), "全員0で allPartyDown=true");
@@ -236,7 +236,7 @@ ok(enemyUnitForFloor(run, NORMAL, ":p1").members[0].name !== undefined, "salt付
   r3.party[2].hp = 0; r3.party[0].hp = 300;
   healParty(r3, 1.0); // 全回復でも…
   eq(r3.party[2].hp, 0, "トんだメンバーは回復しない（復活しない）");
-  eq(r3.party[0].hp, 1000, "生存メンバーは満タンまで回復");
+  eq(r3.party[0].hp, 1000 * HP_SCALE, "生存メンバーは満タンまで回復");
   // ゲームオーバー＝生存1人以下（runWiped）
   ok(!runWiped(r3), "生存2人なら継続（runWiped=false）");
   r3.party[1].hp = 0;
@@ -294,16 +294,16 @@ ok(coinsForClear({ floor: 5, kind: "named" }) > coinsForClear({ floor: 5, kind: 
 // ---------- カード効果 ----------
 run = newRun(party, "s");
 applyCard(run, cardById("heal-small")); // 満タンなので回復は頭打ち
-eq(run.party[0].hp, 1000, "満タンからの回復は上限据置");
+eq(run.party[0].hp, 1000 * HP_SCALE, "満タンからの回復は上限据置");
 // ダメージを受けてから回復
-run.party[0].hp = 400;
-applyCard(run, cardById("heal-small")); // +25%最大=+250
-eq(run.party[0].hp, 650, "25%回復=+250");
+run.party[0].hp = 400 * HP_SCALE;
+applyCard(run, cardById("heal-small")); // +25%最大
+eq(run.party[0].hp, 650 * HP_SCALE, "25%回復=+25000");
 
 run = newRun(party, "s");
 applyCard(run, cardById("maxhp-up-common")); // ×1.15
-eq(run.party[0].hpMax, Math.round(1000 * 1.15), "最大HP+15%");
-eq(run.party[0].hp, Math.round(1000 * 1.15), "現在HPも底上げ");
+eq(run.party[0].hpMax, Math.round(1000 * HP_SCALE * 1.15), "最大HP+15%");
+eq(run.party[0].hp, Math.round(1000 * HP_SCALE * 1.15), "現在HPも底上げ");
 
 run = newRun(party, "s");
 applyCard(run, cardById("deal-up-common")); // ×1.1
@@ -348,7 +348,7 @@ eq(run.mods.paramAdd.fire, 20, "paramBoost 集約（予約kind）");
 run = newRun(party, "s");
 applyCard(run, cardById("fortress"));
 ok(Math.abs(run.mods.takeMul - 0.6) < 1e-9, "compound takeReduce 反映");
-eq(run.party[0].hpMax, Math.round(1000 * 1.25), "compound maxHpUp 反映");
+eq(run.party[0].hpMax, Math.round(1000 * HP_SCALE * 1.25), "compound maxHpUp 反映");
 
 // ---------- ダメージ変換（floor1：fdm=1, dealDepth=1, friendlyMul=0.3） ----------
 run = newRun(party, "s");
@@ -1164,17 +1164,17 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   eq(tv({ baseEnemyHp: 900 }, "enemyHpSlope", 0.08), 0.08, "tv 無指定キーは fallback");
   eq(tv(null, "baseEnemyHp", 700), 700, "tv tuning=null は fallback");
   // 敵HP：base を上げると硬くなる（F10 で既定より大きい）。
-  const hard = { baseEnemyHp: 1000, enemyHpSlope: 0.12 };
+  const hard = { baseEnemyHp: 1000 * HP_SCALE, enemyHpSlope: 0.12 };
   ok(floorEnemyHp(10, hard) > floorEnemyHp(10), "tuning baseEnemyHp↑ で敵HPが増える");
   // 被ダメ深度：slope を上げると深層が重い（F40 で既定より大きい）。
   ok(floorDamageMul(40, { floorDmgSlope: 0.6 }) > floorDamageMul(40), "tuning floorDmgSlope↑ で被ダメ深度が増える");
   // 一撃死上限：fadeStart を早めると深層で早く開く（F35 で既定より大きいか同等）。
   ok(lethalCapFrac(45, { lethalCapFadeStart: 20 }) >= lethalCapFrac(45), "tuning lethalCapFadeStart↓ で上限が早く開く");
   // 章マスタの tuning が run に乗り、保存往復で残る。
-  const tr = newRun([{ id: "x", char: { id: "x" } }], "tune-seed", "mentor", ["shiyue"], null, { baseEnemyHp: 850 });
-  eq(tr.tuning?.baseEnemyHp, 850, "newRun が tuning を保持");
+  const tr = newRun([{ id: "x", char: { id: "x" } }], "tune-seed", "mentor", ["shiyue"], null, { baseEnemyHp: 850 * HP_SCALE });
+  eq(tr.tuning?.baseEnemyHp, 850 * HP_SCALE, "newRun が tuning を保持");
   const tround = deserializeRun(serializeRun(tr), (id) => ({ id }));
-  eq(tround.tuning?.baseEnemyHp, 850, "tuning は保存往復で残る");
+  eq(tround.tuning?.baseEnemyHp, 850 * HP_SCALE, "tuning は保存往復で残る");
   // enemyUnitForFloor が run.tuning を反映（硬い章は敵HPが大きい）。
   const plain = newRun([{ id: "x", char: { id: "x" } }], "tune-seed2", "mentor", ["shiyue"]);
   plain.floor = 5; tr.floor = 5;
