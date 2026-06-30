@@ -14,11 +14,11 @@
 
 import { CLUSTER_SYNERGY, CLUSTER_META, clusterOf, cardById } from "../data/rogueliteCardMaster.js";
 
-// 楼光の館で扱うHPの「桁」。1=旧スケール（25000点→1000HP）。10=ゼロ1つ増し（25000点→10000HP）。
+// 楼光の館で扱うHPの「桁」。1=旧スケール（25000点→1000HP）。20=麻雀の点棒感に寄せる（25000点→20000HP・敵初期14000）。
 // HPの絶対値（味方初期HP・敵HP・1ハンド被ダメ・絶対値バフ maxHpAdd）すべてに一貫適用し、
 // 割合系（heal/maxHpUp/dealMul/takeReduce/regen）は係数なので桁を上げても比が保たれる＝バランス不変。
 // run.js が DAMAGE_SCALE / ROGUELITE_BASE_ENEMY_HP / 初期HP下限へ、ここが maxHpAdd へ掛ける（単一情報源）。
-export const HP_SCALE = 10;
+export const HP_SCALE = 20;
 
 // バフ成長の上限（test/roguelite-balance.mjs で調整／本番は既定）。攻撃(dealCap)・防御(takeFloor)は
 // run.js 側で天井あり。HP は上限なし（青天井）＝取れば必ず伸びる（「+90%で凍結＝壊れて見える」対策）。

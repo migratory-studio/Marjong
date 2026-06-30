@@ -19,9 +19,9 @@ import { itemMods } from "./itemEffects.js";
 import { drawItems } from "../data/rogueliteItemMaster.js";
 import { biomeMods } from "../data/rogueliteBiomeMaster.js";
 
-// 点棒→HP の写像係数（25000点 → 10000HP＝HP_SCALE=10適用後）。味方HP・与被ダメ双方に一貫適用。
+// 点棒→HP の写像係数（25000点 → 20000HP＝HP_SCALE=20適用後）。味方HP・与被ダメ双方に一貫適用。
 // HP_SCALE で桁を上げる：初期HPもダメージも同じ係数で増えるので「数字が大きいだけ」でバランスは不変。
-export const DAMAGE_SCALE = (1000 / 25000) * HP_SCALE; // = 0.04 × 10 = 0.4
+export const DAMAGE_SCALE = (1000 / 25000) * HP_SCALE; // = 0.04 × 20 = 0.8
 export const ROGUELITE_BASE_ENEMY_HP = 700 * HP_SCALE; // 階層1の敵HP（旧700×桁上げ）。満貫1発で約半分削れ、2発で撃破の体感は不変。
 // 敵HPは「線形」成長（複利の暴騰＝深層で硬すぎる体感を断つ）。1階ごとに BASE のこの割合ずつ増える。
 const ENEMY_HP_SLOPE = 0.08;
