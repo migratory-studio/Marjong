@@ -10,7 +10,7 @@
 // 1280×720 ノースクロール方針：ロスターのみ内部スクロールに逃がす（F6 と同様の扱い）。
 
 import { RARITY_META, CARD_CATEGORY, cardCategory, cardById, CLUSTER_META, clusterOf } from "../data/rogueliteCardMaster.js";
-import { clusterProgress, clusterPickPreview } from "../roguelite/cardEffects.js";
+import { clusterProgress, clusterPickPreview, HP_SCALE } from "../roguelite/cardEffects.js";
 import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { biomeEffectChips, biomeOf } from "../data/rogueliteBiomeMaster.js";
@@ -1175,7 +1175,7 @@ function describeEffect(e, out = []) {
   switch (e.kind) {
     case "heal": out.push({ t: `HP +${Math.round((e.amount || 0) * 100)}%`, tone: "hp" }); break;
     case "maxHpUp": out.push({ t: `HP最大 +${Math.round(((e.mul || 1) - 1) * 100)}%`, tone: "hp" }); break;
-    case "maxHpAdd": out.push({ t: `HP最大 +${e.add || 0}`, tone: "hp" }); break;
+    case "maxHpAdd": out.push({ t: `HP最大 +${(e.add || 0) * HP_SCALE}`, tone: "hp" }); break; // add は旧スケール基準＝桁上げ(HP_SCALE)を掛けて実値表示（深い階ほどさらに増える）
     case "dealMul": out.push({ t: `攻撃 +${Math.round(((e.mul || 1) - 1) * 100)}%`, tone: "atk" }); break;
     case "takeReduce": out.push({ t: `防御 +${Math.round((e.rate || 0) * 100)}%`, tone: "def" }); break;
     case "skillLevelUp": out.push({ t: `スキルLv +${e.delta || 1}`, tone: "skl" }); break;

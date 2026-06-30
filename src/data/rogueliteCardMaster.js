@@ -76,7 +76,7 @@ export const ROGUELITE_CARD_MASTER = [
   {
     id: "brace-common",
     name: "踏ん張り",
-    desc: "被ダメ-8%、さらにHP最大+50（深い階ほど大きい）。じわりと固める＝【守備】。",
+    desc: "被ダメ-8%、さらにHP最大値が増える（深い階ほど大きい）。じわりと固める＝【守備】。",
     rarity: "common",
     effect: { kind: "compound", parts: [{ kind: "takeReduce", rate: 0.08 }, { kind: "maxHpAdd", add: 50 }] },
     cluster: "guard",
@@ -130,7 +130,7 @@ export const ROGUELITE_CARD_MASTER = [
   {
     id: "flush-tetsu",
     name: "孤高の一色",
-    desc: "HP最大+100（深い階ほど大きい）。一色は脆い手だが、染め札を重ねるほど開眼が近づく。",
+    desc: "HP最大値が増える（深い階ほど大きい）。一色は脆い手だが、染め札を重ねるほど開眼が近づく。",
     rarity: "rare",
     effect: { kind: "maxHpAdd", add: 100 },
     cluster: "flush",
