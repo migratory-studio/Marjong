@@ -120,6 +120,20 @@ export function scenarioTuneOf(c) {
   return `translate(${x}, ${y}) scale(${z})`;
 }
 
+// トップ（ホーム）左右の出迎え立ち絵(contain・全身)の見せ方チューニング = 寄せ/拡大。
+//   imagePos.topCast = { x, y, zoom }（translate%＋scale・底辺基準）。未設定/既定は null（無変形）。
+//   キャラごとに縦横比が違い、横広な絵は contain で小さく収まるので zoom で大きさを揃え、
+//   x/y で枠内の見せ位置を調整する。homeCast が img の transform に流し込む（origin=bottom center）。
+//   値は offset-tuner の「トップ立ち絵」カードで調整して貼り戻す。
+export function topCastTuneOf(c) {
+  const t = c?.imagePos?.topCast;
+  if (!t) return null;
+  const x = t.x || "0%", y = t.y || "0%", z = (t.zoom != null ? Number(t.zoom) : 1);
+  const off = (x === "0%" || !t.x) && (y === "0%" || !t.y);
+  if (off && z === 1) return null;
+  return { x, y, zoom: z };
+}
+
 // 対戦ホーム拡大（バストアップ）の寄せ/拡大 { x, y, zoom }。
 //   imagePos.home が中身を持てばそれを、無ければ呼び出し側の既定(fallback)を使う。
 export function homeTuneOf(c, fallback = {}) {

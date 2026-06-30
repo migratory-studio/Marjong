@@ -106,7 +106,7 @@ const asset = (p) => p ? ("../" + p) : "";
 const LS_KEY = "offsetTuner.v1";
 
 // ---- defaults / parse / format -------------------------------------------
-const DEF = { portrait:{x:50,y:0,zoom:1,ox:0,oy:0}, icon:{x:50,y:0}, home:{x:0,y:0,zoom:1}, scenario:{x:0,y:0,zoom:1}, shop:{x:50,y:0,zoom:1,ox:0,oy:0} };
+const DEF = { portrait:{x:50,y:0,zoom:1,ox:0,oy:0}, icon:{x:50,y:0}, home:{x:0,y:0,zoom:1}, scenario:{x:0,y:0,zoom:1}, shop:{x:50,y:0,zoom:1,ox:0,oy:0}, topCast:{x:0,y:0,zoom:1} };
 const EMO_DEF = { side:"left", x:67, y:3 }; // 未設定キャラの初期エモート位置（描画既定 size*0.42 / size*0.02 相当）
 const KW = { left:0, right:100, top:0, bottom:100, center:50 };
 // エモート可視化に使う代表スプライト（notice / STD: 400px枠・5×8）。本物の見え方を確認するため実画像を使う。
@@ -144,6 +144,8 @@ function initialState(c){
   const home = { x: parsePct(h.x,0), y: parsePct(h.y,0), zoom: (h.zoom!=null? Number(h.zoom):1) };
   const sc = ip.scenario || {};
   const scenario = { x: parsePct(sc.x,0), y: parsePct(sc.y,0), zoom: (sc.zoom!=null? Number(sc.zoom):1) };
+  const tc = ip.topCast || {};
+  const topCast = { x: parsePct(tc.x,0), y: parsePct(tc.y,0), zoom: (tc.zoom!=null? Number(tc.zoom):1) };
   const shop = parseObjPos(ip.shop) || {...DEF.shop};
   shop.zoom = (ip.shopZoom!=null && Number(ip.shopZoom)>0) ? Number(ip.shopZoom) : 1;
   const sho = ip.shopOffset || {};
@@ -152,7 +154,7 @@ function initialState(c){
   const emote = em
     ? { side: em.side==="right"?"right":"left", x: parsePct(em.x,EMO_DEF.x), y: parsePct(em.y,EMO_DEF.y), set:true }
     : { ...EMO_DEF, set:false }; // 未設定キャラはドラッグするまで出力に含めない
-  return { portrait, icon, home, scenario, shop, emote };
+  return { portrait, icon, home, scenario, shop, emote, topCast };
 }
 
 // 既定一致か（出力時に省略するため）
@@ -178,6 +180,11 @@ function toImagePos(st){
   if(Math.abs(st.scenario.y)>=0.05) s.y = num(st.scenario.y)+"%";
   if(Math.abs(st.scenario.zoom-1)>=0.005) s.zoom = Math.round(st.scenario.zoom*100)/100;
   if(Object.keys(s).length) out.scenario = s;
+  const t={};
+  if(Math.abs(st.topCast.x)>=0.05) t.x = num(st.topCast.x)+"%";
+  if(Math.abs(st.topCast.y)>=0.05) t.y = num(st.topCast.y)+"%";
+  if(Math.abs(st.topCast.zoom-1)>=0.005) t.zoom = Math.round(st.topCast.zoom*100)/100;
+  if(Object.keys(t).length) out.topCast = t;
   if(!eqXY(st.shop,DEF.shop)) out.shop = objPosStr(st.shop);
   if(Math.abs((st.shop.zoom||1)-1)>=0.005) out.shopZoom = Math.round(st.shop.zoom*100)/100;
   const sho={};
@@ -218,6 +225,13 @@ function imagePosLiteral(ip){
     if(ip.scenario.y) sp.push(`y: ${JSON.stringify(ip.scenario.y)}`);
     if(ip.scenario.zoom!=null) sp.push(`zoom: ${ip.scenario.zoom}`);
     parts.push(`scenario: { ${sp.join(", ")} }`);
+  }
+  if(ip.topCast){
+    const tp=[];
+    if(ip.topCast.x) tp.push(`x: ${JSON.stringify(ip.topCast.x)}`);
+    if(ip.topCast.y) tp.push(`y: ${JSON.stringify(ip.topCast.y)}`);
+    if(ip.topCast.zoom!=null) tp.push(`zoom: ${ip.topCast.zoom}`);
+    parts.push(`topCast: { ${tp.join(", ")} }`);
   }
   if(ip.shop) parts.push(`shop: ${JSON.stringify(ip.shop)}`);
   if(ip.shopZoom!=null) parts.push(`shopZoom: ${ip.shopZoom}`);
@@ -335,6 +349,7 @@ function renderMain(){
   cards.appendChild(shopCard(c,st));
   cards.appendChild(iconCard(c,st));
   cards.appendChild(homeCard(c,st));
+  cards.appendChild(topCastCard(c,st));
   cards.appendChild(scenarioCard(c,st));
   cards.appendChild(emoteCard(c,st));
   mainEl.appendChild(cards);
@@ -505,6 +520,44 @@ function homeCard(c,st){
     apply();
   });
   attachWheelZoom(frame, ()=>st.home.zoom, (z)=>st.home.zoom=z, apply, 0.6, 1.5);
+  img.complete ? apply() : img.addEventListener("load",apply);
+  apply();
+  return card;
+}
+
+// --- topCast (トップ左右の出迎え立ち絵 contain・底辺合わせ, imagePos.topCast{x,y,zoom}) ---
+// ホーム画面の左右ガター枠(stage 340×672)を縮小再現。枠は overflow:hidden で実機と同じくクリップ。
+// 縦横比がキャラごとに違うので zoom で大きさを揃え、x/y で枠内の見せ位置を寄せる。底辺・中央合わせ。
+function topCastCard(c,st){
+  const card=document.createElement("div"); card.className="card";
+  card.innerHTML=`<h2>トップ立ち絵 <span class="tag">ホーム左右 / portrait.png contain・底辺合わせ / ドラッグ=寄せ・スクロール=ズーム</span></h2>`;
+  const ASPECT = 340/672;                 // 実機ガター枠の縦横比
+  const FH = 396, FW = Math.round(FH*ASPECT); // ≈ 200×396
+  const frame=document.createElement("div"); frame.className="frame"; frame.style.width=FW+"px"; frame.style.height=FH+"px"; frame.style.cursor="grab";
+  const img=document.createElement("img"); img.src=asset(c.assets?.portrait);
+  img.style.position="absolute"; img.style.inset="0"; img.style.width="100%"; img.style.height="100%";
+  img.style.objectFit="contain"; img.style.objectPosition="bottom center"; img.style.transformOrigin="bottom center";
+  img.style.filter="drop-shadow(0 6px 16px rgba(0,0,0,.5))";
+  img.onerror=()=>{ frame.style.opacity=.3; };
+  const grid=document.createElement("div"); grid.className="grid";
+  frame.appendChild(img); frame.appendChild(grid); card.appendChild(frame);
+  const apply=()=>{
+    img.style.transform=`translate(${num(st.topCast.x)}%, ${num(st.topCast.y)}%) scale(${st.topCast.zoom})`;
+    read.textContent=`x:${num(st.topCast.x)}%  y:${num(st.topCast.y)}%  zoom:${Math.round(st.topCast.zoom*100)/100}`;
+  };
+  const ctl=document.createElement("div"); ctl.className="ctl";
+  ctl.innerHTML=`<div class="row"><b class="read"></b><button class="mini">既定に戻す</button></div>`;
+  const read=ctl.querySelector(".read");
+  ctl.querySelector("button").onclick=()=>{ st.topCast={...DEF.topCast}; apply(); persist(); renderOutput(); };
+  card.appendChild(ctl);
+  let s0;
+  // translate% は img のボーダーボックス(=枠 FW×FH)基準。実機も box 340×672 で同じ%が同じ見えになる。
+  attachDrag(frame, ()=>{ s0={...st.topCast}; }, (dx,dy)=>{
+    st.topCast.x=clamp(s0.x + dx*100/FW, -150, 150);
+    st.topCast.y=clamp(s0.y + dy*100/FH, -150, 150);
+    apply();
+  });
+  attachWheelZoom(frame, ()=>st.topCast.zoom, (z)=>st.topCast.zoom=z, apply, 0.5, 3);
   img.complete ? apply() : img.addEventListener("load",apply);
   apply();
   return card;

@@ -192,18 +192,18 @@ body {
 #home-screen > #debug-menu-btn { position: relative; z-index: 1; }
 .home-cast-fig {
   position: absolute; bottom: 0; width: 340px; height: 100%;
+  overflow: hidden; /* zoom 調整で拡大しても枠外＝中央メニュー側へはみ出さないよう切る */
   opacity: 0; animation: home-cast-in .6s ease forwards;
 }
 .home-cast-fig.is-left  { left: 6px; }
 .home-cast-fig.is-right { right: 6px; }
+/* 底辺・中央合わせ（左右で挙動を変えない＝imagePos.topCast の調整が両側で同じに効く）。
+   個別の大きさ/位置は homeCast.js が img.transform に topCast を流し込む。 */
 .home-cast-fig img {
   display: block; width: 100%; height: 100%;
-  object-fit: contain;
+  object-fit: contain; object-position: bottom center;
   filter: drop-shadow(0 8px 22px rgba(0,0,0,.5));
 }
-/* contain で生じる横の余白ぶん、人物を画面の外縁側へ寄せて中央メニューとの間を空ける。 */
-.home-cast-fig.is-left  img { object-position: bottom left; }
-.home-cast-fig.is-right img { object-position: bottom right; }
 @keyframes home-cast-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 .coming-soon { text-align: center; color: var(--muted); }
 .coming-soon-badge {

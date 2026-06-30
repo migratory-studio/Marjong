@@ -12,6 +12,7 @@
 //  - 解禁前(locked)のキャラはネタバレ回避で出さない。母集団が薄ければ重複も許容する。
 //  - 起動ごと＝ページロードごとに1回だけ抽選（bootHome から呼ぶ）。装飾なのでクリックは透過。
 import { CHARACTERS } from "../characters/characters.js";
+import { topCastTuneOf } from "../data/imagePos.js";
 
 // 立ち絵に使える母集団（モブ除外・解禁前キャラ除外・portrait 画像を持つもの）。
 function castPool() {
@@ -39,6 +40,13 @@ function figureNode(c, side) {
   img.decoding = "async";
   img.loading = "eager";
   img.onerror = () => fig.remove();
+  // キャラ別の大きさ/位置調整（offset-tuner「トップ立ち絵」→ imagePos.topCast）。
+  // 底辺基準で scale＝足元を残して頭側へ伸ばす。枠(.home-cast-fig)で外側はクリップ。
+  const t = topCastTuneOf(c);
+  if (t) {
+    img.style.transform = `translate(${t.x}, ${t.y}) scale(${t.zoom})`;
+    img.style.transformOrigin = "bottom center";
+  }
   fig.appendChild(img);
   return fig;
 }
