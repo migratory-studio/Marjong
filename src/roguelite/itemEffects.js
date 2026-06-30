@@ -95,6 +95,12 @@ export function consumeHpRaceSaver(run) {
   return true;
 }
 
+// 競り守りの護符(trigger/on=hpRace)を所持しているか（消費しない・UI予告用）。
+//   追撃モーダルで「やめても護符が身代わりになる」と先に伝えるための非破壊チェック。
+export function hasHpRaceSaver(run) {
+  return (run?.items || []).some((x) => { const e = itemById(x)?.effect; return e?.kind === "trigger" && e.on === "hpRace"; });
+}
+
 // 先見の札（次の層を見通す道具）を持っているか。
 export function hasForesight(run) {
   return (run?.items || []).some((x) => itemById(x)?.effect?.foresight);

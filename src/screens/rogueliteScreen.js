@@ -991,23 +991,83 @@ export function showRogueliteRecruit(container, opts = {}) {
 }
 
 // ---- 追撃（push-your-luck）：先に行く / 追撃（残り回数） ----
+
+const ordinal = (n) => `${n}位`;
+const groupLabelOf = (g, solo) =>
+  g.isAlly ? (solo ? "あなた" : "自グループ") : (solo ? (g.members[0]?.name || "敵") : "相手グループ");
+
+// 卓上の順位表：他グループの点数(=HP)と自分の順位を一目で。スコア降順・自グループを金で強調。
+function standingsRowsHtml(standings, charImages) {
+  const solo = standings.solo;
+  const top = Math.max(1, ...standings.groups.map((g) => g.score));
+  return [...standings.groups]
+    .sort((a, b) => b.score - a.score)
+    .map((g) => {
+      const w = Math.max(3, Math.min(100, (g.score / top) * 100));
+      const frac = g.score / (g.fullScore || 1);
+      const tier = frac <= 0.25 ? "low" : frac <= 0.5 ? "mid" : "high";
+      const faces = g.members.map((m) => faceImgHtml(charImages, m.char, "rl-stand-face")).join("");
+      return `<div class="rl-stand-row${g.isAlly ? " is-ally" : ""}">
+          <span class="rl-stand-rank r${g.rank}">${g.rank}</span>
+          <span class="rl-stand-faces">${faces}</span>
+          <span class="rl-stand-name">${groupLabelOf(g, solo)}</span>
+          <span class="rl-stand-bar"><span class="rl-stand-fill ${tier}" style="width:${w}%"></span></span>
+          <span class="rl-stand-score">${g.score.toLocaleString()}<small>HP</small></span>
+        </div>`;
+    })
+    .join("");
+}
+
+// 結末バナー（このページの主役＝signature）。いま追撃をやめたら何が起きるかを断定で読み上げる。
+//   上回り=金の「突破」印 / 競り負け=朱の警告帯（着卓全員に -○○%）。護符所持なら身代わり予告を添える。
+function pursueVerdictHtml(standings) {
+  if (standings.behind) {
+    const pct = standings.penaltyPct;
+    const ward = standings.warded
+      ? `<span class="rl-verdict-ward">競り守りの護符が身代わりに割れて、この痛手を防ぎます。</span>`
+      : "";
+    return `<div class="rl-verdict is-behind" role="status">
+        <span class="rl-verdict-seal">現在 ${ordinal(standings.allyRank)}</span>
+        <span class="rl-verdict-body">追撃をやめてここで締めると、<b>着卓メンバー全員に −${pct}%</b> のダメージが入ります。${ward}</span>
+      </div>`;
+  }
+  return `<div class="rl-verdict is-ahead" role="status">
+      <span class="rl-verdict-seal">突破</span>
+      <span class="rl-verdict-body">いま<b>HPで上回って</b>います。追撃をやめれば、<b>無傷でこの階を踏破</b>します。</span>
+    </div>`;
+}
+
 // 局終わりの追撃モーダル（インゲーム）。同じ卓・HPを引き継いで次局（東2局/東3局…）を戦うか確認する。
-// onPursue=次局へ／onStop=この対局を締める（戦果を確定）。
+// onPursue=次局へ／onStop=この対局を締める（戦果を確定）。standings があれば卓上順位＋結末を提示する。
 export function showRoguelitePursue(container, opts = {}) {
-  const { floor = 1, nextLabel = "次局", run, charImages = null, leadLine, leadChar, onPursue, onStop } = opts;
+  const { floor = 1, nextLabel = "次局", run, charImages = null, standings = null, leadLine, leadChar, onPursue, onStop } = opts;
   if (!container) { onStop?.(); return; }
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-continue";
   const speakHtml = (leadLine && leadChar)
     ? `<div class="rl-modal-speak" style="--c:${leadChar.color || "var(--accent)"}"><b>${leadChar.name}</b>「${leadLine}」</div>` : "";
+  // 結末（突破 or ペナルティ）でボタン文言を寄せる。やめる側＝確定する内容を、追撃側＝伸るリスクを言う。
+  const stopLabel = standings
+    ? (standings.behind
+        ? `退いて締める<small>−${standings.penaltyPct}% を受けて踏破</small>`
+        : `ここで踏破<small>無傷で戦果を確定</small>`)
+    : `ここで充分<small>戦果を確定して進む</small>`;
+  const bodyHtml = standings
+    ? `<div class="rl-pursue-standings">
+         <div class="rl-stand-cap">卓上の順位 — 点数（=HP）</div>
+         ${standingsRowsHtml(standings, charImages)}
+       </div>
+       ${pursueVerdictHtml(standings)}
+       <p class="rl-continue-note rl-pursue-sub">追撃すると同じ卓・HPのまま <strong>${nextLabel}</strong> へ。深追いは<strong>撃破・高レア戦利品</strong>を狙えるが、削られれば順位もHPも崩れる。</p>`
+    : `<div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
+       <p class="rl-continue-note">この卓・HPをそのまま引き継いで <strong>${nextLabel}</strong> を戦う。深追いするほど<strong>撃破・戦利品（高レア）</strong>を狙えるが、削られれば<strong>没収</strong>に近づく。</p>`;
   ov.innerHTML = `
-    <div class="rl-modal">
+    <div class="rl-modal rl-pursue-modal">
       <div class="rl-modal-head">第 ${floor} 階・局終わり — このまま追撃しますか？${coinBadge(run?.coins || 0)}</div>
       ${speakHtml}
-      <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
-      <p class="rl-continue-note">この卓・HPをそのまま引き継いで <strong>${nextLabel}</strong> を戦う。深追いするほど<strong>撃破・戦利品（高レア）</strong>を狙えるが、削られれば<strong>没収</strong>に近づく。</p>
+      ${bodyHtml}
       <div class="rl-continue-btns">
-        <button type="button" class="rl-start" id="rl-go">ここで充分<small>戦果を確定して進む</small></button>
+        <button type="button" class="rl-start" id="rl-go">${stopLabel}</button>
         <button type="button" class="rl-retreat rl-pursue-btn" id="rl-pursue">追撃する<small>${nextLabel}へ</small></button>
       </div>
     </div>`;

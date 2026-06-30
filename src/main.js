@@ -62,7 +62,7 @@ import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from 
 import { applyCard, applyEffect, clusterDealMul, clusterLevelUp, recomputeClusterCount } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER, clusterOf } from "./data/rogueliteCardMaster.js";
 import { ROGUELITE_ITEM_MASTER, itemById, drawItems, ITEM_SLOTS, ITEM_KIND_META } from "./data/rogueliteItemMaster.js";
-import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie, consumeBustSaver, consumeHpRaceSaver, hasForesight } from "./roguelite/itemEffects.js";
+import { useItem, itemMods, consumeBanquetCharm, takeNextBattle, biomeDieId, consumeBiomeDie, consumeBustSaver, consumeHpRaceSaver, hasHpRaceSaver, hasForesight } from "./roguelite/itemEffects.js";
 import { rlLog, rlLogAll, rlLogJSONL, rlLogCSV, rlLogDownload, rlLogClear, setRlLogSink, flushRlLog, setRlRunId } from "./roguelite/rogueliteLog.js";
 import { supabase } from "./config/supabase.js";
 import { bgDef } from "./data/backgroundMaster.js";
@@ -5226,6 +5226,41 @@ function showWinResult(overlay, r) {
   winRevealTimer = setTimeout(revealOne, 400);
 }
 
+// 局終わり時点の「卓上の順位」を生スコア(=HP)から組む。追撃モーダルに渡し、他グループの点数・自分の
+// 順位・いま追撃をやめたら何が起きるか（突破 or 着卓ペナルティ）をユーザーに提示するための土台。
+//   pairBattleData.hp は局中つねに game.players[].points と同期済み（＝ライブ点数）。
+function rogueliteTableStandings(run) {
+  const pb = pairBattleData;
+  if (!pb || !pb.pairs || !pb.chars) return null;
+  const { pairs, pairOf, chars, hp, solo, tableSize } = pb;
+  const myPair = pairOf?.[humanIndex] ?? pairOf?.[0] ?? 0;
+  const scoreOf = (pid) => pairs[pid].seats.reduce((a, s) => a + Math.max(0, hp[s] ?? 0), 0);
+  const fullOf  = (pid) => pairs[pid].seats.reduce((a, s) => a + (chars[s]?.stats?.startingPoints || 0), 0);
+  const groups = pairs.map((p, pid) => ({
+    pid, isAlly: pid === myPair, score: scoreOf(pid), fullScore: fullOf(pid),
+    members: [...p.seats].sort((a, b) => (hp[b] ?? 0) - (hp[a] ?? 0)).map((s) => ({
+      char: chars[s], name: chars[s]?.name || "?", color: chars[s]?.color || "#888",
+      hp: Math.max(0, Math.round(hp[s] ?? 0)), down: (hp[s] ?? 0) <= 0,
+    })),
+  }));
+  // 順位は「自分より厳密に点が多いグループ数+1」（同点は上位扱い＝ソロ着順ペナルティの strict-greater と一致）。
+  for (const g of groups) g.rank = 1 + groups.reduce((a, o) => a + (o.score > g.score ? 1 : 0), 0);
+  const ally = groups.find((g) => g.isAlly) || groups[0];
+  const allyRank = ally?.rank || 1;
+  // いま「やめる」と確定する結末＝onRogueliteBattleEnd と同一判定。
+  //   ソロ(三麻/二麻)＝着順ペナルティ表 / ペア(四麻)＝合計HPで競り負けたら20%。1位/上回り=無傷の突破。
+  let penaltyFrac = 0;
+  if (solo) penaltyFrac = ROGUELITE_SOLO_PENALTY[tableSize]?.[allyRank] || 0;
+  else {
+    const enemyScore = groups.filter((g) => !g.isAlly).reduce((a, g) => a + g.score, 0);
+    penaltyFrac = (ally?.score ?? 0) < enemyScore ? ROGUELITE_HP_LOSS_PENALTY_FRAC : 0;
+  }
+  const behind = penaltyFrac > 0;
+  const warded = behind && hasHpRaceSaver(run); // 護符を持っていれば身代わりに割れて痛手を防ぐ（予告）
+  return { mode: solo ? "solo" : "pair", solo, groups, allyRank, groupCount: groups.length,
+           penaltyFrac, penaltyPct: Math.round(penaltyFrac * 100), behind, warded };
+}
+
 // 楼光の館・局終わりの追撃モーダル（インゲーム）。同卓・HPを引き継いで次局へ進むか確認する。
 // onPursue=次局へ／onStop=この対局を締める（戦果確定）。次局のラベル（東2局…）は game から取る。
 function promptRoguelitePursueInGame(onPursue, onStop) {
@@ -5236,6 +5271,7 @@ function promptRoguelitePursueInGame(onPursue, onStop) {
     floor: run.floor,
     nextLabel: game?.roundLabel?.() || "次局",
     run, charImages,
+    standings: rogueliteTableStandings(run),
     leadChar: lead,
     leadLine: lead ? vline(lead.id, "rlPursue", rlVoiceCtx()) : null,
     onPursue, onStop,

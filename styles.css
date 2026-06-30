@@ -5151,6 +5151,49 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-route-blurb { font-size: 12.5px; color: var(--muted); line-height: 1.5; text-align: center; }
 .rl-pursue-btn { border-color: var(--accent); color: var(--accent); }
 .rl-pursue-btn:hover { background: rgba(246,179,82,.15); }
+
+/* 追撃モーダル：卓上の順位（他グループの点数＝HP＋自分の順位）＋「やめたら何が起きるか」結末バナー */
+.rl-pursue-modal { width: min(720px, 90%); }
+.rl-pursue-standings { display: flex; flex-direction: column; gap: 6px; margin: 2px 0 14px; }
+.rl-stand-cap { font-size: 11px; letter-spacing: .18em; color: var(--rl-gold); opacity: .82; text-align: left; margin-bottom: 2px; }
+.rl-stand-row { display: grid; grid-template-columns: 26px auto 96px 1fr auto; align-items: center; gap: 10px;
+  padding: 6px 10px; border-radius: 10px; background: rgba(0,0,0,.26); border: 1px solid transparent; }
+.rl-stand-row.is-ally { background: rgba(232,196,93,.12); border-color: rgba(232,196,93,.45);
+  box-shadow: inset 0 0 0 1px rgba(232,196,93,.1); }
+.rl-stand-rank { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; justify-self: center;
+  font-family: var(--font-min, serif); font-size: 14px; font-weight: 800; color: #1a1206; background: #6b6f78; }
+.rl-stand-rank.r1 { background: linear-gradient(150deg, #f6e3a0, var(--rl-gold)); box-shadow: 0 0 10px rgba(232,196,93,.5); }
+.rl-stand-rank.r2 { background: linear-gradient(150deg, #e3e6ea, #aab0b8); }
+.rl-stand-rank.r3 { background: linear-gradient(150deg, #d6a778, #b07b4e); }
+.rl-stand-faces { display: flex; }
+.rl-stand-face { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; object-position: top center;
+  border: 1.5px solid rgba(255,255,255,.18); margin-left: -7px; background: #1a1320; }
+.rl-stand-face:first-child { margin-left: 0; }
+.rl-stand-face.rl-face-fb { display: grid; place-items: center; font-size: 12px; font-weight: 800; color: #fff; background: var(--c, #555); }
+.rl-stand-name { text-align: left; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rl-stand-row.is-ally .rl-stand-name { color: var(--rl-gold); }
+.rl-stand-bar { height: 10px; border-radius: 6px; background: rgba(0,0,0,.45); overflow: hidden; }
+.rl-stand-fill { display: block; height: 100%; transition: width .3s; }
+.rl-stand-fill.high { background: #5ad17a; } .rl-stand-fill.mid { background: var(--rl-gold); } .rl-stand-fill.low { background: var(--danger); }
+.rl-stand-score { justify-self: end; font-variant-numeric: tabular-nums; font-size: 17px; font-weight: 800; color: var(--rl-ink); }
+.rl-stand-score small { font-size: 10px; font-weight: 600; color: var(--muted); margin-left: 2px; letter-spacing: .04em; }
+.rl-stand-row.is-ally .rl-stand-score { color: var(--rl-gold); }
+
+/* 結末バナー＝signature。上回り=金の突破印／競り負け=朱の警告帯。左の印＋右の読み上げ文。 */
+.rl-verdict { display: flex; align-items: center; gap: 14px; text-align: left; padding: 12px 16px; margin: 0 0 16px;
+  border-radius: 12px; border: 1px solid; }
+.rl-verdict-seal { flex: none; min-width: 76px; padding: 8px 6px; border-radius: 10px; text-align: center;
+  font-family: var(--font-min, serif); font-weight: 800; letter-spacing: .06em; line-height: 1.2; }
+.rl-verdict-body { font-size: 13.5px; line-height: 1.65; color: var(--rl-ink); }
+.rl-verdict-body b { font-weight: 800; }
+.rl-verdict.is-ahead { border-color: rgba(232,196,93,.5); background: linear-gradient(100deg, rgba(232,196,93,.16), rgba(232,196,93,.05)); }
+.rl-verdict.is-ahead .rl-verdict-seal { font-size: 22px; color: #1a1206; background: linear-gradient(150deg, #f6e3a0, var(--rl-gold)); box-shadow: 0 0 16px rgba(232,196,93,.45); }
+.rl-verdict.is-ahead .rl-verdict-body b { color: var(--rl-gold); }
+.rl-verdict.is-behind { border-color: rgba(192,86,58,.6); background: linear-gradient(100deg, rgba(192,86,58,.2), rgba(192,86,58,.06)); }
+.rl-verdict.is-behind .rl-verdict-seal { font-size: 17px; color: #fff; background: linear-gradient(150deg, #d8694a, var(--rl-ember, #c0563a)); box-shadow: 0 0 16px rgba(192,86,58,.45); }
+.rl-verdict.is-behind .rl-verdict-body b { color: #f0a48e; }
+.rl-verdict-ward { display: block; margin-top: 4px; font-size: 12px; color: #8fc1ff; }
+.rl-pursue-sub { margin: 0 0 18px; }
 .rl-rest-hung { font-size: 13px; color: #e8c45d; margin: 4px 0 16px; }
 
 .rl-event-modal { width: min(840px, 92%); }
