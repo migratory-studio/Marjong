@@ -12,7 +12,7 @@
 export const SHOP_BUFFS = [
   { id: "deal",  name: "攻めの極意", kind: "dealMul",   perLevel: 0.04, maxLevel: 5, icon: "⚔", desc: "楼光の館・開始時から与ダメージが上がる。" },
   { id: "take",  name: "守りの極意", kind: "takeMul",   perLevel: 0.03, maxLevel: 5, icon: "🛡", desc: "楼光の館・開始時から被ダメージが下がる。" },
-  { id: "coins", name: "軍資金",     kind: "startCoins", perLevel: 25,   maxLevel: 4, icon: "🪙", desc: "楼光の館・開始時に持つ光貨が増える。" },
+  { id: "coins", name: "軍資金",     kind: "startCoins", perLevel: 25,   maxLevel: 5, icon: "🪙", desc: "楼光の館・開始時に持つ光貨が増える。" },
   { id: "hp",    name: "鉄壁の備え", kind: "startHp",   perLevel: 0.03, maxLevel: 5, icon: "❤", desc: "楼光の館・開始時の最大HPが上がる。" },
   // 流派の段階解放（1回購入＝恒久）。既定は各流派1段目（開眼/鉄壁等）まで。これを買うと2段目（極み等）が解放され、
   // 同流派5枚でさらに跳ねるようになる。kind=clusterTier は applyShopBuffsToRun が run.clusterTierCap を底上げ。
@@ -21,11 +21,11 @@ export const SHOP_BUFFS = [
 
 // レベル別コスト（宝珠）。配列 index = 現在レベル（0→1段目を買う費用…）。length=maxLevel。
 const BUFF_COST_TABLE = {
-  deal:  [8, 14, 22, 32, 44],
-  take:  [8, 14, 22, 32, 44],
-  coins: [6, 12, 20, 30],
-  hp:    [10, 18, 28, 40, 54],
-  clusterTier: [60], // 1回購入＝流派2段目の恒久解放（節目の大きな買い物）
+  deal:  [50, 120, 180, 250, 350],
+  take:  [30, 40, 70, 120, 180],
+  coins: [50, 120, 180, 250, 350],
+  hp:    [55, 150, 220, 300, 400],
+  clusterTier: [120], // 1回購入＝流派2段目の恒久解放（節目の大きな買い物）
 };
 // 現在レベルから次の1段の費用（宝珠）。上限到達なら null。
 export function buffCost(id, currentLevel) {
@@ -45,16 +45,45 @@ export function buffEffectText(buff, level) {
 // 1回購入で profile.unlocked<Backgrounds|Bgms|Characters> に key を積む（恒久解禁）。
 export const SHOP_UNLOCKS = [
   // 背景（解禁=対戦ホームで選べるようになる）。価格は一律 BG_UNLOCK_COST。
-  { id: "bg-washitsu", type: "bg", key: "washitsu", name: "背景・和室",       cost: 30, img: "graphic/bg/sc/bg-washitsu.jpg", desc: "対戦ホームの背景に「和室」を追加する。" },
+  { id: "bg-washitsu", type: "bg", key: "washitsu", name: "背景・和室",       cost: 30, img: "graphic/bg/sc/bg-washitsu.jpg", desc: "対戦ホームの背景に「和室」を追加する。", weight: 3 },
   { id: "bg-cafe",     type: "bg", key: "cafe",     name: "背景・喫茶店",     cost: 30, img: "graphic/bg/sc/bg-cafe.jpg",     desc: "対戦ホームの背景に「喫茶店」を追加する。" },
   { id: "bg-ryokan",   type: "bg", key: "ryokan",   name: "背景・旅館の和室", cost: 30, img: "graphic/bg/sc/bg-ryokan.jpg",   desc: "対戦ホームの背景に「旅館の和室」を追加する。" },
-  // BGM（解禁=対戦ホームで選べるようになる）。key は HOME_BGM_CHOICES のキー。価格は一律 BGM_UNLOCK_COST。
+  // ↓ ここから大量追加。key は HOME_BG_CHOICES のキーと一致させること。価格は一律 30。
+  { id: "bg-kyudo",       type: "bg", key: "kyudo",       name: "背景・弓道場",       cost: 30, img: "graphic/bg/sc/bg-kyudo.jpg",           desc: "対戦ホームの背景に「弓道場」を追加する。" },
+  { id: "bg-festival",    type: "bg", key: "festival",    name: "背景・縁日",         cost: 30, img: "graphic/bg/sc/bg-festival.jpg",        desc: "対戦ホームの背景に「縁日」を追加する。" },
+  { id: "bg-bar",         type: "bg", key: "bar",         name: "背景・バー",         cost: 30, img: "graphic/bg/sc/bg-bar.jpg",             desc: "対戦ホームの背景に「バー」を追加する。" },
+  { id: "bg-restaurant",  type: "bg", key: "restaurant",  name: "背景・レストラン",   cost: 30, img: "graphic/bg/sc/bg-restaurant.jpg",      desc: "対戦ホームの背景に「レストラン」を追加する。" },
+  { id: "bg-park",        type: "bg", key: "park",        name: "背景・公園",         cost: 30, img: "graphic/bg/sc/bg-park.jpg",            desc: "対戦ホームの背景に「公園」を追加する。" },
+  { id: "bg-city",        type: "bg", key: "city",        name: "背景・夜景",         cost: 30, img: "graphic/bg/sc/bg-city.jpg",            desc: "対戦ホームの背景に「夜景」を追加する。" },
+  { id: "bg-station",     type: "bg", key: "station",     name: "背景・駅",           cost: 30, img: "graphic/bg/sc/bg-station.jpg",         desc: "対戦ホームの背景に「駅」を追加する。" },
+  { id: "bg-train",       type: "bg", key: "train",       name: "背景・電車",         cost: 30, img: "graphic/bg/sc/bg-train.jpg",           desc: "対戦ホームの背景に「電車」を追加する。" },
+  { id: "bg-convenience", type: "bg", key: "convenience", name: "背景・コンビニ",     cost: 30, img: "graphic/bg/sc/bg-convenience.jpg",     desc: "対戦ホームの背景に「コンビニ」を追加する。" },
+  { id: "bg-arcade",      type: "bg", key: "arcade",      name: "背景・ゲームセンター", cost: 30, img: "graphic/bg/sc/bg-arcade.jpg",         desc: "対戦ホームの背景に「ゲームセンター」を追加する。" },
+  { id: "bg-classroom",   type: "bg", key: "classroom",   name: "背景・教室",         cost: 30, img: "graphic/bg/sc/bg-classroom.jpg",       desc: "対戦ホームの背景に「教室」を追加する。" },
+  { id: "bg-clubroom",    type: "bg", key: "clubroom",    name: "背景・部室",         cost: 30, img: "graphic/bg/sc/bg-clubroom.jpg",        desc: "対戦ホームの背景に「部室」を追加する。" },
+  { id: "bg-corridor",    type: "bg", key: "corridor",    name: "背景・学校の廊下",   cost: 30, img: "graphic/bg/sc/bg-school-corridor.jpg", desc: "対戦ホームの背景に「学校の廊下」を追加する。" },
+  { id: "bg-gate",        type: "bg", key: "gate",        name: "背景・校門",         cost: 30, img: "graphic/bg/sc/bg-school-gate.jpg",     desc: "対戦ホームの背景に「校門」を追加する。" },
+  { id: "bg-rooftop",     type: "bg", key: "rooftop",     name: "背景・屋上",         cost: 30, img: "graphic/bg/sc/bg-school-rooftop.jpg",  desc: "対戦ホームの背景に「屋上」を追加する。" },
+  { id: "bg-campus",      type: "bg", key: "campus",      name: "背景・学び舎",       cost: 30, img: "graphic/bg/sc/bg-campus.jpg",          desc: "対戦ホームの背景に「学び舎」を追加する。" },
+  { id: "bg-blackboard",  type: "bg", key: "blackboard",  name: "背景・黒板",         cost: 30, img: "graphic/bg/sc/bg-blackboard.jpg",      desc: "対戦ホームの背景に「黒板」を追加する。" },
+  { id: "bg-ruins",       type: "bg", key: "ruins",       name: "背景・遺跡",         cost: 30, img: "graphic/bg/sc/bg-ruins.jpg",           desc: "対戦ホームの背景に「遺跡」を追加する。" },
+  { id: "bg-dungeon",     type: "bg", key: "dungeon",     name: "背景・ダンジョン",   cost: 30, img: "graphic/bg/sc/bg-dungeon.jpg",         desc: "対戦ホームの背景に「ダンジョン」を追加する。" },
+  { id: "bg-hideout",     type: "bg", key: "hideout",     name: "背景・アジト",       cost: 30, img: "graphic/bg/sc/bg-hideout.jpg",         desc: "対戦ホームの背景に「アジト」を追加する。" },
+  { id: "bg-basement",    type: "bg", key: "basement",    name: "背景・地下室",       cost: 30, img: "graphic/bg/sc/bg-basement.jpg",        desc: "対戦ホームの背景に「地下室」を追加する。" },
+  // BGM（解禁=対戦ホームで選べるようになる）。key は HOME_BGM_CHOICES のキー。価格は一律 25。
   { id: "bgm-kengeki", type: "bgm", key: "kengeki", name: "BGM・剣戟",   cost: 25, desc: "対戦ホームのBGMに「剣戟」を追加する。" },
   { id: "bgm-epic",    type: "bgm", key: "epic",    name: "BGM・勇壮",   cost: 25, desc: "対戦ホームのBGMに「勇壮」を追加する。" },
   { id: "bgm-otogi4",  type: "bgm", key: "otogi4",  name: "BGM・おとぎ4", cost: 25, desc: "対戦ホームのBGMに「おとぎ4」を追加する。" },
+  { id: "bgm-ohayashi2a", type: "bgm", key: "ohayashi2a", name: "BGM・お囃子",   cost: 25, desc: "対戦ホームのBGMに「お囃子」を追加する。" },
+  { id: "bgm-shizima3",   type: "bgm", key: "shizima3",   name: "BGM・しじま",   cost: 25, desc: "対戦ホームのBGMに「しじま」を追加する。" },
+  { id: "bgm-entangle",   type: "bgm", key: "entangle",   name: "BGM・読み合い", cost: 25, desc: "対戦ホームのBGMに「読み合い」を追加する。" },
+  { id: "bgm-tatari",     type: "bgm", key: "tatari",     name: "BGM・祟り",     cost: 25, desc: "対戦ホームのBGMに「祟り」を追加する。" },
+  { id: "bgm-carnival",   type: "bgm", key: "carnival",   name: "BGM・宵の祭舞", cost: 25, desc: "対戦ホームのBGMに「宵の祭舞」を追加する。" },
+  { id: "bgm-forest",     type: "bgm", key: "forest",     name: "BGM・惑いの森", cost: 25, desc: "対戦ホームのBGMに「惑いの森」を追加する。" },
+  { id: "bgm-citybreath", type: "bgm", key: "citybreath", name: "BGM・夜の街",   cost: 25, desc: "対戦ホームのBGMに「夜の街」を追加する。" },
   // キャラ解禁。key は charId。買うと profile.unlockedCharacters に積まれ、characterMaster で locked:true の
   // キャラが選択導線（フリー対戦など）で選べるようになる。実キャラを売り出すときは下記の形で1行足すだけ。
-  { id: "char-teacher", type: "char", key: "teacher", name: "篠宮 栞", cost: 80, img: "graphic/chars/teacher/portrait.png", desc: "家庭教師型「篠宮 栞」を仲間に。能力『模範解答』でフリー対戦などに連れていける。" },
+  { id: "char-teacher", type: "char", key: "teacher", name: "篠宮 栞", cost: 150, img: "graphic/chars/teacher/portrait.png", desc: "学校教師「篠宮 栞」を仲間に。能力『模範解答』で麻雀のサポートをしてくれる。" },
 ];
 
 // profile から解禁配列名（type→profileキー）。新規typeを足すときはここに対応を1行。
@@ -65,4 +94,60 @@ export function isShopUnlocked(item, profile) {
   const field = UNLOCK_FIELD[item?.type];
   if (!field) return false;
   return (profile?.[field] || []).includes(item.key);
+}
+
+// ===== 日替わり陳列（背景/BGM）==============================================
+// 背景・BGM は在庫が多いので毎日 weight 重み付きで N 点だけ並べる（24時=ローカル日付の境界でリセット）。
+// 「同じ日＝同じ品揃え」を保証するため、選定は **日付のみ** をシードにした決定論抽選にする
+//  （所持状況に依存しない＝その日のうちに1点買っても残りがシャッフルされない。購入画面の出入り・再描画でも不変）。
+// 所持済みアイテムも除外しない（並びは固定。買ったものは呼び出し側で「解禁済」表示になる）。
+
+// ローカル日付 → 連番シード（YYYYMMDD）。24時=日付が変わる瞬間に値が変わる＝そこでリセット。
+export function shopDaySeed(date = new Date()) {
+  return date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
+}
+
+// 文字列 → 32bit ハッシュ（決定論シード用）。
+function hashStr(s) {
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+// 決定論PRNG（mulberry32）。同じシードなら毎回同じ列を返す。
+function mulberry32(seed) {
+  let a = seed >>> 0;
+  return function () {
+    a |= 0; a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+// weight 重み付き・非復元サンプリング（rng=0..1）。weight 未指定/0以下は最低 0 として扱い、全0なら一様。
+function weightedSample(pool, n, rng) {
+  const bag = pool.map((it) => ({ it, w: Math.max(0, Number(it.weight ?? 1)) }));
+  const out = [];
+  while (out.length < n && bag.length) {
+    const total = bag.reduce((s, p) => s + p.w, 0);
+    let idx;
+    if (total <= 0) {
+      idx = Math.floor(rng() * bag.length);
+    } else {
+      let r = rng() * total;
+      for (idx = 0; idx < bag.length - 1; idx++) { r -= bag[idx].w; if (r <= 0) break; }
+    }
+    out.push(bag.splice(idx, 1)[0].it);
+  }
+  return out;
+}
+
+// その日に陳列する type(bg|bgm) の解禁アイテム配列（既定3点）。プールが count 以下なら全部返す。
+// 並びはカタログ順を保つ（抽選順のランダム並びにしない＝見た目が安定）。
+export function dailyShopUnlocks(type, count = 3, daySeed = shopDaySeed()) {
+  const pool = SHOP_UNLOCKS.filter((it) => it.type === type);
+  if (pool.length <= count) return pool;
+  const rng = mulberry32(hashStr(`${daySeed}:${type}`));
+  const picked = weightedSample(pool, count, rng);
+  const order = new Map(pool.map((it, i) => [it.id, i]));
+  return picked.sort((a, b) => order.get(a.id) - order.get(b.id));
 }

@@ -161,6 +161,14 @@ const BGM_AWAYUKI     = enc("sound/bgm/PerituneMaterial_Awayuki.mp3");
 const BGM_HANAGOYOMI2 = enc("sound/bgm/PerituneMaterial_Hanagoyomi2.mp3");
 const BGM_MICHIKUSA3  = enc("sound/bgm/PerituneMaterial_Michikusa3.mp3");
 const BGM_SAKUYA3     = enc("sound/bgm/PerituneMaterial_Sakuya3.mp3");
+// 追加トラック（PeriTune／要クレジット表記）。すべて宝珠ショップ解禁（locked）。
+const BGM_OHAYASHI2A  = enc("sound/bgm/PerituneMaterial_Ohayashi2A.mp3");  // 軽快な和のお囃子
+const BGM_SHIZIMA3    = enc("sound/bgm/PerituneMaterial_Shizima3.mp3");    // 張り詰めた静寂
+const BGM_ENTANGLE    = enc("sound/bgm/PerituneMaterial_Entangle.mp3");    // もつれる読み合い
+const BGM_TATARI      = enc("sound/bgm/PerituneMaterial_Tatari.mp3");      // 不穏・祟り
+const BGM_CARNIVAL    = enc("sound/bgm/PerituneMaterial_Carnival_Dark.mp3"); // 妖しいカーニバル
+const BGM_FOREST      = enc("sound/bgm/Peritune_Bewitched_Forest_loop.mp3"); // 惑いの森（ループ）
+const BGM_CITYBREATH  = enc("sound/bgm/Peritune_The_City_Breathes_Your_Name_loop.mp3"); // 都会の夜気（ループ）
 
 // 対戦ホームで手動切替できるBGM。key は profile.homeBgm に保存。既定＝先頭（淡雪 / Awayuki）。
 // ファイル未配置のものは playBgm が失敗して無音になるだけ（クラッシュしない）。
@@ -171,10 +179,17 @@ export const HOME_BGM_CHOICES = [
   { key: "sakuya3",     label: "朔夜",     src: BGM_SAKUYA3 },
   { key: "hanadoki",    label: "花どき",   src: BGM_HOME },
   { key: "amenoshita",  label: "天ノ下",   src: BGM_SELECT },
-  // 以下3曲は宝珠ショップ解禁（locked）。購入で profile.unlockedBgms に key が入ると選べる。
-  { key: "otogi4",      label: "おとぎ4",  src: BGM_MENTOR,     locked: true },
-  { key: "kengeki",     label: "剣戟",     src: BGM_TOURNEY[1], locked: true },
-  { key: "epic",        label: "勇壮",     src: BGM_TOURNEY[2], locked: true },
+  // 以下は宝珠ショップ解禁（locked）。購入で profile.unlockedBgms に key が入ると選べる。
+  { key: "otogi4",      label: "おとぎ4",     src: BGM_MENTOR,     locked: true },
+  { key: "kengeki",     label: "剣戟",        src: BGM_TOURNEY[1], locked: true },
+  { key: "epic",        label: "勇壮",        src: BGM_TOURNEY[2], locked: true },
+  { key: "ohayashi2a",  label: "お囃子",      src: BGM_OHAYASHI2A, locked: true },
+  { key: "shizima3",    label: "しじま",      src: BGM_SHIZIMA3,   locked: true },
+  { key: "entangle",    label: "読み合い",    src: BGM_ENTANGLE,   locked: true },
+  { key: "tatari",      label: "祟り",        src: BGM_TATARI,     locked: true },
+  { key: "carnival",    label: "宵の祭舞",    src: BGM_CARNIVAL,   locked: true },
+  { key: "forest",      label: "惑いの森",    src: BGM_FOREST,     locked: true },
+  { key: "citybreath",  label: "夜の街",      src: BGM_CITYBREATH, locked: true },
 ];
 const SE_DAHAI = ["１", "２", "３", "４"].map((n) => enc(`sound/se/dahai/牌を置く・その${n}.mp3`));
 const SE_SHUFFLE = enc("sound/se/麻雀牌をまぜる.mp3"); // start of hand (deal)

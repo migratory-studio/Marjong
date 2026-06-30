@@ -12,7 +12,7 @@
 //  - 導線は当面ここ（対戦ホーム）から。将来は「楼光の館トップ」へ移す（呼び出し側を差し替えるだけ）。
 import {
   SHOP_BUFFS, SHOP_UNLOCKS, UNLOCK_FIELD,
-  buffCost, buffEffectText, isShopUnlocked,
+  buffCost, buffEffectText, isShopUnlocked, dailyShopUnlocks,
 } from "../data/shopMaster.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { shopStyleAttr } from "../data/imagePos.js";
@@ -34,14 +34,18 @@ function esc(s) {
 // 新ジャンルを増やすときはここに1行足すだけ（中身が0件のタブは自動で隠す）。
 const SHOP_CATEGORIES = [
   { id: "buffs", kind: "buffs",                 label: "恒久強化",     sub: "次の楼光の館ランから効く補正" },
-  { id: "bg",    kind: "unlock", type: "bg",    label: "背景",         sub: "対戦ホームの背景を増やす" },
-  { id: "bgm",   kind: "unlock", type: "bgm",   label: "BGM",          sub: "対戦ホームのBGMを増やす" },
+  { id: "bg",    kind: "unlock", type: "bg",    label: "背景",         sub: "対戦ホームの背景を増やす（本日の品揃え・毎日24時更新）" },
+  { id: "bgm",   kind: "unlock", type: "bgm",   label: "BGM",          sub: "対戦ホームのBGMを増やす（本日の品揃え・毎日24時更新）" },
   { id: "char",  kind: "unlock", type: "char",  label: "キャラクター", sub: "仲間を解禁する" },
 ];
 
-// カテゴリに属する商品件数（タブの出し分け・件数バッジ用）。
+// カテゴリに属する商品（タブの件数バッジ・本体描画の両方で使う＝表示する物そのものを返す）。
+//  - 背景 / BGM は在庫が多いので「日替わり3点」だけ並べる（dailyShopUnlocks＝日付シードの決定論抽選。
+//    同じ日なら何度呼んでも同じ3点なので、出入り・再描画・連続呼び出しでもブレない）。
+//  - 恒久強化 / キャラは常に全部。
 function categoryItems(cat) {
   if (cat.kind === "buffs") return SHOP_BUFFS;
+  if (cat.type === "bg" || cat.type === "bgm") return dailyShopUnlocks(cat.type, 3);
   return SHOP_UNLOCKS.filter((it) => it.type === cat.type);
 }
 

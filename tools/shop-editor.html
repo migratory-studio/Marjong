@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>宝珠ショップ エディタ（価格／説明／重み付け）</title>
+<style>
+  :root{
+    --bg:#0e0c14; --panel:#191622; --panel2:#13111b; --ink:#ece7f2; --muted:#9b93ad;
+    --accent:#e8c45d; --accent2:#8fb6ff; --warn:#ffcf6c; --err:#ff7a7a; --ok:#7ee0a5; --line:#2c2738;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:radial-gradient(120% 90% at 50% -10%,#1a1526 0%,var(--bg) 60%);color:var(--ink);
+       font:13.5px/1.5 system-ui,"Segoe UI",sans-serif;}
+  header{padding:9px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+         background:linear-gradient(180deg,rgba(232,196,93,.06),transparent);}
+  header h1{font-size:15px;margin:0 6px 0 0;font-weight:800;letter-spacing:.03em;color:var(--accent);}
+  header h1 small{color:var(--muted);font-weight:500;font-size:11px;letter-spacing:.18em;margin-left:6px;}
+  .row{display:flex;align-items:center;gap:8px;}
+  label{color:var(--muted);}
+  select,input[type=text],input[type=number],textarea{
+    background:#100e18;color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:5px 7px;font:inherit;}
+  input[type=number]{width:78px;}
+  textarea{width:100%;resize:vertical;min-height:38px;}
+  button{background:var(--accent);color:#231a06;border:none;border-radius:6px;padding:6px 12px;font-weight:700;cursor:pointer;}
+  button.ghost{background:transparent;color:var(--ink);border:1px solid var(--line);font-weight:600;}
+  button.mini{padding:3px 8px;font-size:12px;}
+  button.x{background:transparent;color:var(--err);border:1px solid var(--line);padding:2px 8px;font-size:12px;}
+  button:disabled{opacity:.4;cursor:not-allowed;}
+  .pill{padding:2px 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:12px;}
+  .pill b{color:var(--accent);font-weight:700;}
+  main{display:grid;grid-template-columns:1fr 480px;height:calc(100vh - 50px);}
+  .left{overflow:auto;padding:0 0 60px;}
+  .right{border-left:1px solid var(--line);background:var(--panel2);overflow:auto;padding:14px 14px 40px;display:flex;flex-direction:column;}
+  .tabs{display:flex;gap:3px;flex-wrap:wrap;padding:10px 14px 0;position:sticky;top:0;background:var(--bg);z-index:3;border-bottom:1px solid var(--line);}
+  .tab{padding:6px 12px;border:1px solid var(--line);border-bottom:none;border-radius:8px 8px 0 0;background:var(--panel2);color:var(--muted);cursor:pointer;font-size:12.5px;}
+  .tab.on{background:var(--panel);color:var(--ink);font-weight:700;box-shadow:inset 0 2px 0 var(--accent);}
+  .tab .cnt{color:var(--muted);font-size:11px;margin-left:5px;}
+  .pane{padding:12px 16px;display:none;}
+  .pane.on{display:block;}
+  .pane-head{color:var(--muted);font-size:12px;margin:2px 0 12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .card{margin-bottom:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;}
+  .card.disabled{opacity:.5;}
+  .card .top{display:flex;align-items:center;gap:10px;}
+  .card .thumb{width:54px;height:36px;border-radius:6px;object-fit:cover;border:1px solid var(--line);background:#0b0911;flex:none;}
+  .card .thumb.icon{width:36px;font-size:22px;display:flex;align-items:center;justify-content:center;}
+  .card .ttl{font-weight:700;flex:1;min-width:0;}
+  .card .ttl small{display:block;color:var(--muted);font-weight:400;font-size:11px;font-family:ui-monospace,monospace;}
+  .fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px 12px;margin-top:9px;}
+  .f{display:flex;flex-direction:column;gap:3px;}
+  .f.wide{grid-column:1 / -1;}
+  .f span{color:var(--muted);font-size:11px;}
+  .wbar{height:7px;border-radius:5px;background:#0b0911;border:1px solid var(--line);overflow:hidden;margin-top:5px;}
+  .wbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));}
+  .wshare{color:var(--accent2);font-size:11px;font-family:ui-monospace,monospace;}
+  .out h2{font-size:12.5px;color:var(--accent);margin:0 0 6px;letter-spacing:.04em;}
+  .out p{color:var(--muted);font-size:11.5px;margin:0 0 8px;}
+  pre{background:#0b0911;border:1px solid var(--line);border-radius:8px;padding:10px;overflow:auto;font:12px/1.5 ui-monospace,monospace;
+      white-space:pre;flex:1;margin:0;}
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ok);color:#06281a;padding:8px 16px;border-radius:8px;
+         font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none;}
+  .toast.on{opacity:1;}
+  .hint{color:var(--warn);font-size:11.5px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>宝珠ショップ エディタ <small>PRICE / DESC / WEIGHT</small></h1>
+  <span class="pill">商品 <b id="total">0</b></span>
+  <div class="row" style="margin-left:auto;gap:8px;">
+    <button class="ghost" id="reload">読み込み直す</button>
+    <button id="gen">コード生成 →</button>
+  </div>
+</header>
+
+<main>
+  <div class="left">
+    <div class="tabs" id="tabs"></div>
+    <div id="panes"></div>
+  </div>
+  <div class="right out">
+    <h2>貼り戻しコード（shopMaster.js）</h2>
+    <p>下のブロックを <code>src/data/shopMaster.js</code> の対応箇所（<code>SHOP_BUFFS</code> / <code>BUFF_COST_TABLE</code> / <code>SHOP_UNLOCKS</code>）にそのまま上書きしてください。重み(<code>weight</code>)は既定値1のときは出力しません。</p>
+    <div class="row" style="margin-bottom:8px;gap:8px;">
+      <button id="copy">クリップボードにコピー</button>
+      <span class="hint" id="warns"></span>
+    </div>
+    <pre id="code">「コード生成 →」を押すと、ここに貼り戻し用コードが出ます。</pre>
+  </div>
+</main>
+<div class="toast" id="toast">コピーしました</div>
+
+<script type="module">
+import { SHOP_BUFFS, SHOP_UNLOCKS, buffCost } from '../src/data/shopMaster.js';
+import { HOME_BGM_CHOICES } from '../src/ui/assets.js';
+
+// ---- 既知リソース（追加時の候補。authoring用の利便リスト）-----------------
+const BG_FILES = [
+  "arcade","bar","basement","blackboard","cafe","campus","city","classroom","clubroom",
+  "convenience","dungeon","festival","hideout","kyudo","park","restaurant","ruins","ryokan",
+  "school-corridor","school-gate","school-rooftop","station","train","washitsu",
+].map((s) => `graphic/bg/sc/bg-${s}.jpg`);
+
+// ---- 状態（マスタを編集可能なディープコピーに）----------------------------
+let buffs, costTable, unlocks;
+function load(){
+  buffs = SHOP_BUFFS.map((b) => ({ ...b, weight: b.weight ?? 1 }));
+  costTable = {};
+  for (const b of SHOP_BUFFS){
+    const arr = [];
+    for (let lv = 0; lv < b.maxLevel; lv++) arr.push(buffCost(b.id, lv) ?? 0);
+    costTable[b.id] = arr;
+  }
+  unlocks = SHOP_UNLOCKS.map((u) => ({ ...u, weight: u.weight ?? 1 }));
+}
+load();
+
+// カテゴリ＝出力グループ。weightシェアはこの単位で計算。
+const TABS = [
+  { id:"buffs", label:"恒久強化", kind:"buffs" },
+  { id:"bg",    label:"背景",     kind:"unlock", type:"bg" },
+  { id:"bgm",   label:"BGM",      kind:"unlock", type:"bgm" },
+  { id:"char",  label:"キャラ",   kind:"unlock", type:"char" },
+];
+let active = "bg";
+
+const esc = (s) => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+const itemsOf = (tab) => tab.kind === "buffs" ? buffs : unlocks.filter((u) => u.type === tab.type);
+
+// ---- 描画 ----------------------------------------------------------------
+function render(){
+  const tabsEl = document.getElementById("tabs");
+  tabsEl.innerHTML = TABS.map((t) =>
+    `<div class="tab ${t.id===active?'on':''}" data-tab="${t.id}">${t.label}<span class="cnt">${itemsOf(t).length}</span></div>`
+  ).join("");
+  tabsEl.querySelectorAll(".tab").forEach((el) => el.onclick = () => { active = el.dataset.tab; render(); });
+
+  document.getElementById("total").textContent = buffs.length + unlocks.length;
+
+  const panes = document.getElementById("panes");
+  const tab = TABS.find((t) => t.id === active);
+  const items = itemsOf(tab);
+  const totalW = items.reduce((s,it) => s + (Number(it.weight)||0), 0) || 1;
+
+  let head = `<div class="pane-head">`;
+  if (tab.kind === "buffs"){
+    head += `恒久バフ。コストはレベル別（カンマ区切り）。恒久強化は常時全品陳列（重みは使われません）。`;
+  } else if (tab.type === "bg" || tab.type === "bgm"){
+    const unit = tab.type==="bg" ? "30" : "25";
+    head += `${tab.label}の解禁商品。<b style="color:var(--ink)">既定価格の目安: ${unit}宝珠</b>。<b style="color:var(--ink)">この${tab.label}は毎日3点だけ日替わり陳列</b>され、重み(シェア%)が大きいほど並びやすくなります（24時=ローカル日付でリセット）。`;
+  } else {
+    head += `${tab.label}の解禁商品。キャラは常時全品陳列（重みは使われません）。`;
+  }
+  head += ` <button class="mini" id="add">＋ 新規追加</button></div>`;
+
+  panes.innerHTML = `<div class="pane on">${head}${items.map((it) => card(it, tab, totalW)).join("") || '<p style="color:var(--muted)">商品がありません。</p>'}</div>`;
+  bindCards(tab);
+  document.getElementById("add").onclick = () => addItem(tab);
+}
+
+function weightBlock(it, totalW){
+  const w = Number(it.weight)||0;
+  const share = Math.round((w/totalW)*1000)/10;
+  return `<div class="f">
+    <span>重み <span class="wshare">${w<=0?'(無効)':share+'%'}</span></span>
+    <input type="number" min="0" step="0.5" data-k="weight" value="${it.weight}" />
+    <div class="wbar"><i style="width:${Math.min(100,share)}%"></i></div>
+  </div>`;
+}
+
+function card(it, tab, totalW){
+  if (tab.kind === "buffs"){
+    return `<div class="card" data-id="${esc(it.id)}">
+      <div class="top">
+        <div class="thumb icon">${esc(it.icon||'•')}</div>
+        <div class="ttl">${esc(it.name)}<small>id: ${esc(it.id)} ・ kind: ${esc(it.kind)}</small></div>
+        <button class="x" data-act="del">削除</button>
+      </div>
+      <div class="fields">
+        <div class="f"><span>名前</span><input type="text" data-k="name" value="${esc(it.name)}"/></div>
+        <div class="f"><span>アイコン</span><input type="text" data-k="icon" value="${esc(it.icon||'')}"/></div>
+        <div class="f"><span>kind</span><input type="text" data-k="kind" value="${esc(it.kind)}"/></div>
+        <div class="f"><span>perLevel</span><input type="number" step="0.01" data-k="perLevel" value="${it.perLevel}"/></div>
+        <div class="f"><span>maxLevel</span><input type="number" step="1" data-k="maxLevel" value="${it.maxLevel}"/></div>
+        <div class="f wide"><span>コスト（レベル別・カンマ区切り／長さ=maxLevel）</span><input type="text" data-k="costTable" value="${esc((costTable[it.id]||[]).join(', '))}"/></div>
+        ${weightBlock(it, totalW)}
+        <div class="f wide"><span>説明</span><textarea data-k="desc">${esc(it.desc||'')}</textarea></div>
+      </div>
+    </div>`;
+  }
+  const thumb = it.img
+    ? `<img class="thumb" src="../${esc(it.img)}" alt="" onerror="this.style.opacity=.25"/>`
+    : `<div class="thumb icon">${tab.type==='bgm'?'♪':'?'}</div>`;
+  const imgList = tab.type==="bg" ? `list="bgfiles"` : "";
+  const keyList = tab.type==="bgm" ? `list="bgmkeys"` : "";
+  return `<div class="card" data-id="${esc(it.id)}">
+    <div class="top">
+      ${thumb}
+      <div class="ttl">${esc(it.name)}<small>id: ${esc(it.id)} ・ key: ${esc(it.key)}</small></div>
+      <button class="x" data-act="del">削除</button>
+    </div>
+    <div class="fields">
+      <div class="f"><span>名前</span><input type="text" data-k="name" value="${esc(it.name)}"/></div>
+      <div class="f"><span>key（参照先のキー）</span><input type="text" data-k="key" value="${esc(it.key)}" ${keyList}/></div>
+      <div class="f"><span>価格（宝珠）</span><input type="number" step="1" min="0" data-k="cost" value="${it.cost}"/></div>
+      ${weightBlock(it, totalW)}
+      ${tab.type!=="bgm" ? `<div class="f wide"><span>画像パス（img）</span><input type="text" data-k="img" value="${esc(it.img||'')}" ${imgList}/></div>` : ``}
+      <div class="f wide"><span>説明</span><textarea data-k="desc">${esc(it.desc||'')}</textarea></div>
+    </div>
+  </div>`;
+}
+
+function bindCards(tab){
+  const items = itemsOf(tab);
+  const find = (id) => items.find((x) => x.id === id);
+  document.querySelectorAll(".card").forEach((cardEl) => {
+    const it = find(cardEl.dataset.id);
+    if (!it) return;
+    cardEl.querySelectorAll("input,textarea").forEach((inp) => {
+      inp.addEventListener("input", () => {
+        const k = inp.dataset.k;
+        if (k === "costTable"){
+          costTable[it.id] = inp.value.split(",").map((s) => Number(s.trim())).filter((n) => !Number.isNaN(n));
+        } else if (["perLevel","maxLevel","cost","weight"].includes(k)){
+          it[k] = inp.value === "" ? "" : Number(inp.value);
+        } else {
+          it[k] = inp.value;
+        }
+        // 重み/価格はシェアバー再計算が要るので、その場で軽く再描画
+        if (k === "weight") render();
+      });
+    });
+    cardEl.querySelector('[data-act=del]').onclick = () => {
+      if (!confirm(`「${it.name}」を削除しますか？`)) return;
+      if (tab.kind === "buffs"){ buffs = buffs.filter((b) => b !== it); delete costTable[it.id]; }
+      else { unlocks = unlocks.filter((u) => u !== it); }
+      render();
+    };
+  });
+}
+
+function addItem(tab){
+  const stamp = String(buffs.length + unlocks.length + 1);
+  if (tab.kind === "buffs"){
+    const id = "buff" + stamp;
+    buffs.push({ id, name:"新しい強化", kind:"dealMul", perLevel:0.04, maxLevel:5, icon:"✦", desc:"", weight:1 });
+    costTable[id] = [10, 18, 28, 40, 54];
+  } else {
+    const id = `${tab.type}-new${stamp}`;
+    const base = { id, type:tab.type, key:"", name:"新しい商品", cost: tab.type==="bg"?30:tab.type==="bgm"?25:80, desc:"", weight:1 };
+    if (tab.type!=="bgm") base.img = tab.type==="bg" ? "graphic/bg/sc/bg-.jpg" : "graphic/chars//portrait.png";
+    unlocks.push(base);
+  }
+  render();
+}
+
+// ---- コード生成 ----------------------------------------------------------
+function q(s){ return JSON.stringify(String(s ?? "")); } // 文字列を安全にクォート（"…" 形式）
+
+function genBuffs(){
+  const lines = buffs.map((b) => {
+    const parts = [`id: ${q(b.id)}`, `name: ${q(b.name)}`, `kind: ${q(b.kind)}`,
+      `perLevel: ${b.perLevel}`, `maxLevel: ${b.maxLevel}`, `icon: ${q(b.icon||"")}`, `desc: ${q(b.desc||"")}`];
+    if (Number(b.weight) !== 1) parts.push(`weight: ${b.weight}`);
+    return `  { ${parts.join(", ")} },`;
+  });
+  return `export const SHOP_BUFFS = [\n${lines.join("\n")}\n];`;
+}
+
+function genCostTable(){
+  const lines = buffs.map((b) => `  ${b.id}: [${(costTable[b.id]||[]).join(", ")}],`);
+  return `const BUFF_COST_TABLE = {\n${lines.join("\n")}\n};`;
+}
+
+function genUnlocks(){
+  const order = ["bg","bgm","char"];
+  const lines = [];
+  for (const type of order){
+    const grp = unlocks.filter((u) => u.type === type);
+    if (!grp.length) continue;
+    lines.push(`  // ${type === "bg" ? "背景" : type === "bgm" ? "BGM" : "キャラ"}`);
+    for (const u of grp){
+      const parts = [`id: ${q(u.id)}`, `type: ${q(u.type)}`, `key: ${q(u.key)}`, `name: ${q(u.name)}`, `cost: ${u.cost}`];
+      if (u.img != null && u.img !== "") parts.push(`img: ${q(u.img)}`);
+      parts.push(`desc: ${q(u.desc||"")}`);
+      if (Number(u.weight) !== 1) parts.push(`weight: ${u.weight}`);
+      lines.push(`  { ${parts.join(", ")} },`);
+    }
+  }
+  return `export const SHOP_UNLOCKS = [\n${lines.join("\n")}\n];`;
+}
+
+function warnings(){
+  const w = [];
+  const allKeys = {};
+  for (const u of unlocks){
+    if (!u.key) w.push(`key 未設定: ${u.id}`);
+    const k = `${u.type}:${u.key}`;
+    if (allKeys[k]) w.push(`key 重複: ${u.type}/${u.key}`);
+    allKeys[k] = true;
+    if (!(Number(u.cost) >= 0)) w.push(`価格が不正: ${u.id}`);
+  }
+  for (const b of buffs){
+    if ((costTable[b.id]||[]).length !== Number(b.maxLevel))
+      w.push(`コスト数≠maxLevel: ${b.id}（${(costTable[b.id]||[]).length}/${b.maxLevel}）`);
+  }
+  return w;
+}
+
+function generate(){
+  const code =
+    `// ▼▼ 1) SHOP_BUFFS をこのブロックで置換 ▼▼\n${genBuffs()}\n\n` +
+    `// ▼▼ 2) BUFF_COST_TABLE をこのブロックで置換 ▼▼\n${genCostTable()}\n\n` +
+    `// ▼▼ 3) SHOP_UNLOCKS をこのブロックで置換 ▼▼\n${genUnlocks()}\n`;
+  document.getElementById("code").textContent = code;
+  const w = warnings();
+  document.getElementById("warns").textContent = w.length ? `⚠ ${w.length}件: ${w.join(" / ")}` : "";
+  return code;
+}
+
+// ---- バインド ------------------------------------------------------------
+document.getElementById("gen").onclick = generate;
+document.getElementById("reload").onclick = () => { load(); active = "bg"; render(); document.getElementById("code").textContent = "（再読み込みしました。コード生成 → を押してください）"; };
+document.getElementById("copy").onclick = async () => {
+  const code = document.getElementById("code").textContent;
+  try { await navigator.clipboard.writeText(code); toast(); }
+  catch { const r = document.createRange(); r.selectNode(document.getElementById("code")); getSelection().removeAllRanges(); getSelection().addRange(r); document.execCommand("copy"); toast(); }
+};
+function toast(){ const t = document.getElementById("toast"); t.classList.add("on"); setTimeout(() => t.classList.remove("on"), 1200); }
+
+// datalist（追加時の候補）
+const dl = document.createElement("div");
+dl.innerHTML =
+  `<datalist id="bgfiles">${BG_FILES.map((f)=>`<option value="${f}">`).join("")}</datalist>` +
+  `<datalist id="bgmkeys">${HOME_BGM_CHOICES.map((c)=>`<option value="${c.key}">${c.label}</option>`).join("")}</datalist>`;
+document.body.appendChild(dl);
+
+render();
+</script>
+</body>
+</html>
