@@ -1982,6 +1982,7 @@ async function openRoguelite() {
       charImages,
       bestFloor: best,
       carry: carryCards, // 引き継ぎ中のバフ（表示用）
+      companionBonds: profile?.companionBonds || {}, // 相棒絆Lv（枠の灯の色＝間柄の段階表示に使う）
       backLabel: "← 記憶を選ぶ", // 戻り先＝大章選択ハブ（ボタンは行き先を名乗る）
       onBack: () => showChapterHub(),
       onStart: (party) => startRogueliteRun(party, chapterId),

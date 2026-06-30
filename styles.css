@@ -4873,29 +4873,68 @@ button.primary.danger:hover { color: #ffbcbc; }
 
 .rl-party { display: flex; flex-direction: column; gap: 10px; }
 .rl-party-head, .rl-roster-head { font-size: 13px; color: var(--muted); }
+.rl-roster-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.rl-roster-legend { font-size: 11px; color: var(--muted); opacity: .85; display: inline-flex; align-items: center; gap: 6px; }
+.rl-legend-lamp { width: 9px; height: 9px; border-radius: 50%;
+  background: conic-gradient(from 220deg, #8893a4, #5fae9a, #5ea0d6, #e8c45d, #f2a6bd, #8893a4);
+  box-shadow: 0 0 6px rgba(232,196,93,.4); }
 .rl-party-slots { display: flex; flex-direction: column; gap: 10px; }
+
+/* 絆の帯(0..4) → 枠の「灯の色」。出会ったばかりの石灰 → 青磁 → 空青 → 楼光金 → 無二の薔薇金。 */
+.tone-bond0 { --bond:#8893a4; --bond-glow:rgba(136,147,164,.14); --bond-edge:rgba(136,147,164,.34); } /* 出会ったばかり */
+.tone-bond1 { --bond:#5fae9a; --bond-glow:rgba(95,174,154,.16);  --bond-edge:rgba(95,174,154,.46);  } /* 打ち解け始め */
+.tone-bond2 { --bond:#5ea0d6; --bond-glow:rgba(94,160,214,.17);  --bond-edge:rgba(94,160,214,.50);  } /* 気を許す仲 */
+.tone-bond3 { --bond:#e8c45d; --bond-glow:rgba(232,196,93,.18);  --bond-edge:rgba(232,196,93,.56);  } /* 相棒 */
+.tone-bond4 { --bond:#f2a6bd; --bond-glow:rgba(242,166,189,.20); --bond-edge:rgba(242,166,189,.62); } /* 無二の相棒 */
+
 .rl-slot { display: flex; align-items: center; gap: 12px; min-height: 76px; padding: 8px 12px;
   border: 2px dashed rgba(246,179,82,.35); border-radius: 12px; color: var(--muted);
   background: rgba(0,0,0,.18); font-size: 14px; cursor: default; }
-.rl-slot.filled { border-style: solid; border-color: rgba(246,179,82,.6); color: var(--ink); cursor: pointer; }
-.rl-slot.you.filled { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(246,179,82,.3) inset; }
+.rl-slot.filled { border-style: solid; border-color: var(--bond-edge, rgba(246,179,82,.6)); color: var(--ink); cursor: pointer;
+  background: linear-gradient(90deg, var(--bond-glow, transparent), rgba(0,0,0,.18) 62%); transition: border-color .14s, box-shadow .14s; }
+.rl-slot.you.filled { box-shadow: 0 0 0 1px var(--bond-edge, rgba(246,179,82,.3)) inset; }
+.rl-slot.filled:hover { box-shadow: 0 0 12px var(--bond-glow, transparent), 0 0 0 1px var(--bond-edge, transparent) inset; }
 .rl-slot-face, .rl-cell-face, .rl-slot-face.rl-face-fb { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; object-position: top center; }
-.rl-slot-name { flex: 1; font-size: 16px; font-weight: 700; }
-.rl-slot-tag { font-size: 12px; color: var(--accent); }
+.rl-slot-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.rl-slot-name { font-size: 16px; font-weight: 700; line-height: 1.15; }
+.rl-slot-hp { font-size: 11px; color: var(--muted); display: flex; align-items: baseline; gap: 6px; }
+.rl-slot-hp b { font-size: 15px; color: var(--ink); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+.rl-slot-bond { color: var(--bond, var(--accent)); font-weight: 700; font-size: 10.5px; letter-spacing: .03em; }
+.rl-slot-tag { font-size: 12px; color: var(--bond, var(--accent)); align-self: flex-start; }
 
 .rl-roster { display: flex; flex-direction: column; gap: 8px; min-height: 0; }
-.rl-roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(98px, 1fr)); gap: 10px;
-  overflow-y: auto; padding: 4px; align-content: start; min-height: 0; }
-.rl-cell { position: relative; display: flex; flex-direction: column; align-items: center; gap: 6px;
-  padding: 8px 6px; border: 2px solid rgba(255,255,255,.12); border-radius: 12px;
-  background: rgba(0,0,0,.22); color: var(--ink); cursor: pointer; transition: transform .1s, border-color .1s; }
-.rl-cell:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-2px); }
+.rl-roster-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(106px, 1fr)); gap: 10px;
+  overflow: hidden auto; padding: 4px; align-content: start; min-height: 0; } /* 縦のみスクロール（端カードのホバーポップが横スクロールバーを誘発しないよう x はクリップ） */
+.rl-cell { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px;
+  padding: 9px 6px 8px; border: 1.5px solid var(--bond-edge, rgba(255,255,255,.12)); border-radius: 13px;
+  background: radial-gradient(120% 88% at 50% -12%, var(--bond-glow, transparent), transparent 62%), rgba(0,0,0,.24);
+  color: var(--ink); cursor: pointer; transition: transform .12s, border-color .12s, box-shadow .12s; }
+.rl-cell:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--bond, var(--accent));
+  box-shadow: 0 6px 18px rgba(0,0,0,.42), 0 0 0 1px var(--bond-edge, transparent); }
 .rl-cell:disabled { opacity: .4; cursor: default; }
-.rl-cell.picked { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(246,179,82,.35) inset; }
-.rl-cell.deshi { border-color: rgba(224,184,90,.5); }
+.rl-cell.picked { border-color: var(--bond, var(--accent)); outline: 2px solid var(--bond, var(--accent)); outline-offset: -2px;
+  box-shadow: 0 0 0 2px var(--bond-edge, rgba(246,179,82,.35)) inset, 0 0 14px var(--bond-glow, transparent); }
 .rl-cell-face { width: 64px; height: 64px; }
-.rl-cell-name { font-size: 12px; text-align: center; line-height: 1.2; }
+.rl-cell-name { font-size: 12px; text-align: center; line-height: 1.2; font-weight: 700; }
+/* 出発時HP＝実値＋点棒ゲージ（短く赤い＝脆い／長く金＝堅い） */
+.rl-cell-hp { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.rl-cell-hp-line { display: flex; align-items: baseline; gap: 3px; font-variant-numeric: tabular-nums; }
+.rl-cell-hp-line b { font-size: 16px; font-weight: 800; color: #f3ece0; line-height: 1; letter-spacing: .01em; }
+.rl-cell-hp-unit { font-size: 9px; color: var(--muted); letter-spacing: .1em; }
+.rl-cell-hp-gauge { position: relative; width: 80%; height: 5px; border-radius: 3px; overflow: hidden;
+  background: linear-gradient(90deg, #b8503a 0%, #d99a4e 56%, #e8c45d 100%); }
+.rl-cell-hp-gauge > i { position: absolute; inset: 0 0 0 auto; width: calc((1 - var(--fill, .5)) * 100%); background: rgba(8,6,4,.78); }
+/* 間柄ラベル＝枠の灯と同色の点＋帯名（数値は出さない＝CLAUDE.md 絆表示方針） */
+.rl-cell-bond { font-size: 9.5px; font-weight: 700; letter-spacing: .03em; color: var(--bond, var(--muted));
+  display: inline-flex; align-items: center; gap: 4px; }
+.rl-cell-bond::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--bond, var(--muted)); box-shadow: 0 0 5px var(--bond, transparent); }
+/* 無二の相棒(band4)＝最高絆の特別。灯がゆっくり呼吸する（控えめ・reduced-motion で停止） */
+.rl-cell.tone-bond4::after { content: ""; position: absolute; inset: -1px; border-radius: 13px; pointer-events: none;
+  box-shadow: 0 0 12px rgba(242,166,189,.32); animation: rl-bond-breathe 3.4s ease-in-out infinite; }
+@keyframes rl-bond-breathe { 0%, 100% { opacity: .45; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .rl-cell.tone-bond4::after { animation: none; opacity: .7; } }
 .rl-cell.locked { filter: grayscale(.75); } /* 未解禁＝鍵・非アクティブ（:disabled の dim と併用） */
+.rl-cell.locked::after { display: none; }
 .rl-cell-lock { position: absolute; top: 4px; left: 4px; font-size: 15px; line-height: 1; filter: none; }
 .rl-cell-badge { position: absolute; top: 4px; right: 4px; font-size: 10px; padding: 1px 5px;
   background: #e0b85a; color: #2a1f08; border-radius: 6px; font-weight: 700; }
@@ -5321,14 +5360,16 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-hp-row.is-down { opacity: 0.5; }
 .rl-hp-row.is-down .rl-hp-val { color: var(--danger,#ff6b6b); font-weight: 700; }
 
-/* 楼光の館：編成セルの選択明示＋能力ホバー */
-.rl-cell { position: relative; }
-.rl-cell.picked { outline: 2px solid var(--accent,#e8c45d); outline-offset: -2px; box-shadow: 0 0 0 3px rgba(232,196,93,0.2); }
-.rl-cell-check { position: absolute; top: 4px; left: 4px; font-size: 10px; font-weight: 700; color: #1a1206; background: var(--accent,#e8c45d); border-radius: 5px; padding: 1px 6px; }
+/* 楼光の館：編成セルの選択チェック＋能力ホバー（picked 演出は上部 .rl-cell.picked に一本化済み） */
+.rl-cell-check { position: absolute; top: 4px; left: 4px; font-size: 10px; font-weight: 700; color: #1a1206; background: var(--bond, var(--accent,#e8c45d)); border-radius: 5px; padding: 1px 6px; }
 .rl-cell-pop { position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%) translateY(4px); width: 200px; padding: 8px 10px; background: #14110d; border: 1px solid rgba(232,196,93,0.5); border-radius: 9px; box-shadow: 0 6px 18px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s; z-index: 20; text-align: left; }
 .rl-cell:hover .rl-cell-pop { opacity: 1; transform: translateX(-50%) translateY(0); }
 .rl-cell-pop-name { font-size: 13px; font-weight: 700; color: var(--ink,#fff); margin-bottom: 4px; }
 .rl-cell-pop-role { font-size: 10px; font-weight: 400; color: #9aa3b2; margin-left: 6px; }
+.rl-cell-pop-stats { display: flex; flex-direction: column; gap: 2px; margin-bottom: 6px; }
+.rl-cell-pop-stats > span { font-size: 10.5px; color: #9aa3b2; }
+.rl-cell-pop-hp b { color: #f3ece0; font-weight: 800; font-variant-numeric: tabular-nums; margin-left: 4px; }
+.rl-cell-pop-bond b { color: var(--bond, #e8c45d); font-weight: 700; margin-left: 4px; }
 .rl-cell-pop-ab { font-size: 11px; color: #cdd3da; }
 .rl-cell-pop-ab b { color: var(--accent,#e8c45d); display: block; margin-bottom: 2px; }
 .rl-cell-pop-ab span { color: #aeb6c2; line-height: 1.4; }

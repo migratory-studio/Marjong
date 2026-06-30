@@ -14,7 +14,8 @@ import { clusterProgress, clusterPickPreview, HP_SCALE } from "../roguelite/card
 import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { biomeEffectChips, biomeOf } from "../data/rogueliteBiomeMaster.js";
-import { tableSizeLabel, isSoloTable, ABILITY_SOURCE_MAX, soloPenaltyHint } from "../roguelite/run.js";
+import { tableSizeLabel, isSoloTable, ABILITY_SOURCE_MAX, soloPenaltyHint, allyScaledHp } from "../roguelite/run.js";
+import { bondBandLabel } from "../progression/progressionService.js";
 import { bgDef } from "../data/backgroundMaster.js";
 import { portraitStyleAttr } from "../data/imagePos.js";
 
@@ -31,15 +32,31 @@ export function applyChapterColorSet(el, cs) {
   if (cs.tc) el.style.setProperty("--tc", cs.tc);
 }
 
-// 編成カード用：能力名と「丈夫さ」目安（持ち点＝HPの厚み）。
+// 編成カード用：能力名と、楼光の館で実際に出発するHPの「実値」。
+// 「堅/脆」のような曖昧語ではなく、点棒感のある具体的な数字で見せる（誰が削れやすいかが一目で分かる）。
 const ROLE_LABEL = { attacker: "アタッカー", blocker: "ブロッカー", gambler: "ギャンブラー", support: "サポート" };
-function charAbilityName(c) {
-  const id = c?.abilities?.[0]?.abilityId;
-  return id ? (abilityDef(id)?.name || "") : "";
+// 点棒→館HP の写像（run.js の allyScaledHp と同一式）。編成画面と本番の初期HPを一致させる単一情報源。
+function charRogueliteHp(c) {
+  return allyScaledHp(c?.avatarHpMax ?? c?.stats?.startingPoints ?? 25000);
 }
-function charToughness(c) {
-  const hp = c?.stats?.startingPoints || 0;
-  return hp >= 22000 ? "堅" : hp >= 15000 ? "並" : "脆";
+const HP_GAUGE_REF = allyScaledHp(25000); // 満点棒(25000)＝ゲージ満タンの基準
+const HP_GAUGE_FLOOR = allyScaledHp(0);   // HP下限（allyScaledHp の床）＝ゲージ最小
+// HPの実値を 0..1 のゲージ比へ（下限でも細い灯が残るよう .05 をフロアに）。
+function hpGaugeFill(hp) {
+  const t = (hp - HP_GAUGE_FLOOR) / Math.max(1, HP_GAUGE_REF - HP_GAUGE_FLOOR);
+  return Math.max(0.05, Math.min(1, t));
+}
+// 整数HPを 11,200 のように三桁区切りで（点棒表記に寄せる）。
+function fmtHp(hp) { return Math.round(hp).toLocaleString("en-US"); }
+// 絆Lv → 帯(0..4)。枠の「灯の色」が関係の深さで変わる＝数値を見せずに蓄積を可視化（CLAUDE.md ピラー1）。
+// しきい値は bondBandLabel と完全一致させること（間柄ラベルと枠色がズレないように）。
+function bondBandIndex(level = 1) {
+  const lv = level ?? 1;
+  if (lv >= 8) return 4; // 無二の相棒
+  if (lv >= 6) return 3; // 相棒
+  if (lv >= 4) return 2; // 気を許す仲
+  if (lv >= 2) return 1; // 打ち解け始め
+  return 0;              // 出会ったばかり
 }
 
 function faceNode(charImages, c, cls = "rl-face") {
@@ -180,7 +197,8 @@ export function showRogueliteChapterSelect(container, opts = {}) {
 }
 
 export function showRoguelite(container, opts = {}) {
-  const { deshiRoster = [], characters = [], unlockedIds = null, charImages, bestFloor = 0, carry = [], onBack, onStart, backLabel = "← 対戦ホームへ" } = opts;
+  const { deshiRoster = [], characters = [], unlockedIds = null, charImages, bestFloor = 0, carry = [], companionBonds = {}, onBack, onStart, backLabel = "← 対戦ホームへ" } = opts;
+  const bondLevelOf = (c) => companionBonds?.[c?.id]?.level ?? 1;
   if (!container) return;
   // 未解禁キャラ（characterMaster で locked:true ＆ 宝珠ショップ未購入）。鍵・非アクティブで出す。
   const isLocked = (c) => !!(c && c.locked) && !(unlockedIds && unlockedIds.has(c.id));
@@ -213,7 +231,7 @@ export function showRoguelite(container, opts = {}) {
           </div>` : ""}
         </div>
         <div class="rl-roster">
-          <div class="rl-roster-head">連れて行く打ち手を選ぶ</div>
+          <div class="rl-roster-head">連れて行く打ち手を選ぶ<span class="rl-roster-legend"><i class="rl-legend-lamp"></i>枠の灯＝絆の深さ　・　数字＝出発時HP</span></div>
           <div class="rl-roster-grid" id="rl-roster-grid"></div>
         </div>
       </div>
@@ -233,13 +251,20 @@ export function showRoguelite(container, opts = {}) {
     for (let i = 0; i < MAX_PARTY; i++) {
       const c = party[i];
       const slot = document.createElement("div");
-      slot.className = "rl-slot" + (c ? " filled" : "") + (i === 0 ? " you" : "");
+      slot.className = "rl-slot" + (c ? " filled" : "") + (i === 0 ? " you" : "") + (c ? ` tone-bond${bondBandIndex(bondLevelOf(c))}` : "");
       if (c) {
         slot.appendChild(faceNode(charImages, c, "rl-slot-face"));
+        const meta = document.createElement("div");
+        meta.className = "rl-slot-meta";
         const name = document.createElement("div");
         name.className = "rl-slot-name";
         name.textContent = c.name || "?";
-        slot.appendChild(name);
+        meta.appendChild(name);
+        const hp = document.createElement("div");
+        hp.className = "rl-slot-hp";
+        hp.innerHTML = `<b>${fmtHp(charRogueliteHp(c))}</b> HP<span class="rl-slot-bond">${bondBandLabel(bondLevelOf(c))}</span>`;
+        meta.appendChild(hp);
+        slot.appendChild(meta);
         const tag = document.createElement("div");
         tag.className = "rl-slot-tag";
         tag.textContent = i === 0 ? "あなた" : i === MAX_PARTY - 1 ? "控え" : "相棒";
@@ -258,31 +283,41 @@ export function showRoguelite(container, opts = {}) {
     for (const c of pool) {
       const locked = isLocked(c);
       const inParty = party.some((p) => p.id === c.id);
+      const bondLv = bondLevelOf(c);
+      const band = locked ? 0 : bondBandIndex(bondLv); // 未解禁は絆を結べない＝灯さない（tone-bond0固定）
+      const hp = charRogueliteHp(c);
       const cell = document.createElement("button");
       cell.type = "button";
-      cell.className = "rl-cell" + (inParty ? " picked" : "") + (c.isCompletedAvatar ? " deshi" : "") + (locked ? " locked" : "");
+      cell.className = "rl-cell" + ` tone-bond${band}` + (inParty ? " picked" : "") + (c.isCompletedAvatar ? " deshi" : "") + (locked ? " locked" : "");
       cell.disabled = locked || (!inParty && party.length >= MAX_PARTY);
       cell.appendChild(faceNode(charImages, c, "rl-cell-face"));
       const nm = document.createElement("div");
       nm.className = "rl-cell-name";
       nm.textContent = c.name || "?";
       cell.appendChild(nm);
-      // 能力名＋丈夫さ目安（誰を選ぶかの判断材料）。
-      const info = document.createElement("div");
-      info.className = "rl-cell-info";
-      const ab = charAbilityName(c);
+      // 出発時HPの「実値」＋点棒ゲージ（堅/脆の曖昧語を捨て、削れやすさを数字と長さで見せる）。
       const role = ROLE_LABEL[c.role] || "";
-      const tough = charToughness(c);
-      info.textContent = `${ab || role || "—"}・HP${tough}`;
-      cell.appendChild(info);
+      const hpEl = document.createElement("div");
+      hpEl.className = "rl-cell-hp";
+      hpEl.style.setProperty("--fill", String(hpGaugeFill(hp)));
+      hpEl.innerHTML = `<span class="rl-cell-hp-line"><b>${fmtHp(hp)}</b><span class="rl-cell-hp-unit">HP</span></span><span class="rl-cell-hp-gauge"><i></i></span>`;
+      cell.appendChild(hpEl);
+      // 間柄ラベル（枠の灯の色と同色）。絆が深いほど色が変わる＝蓄積の可視化。未解禁は出さない。
+      if (!locked) {
+        const bond = document.createElement("div");
+        bond.className = "rl-cell-bond";
+        bond.textContent = bondBandLabel(bondLv);
+        cell.appendChild(bond);
+      }
       // 能力の「効果」までホバーで見せる（一見さんが手探りで選ばないように）。
       const abId = c?.abilities?.[0]?.abilityId;
       const def = abId ? abilityDef(abId) : null;
-      const toughLabel = tough === "堅" ? "堅い（高HP）" : tough === "並" ? "並" : "脆い（低HP）";
-      cell.title = `${c.name}｜${role}${def ? `\n能力「${def.name}」：${def.desc}` : ""}\nHPの厚み：${toughLabel}`;
+      cell.title = `${c.name}｜${role || "打ち手"}\n出発時HP：${fmtHp(hp)}\n間柄：${bondBandLabel(bondLv)}${def ? `\n能力「${def.name}」：${def.desc}` : ""}`;
       const pop = document.createElement("div");
       pop.className = "rl-cell-pop";
-      pop.innerHTML = `<div class="rl-cell-pop-name">${c.name}<span class="rl-cell-pop-role">${role}・HP${toughLabel}</span></div>${def ? `<div class="rl-cell-pop-ab"><b>${def.name}</b>${def.desc ? `<span>${def.desc}</span>` : ""}</div>` : ""}`;
+      pop.innerHTML = `<div class="rl-cell-pop-name">${c.name}<span class="rl-cell-pop-role">${role || "打ち手"}</span></div>`
+        + `<div class="rl-cell-pop-stats"><span class="rl-cell-pop-hp">出発時HP <b>${fmtHp(hp)}</b></span><span class="rl-cell-pop-bond">間柄 <b>${bondBandLabel(bondLv)}</b></span></div>`
+        + `${def ? `<div class="rl-cell-pop-ab"><b>${def.name}</b>${def.desc ? `<span>${def.desc}</span>` : ""}</div>` : ""}`;
       cell.appendChild(pop);
       if (c.isCompletedAvatar) {
         const b = document.createElement("span");
