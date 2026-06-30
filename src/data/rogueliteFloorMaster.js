@@ -13,24 +13,26 @@
 //   shop / gamble / shrine … 第2弾（プレースホルダ。weight=0＝当面プールに出さない）
 //
 // enemy（battle のみ）: 'mob'（通常）/ 'named'（強敵＝名前＋能力のモブ）/ 'boss'（ボス＝キャラ）
-// baseHands … 1戦の基本局数（maxHands）。pursueMax … 追撃で足せる最大局数。
+// baseHands … 1戦で打てる最大局数（maxHands の上限）。1局目は必ず打ち、以降は「局終わり」に
+//             追撃モーダルで続行可否を確認する＝同じ卓・HPを継いで東2局/東3局…まで戦える。
+//             通常=東2局まで(2) / 強敵・ボス=東3局まで(3)。pursueMax は廃止（0固定・互換のため残置）。
 // weight … 進路抽選の重み（0＝プールから除外。boss は強制配置なので0）。
 
 export const ROGUELITE_FLOOR_MASTER = [
   {
     id: "normal", name: "通常戦闘", kind: "battle", enemy: "mob",
-    baseHands: 1, pursueMax: 1, weight: 50,
-    blurb: "名もなき打ち手。1局で決着、追撃も可。",
+    baseHands: 2, pursueMax: 0, weight: 50,
+    blurb: "名もなき打ち手。1局で決着、局終わりに追撃で東2局まで。",
   },
   {
     id: "elite", name: "強敵戦闘", kind: "battle", enemy: "named",
-    baseHands: 2, pursueMax: 2, weight: 22,
-    blurb: "名のある手練れ。2局戦・手強いが実入りも大きい。",
+    baseHands: 3, pursueMax: 0, weight: 22,
+    blurb: "名のある手練れ。追撃で東3局まで・手強いが実入りも大きい。",
   },
   {
     id: "boss", name: "ボス", kind: "battle", enemy: "boss",
-    baseHands: 2, pursueMax: 2, weight: 0, // 10階ごとに強制配置（抽選プール外）
-    blurb: "館の主。2局戦・避けられぬ大一番。",
+    baseHands: 3, pursueMax: 0, weight: 0, // 10階ごとに強制配置（抽選プール外）
+    blurb: "館の主。追撃で東3局まで・避けられぬ大一番。",
   },
   {
     id: "rest", name: "休息", kind: "rest",
@@ -54,7 +56,7 @@ export const ROGUELITE_FLOOR_MASTER = [
   },
   // ---- 第2弾（通貨・供物） ----
   { id: "shop", name: "ショップ", kind: "shop", weight: 8, blurb: "光貨で強化を買い求める。回復やバフを品定め。" },
-  { id: "gamble", name: "賭場", kind: "gamble", enemy: "named", baseHands: 1, weight: 6, blurb: "一局の大勝負。勝てば高レアと光貨が倍。負ければ手痛い。" },
+  { id: "gamble", name: "賭場", kind: "gamble", enemy: "named", baseHands: 2, pursueMax: 0, weight: 6, blurb: "大勝負。被ダメは防御を貫通して2倍。勝てば高レアと光貨が倍。" },
   { id: "shrine", name: "祠", kind: "shrine", weight: 5, blurb: "供物を捧げ、力を請う。痛みと引き換えの強大な恩恵。" },
   { id: "forge", name: "鍛冶屋", kind: "forge", weight: 7, blurb: "光貨を払い、パーティのスキルレベルを鍛える。能力そのものが強くなる。" },
   { id: "recruit", name: "流派の門", kind: "recruit", weight: 5, blurb: "光貨を多く払い、新たな打ち手を仲間に。候補3人から1人を迎え、1人と入れ替える。" },

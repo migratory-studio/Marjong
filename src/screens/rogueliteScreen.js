@@ -555,7 +555,7 @@ export function showRogueliteSpeak(container, { char, charImages, line } = {}) {
 
 // ---- 進路選択（次フロアを2〜3択／ボス階は強制）＋撤退 ----
 export function showRogueliteRoute(container, opts = {}) {
-  const { floor = 1, choices = [], boss = false, bossTableSize = 4, coins = 0, skillLevel = 0, held = [], run = null, charImages = null, onPick, onRetreat, onSwap, onItems } = opts;
+  const { floor = 1, choices = [], boss = false, bossTableSize = 4, coins = 0, skillLevel = 0, held = [], run = null, charImages = null, forgeInfo = null, onPick, onRetreat, onSwap, onItems } = opts;
   if (!container) return;
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-route rl-hub" + (boss ? " is-boss" : "");
@@ -570,17 +570,25 @@ export function showRogueliteRoute(container, opts = {}) {
     const solo = isSoloTable(sz);
     return `<span class="rl-route-size ${solo ? "solo" : "pair"}">${tableSizeLabel(sz)}<small>${solo ? "一人で挑む" : "相棒と2対2"}</small></span>`;
   };
+  // 鍛冶屋マス：次Lv（or 限界突破）までに必要な光貨を常時表示。所持不足ならグレーアウト＝選べない。
+  const forgeCostChip = (kind) => {
+    if (kind !== "forge" || !forgeInfo) return "";
+    const label = forgeInfo.maxed ? `限界突破　光貨 ${forgeInfo.cost}` : `Lv${forgeInfo.lv}→${forgeInfo.lv + 1}　光貨 ${forgeInfo.cost}`;
+    return `<span class="rl-route-cost${forgeInfo.afford ? "" : " poor"}">${label}${forgeInfo.afford ? "" : "（光貨不足）"}</span>`;
+  };
   const cardsHtml = cardEntries.map((f, i) => {
     const m = FLOOR_KIND_META[f.kind] || FLOOR_KIND_META.battle;
     const solo = isSoloTable(f.tableSize);
-    return `<button type="button" class="rl-route-card${f._boss ? " boss" : ""}" data-i="${i}" style="--mark:${m.color}">
+    const forgeLocked = f.kind === "forge" && forgeInfo && !forgeInfo.afford; // 光貨不足の鍛冶屋は選べない
+    return `<button type="button" class="rl-route-card${f._boss ? " boss" : ""}${forgeLocked ? " is-locked" : ""}" data-i="${i}" style="--mark:${m.color}"${forgeLocked ? " disabled" : ""}>
       <span class="rl-route-spark"></span>
       <span class="rl-route-mark">${m.mark}</span>
       <span class="rl-route-name">${f.name}</span>
       ${sizeChip(f.tableSize)}
+      ${forgeCostChip(f.kind)}
       <span class="rl-route-blurb">${f.blurb}</span>
       ${solo ? `<span class="rl-route-solonote">相棒なし・着順ペナルティ（${soloPenaltyHint(f.tableSize)}）</span>` : ""}
-      <span class="rl-route-go">この道へ ›</span>
+      <span class="rl-route-go">${forgeLocked ? "光貨が足りない" : "この道へ ›"}</span>
     </button>`;
   }).join("");
   const partyDock = run ? `
@@ -870,28 +878,30 @@ export function showRogueliteRecruit(container, opts = {}) {
 }
 
 // ---- 追撃（push-your-luck）：先に行く / 追撃（残り回数） ----
+// 局終わりの追撃モーダル（インゲーム）。同じ卓・HPを引き継いで次局（東2局/東3局…）を戦うか確認する。
+// onPursue=次局へ／onStop=この対局を締める（戦果を確定）。
 export function showRoguelitePursue(container, opts = {}) {
-  const { floor = 1, remaining = 1, run, charImages = null, leadLine, leadChar, onPursue, onGo } = opts;
-  if (!container) return;
+  const { floor = 1, nextLabel = "次局", run, charImages = null, leadLine, leadChar, onPursue, onStop } = opts;
+  if (!container) { onStop?.(); return; }
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-continue";
   const speakHtml = (leadLine && leadChar)
     ? `<div class="rl-modal-speak" style="--c:${leadChar.color || "var(--accent)"}"><b>${leadChar.name}</b>「${leadLine}」</div>` : "";
   ov.innerHTML = `
     <div class="rl-modal">
-      <div class="rl-modal-head">第 ${floor} 階・追撃のチャンス（残り ${remaining}）${coinBadge(run?.coins || 0)}</div>
+      <div class="rl-modal-head">第 ${floor} 階・局終わり — このまま追撃しますか？${coinBadge(run?.coins || 0)}</div>
       ${speakHtml}
       <div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
-      <p class="rl-continue-note">追撃すればもう1局戦い、<strong>さらなる戦利品（高レア）</strong>を狙える。だが全滅すれば<strong>すべて没収</strong>。</p>
+      <p class="rl-continue-note">この卓・HPをそのまま引き継いで <strong>${nextLabel}</strong> を戦う。深追いするほど<strong>撃破・戦利品（高レア）</strong>を狙えるが、削られれば<strong>没収</strong>に近づく。</p>
       <div class="rl-continue-btns">
-        <button type="button" class="rl-start" id="rl-go">先へ進む</button>
-        <button type="button" class="rl-retreat rl-pursue-btn" id="rl-pursue">追撃する</button>
+        <button type="button" class="rl-start" id="rl-go">ここで充分<small>戦果を確定して進む</small></button>
+        <button type="button" class="rl-retreat rl-pursue-btn" id="rl-pursue">追撃する<small>${nextLabel}へ</small></button>
       </div>
     </div>`;
   container.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("is-open"));
   ov.querySelector("#rl-pursue")?.addEventListener("click", () => { ov.remove(); onPursue?.(); });
-  ov.querySelector("#rl-go")?.addEventListener("click", () => { ov.remove(); onGo?.(); });
+  ov.querySelector("#rl-go")?.addEventListener("click", () => { ov.remove(); onStop?.(); });
 }
 
 // ---- 層（バイオーム）入場演出 ----

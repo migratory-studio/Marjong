@@ -143,10 +143,11 @@ function floorEnemyLv(floor = 1, tuning = null) {
   return Math.max(1, Math.min(10, Math.round(1 + (floor - 1) * tv(tuning, "enemyLvSlope", 0.6))));
 }
 
-// 1戦の「定められた局数」はフロア種別の baseHands が真実（マスタ駆動）。
-// この局数を耐え切るか、どちらかがトビで決着＝サクサク。未指定は通常戦闘＝1局。
+// 1戦で打てる「最大局数（maxHands 上限）」はフロア種別の baseHands が真実（マスタ駆動）。
+// 1局目は必ず打ち、以降の局は「局終わり」の追撃モーダルで続行可否を確認する（同卓・HP継続）。
+// この上限に達するか、どちらかがトビで決着＝サクサク。未指定は1局。
 export function handsForType(floorType, over = null) {
-  return (over && over.baseHands) || floorType?.baseHands || 1; // 章ごとに局数を上書き可
+  return (over && over.baseHands) || floorType?.baseHands || 1; // 章ごとに局数上限を上書き可
 }
 
 // 章ごとの経済オーバーライド（光貨収入/施設コスト）。未指定キーはグローバル既定にフォールバック。
@@ -565,7 +566,7 @@ export function swapPartyMember(run, char, releaseIdx) {
 // 戻り値: 席ごとのHP差分（負数・整数）。呼び出し側が hp[i]=max(0,hp[i]+d) で反映する。
 // 味方の失点には「深度被ダメ倍率（run.floor）」も乗る＝深いほど痛い（エンドレスの難度ランプ）。
 // 計算文脈（mod・深度倍率・上限）をまとめる。deltas/breakdown が共有＝二重実装を避ける。
-function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}, deltas = []) {
+function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}, deltas = [], gambleFloor = false) {
   const m = run.mods;
   const im = itemMods(run); // 常設道具（光貨/回復/レア度/深度緩和）の集計
   const bm = biomeMods(run); // 層モディファイア（被ダメ/与ダメ）。帯ごとに変わる。
@@ -585,11 +586,14 @@ function damageContext(run, roles, winnerSeat, hpMax, battleMods = {}, deltas = 
   const guardCapBase = clusterTakeCapFrac(run);
   const guardCap = guardCapBase == null ? null
     : Math.min(1, guardCapBase + Math.max(0, (run.floor || 1) - tv(run.tuning, "lethalCapFadeStart", RL_TUNE.lethalCapFadeStart)) * tv(run.tuning, "lethalCapFadeSlope", RL_TUNE.lethalCapFadeSlope));
-  const cap = guardCap != null ? Math.min(baseCap, guardCap) : baseCap;
+  // 博打マス：被ダメは「防御流派効果を貫通」して倍。守備cap(guardCap)と被ダメ軽減(takeMul)を無視し、
+  // 翻数×深度の素ダメを2倍にする（gambleMul）。基準の一撃死上限(baseCap)だけは残し満タン即死は防ぐ。
+  const cap = gambleFloor ? baseCap : (guardCap != null ? Math.min(baseCap, guardCap) : baseCap);
   return {
     winnerIsAlly: winnerSeat != null && roles[winnerSeat] === "ally",
     dealMul: Math.min(RL_TUNE.dealCap, m.dealMul * (battleMods.dealMul || 1)),   // 鼓舞=次戦攻撃↑
-    takeMul: Math.max(RL_TUNE.takeFloor, m.takeMul * (battleMods.takeMul || 1)), // 鉄壁=次戦被ダメ↓
+    takeMul: gambleFloor ? 1 : Math.max(RL_TUNE.takeFloor, m.takeMul * (battleMods.takeMul || 1)), // 博打=防御貫通(軽減なし) / 通常=鉄壁等で被ダメ↓
+    gambleMul: gambleFloor ? 2 : 1, // 博打マスの被ダメ倍率（敵和了で味方が払う失点に乗る）
     fdm,
     deal: dealDepthMul(run.floor || 1, run.tuning) * (bm.dmgDealMul || 1), // 層の与ダメ係数（黄昏=攻め映え）
     friendlyMul: RL_TUNE.friendlyMul,
@@ -625,6 +629,8 @@ function seatDamage(d, role, i, ctx, guardRef) {
     // 敵の和了で味方が払う失点：翻数(点数帯)係数 → 深度倍率の順で乗る。手の重さが主役。
     scaled *= ctx.tierMul; if (Math.abs(ctx.tierMul - 1) > 0.001) steps.push({ k: `翻数 ×${ctx.tierMul.toFixed(2)}`, v: Math.round(scaled) });
     scaled *= ctx.fdm; if (ctx.fdm > 1.001) steps.push({ k: `深度 ×${ctx.fdm.toFixed(2)}`, v: Math.round(scaled) });
+    // 博打マス：防御を貫通した素ダメを倍化（最後に乗せる＝守備cap/軽減を無視した上での2倍）。
+    if (ctx.gambleMul > 1) { scaled *= ctx.gambleMul; steps.push({ k: `賭け ×${ctx.gambleMul}`, v: Math.round(scaled) }); }
   }
   let val = Math.round(scaled);
   let capped = false;
@@ -639,8 +645,8 @@ function seatDamage(d, role, i, ctx, guardRef) {
 // 対局の素点差分(deltas)を独自HPスケールへ写す（与ダメ倍率・被ダメ軽減・深度・一撃死上限・お守り込み）。
 //   hpMax … 席ごとの最大HP（任意）。渡すと1ハンドの被ダメに最大HP比の上限を掛ける（満タン即死を防ぐ）。
 //   battleMods … 「次の1戦だけ」効果（道具）。{ dealMul, takeMul } を一時的に上乗せする。
-export function rogueliteDamageDeltas(run, { deltas, roles, winnerSeat, hpMax, battleMods }) {
-  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods, deltas);
+export function rogueliteDamageDeltas(run, { deltas, roles, winnerSeat, hpMax, battleMods, gambleFloor }) {
+  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods, deltas, gambleFloor);
   const guardRef = { n: run.mods.friendlyGuard || 0 };
   const out = deltas.map((d, i) => seatDamage(d, roles[i], i, ctx, guardRef).value);
   if (guardRef.n !== (run.mods.friendlyGuard || 0)) run.mods.friendlyGuard = guardRef.n; // 消費を反映
@@ -648,8 +654,8 @@ export function rogueliteDamageDeltas(run, { deltas, roles, winnerSeat, hpMax, b
 }
 
 // ダメージの内訳（演出用）。各席の計算過程 steps を返す。お守りは消費しない（表示のみ・コピーで判定）。
-export function explainRogueliteDamage(run, { deltas, roles, winnerSeat, hpMax, battleMods }) {
-  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods, deltas);
+export function explainRogueliteDamage(run, { deltas, roles, winnerSeat, hpMax, battleMods, gambleFloor }) {
+  const ctx = damageContext(run, roles, winnerSeat, hpMax, battleMods, deltas, gambleFloor);
   const guardRef = { n: run.mods.friendlyGuard || 0 };
   return deltas.map((d, i) => ({ seat: i, role: roles[i], ...seatDamage(d, roles[i], i, ctx, guardRef) }));
 }

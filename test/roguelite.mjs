@@ -71,9 +71,10 @@ eq(allyScaledHp(25000), 1000, "25000点→1000HP");
 eq(floorEnemyHp(1), 700, "階層1の敵HP=700（硬すぎ緩和）");
 ok(floorEnemyHp(5) > floorEnemyHp(1), "深い階ほど敵HP増");
 ok(floorEnemyHp(99) === floorEnemyHp(30), "30階で頭打ち（青天井回避）");
-eq(handsForType(floorTypeById("normal")), 1, "通常戦闘=1局");
-eq(handsForType(floorTypeById("elite")), 2, "強敵戦闘=2局");
-eq(handsForType(floorTypeById("boss")), 2, "ボス=2局");
+eq(handsForType(floorTypeById("normal")), 2, "通常戦闘=東2局まで(追撃込み上限2)");
+eq(handsForType(floorTypeById("elite")), 3, "強敵戦闘=東3局まで(追撃込み上限3)");
+eq(handsForType(floorTypeById("boss")), 3, "ボス=東3局まで(追撃込み上限3)");
+eq(handsForType(floorTypeById("gamble")), 2, "賭場=東2局まで(通常と同フロー)");
 ok(isBossFloor(10) && !isBossFloor(3), "ボスは10階ごと");
 
 // ---- フロア種別マスタ ----
@@ -368,6 +369,22 @@ eq(dd[2], Math.round(-2000 * DAMAGE_SCALE * 0.9 * 0.3), "同士討ちは被ダ�
 // 敵席1が 3000 でロン（勝者得点を席1に入れる＝翻数判定の正典）。3000=安手帯→係数で軽くなる。
 dd = rogueliteDamageDeltas(run, { deltas: [-3000, 3000, 0, 0], roles, winnerSeat: 1 });
 eq(dd[0], Math.round(-3000 * DAMAGE_SCALE * 0.9 * hanTierMul(3000)), "敵和了時は味方失点に軽減＋翻数係数（安手は軽い・floor1）");
+
+// ---------- 博打マス（gambleFloor）＝防御流派を貫通して被ダメ2倍 ----------
+{
+  const base = newRun(party, "gmb");
+  const enemyHit = [-3000, 3000, 0, 0]; // 敵席1がロン・味方席0が払う
+  const normal = rogueliteDamageDeltas(base, { deltas: enemyHit.slice(), roles, winnerSeat: 1 })[0];
+  const gam = rogueliteDamageDeltas(base, { deltas: enemyHit.slice(), roles, winnerSeat: 1, gambleFloor: true })[0];
+  ok(Math.abs(gam - normal * 2) <= 1, "博打マスは敵和了の味方失点をほぼ2倍にする（丸め誤差±1）");
+  // 守備流派（要塞＝takeMul↓）を積んでも、博打マスでは軽減を貫通して効かない。
+  const fort = newRun(party, "gmb2");
+  applyCard(fort, cardById("take-down-common")); // takeMul ×0.9
+  const fortNormal = rogueliteDamageDeltas(fort, { deltas: enemyHit.slice(), roles, winnerSeat: 1 })[0];
+  const fortGam = rogueliteDamageDeltas(fort, { deltas: enemyHit.slice(), roles, winnerSeat: 1, gambleFloor: true })[0];
+  ok(Math.abs(fortNormal - normal * 0.9) < 1.5, "通常マスは守備で被ダメ軽減");
+  eq(fortGam, gam, "博打マスでは守備軽減を貫通＝要塞ありでも被ダメは無防備時の2倍と一致");
+}
 
 // ---------- 一撃死上限（hpMax を渡すと最大HP比で被ダメをクランプ） ----------
 {
