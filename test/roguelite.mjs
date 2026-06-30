@@ -67,8 +67,8 @@ ok(isGrantCard(cardById("grant-lucky-draw")), "grant 判定");
 ok(!isGrantCard(cardById("heal-small")), "非grant 判定");
 
 // ---------- HP スケール ----------
-eq(allyScaledHp(25000), 1000 * HP_SCALE, "25000点→100000HP（HP桁上げ後）");
-eq(floorEnemyHp(1), 700 * HP_SCALE, "階層1の敵HP=70000（旧700×桁上げ）");
+eq(allyScaledHp(25000), 1000 * HP_SCALE, "25000点→10000HP（HP桁上げ後）");
+eq(floorEnemyHp(1), 700 * HP_SCALE, "階層1の敵HP=7000（旧700×桁上げ）");
 ok(floorEnemyHp(5) > floorEnemyHp(1), "深い階ほど敵HP増");
 ok(floorEnemyHp(99) === floorEnemyHp(30), "30階で頭打ち（青天井回避）");
 eq(handsForType(floorTypeById("normal")), 2, "通常戦闘=東2局まで(追撃込み上限2)");
@@ -158,7 +158,7 @@ const party = [
 let run = newRun(party, "seed-1");
 eq(run.floor, 1, "初期階層1");
 eq(run.party.length, 2, "パーティ2人");
-eq(run.party[0].hp, 1000 * HP_SCALE, "あなたHP=100000");
+eq(run.party[0].hp, 1000 * HP_SCALE, "あなたHP=10000");
 eq(run.party[1].hpMax, allyScaledHp(12000), "相棒HPMax正規化");
 eq(run.mods.dealMul, 1, "初期 dealMul=1");
 
@@ -298,7 +298,7 @@ eq(run.party[0].hp, 1000 * HP_SCALE, "満タンからの回復は上限据置");
 // ダメージを受けてから回復
 run.party[0].hp = 400 * HP_SCALE;
 applyCard(run, cardById("heal-small")); // +25%最大
-eq(run.party[0].hp, 650 * HP_SCALE, "25%回復=+25000");
+eq(run.party[0].hp, 650 * HP_SCALE, "25%回復=+2500");
 
 run = newRun(party, "s");
 applyCard(run, cardById("maxhp-up-common")); // ×1.15
