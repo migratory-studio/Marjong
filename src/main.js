@@ -2283,7 +2283,7 @@ function enterFloor(run, floorType) {
         saveRogueliteRun(run);
         if (floorType?.enemy === "boss") showBossIntroThenBattle(run, floorType); else launchRogueliteBattle(run, floorType);
       };
-      showRogueliteDeploy(host, { run, floorType, charImages, onConfirm: launch, onBack: () => renderRoute(run) });
+      showRogueliteDeploy(host, { run, floorType, charImages, audio, onConfirm: launch, onBack: () => renderRoute(run) });
       break;
     }
     case "rest": {
@@ -2916,7 +2916,8 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false, clear
     try { await profileRepo.saveProfile(next); } catch { /* 保存失敗は無視 */ }
   }
   rogueliteState = null;
-  const slots = carrySlotsFor(best);
+  // 持ち帰り枠（ディレクション指定）：全滅＝0枠（何も持ち帰れない）／道中帰還（撤退）＝1枠／踏破＝2枠。
+  const slots = wiped ? 0 : retreated ? 1 : 2;
   // 獲得バフ（ユニーク）を引き継ぎ候補に。
   const acquired = [...new Set(run.cards)].map((id) => cardById(id)).filter(Boolean);
   // 双方向＝プレイヤーが返す2択（提案B §3.2-5）。「また登る/今は休む」を選ぶと相棒が返し、その手をキャラが覚える。

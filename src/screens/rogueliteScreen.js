@@ -62,6 +62,39 @@ function faceNode(charImages, c, cls = "rl-face") {
   return d;
 }
 
+// 立ち絵（対局開始と同じ portrait）をHTML文字列で返す。出陣編成の縦カラム用。実画像が無ければ頭文字。
+function portraitHtml(charImages, c, cls = "rl-deploy-col-art") {
+  const u = charImages?.url?.(c, "portrait") || charImages?.url?.(c, "icon") || "";
+  if (u && !c?.isMob) {
+    const isPortrait = u === charImages?.url?.(c, "portrait");
+    const ps = isPortrait ? ` style="${portraitStyleAttr(c, { zoom: false, translate: false })}"` : "";
+    return `<img class="${cls}" src="${u}" alt=""${ps}>`;
+  }
+  return `<div class="${cls} rl-face-fb" style="--c:${c?.color || "#888"}">${[...(c?.name || "?")][0] || "?"}</div>`;
+}
+
+// 能力の中身を小モーダルで表示（出陣編成で能力チップをクリック）。abilityMaster の定義をそのまま読む。
+function showAbilityModal(host, abilityId) {
+  const d = abilityDef(abilityId);
+  if (!host || !d) return;
+  const kind = d.activation === "manual" ? "任意発動" : "常時発動";
+  const scope = d.activation === "manual" && Number.isFinite(d.maxCharges)
+    ? (d.chargeScope === "game" ? `1ゲーム${d.maxCharges}回` : `1局${d.maxCharges}回`) : "";
+  const ov = document.createElement("div");
+  ov.className = "rl-overlay rl-abil-modal";
+  ov.innerHTML = `
+    <div class="rl-modal rl-abil-card">
+      <div class="rl-abil-h">${d.name}<span class="rl-abil-kind">${kind}${scope ? ` ・ ${scope}` : ""}</span></div>
+      <p class="rl-abil-desc">${d.desc || d.blurb || ""}</p>
+      <button type="button" class="rl-start" id="rl-abil-close">閉じる</button>
+    </div>`;
+  host.appendChild(ov);
+  requestAnimationFrame(() => ov.classList.add("is-open"));
+  const close = () => ov.remove();
+  ov.querySelector("#rl-abil-close")?.addEventListener("click", close);
+  ov.addEventListener("click", (e) => { if (e.target === ov) close(); });
+}
+
 // ---- パーティ編成 ----
 // ---- 大章（記憶）選択ハブ（提案B §3.1 ①／「記憶の塔」縦選択）。どの記憶を登るかを選ぶ ----
 // 塔＝記憶を辿る縦軸そのもの：層を下(第一)から上へ積み、解禁された記憶は灯り、未解禁は封じられて翳る。
@@ -716,8 +749,42 @@ export function showRogueliteSwap(container, opts = {}) {
 // 進路で戦闘(通常/強敵/ボス)を選んで押した直後に1枚挟む確認画面。「卓に出す二人」を決め、
 // 各自のHP・携えるもの(バフ/必殺技/道具/流派)を一望して「出陣する」で対局へ。戻れば進路へ。
 // 着卓の入替は showRogueliteSwap と同じ lineup ロジック（上2人＝着卓・先頭=操作／▲▼で並べ替え・run.lineupへ保存）。
+// 編成画面に入った瞬間の「ドドン！」幕間。第N階・〇〇戦／卓形式／煽り文句を順に滲ませ、
+// 一拍おいて溶けて消える（タップで即スキップ）。演出だけで状態は触らない。
+function playDeployIntro(container, { floor, battleTitle, modeName, cry, tone, colorSet, sound } = {}) {
+  if (!container) return;
+  const ov = document.createElement("div");
+  ov.className = `rl-vs-intro tone-${tone || "normal"}`;
+  applyChapterColorSet(ov, colorSet);
+  ov.innerHTML = `
+    <div class="rl-vs-inner">
+      <div class="rl-vs-floor">楼光の館 ・ 第 ${floor} 階</div>
+      <div class="rl-vs-line rl-vs-title"><span>${battleTitle}</span></div>
+      <div class="rl-vs-line rl-vs-mode">${modeName}</div>
+      <div class="rl-vs-line rl-vs-cry">${cry}</div>
+    </div>`;
+  container.appendChild(ov);
+  const timers = [];
+  let done = false;
+  const finish = () => {
+    if (done) return; done = true;
+    timers.forEach(clearTimeout);
+    ov.classList.add("is-leaving");
+    setTimeout(() => ov.remove(), 360);
+  };
+  // 各行を時間差で起こす（CSSの .show でフェード/パンチ）。最後の煽りのあと一拍おいて退場。
+  requestAnimationFrame(() => {
+    timers.push(setTimeout(() => { ov.querySelector(".rl-vs-title")?.classList.add("show"); sound?.playDodon?.(); }, 120));
+    timers.push(setTimeout(() => ov.querySelector(".rl-vs-mode")?.classList.add("show"), 620));
+    timers.push(setTimeout(() => { ov.querySelector(".rl-vs-cry")?.classList.add("show"); sound?.playWinHit?.(); }, 1080));
+    timers.push(setTimeout(finish, 2150));
+  });
+  ov.addEventListener("click", finish); // タップで即スキップ
+  return finish;
+}
+
 export function showRogueliteDeploy(container, opts = {}) {
-  const { run, floorType, charImages, onConfirm, onBack } = opts;
+  const { run, floorType, charImages, onConfirm, onBack, audio } = opts;
   if (!container || !run) { onConfirm?.(false); return; }
   const isBoss = floorType?.enemy === "boss";
   const tone = isBoss ? "boss" : (floorType?.elite ? "elite" : "normal");
@@ -757,7 +824,7 @@ export function showRogueliteDeploy(container, opts = {}) {
       <main class="rl-deploy-main">
         <section class="rl-deploy-lineup">
           <div class="rl-deploy-lineup-head">出陣　<small>${enemyNote}</small></div>
-          <div class="rl-deploy-list" id="rl-deploy-list"></div>
+          <div class="rl-deploy-stage" id="rl-deploy-list"></div>
         </section>
         <aside class="rl-deploy-side">
           <div class="rl-deploy-side-h">携えるもの</div>
@@ -783,6 +850,8 @@ export function showRogueliteDeploy(container, opts = {}) {
 
   const listEl = ov.querySelector("#rl-deploy-list");
   const youId = run.party[0]?.id;
+  // 立ち絵の3カラム構図（左から出場順）。上位 seatCount 人＝着卓、それ以下＝控え。
+  // ◀▶ で並べ替え（左へ動かすほど着卓に近づく）。能力チップはクリックで内容をモーダル表示。
   const renderList = () => {
     listEl.innerHTML = "";
     order.forEach((m, i) => {
@@ -791,32 +860,35 @@ export function showRogueliteDeploy(container, opts = {}) {
       const tier = pct <= 25 ? "low" : pct <= 50 ? "mid" : "high";
       const isYou = m.id === youId;
       const dead = m.hp <= 0;
-      const ab = charAbilityName(m.char);
-      const row = document.createElement("div");
-      row.className = `rl-deploy-row${seated ? " seated" : " bench"}${dead ? " is-down" : ""}`;
-      row.innerHTML = `
-        <div class="rl-deploy-move">
-          <button type="button" class="rl-swap-up" data-id="${m.id}" ${i === 0 ? "disabled" : ""} aria-label="上へ">▲</button>
-          <button type="button" class="rl-swap-down" data-id="${m.id}" ${i === order.length - 1 ? "disabled" : ""} aria-label="下へ">▼</button>
-        </div>
-        <div class="rl-deploy-face-wrap" data-face="${m.id}"></div>
-        <div class="rl-deploy-info">
-          <div class="rl-deploy-name" style="color:${m.char?.color || "#eadfce"}">${m.char?.name || "?"}${m.hungover ? " 🍶" : ""}
-            <span class="rl-deploy-tag ${seated ? "active" : "bench"}">${seated ? (isYou ? "操作" : (solo ? "出陣" : "出場")) : "控え"}</span>
-            ${ab ? `<span class="rl-deploy-ab">${ab}</span>` : ""}
-          </div>
-          <div class="rl-hp-bar"><span class="rl-hp-fill ${tier}" style="width:${pct}%"></span></div>
-        </div>
-        <div class="rl-deploy-hp">${dead ? "ダウン" : `${Math.max(0, Math.round(m.hp))}<small>/${m.hpMax}</small>`}</div>`;
-      listEl.appendChild(row);
-      const slot = row.querySelector(`[data-face="${m.id}"]`);
-      if (slot && m.char) slot.appendChild(faceNode(charImages, m.char, "rl-deploy-face"));
-      if (i === seatCount - 1 && order.length > seatCount) {
+      const abils = (m.char?.abilities || []).map((a) => a.abilityId).filter(Boolean);
+      const abilChips = abils.length
+        ? abils.map((id) => `<button type="button" class="rl-deploy-abchip" data-abil="${id}" title="クリックで能力の詳細">${abilityDef(id)?.name || id}</button>`).join("")
+        : `<span class="rl-deploy-abnone">—</span>`;
+      // 着卓と控えの境目に仕切り（着卓ライン）を1本だけ挟む。
+      if (i === seatCount && order.length > seatCount) {
         const div = document.createElement("div");
-        div.className = "rl-deploy-divider";
-        div.innerHTML = `<span>― ここまで着卓（戦う${solo ? "一人" : "二人"}）／下は控え ―</span>`;
+        div.className = "rl-deploy-vdivider";
+        div.innerHTML = `<span>控え</span>`;
         listEl.appendChild(div);
       }
+      const col = document.createElement("div");
+      col.className = `rl-deploy-col${seated ? " seated" : " bench"}${dead ? " is-down" : ""}`;
+      col.innerHTML = `
+        <div class="rl-deploy-col-portrait">
+          ${portraitHtml(charImages, m.char)}
+          <span class="rl-deploy-col-tag ${seated ? "active" : "bench"}">${seated ? (isYou ? "操作" : (solo ? "出陣" : "出場")) : "控え"}</span>
+          <div class="rl-deploy-col-move">
+            <button type="button" class="rl-swap-up" data-id="${m.id}" ${i === 0 ? "disabled" : ""} aria-label="前へ">◀</button>
+            <button type="button" class="rl-swap-down" data-id="${m.id}" ${i === order.length - 1 ? "disabled" : ""} aria-label="後ろへ">▶</button>
+          </div>
+        </div>
+        <div class="rl-deploy-col-name" style="color:${m.char?.color || "#eadfce"}">${m.char?.name || "?"}${m.hungover ? " 🍶" : ""}</div>
+        <div class="rl-deploy-col-hp">
+          <div class="rl-hp-bar"><span class="rl-hp-fill ${tier}" style="width:${pct}%"></span></div>
+          <div class="rl-deploy-col-hpval">${dead ? "ダウン" : `${Math.max(0, Math.round(m.hp))}<small>/${m.hpMax}</small>`}</div>
+        </div>
+        <div class="rl-deploy-col-abils"><span class="rl-deploy-abk">能力</span>${abilChips}</div>`;
+      listEl.appendChild(col);
     });
     const move = (id, dir) => {
       const idx = order.findIndex((m) => m.id === id);
@@ -828,6 +900,7 @@ export function showRogueliteDeploy(container, opts = {}) {
     };
     listEl.querySelectorAll(".rl-swap-up").forEach((b) => b.addEventListener("click", () => move(b.dataset.id, -1)));
     listEl.querySelectorAll(".rl-swap-down").forEach((b) => b.addEventListener("click", () => move(b.dataset.id, +1)));
+    listEl.querySelectorAll(".rl-deploy-abchip").forEach((b) => b.addEventListener("click", (e) => { e.stopPropagation(); showAbilityModal(container, b.dataset.abil); }));
   };
   renderList();
   run.lineup = order.map((m) => m.id); // 並べ替えずに出陣しても現順を確定保存
@@ -835,6 +908,11 @@ export function showRogueliteDeploy(container, opts = {}) {
   ov.querySelector("#rl-deploy-back")?.addEventListener("click", () => { ov.remove(); onBack?.(); });
   ov.querySelector("#rl-deploy-plain")?.addEventListener("click", () => { ov.remove(); onConfirm?.(false); });
   ov.querySelector("#rl-deploy-armed")?.addEventListener("click", () => { if ((run.abilitySource ?? 0) <= 0) return; ov.remove(); onConfirm?.(true); });
+
+  // 入場の「ドドン！」幕間（編成画面の上に被せて、一拍おいて溶ける）。
+  const modeName = tableSize === 2 ? "二人麻雀 ・ 一騎打ち" : tableSize === 3 ? "三人麻雀 ・ 一人打ち" : "四人麻雀 ・ 相棒戦";
+  const cry = isBoss ? "館の主、いざ——尋常に勝負！" : (floorType?.elite ? "強敵あり。尋常に——勝負！" : "尋常に——勝負！");
+  playDeployIntro(container, { floor: run.floor, battleTitle: battleLabel, modeName, cry, tone, colorSet: run?.over?.colorSet, sound: audio });
 }
 
 // ---- 流派の門（交代マス）：光貨で1人を迎え、1人を送り出す（PTは3人のまま） ----
@@ -1487,5 +1565,28 @@ export function showRogueliteGameOver(container, opts = {}) {
     });
   }
 
-  ov.querySelector("#rl-go-close")?.addEventListener("click", () => { ov.remove(); onClose?.([...selected]); });
+  const doClose = () => { ov.remove(); onClose?.([...selected]); };
+  ov.querySelector("#rl-go-close")?.addEventListener("click", () => {
+    // 何も選ばず帰還しようとしたら確認（引き継ぎ枠があるのに0枠＝取りこぼし防止）。
+    if (canCarry && selected.size === 0) {
+      const cf = document.createElement("div");
+      cf.className = "rl-overlay rl-confirm";
+      cf.innerHTML = `
+        <div class="rl-modal rl-confirm-card">
+          <div class="rl-confirm-h">バフを持ち帰らずに帰還しますか？</div>
+          <p class="rl-confirm-note">獲得したバフを1つも引き継ぎに選んでいません。このまま帰ると次のランへは何も持ち越せません。</p>
+          <div class="rl-continue-btns">
+            <button type="button" class="rl-retreat" id="rl-confirm-cancel">選び直す</button>
+            <button type="button" class="rl-start" id="rl-confirm-ok">このまま帰還する</button>
+          </div>
+        </div>`;
+      container.appendChild(cf);
+      requestAnimationFrame(() => cf.classList.add("is-open"));
+      cf.querySelector("#rl-confirm-cancel")?.addEventListener("click", () => cf.remove());
+      cf.querySelector("#rl-confirm-ok")?.addEventListener("click", () => { cf.remove(); doClose(); });
+      cf.addEventListener("click", (e) => { if (e.target === cf) cf.remove(); });
+      return;
+    }
+    doClose();
+  });
 }

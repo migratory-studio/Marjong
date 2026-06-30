@@ -196,6 +196,7 @@ const SE_SHUFFLE = enc("sound/se/麻雀牌をまぜる.mp3"); // start of hand (
 const SE_KINGAKU = enc("sound/se/shakiin2.mp3");     // on win (score reveal)
 const SE_NAKI = enc("sound/se/naki.mp3");            // shared call SE (pon/chi/kan executed)
 const SE_NAKITAKU = enc("sound/se/nakitaku.mp3");    // call-prompt SE (pon/chi/kan options offered)
+const SE_DODON = enc("sound/se/和太鼓でドドン.mp3");  // 楼光・編成入場カットインの「ドドン！」
 
 export class AudioManager {
   constructor({ bgmVolume = 0.4, seVolume = 0.8 } = {}) {
@@ -484,6 +485,10 @@ export class AudioManager {
       o2.start(now + 0.04); o2.stop(now + 0.32);
     } catch { /* ignore */ }
   }
+
+  // 「ドドン！」の和太鼓SE（楼光・編成入場カットイン用）。実ファイルを一発再生。
+  // 音源未配置時は無音になるだけ（playSe がクラッシュしない）。SE音量に追従。
+  playDodon() { this.playSe(SE_DODON, 1); }
 
   _playFromPool(pool) {
     if (!this.enabled || !pool || pool.length === 0) return;
