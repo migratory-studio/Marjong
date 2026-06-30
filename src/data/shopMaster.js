@@ -107,6 +107,15 @@ export function shopDaySeed(date = new Date()) {
   return date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
 }
 
+// 品揃えの有料更新（リロール）。1日 MAX_SHOP_REROLLS 回まで。N回目（0始まり）の費用は SHOP_REROLL_COSTS[N]。
+// 24時＝日付が変われば回数はリセット（呼び出し側が day を見て count を 0 に戻す）。
+export const SHOP_REROLL_COSTS = [10, 50, 100];
+export const MAX_SHOP_REROLLS = SHOP_REROLL_COSTS.length;
+// 次の1回の費用（宝珠）。used=本日すでに使った回数。上限到達なら null。
+export function shopRerollCost(used) {
+  return SHOP_REROLL_COSTS[used | 0] ?? null;
+}
+
 // 文字列 → 32bit ハッシュ（決定論シード用）。
 function hashStr(s) {
   let h = 2166136261 >>> 0;
@@ -142,11 +151,13 @@ function weightedSample(pool, n, rng) {
 }
 
 // その日に陳列する type(bg|bgm) の解禁アイテム配列（既定3点）。プールが count 以下なら全部返す。
+// reroll=有料更新の回数（0=無料ベース）。シードに織り込むので回数が増えるたびに別の3点になり、
+// かつ (daySeed, type, reroll) の純関数＝同条件なら何度呼んでも同じ＝再描画・出入りでブレない。
 // 並びはカタログ順を保つ（抽選順のランダム並びにしない＝見た目が安定）。
-export function dailyShopUnlocks(type, count = 3, daySeed = shopDaySeed()) {
+export function dailyShopUnlocks(type, count = 3, daySeed = shopDaySeed(), reroll = 0) {
   const pool = SHOP_UNLOCKS.filter((it) => it.type === type);
   if (pool.length <= count) return pool;
-  const rng = mulberry32(hashStr(`${daySeed}:${type}`));
+  const rng = mulberry32(hashStr(`${daySeed}:${type}:${reroll}`));
   const picked = weightedSample(pool, count, rng);
   const order = new Map(pool.map((it, i) => [it.id, i]));
   return picked.sort((a, b) => order.get(a.id) - order.get(b.id));

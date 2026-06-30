@@ -12,7 +12,8 @@
 //  - 導線は当面ここ（対戦ホーム）から。将来は「楼光の館トップ」へ移す（呼び出し側を差し替えるだけ）。
 import {
   SHOP_BUFFS, SHOP_UNLOCKS, UNLOCK_FIELD,
-  buffCost, buffEffectText, isShopUnlocked, dailyShopUnlocks,
+  buffCost, buffEffectText, isShopUnlocked,
+  dailyShopUnlocks, shopDaySeed, shopRerollCost, MAX_SHOP_REROLLS,
 } from "../data/shopMaster.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { shopStyleAttr } from "../data/imagePos.js";
@@ -40,12 +41,12 @@ const SHOP_CATEGORIES = [
 ];
 
 // カテゴリに属する商品（タブの件数バッジ・本体描画の両方で使う＝表示する物そのものを返す）。
-//  - 背景 / BGM は在庫が多いので「日替わり3点」だけ並べる（dailyShopUnlocks＝日付シードの決定論抽選。
-//    同じ日なら何度呼んでも同じ3点なので、出入り・再描画・連続呼び出しでもブレない）。
+//  - 背景 / BGM は在庫が多いので「日替わり3点」だけ並べる（dailyShopUnlocks＝日付＋更新回数シードの決定論抽選。
+//    同条件なら何度呼んでも同じ3点なので、出入り・再描画・連続呼び出しでもブレない）。reroll=本日の有料更新回数。
 //  - 恒久強化 / キャラは常に全部。
-function categoryItems(cat) {
+function categoryItems(cat, reroll = 0) {
   if (cat.kind === "buffs") return SHOP_BUFFS;
-  if (cat.type === "bg" || cat.type === "bgm") return dailyShopUnlocks(cat.type, 3);
+  if (cat.type === "bg" || cat.type === "bgm") return dailyShopUnlocks(cat.type, 3, shopDaySeed(), reroll);
   return SHOP_UNLOCKS.filter((it) => it.type === cat.type);
 }
 
@@ -63,6 +64,14 @@ export async function showShop(container, opts = {}) {
     if (!Array.isArray(profile[f])) profile[f] = [];
   }
   const buffs = profile.rogueliteShopBuffs;
+
+  // 品揃えの有料更新の状態 { day, count }。day が今日でなければ（=日付跨ぎ）回数を 0 にリセット。
+  // 背景/BGM 共通で1つの回数を使う（1回の更新で両方の品揃えが入れ替わる）。
+  if (!profile.shopReroll || typeof profile.shopReroll !== "object") profile.shopReroll = { day: 0, count: 0 };
+  function rerollUsed() {
+    const r = profile.shopReroll;
+    return r.day === shopDaySeed() ? (r.count | 0) : 0; // 今日でなければ 0（次の更新/保存時に day も更新される）
+  }
 
   // 表示するタブ（中身が1件以上あるカテゴリだけ）。全部空でも「恒久強化」だけは常に出す。
   let cats = SHOP_CATEGORIES.filter((c) => categoryItems(c).length > 0);
@@ -87,6 +96,7 @@ export async function showShop(container, opts = {}) {
       <nav class="shop-tabs" id="shop-tabs" role="tablist" aria-label="ショップ カテゴリ"></nav>
       <div class="shop-body" id="shop-body">
         <div class="shop-sec-sub" id="shop-sec-sub"></div>
+        <div class="shop-reroll" id="shop-reroll" hidden></div>
         <div class="shop-grid" id="shop-grid"></div>
       </div>
       <footer class="shop-foot">
@@ -99,6 +109,7 @@ export async function showShop(container, opts = {}) {
   const tabsEl = container.querySelector("#shop-tabs");
   const bodyEl = container.querySelector("#shop-body");
   const subEl = container.querySelector("#shop-sec-sub");
+  const rerollEl = container.querySelector("#shop-reroll");
   const gridEl = container.querySelector("#shop-grid");
 
   function renderOrbs() { orbsEl.textContent = profile.orbs | 0; }
@@ -170,10 +181,29 @@ export async function showShop(container, opts = {}) {
     </div>`;
   }
 
+  // 更新バー（背景/BGMタブのみ）。本日の更新回数・次回費用・更新ボタンを出す。
+  function renderRerollBar(isUnlockRotate) {
+    if (!isUnlockRotate) { rerollEl.hidden = true; rerollEl.innerHTML = ""; return; }
+    const used = rerollUsed();
+    const cost = shopRerollCost(used);
+    const maxed = cost == null;
+    const afford = !maxed && (profile.orbs | 0) >= cost;
+    const label = maxed ? "本日の更新は上限です"
+      : afford ? `ラインナップ更新（宝珠 ${cost}）`
+      : `ラインナップ更新（宝珠 ${cost}・不足）`;
+    rerollEl.hidden = false;
+    rerollEl.innerHTML = `
+      <span class="shop-reroll-info">本日の更新 <b>${used}</b>/${MAX_SHOP_REROLLS}</span>
+      <button type="button" class="shop-reroll-btn" id="shop-reroll-go" ${maxed || !afford ? "disabled" : ""}>${label}</button>`;
+    rerollEl.querySelector("#shop-reroll-go")?.addEventListener("click", () => buyReroll());
+  }
+
   function renderBody() {
     const cat = cats.find((c) => c.id === activeCat) || cats[0];
     subEl.textContent = cat.sub || "";
-    const items = categoryItems(cat);
+    const isUnlockRotate = cat.kind === "unlock" && (cat.type === "bg" || cat.type === "bgm");
+    renderRerollBar(isUnlockRotate);
+    const items = categoryItems(cat, rerollUsed());
     if (!items.length) {
       gridEl.innerHTML = `<div class="shop-empty">近日追加予定。</div>`;
       return;
@@ -237,7 +267,9 @@ export async function showShop(container, opts = {}) {
       </div>`, () => {
       modalEl.querySelector("#shop-m-cancel").addEventListener("click", () => { audio?.playClick?.(); closeModal(); });
       modalEl.querySelector("#shop-m-go").addEventListener("click", () => {
-        const ok = intent.kind === "buff" ? commitBuff(intent.id) : commitUnlock(intent.id);
+        const ok = intent.kind === "buff" ? commitBuff(intent.id)
+          : intent.kind === "reroll" ? commitReroll()
+          : commitUnlock(intent.id);
         if (ok) openComplete(intent); else closeModal();
       });
     });
@@ -289,6 +321,18 @@ export async function showShop(container, opts = {}) {
       doneText: UNLOCK_DONE[it.type] || "解禁しました。",
     });
   }
+  // 品揃えの有料更新（背景・BGMをまとめて引き直す）。
+  function buyReroll() {
+    const used = rerollUsed();
+    const cost = shopRerollCost(used);
+    if (cost == null || (profile.orbs | 0) < cost) return;
+    audio?.playClick?.();
+    openConfirm({
+      kind: "reroll", icon: "🔄", name: "ラインナップ更新", cost,
+      effect: `背景とBGMの本日の品揃えを引き直す（${used + 1}/${MAX_SHOP_REROLLS} 回目）。`,
+      doneText: "背景とBGMの品揃えを更新した。",
+    });
+  }
 
   // 実購入（残高再検証つき。成功で true）。状態更新＝残高・本体のみ（タブ件数は不変＝スクロール位置を保つ）。
   function commitBuff(id) {
@@ -311,6 +355,18 @@ export async function showShop(container, opts = {}) {
     if (!field) return false;
     profile.orbs = (profile.orbs | 0) - it.cost;
     if (!profile[field].includes(it.key)) profile[field].push(it.key);
+    renderOrbs();
+    renderBody();
+    queueSave();
+    return true;
+  }
+  // 更新を確定（残高・回数を再検証）。回数を+1し当日に固定→renderBody が新しい品揃えで引き直す。
+  function commitReroll() {
+    const used = rerollUsed();
+    const cost = shopRerollCost(used);
+    if (cost == null || (profile.orbs | 0) < cost) return false;
+    profile.orbs = (profile.orbs | 0) - cost;
+    profile.shopReroll = { day: shopDaySeed(), count: used + 1 };
     renderOrbs();
     renderBody();
     queueSave();
