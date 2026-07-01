@@ -241,7 +241,7 @@ body {
   margin: 4px 0 2px; line-height: 0;
   display: block; padding: 0; border: 0; border-image: none; background: none; text-shadow: none;
 }
-.home-logo-h1 .title-logo-img { width: min(500px, 60vw); max-height: 240px; margin: 0 auto; }
+.home-logo-h1 .title-logo-img { width: min(760px, 72vw); max-height: 360px; margin: 0 auto; }
 
 /* ---- 仮ロゴ注記（ロード画面／ホーム下部に小さく） ---- */
 .placeholder-note {
