@@ -262,7 +262,7 @@ export function showRoguelite(container, opts = {}) {
         meta.appendChild(name);
         const hp = document.createElement("div");
         hp.className = "rl-slot-hp";
-        hp.innerHTML = `<b>${fmtHp(charRogueliteHp(c))}</b> HP<span class="rl-slot-bond">${bondBandLabel(bondLevelOf(c))}</span>`;
+        hp.innerHTML = `<b>${fmtHp(charRogueliteHp(c))}</b> HP<span class="rl-slot-bond">${bondBandLabel(bondLevelOf(c))} Lv${bondLevelOf(c)}</span>`;
         meta.appendChild(hp);
         slot.appendChild(meta);
         const tag = document.createElement("div");
@@ -306,17 +306,17 @@ export function showRoguelite(container, opts = {}) {
       if (!locked) {
         const bond = document.createElement("div");
         bond.className = "rl-cell-bond";
-        bond.textContent = bondBandLabel(bondLv);
+        bond.textContent = `${bondBandLabel(bondLv)} Lv${bondLv}`;
         cell.appendChild(bond);
       }
       // 能力の「効果」までホバーで見せる（一見さんが手探りで選ばないように）。
       const abId = c?.abilities?.[0]?.abilityId;
       const def = abId ? abilityDef(abId) : null;
-      cell.title = `${c.name}｜${role || "打ち手"}\n出発時HP：${fmtHp(hp)}\n間柄：${bondBandLabel(bondLv)}${def ? `\n能力「${def.name}」：${def.desc}` : ""}`;
+      cell.title = `${c.name}｜${role || "打ち手"}\n出発時HP：${fmtHp(hp)}\n間柄：${bondBandLabel(bondLv)}（Lv${bondLv}）${def ? `\n能力「${def.name}」：${def.desc}` : ""}`;
       const pop = document.createElement("div");
       pop.className = "rl-cell-pop";
       pop.innerHTML = `<div class="rl-cell-pop-name">${c.name}<span class="rl-cell-pop-role">${role || "打ち手"}</span></div>`
-        + `<div class="rl-cell-pop-stats"><span class="rl-cell-pop-hp">出発時HP <b>${fmtHp(hp)}</b></span><span class="rl-cell-pop-bond">間柄 <b>${bondBandLabel(bondLv)}</b></span></div>`
+        + `<div class="rl-cell-pop-stats"><span class="rl-cell-pop-hp">出発時HP <b>${fmtHp(hp)}</b></span><span class="rl-cell-pop-bond">間柄 <b>${bondBandLabel(bondLv)} Lv${bondLv}</b></span></div>`
         + `${def ? `<div class="rl-cell-pop-ab"><b>${def.name}</b>${def.desc ? `<span>${def.desc}</span>` : ""}</div>` : ""}`;
       cell.appendChild(pop);
       if (c.isCompletedAvatar) {

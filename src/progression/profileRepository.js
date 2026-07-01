@@ -71,6 +71,16 @@ export class ProfileRepository {
     // 欠損補完（旧セーブに companionBonds / playerHistory が無い場合）。
     if (!merged.companionBonds || typeof merged.companionBonds !== "object") {
       merged.companionBonds = {};
+    } else {
+      // 相棒絆レベルアップ演出の消化ポインタ celebratedLevel を補完。旧セーブに無ければ
+      // 現 level で初期化＝過去分は「演出済み」扱いでスキップ（初回に大量演出/宝珠を出さない）。
+      const cb = {};
+      for (const [id, b] of Object.entries(merged.companionBonds)) {
+        cb[id] = (b && typeof b === "object")
+          ? { ...b, celebratedLevel: b.celebratedLevel ?? (b.level ?? 1) }
+          : b;
+      }
+      merged.companionBonds = cb;
     }
     if (!Array.isArray(merged.completedAvatars)) merged.completedAvatars = [];
     // 宝珠ショップ関連の欠損補完（旧セーブ）。

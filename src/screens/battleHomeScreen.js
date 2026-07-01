@@ -17,7 +17,7 @@
 //    固有性を主軸に約7割で優先し、無ければ雑談へフォールバック（両軸：固有性＋雑談ストック）。
 import { CHARACTERS } from "../characters/characters.js";
 import { pickVoiceLine } from "../data/voiceLines.js";
-import { topPlayStyle, bondProgressFrac } from "../progression/companionBond.js";
+import { topPlayStyle, bondProgressFrac, bondPtView } from "../progression/companionBond.js";
 import { bondBandLabel } from "../progression/progressionService.js";
 import { HOME_BGM_CHOICES } from "../ui/assets.js";
 import { homeTuneOf } from "../data/imagePos.js";
@@ -265,8 +265,9 @@ export async function showBattleHome(container, opts = {}) {
     } catch { /* 保存失敗してもセッション内の見た目/再生は反映済み */ }
   }
 
-  // 立ち絵＋相棒名＋絆帯＋出迎えセリフを current で描き直す。
-  // 絆は数値レス方針 [[bond-display-hybrid-policy]]：帯名(bondBandLabel)で見せる。
+  // 立ち絵＋相棒名＋絆＋出迎えセリフを current で描き直す。
+  // 絆は帯名＋Lv実数＋pt(現在/次まで)で見せる（数値表示へ転換。ゲージ2周＝1帯のズレが
+  // 数値なしでは伝わらなかったため。[[bond-display-hybrid-policy]] 改）。
   function paint() {
     wrap.innerHTML = "";
     wrap.appendChild(portraitNode(current));
@@ -281,8 +282,15 @@ export async function showBattleHome(container, opts = {}) {
     //   これから関係が育つことを言葉で伝える。計上は連携時のみ＝ [[companion-bond-system]] は不変）。
     const b = profile?.companionBonds?.[current.id];
     if (togetherEl) togetherEl.textContent = loggedIn ? `${b?.matches ?? 0} 局` : "これから";
-    if (bondEl) bondEl.textContent = loggedIn ? bondBandLabel(b?.level ?? 1) : "出会ったばかり";
-    // 数値なしの細ゲージ＝次の絆までの進捗（連携時のみ。未連携は隠す）。
+    if (bondEl) {
+      if (loggedIn) {
+        const { lv, cur, need } = bondPtView(b || {});
+        bondEl.innerHTML = `${bondBandLabel(b?.level ?? 1)}<span class="bh-bond-pt">Lv${lv}（${cur}/${need}）</span>`;
+      } else {
+        bondEl.textContent = "出会ったばかり";
+      }
+    }
+    // 細ゲージ＝次のLvまでの進捗（pt の cur/need と一致。連携時のみ・未連携は隠す）。
     if (bondGaugeEl && bondFillEl) {
       bondGaugeEl.hidden = !loggedIn;
       if (loggedIn) bondFillEl.style.width = `${Math.round(bondProgressFrac(b || {}) * 100)}%`;

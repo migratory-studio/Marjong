@@ -8,6 +8,7 @@
 //  - 係数は progressionService.js の GROWTH_TUNING と共通語彙を使う。
 
 import { GROWTH_TUNING } from "./progressionService.js";
+import { bondRewardForLevel, applyBondReward } from "../data/bondRewardMaster.js";
 
 // ── 絆Lvの計算 ─────────────────────────────────────────────────────────────
 //
@@ -29,10 +30,20 @@ export function companionLevelFromExp(totalExp) {
 }
 
 // 次Lvまでの進捗 0..1（保存の exp は現Lv内の残りなので exp / (base * level)）。
-// 数値は見せず細ゲージで“次の絆までの進捗”だけ伝える用途（ピラー1の範囲内の手ごたえ）。
+// 細ゲージ＝“次の絆までの進捗”。bondPtView の cur/need と一致する（同じ式）。
 export function bondProgressFrac({ level = 1, exp = 0 } = {}) {
   const need = GROWTH_TUNING.bondExpPerLevel * Math.max(1, level);
   return need > 0 ? Math.max(0, Math.min(1, exp / need)) : 0;
+}
+
+// 絆の数値表示セット（Lv実数＋現Lv内pt／次Lvまでの必要pt）。
+// ゲージ単体では「帯が2Lvごと・ゲージは1Lvで一周」のズレが伝わらなかったため、
+// 数値を見せる方針へ転換（[[bond-display-hybrid-policy]] 改）。cur/need は bondProgressFrac と同源。
+export function bondPtView({ level = 1, exp = 0 } = {}) {
+  const lv = Math.max(1, level);
+  const need = GROWTH_TUNING.bondExpPerLevel * lv;
+  const cur = Math.max(0, Math.min(need, Math.floor(exp)));
+  return { lv, cur, need };
 }
 
 // ── 対局結果を profile に反映（イミュータブル） ─────────────────────────────
@@ -71,7 +82,13 @@ export function applyMatchToCompanion(
   const { level: newLevel, exp: newExp } = companionLevelFromExp(newTotalExp);
 
   // matches＝そのキャラと一緒に打った局数（対戦ホーム「一緒に」表示用。キャラ別カウント）。
-  bonds[companionId] = { level: newLevel, exp: newExp, matches: (current.matches ?? 0) + 1 };
+  // celebratedLevel は据え置き（level だけ上がる）＝未消化のレベルアップとして対戦ホームで演出する。
+  // 新規キャラは celebratedLevel=level で開始＝いきなり pending を出さない（過去分スキップと同じ理屈）。
+  bonds[companionId] = {
+    level: newLevel, exp: newExp,
+    matches: (current.matches ?? 0) + 1,
+    celebratedLevel: current.celebratedLevel ?? current.level ?? 1,
+  };
 
   // ---- 2. playerHistory 更新 ----
   const hist = { ...(profile.playerHistory ?? defaultPlayerHistory()) };
@@ -119,7 +136,11 @@ export function addCompanionBondExp(profile, companionId, expGain, { countMatch 
   const current = bonds[companionId] ?? { level: 1, exp: 0 };
   const newTotal = accumulateExp(current.level, current.exp) + Math.floor(expGain);
   const { level, exp } = companionLevelFromExp(newTotal);
-  bonds[companionId] = { level, exp, matches: (current.matches ?? 0) + (countMatch ? 1 : 0) };
+  bonds[companionId] = {
+    level, exp,
+    matches: (current.matches ?? 0) + (countMatch ? 1 : 0),
+    celebratedLevel: current.celebratedLevel ?? current.level ?? 1,
+  };
   return { ...profile, companionBonds: bonds };
 }
 
@@ -190,6 +211,57 @@ export function topPlayStyle(playerHistory) {
   if (topCount / total < 0.4) return null;
 
   return topTag;
+}
+
+// ── 絆レベルアップ演出の消化（対戦ホームで「相棒にしたキャラ」の未演出Lvを祝う） ──
+//
+// celebratedLevel = 最後に演出を見たLv。level > celebratedLevel のぶんが「未消化」。
+// 演出を見た瞬間に消化＝report の報酬（Lv9+の宝珠など）を確定付与する（見るまで貰えない）。
+
+// 相棒 bond の「見た目上の消化ポインタ」。未定義（旧セーブ）は現 level 扱い＝過去分スキップ。
+function celebratedOf(bond) {
+  return bond?.celebratedLevel ?? bond?.level ?? 1;
+}
+
+// 未消化のレベルアップ一覧を古い順に返す。各要素 { level, reward }（reward は null 可）。
+export function pendingBondCelebrations(bond) {
+  const lv = bond?.level ?? 1;
+  const seen = celebratedOf(bond);
+  const out = [];
+  for (let n = seen + 1; n <= lv; n++) out.push({ level: n, reward: bondRewardForLevel(n) });
+  return out;
+}
+
+// そのキャラに未消化のレベルアップがあるか（赤シンボル・演出トリガー判定）。
+export function hasPendingBondCelebration(profile, charId) {
+  const b = profile?.companionBonds?.[charId];
+  if (!b) return false;
+  return (b.level ?? 1) > celebratedOf(b);
+}
+
+// いずれかのキャラに未消化があるか（「相棒をかえる」ボタンの赤ドット判定）。
+export function anyPendingBondCelebration(profile) {
+  const bonds = profile?.companionBonds ?? {};
+  return Object.keys(bonds).some((id) => hasPendingBondCelebration(profile, id));
+}
+
+// charId の絆を「1段だけ」演出済みに進め、そのLvの報酬を付与した新 profile を返す。
+// 戻り値 celebrated＝今回消化した演出情報（無ければ null）。screen 側で 1段ずつ呼んで順に見せる。
+export function consumeBondCelebration(profile, charId) {
+  const bond = profile?.companionBonds?.[charId];
+  if (!bond) return { profile, celebrated: null };
+  const seen = celebratedOf(bond);
+  const lv = bond.level ?? 1;
+  if (seen >= lv) return { profile, celebrated: null };
+  const nextLv = seen + 1;
+  const reward = bondRewardForLevel(nextLv);
+  // 報酬を先に付与（見た瞬間に確定）→ 消化ポインタを1つ進める。
+  let p = applyBondReward(profile, reward);
+  p = {
+    ...p,
+    companionBonds: { ...p.companionBonds, [charId]: { ...bond, celebratedLevel: nextLv } },
+  };
+  return { profile: p, celebrated: { charId, level: nextLv, reward } };
 }
 
 // ── 内部ユーティリティ ────────────────────────────────────────────────────
