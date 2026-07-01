@@ -241,7 +241,15 @@ body {
   margin: 4px 0 2px; line-height: 0;
   display: block; padding: 0; border: 0; border-image: none; background: none; text-shadow: none;
 }
-.home-logo-h1 .title-logo-img { width: min(760px, 72vw); max-height: 360px; margin: 0 auto; }
+.home-logo-h1 .title-logo-img { width: min(760px, 72vw); max-height: 328px; margin: 0 auto; }
+
+/* トップは大きめロゴ＋3メニューを 1280×720 に内部スクロールなしで収める（fixed-stage policy）。
+   ロゴを主役に据えたぶん、メニュー側の縦余白・ボタンpaddingを詰めて総高を 720px 内に収める。
+   .menu-screen/.menu-list/.menu-btn は他メニュー画面と共有なので #home-screen に限定して上書き。 */
+#home-screen.menu-screen { gap: 14px; }
+#home-screen .menu-head { margin-top: -6px; }
+#home-screen .menu-list { gap: 8px; }
+#home-screen .menu-btn { padding: 9px 22px; }
 
 /* ---- 仮ロゴ注記（ロード画面／ホーム下部に小さく） ---- */
 .placeholder-note {
