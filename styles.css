@@ -223,6 +223,33 @@ body {
 .load-logo { font-size: 44px; margin: 0; letter-spacing: .03em; }
 .load-logo small { color: var(--accent); font-size: 18px; }
 .load-tip { color: var(--muted); font-size: 14px; margin: 0; }
+
+/* ---- タイトルロゴ画像（ロード画面／ホーム共通） ----
+   透過PNGはダークネイビー主体なので、後ろに柔らかいクリーム光を敷いて暗背景でも読ませる。
+   ※ 現ロゴはAI生成の仮組み。本リリースでデザイナー版へ差し替え（graphic/title.png）。 */
+.title-logo-img {
+  display: block; width: min(560px, 68vw); height: auto; max-height: 300px;
+  object-fit: contain;
+  /* 文字が暗背景に沈まないよう、白＝クリームの淡い発光を後光に */
+  filter: drop-shadow(0 0 26px rgba(246, 240, 224, .5)) drop-shadow(0 0 60px rgba(246, 240, 224, .28)) drop-shadow(0 10px 22px rgba(0,0,0,.5));
+}
+.load-logo .title-logo-img { width: min(600px, 72vw); max-height: 340px; }
+/* 画像ロゴを載せる見出しは、テキスト見出し用のネームプレート(plate.png の border-image fill)を外す。
+   plate.png の fill がロゴ背後に赤金の帯として出てしまうため、装飾を全て打ち消す。
+   ※ `.menu-head h1`(specificity 0-1-1) に勝つよう、型を含めた `.menu-head h1.home-logo-h1` で上書き。 */
+.menu-head h1.home-logo-h1 {
+  margin: 4px 0 2px; line-height: 0;
+  display: block; padding: 0; border: 0; border-image: none; background: none; text-shadow: none;
+}
+.home-logo-h1 .title-logo-img { width: min(500px, 60vw); max-height: 240px; margin: 0 auto; }
+
+/* ---- 仮ロゴ注記（ロード画面／ホーム下部に小さく） ---- */
+.placeholder-note {
+  position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+  margin: 0; text-align: center; white-space: nowrap;
+  font-size: 11px; letter-spacing: .02em; color: var(--muted); opacity: .72;
+  pointer-events: none;
+}
 .load-bar {
   position: absolute; left: 50%; bottom: 56px; transform: translateX(-50%);
   width: 640px; height: 26px; overflow: hidden;

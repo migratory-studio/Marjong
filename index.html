@@ -17,18 +17,24 @@
     <!-- Loading: 起動時にリソースを先読みしてから各画面を出す。下部にロードゲージ。 -->
     <section id="loading-screen" class="screen">
       <div class="load-stage">
-        <h1 class="load-logo">ツモノグリフ <small>〜牌と絆のアンサンブル〜</small></h1>
+        <h1 class="load-logo">
+          <img src="graphic/title.png" alt="ツモノグリフ 〜牌と絆のアンサンブル〜" class="title-logo-img" />
+        </h1>
         <p class="load-tip">読み込み中…</p>
       </div>
       <div class="load-bar" role="progressbar" aria-label="読み込み">
         <div class="load-fill" id="load-fill"></div>
       </div>
+      <!-- 仮ロゴ注記: 本リリース時にデザイナー版へ差し替え（graphic/title.png） -->
+      <p class="placeholder-note">※ 現在のロゴはAI生成を使用した仮組みです。本リリース時にデザイナー作成のものへ差し替えます。</p>
     </section>
 
     <!-- Home: top-level mode entry（初期はロード画面を見せるため hidden） -->
     <section id="home-screen" class="screen menu-screen hidden">
       <header class="menu-head">
-        <h1>ツモノグリフ <small>〜牌と絆のアンサンブル〜</small></h1>
+        <h1 class="home-logo-h1">
+          <img src="graphic/title.png" alt="ツモノグリフ 〜牌と絆のアンサンブル〜" class="title-logo-img" />
+        </h1>
         <p class="lead">点棒がHP、相棒と挑む“共闘”の麻雀。まずは対戦ホームへ。</p>
       </header>
       <nav class="menu-list">
@@ -47,6 +53,8 @@
       </nav>
       <!-- DEBUG: ?debug=tsumoreba 起動時のみ表示（bootHome で出し分け） -->
       <button type="button" id="debug-menu-btn" class="debug-fab hidden">🐛 DEBUG</button>
+      <!-- 仮ロゴ注記: 本リリース時にデザイナー版へ差し替え（graphic/title.png） -->
+      <p class="placeholder-note">※ 現在のロゴはAI生成を使用した仮組みです。本リリース時にデザイナー作成のものへ差し替えます。</p>
     </section>
 
     <!-- Battle home (JS-rendered: お気に入りキャラ立ち絵＋出迎え＋フリー/オンライン導線) -->
