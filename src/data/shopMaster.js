@@ -70,6 +70,11 @@ export const SHOP_UNLOCKS = [
   { id: "bg-dungeon",     type: "bg", key: "dungeon",     name: "背景・ダンジョン",   cost: 30, img: "graphic/bg/sc/bg-dungeon.jpg",         desc: "対戦ホームの背景に「ダンジョン」を追加する。" },
   { id: "bg-hideout",     type: "bg", key: "hideout",     name: "背景・アジト",       cost: 30, img: "graphic/bg/sc/bg-hideout.jpg",         desc: "対戦ホームの背景に「アジト」を追加する。" },
   { id: "bg-basement",    type: "bg", key: "basement",    name: "背景・地下室",       cost: 30, img: "graphic/bg/sc/bg-basement.jpg",        desc: "対戦ホームの背景に「地下室」を追加する。" },
+  // げーむまてりあるず・白い雀荘シリーズ（高級ライン＝cost は通常背景の倍）。
+  { id: "bg-parlor",         type: "bg", key: "parlor",         name: "背景・雀荘",           cost: 60, img: "graphic/bg/sc/bg-parlor.jpg",         desc: "対戦ホームの背景に「雀荘」を追加する。白基調の明るい打ち場。" },
+  { id: "bg-parlornatural",  type: "bg", key: "parlornatural",  name: "背景・雀荘（木漏れ）", cost: 60, img: "graphic/bg/sc/bg-parlor-natural.jpg", desc: "対戦ホームの背景に「雀荘（木漏れ）」を追加する。木のぬくもりが灯る打ち場。" },
+  { id: "bg-parlorhall",     type: "bg", key: "parlorhall",     name: "背景・雀荘（大広間）", cost: 60, img: "graphic/bg/sc/bg-hall.jpg",           desc: "対戦ホームの背景に「雀荘（大広間）」を追加する。卓が並ぶ大会仕込みの広間。" },
+  { id: "bg-parlornoir",     type: "bg", key: "parlornoir",     name: "背景・雀荘（黒革）",   cost: 60, img: "graphic/bg/sc/bg-parlor-noir.jpg",    desc: "対戦ホームの背景に「雀荘（黒革）」を追加する。黒革の椅子が締める勝負の間。" },
   // BGM（解禁=対戦ホームで選べるようになる）。key は HOME_BGM_CHOICES のキー。価格は一律 25。
   { id: "bgm-kengeki", type: "bgm", key: "kengeki", name: "BGM・剣戟",   cost: 25, desc: "対戦ホームのBGMに「剣戟」を追加する。" },
   { id: "bgm-epic",    type: "bgm", key: "epic",    name: "BGM・勇壮",   cost: 25, desc: "対戦ホームのBGMに「勇壮」を追加する。" },

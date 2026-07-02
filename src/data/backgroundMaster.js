@@ -19,7 +19,7 @@ export const BACKGROUND_MASTER = {
   "bg-dojo-dusk":  { label: "道場（夕暮れ）",   gradient: "linear-gradient(160deg,#3a241a 0%,#7a3f24 45%,#2a160e 100%)" },
   "bg-dojo-night": { label: "道場（夜）",       gradient: "linear-gradient(160deg,#10141f 0%,#1b2233 60%,#0a0d15 100%)" },
   "bg-table":      { label: "雀卓（寄り）",     gradient: "radial-gradient(circle at 50% 40%,#246048 0%,#163a2b 80%)" },
-  "bg-hall":       { label: "大会会場",         gradient: "linear-gradient(160deg,#1b2536 0%,#2d3c54 55%,#0e151f 100%)" },
+  "bg-hall":       { label: "大会会場",         gradient: "linear-gradient(160deg,#1b2536 0%,#2d3c54 55%,#0e151f 100%)", img: "graphic/bg/sc/bg-hall.jpg" },
   "bg-corridor":   { label: "縁側・廊下",       gradient: "linear-gradient(160deg,#3a3326 0%,#56492f 55%,#241d12 100%)" },
   "bg-street":     { label: "街路",             gradient: "linear-gradient(160deg,#33384a 0%,#4a5168 60%,#20242f 100%)", img: `${BG_DIR}/bg-street.png` },
   "bg-rain":       { label: "雨・室内から",     gradient: "linear-gradient(160deg,#222a30 0%,#33414b 60%,#161c20 100%)" },
@@ -58,6 +58,9 @@ export const BACKGROUND_MASTER = {
   "bg-ruins":          { label: "廃墟の部屋",     gradient: "linear-gradient(160deg,#3a3630 0%,#4c463c 55%,#201d18 100%)", img: "graphic/bg/sc/bg-ruins.jpg" },
   // 暗い地下迷宮（くらげ氏／BOOTH・商用利用許可確認済み）。楼光「奈落」層に使用。
   "bg-dungeon":        { label: "暗い地下迷宮",   gradient: "linear-gradient(160deg,#1a1620 0%,#241d2e 55%,#0b0910 100%)", img: "graphic/bg/sc/bg-dungeon.jpg" },
+  // ── げーむまてりあるず素材（https://game-materials.com/ 商用可・加工可・クレジット任意）。
+  //    白基調の雀荘シリーズ。bg-hall の実画像（上記 img）も同シリーズ（卓が並ぶ大部屋）。
+  "bg-parlor":         { label: "雀荘（明るい）", gradient: "linear-gradient(160deg,#e8e4dc 0%,#cfc8bc 55%,#a89e8e 100%)", img: "graphic/bg/sc/bg-parlor.jpg" },
 };
 
 const DEFAULT = { label: "(未定義)", gradient: "linear-gradient(160deg,#2a2018,#1c140e)" };

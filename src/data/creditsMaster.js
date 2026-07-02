@@ -16,6 +16,7 @@ export const CREDITS_MASTER = {
         { role: "UI素材", name: "こぱんだ屋" },
         { role: "背景素材", name: "みんちりえ" },
         { role: "背景素材", name: "くらげ（BOOTH）" },
+        { role: "背景素材", name: "ゲームまてりあるず" },
         { role: "音楽素材", name: "PeriTune" },
         { role: "開発協力", name: "Claude（Anthropic）" },
       ],

@@ -59,6 +59,23 @@
 
 ---
 
+## 🖼 背景素材
+
+### げーむまてりあるず
+- サイト: https://game-materials.com/
+- ライセンス: 商用利用可・加工可。**クレジット表記は任意（推奨）**。素材としての再配布・販売は禁止。
+- 利用規約: https://game-materials.com/userpolicy/
+- クレジット例: `背景素材: ゲームまてりあるず（https://game-materials.com/）`
+
+| 用途 | ファイル | 素材 |
+|---|---|---|
+| シナリオ背景「大会会場」（bg-hall）＋ショップ背景「雀荘（大広間）」 | `graphic/bg/sc/bg-hall.jpg` | 白を基調とした雀荘 |
+| シナリオ背景「雀荘」（bg-parlor）＋ショップ背景「雀荘」 | `graphic/bg/sc/bg-parlor.jpg` | 白を基調とした雀荘 |
+| ショップ背景「雀荘（木漏れ）」 | `graphic/bg/sc/bg-parlor-natural.jpg` | 白を基調とした雀荘 |
+| ショップ背景「雀荘（黒革）」 | `graphic/bg/sc/bg-parlor-noir.jpg` | 白を基調とした雀荘 |
+
+---
+
 ## 🀄 グラフィック（牌 / キャラ / 背景 等）
 
 | 種別 | 場所 | 出典 |
@@ -66,7 +83,7 @@
 | 牌画像（萬子/筒子/索子/字牌・赤5・裏牌） | `graphic/tiles/`（`*.svg`） | **FluffyStuff / Riichi Mahjong Tiles** — **CC0**（パブリックドメイン／商用可・帰属表示不要）。https://github.com/FluffyStuff/riichi-mahjong-tiles |
 | キャラ立ち絵・アイコン | `graphic/chars/` | **r-id 氏（BOOTH）** の立ち絵素材がほとんど（https://booth.pm/ ＋「r-id」）。※各素材の利用規約（**商用利用・改変の可否**）は要確認 |
 | モブ（シルエット） | `graphic/chars/mobs/` | ❓要確認 |
-| 背景 | `graphic/bg/` | ❓要確認 |
+| 背景 | `graphic/bg/` | みんちりえ（`sc/` のほとんど）＋ げーむまてりあるず（雀荘4種・上記）＋ くらげ／BOOTH（`bg-dungeon`）。`bg-dojo`/`bg-street` は ❓要確認 |
 | 表情・エモート | `graphic/emo/` | ❓要確認 |
 
 ---

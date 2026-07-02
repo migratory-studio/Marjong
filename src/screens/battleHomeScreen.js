@@ -53,6 +53,11 @@ const HOME_BG_CHOICES = [
   { key: "dungeon",     label: "ダンジョン",   img: "graphic/bg/sc/bg-dungeon.jpg",         thumb: "graphic/bg/sc/bg-dungeon.jpg",         locked: true },
   { key: "hideout",     label: "アジト",       img: "graphic/bg/sc/bg-hideout.jpg",         thumb: "graphic/bg/sc/bg-hideout.jpg",         locked: true },
   { key: "basement",    label: "地下室",       img: "graphic/bg/sc/bg-basement.jpg",        thumb: "graphic/bg/sc/bg-basement.jpg",        locked: true },
+  // げーむまてりあるず・白い雀荘シリーズ（ショップの高級ライン）。
+  { key: "parlor",         label: "雀荘",           img: "graphic/bg/sc/bg-parlor.jpg",         thumb: "graphic/bg/sc/bg-parlor.jpg",         locked: true },
+  { key: "parlornatural",  label: "雀荘（木漏れ）", img: "graphic/bg/sc/bg-parlor-natural.jpg", thumb: "graphic/bg/sc/bg-parlor-natural.jpg", locked: true },
+  { key: "parlorhall",     label: "雀荘（大広間）", img: "graphic/bg/sc/bg-hall.jpg",           thumb: "graphic/bg/sc/bg-hall.jpg",           locked: true },
+  { key: "parlornoir",     label: "雀荘（黒革）",   img: "graphic/bg/sc/bg-parlor-noir.jpg",    thumb: "graphic/bg/sc/bg-parlor-noir.jpg",    locked: true },
 ];
 
 // 解禁判定。locked でなければ常に解放。locked は宝珠ショップで買った key（profile.unlocked*）を見る。
