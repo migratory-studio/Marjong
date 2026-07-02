@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<!-- base=repo root: styles.css / graphic/ / sound/ の相対パスが本体と同じに解決される。
+     module import も base 基準（"./src/..."）。 -->
+<base href="../" />
+<title>シナリオ・エディター（紙芝居プレビュー付き）</title>
+<!-- 本体の styles.css を読み込む＝ .sc-* （紙芝居）の見た目がゲームと完全一致。
+     エディター側のUIは下の <style> の --ed-* 変数系で分離（本体の :root 変数は汚さない）。 -->
+<link rel="stylesheet" href="styles.css" />
+<style>
+  :root { --ed-bg:#0f1115; --ed-panel:#1a1d24; --ed-panel2:#13161c; --ed-ink:#e8eaed; --ed-muted:#9aa0a8; --ed-accent:#6cc6ff; --ed-warn:#ffcf6c; --ed-err:#ff7a7a; --ed-ok:#7ee0a5; --ed-line:#2a2f3a; }
+  html, body { overflow: hidden; }
+  body { margin:0; background:var(--ed-bg); color:var(--ed-ink); font:13px/1.5 system-ui, "Segoe UI", sans-serif; }
+  header { padding:8px 14px; border-bottom:1px solid var(--ed-line); display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  header h1 { font-size:15px; margin:0 8px 0 0; font-weight:700; letter-spacing:.02em; }
+  .row { display:flex; align-items:center; gap:6px; }
+  label { color:var(--ed-muted); }
+  select, input[type=text], input[type=number], textarea {
+    background:#11141a; color:var(--ed-ink); border:1px solid var(--ed-line); border-radius:6px; padding:4px 6px; font:inherit;
+  }
+  input[type=number] { width:70px; }
+  textarea { width:100%; resize:vertical; line-height:1.5; }
+  button { background:var(--ed-accent); color:#06212e; border:none; border-radius:6px; padding:6px 11px; font-weight:700; cursor:pointer; font:inherit; font-weight:700; }
+  button.ghost { background:transparent; color:var(--ed-ink); border:1px solid var(--ed-line); font-weight:600; }
+  button.mini { padding:3px 7px; font-size:12px; }
+  button.danger { background:transparent; color:var(--ed-err); border:1px solid #5a2a2a; }
+  button:disabled { opacity:.4; cursor:not-allowed; }
+  .pill { padding:2px 9px; border:1px solid var(--ed-line); border-radius:999px; color:var(--ed-muted); font-size:12px; }
+  small.hint { color:var(--ed-muted); }
+  kbd { background:#11141a; border:1px solid var(--ed-line); border-radius:4px; padding:1px 5px; font-size:11px; }
+
+  /* ※本体 styles.css を同居させるため、汎用名(.side等)は使わず ed- プレフィックスで衝突回避 */
+  main { display:grid; grid-template-columns: 1fr 660px; height:calc(100vh - 50px); }
+  .ed-list { padding:12px 14px; overflow:auto; }
+  .ed-side { border-left:1px solid var(--ed-line); padding:12px 14px; overflow-y:auto; overflow-x:hidden; background:var(--ed-panel2); }
+  .ed-side h3 { font-size:13px; margin:0 0 8px; color:var(--ed-accent); }
+  .ed-side section { margin-bottom:18px; }
+
+  /* ---- 行カード ---- */
+  .lcard { border:1px solid var(--ed-line); border-radius:8px; background:var(--ed-panel); margin-bottom:8px; padding:8px 10px; }
+  .lcard.sel { border-color:var(--ed-accent); box-shadow:0 0 0 1px var(--ed-accent); }
+  .lhead { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+  .lno { font-weight:700; color:var(--ed-accent); min-width:2.2em; }
+  .lbadge { font-size:11px; color:var(--ed-muted); border:1px solid var(--ed-line); border-radius:999px; padding:1px 8px; }
+  .lops { margin-left:auto; display:flex; gap:4px; }
+  .lrow { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-top:5px; font-size:12px; }
+  .lrow label { font-size:11px; }
+  /* ラベル＋コントロールを1塊にして折返し時に泣き別れしない */
+  .fld { display:inline-flex; align-items:center; gap:4px; white-space:nowrap; }
+  .fld select { max-width:230px; }
+  .stline { display:flex; align-items:center; gap:4px; flex-wrap:wrap; border:1px dashed var(--ed-line); border-radius:6px; padding:3px 6px; }
+  .stline input[type=text] { width:110px; font-size:12px; }
+  .empty { color:var(--ed-muted); padding:24px; text-align:center; }
+
+  /* ---- プレビュー枠：1280×720 の本物ステージを縮小表示 ---- */
+  .pv-frame { position:relative; overflow:hidden; border:1px solid var(--ed-line); border-radius:8px; background:#000; }
+  .pv-stage { position:relative; width:var(--stage-w); height:var(--stage-h); transform-origin:top left; background:#101410; }
+  .pv-idle { position:absolute; inset:0; z-index:60; display:flex; align-items:center; justify-content:center;
+             color:#c9d2c9; font-size:28px; background:rgba(8,10,8,.72); pointer-events:none; }
+  .pv-idle.hidden { display:none; }
+
+  .vlist { list-style:none; margin:6px 0 0; padding:0; font-size:12px; }
+  .vlist li { padding:4px 8px; border-radius:6px; margin-bottom:3px; }
+  .vlist li.err { background:#2a1414; color:var(--ed-err); }
+  .vlist li.warn { background:#2a2410; color:var(--ed-warn); }
+  .vlist li.ok { background:#0f2418; color:var(--ed-ok); }
+  .codebox { width:100%; min-height:160px; max-height:340px; background:#0a0c10; color:#cfe6ff; font:12px/1.5 ui-monospace, "Cascadia Code", monospace; border:1px solid var(--ed-line); border-radius:8px; padding:10px; white-space:pre; overflow:auto; }
+  .metagrid { display:grid; grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr); gap:6px 8px; align-items:center; font-size:12px; }
+  .metagrid input, .metagrid select { min-width:0; width:100%; }
+  .metagrid input[type=checkbox] { width:auto; }
+  .metagrid textarea { grid-column: 2 / 5; }
+  .toast { position:fixed; bottom:18px; left:50%; transform:translateX(-50%); background:var(--ed-ok); color:#062014; padding:9px 18px; border-radius:999px; font-weight:700; opacity:0; transition:opacity .2s; pointer-events:none; z-index:99; }
+  .toast.show { opacity:1; }
+  .draftbar { background:#2a2410; color:var(--ed-warn); border:1px solid #5a4326; border-radius:8px; padding:6px 10px; display:flex; align-items:center; gap:10px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>シナリオ・エディター</h1>
+  <div class="row"><label>シナリオ</label><select id="scnSel"></select></div>
+  <button class="ghost mini" id="newBtn">新規作成</button>
+  <span class="pill" id="stat">—</span>
+  <div class="draftbar" id="draftBar" style="display:none">
+    <span>前回の未保存の編集があります</span>
+    <button class="mini" id="draftRestore">復元</button>
+    <button class="ghost mini" id="draftDiscard">破棄</button>
+  </div>
+  <small class="hint" style="margin-left:auto">編集→右の「JSON生成」でコピー/DL。マスタは<b>上書きされません</b>（貼り戻し方式）。</small>
+</header>
+
+<main>
+  <div class="ed-list" id="lineList"></div>
+
+  <div class="ed-side">
+    <section>
+      <h3>プレビュー（本物の紙芝居プレイヤー）</h3>
+      <div class="pv-frame" id="pvFrame">
+        <div class="pv-stage" id="pvStage">
+          <div id="scenario-screen" class="hidden"></div>
+          <div class="pv-idle" id="pvIdle">▶ で再生／行を選ぶとその行を表示</div>
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px; gap:8px; flex-wrap:wrap">
+        <button class="mini" id="pvPlayAll">▶ 最初から</button>
+        <button class="mini" id="pvPlaySel" disabled>▶ 選択行から</button>
+        <button class="ghost mini" id="pvStop">■ 停止</button>
+        <button class="ghost mini" id="sndBtn">🔊 音ON</button>
+        <label class="row" style="gap:4px"><input type="checkbox" id="autoPv" checked />編集を自動反映</label>
+      </div>
+      <small class="hint">クリックで進行・演出/エモート/BGM/SE込みでゲームと同じ再生。</small>
+    </section>
+
+    <section>
+      <h3>シナリオ情報（メタ）</h3>
+      <div class="metagrid" id="metaGrid"></div>
+    </section>
+
+    <section>
+      <h3>検証</h3>
+      <ul class="vlist" id="valOut"></ul>
+    </section>
+
+    <section>
+      <h3>出力（貼り戻し用・非破壊）</h3>
+      <div class="row" style="gap:6px; margin-bottom:8px; flex-wrap:wrap">
+        <button class="mini" id="genJsonBtn">forge JSON生成</button>
+        <button class="mini ghost" id="genJsBtn">インラインJS生成</button>
+        <button class="ghost mini" id="copyBtn" disabled>コピー</button>
+        <button class="ghost mini" id="dlBtn" disabled>ダウンロード</button>
+      </div>
+      <small class="hint">
+        JSON → <kbd>scenario-forge/output/&lt;scenarioId&gt;.json</kbd> に置き、<kbd>emit-master.mjs</kbd> で本体へ反映。<br />
+        インラインJS → <kbd>playScenario("id", { lines })</kbd> で直接再生（楼光の館などマスタ非経由の口上向け）。
+      </small>
+      <div class="codebox" id="codeOut" style="margin-top:8px">（未生成）</div>
+    </section>
+
+    <section>
+      <h3>JSONインポート</h3>
+      <textarea id="impText" rows="4" placeholder='{"scenario":{...},"lines":[...]} または行配列 [...] を貼り付け'></textarea>
+      <div class="row" style="margin-top:6px"><button class="mini ghost" id="impBtn">読み込む</button></div>
+    </section>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { SCENARIO_MASTER } from "./src/data/scenarioMaster.js";
+import { SCENARIO_LINE_MASTER } from "./src/data/scenarioLineMaster.js";
+import { CHARACTER_MASTER } from "./src/data/characterMaster.js";
+import { BACKGROUND_MASTER } from "./src/data/backgroundMaster.js";
+import { BGM_MASTER, SE_MASTER } from "./src/data/scenarioAudioMaster.js";
+import { EMOTE_MASTER } from "./src/data/emoteMaster.js";
+import { playScenario } from "./src/scenario/scenarioPlayer.js";
+
+// ── 語彙（scenario-forge/reference/vocab.json と同期。素材系は本体マスタから動的に導出）──
+const CH_FX = ["none","jump","shake","fade_in","fade_out"];
+const SC_FX = ["none","flash","shake","fade_in","fade_out"];
+const FX_LABEL = { none:"なし", jump:"ジャンプ", shake:"シェイク", fade_in:"フェードイン", fade_out:"フェードアウト", flash:"フラッシュ" };
+const POSITIONS = [["left","左"],["center","中"],["right","右"]];
+const STANDING_IDS = [["default","標準"],["smile","笑顔"],["serious","真剣"],["surprised","驚き"]];
+const SCENARIO_TYPES = ["bond","ability_guide","tournament_before","tournament_after","ability_change","event","tutorial"];
+const CUSTOM = "__custom"; // 立ち絵URL直指定（モブ等）のセンチネル
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
+const deep = (o) => JSON.parse(JSON.stringify(o));
+
+// ── データモデル ─────────────────────────────────────────────
+function newMeta() {
+  return { scenarioId:"my-scenario-01", mentorCharacterId:"shiyue", title:"無題", scenarioType:"bond",
+    unlockConditions:[{ type:"always" }], firstReadReward:{ soul:100 }, sortOrder:10, isEnabled:true, scenarioVersion:1 };
+}
+function newLine(prev) {
+  // ステートレスVN方式: 背景と立ち絵は前行から引き継いでコピーするのが自然な執筆フロー。
+  return { backgroundId: prev?.backgroundId || "bg-dojo", standings: prev ? deep(prev.standings || []) : [],
+    speakerCharacterId: prev?.speakerCharacterId ?? null, speakerNameOverride:null, text:"",
+    characterEffect:"none", screenEffect:"none", effectDurationMs:0, bgmId:"", seId:"", emoteId:"" };
+}
+let model = { scenario:newMeta(), lines:[newLine(null)] };
+let selIdx = 0;
+let dirty = false;
+
+// ── ドラフト自動保存（localStorage・単一スロット）────────────────────
+const DRAFT_KEY = "scenario-editor-draft";
+let saveTimer = null;
+function scheduleSave() {
+  dirty = true;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ model, ts:Date.now() })); } catch {}
+  }, 800);
+}
+window.addEventListener("beforeunload", (e) => { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+
+// ── プレビュー：本物の playScenario を縮小ステージに埋め込む ───────────
+// 多重起動対策: 前回の実行は「目録」ボタン相当の finish() を踏ませてから、ノードごと
+// 作り直す（古い click リスナー/タイマーを道連れにする）。onEnd は世代トークンで無効化。
+let runGen = 0;
+const audioShim = {
+  enabled: true, _bgm: null, currentBgmSrc: null,
+  playBgm(src) {
+    this.currentBgmSrc = src;
+    if (!this.enabled || !src) return;
+    if (this._bgm && this._bgm._src === src && !this._bgm.paused) return;
+    this._stop();
+    const a = new Audio(src); a._src = src; a.loop = true; a.volume = .45;
+    a.play().catch(() => {});
+    this._bgm = a;
+  },
+  stopBgm() { this.currentBgmSrc = null; this._stop(); },
+  _stop() { if (this._bgm) { this._bgm.pause(); this._bgm = null; } },
+  playSe(src) { if (!this.enabled || !src) return; const a = new Audio(src); a.volume = .65; a.play().catch(() => {}); },
+};
+function freshScreen() {
+  const old = $("scenario-screen");
+  const nu = document.createElement("div");
+  nu.id = "scenario-screen"; nu.className = "hidden";
+  old.replaceWith(nu);
+}
+function stopPreview(msg) {
+  runGen++;
+  const btn = document.querySelector("#scenario-screen .sc-sys-menu");
+  if (btn) btn.click(); // finish(): タイマー/リスナー/エモートを正規手順で掃除
+  audioShim.stopBgm();
+  freshScreen();
+  showIdle(msg ?? "▶ で再生／行を選ぶとその行を表示");
+}
+function showIdle(msg) { const el = $("pvIdle"); el.textContent = msg; el.classList.remove("hidden"); }
+function hideIdle() { $("pvIdle").classList.add("hidden"); }
+
+function normalizeForPlay(l, no) {
+  const out = deep(l);
+  out.lineNo = no;
+  out.speakerCharacterId = l.speakerCharacterId || null;
+  out.speakerNameOverride = l.speakerNameOverride || null;
+  if (!l.bgmId) delete out.bgmId;
+  if (!l.seId) delete out.seId;
+  if (!l.emoteId) delete out.emoteId;
+  return out;
+}
+function playFrom(start, single = false) {
+  stopPreview();
+  const src = model.lines.slice(start, single ? start + 1 : undefined)
+    .map((l, k) => normalizeForPlay(l, start + k + 1));
+  if (src.length === 0) return;
+  hideIdle();
+  const g = ++runGen;
+  playScenario("preview", {
+    lines: src,
+    audio: audioShim,
+    onEnd: () => { if (g !== runGen) return; audioShim.stopBgm(); showIdle("再生終了"); },
+  });
+  // 単行スナップショットは進捗の分母がスライス長(1)になるので全体行数に読み替える。
+  if (single) {
+    const p = document.querySelector("#scenario-screen .sc-progress");
+    if (p) p.textContent = `${start + 1} / ${model.lines.length}（行プレビュー）`;
+  }
+}
+
+// プレビュー枠を右ペイン幅に合わせて縮小（1280×720 を transform:scale）。
+// レイアウト確定タイミングに依存しないよう ResizeObserver で追従する。
+function fitPreview() {
+  const frame = $("pvFrame"), stage = $("pvStage");
+  const w = frame.clientWidth;
+  if (!w) return;
+  const s = w / 1280;
+  stage.style.transform = `scale(${s})`;
+  frame.style.height = `${Math.round(720 * s)}px`;
+}
+new ResizeObserver(fitPreview).observe($("pvFrame"));
+
+// 自動反映: 編集した行のスナップショットをデバウンス表示。
+let pvTimer = null;
+function schedulePv(idx) {
+  if (!$("autoPv").checked) return;
+  clearTimeout(pvTimer);
+  pvTimer = setTimeout(() => playFrom(idx, true), 450);
+}
+
+// ── セレクト用オプション生成 ───────────────────────────────────
+const opt = (v, label, sel) => `<option value="${esc(v)}"${String(v) === String(sel ?? "") ? " selected" : ""}>${esc(label)}</option>`;
+const charOpts = (sel, withEmpty, withCustom) =>
+  (withEmpty ? opt("", "（なし＝地の文）", sel) : "") +
+  CHARACTER_MASTER.map((c) => opt(c.id, `${c.name}（${c.id}）`, sel)).join("") +
+  (withCustom ? opt(CUSTOM, "✎ URL直指定（モブ等）", sel) : "");
+const bgOpts = (sel) => Object.entries(BACKGROUND_MASTER).map(([id, d]) => opt(id, `${d.img ? "🖼 " : ""}${id}｜${d.label}`, sel)).join("");
+const bgmOpts = (sel) => opt("", "（継続＝指定なし）", sel) + Object.entries(BGM_MASTER).map(([id, d]) => opt(id, `${id}｜${d.label}`, sel)).join("");
+const seOpts = (sel) => opt("", "（なし）", sel) + Object.entries(SE_MASTER).map(([id, d]) => opt(id, `${id}｜${d.label}`, sel)).join("");
+const emoteOpts = (sel) => opt("", "（なし）", sel) + Object.values(EMOTE_MASTER).map((d) => opt(d.emoteId, `${d.emoteId}｜${d.label}`, sel)).join("");
+const fxOpts = (list, sel) => list.map((v) => opt(v, FX_LABEL[v] || v, sel)).join("");
+const exprOpts = (chId, sel) => {
+  const ch = charById(chId);
+  return STANDING_IDS.map(([v, la]) => opt(v, `${la}${ch?.assets?.portraits?.[v] ? "●" : ""}`, sel)).join("");
+};
+
+// ── 行リスト描画 ─────────────────────────────────────────────
+function standingRow(st, i, si) {
+  const isCustom = !!st.portraitSrc || !charById(st.characterId);
+  const charSel = `<select data-f="st-char" data-idx="${i}" data-sidx="${si}">${charOpts(isCustom ? CUSTOM : st.characterId, false, true)}</select>`;
+  const customFields = isCustom ? `
+      <input type="text" data-f="st-id" data-idx="${i}" data-sidx="${si}" value="${esc(st.characterId)}" placeholder="id（例:mob-a）" style="width:90px" />
+      <input type="text" data-f="st-src" data-idx="${i}" data-sidx="${si}" value="${esc(st.portraitSrc || "")}" placeholder="立ち絵URL" />
+      <input type="text" data-f="st-name" data-idx="${i}" data-sidx="${si}" value="${esc(st.name || "")}" placeholder="表示名" style="width:80px" />` : "";
+  return `<span class="stline">
+      ${charSel}${customFields}
+      <select data-f="st-pos" data-idx="${i}" data-sidx="${si}">${POSITIONS.map(([v, la]) => opt(v, la, st.position)).join("")}</select>
+      <select data-f="st-expr" data-idx="${i}" data-sidx="${si}">${exprOpts(st.characterId, st.standingId || "default")}</select>
+      <button class="ghost mini" data-act="st-del" data-idx="${i}" data-sidx="${si}" title="この立ち絵を外す">×</button>
+    </span>`;
+}
+function lineCard(l, i) {
+  const sp = l.speakerCharacterId ? (charById(l.speakerCharacterId)?.name || l.speakerCharacterId) : "地の文";
+  const needStand = l.speakerCharacterId && !(l.standings || []).some((s) => s.characterId === l.speakerCharacterId);
+  return `<div class="lcard${i === selIdx ? " sel" : ""}" data-card="${i}">
+    <div class="lhead">
+      <span class="lno">${i + 1}</span>
+      <span class="lbadge">${esc(sp)}</span>
+      <span class="lbadge">${esc(l.backgroundId)}</span>
+      ${l.bgmId ? `<span class="lbadge">♪${esc(l.bgmId)}</span>` : ""}
+      <div class="lops">
+        <button class="ghost mini" data-act="play-from" data-idx="${i}" title="この行から再生">▶</button>
+        <button class="ghost mini" data-act="up" data-idx="${i}" ${i === 0 ? "disabled" : ""}>↑</button>
+        <button class="ghost mini" data-act="down" data-idx="${i}" ${i === model.lines.length - 1 ? "disabled" : ""}>↓</button>
+        <button class="ghost mini" data-act="dup" data-idx="${i}">複製</button>
+        <button class="ghost mini" data-act="ins" data-idx="${i}">＋下に</button>
+        <button class="danger mini" data-act="del" data-idx="${i}">削除</button>
+      </div>
+    </div>
+    <textarea data-f="text" data-idx="${i}" rows="2" placeholder="本文（空行は検証で警告）">${esc(l.text)}</textarea>
+    <div class="lrow">
+      <span class="fld"><label>話者</label><select data-f="speaker" data-idx="${i}">${charOpts(l.speakerCharacterId || "", true, false)}</select></span>
+      <span class="fld"><label>名前上書き</label><input type="text" data-f="nameOv" data-idx="${i}" value="${esc(l.speakerNameOverride || "")}" placeholder="（???等）" style="width:90px" /></span>
+      ${needStand ? `<button class="ghost mini" data-act="speaker-stand" data-idx="${i}">話者を立たせる</button>` : ""}
+    </div>
+    <div class="lrow">
+      <label>立ち絵</label>
+      ${(l.standings || []).map((st, si) => standingRow(st, i, si)).join("")}
+      <button class="ghost mini" data-act="st-add" data-idx="${i}" ${(l.standings || []).length >= 3 ? "disabled" : ""}>＋立ち絵</button>
+    </div>
+    <div class="lrow">
+      <span class="fld"><label>背景</label><select data-f="bg" data-idx="${i}">${bgOpts(l.backgroundId)}</select></span>
+      <span class="fld"><label>BGM</label><select data-f="bgm" data-idx="${i}">${bgmOpts(l.bgmId || "")}</select></span>
+      <span class="fld"><label>SE</label><select data-f="se" data-idx="${i}">${seOpts(l.seId || "")}</select></span>
+      <span class="fld"><label>エモート</label><select data-f="emote" data-idx="${i}">${emoteOpts(l.emoteId || "")}</select></span>
+    </div>
+    <div class="lrow">
+      <span class="fld"><label>立ち絵演出</label><select data-f="chfx" data-idx="${i}">${fxOpts(CH_FX, l.characterEffect || "none")}</select></span>
+      <span class="fld"><label>画面演出</label><select data-f="scfx" data-idx="${i}">${fxOpts(SC_FX, l.screenEffect || "none")}</select></span>
+      <span class="fld"><label>長さms</label><input type="number" data-f="durms" data-idx="${i}" value="${Number(l.effectDurationMs) || 0}" min="0" step="50" /></span>
+    </div>
+  </div>`;
+}
+function renderList() {
+  const el = $("lineList");
+  el.innerHTML = model.lines.length
+    ? model.lines.map((l, i) => lineCard(l, i)).join("")
+    : `<div class="empty">行がありません。「＋最初の行」で追加。</div><div style="text-align:center"><button data-act="ins" data-idx="-1">＋最初の行</button></div>`;
+  $("stat").textContent = `${model.scenario.scenarioId}｜${model.lines.length}行`;
+  $("pvPlaySel").disabled = model.lines.length === 0;
+  renderValidation();
+}
+function selectCard(i, pv = true) {
+  if (i < 0 || i >= model.lines.length) return;
+  const prev = document.querySelector(".lcard.sel");
+  if (prev) prev.classList.remove("sel");
+  selIdx = i;
+  document.querySelector(`.lcard[data-card="${i}"]`)?.classList.add("sel");
+  $("pvPlaySel").disabled = false;
+  if (pv) schedulePv(i);
+}
+
+// ── 行リストのイベント（委譲）───────────────────────────────────
+$("lineList").addEventListener("click", (ev) => {
+  const btn = ev.target.closest("button[data-act]");
+  if (btn) {
+    const i = Number(btn.dataset.idx);
+    const act = btn.dataset.act;
+    if (act === "play-from") { selectCard(i, false); playFrom(i); return; }
+    if (act === "ins") { model.lines.splice(i + 1, 0, newLine(model.lines[i] || null)); selIdx = i + 1; }
+    else if (act === "dup") { model.lines.splice(i + 1, 0, deep(model.lines[i])); selIdx = i + 1; }
+    else if (act === "del") { model.lines.splice(i, 1); selIdx = Math.min(selIdx, model.lines.length - 1); }
+    else if (act === "up" && i > 0) { [model.lines[i - 1], model.lines[i]] = [model.lines[i], model.lines[i - 1]]; selIdx = i - 1; }
+    else if (act === "down" && i < model.lines.length - 1) { [model.lines[i + 1], model.lines[i]] = [model.lines[i], model.lines[i + 1]]; selIdx = i + 1; }
+    else if (act === "st-add") { (model.lines[i].standings ||= []).push({ characterId: model.lines[i].speakerCharacterId || CHARACTER_MASTER[0].id, position: "center", standingId: "default" }); selIdx = i; }
+    else if (act === "st-del") { model.lines[i].standings.splice(Number(btn.dataset.sidx), 1); selIdx = i; }
+    else if (act === "speaker-stand") { (model.lines[i].standings ||= []).push({ characterId: model.lines[i].speakerCharacterId, position: "center", standingId: "default" }); selIdx = i; }
+    scheduleSave(); renderList(); schedulePv(selIdx);
+    return;
+  }
+  const card = ev.target.closest(".lcard");
+  if (card) selectCard(Number(card.dataset.card));
+});
+$("lineList").addEventListener("input", (ev) => {
+  const t = ev.target;
+  const f = t.dataset.f;
+  if (!f) return;
+  const i = Number(t.dataset.idx);
+  const l = model.lines[i];
+  if (!l) return;
+  const si = t.dataset.sidx !== undefined ? Number(t.dataset.sidx) : -1;
+  const st = si >= 0 ? l.standings[si] : null;
+  let structural = false;
+  switch (f) {
+    case "text": l.text = t.value; break;
+    case "speaker": l.speakerCharacterId = t.value || null; structural = true; break;
+    case "nameOv": l.speakerNameOverride = t.value || null; break;
+    case "bg": l.backgroundId = t.value; structural = true; break;
+    case "bgm": l.bgmId = t.value; structural = true; break;
+    case "se": l.seId = t.value; break;
+    case "emote": l.emoteId = t.value; break;
+    case "chfx": l.characterEffect = t.value; break;
+    case "scfx": l.screenEffect = t.value; break;
+    case "durms": l.effectDurationMs = Math.max(0, Number(t.value) || 0); break;
+    case "st-char":
+      if (t.value === CUSTOM) { l.standings[si] = { characterId: "mob-a", portraitSrc: "", name: "", position: st.position, standingId: st.standingId }; }
+      else { l.standings[si] = { characterId: t.value, position: st.position, standingId: st.standingId || "default" }; }
+      structural = true; break;
+    case "st-id": st.characterId = t.value; break;
+    case "st-src": st.portraitSrc = t.value; break;
+    case "st-name": st.name = t.value; break;
+    case "st-pos": st.position = t.value; break;
+    case "st-expr": st.standingId = t.value; break;
+  }
+  scheduleSave();
+  if (structural) { renderList(); selectCard(i, false); }
+  selIdx = i;
+  schedulePv(i);
+  renderValidation();
+});
+
+// ── メタ編集 ────────────────────────────────────────────────
+function renderMeta() {
+  const m = model.scenario;
+  $("metaGrid").innerHTML = `
+    <label>scenarioId</label><input type="text" data-m="scenarioId" value="${esc(m.scenarioId)}" />
+    <label>タイトル</label><input type="text" data-m="title" value="${esc(m.title)}" />
+    <label>師匠</label><select data-m="mentorCharacterId">${charOpts(m.mentorCharacterId || "", true, false)}</select>
+    <label>種別</label><select data-m="scenarioType">${SCENARIO_TYPES.map((v) => opt(v, v, m.scenarioType)).join("")}</select>
+    <label>sortOrder</label><input type="number" data-m="sortOrder" value="${Number(m.sortOrder) || 0}" />
+    <label>version</label><input type="number" data-m="scenarioVersion" value="${Number(m.scenarioVersion) || 1}" min="1" />
+    <label>初読ソウル</label><input type="number" data-m="soul" value="${Number(m.firstReadReward?.soul) || 0}" step="10" />
+    <label>有効</label><input type="checkbox" data-m="isEnabled" ${m.isEnabled ? "checked" : ""} style="justify-self:start" />
+    <label>解放条件</label><textarea data-m="unlock" rows="2" spellcheck="false">${esc(JSON.stringify(m.unlockConditions))}</textarea>`;
+}
+$("metaGrid").addEventListener("input", (ev) => {
+  const t = ev.target, m = model.scenario, f = t.dataset.m;
+  if (!f) return;
+  if (f === "soul") m.firstReadReward = { soul: Number(t.value) || 0 };
+  else if (f === "isEnabled") m.isEnabled = t.checked;
+  else if (f === "sortOrder" || f === "scenarioVersion") m[f] = Number(t.value) || 0;
+  else if (f === "unlock") { try { m.unlockConditions = JSON.parse(t.value); t.style.borderColor = ""; } catch { t.style.borderColor = "var(--ed-err)"; } }
+  else m[f] = t.value;
+  if (f === "scenarioId") $("stat").textContent = `${m.scenarioId}｜${model.lines.length}行`;
+  scheduleSave(); renderValidation();
+});
+
+// ── 検証 ───────────────────────────────────────────────────
+function validate() {
+  const out = [];
+  const m = model.scenario;
+  if (!/^[a-z0-9][a-z0-9-]*$/.test(m.scenarioId)) out.push(["err", `scenarioId が不正: "${m.scenarioId}"（小文字英数とハイフン）`]);
+  if (!Array.isArray(m.unlockConditions)) out.push(["err", "unlockConditions が配列ではありません"]);
+  if (SCENARIO_MASTER.some((s) => s.scenarioId === m.scenarioId)) out.push(["warn", `scenarioId "${m.scenarioId}" は既存シナリオと同一（上書き更新なら意図どおり）`]);
+  model.lines.forEach((l, i) => {
+    const n = i + 1;
+    if (!l.text || !l.text.trim()) out.push(["warn", `${n}行目: 本文が空`]);
+    if (!BACKGROUND_MASTER[l.backgroundId]) out.push(["err", `${n}行目: 未定義の背景 "${l.backgroundId}"`]);
+    if (l.bgmId && !BGM_MASTER[l.bgmId]) out.push(["err", `${n}行目: 未定義のBGM "${l.bgmId}"`]);
+    if (l.seId && !SE_MASTER[l.seId]) out.push(["err", `${n}行目: 未定義のSE "${l.seId}"`]);
+    if (l.emoteId && !EMOTE_MASTER[l.emoteId]) out.push(["err", `${n}行目: 未定義のエモート "${l.emoteId}"`]);
+    const sts = l.standings || [];
+    if (sts.length > 3) out.push(["err", `${n}行目: 立ち絵が4体以上（最大3）`]);
+    const ids = sts.map((s) => s.characterId);
+    if (new Set(ids).size !== ids.length) out.push(["err", `${n}行目: 立ち絵の characterId が重複`]);
+    for (const st of sts) {
+      const isCustom = "portraitSrc" in st;
+      if (!isCustom && !charById(st.characterId)) out.push(["err", `${n}行目: 未定義キャラ "${st.characterId}"（URL直指定なら立ち絵URLを入力）`]);
+      if (isCustom && !st.portraitSrc) out.push(["warn", `${n}行目: "${st.characterId}" の立ち絵URLが空（表示されません）`]);
+    }
+    if (l.speakerCharacterId && !sts.some((s) => s.characterId === l.speakerCharacterId))
+      out.push(["warn", `${n}行目: 話者 "${l.speakerCharacterId}" が立ち絵に不在（画面外からの声なら意図どおり）`]);
+    if (l.emoteId && !l.speakerCharacterId) out.push(["warn", `${n}行目: エモートは話者の頭上に出ます（地の文では中央上に出ます）`]);
+  });
+  return out;
+}
+function renderValidation() {
+  const v = validate();
+  $("valOut").innerHTML = v.length
+    ? v.map(([lv, msg]) => `<li class="${lv}">${esc(msg)}</li>`).join("")
+    : `<li class="ok">問題なし</li>`;
+}
+
+// ── 出力生成（貼り戻し方式・マスタは上書きしない）──────────────────
+function cleanStanding(st) {
+  const out = { characterId: st.characterId, position: st.position, standingId: st.standingId || "default" };
+  if (st.portraitSrc) out.portraitSrc = st.portraitSrc;
+  if (st.name) out.name = st.name;
+  return out;
+}
+function buildLines() {
+  return model.lines.map((l, i) => {
+    const out = {
+      lineNo: i + 1,
+      backgroundId: l.backgroundId,
+      standings: (l.standings || []).map(cleanStanding),
+      speakerCharacterId: l.speakerCharacterId || null,
+      speakerNameOverride: l.speakerNameOverride || null,
+      text: l.text || "",
+      characterEffect: l.characterEffect || "none",
+      screenEffect: l.screenEffect || "none",
+      effectDurationMs: Number(l.effectDurationMs) || 0,
+    };
+    if (l.bgmId) out.bgmId = l.bgmId;
+    if (l.seId) out.seId = l.seId;
+    if (l.emoteId) out.emoteId = l.emoteId;
+    return out;
+  });
+}
+let genKind = null; // "json" | "js"（ダウンロード時の拡張子判定）
+function genJson() {
+  const data = { scenario: deep(model.scenario), lines: buildLines() };
+  $("codeOut").textContent = JSON.stringify(data, null, 2);
+  genKind = "json";
+  $("copyBtn").disabled = $("dlBtn").disabled = false;
+}
+function genJs() {
+  const name = model.scenario.scenarioId.replace(/-/g, "_").toUpperCase() + "_LINES";
+  const body = JSON.stringify(buildLines(), null, 2);
+  $("codeOut").textContent =
+    `// ${model.scenario.title} — scenario-forge 非経由のインライン再生用（scenario-editor 生成）\n` +
+    `// 使い方: playScenario("${model.scenario.scenarioId}", { lines: ${name}, audio, onEnd });\n` +
+    `export const ${name} = ${body};\n`;
+  genKind = "js";
+  $("copyBtn").disabled = $("dlBtn").disabled = false;
+}
+$("genJsonBtn").addEventListener("click", genJson);
+$("genJsBtn").addEventListener("click", genJs);
+$("copyBtn").addEventListener("click", async () => {
+  await navigator.clipboard.writeText($("codeOut").textContent);
+  toast("コピーしました");
+});
+$("dlBtn").addEventListener("click", () => {
+  const ext = genKind === "js" ? "js" : "json";
+  const blob = new Blob([$("codeOut").textContent], { type: "text/plain;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `${model.scenario.scenarioId}.${ext}`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  dirty = false;
+});
+
+// ── 読み込み（既存シナリオ / JSONインポート / 新規）──────────────────
+function loadExisting(id) {
+  const meta = SCENARIO_MASTER.find((s) => s.scenarioId === id);
+  if (!meta) return;
+  const lines = SCENARIO_LINE_MASTER.filter((l) => l.scenarioId === id)
+    .slice().sort((a, b) => a.lineNo - b.lineNo)
+    .map(({ scenarioId, lineNo, ...rest }) => ({ bgmId: "", seId: "", emoteId: "", ...deep(rest) }));
+  model = { scenario: deep(meta), lines };
+  selIdx = 0; dirty = false;
+  stopPreview();
+  renderMeta(); renderList();
+}
+function fillScnSel() {
+  const groups = new Map();
+  for (const s of SCENARIO_MASTER) {
+    const key = s.mentorCharacterId || "（共通）";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(s);
+  }
+  let html = `<option value="">— 既存から読み込む —</option>`;
+  for (const [mid, list] of groups) {
+    const name = charById(mid)?.name || mid;
+    html += `<optgroup label="${esc(name)}">` +
+      list.slice().sort((a, b) => a.sortOrder - b.sortOrder)
+        .map((s) => `<option value="${esc(s.scenarioId)}">${esc(s.title)}（${esc(s.scenarioId)}）</option>`).join("") +
+      `</optgroup>`;
+  }
+  $("scnSel").innerHTML = html;
+}
+$("scnSel").addEventListener("change", (ev) => {
+  if (!ev.target.value) return;
+  if (dirty && !confirm("未保存の編集があります。破棄して読み込みますか？")) { ev.target.value = ""; return; }
+  loadExisting(ev.target.value);
+});
+$("newBtn").addEventListener("click", () => {
+  if (dirty && !confirm("未保存の編集があります。破棄して新規作成しますか？")) return;
+  model = { scenario: newMeta(), lines: [newLine(null)] };
+  selIdx = 0; dirty = false;
+  $("scnSel").value = "";
+  stopPreview();
+  renderMeta(); renderList();
+});
+$("impBtn").addEventListener("click", () => {
+  let data;
+  try { data = JSON.parse($("impText").value); } catch { toast("JSONが読めません"); return; }
+  if (Array.isArray(data)) data = { scenario: model.scenario, lines: data };
+  if (!data.lines) { toast("lines がありません"); return; }
+  model = {
+    scenario: { ...newMeta(), ...deep(data.scenario || {}) },
+    lines: data.lines.slice().sort((a, b) => (a.lineNo || 0) - (b.lineNo || 0))
+      .map(({ scenarioId, lineNo, ...rest }) => ({ bgmId: "", seId: "", emoteId: "", ...deep(rest) })),
+  };
+  selIdx = 0; scheduleSave();
+  stopPreview();
+  renderMeta(); renderList();
+  toast(`${model.lines.length}行を読み込みました`);
+});
+
+// ── プレビュー操作 ───────────────────────────────────────────
+$("pvPlayAll").addEventListener("click", () => playFrom(0));
+$("pvPlaySel").addEventListener("click", () => playFrom(selIdx));
+$("pvStop").addEventListener("click", () => stopPreview());
+$("sndBtn").addEventListener("click", () => {
+  audioShim.enabled = !audioShim.enabled;
+  if (!audioShim.enabled) audioShim._stop();
+  $("sndBtn").textContent = audioShim.enabled ? "🔊 音ON" : "🔇 音OFF";
+});
+
+// ── ドラフト復元 ─────────────────────────────────────────────
+function checkDraft() {
+  let d = null;
+  try { d = JSON.parse(localStorage.getItem(DRAFT_KEY) || "null"); } catch {}
+  if (!d?.model?.lines?.length) return;
+  $("draftBar").style.display = "";
+  $("draftRestore").onclick = () => {
+    model = d.model; selIdx = 0; dirty = true;
+    $("draftBar").style.display = "none";
+    renderMeta(); renderList();
+    toast(`ドラフト復元: ${model.scenario.scenarioId}`);
+  };
+  $("draftDiscard").onclick = () => {
+    localStorage.removeItem(DRAFT_KEY);
+    $("draftBar").style.display = "none";
+  };
+}
+
+function toast(msg) {
+  const el = $("toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 1600);
+}
+
+// ── 起動 ───────────────────────────────────────────────────
+fillScnSel();
+renderMeta();
+renderList();
+fitPreview();
+checkDraft();
+</script>
+</body>
+</html>
