@@ -12,3 +12,4 @@ import "./amberShieldAbility.js";
 import "./kakehaRuinaAbility.js";
 import "./charybdisAbility.js";
 import "./teacherAbility.js";
+import "./muddyLotusAbility.js";

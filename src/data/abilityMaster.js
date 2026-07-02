@@ -141,6 +141,15 @@ export const ABILITY_MASTER = {
     maxCharges: 2,
     cooldown: 0,
   },
+  "muddy-lotus": {
+    name: "泥中の蓮",
+    desc: "常時発動。卓が泥沼に沈み、全員のアガリ点が25%減る（自分の4ハン以上のアガリも沈む）。自分の3ハン以下のアガリだけは泥の対象外となり、点数1.5倍で咲く。",
+    blurb: "泥中の蓮 — 常時 全員のアガリ点-25%／自分の3ハン以下は対象外・×1.5",
+    activation: "passive",
+    chargeScope: "hand",
+    maxCharges: Infinity,
+    cooldown: 0,
+  },
   "abyss-collection": {
     name: "淵の蒐集",
     desc: "常時発動。このキャラは和了できない（ロン・ツモ不可）。その代わり、流局時にこのキャラへ渡る得点（テンパイ料の受け取り）が3倍になり、流し満貫が役満扱いになる。",

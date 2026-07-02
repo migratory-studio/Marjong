@@ -170,7 +170,8 @@ export async function showMentorSelect(container, { repository, draft, onBack, o
 
     const roles = elt("div", "av-mentor-picker-roles");
     for (const role of MENTOR_ROLES) {
-      const members = CHARACTER_MASTER.filter((c) => c.role === role.id && !isMentorLocked(c));
+      // noMentor＝師弟不可キャラ（沼田蓮＝同級生枠）。解禁済みでもピッカーに出さない。
+      const members = CHARACTER_MASTER.filter((c) => c.role === role.id && !c.noMentor && !isMentorLocked(c));
       if (members.length === 0) continue;
       const group = elt("div", "av-mentor-role-group");
       group.style.setProperty("--role", role.color);

@@ -43,6 +43,13 @@ const RIVAL_POOL = {
               rematch: "また君だ。……君の章は、読み応えがある。", grudge: "君に負けるたび、頁が増えていく。……結末は、書き換えさせてもらう。", proud: "君の章は、もう読み終えた。……結末も知っている。" },
   shien:    { name: "紫煙のシエン", reading: "しえん", title: "燻(いぶ)す打ち手", color: "#9c6ab0", sil: 3, abilityId: "kakeha-bet", line: "じっくり、じわじわ。逃がさないよ。",
               rematch: "おや、また燻し甲斐のある顔が来た。", grudge: "君だけは煙に巻けない。……なら、今日は直火でいこうか。", proud: "君はいつも、いい色に燻し上がる。……今日も、じっくりいこうか。" },
+  // 沼田 蓮 — 凌雲編 ep9-12 の宿敵（弟子の学生時代、唯一勝てなかった同級生）。正典＝
+  // scenario-forge/design/ryuuun.json rival。プレイアブル版（characterMaster id="ren"）と同一人物で、
+  // 立ち絵も実アセットを共有する（portrait 指定＝シルエットでなく顔が出る、初のネームド）。
+  // ※ RIVAL_POOL の既存キー "ren" は別人（対の漣）。沼田はキー "numata" で区別する。
+  // 口上はどのキャンペーンで出会っても成立する自己完結文（弟子＝同一人物なので「同級生」は普遍）。
+  numata:   { name: "沼田 蓮",      reading: "ぬまた れん", title: "泥に咲く打ち手", color: "#c98fa6", sil: 1, abilityId: "muddy-lotus", portrait: "graphic/chars/ren/portrait.png", line: "……あ。……僕なんかが、この卓でごめん。でも——今日は、いけそうな気が、するんだ。",
+              rematch: "……また、君と打てるんだ。……嬉しいよ。君と打つときの自分が、いちばん……なりたい自分に、近いから。", grudge: "……何度負けても、いいんだ。格好悪くても。——でも今日は、勝つ自分を、イメージして来た。", proud: "……ごめん。君との卓は、いつも……いけそうな気が、しちゃうんだ。" },
 };
 
 // 因縁段階の口上を解決する。unitOrCharId は "rival:shizuka" 形式でも素の id でも可。
@@ -63,10 +70,12 @@ export function rivalIntroLineFor(unitOrCharId, history = {}) {
 // 大会 → 登場ライバル候補（優先順）。ティアの人数ぶん、頭から採用する。
 // T3（出場8＝相手7）は全員ネームドなので7体ぶん用意する。
 const ASSIGN = {
-  "menzen-kaiken":    ["shizuka", "kurono", "mirei"],
+  // 門前開鍵杯＝凌雲編 ep12「泥仕合」の決勝の卓（正典）。沼田 蓮を先頭＝T1唯一のネームドに置く。
+  // 旧リードの静は musou-kan（個人戦）へ移し、大会での登場を保つ。
+  "menzen-kaiken":    ["numata", "shizuka", "kurono"],
   "chin-iki":         ["hiro", "shien", "mirei"],
   "ji-peeko":         ["ren", "mirei", "shizuka"],
-  "musou-kan":        ["garou", "kurono", "shien"],
+  "musou-kan":        ["garou", "shizuka", "shien"],
   "kyou-sharin":      ["mirei", "ren", "tenka"],
   "daisanken":        ["enji", "garou", "shien"],
   "tenankou":         ["kurono", "enji", "garou"],
@@ -77,7 +86,8 @@ const ASSIGN = {
 // 1体のネームド・ライバルを対局用キャラ・オブジェクトに組む（モブと同形）。
 // 立ち絵は流用シルエット。isMob:false＝匿名化しない（名前・肩書きを出す）。
 function buildRival(id, def, startingPoints) {
-  const portrait = `graphic/chars/mobs/${def.sil}.png`;
+  // def.portrait があれば実アセット（顔つきネームド＝沼田等）、無ければ流用シルエット。
+  const portrait = def.portrait || `graphic/chars/mobs/${def.sil}.png`;
   return {
     id: `rival:${id}`,
     name: def.name,

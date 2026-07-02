@@ -247,8 +247,57 @@ const MODEL_ANSWER_LEVELS = [
     unlockDescription: "最終解。最善手も勝ち筋も、そして“いま押すか退くか”までも言葉になる。教壇の達観が、勝負の場に降りてくる。" },
 ];
 
+// 泥中の蓮（沼田 蓮・lv-muddy-lotus）— 卓全体を泥に沈めるフィールド型の本設計テーブル。
+// 基準帯 Lv1〜5 ＝「泥と蓮の完成」: 泥（全員のアガリ点減少）が -10%→-25% へ深まり、
+// 蓮（自分の3ハン以下の倍率・泥の対象外）が 1.2→1.5 へ咲く（Lv5＝フリー対戦の沼田＝
+// MuddyLotusAbility 既定値と完全一致）。cheapHanMax=3 は全Lv固定＝「格好悪く安手で勝つ」
+// 美学は育っても変わらない（自分の4ハン以上は他人と同様に泥へ沈む縛りが常に効く）。
+// 超越帯 Lv6〜10 ＝「泥中に咲く」: 泥が沈めた点数が「沈殿」として溜まり（ゲーム単位）、
+// 自分の蓮の和了時に absorbRate ぶんを吸い上げて加点する（非ゼロサム＝支払い側は増えない）。
+// 沼田は師匠を持たない同級生枠（凌雲編の宿敵→好敵手）なので、超越帯は“相棒の能力”でなく
+// 本人の美学『格好悪く泥臭く勝ち、同じような生き方の誰かに希望を見せる』の完成として設計する
+// （凌雲式＝literal能力でなく哲学を宿す先例に連なる）。Lv10＝『いつも、なりたい自分をイメージして打つ』。
+// runtimeParams の契約（MuddyLotusAbility のコンストラクタと対応）:
+//   reduceRate      … 泥。全員のアガリ点の減少率（0.25＝-25%）
+//   cheapHanMax     … 蓮の対象となる自分のアガリの最大ハン数（全Lv固定 3）
+//   cheapMultiplier … 蓮。自分の3ハン以下のアガリの倍率（泥の対象外）
+//   absorbRate      … 超越帯。沈殿を蓮の和了時に吸い上げる割合（吸ったら沈殿は流れる）
+const MUDDY_LOTUS_LEVELS = [
+  { skillLevel: 1,  soulCost: 0,    runtimeParams: { reduceRate: 0.10, cheapHanMax: 3, cheapMultiplier: 1.2, absorbRate: 0 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥＝全員のアガリ点-10%。蓮＝自分の3ハン以下は泥の対象外・1.2倍で咲く。",
+    unlockDescription: "習得。卓を浅い泥に沈め、自分の安手だけを咲かせる泥仕合の芽生え。" },
+  { skillLevel: 2,  soulCost: 400,  runtimeParams: { reduceRate: 0.15, cheapHanMax: 3, cheapMultiplier: 1.3, absorbRate: 0 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥＝全員のアガリ点-15%。蓮＝自分の3ハン以下は1.3倍。",
+    unlockDescription: "泥が深まり（-15%）、蓮の咲きも大きく（1.3倍）。" },
+  { skillLevel: 3,  soulCost: 800,  runtimeParams: { reduceRate: 0.20, cheapHanMax: 3, cheapMultiplier: 1.3, absorbRate: 0 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥＝全員のアガリ点-20%。蓮＝自分の3ハン以下は1.3倍。",
+    unlockDescription: "泥がさらに深く（-20%）。大物手ほど深く沈む。" },
+  { skillLevel: 4,  soulCost: 1400, runtimeParams: { reduceRate: 0.20, cheapHanMax: 3, cheapMultiplier: 1.4, absorbRate: 0 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥＝全員のアガリ点-20%。蓮＝自分の3ハン以下は1.4倍。",
+    unlockDescription: "蓮が育つ。安手の花が1.4倍に。" },
+  { skillLevel: 5,  soulCost: 2200, runtimeParams: { reduceRate: 0.25, cheapHanMax: 3, cheapMultiplier: 1.5, absorbRate: 0 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥＝全員のアガリ点-25%（自分の4ハン以上も沈む）。蓮＝自分の3ハン以下は対象外・1.5倍（フリー対戦の沼田と同等）。",
+    unlockDescription: "完成基準。泥-25%×蓮1.5倍——格好悪く、泥臭く勝つ。沼田の泥仕合の完成。" },
+  { skillLevel: 6,  soulCost: 2800, runtimeParams: { reduceRate: 0.25, cheapHanMax: 3, cheapMultiplier: 1.5, absorbRate: 0.15 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥-25%・蓮1.5倍。さらに泥が沈めた点が「沈殿」として溜まり、自分の3ハン以下の和了で15%を吸い上げる。",
+    unlockDescription: "超越域へ。泥に沈んだ点を、蓮が養分として吸いはじめる——泥中に咲く。" },
+  { skillLevel: 7,  soulCost: 3600, runtimeParams: { reduceRate: 0.25, cheapHanMax: 3, cheapMultiplier: 1.5, absorbRate: 0.25 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥-25%・蓮1.5倍・吸い上げ25%。",
+    unlockDescription: "根が深くなる。沈殿の25%を吸い上げる。" },
+  { skillLevel: 8,  soulCost: 4600, runtimeParams: { reduceRate: 0.30, cheapHanMax: 3, cheapMultiplier: 1.5, absorbRate: 0.25 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥-30%・蓮1.5倍・吸い上げ25%。",
+    unlockDescription: "泥が最深部へ（-30%）。派手な打点は、もうこの卓では咲かない。" },
+  { skillLevel: 9,  soulCost: 5800, runtimeParams: { reduceRate: 0.30, cheapHanMax: 3, cheapMultiplier: 1.6, absorbRate: 0.35 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥-30%・蓮1.6倍・吸い上げ35%。",
+    unlockDescription: "蓮が大輪に（1.6倍）。沈殿の35%を吸い上げる。" },
+  { skillLevel: 10, soulCost: 7200, runtimeParams: { reduceRate: 0.30, cheapHanMax: 3, cheapMultiplier: 1.6, absorbRate: 0.50 }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "泥-30%・蓮1.6倍・吸い上げ50%——泥中の蓮、満開。",
+    unlockDescription: "満開。『いつも、なりたい自分をイメージして打つ』——泥に沈んだ点の半分を吸い上げ、格好悪い勝ち方が誰かの希望になる。" },
+];
+
 export const SKILL_LEVEL_MASTER = {
   "lv-lucky-draw": LUCKY_DRAW_LEVELS,
+  "lv-muddy-lotus": MUDDY_LOTUS_LEVELS,
   "lv-gamble-bet": GAMBLE_BET_LEVELS,
   "lv-amber-shield": AMBER_SHIELD_LEVELS,
   "lv-iron-guard": IRON_GUARD_LEVELS,

@@ -29,6 +29,15 @@ export const Hooks = {
   //   ctx: { winner, result }  -> return modified result or undefined.
   MODIFY_SCORE: "modifyScore",
 
+  // Like MODIFY_SCORE, but called for EVERY seated player's abilities (not just
+  // the winner's), after the winner's own MODIFY_SCORE pass. Field-effect
+  // abilities that sink or swell anyone's win live here (e.g. 泥中の蓮).
+  // Implementations must not mutate rank/totalHan/yaku — point numbers only —
+  // so rank-gated abilities (琥珀の盾の満貫判定など) keep judging the hand's
+  // true tier, not the adjusted payout.
+  //   ctx: { winner, result }  -> return modified result or undefined.
+  MODIFY_SCORE_GLOBAL: "modifyScoreGlobal",
+
   // Veto a player's ability to declare a win (和了) by ron or tsumo. Threaded as
   // a boolean (default true = may win); an ability returns false to forbid it.
   // Note: this only blocks ron/tsumo — 流し満貫 is a 流局 payout, not a 和了, so

@@ -229,6 +229,27 @@ export const CHARACTER_MASTER = [
     abilities: [{ abilityId: "kakeha-bet", params: {} }],
   },
   {
+    id: "ren",
+    name: "沼田 蓮",
+    reading: "ぬまた れん",
+    color: "#c98fa6",
+    role: "gambler",
+    locked: true, // 宝珠ショップ（char-ren）で解禁。凌雲編の宿敵→好敵手のキャラ化（会話シーンなし）。
+    // ★同級生キャラ＝師弟不可。弟子と同い年の好敵手（凌雲編 ep9-12/17）なので、師匠導線
+    //   （skillTemplateMaster の INITIAL_MENTOR_IDS／師匠ピッカー）には将来も入れないこと。
+    //   noMentor フラグが恒久ガード（mentorSelectScreen が解禁後もピッカーから除外する）。
+    //   スキルLvテーブル lv-muddy-lotus は栞と同じ「足場のみ」（育成導線なし＝フリー対戦はLv5固定）。
+    noMentor: true,
+    bio: "卓全体のアガリ点を泥に沈める異色の博打型。自分の3ハン以下だけが1.5倍で咲く。",
+    profile: "攻めとも守りともつかない、のらりくらりで老獪な打ち回し。地味で内気、卑屈なほど自分を低く見るが、その負を受け入れた底知れなさがある。美学は『格好悪い自分が、格好悪く泥臭く勝ち、同じような生き方の誰かに希望を見せる』。押し引きの基準は理屈でなく“いけそうなとき”という感覚。泥沼の消耗戦にこそ強く、泥水から咲く蓮のように、小さな手で確かに勝ち切る。",
+    stats: { startingPoints: 16000 }, // 泥仕合（消耗戦）に付き合える厚めのHP。紙HPのドラニエルと差別化
+    assets: assetsFor("ren"),
+    imagePos: { portraitZoom: 1.42, portraitOffset: { x: "0.5%", y: "10.3%" }, scenario: { x: "1.5%", y: "-24.4%", zoom: 2.13 }, shopZoom: 1.69, shopOffset: { x: "1%", y: "-18.4%" } },
+    emotePos: { side: "left", x: 77, y: -9 },
+    params: { attack: 2, defense: 4, quirk: 5, difficulty: 3 },
+    abilities: [{ abilityId: "muddy-lotus", params: {} }],
+  },
+  {
     id: "janedoe",
     name: "JaneDoe",
     reading: "ジェーンドゥ",

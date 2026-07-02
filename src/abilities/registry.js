@@ -138,9 +138,15 @@ export class AbilityManager {
   }
 
   // Let abilities tweak a score result.
+  // 勝者本人の MODIFY_SCORE を通したあと、全員の MODIFY_SCORE_GLOBAL（場能力＝
+  // 泥中の蓮など）を席順で通す。順序＝勝者の倍率系が先・場の沈降が後で固定。
   modifyScore(winner, result) {
     const ctx = { winner, result };
-    return this.modifyForPlayer(Hooks.MODIFY_SCORE, winner, ctx, result);
+    let value = this.modifyForPlayer(Hooks.MODIFY_SCORE, winner, ctx, result);
+    for (const player of this.game.players) {
+      value = this.modifyForPlayer(Hooks.MODIFY_SCORE_GLOBAL, player, { winner, result: value }, value);
+    }
+    return value;
   }
 
   // modifyScore と同じ改変を行いつつ、能力ごとの「合計点(total)の増減」を順に記録する。
@@ -164,6 +170,22 @@ export class AbilityManager {
       const to = out && typeof out.total === "number" ? out.total : from;
       if (to !== from) steps.push({ abilityId: ab.id ?? null, from, to, dir: to > from ? "up" : "down" });
       value = out;
+    }
+    // 場能力（MODIFY_SCORE_GLOBAL）＝全員の能力を席順で通す。modifyScore と同じ順序。
+    // 減少もステップに積むので、和了画面の「増加!/減少!」演出にそのまま乗る。
+    for (const player of this.game.players) {
+      const gapi = new AbilityApi(this.game, player);
+      for (const ab of this._abilitiesOf(player)) {
+        const fn = ab[Hooks.MODIFY_SCORE_GLOBAL];
+        if (typeof fn !== "function") continue;
+        const before = value;
+        const out = fn.call(ab, { winner, result: before }, gapi, before);
+        if (out === undefined || out === before) continue;
+        const from = before && typeof before.total === "number" ? before.total : baseTotal;
+        const to = out && typeof out.total === "number" ? out.total : from;
+        if (to !== from) steps.push({ abilityId: ab.id ?? null, from, to, dir: to > from ? "up" : "down" });
+        value = out;
+      }
     }
     return { result: value ?? result, baseTotal, steps };
   }

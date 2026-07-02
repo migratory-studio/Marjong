@@ -1,7 +1,7 @@
 // Controller: select screen -> game loop. Drives CPU turns on timers and routes
 // human input. Engine stays synchronous; this file owns orchestration & timing.
 import { Game, Phase, Events } from "./core/game.js";
-import { CHARACTERS, instantiateAbilities, setModelAnswerLevelOverride, getModelAnswerLevelOverride } from "./characters/characters.js";
+import { CHARACTERS, instantiateAbilities, setModelAnswerLevelOverride, getModelAnswerLevelOverride, setMuddyLotusLevelOverride, getMuddyLotusLevelOverride } from "./characters/characters.js";
 import { CHARACTER_MASTER, ROLE_MASTER } from "./data/characterMaster.js";
 import { applyPortraitCrop, installIconPosStyles } from "./data/imagePos.js";
 import { abilityDef } from "./data/abilityMaster.js";
@@ -6367,7 +6367,16 @@ function showDebugMenu() {
         <option value="">既定（Lv5）</option>
         ${[1,2,3,4,5,6,7,8,9,10].map((n) => `<option value="${n}">Lv${n}</option>`).join("")}
       </select></div>
-      <div class="dbg-note">※ ?debug=tsumoreba 起動時のみ表示／栞でフリー対戦すると反映</div>
+      <div class="dbg-sec">沼田蓮 泥中の蓮スキルLv</div>
+      <div class="dbg-row"><label>Lv（次の対局から）</label><select class="dbg-ml-lv">
+        <option value="">既定（Lv5）</option>
+        ${[1,2,3,4,5,6,7,8,9,10].map((n) => `<option value="${n}">Lv${n}</option>`).join("")}
+      </select></div>
+      <div class="dbg-sec">宝珠を付与（動作確認用）</div>
+      <div class="dbg-row"><label>所持: <span class="dbg-orb-now">…</span></label>
+        <button type="button" class="dbg-btn dbg-mini dbg-orb-add" data-orbs="100">+100</button>
+        <button type="button" class="dbg-btn dbg-mini dbg-orb-add" data-orbs="300">+300</button></div>
+      <div class="dbg-note">※ ?debug=tsumoreba 起動時のみ表示／該当キャラでフリー対戦すると反映</div>
     </div>
     <div class="naki-fx" id="dbg-naki-host"></div>
     <div class="ability-cutin hidden" id="dbg-cutin-host"></div>`;
@@ -6385,6 +6394,27 @@ function showDebugMenu() {
     const cur = getModelAnswerLevelOverride();
     maLvSel.value = cur == null ? "" : String(cur);
     maLvSel.onchange = () => setModelAnswerLevelOverride(maLvSel.value === "" ? null : Number(maLvSel.value));
+  }
+  // 沼田蓮 泥中の蓮スキルLv の強制（次の対局から反映）。栞と同じ足場。
+  const mlLvSel = ov.querySelector(".dbg-ml-lv");
+  if (mlLvSel) {
+    const cur = getMuddyLotusLevelOverride();
+    mlLvSel.value = cur == null ? "" : String(cur);
+    mlLvSel.onchange = () => setMuddyLotusLevelOverride(mlLvSel.value === "" ? null : Number(mlLvSel.value));
+  }
+  // 宝珠の付与（動作確認用）。プロフィール経由＝ログイン時はSupabaseにも同期される。
+  const orbNow = ov.querySelector(".dbg-orb-now");
+  const refreshOrbs = () => profileRepo.loadProfile().then((p) => { if (orbNow) orbNow.textContent = String(p.orbs || 0); }).catch(() => {});
+  refreshOrbs();
+  for (const btn of ov.querySelectorAll(".dbg-orb-add")) {
+    btn.onclick = async () => {
+      try {
+        const p = await profileRepo.loadProfile();
+        p.orbs = (p.orbs || 0) + Number(btn.dataset.orbs || 0);
+        await profileRepo.saveProfile(p);
+        refreshOrbs();
+      } catch (e) { console.error("宝珠付与失敗:", e); }
+    };
   }
   const CENTER = { left: "50%", top: "50%" };
   const curChar = () => CHARACTER_MASTER.find((c) => c.id === charSel.value) || CHARACTER_MASTER[0];

@@ -124,6 +124,25 @@ export const SKILL_TEMPLATE_MASTER = [
     initialSkillLevel: 1,
     isEnabled: true,
   },
+  // ---- 沼田 蓮（ギャンブル系・同級生枠＝師匠にはならない）----
+  // 育成テンプレ。フリー対戦の沼田は characterMaster の params:{}＝コンストラクタ既定値(=Lv5)で
+  // 動くため現挙動には影響しない。lv-muddy-lotus の Lv 差分（超越帯 Lv6〜10＝泥中に咲く）への結線。
+  // ★沼田は弟子の「同級生」（凌雲編の宿敵→好敵手）なので師匠化はしない＝INITIAL_MENTOR_IDS に
+  //   将来も入れないこと。栞と同じ「足場のみ」＝現状どの師匠ピッカーにも出ない。
+  {
+    skillTemplateId: "tmpl-muddy-lotus",
+    runtimeAbilityId: "muddy-lotus",
+    name: "泥中の蓮",
+    description: "卓全体のアガリ点を泥に沈め、自分の3ハン以下だけを1.5倍で咲かせる泥仕合型。派手さを捨て、消耗戦を制する。",
+    familyId: "gamble",
+    paramAffinity: ["mental", "gamble"], // 泥仕合の我慢＝メンタル(主)・“いけそう”の勘＝勝負勘(副)
+    rarity: "rare",
+    mentorCharacterIds: ["ren"],
+    integrationTier: "hook_only",
+    levelTableId: "lv-muddy-lotus",
+    initialSkillLevel: 1,
+    isEnabled: true,
+  },
   {
     skillTemplateId: "tmpl-amber-shield",
     runtimeAbilityId: "amber-shield",
