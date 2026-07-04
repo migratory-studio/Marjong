@@ -4773,7 +4773,7 @@ function showJaneDoeTargets(idx) {
   const bar = el("action-bar");
   const label = document.createElement("span");
   label.style.cssText = "align-self:center;color:#f6b352;font-weight:700;margin-right:8px;";
-  label.textContent = "強制ツモ切りの対象を選択:";
+  label.textContent = "「沈黙の処方箋」の対象を選択:";
   bar.appendChild(label);
   for (const o of game.players) {
     if (o.index === idx) continue;

@@ -383,7 +383,7 @@ export class DoraPullAbility extends Ability {
       tsumo: result.tsumoEach != null,
       honba: api.state.honba || 0,
     });
-    api.log(`ドラ寄せ：確定ドラ${extra}（手の打点に上乗せ）`);
+    api.log(`天啓ドラ寄せ：確定ドラ${extra}（手の打点に上乗せ）`);
     return out;
   }
 }

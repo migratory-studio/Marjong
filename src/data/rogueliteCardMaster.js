@@ -203,7 +203,7 @@ export const ROGUELITE_CARD_MASTER = [
   {
     id: "grant-lucky-draw",
     name: "幸運のツモ（札）",
-    desc: "着卓する味方に「ツモ偏重」が宿る。手が早くなる＝【速攻】流派の核。",
+    desc: "着卓する味方に「ツモれば勝ち」が宿る。手が早くなる＝【速攻】流派の核。",
     rarity: "legendary",
     effect: { kind: "grantAbility", abilityId: "lucky-draw" },
     cluster: "tempo",
@@ -212,7 +212,7 @@ export const ROGUELITE_CARD_MASTER = [
   {
     id: "grant-chunchan",
     name: "中張の風（札）",
-    desc: "着卓する味方に「中張ツモ」が宿る。タンヤオ軸で押す＝【速攻】。",
+    desc: "着卓する味方に「韋駄天の中張」が宿る。タンヤオ軸で押す＝【速攻】。",
     rarity: "epic",
     effect: { kind: "grantAbility", abilityId: "chunchan" },
     cluster: "tempo",
@@ -221,7 +221,7 @@ export const ROGUELITE_CARD_MASTER = [
   {
     id: "grant-rootou",
     name: "老頭の構え（札）",
-    desc: "着卓する味方に「老頭ツモ」が宿る。么九・染め手・国士の軸＝【染め】流派の核。",
+    desc: "着卓する味方に「老頭の庭」が宿る。么九・染め手・国士の軸＝【染め】流派の核。",
     rarity: "epic",
     effect: { kind: "grantAbility", abilityId: "rootou" },
     cluster: "flush", // 【染め】流派の核（しきい値シナジーの軸）
@@ -229,8 +229,8 @@ export const ROGUELITE_CARD_MASTER = [
   },
   {
     id: "grant-danger-sense",
-    name: "危険感知（札）",
-    desc: "着卓する味方に「危険感知」が宿る。当たり牌を警告＝放銃を避けて粘る＝【守備】流派の核。",
+    name: "放銃、いたしません（札）",
+    desc: "着卓する味方に「放銃、いたしません」が宿る。当たり牌を警告＝放銃を避けて粘る＝【守備】流派の核。",
     rarity: "epic",
     effect: { kind: "grantAbility", abilityId: "danger-sense" },
     cluster: "guard",
@@ -267,8 +267,8 @@ export const ROGUELITE_CARD_MASTER = [
   },
   {
     id: "grant-homura",
-    name: "焔（札）",
-    desc: "着卓する味方に「焔」が宿る。満貫以上なら1.5倍／未満は点数固定＝跳ねを狙う【打点】の博打。",
+    name: "大物手の焔（札）",
+    desc: "着卓する味方に「大物手の焔」が宿る。満貫以上なら1.5倍／未満は点数固定＝跳ねを狙う【打点】の博打。",
     rarity: "epic",
     effect: { kind: "grantAbility", abilityId: "homura" },
     cluster: "value",
@@ -276,8 +276,8 @@ export const ROGUELITE_CARD_MASTER = [
   },
   {
     id: "grant-jane-doe",
-    name: "強制ツモ切り（札）",
-    desc: "着卓する味方に「強制ツモ切り」が宿る。脅威の相手を3巡ツモ切りに固定＝妨害で速度差を作る【速攻】。",
+    name: "沈黙の処方箋（札）",
+    desc: "着卓する味方に「沈黙の処方箋」が宿る。脅威の相手を3巡ツモ切りに固定＝妨害で速度差を作る【速攻】。",
     rarity: "epic",
     effect: { kind: "grantAbility", abilityId: "jane-doe" },
     cluster: "tempo",
@@ -354,8 +354,8 @@ export const ROGUELITE_CARD_MASTER = [
   },
   {
     id: "grant-dora-pull",
-    name: "ドラ手繰り（札）",
-    desc: "着卓する味方に「ドラ手繰り」が宿る。一発逆転の打点＝【打点】流派の核。",
+    name: "天啓ドラ寄せ（札）",
+    desc: "着卓する味方に「天啓ドラ寄せ」が宿る。一発逆転の打点＝【打点】流派の核。",
     rarity: "legendary",
     effect: { kind: "grantAbility", abilityId: "dora-pull" },
     cluster: "value",
