@@ -245,7 +245,19 @@ const KUIDOSHI_BIGMATCH = {
   chase: "追う側か。——望むところだよ。受けて、受けて、最後に前へ出る。いこう、一緒に。",
   longshot: "分が悪い? ……いいんだ。沈まなければ、まだ終わらない。君を、矢面には立たせないよ。",
 };
-const EXPLICIT_BIGMATCH = { shiyue: SHIYUE_BIGMATCH, bibi: BIBI_BIGMATCH, kakeha_ruina: RUINA_BIGMATCH, kuidoshi: KUIDOSHI_BIGMATCH };
+// ルクス・ゼロはどの局面も「確率を詰める／ゼロでないなら消さない」に帰着＝計算の口上が大一番で響く。
+const YOBININ_BIGMATCH = {
+  top: "首位で大一番。……いい位置だ。だが油断は誤差を生む。最後の一巡まで、詰め切るぞ。",
+  chase: "追う側か。必要な点差は算出済みだ。——不可能ではない。なら、やるだけだ。",
+  longshot: "勝率は低い。……だが、ゼロではない。ゼロでないなら、私は消さない。いくぞ。",
+};
+// ドラニエルはどの局面も「派手に張る」に帰着＝分が悪いほど燃える博徒の口上。
+const DORANIE_BIGMATCH = {
+  top: "首位で大一番とは、いい眺めじゃのう! 最後まで派手に張って、締めるのじゃ!",
+  chase: "追う大一番……ふぉっふぉ、燃える展開じゃ! 一発で捲ってやろうぞ!",
+  longshot: "大差? わはは、上等じゃ! 博打は分が悪いほど、勝ったとき美味いのじゃ!",
+};
+const EXPLICIT_BIGMATCH = { shiyue: SHIYUE_BIGMATCH, bibi: BIBI_BIGMATCH, kakeha_ruina: RUINA_BIGMATCH, kuidoshi: KUIDOSHI_BIGMATCH, yobinin: YOBININ_BIGMATCH, doranie: DORANIE_BIGMATCH };
 export function pickMentorBigMatchLine(charId, situation = "chase") {
   const set = EXPLICIT_BIGMATCH[charId];
   if (set) return set[situation] || set.chase;
@@ -555,7 +567,25 @@ const KUIDOSHI_LEAGUE_LOSS = [
     { key: "rest", label: "今月は、休む", reply: "うん、いい判断だ。沈まなければ、卓は逃げない。……また、来月。", memory: "rest" },
   ]),
 ];
-const EXPLICIT_LEAGUE_LOSS = { shiyue: SHIYUE_LEAGUE_LOSS, bibi: BIBI_LEAGUE_LOSS, kakeha_ruina: RUINA_LEAGUE_LOSS, kuidoshi: KUIDOSHI_LEAGUE_LOSS };
+// ルクス・ゼロ＝敗北も「観測値」として処理。だが again の即答＝非合理を買う、に軟化が滲む。
+const YOBININ_LEAGUE_LOSS = [
+  LL("close", {}, "……誤差、わずかに届かず。この敗北を、どう処理する。", [
+    { key: "again", label: "すぐ挑み直す", reply: "了解した。敗因は既に切り分けてある。次は、誤差ごと消すぞ。", memory: "again" },
+    { key: "rest", label: "少し止まりたい", reply: "……停止も、手順の一つだ。焦って崩すより、いい判断だ。", memory: "rest" },
+  ]),
+  LL("far", {}, "大差での敗北を記録した。……顔を、上げられるか。", [
+    { key: "again", label: "もう一度挑む", reply: "……即答か。非合理だ。だが、その非合理を私は買っている。", memory: "again" },
+    { key: "rest", label: "今月は休む", reply: "了解。数値は逃げない。整えてから、また詰めればいい。", memory: "rest" },
+  ]),
+];
+// ドラニエル＝負けも賭けのうち。湿らせない無邪気さで送り出す。
+const DORANIE_LEAGUE_LOSS = [
+  LL("any", {}, "負けたのう。……して弟子よ、おぬしはどっちじゃ?", [
+    { key: "again", label: "すぐ取り返す", reply: "わはは、それでこそ博徒じゃ! 負けた分は倍にして返すのじゃ!", memory: "again" },
+    { key: "rest", label: "今日は休む", reply: "うむ、賢いのう。賭けは退き際も肝心じゃ。……ようがんばった。", memory: "rest" },
+  ]),
+];
+const EXPLICIT_LEAGUE_LOSS = { shiyue: SHIYUE_LEAGUE_LOSS, bibi: BIBI_LEAGUE_LOSS, kakeha_ruina: RUINA_LEAGUE_LOSS, kuidoshi: KUIDOSHI_LEAGUE_LOSS, yobinin: YOBININ_LEAGUE_LOSS, doranie: DORANIE_LEAGUE_LOSS };
 // 敗北の2択を1つ返す。未実装キャラは null（リザルトは従来の定型文のまま＝テンプレ文言を本番に出さない）。
 export function pickLeagueLossTalk(charId, tier, ctx = {}) {
   const all = EXPLICIT_LEAGUE_LOSS[charId];
@@ -585,7 +615,17 @@ const KUIDOSHI_DUO_INVITE = [
   G({}, "一局、付き合おうか。……手は、抜かないよ? それが、僕の礼儀だ。"),
   G({ cleared: true }, "九蓮宝士さま、一局どう? ……今日は師匠じゃなく、好敵手として。——僕の盾、抜けるかな。"),
 ];
-const EXPLICIT_DUO_INVITE = { shiyue: SHIYUE_DUO_INVITE, bibi: BIBI_DUO_INVITE, kakeha_ruina: RUINA_DUO_INVITE, kuidoshi: KUIDOSHI_DUO_INVITE };
+// ルクス・ゼロ＝手加減という誤差は入れない。クリア後は"観測対象"として好敵手の反転。
+const YOBININ_DUO_INVITE = [
+  G({}, "一局、組むぞ。……手加減という誤差は、入れない。それが私の礼儀だ。"),
+  G({ cleared: true }, "九蓮宝士……お前と、一局。今日は師ではなく、観測対象として打つ。——私の計算、超えてみせろ。"),
+];
+// ドラニエル＝手加減はわらわの辞書にない。クリア後は博徒同士の張り合いへ反転。
+const DORANIE_DUO_INVITE = [
+  G({}, "一局、張ろうぞ! ……手加減? わらわの辞書には、ないのじゃ!"),
+  G({ cleared: true }, "九蓮宝士どのが、わらわと一局か! ふぉっふぉ、よかろう。今日は師匠ではなく、博徒として張り合うのじゃ!"),
+];
+const EXPLICIT_DUO_INVITE = { shiyue: SHIYUE_DUO_INVITE, bibi: BIBI_DUO_INVITE, kakeha_ruina: RUINA_DUO_INVITE, kuidoshi: KUIDOSHI_DUO_INVITE, yobinin: YOBININ_DUO_INVITE, doranie: DORANIE_DUO_INVITE };
 export const DUO_INVITE_FALLBACK = "「一局、付き合え。…手は抜かんぞ」";
 export function pickMentorDuoInvite(charId, ctx = {}) {
   const all = EXPLICIT_DUO_INVITE[charId];
@@ -641,7 +681,24 @@ const KUIDOSHI_PARLOR = [
   P("rough", {}, "おかえり。……渋い顔だ。だいじょうぶ、減ったぶんは、また受けて取り返せる。"),
   P("rough", {}, "そういう日も、ある。……負けた卓のことは、二人で、覚えておこう。"),
 ];
-const EXPLICIT_PARLOR = { shiyue: SHIYUE_PARLOR, bibi: BIBI_PARLOR, kakeha_ruina: RUINA_PARLOR, kuidoshi: KUIDOSHI_PARLOR };
+// ルクス・ゼロ＝戦果を収支・観測値として語る。bigWin×絆は「お前の揺らぎは上に振れる」＝計算外への愛着。
+const YOBININ_PARLOR = [
+  P("bigWin", {}, "帰投を確認。……収支、大幅な正。効率的な稼働だった。"),
+  P("bigWin", { bondMin: 4 }, "山のような点棒……。確率上、これほどの偏りは稀だ。……お前の揺らぎは、いつも上に振れるな。"),
+  P("win", {}, "勝ち越しか。手順は安定している。……いい運用だ。"),
+  P("win", {}, "収支、正。誤差の少ない一日だ。維持しろ。"),
+  P("rough", {}, "負け越しを検知。……だが手順の崩れは軽微だ。数字は、また戻る。"),
+  P("rough", {}, "沈んだか。……観測値が一つ増えただけだ。次で、補正する。"),
+];
+// ドラニエル＝荒稼ぎは宴、スッても笑い飛ばす。bigWin×絆は天界に自慢したい親バカが滲む。
+const DORANIE_PARLOR = [
+  P("bigWin", {}, "おお、荒稼ぎじゃな! わはは、見事な張りっぷりじゃ! 今夜は宴ぞ!"),
+  P("bigWin", { bondMin: 4 }, "山のような点棒じゃのう……。ふふん、わらわの弟子は博才があるわい。天界に自慢してやるのじゃ!"),
+  P("win", {}, "勝ち越しか! うむうむ、上々じゃ! その調子で張り続けよ!"),
+  P("rough", {}, "スッたか。ふぉっふぉ、気にするでない。わらわなど飛んでばかりじゃぞ!"),
+  P("rough", {}, "渋い顔じゃのう。……賭けは負けた翌日が、いちばん面白いのじゃ。"),
+];
+const EXPLICIT_PARLOR = { shiyue: SHIYUE_PARLOR, bibi: BIBI_PARLOR, kakeha_ruina: RUINA_PARLOR, kuidoshi: KUIDOSHI_PARLOR, yobinin: YOBININ_PARLOR, doranie: DORANIE_PARLOR };
 
 // ── 凌雲（リン・ユン）── 型D＝さわやかな静。一人称『僕』・穏やかな常体・口癖なし。
 // 不動／受け／沈ませない／（覇道編）相手を知る→自分を知る→なりたい自分。素性（恩師・受けに徹した理由）は
@@ -756,7 +813,19 @@ const DORANIE_REST = [
 ];
 const EXPLICIT_GREET = { shiyue: SHIYUE_GREET, bibi: BIBI_GREET, kakeha_ruina: RUINA_GREET, kuidoshi: KUIDOSHI_GREET , yobinin: YOBININ_GREET, doranie: DORANIE_GREET };
 const EXPLICIT_REST = { shiyue: SHIYUE_REST, bibi: BIBI_REST, kakeha_ruina: RUINA_REST, kuidoshi: KUIDOSHI_REST , yobinin: YOBININ_REST, doranie: DORANIE_REST };
-const EXPLICIT_PRAISE = { shiyue: SHIYUE_PRAISE, bibi: BIBI_PRAISE, kakeha_ruina: RUINA_PRAISE, kuidoshi: KUIDOSHI_PRAISE };
+// ルクス・ゼロの素出し＝無機質が一瞬崩れて「計算外」を認める瞬間が報酬。
+const YOBININ_PRAISE = [
+  G({}, "……観測した。今の一打、誤差ゼロだ。……完璧、と言っていい。"),
+  G({}, "見事だ。私の計算より、速い。……記録を、更新しておく。"),
+  G({ bondMin: 3 }, "……驚いた。計算外の伸びだ。お前という変数は、いつも私の予測を超える。"),
+];
+// ドラニエルの素出し＝無邪気な大はしゃぎ。絆で一瞬だけ、しみじみした親心が漏れる。
+const DORANIE_PRAISE = [
+  G({}, "わはは! 見たぞ見たぞ! 今のは天界級の一打じゃ!"),
+  G({}, "ふぉっふぉ、大したものじゃ! わらわの目に狂いはなかったのう!"),
+  G({ bondMin: 3 }, "……のう、今の一打。わらわ、ちょっと鳥肌が立ったぞ。弟子の成長とは、よいものじゃなあ。"),
+];
+const EXPLICIT_PRAISE = { shiyue: SHIYUE_PRAISE, bibi: BIBI_PRAISE, kakeha_ruina: RUINA_PRAISE, kuidoshi: KUIDOSHI_PRAISE, yobinin: YOBININ_PRAISE, doranie: DORANIE_PRAISE };
 const nameOf = (id) => CHARACTER_MASTER.find((c) => c.id === id)?.name || id;
 
 export const MENTOR_GREETINGS = Object.fromEntries(
