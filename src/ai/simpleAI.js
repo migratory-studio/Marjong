@@ -56,6 +56,11 @@ export function decideAbilityActivations(game, playerIndex) {
   const m = p.numMeldSets();
   const sh = shanten(counts, m);
   const turnNo = p.discards.length; // 0 on the very first discard of the hand
+  // 能力仕様から発動タイミングを判断するための文脈。
+  //   progress … ゲームの消化度 0..1。ゲーム回数制(chargeScope:"game")の能力は、
+  //              終盤(lastCall)になったら発動条件を緩めて「余らせて終わる」のを防ぐ。
+  //   dora / yaochuu … 手の適性（打点の種・么九/中張の寄り）。局を選ぶ能力の判断材料。
+  const ctx = { sh, turnNo, p, progress: matchProgress(game), dora: doraInHand(game, p), yaochuu: yaochuuCount(p) };
   const out = [];
   for (const ab of p.abilities || []) {
     if (ab.activation !== "manual" || ab.active || !ab.ready) continue;
@@ -91,7 +96,12 @@ export function decideAbilityActivations(game, playerIndex) {
       }
       continue;
     }
-    if (shouldActivate(ab.id, { sh, turnNo, p })) out.push({ id: ab.id, params: {} });
+    // dora-pull（ドラ寄せ）: 局内の発動回数で判断が変わる（1発目=仕込み/2発目=ダメ押し）。
+    if (ab.id === "dora-pull") {
+      if (decideDoraPull(game, ab, sh)) out.push({ id: ab.id, params: {} });
+      continue;
+    }
+    if (shouldActivate(ab.id, ctx)) out.push({ id: ab.id, params: {} });
   }
   return out;
 }
@@ -126,23 +136,78 @@ function decideRecall(game, p) {
   return best != null ? { riverTileId: best } : null;
 }
 
-function shouldActivate(id, { sh, turnNo, p }) {
+// 能力仕様（何が得か・どの手で活きるか・チャージのスコープ）から発動局・発動巡を選ぶ。
+// 旧実装は lucky-draw/rootou/chunchan が「sh>=2 && 2巡目まで」＝配牌はほぼ常に2シャンテン
+// 以上なので実質“開幕ブッパ”で、ゲーム2回ぶんのチャージを最初の2局で浪費していた。
+function shouldActivate(id, { sh, turnNo, p, progress, dora, yaochuu }) {
+  // ゲーム回数制の能力は、終盤に入ったら条件を緩めて使い切る（余らせ＝丸損）。
+  const lastCall = progress >= 0.7;
   switch (id) {
     // pull a tile when one away from tenpai (best value for a single pull)
     case "summon-tile": return sh === 1;
-    // draw-biasing boosts: spend early while the hand is still far from tenpai
+    // 詩玥「ツモ偏重」(1ゲーム2局): 押す価値のある局にだけ注ぐ。
+    //   ①速い立ち上がり（2巡目までに2シャンテン以下）＝加速の伸びしろが大きい
+    //   ②打点の種がある手（ドラ2枚以上）＝寄せた先の和了が重い
     case "lucky-draw":
+      if (turnNo > 5) return false; // 中盤以降に切っても偏向ツモの回数が残らない
+      if (turnNo <= 2 && sh <= 2) return true;
+      if (dora >= 2 && sh <= 3) return true;
+      return lastCall && sh <= 3;
+    // 姚玖「老頭ツモ」(1ゲーム2局): 么九牌が既に厚い手（混老頭/トイトイ/国士気配）で
+    // こそ么九寄せが活きる。バラけた手で切ると手なりを壊すだけ。
     case "rootou":
-    case "chunchan": return sh >= 2 && turnNo <= 2;
-    // ドラ寄せ: 新ドラ表示牌をめくり、和了時に発動回数ぶんの確定ドラを得る。テンパイ前
-    // （1シャンテン以下＝ sh>=1）に切って打点を仕込む。1局2回ぶん、終盤までに使い切る。
-    case "dora-pull": return sh >= 1;
+      if (turnNo > 6) return false;
+      if (yaochuu >= 7) return true;
+      return lastCall && yaochuu >= 5;
+    // 春嬋「中張ツモ」(1ゲーム2局): タンヤオ・平和系（么九牌が少ない配牌）で発動。
+    case "chunchan":
+      if (turnNo > 6) return false;
+      if (yaochuu <= 2 && sh <= 3) return true;
+      return lastCall && yaochuu <= 3;
     // open up to speed up a slow closed hand
     case "omni-chi": return sh >= 2 && turnNo <= 3 && p.menzen;
-    // 焔: 1巡目限定の博打。立ち上がりが整っている局に賭ける。
-    case "homura": return turnNo === 0 && sh <= 2;
+    // 焔「焔」(1巡目限定・1ゲーム2局): 満貫未満は固定点に落ちる諸刃なので、
+    // 打点の種（ドラ）か神配牌（1シャンテン）があるときだけ賭ける。
+    case "homura":
+      if (turnNo !== 0) return false;
+      if (sh <= 1) return true;
+      if (sh === 2 && dora >= 1) return true;
+      return lastCall && sh <= 3;
     default: return false;
   }
+}
+
+// ドラニエル「ドラ寄せ」(1局2回): 新ドラは全員の刃にもなる諸刃なので、自分の和了が
+// 近い局にだけ暴く。1発目＝1シャンテン以下で仕込み、2発目＝聴牌してからのダメ押し。
+// ドラ表示が3枚見えている卓は次のめくりで四開槓（流局）が近いので自重する。
+function decideDoraPull(game, ab, sh) {
+  if (game.wall.doraKinds().length >= 3) return false;
+  const fired = ab._activationsThisHand || 0;
+  if (fired === 0) return sh <= 1;
+  return sh <= 0;
+}
+
+// ゲームの消化度 0..1 の概算。局数上限（楼光の1〜3局戦）があればそちらを優先。
+// 連荘は概算に含めない（東風=4局/半荘=8局を分母にした目安で足りる）。
+function matchProgress(game) {
+  if (game.maxHands != null) return Math.min(1, game.handNumber / game.maxHands);
+  const total = (game.maxRounds || 1) * game.numPlayers;
+  const played = (game.roundWind - 27) * game.numPlayers + (game.kyoku - 1);
+  return Math.min(1, played / Math.max(1, total));
+}
+
+// 手中のドラ枚数（表示ドラの重複ぶん＋赤5）。打点の種の有無を見る。
+function doraInHand(game, p) {
+  const mult = new Map();
+  for (const k of game.wall.doraKinds()) mult.set(k, (mult.get(k) || 0) + 1);
+  let n = 0;
+  for (const t of p.hand) n += (mult.get(t.kind) || 0) + (t.red ? 1 : 0);
+  return n;
+}
+
+// 手中の么九牌（1・9・字牌）枚数。老頭/中張ツモの「手の寄り」判定に使う。
+function yaochuuCount(p) {
+  return p.hand.filter((t) => isHonor(t.kind) || rankOf(t.kind) === 1 || rankOf(t.kind) === 9).length;
 }
 
 // jane-doe target: the most threatening non-riichi opponent (lowest shanten).
