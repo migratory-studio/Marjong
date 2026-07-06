@@ -26,6 +26,7 @@ const FLAT = (v) => ({ fire: v, guard: v, read: v, gamble: v, speed: v, mental: 
 }
 
 // --- HAN_TABLE 整合: han と points のペアが常にテーブル行と一致（裏ドラ込み） ---
+// ※ bigHandLv 未指定（=0）は大物手未解禁なので、従来どおり跳満止まりの6ペアのみ。
 {
   const PAIRS = new Set(["1:1000", "2:2600", "3:3900", "4:8000", "5:8000", "6:12000"]);
   let all = true, uraSeen = 0, riichiSeen = 0;
@@ -130,6 +131,38 @@ const FLAT = (v) => ({ fire: v, guard: v, read: v, gamble: v, speed: v, mental: 
   };
   const plain = uraCount(0), rich = uraCount(0.4);
   ok(`uraRateAdd で裏ドラ増 (plain=${plain} < rich=${rich})`, rich > plain * 1.5);
+}
+
+// --- 大物手の解禁（bigHandLv）: 未解禁=跳満止まり／lv2=倍満解禁／lv3=三倍満以上が低確率 ---
+{
+  const PAIRS_BIG = new Set([
+    "1:1000", "2:2600", "3:3900", "4:8000", "5:8000", "6:12000",
+    "8:16000", "11:24000", "13:32000",
+  ]);
+  const tally = (lv) => {
+    const t = { baiman: 0, sanbaiPlus: 0, ok: true };
+    for (let i = 0; i < 1500; i++) {
+      const m = newMatch({ self: FLAT(99), opp: FLAT(10), hp: 25000, hpMax: 30000, seed: `big-${lv}-${i}`, bigHandLv: lv });
+      while (!m.finished) {
+        const r = resolveRound(m, "last");
+        const h = r.hand;
+        if (!PAIRS_BIG.has(`${h.han}:${h.points}`)) t.ok = false;
+        if (!PAIRS_BIG.has(`${h.baseHan}:${h.basePoints}`)) t.ok = false;
+        if (h.winnerSeat === 0) { // 火力99の自分の和了で観測
+          if (h.han >= 8 && h.han < 11) t.baiman++;
+          if (h.han >= 11) t.sanbaiPlus++;
+        }
+      }
+    }
+    return t;
+  };
+  const locked = tally(0), unlocked = tally(2), rare = tally(3);
+  ok("未解禁(lv=0)では倍満以上が出ない", locked.baiman === 0 && locked.sanbaiPlus === 0);
+  ok(`解禁(lv=2)で倍満が出る (${unlocked.baiman})`, unlocked.baiman > 0);
+  ok("解禁(lv=2)でも三倍満以上は出ない", unlocked.sanbaiPlus === 0);
+  ok(`大会帯(lv=3)で三倍満以上が出る (${rare.sanbaiPlus})`, rare.sanbaiPlus > 0);
+  ok(`三倍満以上は倍満より稀 (${rare.sanbaiPlus} < ${rare.baiman})`, rare.sanbaiPlus > 0 && rare.sanbaiPlus < rare.baiman * 0.6);
+  ok("解禁帯でも han↔points が HAN_TABLE と整合", locked.ok && unlocked.ok && rare.ok);
 }
 
 // --- oppHpMaxSeats: レア客席だけ点棒が太い ---

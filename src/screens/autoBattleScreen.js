@@ -11,7 +11,8 @@ import {
 } from "../autobattle/autoBattle.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { makeMobRoster } from "../data/mobMaster.js";
-import { flavorTilePath } from "../ui/assets.js";
+import { flavorTilePath, flavorTileKind, tilePath } from "../ui/assets.js";
+import { composeAgari } from "../autobattle/agariComposer.js";
 import { pickBeatChain, STANCE_HINT, VAGUE_HINT, EDGE_LABEL, INTENT_KANJI } from "../data/autoBattleTextMaster.js";
 import { pickMentorBattleQuip } from "../data/mentorVoiceMaster.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
@@ -49,12 +50,22 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
   let quipState = { lastQuipAt: -2, pinchDone: false, startDone: false, rareDone: false, hideTimer: null };
 
   let rare = null; // レア客 { seat: 1..3, char }（出た試合のみ）
-  let selfHandPaths = []; // 自分の手牌（フレーバー表示。fxRng 由来・ロジック無関係）
+  let selfHandKinds = []; // 自分の配牌（kind 13枚。フレーバー表示＋和了形合成の種。ロジック無関係）
+  let riverPool = [];     // 和了形合成で「切った」牌。自分の河へ流して辻褄を合わせる
 
-  // 自分の手牌（見た目だけ）を 13 枚引き直す。ソートして「整えた手」に見せる。
+  // 自分の配牌（見た目だけ）を 13 枚引き直す。ソートして「整えた手」に見せる。同種は物理上限の4枚まで。
   function regenSelfHand() {
-    selfHandPaths = Array.from({ length: 13 }, () => flavorTilePath(fxRng)).sort();
+    const counts = {};
+    selfHandKinds = [];
+    while (selfHandKinds.length < 13) {
+      const k = flavorTileKind(fxRng);
+      if ((counts[k] || 0) >= 4) continue;
+      counts[k] = (counts[k] || 0) + 1;
+      selfHandKinds.push(k);
+    }
+    selfHandKinds.sort((a, b) => a - b);
   }
+  const selfHandHtml = () => selfHandKinds.map((k) => `<img class="ab-htile" src="${esc(tilePath(k))}" alt="">`).join("");
 
   function startMatch() {
     const sd = `${seed}-m${session.matchNo}`;
@@ -79,7 +90,8 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
       ? [0, 1, 2].map((i) => rare.seat === i + 1 ? Math.round(oppHpMax * TRAIT_CFG.rareGuestHpMul) : oppHpMax)
       : null;
     match = newMatch({ self: selfP, opp, hp: session.hp, hpMax: session.hpMax, seed: sd, conditionBias, oppHpMax, oppHpMaxSeats,
-      uraRateAdd: trait?.uraRateAdd || 0 }); // 店トレイト「裏ドラ濃いめ」
+      uraRateAdd: trait?.uraRateAdd || 0, // 店トレイト「裏ドラ濃いめ」
+      bigHandLv: session.oppLv });        // 雀荘ランク解禁（倍満/三倍満以上）。レア客の格上補正は含めない
     match._opp = opp;
     busy = false;
     clearTimeout(quipState.hideTimer); // 前試合の相槌フェードタイマーを破棄
@@ -219,7 +231,7 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
             <div class="ab-hand ab-hand-top">${'<span class="ab-tback"></span>'.repeat(13)}</div>
             <div class="ab-hand ab-hand-left">${'<span class="ab-tback ab-tback-v"></span>'.repeat(13)}</div>
             <div class="ab-hand ab-hand-right">${'<span class="ab-tback ab-tback-v"></span>'.repeat(13)}</div>
-            <div class="ab-hand ab-hand-you">${selfHandPaths.map((p) => `<img class="ab-htile" src="${esc(p)}" alt="">`).join("")}</div>
+            <div class="ab-hand ab-hand-you">${selfHandHtml()}</div>
             <div class="ab-river ab-river-top"></div>
             <div class="ab-river ab-river-left"></div>
             <div class="ab-river ab-river-right"></div>
@@ -309,15 +321,18 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
 
   // ── 麻雀卓の舞台装置（河・リーチ棒）──────────────────────────
   // 河に捨て牌を n 枚ばらまく（fxRng・ゾーンはランダム・1ゾーン10枚まで）。
+  // 和了形合成で自分が「切った」牌（riverPool）は自分の河へ優先して流す＝配牌との辻褄。
   function sprinkleRiver(n) {
     const zones = container.querySelectorAll(".ab-river");
     if (!zones.length) return;
+    const youZone = container.querySelector(".ab-river-you");
     for (let i = 0; i < n; i++) {
-      const z = zones[Math.floor(fxRng() * zones.length)];
+      const fromPool = riverPool.length > 0 && youZone && youZone.children.length < 10;
+      const z = fromPool ? youZone : zones[Math.floor(fxRng() * zones.length)];
       if (!z || z.children.length >= 10) continue;
       const img = document.createElement("img");
       img.className = "ab-rtile";
-      img.src = flavorTilePath(fxRng);
+      img.src = fromPool ? tilePath(riverPool.shift()) : flavorTilePath(fxRng);
       img.alt = "";
       z.appendChild(img);
     }
@@ -351,7 +366,7 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
     if (crc) crc.textContent = `${match.round + 1} / ${match.rounds}`;
     regenSelfHand();
     const hand = container.querySelector(".ab-hand-you");
-    if (hand) hand.innerHTML = selfHandPaths.map((p) => `<img class="ab-htile" src="${esc(p)}" alt="">`).join("");
+    if (hand) hand.innerHTML = selfHandHtml();
   }
 
   function setCmdsDisabled(d) {
@@ -536,7 +551,12 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
     const card = container.querySelector("#ab-result");
     const beat = container.querySelector("#ab-beat");
     const tone = win ? "ab-result-win" : (res.delta < 0 ? "ab-result-lose" : "ab-result-safe");
-    const hanLabel = (han) => (han >= 6 ? "跳満" : han === 5 ? "満貫" : `${han} 翻`);
+    const hanLabel = (han) =>
+      han >= 13 ? "役満" : han >= 11 ? "三倍満" : han >= 8 ? "倍満" : han >= 6 ? "跳満" : han === 5 ? "満貫" : `${han} 翻`;
+    // 和了形の合成: 自分の和了は「局頭に見せた配牌から仕上げた手」、相手は役名の雰囲気だけで作る。
+    // 切った牌は自分の河へ流す（sprinkleRiver が riverPool から消費）。
+    const agari = composeAgari({ seedKinds: win ? selfHandKinds : null, yaku: h.yaku, rng: fxRng });
+    riverPool = win ? agari.discards.slice() : [];
     const wt = h.winType === "tsumo" ? "ツモ" : "ロン";
     const who = h.ronTarget != null
       ? `${esc(seatLabel(h.winnerSeat))} → ${esc(seatLabel(h.ronTarget))} へ${wt}`
@@ -599,13 +619,14 @@ export function showAutoBattle(container, { self, avatar, oppLv = 4, hp, hpMax, 
       container.querySelector("." + SEAT_CLASS[h.winnerSeat])?.classList.add("is-winner");
       if (!instant && win) audio?.playSe?.(sePath("シャキーン1.mp3"), 0.55);
     } });
-    // 役名スラム＋和了牌の倒牌（フレーバー5枚が順にめくれる）。
+    // 役名スラム＋和了手の倒牌（合成した13枚＋和了牌が順にめくれる。和了牌は離して置く）。
     steps.push({ at: cardAt + 200, run() {
       const y = card.querySelector(".ab-r-yaku");
       if (y) { y.textContent = h.yaku || ""; y.classList.add("is-slam"); }
       const tl = card.querySelector(".ab-r-tiles");
-      if (tl) tl.innerHTML = Array.from({ length: 5 }, (_, i) =>
-        `<img class="ab-rwtile" style="animation-delay:${i * 70}ms" src="${esc(flavorTilePath(fxRng))}" alt="">`).join("");
+      if (tl) tl.innerHTML = agari.tiles.map((k, i) =>
+        `<img class="ab-rwtile" style="animation-delay:${i * 45}ms" src="${esc(tilePath(k))}" alt="">`).join("")
+        + `<img class="ab-rwtile ab-rwtile-win" style="animation-delay:${agari.tiles.length * 45 + 120}ms" src="${esc(tilePath(agari.winKind))}" alt="">`;
     } });
     // 翻カウントアップ（170ms/翻、ピッ音の音程が上がっていく）。まず base の翻まで数える。
     const baseHan = Math.max(1, h.baseHan ?? h.han);

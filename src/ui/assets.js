@@ -22,14 +22,15 @@ export function tilePath(kind, red = false) {
   return `${TILE_DIR}/${SUIT_NAME[suitOf(kind)]}${r}${suffix}.svg`;
 }
 
-// 演出用: ランダムな牌画像パスを 1 つ返す（オート対局のフレーバー手牌・河など、
+// 演出用: ランダムな牌 kind を 1 つ返す（オート対局のフレーバー手牌・河など、
 // エンジン非依存の見た目専用）。数牌:字牌 ≒ 3:1 で実際の山に近い比率。
+export function flavorTileKind(rng = Math.random) {
+  if (rng() < 0.78) return Math.floor(rng() * 3) * 9 + Math.floor(rng() * 9); // 萬筒索 0..26
+  return 27 + Math.floor(rng() * HONOR_NAME.length);                          // 字牌 27..33
+}
+
 export function flavorTilePath(rng = Math.random) {
-  if (rng() < 0.78) {
-    const suit = Object.values(SUIT_NAME)[Math.floor(rng() * 3)];
-    return `${TILE_DIR}/${suit}${1 + Math.floor(rng() * 9)}.svg`;
-  }
-  return `${TILE_DIR}/${HONOR_NAME[Math.floor(rng() * HONOR_NAME.length)]}.svg`;
+  return tilePath(flavorTileKind(rng));
 }
 
 export class TileImages {

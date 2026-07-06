@@ -69,6 +69,14 @@ const CFG = {
   // めくり演出の裏付け（軸3）: 和了に立直が付く率（コマンド別＋相手側）と、立直時に裏が乗る率。
   riichiRate: { push: 0.45, pull: 0.10, watch: 0.25, last: 0.60, opp: 0.35 },
   uraRate: 0.30,              // 立直時に HAN_TABLE で 1 行昇格する率（点数と演出が常に整合）
+  // 大物手の解禁（雀荘ランク連動）。実効 oppLv（店種別＋シナリオ進捗）で段階解禁する。
+  // 倍満は火力写像の1段延長で自然に出る。三倍満以上は「倍満帯を引いた上で追加抽選」＝常に低確率。
+  bigHand: {
+    unlockLv: 2,      // 実効 oppLv >= 2（チャレンジ帯〜）で倍満解禁
+    rareLv: 3,        // 実効 oppLv >= 3（大会中の雀荘〜）で三倍満以上も抽選対象
+    rareRate: 0.18,   // 倍満帯を引いたとき三倍満以上へ伸びる率
+    yakumanRate: 0.25, // 伸びたうち役満まで届く率（≒倍満帯の 4.5%）
+  },
   // コマンドごとの「自分の効くparam / 相手の抵抗param / 取り確率係数 / 負け時ダメージ基準」
   cmd: {
     push:  { self: "fire",   opp: "guard", k: 1.0, dmgLose: 7000,  win: 3 },
@@ -117,13 +125,16 @@ export function paramsFromLv(lv, seed = "opp") {
 
 // 新しい試合状態を作る。self/opp は 6 パラメータ。hp は試合開始時の現在 HP。
 // conditionBias は当日の調子（-2..+2）。局取り確率に軽く反映する。
-export function newMatch({ self, opp, hp, hpMax, seed = Date.now(), conditionBias = 0, oppHpMax = 25000, oppHpMaxSeats = null, uraRateAdd = 0 }) {
+// bigHandLv は雀荘の実効 oppLv（店種別＋進捗）。CFG.bigHand の閾値で倍満/三倍満以上を段階解禁。
+export function newMatch({ self, opp, hp, hpMax, seed = Date.now(), conditionBias = 0, oppHpMax = 25000, oppHpMaxSeats = null, uraRateAdd = 0, bigHandLv = 0 }) {
   const rng = makeRng(seed);
   const hpSeats = oppHpMaxSeats || [oppHpMax, oppHpMax, oppHpMax]; // 席ごとの上限（レア客席だけ太い等）
   const state = {
     self, opp, hp, hpMax,
     conditionBias,
     uraRate: clamp(CFG.uraRate + uraRateAdd, 0, 0.9), // 店トレイト「裏ドラ濃いめ」で上乗せ
+    hanCapIdx: bigHandLv >= CFG.bigHand.unlockLv ? HAN_IDX.baiman : HAN_IDX.haneman,
+    bigHandRare: bigHandLv >= CFG.bigHand.rareLv,
     rng,
     round: 0,                 // 0..rounds
     rounds: CFG.rounds,
@@ -191,6 +202,7 @@ export function oppHint(state) {
 }
 
 // 翻 → 点数 ＆ 役名（フレーバー）。子のロン相当の概算。
+// IDX_BAIMAN 以降は雀荘ランク解禁枠（bigHand）：実効 oppLv の高い店でだけ出る大物手。
 const HAN_TABLE = [
   { han: 1, pts: 1000,  yaku: ["立直", "平和ドラ"] },
   { han: 2, pts: 2600,  yaku: ["立直ツモ", "タンヤオドラ1"] },
@@ -198,7 +210,11 @@ const HAN_TABLE = [
   { han: 4, pts: 8000,  yaku: ["混一色ドラ", "対々和"] },
   { han: 5, pts: 8000,  yaku: ["満貫"] },
   { han: 6, pts: 12000, yaku: ["跳満"] },
+  { han: 8,  pts: 16000, yaku: ["清一色ドラ2", "リーチツモ対々ドラ2"] }, // 倍満
+  { han: 11, pts: 24000, yaku: ["清一色リーチツモドラ4"] },             // 三倍満
+  { han: 13, pts: 32000, yaku: ["四暗刻", "大三元", "国士無双"] },       // 役満
 ];
+export const HAN_IDX = { haneman: 5, baiman: 6, sanbaiman: 7, yakuman: 8 };
 // コマンドの攻撃性（高いほど高打点を狙う）。
 const AGGR = { push: 0.7, pull: 0.1, watch: 0.2, last: 1.0 };
 
@@ -207,15 +223,22 @@ const AGGR = { push: 0.7, pull: 0.1, watch: 0.2, last: 1.0 };
 // 勝負勘・攻撃性・能力 boost が上振れ（同じ幅の中で高い方を引きやすく）。
 // 立直＋裏ドラ（軸3）: riichiRate で立直が付き、立直時 uraRate で「HAN_TABLE の 1 行上に昇格」。
 // 点数は常に HAN_TABLE の行から引くため、めくり演出（base→final）と点数が必ず整合する。
-function rollHand(p, aggression, rng, boost = 0, { riichiRate = 0, uraRate = 0 } = {}) {
+// hanCapIdx（雀荘ランク解禁）: 倍満解禁店では火力写像が 1 段伸びる。rare=true の店では
+// 倍満帯を引いた上で追加抽選に通ったときだけ三倍満/役満へ化ける（＝常に低確率）。
+function rollHand(p, aggression, rng, boost = 0, { riichiRate = 0, uraRate = 0, hanCapIdx = HAN_IDX.haneman, rare = false } = {}) {
   const power = clamp((p.fire || 0) / 99, 0, 1);                 // 火力 0..1
-  const maxIdx = clamp(Math.round(power * 5) + Math.round(boost * 2), 1, HAN_TABLE.length - 1); // 低火力=1(2翻まで)…高火力=5
+  const band = hanCapIdx >= HAN_IDX.baiman ? 6 : 5;              // 解禁店では上限帯が 1 段広い
+  const maxIdx = clamp(Math.round(power * band) + Math.round(boost * 2), 1, Math.min(hanCapIdx, HAN_IDX.baiman));
   const lift = clamp((p.gamble || 0) / 99 * 0.3 + aggression * 0.4 + boost * 0.5 + rng() * 0.6, 0, 1.2);
-  const idx = clamp(Math.floor(lift * (maxIdx + 1)), 0, maxIdx);
+  let idx = clamp(Math.floor(lift * (maxIdx + 1)), 0, maxIdx);
+  if (rare && idx === HAN_IDX.baiman && rng() < CFG.bigHand.rareRate) {
+    idx = rng() < CFG.bigHand.yakumanRate ? HAN_IDX.yakuman : HAN_IDX.sanbaiman;
+  }
   const base = HAN_TABLE[idx];
   const riichi = rng() < riichiRate;
   let finalIdx = idx;
-  if (riichi && idx < HAN_TABLE.length - 1 && rng() < uraRate) finalIdx = idx + 1; // 裏ドラ乗り＝1 行昇格
+  // 裏ドラ昇格は倍満まで（三倍満以上は追加抽選のみ＝レア度を1つのつまみで管理）。
+  if (riichi && idx < Math.min(hanCapIdx, HAN_IDX.baiman) && rng() < uraRate) finalIdx = idx + 1;
   const e = HAN_TABLE[finalIdx];
   const yaku = base.yaku[Math.floor(rng() * base.yaku.length)];
   return {
@@ -293,7 +316,8 @@ export function resolveRound(state, command, opts = {}) {
     // 自分の和了。ツモ（相手 3 人払い）かロン（1 人払い）かを抽選。能力でツモ＆高打点に寄る。
     const h = rollHand(state.self, AGGR[command] ?? 0.5, state.rng,
       (ability ? CFG.abilityHanBoost : 0) + (mu.hb || 0),
-      { riichiRate: CFG.riichiRate[command] ?? 0.3, uraRate: state.uraRate });
+      { riichiRate: CFG.riichiRate[command] ?? 0.3, uraRate: state.uraRate,
+        hanCapIdx: state.hanCapIdx, rare: state.bigHandRare });
     winnerSeat = 0;
     const tsumoRate = ability ? CFG.abilityTsumoRate : CFG.selfTsumoRate;
     if (state.rng() < tsumoRate) {
@@ -309,7 +333,8 @@ export function resolveRound(state, command, opts = {}) {
   } else {
     // 相手の和了。ツモ（全員払い）／自分へロン／他家へロン（自分は無傷）を抽選。
     winnerSeat = pickOpp(state.rng);
-    const h = rollHand(state.opp, 0.6, state.rng, 0, { riichiRate: CFG.riichiRate.opp, uraRate: state.uraRate });
+    const h = rollHand(state.opp, 0.6, state.rng, 0, { riichiRate: CFG.riichiRate.opp, uraRate: state.uraRate,
+      hanCapIdx: state.hanCapIdx, rare: state.bigHandRare });
     const roll = state.rng();
     if (roll < CFG.oppTsumoRate) {
       winType = "tsumo";
