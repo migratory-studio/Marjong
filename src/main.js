@@ -1432,8 +1432,10 @@ async function launchHonestMatch(config) {
 // 全 N 節の累積ポイント1位（ユニット単位）で優勝＝宝獲得。
 let tournamentRun = null; // { t, matchIndex, units, totals, names, deshiUnitId, seatedUnitIds, strengthById, fieldAvgStrength }
 
-// 団体戦の弟子チームの“仲間”（師匠以外の3人目）。正典準拠（ビビ＝焔）＋他は妥当な補完。
-const ALLY_BY_MENTOR = { bibi: "homura", shiyue: "mamori", kakeha_ruina: "doranie" };
+// 団体戦の弟子チームの“仲間”（師匠以外の3人目）。正典準拠：ビビ＝焔／ルイナ＝ドラニエル（ep17）／
+// ドラニエル＝ルクス・ゼロ（ep17・design/doranie.json teamBattleTrio）／凌雲＝詩玥（ep17。従来はフォールバック
+// CHARACTERS[0]=shiyue で偶然一致していたのを明示化＝挙動不変）。
+const ALLY_BY_MENTOR = { bibi: "homura", shiyue: "mamori", kakeha_ruina: "doranie", doranie: "yobinin", kuidoshi: "shiyue" };
 // 対局用に持ち点（startingPoints）を上書きしたキャラの複製を返す。
 function asMatchChar(char, points) {
   return { ...char, stats: { ...(char?.stats || {}), startingPoints: points } };

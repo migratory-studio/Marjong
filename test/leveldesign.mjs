@@ -309,5 +309,48 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
     skillRuntimeAbilityParams("lv-gamble-bet", 10).lookaheadDepth === 8 && skillRuntimeAbilityParams("lv-gamble-bet", 10).doraPreference === true);
 }
 
+// ---- ドラニエル編：結線データ整合の単体検証（ルイナ同型） ----
+// 宝順・won ゲート数列はルイナ編と同型（won1→2→4→5→7→8）。design/doranie.json campaignTreasureOrder と同期。
+// lv-dora-pull は本設計済（詳細は test/dorapull.mjs）＝ここでは基準帯/超越帯の境界だけ確認する。
+{
+  const camp = MENTOR_CAMPAIGN.doranie;
+  const ids = camp.map((s) => s.id);
+  ok("ドラニエル: 宝順が 個人→ペア→トリオ→最終 の正典順",
+    JSON.stringify(ids) === JSON.stringify(["chin-iki", "ji-peeko", "menzen-kaiken", "kyou-sharin", "musou-kan", "tenankou", "daisanken", "tenchi-shingyoku", "kyuuren-houtou"]));
+  ok("ドラニエル: oppLv は単調非減少", camp.every((s, i, a) => i === 0 || s.oppLv >= a[i - 1].oppLv));
+  ok("ドラニエル: tenankou はトリオ結成章(ep17)読了が前提",
+    camp.find((s) => s.id === "tenankou")?.requireScenario === "mentor-doranie-bond-17");
+  ok("ドラニエル: トリオ結成(ep17=won5)以前に team 形式が来ない",
+    camp.findIndex((s) => s.id === "tenankou") === 5 && camp.slice(0, 5).every((s) => !["tenankou", "daisanken"].includes(s.id)));
+  ok("ドラニエル: 最終(九蓮宝燈)は team＝弟子+ドラニエル+ルクス・ゼロ",
+    camp.find((s) => s.id === "kyuuren-houtou")?.finalFormat === "team");
+  ok("ドラニエル: 師弟編フィナーレ=ep12 / エピローグ=ep20",
+    MENTOR_FINALE_SCENARIO.doranie === "mentor-doranie-bond-12" && MENTOR_EPILOGUE_SCENARIO.doranie === "mentor-doranie-bond-20");
+
+  // 解禁チェーン（SCENARIO_MASTER のドラニエル20話）
+  const dch = SCENARIO_MASTER.filter((s) => s.mentorCharacterId === "doranie").sort((a, b) => a.sortOrder - b.sortOrder);
+  ok("ドラニエル: 全20話が登録済み", dch.length === 20);
+  const uc = (n) => dch[n - 1]?.unlockConditions || [];
+  const hasType = (n, t) => uc(n).some((c) => c.type === t);
+  const readVal = (n) => uc(n).find((c) => c.type === "scenario_read" || c.type === "scenario_read_prev_month")?.value;
+  const wonVal = (n) => uc(n).find((c) => c.type === "tournament_won")?.value;
+  ok("ドラニエル: ep1=always", hasType(1, "always"));
+  ok("ドラニエル: ep2〜20は前話 scenario_read で連鎖（読了チェーン）",
+    dch.slice(1).every((s, i) => readVal(i + 2) === dch[i].scenarioId));
+  ok("ドラニエル: ep13 はフィナーレ翌月解禁（一気読み防止＝scenario_read_prev_month）", hasType(13, "scenario_read_prev_month"));
+  ok("ドラニエル: won階段 ep11=1 / ep12=2 / ep16=4 / ep17=5 / ep19=7 / ep20=8",
+    wonVal(11) === 1 && wonVal(12) === 2 && wonVal(16) === 4 && wonVal(17) === 5 && wonVal(19) === 7 && wonVal(20) === 8);
+
+  // 技Lv＝超越帯（lv-dora-pull）＝紙HP反転アーク（ep16→6 … ep20→10）と同期
+  const dprof = (...ids2) => ({ scenarioProgress: ids2.map((id) => ({ scenarioId: id })) });
+  ok("ドラニエル: 何も読んでいなければ基準 Lv5", mentorSkillLevel(dprof(), "doranie") === MENTOR_SKILL_BASE);
+  ok("ドラニエル: ep16読了で技 Lv6（二人なら飛ばぬ＝超越帯入り）", mentorSkillLevel(dprof("mentor-doranie-bond-16"), "doranie") === 6);
+  ok("ドラニエル: ep20読了で技 Lv10（ドラを注ぐ極み）", mentorSkillLevel(dprof("mentor-doranie-bond-20"), "doranie") === 10);
+  // 師匠導線：ピッカーに出るための2条件（シナリオ＋能力テンプレ）が両方立っている
+  ok("ドラニエル: templatesForMentor に1件以上（tmpl-dora-pull 共有）", templatesForMentor("doranie").length >= 1);
+  ok("ドラニエル: 基準帯(Lv5)は山読み無し・超越帯(Lv6)で doraDrawBias が宿る",
+    skillRuntimeAbilityParams("lv-dora-pull", 5).doraDrawBias === false && skillRuntimeAbilityParams("lv-dora-pull", 6).doraDrawBias === true);
+}
+
 console.log(fails ? `\n${fails} FAILED` : "\nALL PASS");
 process.exit(fails ? 1 : 0);

@@ -95,7 +95,9 @@ export const SKILL_TEMPLATE_MASTER = [
     familyId: "gamble",
     paramAffinity: ["fire", "gamble"], // 一発逆転＝火力(主)・勝負勘(副)
     rarity: "rare",
-    mentorCharacterIds: ["kakeha_ruina"],
+    // ドラニエル師匠の本流能力でもある（ドラ寄せ＝design/doranie.json）。ルイナ門下では「能力変更先」、
+    // ドラニエル門下では初期候補（凌雲と同じ1候補型）。
+    mentorCharacterIds: ["kakeha_ruina", "doranie"],
     integrationTier: "hook_only",
     levelTableId: "lv-dora-pull",
     initialSkillLevel: 1,
@@ -161,7 +163,7 @@ export const SKILL_TEMPLATE_MASTER = [
 
 // 初期師匠候補（major_update_specification.md §9.3：攻撃 / 守備 / ギャンブルの3系統）。
 // 既存キャラ(characterMaster)の id を指す。Phase 2A のマイキャラ作成で師匠選択に使う。
-export const INITIAL_MENTOR_IDS = ["shiyue", "bibi", "kakeha_ruina", "kuidoshi"];
+export const INITIAL_MENTOR_IDS = ["shiyue", "bibi", "kakeha_ruina", "kuidoshi", "doranie"];
 
 export function templatesForMentor(mentorCharacterId) {
   return SKILL_TEMPLATE_MASTER.filter(

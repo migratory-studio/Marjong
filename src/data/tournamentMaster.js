@@ -87,6 +87,8 @@ export const MENTOR_TREASURE_RANK = {
   bibi: 5,          // 五蓮闘士（正典：5つで停滞＝覇道編で残り4つに挑み直す軸。scenario/design/bibi.json）
   kakeha_ruina: 5,  // 五蓮闘士（博徒）
   kuidoshi: 5,      // 五蓮闘士（守りの名手）。RANK_TRACK 無し＝段位停滞＝「無冠の九蓮」motif（弟子と組んで初めて頂点へ）
+  doranie: 4,       // 四蓮策士（最強の一発と紙の点棒＝勝ち切れず散り続けてきた博徒。ep13「独りでは飛ぶのう」と整合）。
+                    // RANK_TRACK 無し＝段位は動かさない（彼女の成長は段位でなく“共闘”＝design/doranie.json catchphraseArc③）
 };
 // 師匠の段位の「軌跡」: 弟子の宝の数 → 師匠の蓮数（キャラ別の伸び方）。
 // 詩玥は六蓮で止まっていたのが、弟子との覇道編で再び動き出し、九蓮戦の直前に八蓮極士へ届く

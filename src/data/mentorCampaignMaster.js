@@ -81,6 +81,25 @@ export const MENTOR_CAMPAIGN = {
     { id: "tenchi-shingyoku", oppLv: 9 },                                          // ペア
     { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "pair" },                    // 弟子＋凌雲の二人で九蓮宝士
   ],
+  // ドラニエル（博打・ドラ寄せ）：宝順はシナリオ正典（masters/mentor-doranie-bond-*）＝design/doranie.json
+  //   campaignTreasureOrder と同期。won ゲート数列はルイナ編と同型（won1→2→4→5→7→8）：
+  //     ep11=chin-iki（清一器・won1＝弟子の初宝）／ep12=ji-peeko（至盃口・won2＝師弟編フィナーレ「差し向かい」
+  //     ＝公式ペア戦は師弟共闘・1対1は夜の非公式卓）／ep16=kyou-sharin（鏡車輪・won4「二人なら飛ばぬ」）／
+  //     ep17「三人はもっと最高じゃ」=トリオ結成（弟子＋ドラニエル＋ルクス・ゼロ）→tenankou（天の宝×天使）／
+  //     ep19=tenchi-shingyoku（天地神玉・won7「運は作るものじゃ」）／ep20=kyuuren（won8）＝team で九蓮宝士
+  //     （最終局＝ドラを全部弟子に注ぐ「ドラはぜーんぶ、ぬしのものじゃ！」）。
+  doranie: [
+    { id: "chin-iki",         oppLv: 3 },                        // 個人（三人打ち）・ep11（won1）
+    { id: "ji-peeko",         oppLv: 5 },                        // ペア・ep12フィナーレ（師弟共闘／won2）
+    { id: "menzen-kaiken",    oppLv: 5 },                        // 個人（オフスクリーン）
+    { id: "kyou-sharin",      oppLv: 6 },                        // ペア・ep16「二人なら飛ばぬ」（won4）
+    { id: "musou-kan",        oppLv: 7 },                        // 個人（これで won5＝ep17トリオ結成が解禁）
+    // 団体（弟子＋ドラニエル＋ルクス・ゼロ）。ep17でトリオ結成＝その章を読むまで挑めない。
+    { id: "tenankou",         oppLv: 8, requireScenario: "mentor-doranie-bond-17" },
+    { id: "daisanken",        oppLv: 9 },                        // 団体（オフスクリーン）
+    { id: "tenchi-shingyoku", oppLv: 9 },                        // ペア・ep19「運は作るものじゃ」（won7）
+    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ドラニエル＋ルクスのトリオで九蓮宝士
+  ],
 };
 
 // ------------------------------------------------- 育成フェーズ（章立て）：師弟編 → 覇道編
@@ -96,6 +115,7 @@ export const MENTOR_FINALE_SCENARIO = {
   bibi: "mentor-bibi-bond-12",     // 12話＝団体戦優勝。守りに閉じたビビが初めて「信じて攻めを託す」転回点（design/bibi.json）
   kakeha_ruina: "mentor-kakeha_ruina-bond-12", // 12話「ひとりで、いい」＝無双冠(国士無双)で師弟が決勝対峙（design/ruina.json）
   kuidoshi: "mentor-kuidoshi-bond-12", // 12話「泥仕合」＝門前開鍵で師弟編フィナーレ（読了で覇道編へ）
+  doranie: "mentor-doranie-bond-12", // 12話「差し向かい」＝至盃口をペアで獲った夜の非公式1対1（design/doranie.json）
 };
 
 // エピローグ章（最終大会＝九蓮宝燈の優勝後に解禁・読了でスタッフロール）。
@@ -106,6 +126,7 @@ export const MENTOR_EPILOGUE_SCENARIO = {
   bibi: "mentor-bibi-bond-20", // 20話＝弟子の個人戦単独優勝を見届け、手を放して見送る。ビビ自身も道へ（殻破り完成）
   kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝九蓮宝燈を弟子の大捲りで制覇＋後日譚（design/ruina.json）
   kuidoshi: "mentor-kuidoshi-bond-20", // 20話エピローグ＝2人で九蓮宝士・不屈の後日譚（読了でスタッフロール）
+  doranie: "mentor-doranie-bond-20", // 20話「最高なのじゃ」＝トリオで九蓮宝士・口癖の反転＋明るい後日譚（design/doranie.json）
 };
 export function isMentorEpilogue(scenarioId) {
   return Object.values(MENTOR_EPILOGUE_SCENARIO).includes(scenarioId);
@@ -160,6 +181,16 @@ export const MENTOR_SKILL_TRACK = {
     { scenarioId: "mentor-kuidoshi-bond-18", level: 8 },  // 特訓で2枚目の盾を掴みかける
     { scenarioId: "mentor-kuidoshi-bond-19", level: 9 },  // 決勝＝2枚目の盾が3倍満を0に（進化）
     { scenarioId: "mentor-kuidoshi-bond-20", level: 10 }, // 天衣無縫＝守りと攻めに継ぎ目なし
+  ],
+  // ドラニエル＝超越帯（lv-dora-pull Lv6〜10）＝「独りの大博打」から「共闘の大博打」へ。
+  // 覇道編＝紙HPの反転アーク（二人なら飛ばぬ→三人なら飛ばぬ→ドラを弟子に注ぐ）と同期。
+  // 超越帯＝相棒・ルクス・ゼロの山読みが宿る（賭けた局のツモ偏重・ドラ手繰り。本設計済＝test/dorapull.mjs）。
+  doranie: [
+    { scenarioId: "mentor-doranie-bond-16", level: 6 },  // 二人なら飛ばぬ＝鏡車輪・共闘の実り
+    { scenarioId: "mentor-doranie-bond-17", level: 7 },  // トリオ結成＝天の宝×天使×機械
+    { scenarioId: "mentor-doranie-bond-18", level: 8 },  // 帰らんのか＝口癖の前震（最高絆）
+    { scenarioId: "mentor-doranie-bond-19", level: 9 },  // 運は作るものじゃ＝哲学の完成
+    { scenarioId: "mentor-doranie-bond-20", level: 10 }, // 最高なのじゃ＝ドラを注ぐ極み（弟子Lv10と同時期）
   ],
 };
 export function mentorSkillLevel(profile, mentorId) {
