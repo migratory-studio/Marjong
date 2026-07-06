@@ -1433,9 +1433,10 @@ async function launchHonestMatch(config) {
 let tournamentRun = null; // { t, matchIndex, units, totals, names, deshiUnitId, seatedUnitIds, strengthById, fieldAvgStrength }
 
 // 団体戦の弟子チームの“仲間”（師匠以外の3人目）。正典準拠：ビビ＝焔／ルイナ＝ドラニエル（ep17）／
-// ドラニエル＝ルクス・ゼロ（ep17・design/doranie.json teamBattleTrio）／凌雲＝詩玥（ep17。従来はフォールバック
-// CHARACTERS[0]=shiyue で偶然一致していたのを明示化＝挙動不変）。
-const ALLY_BY_MENTOR = { bibi: "homura", shiyue: "mamori", kakeha_ruina: "doranie", doranie: "yobinin", kuidoshi: "shiyue" };
+// ドラニエル＝ルクス・ゼロ（ep17・design/doranie.json teamBattleTrio）／ルクス・ゼロ＝ルイナ（ep17・
+// design/yobinin.json teamBattleTrio）／凌雲＝詩玥（ep17。従来はフォールバック CHARACTERS[0]=shiyue で
+// 偶然一致していたのを明示化＝挙動不変）。
+const ALLY_BY_MENTOR = { bibi: "homura", shiyue: "mamori", kakeha_ruina: "doranie", doranie: "yobinin", yobinin: "kakeha_ruina", kuidoshi: "shiyue" };
 // 対局用に持ち点（startingPoints）を上書きしたキャラの複製を返す。
 function asMatchChar(char, points) {
   return { ...char, stats: { ...(char?.stats || {}), startingPoints: points } };

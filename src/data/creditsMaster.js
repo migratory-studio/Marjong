@@ -40,6 +40,8 @@ export const CREDITS_MASTER = {
     kuidoshi: ["「——次は、君が、誰かの“なりたい姿”になる番だ。", "　いってらっしゃい、ネ。」"],
     // ドラニエル＝口癖『下界の麻雀は、最高じゃのう！』が“ぬしと打つ麻雀”へ反転（ep20）＋シグネチャ『組もうぞ』の円環（design/doranie.json catchphraseArc）。
     doranie: ["「——ぬしと打つ麻雀が、最高なのじゃ。", "　次の大勝負も、わらわと組もうぞ！」"],
+    // ルクス・ゼロ＝口癖『誤差は、消す』の反転（ep20）＋枠物語『検証→観測』の回収（design/yobinin.json catchphraseArc）。
+    yobinin: ["「——誤差も、悪くない。", "　観測は、続ける。……次の卓も、共に。」"],
   },
   lastLineDefault: ["「——また、打とう。」"],
 };

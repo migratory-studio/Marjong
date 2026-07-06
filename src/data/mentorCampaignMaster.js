@@ -100,6 +100,25 @@ export const MENTOR_CAMPAIGN = {
     { id: "tenchi-shingyoku", oppLv: 9 },                        // ペア・ep19「運は作るものじゃ」（won7）
     { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ドラニエル＋ルクスのトリオで九蓮宝士
   ],
+  // ルクス・ゼロ（精密機械・ゼロ・リサーチ）：宝順はシナリオ正典（masters/mentor-yobinin-bond-*）＝
+  //   design/yobinin.json campaignTreasureOrder と同期。won ゲート数列はルイナ/ドラニエル編と同型：
+  //     ep11=chin-iki（清一器・won1＝一色に研ぎ澄ます＝誤差を消す純化）／ep12=menzen-kaiken（門前開鍵・won2
+  //     ＝『孤独な試練を独力で開くマスターキー』＝単独の機械のテーマ宝で師弟決勝対峙「割り切れない」）／
+  //     ep16=kyou-sharin（鏡車輪・won4「揺らぎは、変数」）／ep17「検証のため、貴殿が必要だ」=トリオ結成
+  //     （弟子＋ルクス＋ルイナ＝機械がルイナを口説く）→daisanken／ep19=tenankou（won7「運の隣に立つ」）／
+  //     ep20=kyuuren（won8）＝team＝グレーアウトの最終局に確定のない一打→『誤差も、悪くない』。
+  yobinin: [
+    { id: "chin-iki",         oppLv: 3 },                        // 個人（三人打ち）・ep11（won1）
+    { id: "menzen-kaiken",    oppLv: 4 },                        // 個人・ep12フィナーレ（師弟対峙／won2）
+    { id: "musou-kan",        oppLv: 5 },                        // 個人（オフスクリーン）
+    { id: "kyou-sharin",      oppLv: 6 },                        // ペア・ep16「揺らぎは、変数」（won4）
+    { id: "ji-peeko",         oppLv: 7 },                        // ペア（これで won5＝ep17トリオ結成が解禁）
+    // 団体（弟子＋ルクス・ゼロ＋賭羽ルイナ）。ep17でトリオ結成＝その章を読むまで挑めない。
+    { id: "daisanken",        oppLv: 8, requireScenario: "mentor-yobinin-bond-17" },
+    { id: "tenchi-shingyoku", oppLv: 9 },                        // ペア（オフスクリーン）
+    { id: "tenankou",         oppLv: 9 },                        // 団体・ep19「運の隣に立つ」（won7）
+    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ルクス＋ルイナのトリオで九蓮宝士
+  ],
 };
 
 // ------------------------------------------------- 育成フェーズ（章立て）：師弟編 → 覇道編
@@ -116,6 +135,7 @@ export const MENTOR_FINALE_SCENARIO = {
   kakeha_ruina: "mentor-kakeha_ruina-bond-12", // 12話「ひとりで、いい」＝無双冠(国士無双)で師弟が決勝対峙（design/ruina.json）
   kuidoshi: "mentor-kuidoshi-bond-12", // 12話「泥仕合」＝門前開鍵で師弟編フィナーレ（読了で覇道編へ）
   doranie: "mentor-doranie-bond-12", // 12話「差し向かい」＝至盃口をペアで獲った夜の非公式1対1（design/doranie.json）
+  yobinin: "mentor-yobinin-bond-12", // 12話「割り切れない」＝門前開鍵で師弟決勝対峙・計算の外の一打が機械を破る（design/yobinin.json）
 };
 
 // エピローグ章（最終大会＝九蓮宝燈の優勝後に解禁・読了でスタッフロール）。
@@ -127,6 +147,7 @@ export const MENTOR_EPILOGUE_SCENARIO = {
   kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝九蓮宝燈を弟子の大捲りで制覇＋後日譚（design/ruina.json）
   kuidoshi: "mentor-kuidoshi-bond-20", // 20話エピローグ＝2人で九蓮宝士・不屈の後日譚（読了でスタッフロール）
   doranie: "mentor-doranie-bond-20", // 20話「最高なのじゃ」＝トリオで九蓮宝士・口癖の反転＋明るい後日譚（design/doranie.json）
+  yobinin: "mentor-yobinin-bond-20", // 20話「誤差も、悪くない」＝グレーアウトの最終局に確定のない一打・観測継続宣言で幕（design/yobinin.json）
 };
 export function isMentorEpilogue(scenarioId) {
   return Object.values(MENTOR_EPILOGUE_SCENARIO).includes(scenarioId);
@@ -191,6 +212,16 @@ export const MENTOR_SKILL_TRACK = {
     { scenarioId: "mentor-doranie-bond-18", level: 8 },  // 帰らんのか＝口癖の前震（最高絆）
     { scenarioId: "mentor-doranie-bond-19", level: 9 },  // 運は作るものじゃ＝哲学の完成
     { scenarioId: "mentor-doranie-bond-20", level: 10 }, // 最高なのじゃ＝ドラを注ぐ極み（弟子Lv10と同時期）
+  ],
+  // ルクス・ゼロ＝超越帯（lv-zero-search Lv6〜10）＝「運の隣に立つ」。相棒・賭羽ルイナの運命
+  // （発動局のツモ偏重＝運を消す機械に、運の追い風が宿る）が段階的に極まる（test/zerosearch.mjs）。
+  // 覇道編＝運との和解アーク（揺らぎは変数→運の隣に立つ→誤差も、悪くない）と同期。
+  yobinin: [
+    { scenarioId: "mentor-yobinin-bond-16", level: 6 },  // 揺らぎは、変数＝委ねる一打・信条が形を変える
+    { scenarioId: "mentor-yobinin-bond-17", level: 7 },  // トリオ結成＝運命の女を口説く
+    { scenarioId: "mentor-yobinin-bond-18", level: 8 },  // 観測記録＝蓄積の可視化（最高絆）
+    { scenarioId: "mentor-yobinin-bond-19", level: 9 },  // 運の隣に立つ＝共闘の完成
+    { scenarioId: "mentor-yobinin-bond-20", level: 10 }, // 誤差も、悪くない＝確定のない一打（弟子Lv10と同時期）
   ],
 };
 export function mentorSkillLevel(profile, mentorId) {

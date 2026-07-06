@@ -352,5 +352,48 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
     skillRuntimeAbilityParams("lv-dora-pull", 5).doraDrawBias === false && skillRuntimeAbilityParams("lv-dora-pull", 6).doraDrawBias === true);
 }
 
+// ---- ルクス・ゼロ編：結線データ整合の単体検証（ルイナ/ドラニエル同型） ----
+// 宝順・won ゲート数列は同型（won1→2→4→5→7→8）。design/yobinin.json campaignTreasureOrder と同期。
+// lv-zero-search は本設計済（詳細は test/zerosearch.mjs）＝ここでは基準帯/超越帯の境界だけ確認する。
+{
+  const camp = MENTOR_CAMPAIGN.yobinin;
+  const ids = camp.map((s) => s.id);
+  ok("ルクス: 宝順が 個人→ペア→トリオ→最終 の正典順",
+    JSON.stringify(ids) === JSON.stringify(["chin-iki", "menzen-kaiken", "musou-kan", "kyou-sharin", "ji-peeko", "daisanken", "tenchi-shingyoku", "tenankou", "kyuuren-houtou"]));
+  ok("ルクス: oppLv は単調非減少", camp.every((s, i, a) => i === 0 || s.oppLv >= a[i - 1].oppLv));
+  ok("ルクス: daisanken はトリオ結成章(ep17)読了が前提",
+    camp.find((s) => s.id === "daisanken")?.requireScenario === "mentor-yobinin-bond-17");
+  ok("ルクス: トリオ結成(ep17=won5)以前に team 形式が来ない",
+    camp.findIndex((s) => s.id === "daisanken") === 5 && camp.slice(0, 5).every((s) => !["tenankou", "daisanken"].includes(s.id)));
+  ok("ルクス: 最終(九蓮宝燈)は team＝弟子+ルクス+ルイナ",
+    camp.find((s) => s.id === "kyuuren-houtou")?.finalFormat === "team");
+  ok("ルクス: 師弟編フィナーレ=ep12 / エピローグ=ep20",
+    MENTOR_FINALE_SCENARIO.yobinin === "mentor-yobinin-bond-12" && MENTOR_EPILOGUE_SCENARIO.yobinin === "mentor-yobinin-bond-20");
+
+  // 解禁チェーン（SCENARIO_MASTER のルクス20話）
+  const ych = SCENARIO_MASTER.filter((s) => s.mentorCharacterId === "yobinin").sort((a, b) => a.sortOrder - b.sortOrder);
+  ok("ルクス: 全20話が登録済み", ych.length === 20);
+  const uc = (n) => ych[n - 1]?.unlockConditions || [];
+  const hasType = (n, t) => uc(n).some((c) => c.type === t);
+  const readVal = (n) => uc(n).find((c) => c.type === "scenario_read" || c.type === "scenario_read_prev_month")?.value;
+  const wonVal = (n) => uc(n).find((c) => c.type === "tournament_won")?.value;
+  ok("ルクス: ep1=always", hasType(1, "always"));
+  ok("ルクス: ep2〜20は前話 scenario_read で連鎖（読了チェーン）",
+    ych.slice(1).every((s, i) => readVal(i + 2) === ych[i].scenarioId));
+  ok("ルクス: ep13 はフィナーレ翌月解禁（一気読み防止＝scenario_read_prev_month）", hasType(13, "scenario_read_prev_month"));
+  ok("ルクス: won階段 ep11=1 / ep12=2 / ep16=4 / ep17=5 / ep19=7 / ep20=8",
+    wonVal(11) === 1 && wonVal(12) === 2 && wonVal(16) === 4 && wonVal(17) === 5 && wonVal(19) === 7 && wonVal(20) === 8);
+
+  // 技Lv＝超越帯（lv-zero-search）＝運との和解アーク（ep16→6 … ep20→10）と同期
+  const yprof = (...ids2) => ({ scenarioProgress: ids2.map((id) => ({ scenarioId: id })) });
+  ok("ルクス: 何も読んでいなければ基準 Lv5", mentorSkillLevel(yprof(), "yobinin") === MENTOR_SKILL_BASE);
+  ok("ルクス: ep16読了で技 Lv6（揺らぎは変数＝超越帯入り）", mentorSkillLevel(yprof("mentor-yobinin-bond-16"), "yobinin") === 6);
+  ok("ルクス: ep20読了で技 Lv10（誤差も、悪くない）", mentorSkillLevel(yprof("mentor-yobinin-bond-20"), "yobinin") === 10);
+  // 師匠導線：ピッカーに出るための2条件（シナリオ＋能力テンプレ）が両方立っている
+  ok("ルクス: templatesForMentor に1件以上（tmpl-zero-search）", templatesForMentor("yobinin").length >= 1);
+  ok("ルクス: 基準帯(Lv5)は運の追い風無し・超越帯(Lv6)で drawBias が宿る",
+    skillRuntimeAbilityParams("lv-zero-search", 5).drawBias === false && skillRuntimeAbilityParams("lv-zero-search", 6).drawBias === true);
+}
+
 console.log(fails ? `\n${fails} FAILED` : "\nALL PASS");
 process.exit(fails ? 1 : 0);
