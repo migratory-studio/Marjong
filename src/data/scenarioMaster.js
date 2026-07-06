@@ -19,6 +19,23 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-01",
+    "mentorCharacterId": "doranie",
+    "title": "組もうぞ！",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "always"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 100
+    },
+    "sortOrder": 10,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-01",
     "mentorCharacterId": "kakeha_ruina",
     "title": "いい目だ",
@@ -90,6 +107,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 20,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-02",
+    "mentorCharacterId": "doranie",
+    "title": "次こそ大物手じゃ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-01"
+      },
+      {
+        "type": "bond_level",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 120
+    },
+    "sortOrder": 20,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-02",
@@ -197,6 +236,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-03",
+    "mentorCharacterId": "doranie",
+    "title": "下界は謎だらけ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-02"
+      },
+      {
+        "type": "avatar_level",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 150
+    },
+    "sortOrder": 30,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-03",
     "mentorCharacterId": "kakeha_ruina",
     "title": "ちいさな大博打",
@@ -283,6 +344,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 40,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-04",
+    "mentorCharacterId": "doranie",
+    "title": "腐れ縁が来た",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-03"
+      },
+      {
+        "type": "bond_level",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 180
+    },
+    "sortOrder": 40,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-04",
@@ -373,6 +456,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-05",
+    "mentorCharacterId": "doranie",
+    "title": "降りるでない",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-04"
+      },
+      {
+        "type": "avatar_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 200
+    },
+    "sortOrder": 50,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-05",
     "mentorCharacterId": "kakeha_ruina",
     "title": "賭羽の噂",
@@ -459,6 +564,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 60,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-06",
+    "mentorCharacterId": "doranie",
+    "title": "四開槓",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-05"
+      },
+      {
+        "type": "bond_level",
+        "value": 4
+      }
+    ],
+    "firstReadReward": {
+      "soul": 200
+    },
+    "sortOrder": 60,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-06",
@@ -549,6 +676,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-07",
+    "mentorCharacterId": "doranie",
+    "title": "いい負けじゃった",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-06"
+      },
+      {
+        "type": "bond_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 230
+    },
+    "sortOrder": 70,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-07",
     "mentorCharacterId": "kakeha_ruina",
     "title": "なんで、賭けるの",
@@ -635,6 +784,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 80,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-08",
+    "mentorCharacterId": "doranie",
+    "title": "天界はつまらん",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-07"
+      },
+      {
+        "type": "avatar_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 250
+    },
+    "sortOrder": 80,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-08",
@@ -725,6 +896,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-09",
+    "mentorCharacterId": "doranie",
+    "title": "それでこそじゃ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-08"
+      },
+      {
+        "type": "bond_level",
+        "value": 6
+      }
+    ],
+    "firstReadReward": {
+      "soul": 280
+    },
+    "sortOrder": 90,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-09",
     "mentorCharacterId": "kakeha_ruina",
     "title": "魂は、賭けないで",
@@ -811,6 +1004,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 100,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-10",
+    "mentorCharacterId": "doranie",
+    "title": "わらわが選んだのじゃ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-09"
+      },
+      {
+        "type": "avatar_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 300
+    },
+    "sortOrder": 100,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-10",
@@ -901,6 +1116,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-11",
+    "mentorCharacterId": "doranie",
+    "title": "一色に染めよ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-10"
+      },
+      {
+        "type": "tournament_won",
+        "value": 1
+      }
+    ],
+    "firstReadReward": {
+      "soul": 330
+    },
+    "sortOrder": 110,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-11",
     "mentorCharacterId": "kakeha_ruina",
     "title": "運命を手なずける",
@@ -987,6 +1224,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 120,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-12",
+    "mentorCharacterId": "doranie",
+    "title": "差し向かい",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-11"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 450
+    },
+    "sortOrder": 120,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-12",
@@ -1077,6 +1336,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-13",
+    "mentorCharacterId": "doranie",
+    "title": "独りでは飛ぶのう",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read_prev_month",
+        "value": "mentor-doranie-bond-12"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 350
+    },
+    "sortOrder": 130,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-13",
     "mentorCharacterId": "kakeha_ruina",
     "title": "もう一丁、付き合うよ",
@@ -1163,6 +1444,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 140,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-14",
+    "mentorCharacterId": "doranie",
+    "title": "天界みたいなやつじゃ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-13"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 360
+    },
+    "sortOrder": 140,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-14",
@@ -1253,6 +1556,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-15",
+    "mentorCharacterId": "doranie",
+    "title": "組もうぞ、ゼロや",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-14"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 380
+    },
+    "sortOrder": 150,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-15",
     "mentorCharacterId": "kakeha_ruina",
     "title": "賭ける羽",
@@ -1339,6 +1664,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 160,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-16",
+    "mentorCharacterId": "doranie",
+    "title": "二人なら飛ばぬ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-15"
+      },
+      {
+        "type": "tournament_won",
+        "value": 4
+      }
+    ],
+    "firstReadReward": {
+      "soul": 400
+    },
+    "sortOrder": 160,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-16",
@@ -1429,6 +1776,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-17",
+    "mentorCharacterId": "doranie",
+    "title": "三人はもっと最高じゃ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-16"
+      },
+      {
+        "type": "tournament_won",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 450
+    },
+    "sortOrder": 170,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-17",
     "mentorCharacterId": "kakeha_ruina",
     "title": "三人で、張る",
@@ -1515,6 +1884,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 180,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-18",
+    "mentorCharacterId": "doranie",
+    "title": "帰らんのか",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-17"
+      },
+      {
+        "type": "bond_level",
+        "value": 9
+      }
+    ],
+    "firstReadReward": {
+      "soul": 480
+    },
+    "sortOrder": 180,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-18",
@@ -1605,6 +1996,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-doranie-bond-19",
+    "mentorCharacterId": "doranie",
+    "title": "運は作るものじゃ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-18"
+      },
+      {
+        "type": "tournament_won",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 520
+    },
+    "sortOrder": 190,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-kakeha_ruina-bond-19",
     "mentorCharacterId": "kakeha_ruina",
     "title": "あんたに、張る",
@@ -1691,6 +2104,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 200,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "mentorCharacterId": "doranie",
+    "title": "最高なのじゃ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-doranie-bond-19"
+      },
+      {
+        "type": "tournament_won",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 600
+    },
+    "sortOrder": 200,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
