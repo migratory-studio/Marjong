@@ -69,7 +69,9 @@ export const MENTOR_CAMPAIGN = {
   //     ep6=chin-iki（清一器・won1）／ep12=menzen-kaiken（門前開鍵・won2＝師弟編フィナーレ「泥仕合」）。
   //   覇道編(ep13-20)は実装済み。3つ目以降(ji-peeko=won3)は ep13 読了で解禁され、以降は宝優勝(won)に
   //   同期して章が段階解禁する（scenarioのunlockConditions側＝詩玥階段に倣った成長/won ゲート）。
-  //     daisanken は ep17「トリオ結成」読了で挑める（弟子＋凌雲＋詩玥）。
+  //     daisanken は ep17「円陣」読了で挑める（弟子＋凌雲＋詩玥。章は出陣で幕＝T2優勝はプレイヤーが掴む）。
+  //     ep19「二枚目の盾」=won8 ゲート（決勝前半・盾進化で幕→読了後すぐ九蓮宝燈＝優勝はプレイヤーの手で）／
+  //     ep20「天衣無縫」=won9（優勝アフターマス＋エピローグ）。2026-07 テンポ改修。
   kuidoshi: [
     { id: "chin-iki",         oppLv: 3 },                                          // 個人・ep6（won1）
     { id: "menzen-kaiken",    oppLv: 4, requireScenario: "mentor-kuidoshi-bond-11" }, // 個人・ep12フィナーレ（won2）
@@ -145,7 +147,7 @@ export const MENTOR_EPILOGUE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-20",
   bibi: "mentor-bibi-bond-20", // 20話＝弟子の個人戦単独優勝を見届け、手を放して見送る。ビビ自身も道へ（殻破り完成）
   kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝九蓮宝燈を弟子の大捲りで制覇＋後日譚（design/ruina.json）
-  kuidoshi: "mentor-kuidoshi-bond-20", // 20話エピローグ＝2人で九蓮宝士・不屈の後日譚（読了でスタッフロール）
+  kuidoshi: "mentor-kuidoshi-bond-20", // 20話「天衣無縫」＝優勝の瞬間から・2人で九蓮宝士・虎の檻ミラーの後日譚（読了でスタッフロール）
   doranie: "mentor-doranie-bond-20", // 20話「最高なのじゃ」＝トリオで九蓮宝士・口癖の反転＋明るい後日譚（design/doranie.json）
   yobinin: "mentor-yobinin-bond-20", // 20話「誤差も、悪くない」＝グレーアウトの最終局に確定のない一打・観測継続宣言で幕（design/yobinin.json）
 };

@@ -33451,7 +33451,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "卓を割るほどの大物手だけを受け止め、なかったことにする。それが噂に聞いた琥珀の盾だった。",
+    "text": "琥珀の盾——噂でしか知らなかったその異能は、想像していたどんな派手さとも違って。ただ、静かで、恐ろしかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -36201,7 +36201,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "荒療治だって、笑いながら。それでも、見守ってくれた。その人のことを——僕は、大事にしてるんだネ。",
+    "text": "荒療治だって、笑いながら。それでも、見守ってくれた。——もう、会えない人だけどネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -36219,7 +36219,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ネ、と。——あの雀荘で聞いた、あの響きが。また、ほんの少しだけ、滲んだ。",
+    "text": "ネ、と。あの雀荘で聞いた響きが、また少しだけ滲む。“もう会えない”の静けさに、それ以上は訊けなかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -37087,7 +37087,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ならば。あいつは、兎と亀の兎を見ている。華やかに勝ちにいくこちらを。",
+    "text": "ならば、あいつは兎と亀の兎を見ている。華やかに勝ちにいくこちらを執拗にマークして——亀のように、じりじりと差を詰める画を、描いている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -37110,7 +37110,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それを執拗にマークして。じりじりと、亀のように差を詰める自分を思い描いている。",
+    "text": "胸の奥には、凌雲とふたりで辿り着いた結論がある。——あいつの押し引きは、“いけそうなとき”にしか来ない。なら、それを最後の最後まで、与えなければいい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -37183,7 +37183,8 @@ export const SCENARIO_LINE_MASTER = [
     "text": "南場が終わり、西入。会場から不満の声が漏れ始める。退屈な泥仕合だ、と。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-12",
@@ -37323,7 +37324,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "なんて泥臭い終わり方だろう。派手さなんて、かけらもない。",
+    "text": "なんて泥臭い終わり方だろう。派手さのかけらもない。それでも——あいつの土俵にあえて降りて、数えきれない“痛い目”の記憶を糧にして。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -37346,10 +37347,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それでも。あいつの土俵にあえて降りて。数えきれない“痛い目を見た”記憶を糧にして。",
+    "text": "我慢に我慢を重ねて——勝ち切った。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-12",
@@ -37369,11 +37371,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "我慢に我慢を重ねて——勝ち切った。",
+    "text": "卓の向こうで、沼田がゆっくりと牌を伏せる。そして——ほんのわずかに、こちらへ頭を下げた、気がした。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-victory"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-12",
@@ -37532,11 +37533,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "師弟編を越え、覇道編へ。弟子＋凌雲＋詩玥のトリオで、次々と大会に挑む日々が始まった。",
+    "text": "あの泥仕合から、しばらく。気づけば当然の顔で、詩玥が卓の三人目に収まっていた。——弟子と、凌雲と、詩玥。三人で大会を巡る日々だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-tension"
+    "bgmId": "bgm-daily"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
@@ -37556,7 +37557,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "実力はある。場も沸かせる。だが——いつも、いいところで勝ち切れない。",
+    "text": "宝は、着実に増えてきた。腕も上がっている。それは、確かなはずなのに。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -37579,10 +37580,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "決勝の壁。あと一歩というところで、勝ちがするりと逃げていく。",
+    "text": "——今日も、決勝まで来た。九蓮宝士級の猛者がひしめく、大きな舞台。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
@@ -37602,11 +37604,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "いつしか、ついた呼び名があった。——『無冠の九蓮』。",
+    "text": "オーラス。トップ目。あと一巡凌げば、初めての大タイトルに手が届く。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-sorrow"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
@@ -37626,10 +37627,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "九蓮宝士に届くほどの実力で、無冠。なんとも皮肉な二つ名だ。",
+    "text": "祈るように、安牌を探す。——ない。どこにも、ない。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
@@ -37649,11 +37651,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "また一つ、決勝で零れた夜。卓の片づく音だけが、やけに大きい。",
+    "text": "絞り出した一打に。「ロン」の声が、突き刺さった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "emoteId": "silence"
+    "seId": "se-tile"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
@@ -37663,20 +37665,22 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
         "characterId": "shiyue",
         "position": "right",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "むー、また“いいとこ負け”ネ……。でも、我らが強いのは、ホントだヨ?",
+    "text": "逆転。——表彰台の中央に立ったのは、別のチームだった。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-impact",
+    "emoteId": "shock"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
@@ -37686,20 +37690,21 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "serious"
       },
       {
         "characterId": "shiyue",
         "position": "right",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": "kuidoshi",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "うん。……負けは、知るための材料だ。落ち込むだけじゃ、もったいないよ。",
+    "text": "拍手は、優勝者のためのもの。その脇を、うつむいて通り抜ける。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
@@ -37714,12 +37719,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "right",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": "kuidoshi",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それに——強いのは、本当だ。あと半歩。そこに、何かがある。",
+    "text": "客席のどこかから、聞こえてしまった。『——また負けたのか。“無冠の九蓮”』。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -37737,6 +37742,192 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九蓮宝士に届くほどの実力で、無冠。……皮肉な二つ名は、もう定着し始めていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 11,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その夜のバーは、静かだった。氷の鳴る音だけが、やけに大きい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 12,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの詩玥が、さっきから一度も喋っていない。凌雲の笑みにも、疲れの色が滲んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 13,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……むー。悔しいネ。悔しいヨ、さすがに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 14,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……うん。悔しいね。……最後のは、僕の見立ての甘さだ。ごめん。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 15,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰のせいでもない——と言いかけて、やめた。慰めが欲しい夜じゃない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 16,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "でも、我らが強くなってるのは、ホントだヨ? 半年前の我らなら、決勝にも届かなかったネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 17,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "そう。負けは、知るための材料だ。……あと半歩。そこに、何かがある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 18,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
         "standingId": "default"
       }
     ],
@@ -37749,8 +37940,8 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
-    "lineNo": 11,
-    "backgroundId": "bg-hall",
+    "lineNo": 19,
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "kuidoshi",
@@ -37773,8 +37964,8 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
-    "lineNo": 12,
-    "backgroundId": "bg-hall",
+    "lineNo": 20,
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "kuidoshi",
@@ -37784,12 +37975,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "right",
-        "standingId": "default"
+        "standingId": "smile"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "凌雲が筋道を立て、詩玥が場の空気を回し、弟子が卓を冷静に牽引する。",
+    "text": "鞄から、擦り切れたノートを取り出す。負けるたびに書き足してきた、相手の研究。——もう、何冊目だろう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -37797,8 +37988,8 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
-    "lineNo": 13,
-    "backgroundId": "bg-hall",
+    "lineNo": 21,
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "kuidoshi",
@@ -37813,15 +38004,15 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "負けるたびに相手を研究して、また立ち上がる。それを、何度も、何度も。",
+    "text": "凌雲が筋道を立て、詩玥が場を回し、弟子が卓を牽引する。負けて、書いて、また立ち上がる。それを何度も、何度も。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-13",
-    "lineNo": 14,
-    "backgroundId": "bg-hall",
+    "lineNo": 22,
+    "backgroundId": "bg-bar",
     "standings": [
       {
         "characterId": "kuidoshi",
@@ -37836,7 +38027,30 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "無冠でも。何度でも。——不屈の良いトリオだった。",
+    "text": "勝てない。まだ、勝てない。——それでも、昨日より半歩だけ、確かに前にいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-13",
+    "lineNo": 23,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "無冠の九蓮。……いつかこの名を、最高の前振りに変えてやる。明日もまた、卓に着く。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -38866,7 +39080,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "トリオで挑む、T2の大会。役満級の宝がかかっている。",
+    "text": "トリオで挑む、T2の大会。役満級の宝がかかっている。——無冠のまま、それでも立ち続けて辿り着いた、大きな舞台だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -38913,7 +39127,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "明らかにこちらを見ている。応援に来てくれたらしい。知らず、口元がゆるむ。",
+    "text": "明らかにこちらを見ている。応援に、来てくれたのか。知らず、口元がゆるむ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -38922,45 +39136,24 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
     "lineNo": 4,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "shiyue",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
+    "backgroundId": "bg-corridor",
+    "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "と同時に。いつか彼がそっと言った言葉が、よぎる。",
+    "text": "休憩。人気のない廊下で息を整えていると——足音が、ひとつ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-step"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
     "lineNo": 5,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "shiyue",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
+    "backgroundId": "bg-corridor",
+    "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": "沼田蓮",
-    "text": "……いつも、なりたい自分をイメージして打ってるんだ。",
+    "text": "「……よ」",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -38968,46 +39161,23 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
     "lineNo": 6,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "shiyue",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
+    "backgroundId": "bg-corridor",
+    "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その意味が、今ならわかる気がした。",
+    "text": "沼田蓮。……思えば、面と向かって言葉を交わすのは、これが初めてだった。あの泥仕合ですら、ひとことも。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "emoteId": "silence"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
     "lineNo": 7,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "shiyue",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
+    "backgroundId": "bg-corridor",
+    "standings": [],
     "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "煮詰まった局の合間。三人でぽつぽつと言葉を交わす。",
+    "speakerNameOverride": "沼田蓮",
+    "text": "「……あんたの、あのベタオリ。……俺より格好悪くて。——格好よかった」",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -39015,6 +39185,80 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
     "lineNo": 8,
+    "backgroundId": "bg-corridor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "目も合わせず、ぼそぼそと。それでも、その一言に嘘がないことだけは、わかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 9,
+    "backgroundId": "bg-corridor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "沼田蓮",
+    "text": "「俺はさ。……いつも、なりたい自分をイメージして打ってるんだ。……あんたは、どうなんだ」",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 10,
+    "backgroundId": "bg-corridor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "なりたい、自分。——その言葉が、胸の奥に静かに落ちて、消えなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 11,
+    "backgroundId": "bg-corridor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "答えを探すうちに、沼田はもう背を向けて歩き出していた。相変わらず、格好悪くて——格好いい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓に戻る。煮詰まった局の合間、三人でぽつぽつと言葉を交わす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-17",
+    "lineNo": 13,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39037,7 +39281,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 9,
+    "lineNo": 14,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39060,7 +39304,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 10,
+    "lineNo": 15,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39076,14 +39320,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そのとき、弟子の口から自然とこぼれていた。",
+    "text": "そのとき。さっきの問いへの答えが、弟子の口から自然とこぼれていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 11,
+    "lineNo": 16,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39106,7 +39350,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 12,
+    "lineNo": 17,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39130,7 +39374,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 13,
+    "lineNo": 18,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39153,7 +39397,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 14,
+    "lineNo": 19,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39176,7 +39420,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 15,
+    "lineNo": 20,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39192,14 +39436,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
-    "text": "僕らが探し回った答えを。君はこんな土壇場で、さらりと言う。",
+    "text": "僕らがずっと探し回った答えを。君はこんな土壇場で、さらりと言う。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 16,
+    "lineNo": 21,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39223,30 +39467,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 17,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "shiyue",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "柄にもなく気の詰まっていた詩玥も。たはは、と笑う。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 18,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39270,7 +39491,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 19,
+    "lineNo": 23,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39293,7 +39514,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 20,
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39317,7 +39538,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 21,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39340,7 +39561,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 22,
+    "lineNo": 26,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39356,30 +39577,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そっと観客席の沼田へ視線を送る。ありがとう、の意を込めて。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-kuidoshi-bond-17",
-    "lineNo": 23,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "shiyue",
-        "position": "right",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "その大会で、二人——いや、三人は。確かにひとつ、宝を掴んだ。",
+    "text": "観客席の沼田へ、ありがとう、の視線を送る。——役満級の宝が、決勝の卓で待っている。ここからは、自分たちの番だ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -39631,7 +39829,7 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "——そして。",
+    "text": "——そして、その熱も冷めやらぬうちに。ひとつの発表が、届く。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -39772,7 +39970,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "大きく二人の背を叩く。悔しくないはずがない。だけど、それをぐっとのんで、師弟を送り出したのだ。",
+    "text": "バシン、と思い切り背を叩かれる。掌の熱で、わかってしまう。——悔しくないはずが、ないのだ。それをのんで、この人は送り出してくれる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -39795,7 +39993,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "思い切り背を叩かれる。相変わらず激しいスキンシップだ。だけど——勇気づけられた気がした。",
+    "text": "相変わらず、激しいスキンシップだ。……でも、その熱のぶんだけ、背筋がまっすぐになる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -39915,6 +40113,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
+    "text": "観客席には詩玥。その少し後ろに、腕を組んだ沼田の姿もある。——見届け人は、そろった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-19",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
     "text": "相手のオーラが尋常ではない。それぞれが卓の動かし方を知り尽くしている。まるで台風の中だ。",
     "characterEffect": "none",
     "screenEffect": "none",
@@ -39923,7 +40133,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 7,
+    "lineNo": 8,
     "backgroundId": "bg-hall",
     "standings": [],
     "speakerCharacterId": null,
@@ -39935,7 +40145,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 8,
+    "lineNo": 9,
     "backgroundId": "bg-hall",
     "standings": [],
     "speakerCharacterId": null,
@@ -39949,7 +40159,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 9,
+    "lineNo": 10,
     "backgroundId": "bg-hall",
     "standings": [],
     "speakerCharacterId": null,
@@ -39961,7 +40171,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 10,
+    "lineNo": 11,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39973,13 +40183,13 @@ export const SCENARIO_LINE_MASTER = [
     "speakerCharacterId": "kuidoshi",
     "speakerNameOverride": null,
     "text": "……大丈夫。トップは、まだ狙える。",
-    "characterEffect": "fade_in",
+    "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 600
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 11,
+    "lineNo": 12,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -39997,7 +40207,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 12,
+    "lineNo": 13,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40016,7 +40226,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 13,
+    "lineNo": 14,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40035,7 +40245,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 14,
+    "lineNo": 15,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40053,7 +40263,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 15,
+    "lineNo": 16,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40072,7 +40282,25 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 16,
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ここまでか——。脳裏を、これまでの日々が駆けていく。何度も負けて、何度も立ち上がってきた、あの長い日々が。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-19",
+    "lineNo": 18,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40090,7 +40318,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 17,
+    "lineNo": 19,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40105,11 +40333,12 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
+    "bgmId": "bgm-none",
     "seId": "se-heartbeat"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 18,
+    "lineNo": 20,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40127,7 +40356,25 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 19,
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場が、一拍遅れて気づく。ざわめきが、波になって広がっていく。——あの日、虎の檻で立ち尽くした自分と、同じ顔で。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-19",
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40145,7 +40392,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 20,
+    "lineNo": 23,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40165,7 +40412,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 21,
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40184,7 +40431,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 22,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40202,7 +40449,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 23,
+    "lineNo": 26,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40220,60 +40467,6 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 24,
-    "backgroundId": "bg-white",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "——。",
-    "characterEffect": "none",
-    "screenEffect": "flash",
-    "effectDurationMs": 600
-  },
-  {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 25,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "順位表。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 26,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "1位——凌雲・弟子ペア。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-kuidoshi-bond-19",
     "lineNo": 27,
     "backgroundId": "bg-hall",
     "standings": [
@@ -40285,11 +40478,10 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "ほんの2000点差。すでに九蓮宝士となっていたペアたちを押しのけて。二人は、ついに掴んだ。",
+    "text": "二枚目の盾が、背中で静かに輝いている。恐れは、もう、どこにもない。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "bgmId": "bgm-victory"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
@@ -40304,40 +40496,114 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "大きな歓声とともに。本当に、長い、長い、長い拍手が降り注いだ。",
+    "text": "九蓮宝燈——最後の宝は、この卓の先で待っている。“なりたい自分”の、いちばん近くで。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 29,
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 1,
     "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
+    "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "観客たちは知っていたのだ。この大会に出る前から——何度も負け、何度も立ち上がり、軌道修正してきた、その姿を。",
+    "text": "——長い、長い闘いが、終わった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "順位表のいちばん上。凌雲・弟子ペア。ほんのわずかの差で、九蓮宝士たちを押しのけて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つ目の宝——九蓮宝燈。ついに、掴んだ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 30,
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 4,
     "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "割れるような歓声。そして、本当に長い、長い拍手が降り注いだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観客たちは知っていたのだ。この舞台に立つずっと前から——何度も負け、何度も立ち上がり、軌道修正してきた二人の姿を。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 6,
+    "backgroundId": "bg-white",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "拍手の音が、ふっと遠くなる。——思い出していた。虎の檻で、点棒が動かなかった日。荒療治に、震えた拳。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 7,
+    "backgroundId": "bg-white",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "泥仕合の、西オーラス。無冠と呼ばれ、氷の音だけが鳴っていた夜。ひとり雀荘で、何度もトんだ、あの人の背中。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 8,
+    "backgroundId": "bg-white",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——そのぜんぶが、いま。この拍手の音に、変わったのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
     "text": "弟子はとっさに、四方へ礼をする。そして、凌雲のほうを振り向くと。",
@@ -40346,8 +40612,8 @@ export const SCENARIO_LINE_MASTER = [
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 31,
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 10,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40361,11 +40627,12 @@ export const SCENARIO_LINE_MASTER = [
     "text": "——その場に立ち尽くしていた。初めて、腕で目元を隠して。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
   },
   {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 32,
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 11,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40376,14 +40643,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "初めてあふれ出した、その感情を見て。そっと背中に手を添える。拍手がぐっと、また強くなった。",
+    "text": "そっと、背中に手を添える。拍手が、ぐっとまた強くなった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 33,
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 12,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40400,8 +40667,8 @@ export const SCENARIO_LINE_MASTER = [
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 34,
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 13,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -40412,86 +40679,205 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そう、ひとこと呟いた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 35,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "shiyue",
-        "position": "right",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "控室に戻ると。インタビューを押しのけて、詩玥が二人に思い切り抱きついてきた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "emoteId": "joy"
-  },
-  {
-    "scenarioId": "mentor-kuidoshi-bond-19",
-    "lineNo": 36,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "shiyue",
-        "position": "right",
-        "standingId": "smile"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "本当に、長い、長い闘いだったのだ。",
+    "text": "誰へともなく。——いや。その半眼は、会場よりも、ずっと遠くを見ていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 1,
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "kuidoshi",
+    "speakerNameOverride": null,
+    "text": "……先生。僕の盾は、ここまで来たヨ。——あなたの、あの荒療治のおかげでネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "故郷の響きを、もう隠しもしないで。彼は深々と、もう一度頭を下げた。——この人の一番の素顔を、見た気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 16,
     "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "kuidoshi",
         "position": "left",
-        "standingId": "default"
+        "standingId": "smile"
       },
       {
         "characterId": "shiyue",
         "position": "right",
-        "standingId": "default"
+        "standingId": "smile"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "こうして、二人の九蓮宝士が誕生した。",
+    "text": "控室に戻ると、インタビューを押しのけて、詩玥が二人まとめて抱きついてきた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
+    "emoteId": "joy",
     "bgmId": "bgm-warm"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 2,
+    "lineNo": 17,
     "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "九蓮宝士ネ!! 我の同門と、我のお気に入りの子が! 最っ高だヨ!!",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "出入り口に、ふと目をやる。——沼田が、壁にもたれて立っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": "沼田蓮",
+    "text": "「……見たよ。あんたの、なりたい姿」",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だから、まっすぐに返す。「なりたい自分になる。——相手を、よく見て、知ってから」。そのどちらも、この旅でもらった言葉だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kuidoshi",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "shiyue",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "沼田はふっと笑って、片手だけ上げた。……それで、じゅうぶんだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 22,
+    "backgroundId": "bg-kyudo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——こうして、二人の九蓮宝士が誕生した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 23,
+    "backgroundId": "bg-kyudo",
     "standings": [
       {
         "characterId": "kuidoshi",
@@ -40506,15 +40892,15 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "詩玥は——いつのまにか、自分の弟子をとって。その子と二人で、九蓮宝士を追って取ったらしい。",
+    "text": "詩玥は——いつのまにか自分の弟子をとって、その子と二人で、九蓮宝士を追って取ったらしい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 3,
-    "backgroundId": "bg-hall",
+    "lineNo": 24,
+    "backgroundId": "bg-kyudo",
     "standings": [
       {
         "characterId": "kuidoshi",
@@ -40537,8 +40923,8 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 4,
-    "backgroundId": "bg-hall",
+    "lineNo": 25,
+    "backgroundId": "bg-kyudo",
     "standings": [
       {
         "characterId": "kuidoshi",
@@ -40560,37 +40946,19 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 5,
+    "lineNo": 26,
     "backgroundId": "bg-kyudo",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "あの時、何度も立ち上がった、不屈のメンバー。その姿に勇気づけられた人は、数知れなかっただろう。",
+    "text": "不屈のメンバーの姿に勇気づけられた人は、数知れない。凌雲のもとには、門下生の希望が続出した。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 6,
-    "backgroundId": "bg-kyudo",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "凌雲のもとには、門下生の希望が続出した。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 7,
+    "lineNo": 27,
     "backgroundId": "bg-kyudo",
     "standings": [
       {
@@ -40608,7 +40976,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 8,
+    "lineNo": 28,
     "backgroundId": "bg-kyudo",
     "standings": [
       {
@@ -40626,7 +40994,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 9,
+    "lineNo": 29,
     "backgroundId": "bg-kyudo",
     "standings": [
       {
@@ -40637,14 +41005,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "泥臭さを。負けの味を。守る強さを。そして、イメージする“なりたい自分”を——彼らは知っている。",
+    "text": "泥臭さを。負けの味を。守る強さを。そして、イメージする“なりたい自分”を——彼らは、知っている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 10,
+    "lineNo": 30,
     "backgroundId": "bg-kyudo",
     "standings": [
       {
@@ -40655,14 +41023,15 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "それはきっと、これからもずっと。彼らの座右の銘で、あり続けるのだろう。",
+    "text": "受け切る盾は、勝ち切る盾になった。守りと攻めに、もう継ぎ目はない。——天衣無縫。その称号が、彼の新しい名になった。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 11,
+    "lineNo": 31,
     "backgroundId": "bg-kyudo",
     "standings": [
       {
@@ -40676,22 +41045,43 @@ export const SCENARIO_LINE_MASTER = [
     "text": "さあ。——次は、君が誰かの“なりたい姿”になる番だ。いってらっしゃい、ネ。",
     "characterEffect": "none",
     "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "flower"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 32,
+    "backgroundId": "bg-restaurant",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その足で、あの雀荘へ。虎の檻——すべてが始まった場所の、あの日の凌雲がいた席に、そっと着く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily",
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-kuidoshi-bond-20",
+    "lineNo": 33,
+    "backgroundId": "bg-restaurant",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "やがて戸が鳴る。入ってきたのは、まっすぐな目をした、若い打ち手。——きっと、誰かの“なりたい姿”を探しに来たのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
-    "lineNo": 12,
-    "backgroundId": "bg-kyudo",
-    "standings": [
-      {
-        "characterId": "kuidoshi",
-        "position": "center",
-        "standingId": "smile"
-      }
-    ],
+    "lineNo": 34,
+    "backgroundId": "bg-restaurant",
+    "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "穏やかな声が、そっと背中を押す。長い長い道のりの先で。二人は確かに、なりたい姿になっていた。",
+    "text": "ふっと、笑みがこぼれる。……さあ、始めようか。長い長い道のりの先で、二人は確かに——なりたい姿に、なっていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0

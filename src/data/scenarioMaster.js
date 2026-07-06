@@ -67,7 +67,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 10,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-shiyue-bond-01",
@@ -1262,7 +1262,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 100,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-shiyue-bond-10",
@@ -1526,7 +1526,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 120,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
@@ -1658,7 +1658,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 130,
     "isEnabled": true,
-    "scenarioVersion": 3
+    "scenarioVersion": 5
   },
   {
     "scenarioId": "mentor-shiyue-bond-13",
@@ -2186,7 +2186,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 170,
     "isEnabled": true,
-    "scenarioVersion": 3
+    "scenarioVersion": 5
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -2318,7 +2318,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 180,
     "isEnabled": true,
-    "scenarioVersion": 3
+    "scenarioVersion": 4
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
@@ -2433,7 +2433,7 @@ export const SCENARIO_MASTER = [
   {
     "scenarioId": "mentor-kuidoshi-bond-19",
     "mentorCharacterId": "kuidoshi",
-    "title": "天衣無縫",
+    "title": "二枚目の盾",
     "scenarioType": "bond",
     "unlockConditions": [
       {
@@ -2442,7 +2442,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 7
+        "value": 8
       }
     ],
     "firstReadReward": {
@@ -2450,7 +2450,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 190,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 4
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
@@ -2565,7 +2565,7 @@ export const SCENARIO_MASTER = [
   {
     "scenarioId": "mentor-kuidoshi-bond-20",
     "mentorCharacterId": "kuidoshi",
-    "title": "エピローグ",
+    "title": "天衣無縫",
     "scenarioType": "bond",
     "unlockConditions": [
       {
@@ -2582,7 +2582,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 200,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 4
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
