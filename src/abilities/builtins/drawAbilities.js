@@ -314,10 +314,24 @@ export class ChunchanAbility extends Ability {
 // Manual: 1局に2回（chargeScope hand / maxCharges 2）かつ 1ゲーム2局まで。
 // hand スコープの回数だけでは「使える局数」を縛れないので、ゲーム単位で
 // 「発動した局数」を数え、2局を超えたら新しい局では発動できないようにする。
+//
+// params（skillLevelMaster lv-dora-pull の runtimeParams・§10.5 Phase 7）:
+//   maxHands       … 1ゲームに発動できる局数（既定2＝フリー対戦のドラニエル）
+//   doraDrawBias   … 超越帯（Lv6+）: 発動した局、ツモが有利牌へ寄り、ドラ/赤5を優先して掴む
+//                    ＝相棒・ルクス・ゼロの山読みが宿る（skill-transcendence-policy・凌雲式）
+//   lookaheadDepth … ツモ偏重の走査窓（候補窓 peekLive(8) が天井＝8で最大）
+//   doraTolerance  … ドラ優先の許容幅。handPotential は「-シャンテン×100＋受けの広さ(≤13)」なので
+//                    0＝伸び同点のときだけドラを掴む ／ 50＝同シャンテンなら受けの広さを捨ててでも掴む
+//                    （100未満に収めることで、シャンテンが進む牌・和了牌を捨てることは決してない）
+//   maxCharges / cooldown … abilityDef を上書き（maxChargesOverride 由来＝1局のめくり回数）
 const DORA_PULL_MAX_HANDS = 2;
 export class DoraPullAbility extends Ability {
-  constructor() {
-    super(abilityDef("dora-pull"));
+  constructor(params = {}) {
+    super({ ...abilityDef("dora-pull"), ...params });
+    this.maxHands = params.maxHands ?? DORA_PULL_MAX_HANDS;
+    this.doraDrawBias = params.doraDrawBias ?? false;
+    this.lookaheadDepth = params.lookaheadDepth ?? 8;
+    this.doraTolerance = params.doraTolerance ?? 0;
     this._handsUsed = 0;          // この能力を使った局数（ゲーム通算）
     this._usedThisHand = false;   // 今の局で1回でも発動したか
     this._activationsThisHand = 0; // 今の局の発動回数（＝後付けする確定ドラ枚数）
@@ -340,7 +354,7 @@ export class DoraPullAbility extends Ability {
   // （すでに槓ドラ表示が出揃い、他席もめくりに関与している＝5枚目で四開槓、という状況）。
   activationCondition(api) {
     if (api?.state?.wouldSuukaikanAbortFrom?.(api.me.index)) return false;
-    return this._usedThisHand || this._handsUsed < DORA_PULL_MAX_HANDS;
+    return this._usedThisHand || this._handsUsed < this.maxHands;
   }
   // 即時効果: 新ドラ表示牌を1枚めくる（リンシャンは引かない）。めくりの主体（自分の
   // 席index）を game に渡し、四開槓の通算カウントに参入させる。四開槓で流局した場合も
@@ -370,6 +384,42 @@ export class DoraPullAbility extends Ability {
     }
     return ok;
   }
+  // 超越帯（doraDrawBias・Lv6+）: 発動した局のあいだ、ツモが有利牌へ寄る。
+  // 伸び（handPotential）が最良の候補を基本としつつ、最良から doraTolerance 以内の
+  // ドラ/赤5があればそちらを掴む＝「暴いたドラを、自分の手へ手繰り寄せる」。
+  // 賭けた局にだけ働く（常時ではない）＝張った博打に、相棒・ルクスの山読みが乗る。
+  [Hooks.MODIFY_DRAW](ctx, api) {
+    if (!this.doraDrawBias || !this._usedThisHand) return undefined;
+    const player = ctx.player;
+    const baseCounts = tilesToCounts(player.hand);
+    const doraKinds = new Set(ctx.wall?.doraKinds?.() ?? []);
+    const isDora = (t) => !!t && (t.red || doraKinds.has(t.kind));
+    // 初期値は -Infinity：手が進まない候補しか無い局面（全候補が負スコア）でも
+    // ドラ/赤5を拾えるようにする（lucky-draw の -1 初期値だと負値スコアを更新できない）。
+    let best = ctx.defaultTile;
+    let bestScore = -Infinity;
+    let bestDora = null;
+    let bestDoraScore = -Infinity;
+    for (const tile of ctx.candidates.slice(0, this.lookaheadDepth)) {
+      baseCounts[tile.kind]++;
+      const score = handPotential(baseCounts, player.melds.length);
+      baseCounts[tile.kind]--;
+      if (score > bestScore) {
+        bestScore = score;
+        best = tile;
+      }
+      if (isDora(tile) && score > bestDoraScore) {
+        bestDoraScore = score;
+        bestDora = tile;
+      }
+    }
+    if (bestDora && bestDoraScore >= bestScore - this.doraTolerance) best = bestDora;
+    if (best && best !== ctx.defaultTile) {
+      api.log(isDora(best) ? `暴いたドラを手繰り寄せた` : `有利牌を引き寄せた`);
+    }
+    return best;
+  }
+
   // 和了時、その局の発動回数ぶんの確定ドラ（飜）を自分の手にだけ後付けする。
   // 役満は飜計算の対象外なので素通しする（確定ドラは役満点に影響しない）。
   [Hooks.MODIFY_SCORE](ctx, api, result) {
@@ -413,4 +463,4 @@ registerAbility("summon-tile", (params) => new SummonTileAbility(params));
 registerAbility("zero-search", (params) => new ZeroSearchAbility(params));
 registerAbility("rootou", () => new RootouAbility());
 registerAbility("chunchan", () => new ChunchanAbility());
-registerAbility("dora-pull", () => new DoraPullAbility());
+registerAbility("dora-pull", (params) => new DoraPullAbility(params));

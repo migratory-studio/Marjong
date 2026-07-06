@@ -295,6 +295,50 @@ const MUDDY_LOTUS_LEVELS = [
     unlockDescription: "満開。『いつも、なりたい自分をイメージして打つ』——泥に沈んだ点の半分を吸い上げ、格好悪い勝ち方が誰かの希望になる。" },
 ];
 
+// 天啓ドラ寄せ（ドラニエル・lv-dora-pull）— 一発逆転型の本設計テーブル（基準帯 Lv1〜5＋超越帯 Lv6〜10）。
+// 基準帯＝「賭けの完成」: 発動できる局数 maxHands が 1→2、1局のめくり回数 maxCharges が 1→2 へ
+// （Lv5＝フリー対戦のドラニエル＝DoraPullAbility 既定値と完全一致：1局2回×1ゲーム2局・
+//   めくった回数分の確定ドラ後付け）。めくった新ドラは全員に効く諸刃＝この縛りは全Lv不変。
+// 超越帯 Lv6〜10 ＝「暴いたドラを、手繰り寄せる」: 相棒・ルクス・ゼロの山読みが宿り（skill-transcendence-policy・
+// 凌雲式＝哲学を宿す）、発動した局のツモが有利牌へ寄る。伸びが並ぶならドラ/赤5を掴み、Lv10 では
+// 同シャンテンなら受けの広さを捨ててでもドラを掴む——ep20『ドラはぜーんぶ、ぬしのものじゃ！』の
+// 前段＝「ドラはぜーんぶ、わらわのものじゃ」がメカとして顕現する。物語（覇道編 ep14〜20）とシンクロ。
+// dangerTier（守り）は入れない＝紙の点棒は流儀ごと変わらない（脆さ込みで賭けを楽しむ）。
+// runtimeParams の契約（DoraPullAbility のコンストラクタと対応）:
+//   maxHands / doraDrawBias / lookaheadDepth / doraTolerance（0=伸び同点のみ・50=同シャンテンなら掴む）
+const DORA_PULL_LEVELS = [
+  { skillLevel: 1,  soulCost: 0,    runtimeParams: { maxHands: 1, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 1, cooldownOverride: null,
+    effectDescription: "発動で新ドラ表示牌を1枚めくり、和了時に確定ドラ1を上乗せ。1ゲーム1局×1回。めくったドラは全員に効く諸刃。",
+    unlockDescription: "習得。新ドラを1枚暴き、自分の和了にだけ確定ドラを乗せる賭けの芽生え。" },
+  { skillLevel: 2,  soulCost: 400,  runtimeParams: { maxHands: 2, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 1, cooldownOverride: null,
+    effectDescription: "新ドラめくり（確定ドラ1）を1ゲーム2局で張れる。",
+    unlockDescription: "別の局でも張れるようになる（1ゲーム2局）。" },
+  { skillLevel: 3,  soulCost: 800,  runtimeParams: { maxHands: 2, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "同じ局に2枚目をめくれる（確定ドラ2）。1ゲーム2局。めくり過ぎ（場計4枚）は四開槓で流局する諸刃。",
+    unlockDescription: "同じ局でもう1枚めくれる——確定ドラ2の火柱。ただし場が荒れ、四開槓の危険も近づく。" },
+  { skillLevel: 4,  soulCost: 1400, runtimeParams: { maxHands: 2, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "1局2回×1ゲーム2局。めくりどころの押し引きが冴えてくる。",
+    unlockDescription: "どの局に張るか、どこで止めるか——賭けどころの見極めが据わる。" },
+  { skillLevel: 5,  soulCost: 2200, runtimeParams: { maxHands: 2, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "天啓ドラ寄せ・完成。1局2回×1ゲーム2局、めくった回数分の確定ドラ（フリー対戦のドラニエルと同等）。",
+    unlockDescription: "完成基準。最強の一発と紙の点棒——師匠・ドラニエルと同等の大博打。" },
+  { skillLevel: 6,  soulCost: 2800, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 2, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "賭けた局、ツモが有利牌へ寄り、伸びが並べばドラ/赤5を掴む（山読み・先読み2候補）。",
+    unlockDescription: "超越域へ。張った博打に、相棒・ルクスの山読みが宿る——暴いたドラが、手へ寄り始める。" },
+  { skillLevel: 7,  soulCost: 3600, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 4, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "賭けた局のツモ偏重（先読み4候補・伸びが並べばドラ/赤5優先）。",
+    unlockDescription: "先読みが4候補に。手繰りの再現性が上がる。" },
+  { skillLevel: 8,  soulCost: 4600, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 6, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "賭けた局のツモ偏重（先読み6候補・伸びが並べばドラ/赤5優先）。",
+    unlockDescription: "先読みが6候補に。暴いたドラが、逃げなくなる。" },
+  { skillLevel: 9,  soulCost: 5800, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "賭けた局のツモ偏重（先読み8候補＝最大・伸びが並べばドラ/赤5優先）。",
+    unlockDescription: "山読みが機械の精度に届く——誤差は、消えた。先読み8候補の完全域。" },
+  { skillLevel: 10, soulCost: 7200, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 8, doraTolerance: 50 }, maxChargesOverride: 2, cooldownOverride: null,
+    effectDescription: "賭けた局、同シャンテンなら受けの広さを捨ててでもドラ/赤5を掴む（先読み8候補）——一撃が決定的になる。",
+    unlockDescription: "極み。手の進みが同じなら、保険を捨ててでもドラを掴む——『ドラはぜーんぶ、わらわのものじゃ！』が現実になる。" },
+];
+
 export const SKILL_LEVEL_MASTER = {
   "lv-lucky-draw": LUCKY_DRAW_LEVELS,
   "lv-muddy-lotus": MUDDY_LOTUS_LEVELS,
@@ -302,6 +346,7 @@ export const SKILL_LEVEL_MASTER = {
   "lv-amber-shield": AMBER_SHIELD_LEVELS,
   "lv-iron-guard": IRON_GUARD_LEVELS,
   "lv-model-answer": MODEL_ANSWER_LEVELS,
+  "lv-dora-pull": DORA_PULL_LEVELS,
   "lv-chunchan": buildTable([
     "中張牌の速攻が発動する基礎。",
     "タンヤオ移行が安定する。",
@@ -325,18 +370,6 @@ export const SKILL_LEVEL_MASTER = {
     "複数リーチでも精度を保つ。",
     "放銃をほぼ回避する。",
     "育成の極致。場のすべてが見える。",
-  ]),
-  "lv-dora-pull": buildTable([
-    "ドラ手繰りの基礎。",
-    "集めるドラ枚数が増える。",
-    "打点の伸びが安定する。",
-    "終盤までドラを抱えやすい。",
-    "師匠相当。ドラ手繰りが完成する。",
-    "超越域へ。集まるドラ枚数が増える。",
-    "打点の伸びが一段上がる。",
-    "終盤までドラを抱え切る。",
-    "守りの脆さを補い始める。",
-    "育成の極致。一撃が決定的になる。",
   ]),
 };
 
