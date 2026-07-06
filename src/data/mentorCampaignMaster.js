@@ -36,17 +36,26 @@ export const MENTOR_CAMPAIGN = {
     { id: "tenchi-shingyoku", oppLv: 11 },                      // ペア
     { id: "kyuuren-houtou",    oppLv: 12, finalFormat: "pair" }, // 詩玥＋弟子の二人＝カンスト級の壁
   ],
-  // ビビ（守り）：最初は清一器。最終は仲間と組む team（背中を守る守備の人）。
+  // ビビ（守り）：宝順はシナリオ正典（design/bibi.json mentorSetup）と同期。2026-07 に殻破りアークへ再同期：
+  //   ep03=chin-iki（won1＝最初の宝）／ep04で焔が登場→団体 daisanken はその後（requireScenario）／
+  //   ep08=天暗刻にトリオで挑み**敗北**（won5・宝は増えない）→ep12=天暗刻リベンジ優勝（won6＝師弟編フィナーレ・
+  //   「信じて攻めを託す」転回点。requireScenario=ep11 で敗北〜気づき〜生い立ち開示（ep08〜11）を読む前に獲れてしまう事故を防ぐ）。
+  //   覇道編（ep13〜20）の残り3つ＝menzen-kaiken/musou-kan/kyuuren は**ことごとく個人戦**＝
+  //   ビビが卓に出られない＝身代わりになれない場所（ep13 L1 と一致）。最終・九蓮宝燈は
+  //   finalFormat "solo4"＝弟子ひとりの卓（ep20「この卓に座るのは、ただ一人」）をビビは見届ける。
   bibi: [
-    { id: "chin-iki",         oppLv: 2 },
-    { id: "menzen-kaiken",    oppLv: 3 },
-    { id: "musou-kan",        oppLv: 5 },
-    { id: "tenankou",         oppLv: 6 },
-    { id: "daisanken",        oppLv: 7 },
-    { id: "ji-peeko",         oppLv: 4 },
-    { id: "kyou-sharin",      oppLv: 8 },
-    { id: "tenchi-shingyoku", oppLv: 9 },
-    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" },
+    { id: "chin-iki",         oppLv: 2 },                        // 個人（三人打ち）・ep03「ちいさな初勝利」（won1）
+    { id: "ji-peeko",         oppLv: 3 },                        // ペア（弟子＋ビビ）
+    { id: "kyou-sharin",      oppLv: 4 },                        // ペア
+    // 団体（弟子＋ビビ＋焔）。焔は ep04「炎の打ち手」で出会う＝その章を読むまで挑めない。
+    { id: "daisanken",        oppLv: 6, requireScenario: "mentor-bibi-bond-04" },
+    { id: "tenchi-shingyoku", oppLv: 7 },                        // ペア
+    // 団体・ep08「とどかない一歩」でトリオが敗れた宝＝ep12 のリベンジで獲る（won6）。
+    { id: "tenankou",         oppLv: 8, requireScenario: "mentor-bibi-bond-11" },
+    { id: "menzen-kaiken",    oppLv: 8 },                        // 個人・ep17「ころんで、立つ」（won7）
+    { id: "musou-kan",        oppLv: 9 },                        // 個人（won8＝ep18「残りあとひとつ」）
+    // 弟子ひとりの卓＝ビビは客席から見届ける（ep20）。挑戦前に ep19「お守りのラビちゃん」まで読了必須。
+    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "solo4", requireScenario: "mentor-bibi-bond-19" },
   ],
   // 賭羽ルイナ（博徒）：師弟編=個人戦中心（ソロの美学）→覇道編=ペア（弟子と二人）→トリオ（ドラニエル加入）。
   //   宝順はシナリオ正典（masters/mentor-kakeha_ruina-bond-*）と同期：
@@ -133,7 +142,7 @@ export const MENTOR_PHASES = {
 };
 export const MENTOR_FINALE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-12", // 12話「ツモれば、ふたりの勝ち」＝師弟編フィナーレ
-  bibi: "mentor-bibi-bond-12",     // 12話＝団体戦優勝。守りに閉じたビビが初めて「信じて攻めを託す」転回点（design/bibi.json）
+  bibi: "mentor-bibi-bond-12",     // 12話＝天暗刻（団体）リベンジ優勝（won6）。守りに閉じたビビが初めて「信じて攻めを託す」転回点（design/bibi.json）
   kakeha_ruina: "mentor-kakeha_ruina-bond-12", // 12話「ひとりで、いい」＝無双冠(国士無双)で師弟が決勝対峙（design/ruina.json）
   kuidoshi: "mentor-kuidoshi-bond-12", // 12話「泥仕合」＝門前開鍵で師弟編フィナーレ（読了で覇道編へ）
   doranie: "mentor-doranie-bond-12", // 12話「差し向かい」＝至盃口をペアで獲った夜の非公式1対1（design/doranie.json）
@@ -145,7 +154,7 @@ export const MENTOR_FINALE_SCENARIO = {
 // 表示も「第20話」ではなく「エピローグ」（scenarioListScreen / 解禁モーダル）。
 export const MENTOR_EPILOGUE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-20",
-  bibi: "mentor-bibi-bond-20", // 20話＝弟子の個人戦単独優勝を見届け、手を放して見送る。ビビ自身も道へ（殻破り完成）
+  bibi: "mentor-bibi-bond-20", // 20話＝九蓮宝燈（solo4＝弟子ひとりの卓）の単独優勝を見届け、手を放して見送る。ビビ自身も道へ（殻破り完成）
   kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝九蓮宝燈を弟子の大捲りで制覇＋後日譚（design/ruina.json）
   kuidoshi: "mentor-kuidoshi-bond-20", // 20話「天衣無縫」＝優勝の瞬間から・2人で九蓮宝士・虎の檻ミラーの後日譚（読了でスタッフロール）
   doranie: "mentor-doranie-bond-20", // 20話「最高なのじゃ」＝トリオで九蓮宝士・口癖の反転＋明るい後日譚（design/doranie.json）

@@ -16,7 +16,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 10,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-01",
@@ -211,7 +211,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 20,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-02",
@@ -265,6 +265,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "avatar_level",
         "value": 3
+      },
+      {
+        "type": "tournament_won",
+        "value": 1
       }
     ],
     "firstReadReward": {
@@ -404,7 +408,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 40,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-04",
@@ -492,7 +496,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 40,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-04",
@@ -536,7 +540,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 50,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-05",
@@ -624,7 +628,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 50,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-05",
@@ -756,7 +760,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 60,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-06",
@@ -925,6 +929,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "avatar_level",
         "value": 8
+      },
+      {
+        "type": "tournament_won",
+        "value": 5
       }
     ],
     "firstReadReward": {
@@ -932,7 +940,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 80,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-08",
@@ -1020,7 +1028,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 80,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-08",
@@ -1152,7 +1160,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 90,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-09",
@@ -1196,7 +1204,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 100,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-10",
@@ -1284,7 +1292,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 100,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-10",
@@ -1320,7 +1328,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "bond_level",
-        "value": 5
+        "value": 6
       }
     ],
     "firstReadReward": {
@@ -1328,7 +1336,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 110,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-11",
@@ -1452,7 +1460,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 2
+        "value": 6
       }
     ],
     "firstReadReward": {
@@ -1460,7 +1468,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 120,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-12",
@@ -1548,7 +1556,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 120,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-12",
@@ -1584,7 +1592,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 2
+        "value": 6
       }
     ],
     "firstReadReward": {
@@ -1592,7 +1600,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 130,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-13",
@@ -1680,7 +1688,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 130,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-13",
@@ -1812,7 +1820,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 140,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-14",
@@ -1856,7 +1864,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 150,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-15",
@@ -1944,7 +1952,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 150,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-15",
@@ -2076,7 +2084,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 160,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-16",
@@ -2112,7 +2120,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 5
+        "value": 7
       }
     ],
     "firstReadReward": {
@@ -2120,7 +2128,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 170,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-17",
@@ -2208,7 +2216,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 170,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-17",
@@ -2245,6 +2253,10 @@ export const SCENARIO_MASTER = [
       {
         "type": "bond_level",
         "value": 9
+      },
+      {
+        "type": "tournament_won",
+        "value": 8
       }
     ],
     "firstReadReward": {
@@ -2252,7 +2264,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 180,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-18",
@@ -2340,7 +2352,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 180,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-18",
@@ -2376,7 +2388,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 7
+        "value": 8
       }
     ],
     "firstReadReward": {
@@ -2384,7 +2396,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 190,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-19",
@@ -2472,7 +2484,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 190,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-19",
@@ -2516,7 +2528,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 200,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
@@ -2604,7 +2616,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 200,
     "isEnabled": true,
-    "scenarioVersion": 2
+    "scenarioVersion": 3
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",

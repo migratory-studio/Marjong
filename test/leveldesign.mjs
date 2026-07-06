@@ -268,6 +268,49 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
   ok("ビビ: ep20 のみ読了でも Lv10（max 採用）", mentorSkillLevel(profileWith("mentor-bibi-bond-20"), "bibi") === 10);
 }
 
+// ---- ビビ編：結線データ整合の単体検証（2026-07 殻破りアーク再同期） ----
+// 宝順・won ゲートはシナリオ正典（design/bibi.json mentorSetup）と同期：
+//   ep03=chin-iki(won1) → ep08=天暗刻に敗北(won5) → ep12=天暗刻リベンジ(won6=フィナーレ) →
+//   覇道編の残り3つ＝menzen/musou/kyuuren は「ことごとく個人戦」→ ep20=九蓮宝燈 solo4（弟子ひとりの卓）。
+{
+  const camp = MENTOR_CAMPAIGN.bibi;
+  const ids = camp.map((s) => s.id);
+  ok("ビビ: 宝順が 師弟編6杯→覇道編は個人戦のみ の正典順",
+    JSON.stringify(ids) === JSON.stringify(["chin-iki", "ji-peeko", "kyou-sharin", "daisanken", "tenchi-shingyoku", "tenankou", "menzen-kaiken", "musou-kan", "kyuuren-houtou"]));
+  ok("ビビ: oppLv は単調非減少", camp.every((s, i, a) => i === 0 || s.oppLv >= a[i - 1].oppLv));
+  ok("ビビ: daisanken は焔登場章(ep04)読了が前提",
+    camp.find((s) => s.id === "daisanken")?.requireScenario === "mentor-bibi-bond-04");
+  ok("ビビ: tenankou は敗北〜再起の章(ep11)読了が前提（ep12=won6 と同期）",
+    camp.find((s) => s.id === "tenankou")?.requireScenario === "mentor-bibi-bond-11");
+  ok("ビビ: 覇道編（tenankou 以降）に team/pair 形式が残らない＝『ことごとく個人戦』",
+    camp.slice(ids.indexOf("tenankou") + 1).every((s) => !["daisanken", "tenankou", "ji-peeko", "kyou-sharin", "tenchi-shingyoku"].includes(s.id)));
+  ok("ビビ: 最終(九蓮宝燈)は solo4＝弟子ひとりの卓（ep20『この卓に座るのは、ただ一人』）",
+    camp.find((s) => s.id === "kyuuren-houtou")?.finalFormat === "solo4");
+  ok("ビビ: 最終(九蓮宝燈)は ep19 読了が前提（絆ゲート章はwon防壁を通らないため）",
+    camp.find((s) => s.id === "kyuuren-houtou")?.requireScenario === "mentor-bibi-bond-19");
+  ok("ビビ: 師弟編フィナーレ=ep12 / エピローグ=ep20",
+    MENTOR_FINALE_SCENARIO.bibi === "mentor-bibi-bond-12" && MENTOR_EPILOGUE_SCENARIO.bibi === "mentor-bibi-bond-20");
+
+  // 解禁チェーン（SCENARIO_MASTER のビビ20話）
+  const bch = SCENARIO_MASTER.filter((s) => s.mentorCharacterId === "bibi").sort((a, b) => a.sortOrder - b.sortOrder);
+  ok("ビビ: 全20話が登録済み", bch.length === 20);
+  const uc = (n) => bch[n - 1]?.unlockConditions || [];
+  const hasType = (n, t) => uc(n).some((c) => c.type === t);
+  const readVal = (n) => uc(n).find((c) => c.type === "scenario_read" || c.type === "scenario_read_prev_month")?.value;
+  const wonVal = (n) => uc(n).find((c) => c.type === "tournament_won")?.value;
+  ok("ビビ: ep1=always", hasType(1, "always"));
+  ok("ビビ: ep2〜20は前話 scenario_read で連鎖（読了チェーン）",
+    bch.slice(1).every((s, i) => readVal(i + 2) === bch[i].scenarioId));
+  ok("ビビ: ep13 はフィナーレ翌月解禁（一気読み防止＝scenario_read_prev_month）", hasType(13, "scenario_read_prev_month"));
+  ok("ビビ: won階段 ep03=1 / ep08=5 / ep12=6 / ep13=6 / ep17=7 / ep18=8 / ep19=8 / ep20=9",
+    wonVal(3) === 1 && wonVal(8) === 5 && wonVal(12) === 6 && wonVal(13) === 6
+    && wonVal(17) === 7 && wonVal(18) === 8 && wonVal(19) === 8 && wonVal(20) === 9);
+  // 絆ゲートが逆行しない（ep09=6 → ep11=6。休憩経済のペーシング軸）
+  const bondVal = (n) => uc(n).find((c) => c.type === "bond_level")?.value;
+  ok("ビビ: 絆ゲートは単調非減少（ep02..ep18）",
+    [2, 4, 6, 7, 9, 11, 14, 15, 16, 18].map(bondVal).every((v, i, a) => i === 0 || v >= a[i - 1]));
+}
+
 // ---- ルイナ編：結線データ整合の単体検証 ----
 // ルイナは技Lvトラック据置（相棒能力の踏襲なし）なので、50ヶ月シムではなく
 // MENTOR_CAMPAIGN / 解禁チェーンの静的整合を検証する（ソロ→トリオ反転・最終team・won同期）。

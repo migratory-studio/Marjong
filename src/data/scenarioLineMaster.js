@@ -512,6 +512,36 @@ export const SCENARIO_LINE_MASTER = [
     "scenarioId": "mentor-bibi-bond-01",
     "lineNo": 30,
     "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その人形の名前を、ふと、尋ねてみた。ビビの目が、まん丸になって——それから、ふわりと緩んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 31,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ラビちゃん。ビビの、いちばん古い友だち。……ふふ、名前、聞いてくれたの、あなたが初めて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-01",
+    "lineNo": 32,
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -529,7 +559,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-01",
-    "lineNo": 31,
+    "lineNo": 33,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1706,6 +1736,36 @@ export const SCENARIO_LINE_MASTER = [
     "scenarioId": "mentor-bibi-bond-04",
     "lineNo": 4,
     "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いながら、ビビの目が、きらりと光った。ふと手元に視線を戻すと——こちらの牌山のてっぺんに、いつのまにか、ラビちゃんがちょこんと座らされている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 5,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "ふふ。相棒って、たとえば、こういう子。……なんてね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-04",
+    "lineNo": 6,
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -1723,7 +1783,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 5,
+    "lineNo": 7,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1747,7 +1807,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 6,
+    "lineNo": 8,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1770,7 +1830,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 7,
+    "lineNo": 9,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1793,7 +1853,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 8,
+    "lineNo": 10,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1816,7 +1876,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 9,
+    "lineNo": 11,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1839,7 +1899,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 10,
+    "lineNo": 12,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1862,7 +1922,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 11,
+    "lineNo": 13,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1885,7 +1945,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 12,
+    "lineNo": 14,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1909,7 +1969,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 13,
+    "lineNo": 15,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1932,7 +1992,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 14,
+    "lineNo": 16,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1955,7 +2015,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 15,
+    "lineNo": 17,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -1978,7 +2038,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 16,
+    "lineNo": 18,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2002,7 +2062,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 17,
+    "lineNo": 19,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2026,7 +2086,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 18,
+    "lineNo": 20,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2050,7 +2110,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 19,
+    "lineNo": 21,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2073,7 +2133,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 20,
+    "lineNo": 22,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2096,7 +2156,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 21,
+    "lineNo": 23,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2120,7 +2180,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 22,
+    "lineNo": 24,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2143,7 +2203,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 23,
+    "lineNo": 25,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2166,7 +2226,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 24,
+    "lineNo": 26,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2190,7 +2250,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 25,
+    "lineNo": 27,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2209,7 +2269,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 26,
+    "lineNo": 28,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2228,7 +2288,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 27,
+    "lineNo": 29,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2246,7 +2306,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 28,
+    "lineNo": 30,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2264,7 +2324,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 29,
+    "lineNo": 31,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2282,7 +2342,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 30,
+    "lineNo": 32,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2300,7 +2360,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-04",
-    "lineNo": 31,
+    "lineNo": 33,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2507,6 +2567,19 @@ export const SCENARIO_LINE_MASTER = [
     "scenarioId": "mentor-bibi-bond-05",
     "lineNo": 12,
     "backgroundId": "bg-dojo",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "音が、消えた。誰も、何も言わなかった。ビビの手だけが、宙に浮いたまま、止まっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-05",
+    "lineNo": 13,
+    "backgroundId": "bg-dojo",
     "standings": [
       {
         "characterId": "bibi",
@@ -2524,7 +2597,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 13,
+    "lineNo": 14,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2542,7 +2615,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 14,
+    "lineNo": 15,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2561,7 +2634,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 15,
+    "lineNo": 16,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2579,7 +2652,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 16,
+    "lineNo": 17,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2597,7 +2670,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 17,
+    "lineNo": 18,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2615,7 +2688,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 18,
+    "lineNo": 19,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2633,7 +2706,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 19,
+    "lineNo": 20,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2652,7 +2725,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 20,
+    "lineNo": 21,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2670,7 +2743,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2688,7 +2761,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2706,7 +2779,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2725,7 +2798,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2743,7 +2816,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2761,7 +2834,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2779,7 +2852,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2797,7 +2870,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2815,7 +2888,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -2834,7 +2907,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
-    "lineNo": 30,
+    "lineNo": 31,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -3971,6 +4044,18 @@ export const SCENARIO_LINE_MASTER = [
     "scenarioId": "mentor-bibi-bond-08",
     "lineNo": 3,
     "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "手のなかの宝は、これで、もう五つになった。六つ目——それは、五蓮闘士と呼ばれる小さな師匠が、まだ一度も、越えたことのない数字だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "bibi",
@@ -3992,7 +4077,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 4,
+    "lineNo": 5,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4015,7 +4100,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 5,
+    "lineNo": 6,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -4028,7 +4113,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 6,
+    "lineNo": 7,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -4041,7 +4126,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 7,
+    "lineNo": 8,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -4053,7 +4138,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 8,
+    "lineNo": 9,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4076,7 +4161,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 9,
+    "lineNo": 10,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4100,7 +4185,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 10,
+    "lineNo": 11,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -4113,7 +4198,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 11,
+    "lineNo": 12,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -4125,7 +4210,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 12,
+    "lineNo": 13,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4149,7 +4234,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 13,
+    "lineNo": 14,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -4163,7 +4248,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 14,
+    "lineNo": 15,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -4175,12 +4260,56 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 15,
+    "lineNo": 16,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "最後の局。あと一回、ツモが来れば。あと一回——。そう祈ったところで、卓は、静かに閉じた。",
+    "text": "オーラス。焔の手が、跳満まで育っている。あと一枚。けれど、どの河にも、その一枚の気配だけが、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、ビビの番は——来ない。守る相手が、攻めてこないのだ。逃げ切りを決めた三人は、もう、一切の勝負手を仕舞っている。奪わせない力は、奪いに来ない相手の前では、ただの置物だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……来て。おねがい。ビビに、守らせて……っ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "fluster"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あと一回、ツモが来れば。あと一回——。祈りは、山の残り二枚を数えるだけの時間で、静かに尽きた。卓は、閉じた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -4188,7 +4317,20 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 16,
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "音が、消えた。歓声も、牌の音も。閉じた卓の上で、増えなかった点棒だけが、行儀よく並んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 21,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4213,7 +4355,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 17,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4236,7 +4378,19 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 18,
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観客席の声が、途切れ途切れに落ちてくる。——おい、あれ、五蓮闘士だろ。……三人がかりでも、六つ目は獲れねえのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-08",
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4259,7 +4413,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 19,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4282,7 +4436,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 20,
+    "lineNo": 26,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4305,7 +4459,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 21,
+    "lineNo": 27,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4328,7 +4482,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 22,
+    "lineNo": 28,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4352,7 +4506,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 23,
+    "lineNo": 29,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4363,14 +4517,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "言うだけ言って、焔は背を向けて去っていく。残されたのは、卓の前で動けずにいる、小さな師匠だけだった。",
+    "text": "言うだけ言って、焔は背を向けて去っていく。残されたのは、卓の前で動けずにいる、小さな師匠だけだった。ふわふわの大きな衣に、今日は、いつもより深く、埋もれて見える。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 24,
+    "lineNo": 30,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4381,14 +4535,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そばに寄っても、ビビは顔を上げない。膝の上の白い人形を、両腕でそっと抱き寄せ、その肩口に、こつんと額を預ける。",
+    "text": "そばに寄っても、ビビは顔を上げない。膝の上の白い人形を、両腕でそっと抱き寄せ——その長い耳に、頬を、寄せる。いつか道場で見た、幸せそうなあの仕草と、同じ形。同じ形なのに、まるで違う。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 25,
+    "lineNo": 31,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4407,7 +4561,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 26,
+    "lineNo": 32,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4425,7 +4579,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 27,
+    "lineNo": 33,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4444,7 +4598,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 28,
+    "lineNo": 34,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4463,7 +4617,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 29,
+    "lineNo": 35,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -4481,7 +4635,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-08",
-    "lineNo": 30,
+    "lineNo": 36,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -5520,16 +5674,10 @@ export const SCENARIO_LINE_MASTER = [
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 24,
     "backgroundId": "bg-dojo",
-    "standings": [
-      {
-        "characterId": "bibi",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
+    "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "似てる、という一言が、何を指すのか。ビビはそれ以上は言わず、ただ人形を見つめている。その横顔に、まだこちらの知らない来し方の影が、ちらりと差した。",
+    "text": "それから、ビビは、ゆっくりと、こちらを見た。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -5547,7 +5695,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "bibi",
     "speakerNameOverride": null,
-    "text": "……ねえ。今度、また団体戦があったら。今度こそ、ビビ、ちゃんと、託してみる。焔の火を信じて、背中を、守ってみせる。",
+    "text": "……ううん。ちがうね。見つけたんじゃ、なくて。もらったの。あなたの言葉から。……ありがと。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -5565,7 +5713,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "その目に、迷いがないわけではなかった。けれど、もう自分を否定する色は、消えている。前を向こうとする者の顔が、そこにあった。",
+    "text": "似てる、という一言が、何を指すのか。ビビはそれ以上は言わず、ただ人形を見つめている。その横顔に、まだこちらの知らない来し方の影が、ちらりと差した。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -5573,6 +5721,42 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-10",
     "lineNo": 27,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "bibi",
+    "speakerNameOverride": null,
+    "text": "……ねえ。今度、また団体戦があったら。今度こそ、ビビ、ちゃんと、託してみる。焔の火を信じて、背中を、守ってみせる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 28,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その目に、迷いがないわけではなかった。けれど、もう自分を否定する色は、消えている。前を向こうとする者の顔が、そこにあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-10",
+    "lineNo": 29,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -5591,7 +5775,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 28,
+    "lineNo": 30,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -5609,7 +5793,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 29,
+    "lineNo": 31,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -5627,7 +5811,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-10",
-    "lineNo": 30,
+    "lineNo": 32,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -6152,6 +6336,18 @@ export const SCENARIO_LINE_MASTER = [
     "scenarioId": "mentor-bibi-bond-11",
     "lineNo": 29,
     "backgroundId": "bg-washitsu",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それから、少しだけ迷って、付け足した。——ラビちゃんに、いつか、ちゃんと挨拶させて。ビビの目が、まん丸になった。それから、人形の前足をそっと持ち上げて、こちらに、ちいさく振ってみせた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-11",
+    "lineNo": 30,
+    "backgroundId": "bg-washitsu",
     "standings": [
       {
         "characterId": "bibi",
@@ -6168,7 +6364,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-11",
-    "lineNo": 30,
+    "lineNo": 31,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -6308,7 +6504,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "homura",
     "speakerNameOverride": null,
-    "text": "……いい目だ。よし。おれが火を熾す。おまえは好きに打て。背中は、ビビが守る。これで、獲れねえわけがねえ。",
+    "text": "……いい面構えだ。よし。おれが火を熾す。おまえは好きに打て。背中は、ビビが守る。これで、獲れねえわけがねえ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -6317,6 +6513,31 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-12",
     "lineNo": 7,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "席に着く、その一瞬。あの日の光景が、まぶたの裏をよぎる。閉じた卓。増えなかった点棒。『……来て。おねがい。ビビに、守らせて』——誰にも届かなかった、あの小さな声。",
+    "characterEffect": "none",
+    "screenEffect": "fade_in",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "隣で、ビビが小さく息を吸った。同じものを、見ていたのかもしれない。それから、人形の長い耳に一度だけ頬を寄せて——顔を、上げた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-12",
+    "lineNo": 9,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -6325,11 +6546,12 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "seId": "se-shuffle"
+    "seId": "se-shuffle",
+    "bgmId": "bgm-battle"
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 8,
+    "lineNo": 10,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -6342,7 +6564,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 9,
+    "lineNo": 11,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -6354,7 +6576,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 10,
+    "lineNo": 12,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6377,7 +6599,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 11,
+    "lineNo": 13,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6400,7 +6622,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 12,
+    "lineNo": 14,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6424,7 +6646,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 13,
+    "lineNo": 15,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -6438,7 +6660,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 14,
+    "lineNo": 16,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -6451,7 +6673,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 15,
+    "lineNo": 17,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6474,7 +6696,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 16,
+    "lineNo": 18,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -6487,7 +6709,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 17,
+    "lineNo": 19,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -6505,7 +6727,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 18,
+    "lineNo": 20,
     "backgroundId": "bg-table",
     "standings": [],
     "speakerCharacterId": null,
@@ -6519,7 +6741,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 19,
+    "lineNo": 21,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6545,7 +6767,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 20,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6561,14 +6783,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "会場が、どっと沸いた。あの日は宙に消えるだけだった守りが、今日は、確かに勝ちへと繋がった。三人で挑んだ宝が、ようやく、手のなかに収まる。",
+    "text": "会場が、どっと沸いた。あの日は宙に消えるだけだった守りが、今日は、確かに勝ちへと繋がった。三人で挑んだ六つ目の宝が、ようやく、手のなかに収まる。あの日、越えられなかった数字を、三人の卓が、越えた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 21,
+    "lineNo": 23,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6591,7 +6813,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 22,
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6615,7 +6837,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 23,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6638,7 +6860,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 24,
+    "lineNo": 26,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6661,7 +6883,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 25,
+    "lineNo": 27,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6685,7 +6907,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 26,
+    "lineNo": 28,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6704,7 +6926,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 27,
+    "lineNo": 29,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6722,7 +6944,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 28,
+    "lineNo": 30,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6740,7 +6962,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 29,
+    "lineNo": 31,
     "backgroundId": "bg-hall",
     "standings": [],
     "speakerCharacterId": null,
@@ -6753,7 +6975,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 30,
+    "lineNo": 32,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -6771,7 +6993,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-12",
-    "lineNo": 31,
+    "lineNo": 33,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -7103,7 +7325,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 20,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7121,7 +7343,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 21,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7139,7 +7361,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 22,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7157,7 +7379,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 23,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7175,7 +7397,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 24,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7193,7 +7415,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 25,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7211,7 +7433,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 26,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7229,7 +7451,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 27,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7247,7 +7469,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 28,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7265,7 +7487,7 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 29,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7284,7 +7506,19 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-13",
     "lineNo": 30,
-    "backgroundId": "bg-school-corridor",
+    "backgroundId": "bg-city",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "まだ何か言おうとした、その口の前に——ふ、と白いものが挙がる。ラビちゃんの前足が、ちょん、と唇に触れた。それ以上は、聞かないで。言葉の代わりの、やわらかな栓だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-13",
+    "lineNo": 31,
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -7302,8 +7536,8 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-13",
-    "lineNo": 31,
-    "backgroundId": "bg-school-corridor",
+    "lineNo": 32,
+    "backgroundId": "bg-city",
     "standings": [
       {
         "characterId": "bibi",
@@ -8353,7 +8587,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "homura",
     "speakerNameOverride": null,
-    "text": "はは、そうだ、その顔だ。火が戻ってきやがった。……だが、まだ煮えきらねえな。何か、まだ、火を押さえつけてる薪があるだろ。",
+    "text": "おい、弟子。おまえもだ。ビビの守りと、おれの火——両方、間近で浴びてきただろ。おまえの打ちにも、もう火は移ってる。次の卓で、燃やしてみせろ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -8361,6 +8595,29 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-bibi-bond-15",
     "lineNo": 24,
+    "backgroundId": "bg-school-corridor",
+    "standings": [
+      {
+        "characterId": "bibi",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "homura",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "homura",
+    "speakerNameOverride": null,
+    "text": "はは、そうだ、その顔だ。火が戻ってきやがった。……だが、まだ煮えきらねえな。何か、まだ、火を押さえつけてる薪があるだろ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-15",
+    "lineNo": 25,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -8383,7 +8640,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-15",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -8406,7 +8663,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-15",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -8429,7 +8686,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-15",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -8452,7 +8709,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-15",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -8471,7 +8728,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-15",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -9344,6 +9601,18 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
+    "text": "客席のビビが、両手を組んで、じっと卓を見ている。その唇が、小さく動いた。がんばれ、では、なかった。——だいじょうぶ。祈りの言葉が、いつのまにか、贈る言葉に変わっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-17",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
     "text": "そして、最後の局。耐え抜いた手が、ここで、立つ。守りで貯めた力を、一打に込める。あの一撃で、ころんだ。けれど、もう、立っていた。",
     "characterEffect": "none",
     "screenEffect": "flash",
@@ -9353,7 +9622,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 18,
+    "lineNo": 19,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -9373,7 +9642,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 19,
+    "lineNo": 20,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -9392,7 +9661,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 20,
+    "lineNo": 21,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -9410,7 +9679,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -9429,7 +9698,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -9447,7 +9716,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -9465,7 +9734,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -9484,7 +9753,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -9502,7 +9771,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -9520,7 +9789,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -9539,7 +9808,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -9557,7 +9826,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -9575,7 +9844,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
-    "lineNo": 30,
+    "lineNo": 31,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -9968,7 +10237,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "返す言葉に、迷った。守ってくれなくて、寂しい——とは、思わなかった。むしろ、その手放しの重さを、こちらも、まっすぐに受け取らなければと思った。だから、ただ、深くうなずいた。",
+    "text": "返す言葉に、迷った。守ってくれなくて、寂しい——とは、思わなかった。むしろ、その手放しの重さを、まっすぐに受け取らなければ、と思った。だから、うなずく前に、一言だけ返す。——じゃあ、見てて。ぜんぶ。……ビビの睫毛が、大きく、震えた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -10242,11 +10511,24 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "emoteId": "notice"
+    "emoteId": "notice",
+    "bgmId": "bgm-none"
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
     "lineNo": 6,
+    "backgroundId": "bg-washitsu",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "手が、宙で止まったまま、動かない。一秒。二秒。会場前の喧騒が、遠のく。白い顔だけが、手のひらの上から、じっと、ビビを見上げている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-bibi-bond-19",
+    "lineNo": 7,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10264,7 +10546,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 7,
+    "lineNo": 8,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10283,7 +10565,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 8,
+    "lineNo": 9,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10302,7 +10584,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 9,
+    "lineNo": 10,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10320,7 +10602,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 10,
+    "lineNo": 11,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10338,7 +10620,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 11,
+    "lineNo": 12,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10356,7 +10638,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 12,
+    "lineNo": 13,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10375,7 +10657,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 13,
+    "lineNo": 14,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10393,7 +10675,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 14,
+    "lineNo": 15,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10412,7 +10694,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 15,
+    "lineNo": 16,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10431,7 +10713,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 16,
+    "lineNo": 17,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10449,7 +10731,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 17,
+    "lineNo": 18,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10467,7 +10749,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 18,
+    "lineNo": 19,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10485,7 +10767,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 19,
+    "lineNo": 20,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10503,7 +10785,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 20,
+    "lineNo": 21,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10521,7 +10803,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10540,7 +10822,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10558,7 +10840,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10576,7 +10858,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10595,7 +10877,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10613,7 +10895,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10631,7 +10913,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10650,7 +10932,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10669,7 +10951,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -10687,7 +10969,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
-    "lineNo": 30,
+    "lineNo": 31,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -11337,7 +11619,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "笑って、手を振って、ビビは、人混みのほうへ、軽やかに駆けていった。相棒を胸に、自分の道へ。",
+    "text": "笑って、手を振って——それから、思い出したように立ち止まり、振り向いて、ラビちゃんの前足を、ちょこん、と持ち上げてみせた。いつも、見送るときにしてくれた、あの仕草。それを今日は、見送られる側になったビビが、やる。そうして、人混みのほうへ、軽やかに駆けていった。相棒を胸に、自分の道へ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -42105,7 +42387,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "くしゃっと頭を撫でられて、視界が一瞬かしぐ。手のひらは、いつもどおり軽い。",
+    "text": "くしゃっと頭を撫でられて、また視界がかしぐ。手のひらは、いつもどおり軽い。……もう、このよろけ方だけは、覚えてしまった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -42124,7 +42406,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "片づけは任せたヨ。我、お茶いれてくるネ。",
+    "text": "片づけは任せたヨ。我、お茶いれてくるネ。とっておきのジャスミン茶ヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -43372,7 +43654,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "……あー、びっくりさせたネ。あの人、昔からあんな感じヨ。気にしないで、ネ。",
+    "text": "……あー、びっくりさせたネ。あの人——マモリは、昔からあんな感じヨ。気にしないで、ネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -43795,9 +44077,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……でも、もう出来ないんダヨ。正しく降りるの、自分で手放しちゃったからネ。",
+    "text": "言ってから、しまった、という顔を、一瞬だけした。それでも、言葉は、止まらなかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -43813,9 +44095,9 @@ export const SCENARIO_LINE_MASTER = [
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "手放した。落とした、でも、忘れた、でもない。自分の意志で、どこかへ置いてきたという言い方だった。",
+    "text": "……でも、もう出来ないんダヨ。正しく降りるの、自分で手放しちゃったからネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -43833,7 +44115,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "出来なくなった、ではなく、出来たのに手放した。その違いの重さが、胸の奥にゆっくり沈んでいく。",
+    "text": "手放した。落とした、でも、忘れた、でもない。自分の意志で、どこかへ置いてきたという言い方だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -43841,6 +44123,24 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-05",
     "lineNo": 24,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "出来なくなった、ではなく、出来たのに手放した。その違いの重さが、胸の奥にゆっくり沈んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-05",
+    "lineNo": 25,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -43859,7 +44159,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -43877,7 +44177,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -43895,7 +44195,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -43914,7 +44214,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -43932,7 +44232,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-05",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -44180,7 +44480,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "二人で、九蓮宝士を目指してたヨ。あの人の守りと、我の読みで。二人なら、てっぺんまで行けるって、本気で信じてたネ。",
+    "text": "二人で、もう一度てっぺんを目指してたんダヨ。あの人の守りと、我の読みで。……あの人はネ、一度あの場所に立った人ヨ。なのに、我と、もう一回のぼり直すって言ってくれたネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -44288,7 +44588,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "おかしい、と言いながら、その口元はほどけていた。叱るときの厳しさと、まるで噛み合わない願い。きっと、そのちぐはぐさを、いまも大事に抱えている。",
+    "text": "言うときあの人は、決まって卓の縁を、とん、と指で叩いたそうだ。――話しながら、詩玥の指が、無意識に、同じ場所を同じ音で叩いている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -44296,6 +44596,24 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-06",
     "lineNo": 20,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "おかしい、と言いながら、その口元はほどけていた。叱るときの厳しさと、まるで噛み合わない願い。きっと、そのちぐはぐさを、いまも大事に抱えている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-06",
+    "lineNo": 21,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -44313,7 +44631,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -44331,7 +44649,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -44349,7 +44667,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -44367,7 +44685,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -44386,7 +44704,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -44404,7 +44722,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -44423,7 +44741,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -44441,7 +44759,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-06",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45099,6 +45417,19 @@ export const SCENARIO_LINE_MASTER = [
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 9,
     "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "暗がりの中で、詩玥は、一度だけ言葉を切った。長い、長い間だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 10,
+    "backgroundId": "bg-black",
     "standings": [
       {
         "characterId": "shiyue",
@@ -45115,7 +45446,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 10,
+    "lineNo": 11,
     "backgroundId": "bg-black",
     "standings": [
       {
@@ -45133,7 +45464,19 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 11,
+    "lineNo": 12,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "息を、止めていた。雨のやんだ夜は静かすぎて、掛け時計の針の音だけが、部屋の隅で時を刻み続けている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 13,
     "backgroundId": "bg-black",
     "standings": [],
     "speakerCharacterId": null,
@@ -45141,11 +45484,12 @@ export const SCENARIO_LINE_MASTER = [
     "text": "声は、震えなかった。淡々と、事実だけを並べていく。その平らかさが、どんな涙よりも痛い。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 12,
+    "lineNo": 14,
     "backgroundId": "bg-black",
     "standings": [
       {
@@ -45163,7 +45507,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 13,
+    "lineNo": 15,
     "backgroundId": "bg-black",
     "standings": [
       {
@@ -45181,42 +45525,12 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 14,
-    "backgroundId": "bg-black",
-    "standings": [],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "残り時間を、計算していた。いちばん数えてはいけないものを、いちばん得意な癖で数えてしまった。深謀遠慮の、最後の代償だった。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 15,
-    "backgroundId": "bg-black",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "center",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "数えてるあいだに、見せるべきものを、見せ損ねたヨ。正しさで、ぜんぶ、間に合わなかったネ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 16,
     "backgroundId": "bg-black",
     "standings": [],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "完璧な正しさが、奪っていったもの。一度のツモ。それを見せる、たった一度の機会。降りるたびに守ったはずの何かが、いちばん大事なものを取りこぼしていた。",
+    "text": "残り時間を、計算していた。いちばん数えてはいけないものを、いちばん得意な癖で数えてしまった。深謀遠慮の、最後の代償だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -45234,7 +45548,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "それで、墓の前でね。我、決めたんダヨ。",
+    "text": "数えてるあいだに、見せるべきものを、見せ損ねたヨ。正しさで、ぜんぶ、間に合わなかったネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -45242,6 +45556,104 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-08",
     "lineNo": 18,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "完璧な正しさが、奪っていったもの。一度のツモ。それを見せる、たった一度の機会。降りるたびに守ったはずの何かが、いちばん大事なものを取りこぼしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 19,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "それで、墓の前でね。我、決めたんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 20,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉が、そこで止まる。暗闇の底から、あの人の声だけが、順番に降ってくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none",
+    "seId": "se-wind"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 21,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "『――理屈じゃなくて、お前の引きで上がるのが見たい』",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 22,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "『次の大会こそ、お前のツモを見せてくれ』。言うたびに、卓の縁を、とん、と叩いた。あの指の音まで、聞こえた気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 23,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次こそ。次こそ。積み上がった約束が、墓石の前で、ぜんぶ、行き場を失っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 24,
+    "backgroundId": "bg-black",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "顔を上げたときにはネ、泣くのは、もう終わってたヨ。決めることだけが、残ってたんダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 25,
     "backgroundId": "bg-black",
     "standings": [
       {
@@ -45261,7 +45673,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 19,
+    "lineNo": 26,
     "backgroundId": "bg-black",
     "standings": [
       {
@@ -45279,7 +45691,20 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 20,
+    "lineNo": 27,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誓いの言葉が、暗がりに落ちて、消えた。それきり、長いあいだ、誰の声も、しなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-08",
+    "lineNo": 28,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45298,7 +45723,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 21,
+    "lineNo": 29,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45316,7 +45741,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 22,
+    "lineNo": 30,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45334,7 +45759,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 23,
+    "lineNo": 31,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45352,7 +45777,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 24,
+    "lineNo": 32,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45371,7 +45796,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 25,
+    "lineNo": 33,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45389,7 +45814,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 26,
+    "lineNo": 34,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45407,7 +45832,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 27,
+    "lineNo": 35,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45425,7 +45850,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 28,
+    "lineNo": 36,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45444,7 +45869,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-08",
-    "lineNo": 29,
+    "lineNo": 37,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -45839,6 +46264,24 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "text": "伸ばした指が、一度だけ、宙で止まる。この山に触れることは、この人の傷に触れることだ。分かっていて、それでも、指を置いた。"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 22,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
     "text": "ひとつ、ふたつ。点棒を、声に出して数えてみる。隣で、詩玥が小さく息を呑む気配がした。",
     "characterEffect": "none",
     "screenEffect": "none",
@@ -45847,7 +46290,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -45866,7 +46309,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -45884,7 +46327,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -45903,7 +46346,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -45921,7 +46364,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -45939,7 +46382,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -45957,7 +46400,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -45976,7 +46419,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -45994,7 +46437,43 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-09",
-    "lineNo": 30,
+    "lineNo": 31,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "text": "……ツモれば勝ち、ネ。"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 32,
+    "backgroundId": "bg-dojo",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "text": "同じ言葉の、はずだった。何百回も聞いた、あの軽口。けれど、あの夜の話を聞いたあとでは、もう、同じ響きには聞こえない。積み上がった点棒の隣で、その言葉は、祈りのように鳴った。"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-09",
+    "lineNo": 33,
     "backgroundId": "bg-dojo",
     "standings": [
       {
@@ -46556,6 +47035,63 @@ export const SCENARIO_LINE_MASTER = [
     "speakerCharacterId": null,
     "speakerNameOverride": null,
     "text": "そう言って、マモリは横道へ折れていった。一定の歩幅で、振り返らずに。残された街路で、三人目、という言葉だけが、まだ手のひらに温かく残っている。やります、と。次に会ったら、そう言おうと決めた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 31,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "帰り道の先、道場に、まだ灯りがついていた。戸を開けると、詩玥が卓を拭きながら、顔だけこちらへ向ける。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm",
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 32,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "おかえりヨ。……ん、なんにも聞かないヨ。顔を見れば、いい話だったって、わかるからネ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-10",
+    "lineNo": 33,
+    "backgroundId": "bg-dojo-night",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "何も訊かないでいてくれる。その距離が、いまは一番ありがたかった。——やります。明日、まずこの人に、そう言おう。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -47733,7 +48269,8 @@ export const SCENARIO_LINE_MASTER = [
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "seId": "se-tile"
+    "seId": "se-tile",
+    "bgmId": "bgm-none"
   },
   {
     "scenarioId": "mentor-shiyue-bond-12",
@@ -48108,7 +48645,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "二つの宝を手にして、覇道編の会場に足を踏み入れる。天井が高い。これまでの道場とは、空気の密度がまるで違う。あちこちから、品定めするような視線が刺さってくる。",
+    "text": "二つの宝を手にして、上位大会の会場に足を踏み入れる。天井が高い。これまでの道場とは、空気の密度がまるで違う。あちこちから、品定めするような視線が刺さってくる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -48272,7 +48809,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "三つ目の宝を懸けた一戦が始まる。配牌が配られ、牌の壁がそびえ立つ。向かいに座るのは、いくつもの大会を勝ち上がってきた、年季の入った打ち手だった。",
+    "text": "三つ目の宝——至盃口。二人一組、1対1の美学を競うペア戦の宝ヨ、と詩玥が笑う。予選の卓に、詩玥と並んで着く。マモリは出場枠の外から、柵に軽く手を置いて、二人の背中を測るように見ている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -48297,7 +48834,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "いつも通りでいくヨ。我が引いて、押す。マモリが後ろを守る。これで、ここまで来たんダヨ。",
+    "text": "いつも通りでいくヨ。我が引いて、押す。あんたが横で数えて、締める。これで、ここまで来たんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -48391,7 +48928,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "向こうは、あなたの手を読んでいる。読まれている以上、押すほど止められる。……ここは、私が抑える。失点だけは、させない。",
+    "text": "読まれている以上、押すほど止められる。なら――ここは、こちらが抑える番だ。マモリに叩き込まれた押し引きで、際どい牌を一枚ずつ伏せ、失点だけは、させない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -48414,7 +48951,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "マモリの守りが、際どい放銃をひとつ、またひとつと、ぎりぎりで受け止めていく。点棒は、削られはしても崩れない。けれど、卓の主導権は、ずっと向こうにあった。",
+    "text": "その守りが、際どい放銃をひとつ、またひとつと、ぎりぎりで受け止めていく。点棒は、削られはしても崩れない。けれど、卓の主導権は、ずっと向こうにあった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -48437,7 +48974,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "局が進む。詩玥の引きは止められ続け、マモリの守りで命脈をつなぐ。攻めるはずの席が、ずっと受けに回されている。卓の上の風向きが、いつもと逆だった。",
+    "text": "局が進む。詩玥の引きは止められ続け、こちらの守りで命脈をつなぐ。攻めるはずの卓が、ずっと受けに回されている。卓の上の風向きが、いつもと逆だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -48510,7 +49047,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "辛勝。三つ目の宝が、手のひらに転がり込む。会場のどよめきが、遠く湧く。けれど、勝った詩玥の顔には、いつものはしゃぎが、半分しか乗っていなかった。",
+    "text": "辛勝——なんとか、決勝への切符をもぎ取った。会場のどよめきが、遠く湧く。けれど、勝った詩玥の顔には、いつものはしゃぎが、半分しか乗っていなかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -48534,7 +49071,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "勝っても晴れない顔の詩玥に連れられて、会場を出た。流れ着いたのは、通りの奥の、薄暗いバー。三つ目を手にしたというのに、詩玥は、運ばれたグラスにも口をつけず、自分の手のひらをじっと見下ろしていた。何かを探すように、指を、ゆっくり開いたり閉じたりしている。",
+    "text": "決勝を明日に控えた夜。勝っても晴れない顔の詩玥に連れられて、会場を出た。流れ着いたのは、通りの奥の、薄暗いバー。切符を手にしたというのに、詩玥は、運ばれたグラスにも口をつけず、自分の手のひらをじっと見下ろしていた。何かを探すように、指を、ゆっくり開いたり閉じたりしている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -48651,7 +49188,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "……いや。今日は、勝った。それで十分だ。次の卓のことは、次の卓で考えればいい。",
+    "text": "……いや。今日は、勝った。それで十分だ。明日の卓のことは、明日の卓で考えればいい。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -48674,7 +49211,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "そうだネ。考えすぎは、我のがらじゃないヨ。……でも、次の山は、もっと高いネ。ここからは、今までみたいには、いかない気がするヨ。",
+    "text": "そうだネ。考えすぎは、我のがらじゃないヨ。……でも、明日の決勝は、今までみたいには、いかない気がするヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -48720,7 +49257,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "ま、なんとかなるヨ。三つ目、ちゃんと取れたんだからネ。さ、次いくヨ。残りは、まだ六つあるんダヨ。",
+    "text": "ま、なんとかなるヨ。決勝の切符は、ちゃんと掴んだんだからネ。明日、取りにいくヨ。三つ目の宝——ふたりで、ネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -48744,7 +49281,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "歩き出す背中を、追いかける。覇道の幕が、たしかに上がった。三つの宝が手の中にある。それなのに、この人の横顔に、これまで見たことのない迷いが、影みたいに差していた。",
+    "text": "歩き出す背中を、追いかける。覇道の幕が、たしかに上がった。明日、三つ目の宝を取りにいく。それなのに、この人の横顔に、これまで見たことのない迷いが、影みたいに差していた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -48767,7 +49304,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "引きだけで、本当にいいのか。——店を出て夜風に当たっても、その問いだけが、この人の背中に小さく灯ったまま、消えずに残る。次の山は、思っていたよりずっと、早く来た。",
+    "text": "引きだけで、本当にいいのか。——店を出て夜風に当たっても、その問いだけが、この人の背中に小さく灯ったまま、消えずに残る。決勝の卓は、もう明日に迫っていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -48791,7 +49328,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "四つ目の宝を懸けた大会。会場の喧騒の中で、向かいの席に座ったのは、地味な打ち手だった。派手な仕掛けも、威圧もない。ただ、こちらの目を、底まで覗き込むような静けさがあった。",
+    "text": "四つ目の宝——鏡車輪を懸けた大会。ペアで挑む卓の、向かいの席に座ったのは、地味な打ち手だった。派手な仕掛けも、威圧もない。ただ、こちらの目を、底まで覗き込むような静けさがあった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -48853,16 +49390,11 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "対局が始まる。配牌が伏せられ、卓の上に、静かな緊張が降りた。詩玥が、いつものように、手を作りにかかる。速い。けれど——。",
+    "text": "対局が始まる。詩玥の隣、相方の席に着く。配牌が伏せられ、卓の上に、静かな緊張が降りた。詩玥が、いつものように、手を作りにかかる。速い。けれど——。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -48878,11 +49410,6 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -48901,11 +49428,6 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
@@ -48925,11 +49447,6 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
@@ -48949,11 +49466,6 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -48971,17 +49483,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "落ち着け。今は無理に押すな。後ろは、私が止める。あなたは、危ない牌だけ私に渡せ。それでいい。",
+    "text": "落ち着け——自分に言い聞かせる。無理には押させない。後ろは、こちらが止める。危ない牌は、ぜんぶこちらで受ける。教わった型の、とおりに。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -48995,16 +49502,11 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "マモリが、いつものように後ろを固める。けれど、その守りすら、相手の読みの前で、少しずつ削られていく。どこを切れば安全か——その安全な道さえ、向こうは先に読んでいた。",
+    "text": "教わったとおりに、後ろを固める。けれど、その守りすら、相手の読みの前で、少しずつ削られていく。どこを切れば安全か——その安全な道さえ、向こうは先に読んでいた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -49018,16 +49520,11 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……まずいな。私の受けの逃げ道まで、読まれている。これは、私一人の守りだけでは、支えきれない。",
+    "text": "まずい。受けの逃げ道まで、読まれている。マモリに叩き込まれた守りの型を、その定石ごと、向こうは先に読み切っている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -49041,11 +49538,6 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -49065,11 +49557,6 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -49083,16 +49570,24 @@ export const SCENARIO_LINE_MASTER = [
     "scenarioId": "mentor-shiyue-bond-14",
     "lineNo": 14,
     "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手の手が、ゆっくりと手牌に掛かる。分かっているのに、時間だけが引き延ばされていく。卓の音が、消えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-14",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "surprised"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -49106,23 +49601,18 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 15,
+    "lineNo": 16,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "敗北。覇道編に入って、初めての黒星だった。点棒が運ばれていく音が、やけに大きく聞こえる。詩玥は、倒れた相手の手牌を、ただ見つめていた。",
+    "text": "敗北。宝を追う道に入って、初めての黒星だった。点棒が運ばれていく音が、やけに大きく聞こえる。詩玥は、倒れた相手の手牌を、ただ見つめていた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -49131,17 +49621,12 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 16,
+    "lineNo": 17,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
         "standingId": "default"
       }
     ],
@@ -49154,7 +49639,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 17,
+    "lineNo": 18,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49177,7 +49662,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 18,
+    "lineNo": 19,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49201,7 +49686,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 19,
+    "lineNo": 20,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49224,7 +49709,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 20,
+    "lineNo": 21,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49247,7 +49732,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49271,7 +49756,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49294,7 +49779,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49317,7 +49802,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49340,7 +49825,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49363,7 +49848,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49386,7 +49871,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49404,7 +49889,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49422,7 +49907,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-14",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-school-corridor",
     "standings": [
       {
@@ -49438,6 +49923,18 @@ export const SCENARIO_LINE_MASTER = [
     "screenEffect": "none",
     "effectDurationMs": 0,
     "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-14",
+    "lineNo": 31,
+    "backgroundId": "bg-school-corridor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "帰り方が、わからなかった。だから、廊下の反対側の壁に、そっと背を預けて座る。この人がうずくまっている夜に、隣の床の冷たさを分けるくらいしか、できることが見つからなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
@@ -49823,7 +50320,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "けれど、口にするうちに。声に出して、自分の怖さをほどいていくうちに。詩玥の言葉が、ふと、途中で止まった。何かが、引っかかったらしい。",
+    "text": "けれど、声に出して、自分の怖さをほどいていく、その途中で。——あの、と口を挟んだ。あの人は、最後まで、なんて言ったんですか。誓いの夜より、もっと前は。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -49831,6 +50328,24 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-15",
     "lineNo": 22,
+    "backgroundId": "bg-washitsu",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥が、まばたきを、ひとつ。問いを、口の中で転がす。それから、ゆっくりと、その目が開いていった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-15",
+    "lineNo": 23,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -49849,7 +50364,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -49867,7 +50382,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -49885,7 +50400,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -49903,7 +50418,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -49922,7 +50437,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -49940,7 +50455,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-15",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50063,7 +50578,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "shiyue",
     "speakerNameOverride": "恩師",
-    "text": "……でもな。お前は、視えすぎるあまり、降りてばかりだ。読みは、降りるためだけのものじゃない。……いつか、お前のツモが、見たいんだ。",
+    "text": "いい読みだ。……なあ、その読みでな、いつか、掴みにいってみせろ。守るためだけじゃ、もったいない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -50071,6 +50586,24 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-16",
     "lineNo": 7,
+    "backgroundId": "bg-sky",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": "恩師",
+    "text": "……でもな。お前は、視えすぎるあまり、降りてばかりだ。読みは、降りるためだけのものじゃない。……いつか、お前のツモが、見たいんだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-16",
+    "lineNo": 8,
     "backgroundId": "bg-sky",
     "standings": [
       {
@@ -50088,7 +50621,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 8,
+    "lineNo": 9,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50107,7 +50640,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 9,
+    "lineNo": 10,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50127,7 +50660,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 10,
+    "lineNo": 11,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50145,7 +50678,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 11,
+    "lineNo": 12,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50163,7 +50696,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 12,
+    "lineNo": 13,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50181,7 +50714,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 13,
+    "lineNo": 14,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50200,7 +50733,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 14,
+    "lineNo": 15,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50219,7 +50752,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 15,
+    "lineNo": 16,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50237,7 +50770,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 16,
+    "lineNo": 17,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50255,7 +50788,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 17,
+    "lineNo": 18,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50274,7 +50807,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 18,
+    "lineNo": 19,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50292,7 +50825,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 19,
+    "lineNo": 20,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50311,7 +50844,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 20,
+    "lineNo": 21,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50331,7 +50864,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50349,7 +50882,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50367,7 +50900,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50385,7 +50918,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50403,7 +50936,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50423,7 +50956,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50441,7 +50974,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50459,7 +50992,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50478,7 +51011,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50496,7 +51029,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-16",
-    "lineNo": 30,
+    "lineNo": 31,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -50531,7 +51064,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "次の大会の会場。向かいに座ったのは、あの夜とよく似た静けさを持つ打ち手だった。派手な仕掛けはない。ただ、こちらの河を、底まで覗き込む目をしている。前に詩玥が呑まれた、あの型だ。",
+    "text": "鏡車輪——あの夜、敗れた宝の卓に、二人はもう一度戻ってきた。『もう一人の自分』を映す円鏡の宝。向かいに座るのは、あの夜と同じ、こちらの目を底まで覗き込む打ち手だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -50540,6 +51073,29 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-shiyue-bond-17",
     "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "読みで人を封じ、読み切って、絡め取る。——まるで、読めて、降りていた頃の、昔のこの人だ。鏡の宝は、いちばん残酷な形で、もう一人の詩玥を向かいの席に映していた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-17",
+    "lineNo": 3,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -50562,7 +51118,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 3,
+    "lineNo": 4,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -50585,7 +51141,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 4,
+    "lineNo": 5,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -50608,18 +51164,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 5,
+    "lineNo": 6,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -50633,29 +51184,6 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 6,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "shiyue",
-    "speakerNameOverride": null,
-    "text": "……戻っておいでヨ。我の、読みの声。あんたの番ダヨ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-17",
     "lineNo": 7,
     "backgroundId": "bg-table",
     "standings": [
@@ -50663,16 +51191,11 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "詩玥が、長く塞いできた声を、自分から迎え入れる。すると、伏せ牌の向こうが、見えはじめた。相手がどこで待っているか。どの牌が、罠なのか。冷たい声が、ひとつひとつ、答えを弾き出していく。",
+    "text": "……戻っておいでヨ。我の、読みの声。あんたの番ダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -50686,16 +51209,11 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そこは、待ってるネ。だから切らないヨ。こっちの道も、塞がれてる。じゃあ……この一枚は、まだ生きてるネ。",
+    "text": "詩玥が、長く塞いできた声を、自分から迎え入れる。すると、伏せ牌の向こうが、見えはじめた。相手がどこで待っているか。どの牌が、罠なのか。冷たい声が、ひとつひとつ、答えを弾き出していく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -50709,16 +51227,11 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "詩玥の指が、危ない牌を、ひとつずつ避けていく。無駄を削る。先回りされた道を踏まずに、別の道を、自分の手で選び直す。読みが、振り込みを未然に潰していった。",
+    "text": "そこは、待ってるネ。だから切らないヨ。こっちの道も、塞がれてる。じゃあ……この一枚は、まだ生きてるネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -50731,21 +51244,15 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
+        "standingId": "serious"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……危ない牌を、私に渡してこない。自分で、避けている。それも、来る場所を読み切って。……これは。",
+    "text": "詩玥の指が、危ない牌を、ひとつずつ避けていく。無駄を削る。先回りされた道を踏まずに、別の道を、自分の手で選び直す。読みが、振り込みを未然に潰していった。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0,
-    "emoteId": "notice"
+    "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -50756,19 +51263,15 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "いつも後ろを固めるマモリの守りに、出番が回ってこない。詩玥が、振り込む前に、自分で全部止めている。守りに頼って耐えていたあの卓とは、攻守がまるごと入れ替わっていた。",
+    "text": "危ない牌が、相方のこちらへ回ってこない。詩玥が、振り込む前に、自分で避けている。それも、来る場所を読み切ったうえで、だ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "emoteId": "notice"
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
@@ -50778,17 +51281,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "読めるヨ。前は、見えなかった底まで、ぜんぶ見えてるんダヨ。……でもネ、ここからが、我の本番ヨ。",
+    "text": "後ろを固めるつもりでいた、こちらの守りに、出番が回ってこない。詩玥が、押しながら、同時に受けている。あの夜とは、卓の風向きが逆さまだった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -50802,16 +51300,11 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "守りに使うだけなら、引き分けにしかならない。けれど詩玥は、読みで安全な道を見極めたうえで、その道の先に、自分のツモを育てはじめた。読みが、攻めへ繋がっていく。",
+    "text": "読めるヨ。前は、見えなかった底まで、ぜんぶ見えてるんダヨ。……でもネ、ここからが、我の本番ヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -50825,11 +51318,24 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "守りに使うだけなら、引き分けにしかならない。けれど詩玥は、読みで安全な道を見極めたうえで、その道の先に、自分のツモを育てはじめた。読みが、攻めへ繋がっていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-17",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [
       {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "serious"
       }
     ],
     "speakerCharacterId": "shiyue",
@@ -50842,18 +51348,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 15,
+    "lineNo": 16,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -50866,18 +51367,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 16,
+    "lineNo": 17,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
@@ -50891,18 +51387,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 17,
+    "lineNo": 18,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -50916,17 +51407,12 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 18,
+    "lineNo": 19,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
         "standingId": "default"
       }
     ],
@@ -50939,7 +51425,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 19,
+    "lineNo": 20,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -50963,7 +51449,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 20,
+    "lineNo": 21,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -50979,14 +51465,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "マモリが、卓を回り込んで、詩玥のそばに立った。いつもの抑えた表情のまま、けれど、その目が、少しだけ和らいでいる。長く張り詰めていた糸が、ふと、ゆるんだような顔だった。",
+    "text": "マモリが、卓を回り込んで、詩玥のそばに立った。居住まいを正すように、一拍おいて。いつもの抑えた表情のまま、けれど、その目が、少しだけ和らいでいる。長く張り詰めていた糸が、ふと、ゆるんだような顔だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 21,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51009,7 +51495,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 22,
+    "lineNo": 23,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51033,7 +51519,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 23,
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51057,7 +51543,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 24,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51080,7 +51566,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 25,
+    "lineNo": 26,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51104,7 +51590,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 26,
+    "lineNo": 27,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51127,7 +51613,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 27,
+    "lineNo": 28,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51150,7 +51636,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 28,
+    "lineNo": 29,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51173,7 +51659,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 29,
+    "lineNo": 30,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51196,7 +51682,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-17",
-    "lineNo": 30,
+    "lineNo": 31,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51444,6 +51930,38 @@ export const SCENARIO_LINE_MASTER = [
     "standings": [
       {
         "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……おかしいヨ。読めてるのに、読めた先が、沈んでいくネ。あんたの待ちを避けても、避けた道ごと、淵に呑まれるヨ。……こんなの、初めてダヨ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "点棒が、音もなく削られていく。詩玥の読みも、マモリの守りも、こちらの繋ぎも——三人ぶんの技が、ぜんぶ効かない。卓の底が、抜けている。誰も、何も言えなくなった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-18",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
       },
@@ -51463,7 +51981,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 11,
+    "lineNo": 13,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51487,7 +52005,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 12,
+    "lineNo": 14,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51510,7 +52028,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 13,
+    "lineNo": 15,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51534,7 +52052,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 14,
+    "lineNo": 16,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51557,7 +52075,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 15,
+    "lineNo": 17,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51585,7 +52103,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 16,
+    "lineNo": 18,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51613,7 +52131,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 17,
+    "lineNo": 19,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51641,7 +52159,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 18,
+    "lineNo": 20,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51665,7 +52183,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 19,
+    "lineNo": 21,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51690,7 +52208,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 20,
+    "lineNo": 22,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51714,7 +52232,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 21,
+    "lineNo": 23,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51738,7 +52256,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 22,
+    "lineNo": 24,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -51762,7 +52280,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 23,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51785,7 +52303,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 24,
+    "lineNo": 26,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51809,7 +52327,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 25,
+    "lineNo": 27,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51832,7 +52350,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 26,
+    "lineNo": 28,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51855,7 +52373,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 27,
+    "lineNo": 29,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51878,7 +52396,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 28,
+    "lineNo": 30,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51902,7 +52420,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 29,
+    "lineNo": 31,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51925,7 +52443,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-18",
-    "lineNo": 30,
+    "lineNo": 32,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51965,7 +52483,54 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "八つ目の宝を懸けた大会。会場の喧騒の中で、詩玥は、もう迷いなく卓に着いた。読みも、引きも、自在。淵を越えてからの三人は、どの卓でも、危なげがなかった。",
+    "text": "七つ目の宝——無双冠。孤高の王冠と呼ばれる、独りで挑む宝だった。教わった読みと、教わった引きで、その卓を自分の手で取り切った。柵の外で、詩玥が我がことみたいに飛び跳ねていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "残るは、あと二つ。数えるまでもなく、指が覚えている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "mamori",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "八つ目の宝——天地神玉を懸けた大会。確率を捻じ曲げる、神がかった運の水晶玉。ペアで挑む卓に、詩玥は、もう迷いなく着いた。読みも、引きも、その身にぜんぶ戻っている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -51973,7 +52538,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 2,
+    "lineNo": 4,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -51997,7 +52562,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 3,
+    "lineNo": 5,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -52013,30 +52578,25 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "mamori",
     "speakerNameOverride": null,
-    "text": "……今日の卓は、三人とも、力が均されている。誰か一人が押し切る展開には、ならないかもしれない。終盤の一手が、勝敗を分けるだろう。",
+    "text": "……今日の卓は、どの席も、力が均されている。誰か一人が押し切る展開には、ならない。最後は、細い差を選び取った者が勝つ。……私は、柵の外だ。あとは、二人で。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 4,
+    "lineNo": 6,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "対局が進む。詩玥が読みで道を均し、マモリが後ろを固める。けれど今日は、流れの綾が、こちらの番のところで、ぴたりと止まった。終盤の決め手が、回ってくる。詩玥でも、マモリでもなく。",
+    "text": "対局が進む。詩玥が読みで道を均し、相方のこちらが後ろを締める。けれど今日は、流れの綾が細かい。どの席にも決め手が来ない、我慢比べの卓になった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -52045,18 +52605,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 5,
+    "lineNo": 7,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "serious"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -52069,17 +52624,12 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 6,
+    "lineNo": 8,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
         "standingId": "default"
       }
     ],
@@ -52092,69 +52642,18 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 7,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": "mamori",
-    "speakerNameOverride": null,
-    "text": "……待て。受けに回る道も、ある。そちらなら、確実だ。私なら、こちらを薦める。どちらも、間違いではない。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 8,
-    "backgroundId": "bg-table",
-    "standings": [
-      {
-        "characterId": "shiyue",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "押す詩玥と、守るマモリ。二つの声が、左右から重なる。けれど、どちらも、最後の一打までは言わない。卓の真ん中で迷う指先を、二人とも、ただ静かに見ていた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-shiyue-bond-19",
     "lineNo": 9,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "……でもネ。これは、我の手じゃないヨ。あんたの手ダヨ。我もマモリも、答えは言わないネ。",
+    "text": "柵の外から、マモリの目がこちらを見ている。声は、届かない距離だ。それでも、教わった言葉が耳の奥で響く——受けに回る道も、ある。そちらなら、確実だ、と。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -52167,17 +52666,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
         "standingId": "default"
       }
     ],
-    "speakerCharacterId": "shiyue",
+    "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "あんたが決めな。我の押しでも、マモリの守りでもなく。あんたが見て、あんたが選んだ一打ヨ。それが、いちばん強いんダヨ。",
+    "text": "押す詩玥の実声と、守るマモリの教え。ふたつの声が、左右から重なる。けれど、どちらも、最後の一打までは言わない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -52190,17 +52684,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
+        "standingId": "smile"
       }
     ],
-    "speakerCharacterId": "mamori",
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "……ああ。私も、口は出さない。あなたの目は、もう、十分に鍛えられている。選べ。それを、信じる。",
+    "text": "……でもネ。これは、我の手じゃないヨ。あんたの手ダヨ。我もマモリも、答えは言わないネ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -52213,17 +52702,12 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
+        "standingId": "smile"
       }
     ],
-    "speakerCharacterId": null,
+    "speakerCharacterId": "shiyue",
     "speakerNameOverride": null,
-    "text": "委ねられた。卓の真ん中で、二つの道が、もう一度、目の前に開く。詩玥に教わった読みの声が、相手の河をなぞる。マモリに教わった守りの目が、危ない牌を選り分ける。",
+    "text": "あんたが決めな。我の押しでも、マモリの守りでもなく。あんたが見て、あんたが選んだ一打ヨ。それが、いちばん強いんダヨ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -52237,16 +52721,11 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "相手の捨て牌が、語りかけてくる。どこで待っているか。どの道なら、踏み抜かずに済むか。二人に培われた目が、伏せ牌の向こうまで、すっと届いた。迷いが、ほどけていく。",
+    "text": "柵の外で、マモリが小さく頷くのが見えた。口は、出さない。あなたの目はもう、十分に鍛えられている——そう言っている頷きだった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -52260,16 +52739,11 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "押しでも、守りでもない、その中間に、細い道が一本だけ見えた。読みで危険を避けて、そのうえで届く一手。詩玥の押しと、マモリの守りが、自分の中で、一つに溶けた瞬間だった。",
+    "text": "委ねられた。卓の真ん中で、二つの道が、もう一度、目の前に開く。詩玥に教わった読みの声が、相手の河をなぞる。マモリに教わった守りの目が、危ない牌を選り分ける。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -52283,10 +52757,54 @@ export const SCENARIO_LINE_MASTER = [
         "characterId": "shiyue",
         "position": "left",
         "standingId": "default"
-      },
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手の捨て牌が、語りかけてくる。どこで待っているか。どの道なら、踏み抜かずに済むか。二人に培われた目が、伏せ牌の向こうまで、すっと届いた。迷いが、ほどけていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [
       {
-        "characterId": "mamori",
-        "position": "right",
+        "characterId": "shiyue",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "押しでも、守りでもない、その中間に、細い道が一本だけ見えた。読みで危険を避けて、そのうえで届く一手。詩玥の押しと、マモリの守りが、自分の中で、一つに溶けた瞬間だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二人が、待っている。急かさずに。卓の音が、遠のいていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "left",
         "standingId": "default"
       }
     ],
@@ -52301,17 +52819,12 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 16,
+    "lineNo": 19,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
         "standingId": "default"
       }
     ],
@@ -52326,18 +52839,25 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 17,
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "確率を捻じ曲げる神の玉。その宝の前で、運に頼らず、運を選び取る一打が決まった。教わった押しと、教わった守りの、ちょうど真ん中で。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-19",
+    "lineNo": 21,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": "shiyue",
@@ -52350,18 +52870,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 18,
+    "lineNo": 22,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
         "standingId": "smile"
-      },
-      {
-        "characterId": "mamori",
-        "position": "right",
-        "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
@@ -52373,13 +52888,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 19,
+    "lineNo": 23,
     "backgroundId": "bg-table",
     "standings": [
       {
         "characterId": "shiyue",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "mamori",
@@ -52392,11 +52907,12 @@ export const SCENARIO_LINE_MASTER = [
     "text": "……見事だった。あの局面で、押しと守りの、ちょうど間を選んだ。私には、薦められなかった道だ。あなたは、私たちの先を、行った。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-step"
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 20,
+    "lineNo": 24,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52420,7 +52936,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 21,
+    "lineNo": 25,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52443,7 +52959,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 22,
+    "lineNo": 26,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52467,7 +52983,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 23,
+    "lineNo": 27,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52490,7 +53006,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 24,
+    "lineNo": 28,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52513,7 +53029,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 25,
+    "lineNo": 29,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52536,7 +53052,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 26,
+    "lineNo": 30,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52559,7 +53075,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 27,
+    "lineNo": 31,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52583,7 +53099,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 28,
+    "lineNo": 32,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52606,7 +53122,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-19",
-    "lineNo": 29,
+    "lineNo": 33,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -52959,6 +53475,25 @@ export const SCENARIO_LINE_MASTER = [
       {
         "characterId": "shiyue",
         "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "詩玥が、こちらを見て、ひとつ頷いた。急かさない。会場の音が、遠くなる。——山に、手を置いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
         "standingId": "smile"
       }
     ],
@@ -52973,7 +53508,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 17,
+    "lineNo": 18,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -52993,7 +53528,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 18,
+    "lineNo": 19,
     "backgroundId": "bg-table",
     "standings": [
       {
@@ -53012,7 +53547,44 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 19,
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "shiyue",
+    "speakerNameOverride": null,
+    "text": "……ツモれば、勝ち。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 21,
+    "backgroundId": "bg-table",
+    "standings": [
+      {
+        "characterId": "shiyue",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "歓声の中で、その一言だけが、はっきり聞こえた。初めて会った日と、同じ言葉。軽口で、恩師の言葉で、誓いで——呪いだった言葉。けれどもう、誰の呪いでもなかった。同じ言葉のまま、意味だけが、長い道のりを歩き終えていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-shiyue-bond-20",
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -53031,7 +53603,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 20,
+    "lineNo": 23,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -53051,7 +53623,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 21,
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -53069,7 +53641,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 22,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -53092,7 +53664,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 23,
+    "lineNo": 26,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -53116,7 +53688,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 24,
+    "lineNo": 27,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -53139,7 +53711,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 25,
+    "lineNo": 28,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -53162,7 +53734,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 26,
+    "lineNo": 29,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -53185,7 +53757,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 27,
+    "lineNo": 30,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -53208,7 +53780,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 28,
+    "lineNo": 31,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -53231,7 +53803,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 29,
+    "lineNo": 32,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -53255,7 +53827,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 30,
+    "lineNo": 33,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -53278,7 +53850,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 31,
+    "lineNo": 34,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
@@ -53301,7 +53873,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-shiyue-bond-20",
-    "lineNo": 32,
+    "lineNo": 35,
     "backgroundId": "bg-washitsu",
     "standings": [
       {
