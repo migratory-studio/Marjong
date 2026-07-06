@@ -87,6 +87,23 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 3
   },
   {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "mentorCharacterId": "yobinin",
+    "title": "検証を開始する",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "always"
+      }
+    ],
+    "firstReadReward": {
+      "soul": 100
+    },
+    "sortOrder": 10,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-02",
     "mentorCharacterId": "bibi",
     "title": "ころばせたくない",
@@ -195,6 +212,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 20,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "mentorCharacterId": "yobinin",
+    "title": "誤差は、消す",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-01"
+      },
+      {
+        "type": "bond_level",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 120
+    },
+    "sortOrder": 20,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "twin-chun-yao-01",
@@ -324,6 +363,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "mentorCharacterId": "yobinin",
+    "title": "宙吊りを断つ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-02"
+      },
+      {
+        "type": "avatar_level",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 150
+    },
+    "sortOrder": 30,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-04",
     "mentorCharacterId": "bibi",
     "title": "炎の打ち手",
@@ -432,6 +493,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 40,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "mentorCharacterId": "yobinin",
+    "title": "定刻の機械",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-03"
+      },
+      {
+        "type": "bond_level",
+        "value": 3
+      }
+    ],
+    "firstReadReward": {
+      "soul": 180
+    },
+    "sortOrder": 40,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-bibi-bond-05",
@@ -544,6 +627,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "mentorCharacterId": "yobinin",
+    "title": "結果は、事実だ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-04"
+      },
+      {
+        "type": "avatar_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 200
+    },
+    "sortOrder": 50,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-06",
     "mentorCharacterId": "bibi",
     "title": "ごめんね、のかわりに",
@@ -652,6 +757,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 60,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "mentorCharacterId": "yobinin",
+    "title": "該当なし",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-05"
+      },
+      {
+        "type": "bond_level",
+        "value": 4
+      }
+    ],
+    "firstReadReward": {
+      "soul": 200
+    },
+    "sortOrder": 60,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-bibi-bond-07",
@@ -764,6 +891,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "mentorCharacterId": "yobinin",
+    "title": "敗因は、三つ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-06"
+      },
+      {
+        "type": "bond_level",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 230
+    },
+    "sortOrder": 70,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-08",
     "mentorCharacterId": "bibi",
     "title": "とどかない一歩",
@@ -872,6 +1021,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 80,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "mentorCharacterId": "yobinin",
+    "title": "揺らぎを許す機能",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-07"
+      },
+      {
+        "type": "avatar_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 250
+    },
+    "sortOrder": 80,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-bibi-bond-09",
@@ -984,6 +1155,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "mentorCharacterId": "yobinin",
+    "title": "誤差ゼロ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-08"
+      },
+      {
+        "type": "bond_level",
+        "value": 6
+      }
+    ],
+    "firstReadReward": {
+      "soul": 280
+    },
+    "sortOrder": 90,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-10",
     "mentorCharacterId": "bibi",
     "title": "わたしの麻雀",
@@ -1092,6 +1285,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 100,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "mentorCharacterId": "yobinin",
+    "title": "解析不能、だが不快ではない",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-09"
+      },
+      {
+        "type": "avatar_level",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 300
+    },
+    "sortOrder": 100,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-bibi-bond-11",
@@ -1204,6 +1419,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "mentorCharacterId": "yobinin",
+    "title": "純粋の器",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-10"
+      },
+      {
+        "type": "tournament_won",
+        "value": 1
+      }
+    ],
+    "firstReadReward": {
+      "soul": 330
+    },
+    "sortOrder": 110,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-12",
     "mentorCharacterId": "bibi",
     "title": "みんなで、勝つ",
@@ -1312,6 +1549,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 120,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "mentorCharacterId": "yobinin",
+    "title": "割り切れない",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-11"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 450
+    },
+    "sortOrder": 120,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-bibi-bond-13",
@@ -1424,6 +1683,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "mentorCharacterId": "yobinin",
+    "title": "検証を、継続する",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read_prev_month",
+        "value": "mentor-yobinin-bond-12"
+      },
+      {
+        "type": "tournament_won",
+        "value": 2
+      }
+    ],
+    "firstReadReward": {
+      "soul": 350
+    },
+    "sortOrder": 130,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-14",
     "mentorCharacterId": "bibi",
     "title": "客席のうさぎ",
@@ -1532,6 +1813,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 140,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "mentorCharacterId": "yobinin",
+    "title": "計算が届かない",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-13"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 360
+    },
+    "sortOrder": 140,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-bibi-bond-15",
@@ -1644,6 +1947,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "mentorCharacterId": "yobinin",
+    "title": "いい目だ、と女は言った",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-14"
+      },
+      {
+        "type": "bond_level",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 380
+    },
+    "sortOrder": 150,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-16",
     "mentorCharacterId": "bibi",
     "title": "ひとりだった子",
@@ -1752,6 +2077,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 160,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "mentorCharacterId": "yobinin",
+    "title": "揺らぎは、変数",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-15"
+      },
+      {
+        "type": "tournament_won",
+        "value": 4
+      }
+    ],
+    "firstReadReward": {
+      "soul": 400
+    },
+    "sortOrder": 160,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-bibi-bond-17",
@@ -1864,6 +2211,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "mentorCharacterId": "yobinin",
+    "title": "検証のため、貴殿が必要だ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-16"
+      },
+      {
+        "type": "tournament_won",
+        "value": 5
+      }
+    ],
+    "firstReadReward": {
+      "soul": 450
+    },
+    "sortOrder": 170,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-18",
     "mentorCharacterId": "bibi",
     "title": "あなたなら",
@@ -1972,6 +2341,28 @@ export const SCENARIO_MASTER = [
     "sortOrder": 180,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "mentorCharacterId": "yobinin",
+    "title": "観測記録",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-17"
+      },
+      {
+        "type": "bond_level",
+        "value": 9
+      }
+    ],
+    "firstReadReward": {
+      "soul": 480
+    },
+    "sortOrder": 180,
+    "isEnabled": true,
+    "scenarioVersion": 1
   },
   {
     "scenarioId": "mentor-bibi-bond-19",
@@ -2084,6 +2475,28 @@ export const SCENARIO_MASTER = [
     "scenarioVersion": 2
   },
   {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "mentorCharacterId": "yobinin",
+    "title": "運の隣に立つ",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-18"
+      },
+      {
+        "type": "tournament_won",
+        "value": 7
+      }
+    ],
+    "firstReadReward": {
+      "soul": 520
+    },
+    "sortOrder": 190,
+    "isEnabled": true,
+    "scenarioVersion": 1
+  },
+  {
     "scenarioId": "mentor-bibi-bond-20",
     "mentorCharacterId": "bibi",
     "title": "いってきます",
@@ -2192,5 +2605,27 @@ export const SCENARIO_MASTER = [
     "sortOrder": 200,
     "isEnabled": true,
     "scenarioVersion": 2
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "mentorCharacterId": "yobinin",
+    "title": "誤差も、悪くない",
+    "scenarioType": "bond",
+    "unlockConditions": [
+      {
+        "type": "scenario_read",
+        "value": "mentor-yobinin-bond-19"
+      },
+      {
+        "type": "tournament_won",
+        "value": 8
+      }
+    ],
+    "firstReadReward": {
+      "soul": 600
+    },
+    "sortOrder": 200,
+    "isEnabled": true,
+    "scenarioVersion": 1
   }
 ];

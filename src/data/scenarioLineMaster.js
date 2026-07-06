@@ -52934,6 +52934,12056 @@ export const SCENARIO_LINE_MASTER = [
     "bgmId": "bgm-warm"
   },
   {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ソウルをぶつけ合う公的競技の世界。その片隅に、奇妙な噂の打ち手がいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "山を読み、運の揺らぎを消し、誤差なく勝つ——精密機械。名を、ルクス・ゼロ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "初めて間近で観たその麻雀は、静かだった。無駄がなく、迷いがなく、運の匂いすらしない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——終局。誤差、なし。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "衝撃だった。九蓮宝士を志すなら、学ぶのはこの人しかいない。卓が終わるのを待って、頭を下げた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "該当なし。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "にべもない。翌日、会場の出口で待ち構えて、もう一度。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "非効率。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "翌々日。三度目の直訴に、青い目は一瞥もくれなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "時間の無駄だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでも、通った。断られるたびに、あの誤差のない麻雀が目の奥で光った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 12,
+    "backgroundId": "bg-parlor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "幾日目かの午後。諦め半分で着いた卓が、終盤で岐路を寄越した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 13,
+    "backgroundId": "bg-parlor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "計算なら、降り。期待値は明確に負。手の中には、届くかどうかもわからない大物手の種だけがある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 14,
+    "backgroundId": "bg-parlor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それでも、張った。勝ちを捨てて、指先が危険牌を河に置いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 15,
+    "backgroundId": "bg-parlor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——外れた。負けた。当然の帰結だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 16,
+    "backgroundId": "bg-parlor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "席を立ちかけた背中に、声が落ちた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 17,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——待て。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 18,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "振り向くと、青い光。いつから観ていたのか、ルクス・ゼロが卓の傍らに立っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 19,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "いまの一打。期待値は、負。合理的な根拠、皆無。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 20,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——なぜ、張った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 21,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "答えに詰まった。理由なんて、ない。届く気がした——絞り出せたのは、それだけだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 22,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は、長く沈黙した。青い目が、河に並んだ捨て牌を辿り直している。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none",
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 23,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……解析不能。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 24,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "検証の価値は、ある。——来い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 25,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "連れて行かれたのは、地下だった。暗がりに端末の光が並び、部屋を青白く照らしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "解析室。機械はその部屋を、そう呼んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 27,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "弟子入りを許可する。ただし、これは検証だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "私は師匠ではない。貴殿は、被験者だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "被験者。頷いて、ひとつだけ告げた。目指す場所は九蓮宝士——この世界の頂点だ、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は何も言わず、端末に短く何かを打ち込んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 31,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "目標値として、登録した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-01",
+    "lineNo": 32,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "検証が——のちに師弟と呼ばれるものが、始まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 1,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "初稽古の日。意気込んで解析室の扉を開けた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily",
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 2,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓の上に、牌はなかった。あるのは端末が一台と、画面を埋める数字の列だけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 3,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "着席。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 4,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "促されるまま画面の前に座る。並んだ数字に見覚えがあると気づくのに、数拍かかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 5,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "貴殿の公式戦記録、百二十七局。解析済みだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 6,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——いつの間に。口に出すより早く、画面が切り替わった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "surprise"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 7,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "打つのは、まだ早い。まず、貴殿の誤差を数える。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 8,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誤差を、数える。稽古というより、検査に近い響きだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 9,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そうして始まった講義は、麻雀を数字に解体していく時間だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 10,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "この打牌、放銃率、一二パーセント。より安全な代替手、あり。——誤差。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 11,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "この鳴き、期待値の損失。根拠の記録、なし。——誤差。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 12,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "容赦がない。だが、意地悪でもない。指摘はどこまでも正確で、反論の一つも思いつけなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 13,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "感覚で打つな。感覚は、誤差の温床だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 14,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誤差、誤差、と声は平坦に積み上がる。打ってきた麻雀が、ばらばらの部品になって画面に並んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 15,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "牌を握る手に、変な力が入る。\"……なんだこれは\"。一打ごとに理由を問われる麻雀を、初めて知った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 16,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "質問は。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 17,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "尋ねれば、答えは必ず返ってきた。短く、正確に、一切の飾りなしに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 18,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "窓のない部屋で、時間の感覚が溶けていく。端末の隅の時計だけが、夜を告げていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 19,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "本日の検証は、終了。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 20,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "画面の光が半分落ちて、部屋が一段暗くなる。荷物をまとめる手が、ふと止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 21,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "この人の麻雀は、何なのだろう。数字の向こう側で、この人は何を打っているのだろう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 22,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「先生の麻雀は、何ですか」——気づけば、そう口にしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 23,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械の手が、端末を閉じる。暗がりの中で、青い目だけがこちらを向いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 24,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "誤差は、消す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 25,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——それが私の麻雀だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "運の揺らぎも、感覚のブレも、すべて計算で消す。宣言というより、事実の読み上げに聞こえた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 27,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "背筋が薄ら寒くなった。そして同時に、わかってしまった。——これは、本物だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 28,
+    "backgroundId": "bg-street",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "地上へ続く階段を上がると、街はいつのまにか夜の色をしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 29,
+    "backgroundId": "bg-street",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "平坦な声が、まだ耳の奥に残っている。薄ら寒さと凄みは、たぶん同じもののことだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-02",
+    "lineNo": 30,
+    "backgroundId": "bg-street",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "明日も、あの地下へ降りる。迷いは、なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 1,
+    "backgroundId": "bg-parlor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その日の稽古は、座学ではなかった。町の雀荘に、師の姿があった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 2,
+    "backgroundId": "bg-parlor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手は道場破りめいた腕自慢。地下の機械を負かしに来た、と鼻息が荒い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 3,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "着席を。検証を、開始する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 4,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "初めて間近で観る、師の実戦だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 5,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対局は、静かに進む。師の捨て牌には、迷いの跡がひとつもない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 6,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "中盤、師の手が止まった。——1シャンテン。聴牌まで、あと一枚。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 7,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "麻雀を打つ者なら、誰でも知っている。ここからが、いちばん遠い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 8,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あと一歩が来ない。有効牌だけが引けず、手の中で時間が空回りする——あの宙吊りの一巡。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 9,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "腕自慢が、口の端で笑った。機械も、ここで止まるか——と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 10,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "山を、読む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 11,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "青い目が、伏せられた山を見た。牌の背しか見えないはずのそこを、光で照らすように。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 12,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "河に二枚。相手の手の内に、推定一枚。——残存、一枚。山に、生きている。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 600,
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 13,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数え上げは一瞬だった。捨て牌の川と鳴きの跡と、場のすべてから、見えない山の中身を割り出していく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 14,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "確保。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 15,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次のツモ牌が、卓に小さく鳴った。——有効牌。聴牌。宙吊りの一巡は、来なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 16,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "息を呑む。あの「あと一歩が来ない」地獄を、この人は力ずくで断ち切っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "shock"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 17,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そこから先は、ただの消化だった。数巡後、師の和了の声が静かに卓を締めた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 18,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "腕自慢は青い顔で帰っていった。運が良かっただけだ、と捨て台詞を残して。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 19,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "運では、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 20,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "追い打ちでも、弁明でもない。ただの訂正だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 21,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "解析室に戻っても、まだ胸の高鳴りが収まらなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 22,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あれは何だったのか。どうやって、山が見えるのか。問いが、堰を切ってあふれた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 23,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "ゼロ・リサーチ。場の情報から、山の残存を確定させる。それだけだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 24,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけ、で片づく話ではない。けれど機械は、手柄を語る気配もなく端末に向かっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 25,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ひとつだけ、どうしても聞きたかった。なぜ、1シャンテンであそこまで徹底するのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "聴牌の一歩手前で空回りする、あの宙吊り——イーシャンテン地獄。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 27,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "私は、あれを許さない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "なぜそこまで、と聞きかけて——言葉を飲んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "端末の青い光の中で、機械の横顔が一瞬だけ、何かを堪えているように見えたからだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-03",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気のせいだったのかもしれない。次に見たときには、いつもの平坦な横顔に戻っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 1,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古を重ねるうちに、あることに気づいた。師の一日には、狂いがない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 2,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "正午ちょうどに地上へ上がり、同じ食堂の、同じ席で、同じ定食を頼む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 3,
+    "backgroundId": "bg-restaurant",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "食べ終わるのは十二時二十四分。来る日も来る日も、誤差はほぼゼロ。生活そのものが、精密機械だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 4,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "日替わりは、変数が多い。A定食は、固定。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 5,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "尋ねてもいないのに、理由まで返ってきた。理由のほうも、固定らしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 6,
+    "backgroundId": "bg-restaurant",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ある日の昼。ひと足先に食堂へ着いて、何も考えず空いた席に座った。——いつもの、あの席に。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 7,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "正午。扉が開き、機械が入店する。そして、止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 8,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "トレイも取らず、立ち尽くしている。青い目が、じっとこちらの席を見ていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 9,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……座標が、占有されている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 10,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三秒の沈黙。慌てて隣の席を勧めると、また三秒。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 11,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……検証する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 12,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ぎこちなく、機械が隣に座った。椅子を引く角度まで、いつもと違う気がする。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 13,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "景色がひとつずれただけで、明らかに調子が狂っていた。メニューを見る時間が、いつもより長い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 14,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "A定食——いや。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 15,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言い直しかけて、注文の声が滑った。運ばれてきたのは、見たこともないB定食だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 16,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……修正、不能。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 17,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "つぶやいて、機械は初めての定食を黙々と食べ始めた。所作だけは、いつも通りに精密だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 18,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "感想も、文句もない。ただ咀嚼の回数だけが、心なしか多い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 19,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "食後、恐る恐る聞いてみた。どうでした、そっちの定食。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 20,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "長い、間があった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 21,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……悪くない。想定外の、結果だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 22,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけ言うと、機械は伝票を精密に精算して、定刻より一分遅れで店を出た。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 23,
+    "backgroundId": "bg-restaurant",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一分の遅れ。あの人にとっては、ちょっとした事件かもしれなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 24,
+    "backgroundId": "bg-restaurant",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "翌日の正午。食堂に、小さな異変が起きる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 25,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械が、いつもの席ではなく——窓際の席に座っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 26,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "比較検証だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 27,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聞くより先に、答えが返ってきた。膳の上は、B定食だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 28,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "笑いを噛み殺す。検証という言葉が、今日は少しだけ柔らかく聞こえた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-04",
+    "lineNo": 29,
+    "backgroundId": "bg-restaurant",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "明日はどの席だろう。そんなことを考えながら食べる定食は、いつもより少しうまい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 1,
+    "backgroundId": "bg-parlor",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "実戦稽古の日。師の見立てで組まれた卓は、程よく骨のある面子だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 2,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "開始。検証項目は、押し引きの精度。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 3,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観測者らしく、師は卓の後ろに静かに立つ。端末を片手に、一打ずつ記録しながら。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 4,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "南場も深くなったころ、手が岐路に立った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 5,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対面からリーチ。こちらは1シャンテン。教わったとおりに数えるなら、答えは明快だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 6,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "降り。期待値は、はっきりと負。押す根拠は、どこにもない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 7,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "頭では、わかっていた。なのに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 8,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指先が、勝手に危険牌を掴んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 9,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "理屈ではない。ただ——いけそうな気がした。それだけだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 10,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "牌が河に鳴る。通る。次のツモが、手を進める。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 11,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "もう止まらなかった。数巡、押し切って——",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 12,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモ。会心の和了だった。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "emoteId": "joy",
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 13,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓の相手が呆れ顔で牌を倒す。打った本人が、いちばん驚いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 14,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふと、視線を上げる。師は——端末を見たまま、止まっていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 15,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指が、画面の上で止まっている。あの精密機械の指が、珍しく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 16,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "記録する。判断——非合理。期待値——負。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 17,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "結果——…………勝利。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 18,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後のひと項目だけ、入力までにたっぷり間があった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 19,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指導するなら、いまのは敗着だ。それは教わってきたから、わかる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 20,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが記録には、勝ちと残る。数字の世界に、数字で説明のつかない行が一行、書き込まれてしまった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 21,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対局後。師は、しばらく何も言わなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none",
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 22,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……非合理だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 23,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ようやく落ちた声は、いつもより低く聞こえた。叱責が来る——そう身構えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 24,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "だが、結果は事実だ。……事実は、否定できない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 25,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけだった。機械は端末を閉じ、先に立って解析室へ戻っていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "叱られなかった。妙に拍子抜けしたまま、地下への階段を降りる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 27,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "明日は座学だろうか。今日の一打も、誤差のひとつに数えられて終わるのだろうか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "端末の前で、機械はもう今日の牌譜を開いていた。いつもと同じ、平坦な横顔で。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だから、気づかなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-05",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの一打が——完璧な計算の世界に、小さな棘をひとつ、残したことに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "公式戦の会場——今日は師の対局が組まれていて、観戦席の最前に席を取った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓に着いた師はいつもどおり静かだった。青い佇まいに、揺らぎはひとつもない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——開始。最短経路を、捕捉する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "立ち上がりは完璧だった。無駄のない打牌が重なり、手は五巡で一向聴まで一直線に進む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聴牌の一歩手前——師の言う「宙吊り」の入口で、いつもの手順が始まる。河を数え、山に残る有効牌を数え切る手順だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "残存——",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声が、途切れた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……ゼロ。該当、なし。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聴牌へ進む牌は、すべて場に出切っていた。河に、晒された手の中に。山には——もう、一枚もない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観戦席からでも、それが何を意味するかは分かる。どれだけ引いても、この手は前に進まない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "続行。——迂回打に、移行する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師は降りを選ばなかった。安全牌を挟んで形を保ち、放銃だけを避けて回っていく。手順としては教科書どおりに正しい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモのたび、指先が一瞬だけ止まるのが見えた。牌を持ち上げ、確かめ、河へ置くまでのあいだの——短い空白。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "声には出さない。表情も変わらない。それでもその横顔に、見えない何かが積もっていくのが分かった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "確定できない宙吊り。それはこの人にとって、ただの不運ではない——そんな気がして、目が離せなくなる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "結局、その局は流れた。師の手は最後まで、聴牌に届かなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対局そのものは、僅差で拾った。残りの局を正確に刻み、点差を計算どおりに守り切った勝ちだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 20,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "帰り道。街灯の下を、師は同じ歩幅で歩いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 21,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "隣に追いついて、少し迷って——それでも、聞いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 22,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「さっきの局——」",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 23,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉はそこで止まってしまった。何を聞きたいのか、うまく形にならない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 24,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……想定内だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 25,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "処理は、継続した。問題は、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 26,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "歩調は変わらなかった。嘘ではないのだろう。あの迂回打は最後まで正確だった——けれど、答えにはなっていない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 27,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聞き返す言葉をいくつか探した。どうして指が止まったのか。あの空白の下に、何があるのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 28,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——やめた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 29,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械の下にあるものを聞くのは、まだ早い気がした。今はただ、隣を歩く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 30,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……明日、○六○○。解析室で、本日の検証を行う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-06",
+    "lineNo": 31,
+    "backgroundId": "bg-street",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつもどおりの平坦な声だった。頷いて、夜道に並ぶ。『該当なし』——青い光のあの言葉が、なぜか耳に残ったままだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "公式戦で、負けた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-sorrow"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "中盤で読みを違え、終盤は押しすぎた。挙句、最後は大物手に真っすぐ放銃して沈んだ。言い訳のしようもない大敗だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 3,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "解析室に戻る足は重かった。扉を開けると、端末の青い光がいつもより眩しい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 4,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師は今日の牌譜を画面に出していた。労いの言葉は、ない。分かっていたことだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 5,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "帰投を、確認。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 6,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "敗因は、三つ。列挙する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 7,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——こんなときまで、解析か。俯いた視界に、床の染みだけが映っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 8,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "一。東二局、七巡目の打八筒。下家の河は、筒子の染め手を示していた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 9,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "二。南三局の、東の鳴き。速度を買い、打点と守備を売った。対価が、合っていない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 10,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "三。最終局、十二巡目。降りの判断が、二巡、遅い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 11,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "正確だった。反論の余地もないほどに——顔を上げられないまま、頷くことしかできない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 12,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "補足。三について。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 13,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "三週間前の稽古、東一局。同一の形で、貴殿の降りは四巡、遅れた。本日は、二巡。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 14,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "……え？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 15,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "顔を上げる。端末の画面が、こちらへ向けられていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 16,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "日付、局、巡目、打牌。几帳面に揃った行が画面の奥まで続いている。今日のぶんだけでは、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 17,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "先週の稽古。先月の実戦。——出会った日からの、ぜんぶ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 18,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "観測記録。検証開始からの、貴殿の全打牌。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 19,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "当然のことのように機械は言った。当然の、わけがない。稽古の一打から今日の放銃まで、ひと粒も欠けずに残っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 20,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "“……ずっと、見ていたのか”",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 21,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "敗因は、三つ。だが——",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 22,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "画面が、切り替わる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 23,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "改善は、十七項目。列挙するか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 24,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "十七。敗因の五倍以上ある。数えてくれていたのだ——駄目だったところだけでは、なく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 25,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "判断速度、向上。放銃率、低下。降りの遅れは、三週間で二巡、短縮。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "結論。貴殿は、後退していない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 27,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "慰めの言葉は、最後までなかった。優しい声も、肩に置かれる手も、何ひとつ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "なのに——にじみかけていたものが、静かに引っ込んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "この人は、ずっと見ていてくれたのだ。誰よりも正確に。誰よりも、ぜんぶ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "明日、○六○○。敗因の一から、再検証を行う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-07",
+    "lineNo": 31,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "頷く。声を出すと、余計なものまで出てしまいそうだった。端末の青い光が、今夜は少しだけ暖かい色に見えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 1,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "稽古が長引いた夜だった。解析室には端末の青い光だけが灯り、牌譜の行が静かに流れていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 2,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "並んで、無言で牌譜を追う。師の指が時折画面の上で止まり、また動く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 3,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "静かだった。空調の低い唸りと、頁を送る音だけが部屋の輪郭をなぞっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 4,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——だから、だろう。ずっと胸の底にあった問いが、するりと口をついて出た。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 5,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「どうして、そこまで誤差を消すんですか」",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 6,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言ってから、遅れて心臓が跳ねた。もう、戻せない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 7,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指が、止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 8,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "沈黙。端末の光が、瞬きもしない横顔を照らしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 9,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一秒。三秒。……長い。時計の針だけが、律儀に数を刻んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 10,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "十三秒——数えて、しまった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 11,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……確定できない、宙吊りは。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 12,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言いかけて、止まる。途中で止まるこの人の声を、初めて聞いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 13,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……私には、揺らぎを許す機能が、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 14,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "それだけだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 15,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけ、のわけがない。「機能」という言い方を選んだことも、答えるまでの十三秒も。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 16,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どこで生まれたのか。何があったのか。聞けば、この人は答えるのかもしれない——正確に、几帳面に。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 17,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聞かなかった。この人の空白は、埋めていいものではない気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 18,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "牌譜に目を戻す。青い光の中で、また頁だけが進んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 19,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——貴殿は。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 20,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "珍しく、向こうから声が来た。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 21,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "揺らぎが、怖くないのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 22,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "少し、考えた。取り繕った答えは、きっとすぐ見抜かれる。だから、正直に。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 23,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「怖い、です。……でも、わからないから面白いとも思います。麻雀って、そういうものじゃないかって」",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 24,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "沈黙が返ってくる。今度のは、さっきより柔らかい沈黙だった気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 25,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……記録した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけだった。短い打鍵の音がひとつ響いて、夜はまた静けさに戻っていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 27,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その夜は、それきりどちらも喋らなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "翌朝。いつもどおり○六○○に解析室へ入って——予定表の前で、足が止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "分刻みの几帳面な行のあいだに、見慣れない二文字が増えている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——休憩。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-08",
+    "lineNo": 31,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師は端末に向かったまま、何も言わない。だから、こちらも何も聞かないことにした。ただその二文字を、しばらく眺めていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 1,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "実戦の卓に着く日だった。観戦席には師——端末を開いた、いつもの観測の構えでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 2,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "開始を、確認。——観測に、徹する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 3,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "助言は来ない。卓の上のことは、卓の上で決める。それがこの師弟の、いつもの距離だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 4,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "東三局。配牌は悪くなかった。五巡で手は一向聴まで進む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 5,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "受けは、六筒と三索の二種。——そこで、手が止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 6,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモっては崩れ、崩れては戻る、あの空回りの気配が指先まで来ている。宙吊りの、入口だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 7,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いつもなら、ここで祈るように山を見るだけだった。——今日は、違う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 8,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "教わった声が、頭の中で再生される。祈るな、数えろ。山は隠れているだけで、消えてはいない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 9,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "河を、数える。六筒は三枚が場に見えている。残り、一枚。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 10,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対面の晒した刻子に、三索が三枚。場に見えているのはそれで全部——残りは、一枚。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 11,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "残存、二枚。……薄い。けれど、ゼロではない。山のどこかで、まだ生きている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 12,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "下家は筒子を早くに見切っている。六筒が手の中で使われている気配は薄い。なら——生きているのは、山だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 13,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "確信は、静かに降りてきた。回せる。この手はまだ、前に進める。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "idea"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 14,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "危険牌を先に処理して、受けを保ったまま回し打つ。教わったとおりに。祈らずに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 15,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一巡。——来ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 16,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二巡目。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 17,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指先に、硬い感触があった。めくった牌の中央で、六筒が並んでいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 18,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聴牌だ。宙吊りの綱が、音もなく切れて落ちた。迷わず、リーチを宣言する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 19,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数巡後、和了牌はあっけなく手の中へ来た。運任せではない。読み切って、待ち構えた上がりだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 20,
+    "backgroundId": "bg-table",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "牌を倒して、息をひとつ吐く。イーシャンテン地獄——あの宙吊りを、初めて自分の力で断ち切った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 21,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観戦席で、小さな音がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 22,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師が、端末を閉じた音だった。——閉じたのを見るのは、初めてだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 23,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "観測した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 24,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "誤差ゼロ。——完璧、と言っていい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 25,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械の、最高の賛辞だった。頭の中で、いつかの言葉が重なる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 26,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "『聴牌の一歩手前で空回りする、あの宙吊り。私は、あれを許さない』——教わった日の、あの声だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 27,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "許さなくて、いいのだ。祈らず、数えれば。教えは確かに、この手の中にあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 28,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "次局も、同一の精度を要求する。——開始。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 29,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "賛辞は、一言で終わった。それでいい。それがいい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-09",
+    "lineNo": 30,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "頷いて、山へ向き直る。指先はもう、震えも祈りもしなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 1,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "検証開始から、数ヶ月になる。夜の解析室は今日も、端末の青だけで明るい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 2,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師の画面には見慣れない一覧が並んでいた。名前と数字の行列——打ち手ごとの、行動予測モデルらしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 3,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "公式戦の上位打ち手、全員分の予測モデル。構築済み。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 4,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "的中率、九割二分。想定内。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 5,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "さらりと恐ろしいことを言う。捨て牌も押し引きも、この人の中では九割、起こる前に終わっているのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 6,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一覧の端に、ひとつだけ桁の違う数字があった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 7,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "見覚えのある名前の行だけ、的中率が無残に低い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 8,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「あの、端のは……」と、つい指を差してしまった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 9,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "貴殿の、モデル。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 10,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "貴殿のデータは、毎回、予測を外す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 11,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——来た。また説教だ。身構えて、頭の中で言い訳の在庫を数え始める。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 12,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "予測が外れるたび、モデルを更新した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 13,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "二十九回。……それでも、外れる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 14,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "淡々とした、いつもの声だった。説教の続きを待つ——が、来ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 15,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "おそるおそる、横顔を窺う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 16,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "苛立ちの色が、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 17,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それどころか、他のモデルは用が済むと次々に畳まれていくのに——その無残な画面だけを、師は消さずに開いている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 18,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "まるで、眺めるために開いているみたいに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 19,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "解析不能。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 20,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その言葉は、知っている。出会った日、何度目かの門前払いの果てに、この人が初めてこちらを見て言った言葉だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 21,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あのときは値踏みの言葉だった。検証の対象——それだけの意味しか、なかったはずだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 22,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 23,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……だが、不快ではない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 24,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "続きが、違った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 25,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "端末の光の中で、機械は予測できないものを予測できないまま、手元に置いている。消さずに。畳まずに。諦めもせずに。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "更新は、継続する。……三十回目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 27,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「諦める」という選択肢が読み上げられないことに、なぜだか頬が緩んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "「はい。……たぶんまた、外すと思います」",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……想定内だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "どの賛辞より、その一言が効いた——なんて、この人のモデルにはきっと、まだ載っていない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-10",
+    "lineNo": 31,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "青い光の中で、打鍵の音がひとつ。今夜も検証は、静かに続いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つの宝、最初の挑戦——清一器杯。手をひとつの色に研ぎ澄ました者だけが勝ち残る、三人打ちの個人戦だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "卓を囲むのは三人。萬子の二から八を抜いた牌は少なく、点は荒く、手は高い。一色の火柱が立ちやすい戦場だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "一色に研ぎ澄ます。無駄を、捨てる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——貴殿がこの数ヶ月やってきたことと、同一だ。行け。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけ言って、機械は観戦席へ歩いていった。個人戦の卓に、師の介入はない。端末を開く姿は、いつも通りの観測の構えだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "予選は、教わった手順のまま抜けた。数える。読む。断つ。荒い点の応酬の中でも、手順は静かに回り続けた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——決勝。相手は、火柱のような染め手を好む打ち手と、鳴きで場を早回しする打ち手。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "配牌を開く。筒子が、六枚。染まる——直感がそう言うより先に、指が河を数えはじめていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "場に出た筒子。相手の手に眠る筒子。山に生きる筒子。教わったとおりに、一枚ずつ確定させていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "派手さは、ない。ただ、誤差だけが消えていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "下家がリーチ。三人打ちの立直は重い。だが河はもう読めている——現物と筋を繋ぎ、降りずに回す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "凌ぎ切った次の局、点棒の流れがこちらへ傾いた。気づけば、卓の主導権は手の中にある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "終盤の勝負手。筒子が七枚、八枚——一色まで、あと一歩。そこで、伸びが止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "1シャンテン。いつもの地獄の、入口の気配。——数える。捨てられた四筒は二枚。山に、二枚生きている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "焦らない。形を保って、回す。二巡——三巡——。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "来た。四筒。聴牌——宣言はせず、静かに構える。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "待ちは一・四筒。山に、まだ五枚。数え切った待ちは、もう宙吊りではなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——ツモ。門前の清一色に、ツモの一翻が乗る。跳満。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "精算の点棒が、大きく動いた。歓声より先に、誰かが息を呑む音が聞こえた気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "オーラスは、逃げ切りではなく攻めて終えた。最後の一打まで、誤差は消えたままだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——優勝。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一色に研ぎ澄ました、純粋の器——清一器。九つの宝の最初のひとつが、掌に載る。ずしりと、重い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観戦席を見た。機械は、端末を閉じて立っていた。閉じた端末を胸の前に抱え、まっすぐこちらを見ている。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "記録した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——九分の一。目標値まで、残り八。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけ言って、青い背中が出口へ向かう。祝辞も、拍手も、ない。いつも通りの機械だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——ただ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その端末の画面が、閉じられる寸前まで優勝の瞬間を映したまま止まっていたことは——誰も、知らない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "掌の中の器を、もう一度見る。研ぎ澄ますこと。無駄を捨てること。教えは確かに、この器の形をしていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-11",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "目標値まで、残り八。機械の数え方で、その遠さを数えてみる。……悪くない数字だと、思った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二つ目の標的——門前開鍵杯。孤独な試練を、独力で開く者に与えられるマスターキー。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "旗印は、門前清自摸和。鳴かず、振り込みも拾わず、自分のツモだけで手を開く——独力の一翻だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "エントリー表の前で、足が止まった。——ルクス・ゼロ。師の名が、そこにあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "検証には、対照実験が必要だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "貴殿の麻雀と、私の麻雀。どちらが正か。——決勝で、検証する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "問い返す暇もなく、青い背中は自分のブロックへ歩いていった。決勝で、と機械は言った。そこまで勝ち上がることを、互いに疑ってもいない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——準決勝。互いに順当に勝ち上がり、自分の卓を先に終えて、師の卓を観に行った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "静かだった。四人の卓なのに、音が、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "山が開く。機械は三巡で手の骨格を決め、余分を全部捨てた。捨て牌が、定規で引いた線のように整っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "捕捉。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "相手のリーチに、何ひとつ色が変わらない。現物、現物、筋——危険という危険が、手の中から消されていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして気づけば、誰の手も伸びない。欲しい牌だけが場から涸れ、卓の全員が見えない檻の中で打たされている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "確保。——誤差なし。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "静かな門前ツモ。歓声は、上がらなかった。観客席が、静まり返る。拍手を忘れるほどの、精密。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "掌に、汗が滲んでいた。……あれと、決勝で打つ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "教わった麻雀の、完成形。あの檻を破る打ち筋を——教わった覚えは、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——決勝卓。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "向かいの席に、師が着く。青い目に、いつもの観測の色。だが今日のそれは、こちらを解剖する色だ。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——開始。最短経路を、捕捉する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "東一局から、檻は組み上がっていった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "手が二つ伸びれば、二つとも先回りされる。危険牌を掴まされ、降ろされ、その間に静かなツモが決まる。東場で、点棒は大きく傾いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "想定内。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その二文字が、これほど重く聞こえたことはなかった。捨て牌の一枚目から、全部読まれている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "南場。教わったとおりに数え、教わったとおりに読み、教わったとおりに打つ。——それでも、届かない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "当然だ。同じ教科書なら、書いた側が強い。教えの土俵の上では、この人には届かない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "南三局、ようやくひとつ和了り返す。旗印どおりの、門前のツモ。だが点差は、まだ遠い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——オーラス。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "点差、九千六百。トップは、師。条件は満貫ツモ——直撃なら、なお良し。だが相手はあの機械。振り込みは、期待できない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "配牌は、悪くない。タンヤオに寄せて、ドラが一枚。リーチ、ツモ、タンヤオ、ドラで四翻——裏が一枚乗れば、満貫に届く形。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "中盤、手が1シャンテンで止まる。数える。残存を読む。——生きている。まだ、道はある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 31,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だがその道の途中に——師のリーチが、突き刺さった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 32,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次のツモは、通る保証のない中張牌。教わった計算が、即座に答えを出す。——降り。期待値は、負。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 33,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "降りれば、二着。安全に、確実に、負ける。押せば——届くかもしれない。ただし根拠は、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 34,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふと、あの日の卓を思い出す。期待値は負。合理的な根拠、皆無。——なぜ、張った、と機械は問うた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 35,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの一打を『解析不能』と呼んだ人が、いま目の前にいる。なら、見せるものはひとつしかない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 36,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——押す。指が、危険牌を河に置いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 37,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "……通った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 38,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次巡、もう一枚。それも、通った。そして手牌が、最後の形に育つ——聴牌。リーチ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 39,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "待ちの残存は、読み切れていない。ここから先は、計算の外。教わらなかった場所で、牌を待つ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 40,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一巡。二巡。師の河にも、王手の気配——。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 41,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——来た。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 42,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "門前清自摸和。リーチ、タンヤオ、ドラ一。裏が——一枚。……満貫。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 43,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "逆転。卓上の点棒が、音を立てて入れ替わった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 44,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械の指が、河の上で止まっている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 45,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……解析、不能。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 46,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "長い、長い沈黙。観客のざわめきが、遠い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 47,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……結果は、事実だ。貴殿の勝利を、記録する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 48,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "敗者の弁も、言い訳も、ない。事実を事実として受け入れる——誠実な機械の敗北だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 49,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "孤独な試練を開く鍵——門前開鍵。二つ目の宝が、掌に載る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-12",
+    "lineNo": 50,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが、分かってしまった。いま、師の中で何かが軋んだ音がしたことを。——物語は、覇道編へ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 1,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "門前開鍵を掴んだ、翌朝。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 2,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "解析室へ降りる階段が、いつもより長く感じられた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 3,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "検証は、終わったのかもしれない。被験者が、観測者に勝ってしまったのだから。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 4,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "検証の価値は、ある——始まりの言葉は、そういう意味だった。なら、その証明が済んでしまったいまは……。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 5,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "扉は、いつも通り開いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 6,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は、いつもの席にいた。端末の青い光。いつもの観測の構え。何もかもが、昨日までと同じ配置だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 7,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "画面を、覗く。次の宝までの解析データが——既に、びっしりと並んでいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 8,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……検証を、継続する。異論は。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 9,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あるわけが、なかった。首を横に振ると、機械はひとつ頷いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 10,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "着席。講義を、開始する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 11,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "まるで昨日の敗北など、なかったかのように——。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 12,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いや。違う。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 13,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "画面に映し出されたのは、昨日の決勝の牌譜だった。一打ずつ、注釈がついている。誰の解析よりも、深く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 14,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "南四局。この局面の私の選択は、読みの上では最善だった。——だが、貴殿の最終打牌を想定していない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 15,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "敗因を、三点に分解した。順に、検証する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 16,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "自分の敗北を、この人は逃げずに教材にしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 17,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "淡々と続く講義の声は、いつも通り平坦で。その平坦さが今日は、なぜだか少しだけ、まぶしかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 18,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "講義は、昼を回って終わった。端末を閉じる気配に、ずっと胸にあった問いが口をついて出る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 19,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——どうして、続けてくれるんですか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 20,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は、画面から目を上げなかった。数拍。やがて。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 21,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "貴殿の打牌は、まだ解析不能だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 22,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……検証は、完了していない。それだけだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 23,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "理由になっているような、なっていないような答えだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 24,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "でも、それでいいのだと思った。この人は機械の言葉でしか話さない。なら、機械の言葉のまま受け取ればいい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 25,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "解析不能——最初は値踏みだったはずの言葉が、いまは続きの約束のように聞こえる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "次の標的の解析は、完了している。——九分の二では、目標値に遠い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 27,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "誤差は、消す。……次の検証へ、移行する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "端末の光が、次の宝への道筋を映し出す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "検証は、続く。九つの宝への道を、この機械は隣で歩くことに決めたらしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-13",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "階段を上る足取りは、来たときよりずっと軽かった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "残りの宝を目指す卓の、格が変わった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "集うのは——持っている、としか言いようのない打ち手たち。確率二割の引きを平然と通し、理屈の外から和了が降ってくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師の麻雀は、正確なままだ。むしろ、これまでで最も研ぎ澄まされている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが、正確さが——届かない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "読み切ったはずの待ちの外から、振り込まされる。枯れたはずの牌が、生きて出てくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……再計算。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "端末の画面の隅に、予測的中率の数字がある。九割二分。少し前まで、そこは九割八分だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "対面の打ち手が笑いながら無筋を三枚押し通し、跳満をツモる。根拠を問えば『こういう日だから』。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……再計算。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "八割九分。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数字が、削れていく。機械は折れない。声も、姿勢も、打牌の速度も、何ひとつ変わらない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "変わらないことが、逆に、軋みに聞こえはじめていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次の卓も、その次の卓も、同じだった。計算は正しい。正しいまま、負ける。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "偏差、増大。モデルの寿命が、短い。——再計算。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "八割二分。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "とうとうその日、師は予選で卓を降りた。順位、三着。数字だけ見れば、悪くない。だが。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あの人の辞書で、勝ち以外は全部、誤差だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 18,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——その夜。解析室。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 19,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "端末の光の中で、機械は無言でモデルを組み直し続けている。牌譜、確率表、破綻した予測の残骸。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 20,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……再計算。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 21,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "何度目かの、同じ二文字。折れてはいない。折れてはいないが——。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 22,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふと、あの夜の逆質問を思い出した。——貴殿は、揺らぎが怖くないのか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 23,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "あのとき、正直に答えた。怖い。でも、わからないから麻雀は面白い、とも思う——と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 24,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は『記録した』とだけ言った。あの記録は、いまどこにあるのだろう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 25,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "画面の中で、揺らぎはいまも消すべき誤差のままだ。消しても消しても、覇道の卓は揺らぎ続けている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "……計算だけでは、この先へ行けないのかもしれない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 27,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その予感は、まだ言葉にならない。言葉にする資格も、まだない気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だから、黙って隣の席に着く。散らばった牌譜を、ひとつずつ並べ直す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……手伝いは、非効率だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-14",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そう言いながら、機械は席をひとつ、譲るように詰めた。夜は、まだ長い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "公式戦の会場。その日のざわめきは、いつもと質が違った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-daily"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "人垣の向こうから、場違いなほど妖艶な女が歩いてくる。紫の長髪。羽根飾りのシルクハット。指先で、カジノチップが躍っている。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 600,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "賭場の伝説——賭羽ルイナ。名前だけは、聞いたことがあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "へえ、あんたが噂の機械かい。——よろしくね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師は答えず、席に着いた。青い目が、静かに女を観測している。計算の機械と、運命の女——組み合わせの妙に、会場がざわめいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——開始。最短経路を、捕捉する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、卓が——狂った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いい目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "女がそう呟くたび、ありえない目が、通る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "カンチャンの三筒を、一発でツモる。海底で、単騎の白を引き当てる。裏ドラは、めくれば乗っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師の読みは、狂っていない。それが、いちばん恐ろしかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "読みは正確に、女の待ちを捉えている。危険は消されている。——のに、その正確さごと、上から裏切られる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "確率、一割未満。……再計算。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "確率一割の引きが、三度続いた。端末なら、とっくにエラーを吐いている領域だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ふふ。固いねえ、あんたの麻雀は。——嫌いじゃないよ、そういうの。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "でもさ。天秤ってのは、固いほうに傾くとは限らないのさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "言葉と同時に、女は今日一番の大勝負に出た。点棒を惜しげもなく積み上げ、山に手を伸ばす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——いい目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ツモ。会場が、爆ぜた。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 400,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "精算を終えて、師の点棒はもう、立て直せない場所まで沈んでいた。——完敗、だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "終局。女が席を立つ。機械は、動かない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……あれは、何だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "試行回数が、確率を裏切っている。誤差の集積が、収束しない。……解析、不能。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "silence"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "初めて見る顔だった。敗北に沈む顔では、ない。目を離せずにいる——観測者の顔だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "すれ違いざま、女が足を止めた。流し目が、師を——それから、こちらを一瞬だけ、掠める。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "へえ——機械にしちゃ、いい目をしてる。あんた、面白いね。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "music"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "チップが一枚、宙に放られ、白い指に落ちる。それだけ残して、女は人垣の向こうへ消えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——その夜。解析室の灯りは、朝まで消えなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "画面に並ぶのは、彼女の牌譜だけ。何度も再生しては、止め、また再生する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……再計算。……該当なし。……再計算。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-15",
+    "lineNo": 31,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械の夜に、初めて、解けない問いが住みついた。それがこの先の何を変えるのか——このときはまだ、誰も知らない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "四つ目の標的は、鏡車輪杯。『もう一人の自分』を映すという円鏡を懸けた——2対2の、ペア戦だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "師弟で同じ側に並ぶ、初めての公式戦。卓の向こうに敵ペア、こちら側に二人。合計点で競う戦いだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "開始前の作戦会議。ルクスはいつものように端末を開き——数秒見つめて、閉じた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……今日は、貴殿の判断も、計算に入れる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "聞き違いかと思った。誤差を消す機械が、計算の外にあるものを、計算に入れると言った。真意を問う前に、卓が開く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "予選の卓は、危なげなく進んだ。ルクスの計算が土台を作り、危険を消し、点を積む。ペアの合計点は、常に上にあった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが決勝の相手は、格が違った。天運の申し子——確率の外から和了を降らせる、あの領域のペアだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ルクスの計算は正確なまま、要所で崩される。読み切った待ちの外から振り込まされ、枯れたはずの筋が生き返る。——あの壁が、また来ている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "けれど、今日は違う。崩れた場所に、もう一人いる。理屈の外の押し。期待値の負を承知の勝負手。自分の麻雀で、崩れた盤面へ踏み込んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は、それを止めなかった。止めずに——その一打が通ったあとの世界を、先回りして読み直している。横顔で、それが分かった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "貴殿の押しを、前提に組み込んだ。次局、私は受けに回る。——役割を、分担する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "計算と、計算外。二つの打ち筋が噛み合いはじめ、点差はじりじりと縮んでいく。それでも敵の天運は尽きず——勝負は、オーラスまでもつれた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "オーラス。ペア合計は、敵のわずか下。満貫級を和了れば、届く。親のルクスの手に、勝負手が入っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "1シャンテン。機械は、いつものように山を読む。青い光が河と副露を走査して——答えが、返る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "残存……ゼロ。該当、なし。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——あの局面だ。かつて、この答えの前で機械の指が止まるのを見た。確定できない宙吊り。この人が誰より恐れる、計算の切れる場所。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "読みの上では、有効牌は出切っている。だがその読みには、伏せられた手牌の推定が含まれる。出切ったのか。まだ山に眠っているのか。——確定は、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指は、止まらなかった。機械は顔を上げ、まっすぐこちらを見た。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……委ねる。貴殿の目は、時々、山より正しい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "息を、ひとつ。河を見る。敵の捨て筋を見る。理屈は、ない。ただ、あの色がまだ山で息をしている——そんな気がした。指で、静かにその筋を示す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は、頷いた。読みが『出切った』と告げた受けへ——弟子の勘だけを根拠に、手を寄せて構え直す。誤差ゼロの打ち手が、確定のない待ちに乗った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一巡。二巡。敵の親が、リーチ。場が軋む。それでも機械は、待ちを変えない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三巡目。ルクスの指が、山の一枚に触れ——裏返す。……いた。読みの外で、生きていた一枚。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——ツモ。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 600,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "親の満貫ツモ。ペア合計が、音を立てて逆転する。——優勝。円鏡の宝、鏡車輪は、二人の手に落ちた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場がどよめく。あの機械が、確定のない待ちに乗った——見る者が見れば、それは天変地異に近い一打だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "表彰の裏。円鏡を検分している師に、たずねた。さっきの待ち替えは——計算だったのか、と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "いや。——貴殿の揺らぎを、変数として、読みに入れた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "揺らぎは、消せなかった。消せないものは——織り込む。それだけの、話だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それだけ、と機械は言う。だが、それがどれほどの跳躍か。誤差を消すためだけに在った信条が、いま初めて、形を変えたのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 31,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ふと、掲げられた円鏡を覗き込む。磨き抜かれた鏡面に——機械と、その隣に立つ計算外が、並んで写っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-16",
+    "lineNo": 32,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "『もう一人の自分』を映す鏡。この人の鏡に写っていたのが自分なら——それは、悪くない並びだと思った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "六つ目の標的は、大三剣杯。『戦場を支配する一振りの剣』を懸けた——三人一組の、団体戦だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三人目を、誰にするか。候補を挙げようと口を開いたときには——ルクスはもう、立ち上がっていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "候補は、選定済みだ。——同行を、推奨する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 4,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "迷いのない足取りに引かれて、街を渡り、路地を折れて——たどり着いたのは、薄暗いバーの扉だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-step"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 5,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "扉を押すと、鈴が鳴る。カウンターの奥、紫の羽根帽子。指先でチップを躍らせる女が、こちらを見ずに言った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-mystery",
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 6,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "——おや。噂の機械が、あたしの止まり木に何の用だい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 7,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "賭羽ルイナ。あの夜、師の計算を根こそぎ裏切った——賭場の伝説。機械は一直線にカウンターへ歩み寄り、立ったまま切り出した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 8,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "賭羽ルイナ。貴殿の試行結果を、解析した。和了率、押し引き、裏目の頻度——すべてが、確率分布を逸脱している。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 9,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "既存のモデルでは、説明が付かない。……運命、と仮称する。それを、観測する必要がある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 10,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "回りくどい機械語が、ひとしきり続いて——一拍、置いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 11,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "検証のため、貴殿が必要だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 12,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "躍っていたチップが、ぴたりと指先で止まる。女は初めてこちらへ顔を向け、目を細めた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 13,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "へえ——機械に口説かれるとはね。……いい目だ、乗った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 14,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "口説き文句に色気のかけらもないのは、減点だけどね。——面白そうな卓の匂いがする。それで、十分さ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 15,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "色気の有無は、検証項目に含まれない。……契約成立、と記録する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 16,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "史上最も色気のない口説きが、賭場の伝説を卓に呼んだ瞬間だった。二人の間で、そっと胸を撫で下ろす。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sweat"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 17,
+    "backgroundId": "bg-black",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——大会当日。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
+    "seId": "se-bell"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "計算の機械。運命の女。そして、計算外の弟子。設計図のまるで違う三つの歯車が、大三剣杯の卓に並んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "まず、ルクスの計算が盤面を支配する。山を読み、危険を枯らし、敵の待ちを裸に剥く。静かで、息が詰まるほど精密な支配。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "ふふ。お膳立ては上々——なら、あたしの番だ。……いい目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "女がそう笑うたび、確率が裏切られる。締まった盤面の急所に、ありえない目が突き刺さる。敵の顔から、血の気が引いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、二つの極の間を——自分の一打が繋ぐ。計算が作った土台の上で、運命がこじ開けた穴へ、理屈の外から踏み込む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "噛み合うはずのない歯車が、なぜか噛み合う。決勝の終盤には、会場中が三人の卓だけを見ていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "仕上げは、三元牌。白、發と晒した手の、最後の中——ルイナの『いい目だ』が響いた次巡、弟子の指が山からそれを引き当てる。ツモ。大三元。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 600,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "役満の音が、会場を割った。——優勝。戦場を支配する一振りの剣、大三剣は、異形のトリオの手に落ちた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "妙な卓だったね。計算と、運命と、どっちでもない何か。……ま、悪くない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "気が向いたら、また呼びな。——検証、だったかい? 続きを見せてもらうよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "チップを一枚宙に放って受け、女は人混みへ消えていった。帰り際まで、底の見えない笑みだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "静かになった会場の隅で、ルクスは端末を開いた。今日の記録を、几帳面に打ち込んでいく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "観測初日。運命と仮称する事象を、至近距離で記録。既存モデルとの乖離、想定以上。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 31,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……解析不能な変数が、二つに増えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-17",
+    "lineNo": 32,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二つ。——その一つ目が誰のことか、聞くまでもなかった。解析不能は、この人の言葉でいちばん、大事にされている棚に置かれている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 1,
+    "backgroundId": "bg-basement",
+    "standings": [],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "大会続きの日々の、合間の夜。珍しく、解析室に呼ばれた。稽古でも、反省会でもなく——ただ、来い、とだけ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night",
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 2,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "暗がりに、端末の光が並ぶいつもの部屋。ルクスは席を立ち、一台の端末を、両手でこちらへ差し出した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 3,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "貴殿に、開示すべきデータがある。——観測記録だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 4,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "受け取った画面に、日付が並んでいる。いちばん上は——出会った日だ。あの日からの全打牌、成長曲線、対局結果。そして、各日の末尾に、短い備考欄。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 5,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "初期の備考は、素っ気なかった。『解析不能』。『非合理』。『要観察』。値踏みする機械の、冷たい単語が並ぶ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 6,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "覚えている。この頃は本当に、被験者だった。それでも指は、画面を繰る手を止めない。日付が進むにつれ——記述が、変わっていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 7,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "『定食の席を占有された。比較検証の結果、悪くない』——あの食堂の日だ。思わず、口元がゆるむ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 8,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "『敗戦。だが後退していない。……そう伝えたところ、被験者の表情が変化した。理由不明』——涙が引っ込んだ、あの夜。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 9,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "『被験者、初めて自力で宙吊りを断つ。誤差ゼロ。……完璧、と言っていい』——端末を閉じて、そう言ってくれた日。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 10,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ページを繰る手が、ある一行で止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 11,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "『本日、被験者が笑った。理由不明。……記録する価値があると、判断した』",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 12,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "打牌でも、成長曲線でもない。ただ笑った、それだけの日が——記録されている。機械語のまま。感情の言葉は、ひとつもないまま。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 13,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "これは——感情の履歴だ。名乗らないだけで、ずっとここに、積もっていたのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 14,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "決勝で師を破った日の備考は、短かった。『敗北。結果は、事実だ。……検証を、継続する』。あの軋みの夜も、この人は記録の手を止めていない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 15,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして——最新のページ。指が、止まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 16,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "『被験者、という呼称は、既に不正確である。適切な語を検索中。……候補：弟子。相棒。——保留』",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "notice"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 17,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "何度も、読み返した。候補、弟子。相棒。——保留。たった三語の備考欄が、どんな言葉より雄弁だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 18,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "顔を上げる。機械は、いつもの平坦な顔で立っている。何かを待つでもなく、ただ、まっすぐこちらを見て。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 19,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……データに、誤りがあれば、訂正する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 20,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それが、この記録を開示した理由らしかった。検証の途中経過は、被験者と共有する——機械の理屈は、たぶんそれだけだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 21,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "もう一度だけ、画面を見下ろす。素っ気ない単語から始まって、笑った日を記録するようになるまでの、長い長い観測の列。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 22,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誤りは——ひとつも、なかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 23,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "端末を、両手で返す。言いたいことは山ほどあって、どれも言葉にすると溢れそうだったから——ひとことだけ、選んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 24,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "続き、楽しみにしてます——と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 25,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は、数秒、沈黙した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 26,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……観測は、継続する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 27,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それから端末に向き直り、何かを短く、打ち込んだ。二度、三度。迷いのある打鍵だった。あの人にしては、珍しく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 28,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その画面を、覗きはしなかった。見なくても、いい気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 29,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "ただ——検索中だった『適切な語』の欄は、その夜、埋まったらしい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 30,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "何という語で埋まったのかは、誰も知らない。備考欄と同じだ。名乗らないまま、積もっていくものが、この部屋にはある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-18",
+    "lineNo": 31,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "暗がりに、端末の光がひとつ。観測は、今夜も続いている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "八つ目の標的は、天暗刻杯。『天から与えられた意思を封じた』という黒い球体を懸けた、三人一組の団体戦だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "集うのは、天運の申し子たち。かつて師の計算を軋ませた、理屈の外から和了を降らせる打ち手たち——その、本丸だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "開始前の作戦会議。三人目は、もちろんあの女だ。ルクスは端末を開き——今日は、閉じずに言った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "私は運を、消せなかった。……ならば、運の隣に、立つ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いいね。機械の癖に、粋なこと言うじゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "喉で笑う女と、表情ひとつ変えない機械。その間に立って、なぜだか無性に、今日は勝てる気がした。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "決勝の卓。敵の引きは、噂に違わず理屈の外にあった。確率二割の引きが平然と通り、和了が天から降ってくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが——こちらには、運命の女がいる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "へえ、いい引きだ。——なら、こっちも。……いい目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天運と天運が、真っ向からぶつかる。女の『いい目だ』は一歩も引かない。敵の引きが乱れ、盤面が軋み——場が、荒れる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その荒れた盤面を、ルクスの計算が締める。散らかった確率を拾い集め、危険を枯らし、押し引きの線を引き直す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして、締まった線の急所へ——割り切れない一打で、自分が刺す。運命が張り合い、計算が締め、計算外が刺す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "大三剣の日に噛み合った歯車が、今日は唸りを上げて回っている。点差は拮抗のまま、終盤へ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勝負所は、南場の親番に来た。卓に着くのはルクス。手の内で、暗刻が三つ、静かに睨みを利かせている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三暗刻から、単騎に構えれば——四暗刻。宝と同じ名を冠する、暗黒の役満が見えている。だが、そのとき。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "敵の親が、リーチ。ルクスの山読みが、その待ちを正確に捉える。押せば、掴む牌の半分は危険牌。確率上の正解は——降り、だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "かつての機械なら、迷わず降りていた。誤差を消すのが、信条だったから。だが今日の機械は——読みの答えに、初めて“運の変数”を足した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……ルイナ。この局、貴殿の目は。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いい目だよ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——続行する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "計算が、運を信じた。数字ではなく、隣に立つ者の目を、読みの根拠に置いた。誤差ゼロの機械の、ありえない一巡。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "危険牌を、押す。——通る。単騎に構え直した宣言の一打が、河に置かれる。場が、凍りつくほど静かだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "次巡。機械の指が山に伸び、一枚を引き——静かに、倒した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "ツモ。四暗刻、単騎。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 600,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "親の役満。敵の天運が、音を立てて捻じ伏せられた。会場のどよめきが、遅れて津波のように押し寄せる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そのまま、押し切った。——優勝。天から与えられた意思を封じた球体、天暗刻が、三人の手に落ちる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "表彰のあと。ルイナが黒い球体を撫でながら、チップを一枚、指で弾いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あんた、変わったね。前は運を睨んでたのに——今は、隣で使ってる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は、端末を閉じた。閉じてから、答えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……検証の、成果だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 31,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "運を消そうとした機械が、運の隣に立って勝った。その横顔は、いつもどおり平坦で——いつもより、静かに見えた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 32,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "残る宝は——最後の、一つ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "最後の宝——九蓮宝燈。九つ目の至宝だけは、会場に立つまで、形式が分からない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "告げられた人数は——『3人』。弟子と、機械と、運命の女。この三人で挑めと、宝が言っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-bell"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 3,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "役者は揃ったね。——最後の卓に、これ以上ない面子じゃないか。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 4,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……観測を、開始する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 5,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "計算。計算外。運命。設計図の違う三つの歯車が、頂点の卓に着いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 6,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場は満員。九蓮宝士の座を賭けた最終戦に、固唾を呑む視線が突き刺さる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 7,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "序盤から、三位一体は唸りを上げた。まず、ルクスの計算が盤面を締める。山を読み、危険を枯らし、敵の待ちを裸に剥く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "いい目だ。——ほら、また転んだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 9,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "女が笑うたび、確率が裏切られる。締まった盤面の急所へ、割り切れない一打で自分が刺す。頂点の卓でも、歯車は噛み合っていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 10,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "勝ち続けて——最終局。優勝への、最後の直線。卓に着いているのは、ルクスだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 11,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "手牌は、勝負手。これをアガり切れば、優勝——九蓮宝士が、決まる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 12,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが——手は、1シャンテンのまま、止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 13,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "中盤を過ぎても、ツモが噛み合わない。聴牌の一歩手前で空回りする、あの宙吊り。機械はいつもの手順で、山を読む。青い光が、河と副露を走査する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "答えが、返る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 15,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "残存、ゼロ。……該当、なし。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 16,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いま組んでいる形の有効牌は、すべて場に出切っていた。読みの上に、道はもう一本もない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 17,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "計算が——尽きた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 18,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "かつて、この答えの前で、機械の指は止まった。あの日は、公式戦の片隅で。今日は——頂点の卓で。『該当なし』が、この人自身に突きつけられている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "観客席が、静まり返る。誰もが見ている。無敗の計算が沈黙する、その瞬間を。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 20,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械の指が、牌の上で静止している。一秒。二秒。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 21,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——だが。今日のこの卓には、あの日と違うものがある。隣に、二人。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 22,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気づけば、声が出ていた。先生の番です——と。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "張りなよ、機械。あんたの検証の、答え合わせだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 24,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械は、こちらを見た。それから、女を見た。そして——",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 25,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "端末を、閉じた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "青い光が、卓から消える。山を照らす光も、残存の数字も、もうない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 27,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……確定は、ない。読みも、保証も、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 28,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——ただの、ツモだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "生まれて初めて、機械が、確定のない一打に手を伸ばす。誤差ゼロの打ち手が——ただの運へ、指を差し出す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一巡目。指が山に触れ、ゆっくりと一枚を引く。——読みのどこにも無かった、無関係の一枚。外れ。誰もが、そう思った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-tile"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 31,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "だが——その一枚が、手牌の中で、別の形を照らした。組み替えれば、道がある。計算が捨てた形の先に、細い細い道が。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 32,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "静かに、手が組み替わる。——聴牌。会場が、ざわりと揺れた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 33,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "待ちは、細い。山は、残りわずか。敵も張っている。それでも機械は、もう読み直さない。端末は、閉じたままだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 34,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "二巡目。敵の打牌が河を走り、場が軋む。機械は動じず、無関係の一枚をツモ切って、静かに次を待つ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 35,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "自分の心臓の音が、やけに大きく聞こえる。隣のルイナは、チップを握ったまま、動かない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-heartbeat"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 36,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "三巡目。ツモは、残り二回。会場は、咳ひとつない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 37,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "機械の指が、山の一枚をつまむ。時が、止まったようだった。ゆっくりと、手元へ引き寄せ——裏返す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 38,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "——ツモ。",
+    "characterEffect": "none",
+    "screenEffect": "flash",
+    "effectDurationMs": 800,
+    "seId": "se-tsumo"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 39,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "引き当てた。読みも確定も保証もない、ただの一打で。——ツモ和了。優勝。九蓮宝燈杯、制覇。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-victory",
+    "seId": "se-score"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 40,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "歓声が、会場を割った。九つの宝が繋がり、紋章が灯る。——九蓮宝士の、誕生だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 41,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その中心で、機械は動かない。歓声にも、紋章にも目をやらず——呆然と、自分の手牌を見下ろしている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 42,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……計算の外から、来た。誤差だ。完全な、誤差だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 43,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "数拍。やがて、ぽつりと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-none"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 44,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……誤差も、悪くない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 45,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "運を消そうとした機械が、運に微笑んだ——最初の言葉だった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-warm"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 46,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——その後。解析室の端末に、最後の記録が残っている。『検証は、終了した。結論——』。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 47,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "結論の先を読もうとしたところで、機械が画面を消して、こちらへ向き直った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 48,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……だが、観測は続ける。貴殿の打牌は、まだ解析不能だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 49,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "それがこの人なりの、これからもよろしくの言い方だと——もう、知っている。頷いて、返事の代わりに笑った。備考欄が、また一行増えるのだろう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 50,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "その夜は、ルイナのバーで三人の祝杯になった。機械のグラスの中身は——ソーダ水だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful",
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 51,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "九蓮宝士さまの祝杯が、ソーダ水かい。……ま、あんたらしくて、いい目だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 52,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "そして機械は、定刻きっかりに席を立ち、帰っていく。どこから来た人なのかは、結局、誰も知らないまま。——観測だけが、これからも続いていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
     "scenarioId": "twin-chun-yao-01",
     "lineNo": 1,
     "backgroundId": "bg-dojo",
