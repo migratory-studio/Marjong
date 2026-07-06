@@ -1,6 +1,6 @@
 // 天啓ドラ寄せ（ドラニエル・dora-pull）の Phase7 結線ユニット検証。Run: node test/dorapull.mjs
 // 基準帯テーブル（lv-dora-pull）／Lv5≡フリー対戦の無param生成／局数ゲート（maxHands）／
-// 超越帯のツモ偏重（MODIFY_DRAW＝ルクスの山読み・ドラ手繰り・doraTolerance）を確認する。
+// 超越帯＝「背水の天啓」（lastStand：持ち点が薄いほど張った局の確定ドラが増える）を確認する。
 // めくり→確定ドラ後付け（apply/MODIFY_SCORE）と四開槓ガードは test/smoke.mjs がゲーム実走でカバー済み。
 import "../src/abilities/builtins/index.js"; // 能力を登録
 import { createAbility } from "../src/abilities/registry.js";
@@ -13,35 +13,34 @@ const ok = (label, cond) => { if (!cond) fails++; console.log(`${cond ? "PASS" :
 
 // runtimeParams（Lv → params）から能力を生成。
 const ab = (lv) => createAbility("dora-pull", skillRuntimeAbilityParams("lv-dora-pull", lv));
-const api = (over = {}) => ({ me: { index: 0 }, state: { wouldSuukaikanAbortFrom: () => false }, log() {}, ...over });
-// MODIFY_DRAW を叩く薄いラッパ。hand は kind 配列、candidates は tile オブジェクト配列。
-const t = (kind, red = false) => ({ kind, red });
-const draw = (a, handKinds, candidates, doraKinds = []) =>
-  a[Hooks.MODIFY_DRAW](
-    { player: { hand: handKinds.map((k) => t(k)), melds: [] }, wall: { doraKinds: () => doraKinds }, candidates, defaultTile: candidates[0] },
-    api(),
-  );
+const api = (over = {}) => ({ me: { index: 0 }, state: { wouldSuukaikanAbortFrom: () => false, honba: 0 }, log() {}, ...over });
+// 背水判定用の勝者モック（開始点25000）。
+const winner = (points, isDealer = false) => ({ points, isDealer, character: { stats: { startingPoints: 25000 } } });
 
 // ---- 0) テーブル：skillRuntimeAbilityParams が期待値どおり ----
 {
   const lv1 = skillRuntimeAbilityParams("lv-dora-pull", 1);
-  ok("Lv1: maxHands=1 / maxCharges=1 / bias無し",
-    lv1.maxHands === 1 && lv1.maxCharges === 1 && lv1.doraDrawBias === false);
+  ok("Lv1: maxHands=1 / maxCharges=1 / 背水無し",
+    lv1.maxHands === 1 && lv1.maxCharges === 1 && lv1.lastStand.length === 0);
   const lv2 = skillRuntimeAbilityParams("lv-dora-pull", 2);
   ok("Lv2: maxHands=2 / maxCharges=1（局数が先に伸びる）", lv2.maxHands === 2 && lv2.maxCharges === 1);
   const lv3 = skillRuntimeAbilityParams("lv-dora-pull", 3);
   ok("Lv3: maxHands=2 / maxCharges=2（現行数値に到達）", lv3.maxHands === 2 && lv3.maxCharges === 2);
   const lv5 = skillRuntimeAbilityParams("lv-dora-pull", 5);
-  ok("Lv5: maxHands=2 / maxCharges=2 / bias無し（完成基準）",
-    lv5.maxHands === 2 && lv5.maxCharges === 2 && lv5.doraDrawBias === false);
+  ok("Lv5: maxHands=2 / maxCharges=2 / 背水無し（完成基準）",
+    lv5.maxHands === 2 && lv5.maxCharges === 2 && lv5.lastStand.length === 0);
   const lv6 = skillRuntimeAbilityParams("lv-dora-pull", 6);
-  ok("Lv6: bias有効 / lookahead=2 / tolerance=0",
-    lv6.doraDrawBias === true && lv6.lookaheadDepth === 2 && lv6.doraTolerance === 0);
+  ok("Lv6: maxCharges=3（1局3めくり＝火柱と崖の深化）", lv6.maxCharges === 3 && lv6.maxHands === 2);
+  const lv7 = skillRuntimeAbilityParams("lv-dora-pull", 7);
+  ok("Lv7: maxHands=3（1ゲーム3局）", lv7.maxHands === 3 && lv7.maxCharges === 3);
+  const lv8 = skillRuntimeAbilityParams("lv-dora-pull", 8);
+  ok("Lv8: 背水の天啓・解禁（25%以下で+1）",
+    lv8.lastStand.length === 1 && lv8.lastStand[0].ratio === 0.25 && lv8.lastStand[0].bonus === 1);
   const lv9 = skillRuntimeAbilityParams("lv-dora-pull", 9);
-  ok("Lv9: lookahead=8（最大）/ tolerance=0", lv9.lookaheadDepth === 8 && lv9.doraTolerance === 0);
+  ok("Lv9: 背水の閾値が50%に拡大", lv9.lastStand.length === 1 && lv9.lastStand[0].ratio === 0.5);
   const lv10 = skillRuntimeAbilityParams("lv-dora-pull", 10);
-  ok("Lv10: lookahead=8 / tolerance=50（同シャンテンならドラを掴む）",
-    lv10.lookaheadDepth === 8 && lv10.doraTolerance === 50);
+  ok("Lv10: 二段の背水（50%で+1・25%で+2）",
+    lv10.lastStand.length === 2 && lv10.lastStand.some((s) => s.ratio === 0.25 && s.bonus === 2));
 }
 
 // ---- 1) Lv5 ≡ フリー対戦：無param生成と Lv5 params 生成が一致 ----
@@ -50,7 +49,7 @@ const draw = (a, handKinds, candidates, doraKinds = []) =>
   const lv5 = ab(5);
   ok("Lv5≡フリー対戦: maxHands=2 で一致", free.maxHands === 2 && lv5.maxHands === 2);
   ok("Lv5≡フリー対戦: maxCharges=2 で一致", free.maxCharges === 2 && lv5.maxCharges === 2);
-  ok("Lv5≡フリー対戦: 超越バイアス無しで一致", free.doraDrawBias === false && lv5.doraDrawBias === false);
+  ok("Lv5≡フリー対戦: 背水無しで一致", free.lastStand.length === 0 && lv5.lastStand.length === 0);
 }
 
 // ---- 2) 局数ゲート（activationCondition × maxHands）----
@@ -71,58 +70,66 @@ const draw = (a, handKinds, candidates, doraKinds = []) =>
   b.activate(); b.resetForHand();
   ok("Lv5: 3局目は発動不可（1ゲーム2局を使い切り）", b.activationCondition(api()) === false);
 
+  // Lv7（3局）: 3局目も発動可、4局目は不可。
+  const c = ab(7);
+  c.activate(); c.resetForHand(); c.activate(); c.resetForHand();
+  ok("Lv7: 3局目も発動可（maxHands=3）", c.activationCondition(api()) === true);
+  c.activate(); c.resetForHand();
+  ok("Lv7: 4局目は発動不可", c.activationCondition(api()) === false);
+
+  // Lv6: 1局に3回めくれる（maxCharges=3）。実ゲーム同様 apply→activate の順で叩く。
+  const d = ab(6);
+  const gameMock = { log() {}, revealKanDoraFrom() {} };
+  const playerMock = { index: 0, character: { name: "x" } };
+  ok("Lv6: charges=3 で開始", d.charges === 3);
+  for (let i = 0; i < 3; i++) { d.apply(gameMock, playerMock, {}); d.activate(); }
+  ok("Lv6: 同一局に3回発動できる（活性化3・チャージ0）", d._activationsThisHand === 3 && d.charges === 0);
+
   // 四開槓ガード: この発動が流局を引き起こすなら塞ぐ（全Lv共通）。
-  const c = ab(10);
+  const e = ab(10);
   ok("四開槓ガード: wouldSuukaikanAbortFrom=true なら発動不可",
-    c.activationCondition(api({ state: { wouldSuukaikanAbortFrom: () => true } })) === false);
+    e.activationCondition(api({ state: { wouldSuukaikanAbortFrom: () => true } })) === false);
 
   // resetForGame で局数カウンタが戻る。
   a.resetForGame();
   ok("Lv1: resetForGame で再び発動可", a.activationCondition(api()) === true);
 }
 
-// ---- 3) 超越帯のツモ偏重（MODIFY_DRAW）----
-// 手13枚: 123m 456m 79m(カンチャン) 1z(浮き) 44p 56s ＝イーシャンテン。
-//   候補A=8m(kind7) → 789m完成→テンパイ（待ち4s/7s＝2種・広い）
-//   候補D=4s(kind21・ドラ) → 456s完成→テンパイ（待ち8m＝1種・狭い）
-// 同シャンテン（どちらもテンパイ）で受けの広さだけが違う＝doraTolerance の検証形。
-const HAND_IISHANTEN = [0, 1, 2, 3, 4, 5, 6, 8, 27, 12, 12, 22, 23];
+// ---- 3) 超越帯＝背水の天啓（lastStandBonus / MODIFY_SCORE 結線） ----
 {
-  // bias 無し（Lv5）は発動局でも介入しない。
-  const a = ab(5); a.activate();
-  ok("Lv5: bias無し＝MODIFY_DRAW は素通し(undefined)",
-    draw(a, HAND_IISHANTEN, [t(7), t(21)], [21]) === undefined);
+  // lastStandBonus 単体（開始点25000）。
+  ok("Lv5: 背水無し＝どんな点でも bonus 0", ab(5).lastStandBonus(winner(1000)) === 0);
+  const a8 = ab(8);
+  ok("Lv8: 6000点(24%)で bonus 1", a8.lastStandBonus(winner(6000)) === 1);
+  ok("Lv8: 7000点(28%)は bonus 0（閾値25%の外）", a8.lastStandBonus(winner(7000)) === 0);
+  const a9 = ab(9);
+  ok("Lv9: 12000点(48%)で bonus 1（閾値50%）", a9.lastStandBonus(winner(12000)) === 1);
+  const a10 = ab(10);
+  ok("Lv10: 12000点(48%)で bonus 1", a10.lastStandBonus(winner(12000)) === 1);
+  ok("Lv10: 6000点(24%)で bonus 2（最深段を採用）", a10.lastStandBonus(winner(6000)) === 2);
+  ok("Lv10: 20000点(80%)は bonus 0", a10.lastStandBonus(winner(20000)) === 0);
+  ok("背水: startingPoints 不明なら安全に 0", a10.lastStandBonus({ points: 100, character: { stats: {} } }) === 0);
 
-  // bias 有りでも未発動局（_usedThisHand=false）は介入しない＝賭けた局にだけ働く。
-  const b = ab(6);
-  ok("Lv6: 未発動局は素通し(undefined)", draw(b, HAND_IISHANTEN, [t(7), t(21)], [21]) === undefined);
-
-  // Lv6（tolerance=0・lookahead2）: 伸びが上の非ドラ(A)を選ぶ＝ドラ(D)には浮気しない。
-  const c = ab(6); c.activate();
-  const pickC = draw(c, HAND_IISHANTEN, [t(21), t(7)], [21]); // 窓2に両方入る並び
-  ok("Lv6: 伸び優先＝広いテンパイへ進む8mを引く（ドラでも狭い4sは選ばない）", pickC && pickC.kind === 7);
-
-  // Lv10（tolerance=50）: 同シャンテンなら受けの広さを捨ててドラを掴む。
-  const d = ab(10); d.activate();
-  const pickD = draw(d, HAND_IISHANTEN, [t(7), t(21)], [21]);
-  ok("Lv10: 同シャンテンならドラ4sを掴む（受け2種→1種を許容）", pickD && pickD.kind === 21);
-
-  // Lv10 でも和了牌は捨てない: テンパイ手 123m456m789m 44p 56s、A=7s(24)=ツモ和了 / D=9p(17)=ドラ。
-  // 和了(-1シャンテン)とテンパイ(0)は 100点差 ＞ tolerance50 ＝シャンテンをまたぐ浮気はしない。
-  const HAND_TENPAI = [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 12, 22, 23];
-  const e = ab(10); e.activate();
-  const pickE = draw(e, HAND_TENPAI, [t(24), t(17)], [17]);
-  ok("Lv10: 和了牌7sは何があっても見逃さない（ドラ9pに浮気しない）", pickE && pickE.kind === 24);
-
-  // 赤5はドラ扱い: 伸びが同点（どちらも手を進めない）なら赤5を掴む（Lv6 tolerance=0 でも同点は掴む）。
-  const f = ab(6); f.activate();
-  const pickF = draw(f, HAND_IISHANTEN, [t(28), t(13, true)], []); // 2z vs 赤5p（どちらも浮き牌）
-  ok("Lv6: 伸び同点なら赤5を掴む（red フラグはドラ扱い）", pickF && pickF.kind === 13 && pickF.red === true);
-
-  // lookahead 窓: Lv6（窓2）は3枚目以降の候補を見ない。
-  const g = ab(6); g.activate();
-  const pickG = draw(g, HAND_IISHANTEN, [t(28), t(29), t(7)], []); // 有効牌8mは窓外
-  ok("Lv6: 窓2の外にある8mは見えない（窓内の先頭を返す）", pickG === undefined || pickG.kind !== 7);
+  // MODIFY_SCORE 結線: 張った局（activations>0）の和了で「めくり回数＋背水」が確定ドラとして乗る。
+  const result = () => ({ valid: true, isYakuman: false, dora: 0, totalHan: 2, fu: 30, ron: 2000, total: 2000 });
+  const score = (a, w, r) => a[Hooks.MODIFY_SCORE]({ winner: w }, api(), r);
+  {
+    const a = ab(10);
+    a._activationsThisHand = 1;
+    const out = score(a, winner(6000), result());
+    ok("Lv10: めくり1＋背水2＝確定ドラ3が乗る（totalHan 2→5）", out && out.totalHan === 5 && out.dora === 3);
+    const b = ab(10);
+    b._activationsThisHand = 2;
+    const out2 = score(b, winner(20000), result());
+    ok("Lv10: 背水圏外はめくり回数ぶんのみ（totalHan 2→4）", out2 && out2.totalHan === 4);
+    // 張っていない局（activations=0）は背水があっても素通し＝発動した局限定。
+    const c = ab(10);
+    ok("Lv10: 未発動局は背水があっても素通し(undefined)", score(c, winner(6000), result()) === undefined);
+    // 役満は対象外（既存仕様の維持）。
+    const d = ab(10);
+    d._activationsThisHand = 1;
+    ok("Lv10: 役満は素通し(undefined)", score(d, winner(6000), { valid: true, isYakuman: true, totalHan: 13, fu: 30, total: 32000 }) === undefined);
+  }
 }
 
 console.log(fails === 0 ? "\nALL PASS" : `\n${fails} FAILURE(S)`);

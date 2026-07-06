@@ -348,8 +348,8 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
   ok("ドラニエル: ep20読了で技 Lv10（ドラを注ぐ極み）", mentorSkillLevel(dprof("mentor-doranie-bond-20"), "doranie") === 10);
   // 師匠導線：ピッカーに出るための2条件（シナリオ＋能力テンプレ）が両方立っている
   ok("ドラニエル: templatesForMentor に1件以上（tmpl-dora-pull 共有）", templatesForMentor("doranie").length >= 1);
-  ok("ドラニエル: 基準帯(Lv5)は山読み無し・超越帯(Lv6)で doraDrawBias が宿る",
-    skillRuntimeAbilityParams("lv-dora-pull", 5).doraDrawBias === false && skillRuntimeAbilityParams("lv-dora-pull", 6).doraDrawBias === true);
+  ok("ドラニエル: 基準帯(Lv5)は背水無し・Lv8で「背水の天啓」（lastStand）が解禁",
+    skillRuntimeAbilityParams("lv-dora-pull", 5).lastStand.length === 0 && skillRuntimeAbilityParams("lv-dora-pull", 8).lastStand.length > 0);
 }
 
 // ---- ルクス・ゼロ編：結線データ整合の単体検証（ルイナ/ドラニエル同型） ----

@@ -203,9 +203,10 @@ export const MENTOR_SKILL_TRACK = {
     { scenarioId: "mentor-kuidoshi-bond-19", level: 9 },  // 決勝＝2枚目の盾が3倍満を0に（進化）
     { scenarioId: "mentor-kuidoshi-bond-20", level: 10 }, // 天衣無縫＝守りと攻めに継ぎ目なし
   ],
-  // ドラニエル＝超越帯（lv-dora-pull Lv6〜10）＝「独りの大博打」から「共闘の大博打」へ。
-  // 覇道編＝紙HPの反転アーク（二人なら飛ばぬ→三人なら飛ばぬ→ドラを弟子に注ぐ）と同期。
-  // 超越帯＝相棒・ルクス・ゼロの山読みが宿る（賭けた局のツモ偏重・ドラ手繰り。本設計済＝test/dorapull.mjs）。
+  // ドラニエル＝超越帯（lv-dora-pull Lv6〜10）＝能力自身が極まる型（相棒 graft なし）。
+  // 前半=賭けの深化（1局3めくり・3局）、後半=**「背水の天啓」**＝持ち点が薄いほど確定ドラが増える
+  // （Lv8=25%以下+1→Lv9=50%以下→Lv10=+2。test/dorapull.mjs）＝紙HPの弱点が火力に反転。
+  // 覇道編＝紙HPの反転アーク（二人なら飛ばぬ→三人なら飛ばぬ＝飛び際こそ見せ場）と同期。
   doranie: [
     { scenarioId: "mentor-doranie-bond-16", level: 6 },  // 二人なら飛ばぬ＝鏡車輪・共闘の実り
     { scenarioId: "mentor-doranie-bond-17", level: 7 },  // トリオ結成＝天の宝×天使×機械

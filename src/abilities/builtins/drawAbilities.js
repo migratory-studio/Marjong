@@ -387,22 +387,20 @@ export class ChunchanAbility extends Ability {
 // 「発動した局数」を数え、2局を超えたら新しい局では発動できないようにする。
 //
 // params（skillLevelMaster lv-dora-pull の runtimeParams・§10.5 Phase 7）:
-//   maxHands       … 1ゲームに発動できる局数（既定2＝フリー対戦のドラニエル）
-//   doraDrawBias   … 超越帯（Lv6+）: 発動した局、ツモが有利牌へ寄り、ドラ/赤5を優先して掴む
-//                    ＝相棒・ルクス・ゼロの山読みが宿る（skill-transcendence-policy・凌雲式）
-//   lookaheadDepth … ツモ偏重の走査窓（候補窓 peekLive(8) が天井＝8で最大）
-//   doraTolerance  … ドラ優先の許容幅。handPotential は「-シャンテン×100＋受けの広さ(≤13)」なので
-//                    0＝伸び同点のときだけドラを掴む ／ 50＝同シャンテンなら受けの広さを捨ててでも掴む
-//                    （100未満に収めることで、シャンテンが進む牌・和了牌を捨てることは決してない）
-//   maxCharges / cooldown … abilityDef を上書き（maxChargesOverride 由来＝1局のめくり回数）
+//   maxHands  … 1ゲームに発動できる局数（既定2＝フリー対戦のドラニエル）
+//   lastStand … 超越帯（Lv8+）:「背水の天啓」＝張った（発動した）局の和了時、自分の持ち点が
+//               開始点の ratio 以下なら確定ドラを bonus 枚追加する段階表。例
+//               [{ ratio: 0.5, bonus: 1 }, { ratio: 0.25, bonus: 2 }]＝半分以下で+1・崖っぷちで+2
+//               （最も深い段の bonus を採用）。紙HP＝グラスキャノンの弱点そのものが火力に反転する
+//               ＝「脆さ込みで賭けを楽しむ」の完成形（skill-transcendence-policy＝能力自身が極まる型）。
+//   maxCharges / cooldown … abilityDef を上書き（maxChargesOverride 由来＝1局のめくり回数。
+//               超越帯 Lv6 で 3 へ＝確定ドラ3の火柱と、四開槓の崖が同時に近づく諸刃）
 const DORA_PULL_MAX_HANDS = 2;
 export class DoraPullAbility extends Ability {
   constructor(params = {}) {
     super({ ...abilityDef("dora-pull"), ...params });
     this.maxHands = params.maxHands ?? DORA_PULL_MAX_HANDS;
-    this.doraDrawBias = params.doraDrawBias ?? false;
-    this.lookaheadDepth = params.lookaheadDepth ?? 8;
-    this.doraTolerance = params.doraTolerance ?? 0;
+    this.lastStand = Array.isArray(params.lastStand) ? params.lastStand : [];
     this._handsUsed = 0;          // この能力を使った局数（ゲーム通算）
     this._usedThisHand = false;   // 今の局で1回でも発動したか
     this._activationsThisHand = 0; // 今の局の発動回数（＝後付けする確定ドラ枚数）
@@ -455,56 +453,38 @@ export class DoraPullAbility extends Ability {
     }
     return ok;
   }
-  // 超越帯（doraDrawBias・Lv6+）: 発動した局のあいだ、ツモが有利牌へ寄る。
-  // 伸び（handPotential）が最良の候補を基本としつつ、最良から doraTolerance 以内の
-  // ドラ/赤5があればそちらを掴む＝「暴いたドラを、自分の手へ手繰り寄せる」。
-  // 賭けた局にだけ働く（常時ではない）＝張った博打に、相棒・ルクスの山読みが乗る。
-  [Hooks.MODIFY_DRAW](ctx, api) {
-    if (!this.doraDrawBias || !this._usedThisHand) return undefined;
-    const player = ctx.player;
-    const baseCounts = tilesToCounts(player.hand);
-    const doraKinds = new Set(ctx.wall?.doraKinds?.() ?? []);
-    const isDora = (t) => !!t && (t.red || doraKinds.has(t.kind));
-    // 初期値は -Infinity：手が進まない候補しか無い局面（全候補が負スコア）でも
-    // ドラ/赤5を拾えるようにする（lucky-draw の -1 初期値だと負値スコアを更新できない）。
-    let best = ctx.defaultTile;
-    let bestScore = -Infinity;
-    let bestDora = null;
-    let bestDoraScore = -Infinity;
-    for (const tile of ctx.candidates.slice(0, this.lookaheadDepth)) {
-      baseCounts[tile.kind]++;
-      const score = handPotential(baseCounts, player.melds.length);
-      baseCounts[tile.kind]--;
-      if (score > bestScore) {
-        bestScore = score;
-        best = tile;
-      }
-      if (isDora(tile) && score > bestDoraScore) {
-        bestDoraScore = score;
-        bestDora = tile;
-      }
+  // 超越帯（lastStand・Lv8+）:「背水の天啓」の追加確定ドラ枚数。張った局の和了時、
+  // 自分の持ち点が開始点の ratio 以下なら bonus を加える（最も深い段＝最大 bonus を採用）。
+  lastStandBonus(winner) {
+    if (!this.lastStand.length || !winner) return 0;
+    const start = winner.character?.stats?.startingPoints;
+    if (!start || !(start > 0)) return 0;
+    const ratio = (winner.points ?? start) / start;
+    let bonus = 0;
+    for (const step of this.lastStand) {
+      if (ratio <= step.ratio) bonus = Math.max(bonus, step.bonus);
     }
-    if (bestDora && bestDoraScore >= bestScore - this.doraTolerance) best = bestDora;
-    if (best && best !== ctx.defaultTile) {
-      api.log(isDora(best) ? `暴いたドラを手繰り寄せた` : `有利牌を引き寄せた`);
-    }
-    return best;
+    return bonus;
   }
 
   // 和了時、その局の発動回数ぶんの確定ドラ（飜）を自分の手にだけ後付けする。
+  // 超越帯は「背水の天啓」（lastStandBonus）ぶんをさらに上乗せ＝紙の点棒が火力に反転する。
   // 役満は飜計算の対象外なので素通しする（確定ドラは役満点に影響しない）。
   [Hooks.MODIFY_SCORE](ctx, api, result) {
     // 即時効果型ゆえ active は発動直後に下ろす（isActive では判定できない）。確定ドラの
     // 有無は「その局の発動回数」で判定する。発動回数=後付けする確定ドラ枚数。
     if (this._activationsThisHand <= 0 || !result || !result.valid) return undefined;
     if (result.isYakuman) return undefined;
-    const extra = this._activationsThisHand;
+    const stand = this.lastStandBonus(ctx.winner);
+    const extra = this._activationsThisHand + stand;
     const out = recomputeWithExtraDora(result, extra, {
       isDealer: ctx.winner.isDealer,
       tsumo: result.tsumoEach != null,
       honba: api.state.honba || 0,
     });
-    api.log(`天啓ドラ寄せ：確定ドラ${extra}（手の打点に上乗せ）`);
+    api.log(stand > 0
+      ? `天啓ドラ寄せ：確定ドラ${extra}（背水の天啓+${stand}——紙一重こそ、最高じゃ）`
+      : `天啓ドラ寄せ：確定ドラ${extra}（手の打点に上乗せ）`);
     return out;
   }
 }

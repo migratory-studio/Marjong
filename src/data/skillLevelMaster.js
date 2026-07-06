@@ -299,44 +299,47 @@ const MUDDY_LOTUS_LEVELS = [
 // 基準帯＝「賭けの完成」: 発動できる局数 maxHands が 1→2、1局のめくり回数 maxCharges が 1→2 へ
 // （Lv5＝フリー対戦のドラニエル＝DoraPullAbility 既定値と完全一致：1局2回×1ゲーム2局・
 //   めくった回数分の確定ドラ後付け）。めくった新ドラは全員に効く諸刃＝この縛りは全Lv不変。
-// 超越帯 Lv6〜10 ＝「暴いたドラを、手繰り寄せる」: 相棒・ルクス・ゼロの山読みが宿り（skill-transcendence-policy・
-// 凌雲式＝哲学を宿す）、発動した局のツモが有利牌へ寄る。伸びが並ぶならドラ/赤5を掴み、Lv10 では
-// 同シャンテンなら受けの広さを捨ててでもドラを掴む——ep20『ドラはぜーんぶ、ぬしのものじゃ！』の
-// 前段＝「ドラはぜーんぶ、わらわのものじゃ」がメカとして顕現する。物語（覇道編 ep14〜20）とシンクロ。
-// dangerTier（守り）は入れない＝紙の点棒は流儀ごと変わらない（脆さ込みで賭けを楽しむ）。
+// 超越帯 Lv6〜10 ＝「能力自身が極まる」型（相棒 graft はしない）：
+//   前半（Lv6〜7）＝賭けの深化。1局のめくりが3枚に（確定ドラ3の火柱と、四開槓の崖が同時に近づく諸刃）、
+//   発動できる局が3局に。
+//   後半（Lv8〜10）＝**「背水の天啓」**＝張った局の和了時、自分の持ち点が薄いほど確定ドラが増える
+//   ——紙HP＝グラスキャノンの弱点そのものが火力に反転する。「脆さ込みで賭けを楽しむ」流儀の完成形で、
+//   覇道編の紙HP反転アーク（二人なら飛ばぬ→三人なら飛ばぬ＝飛び際こそ見せ場）とシンクロ。
+//   Lv8=開始点の25%以下で+1 → Lv9=50%以下に拡大 → Lv10=50%以下+1・25%以下+2（紙一重こそ、最高じゃ）。
+// dangerTier（守り）は入れない＝紙の点棒は流儀ごと変わらない（守らず、燃やす）。
 // runtimeParams の契約（DoraPullAbility のコンストラクタと対応）:
-//   maxHands / doraDrawBias / lookaheadDepth / doraTolerance（0=伸び同点のみ・50=同シャンテンなら掴む）
+//   maxHands / lastStand（[{ratio, bonus}] 持ち点比の段階表・最深段を採用）
 const DORA_PULL_LEVELS = [
-  { skillLevel: 1,  soulCost: 0,    runtimeParams: { maxHands: 1, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 1, cooldownOverride: null,
+  { skillLevel: 1,  soulCost: 0,    runtimeParams: { maxHands: 1, lastStand: [] }, maxChargesOverride: 1, cooldownOverride: null,
     effectDescription: "発動で新ドラ表示牌を1枚めくり、和了時に確定ドラ1を上乗せ。1ゲーム1局×1回。めくったドラは全員に効く諸刃。",
     unlockDescription: "習得。新ドラを1枚暴き、自分の和了にだけ確定ドラを乗せる賭けの芽生え。" },
-  { skillLevel: 2,  soulCost: 400,  runtimeParams: { maxHands: 2, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 1, cooldownOverride: null,
+  { skillLevel: 2,  soulCost: 400,  runtimeParams: { maxHands: 2, lastStand: [] }, maxChargesOverride: 1, cooldownOverride: null,
     effectDescription: "新ドラめくり（確定ドラ1）を1ゲーム2局で張れる。",
     unlockDescription: "別の局でも張れるようになる（1ゲーム2局）。" },
-  { skillLevel: 3,  soulCost: 800,  runtimeParams: { maxHands: 2, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+  { skillLevel: 3,  soulCost: 800,  runtimeParams: { maxHands: 2, lastStand: [] }, maxChargesOverride: 2, cooldownOverride: null,
     effectDescription: "同じ局に2枚目をめくれる（確定ドラ2）。1ゲーム2局。めくり過ぎ（場計4枚）は四開槓で流局する諸刃。",
     unlockDescription: "同じ局でもう1枚めくれる——確定ドラ2の火柱。ただし場が荒れ、四開槓の危険も近づく。" },
-  { skillLevel: 4,  soulCost: 1400, runtimeParams: { maxHands: 2, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+  { skillLevel: 4,  soulCost: 1400, runtimeParams: { maxHands: 2, lastStand: [] }, maxChargesOverride: 2, cooldownOverride: null,
     effectDescription: "1局2回×1ゲーム2局。めくりどころの押し引きが冴えてくる。",
     unlockDescription: "どの局に張るか、どこで止めるか——賭けどころの見極めが据わる。" },
-  { skillLevel: 5,  soulCost: 2200, runtimeParams: { maxHands: 2, doraDrawBias: false, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
+  { skillLevel: 5,  soulCost: 2200, runtimeParams: { maxHands: 2, lastStand: [] }, maxChargesOverride: 2, cooldownOverride: null,
     effectDescription: "天啓ドラ寄せ・完成。1局2回×1ゲーム2局、めくった回数分の確定ドラ（フリー対戦のドラニエルと同等）。",
     unlockDescription: "完成基準。最強の一発と紙の点棒——師匠・ドラニエルと同等の大博打。" },
-  { skillLevel: 6,  soulCost: 2800, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 2, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
-    effectDescription: "賭けた局、ツモが有利牌へ寄り、伸びが並べばドラ/赤5を掴む（山読み・先読み2候補）。",
-    unlockDescription: "超越域へ。張った博打に、相棒・ルクスの山読みが宿る——暴いたドラが、手へ寄り始める。" },
-  { skillLevel: 7,  soulCost: 3600, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 4, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
-    effectDescription: "賭けた局のツモ偏重（先読み4候補・伸びが並べばドラ/赤5優先）。",
-    unlockDescription: "先読みが4候補に。手繰りの再現性が上がる。" },
-  { skillLevel: 8,  soulCost: 4600, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 6, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
-    effectDescription: "賭けた局のツモ偏重（先読み6候補・伸びが並べばドラ/赤5優先）。",
-    unlockDescription: "先読みが6候補に。暴いたドラが、逃げなくなる。" },
-  { skillLevel: 9,  soulCost: 5800, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 8, doraTolerance: 0 }, maxChargesOverride: 2, cooldownOverride: null,
-    effectDescription: "賭けた局のツモ偏重（先読み8候補＝最大・伸びが並べばドラ/赤5優先）。",
-    unlockDescription: "山読みが機械の精度に届く——誤差は、消えた。先読み8候補の完全域。" },
-  { skillLevel: 10, soulCost: 7200, runtimeParams: { maxHands: 2, doraDrawBias: true, lookaheadDepth: 8, doraTolerance: 50 }, maxChargesOverride: 2, cooldownOverride: null,
-    effectDescription: "賭けた局、同シャンテンなら受けの広さを捨ててでもドラ/赤5を掴む（先読み8候補）——一撃が決定的になる。",
-    unlockDescription: "極み。手の進みが同じなら、保険を捨ててでもドラを掴む——『ドラはぜーんぶ、わらわのものじゃ！』が現実になる。" },
+  { skillLevel: 6,  soulCost: 2800, runtimeParams: { maxHands: 2, lastStand: [] }, maxChargesOverride: 3, cooldownOverride: null,
+    effectDescription: "同じ局に3枚目をめくれる（確定ドラ3の火柱）。1ゲーム2局。四開槓の崖は、さらに近い。",
+    unlockDescription: "超越域へ。3枚目の天啓——火柱は高く、崖は近く。賭けが、深くなる。" },
+  { skillLevel: 7,  soulCost: 3600, runtimeParams: { maxHands: 3, lastStand: [] }, maxChargesOverride: 3, cooldownOverride: null,
+    effectDescription: "1局3回×1ゲーム3局——張れる博打が増える。",
+    unlockDescription: "張れる局が3局に。下界の卓は、賭け場だらけじゃ。" },
+  { skillLevel: 8,  soulCost: 4600, runtimeParams: { maxHands: 3, lastStand: [{ ratio: 0.25, bonus: 1 }] }, maxChargesOverride: 3, cooldownOverride: null,
+    effectDescription: "背水の天啓・解禁——張った局の和了時、持ち点が開始点の25%以下なら確定ドラ+1。",
+    unlockDescription: "飛び際に、天啓が濃くなる——紙の点棒が、初めて武器になる。" },
+  { skillLevel: 9,  soulCost: 5800, runtimeParams: { maxHands: 3, lastStand: [{ ratio: 0.5, bonus: 1 }] }, maxChargesOverride: 3, cooldownOverride: null,
+    effectDescription: "背水の天啓が広がる——持ち点が開始点の半分以下なら確定ドラ+1。",
+    unlockDescription: "崖は、半分から始まる。追い詰められるほど、賭けは面白くなる。" },
+  { skillLevel: 10, soulCost: 7200, runtimeParams: { maxHands: 3, lastStand: [{ ratio: 0.5, bonus: 1 }, { ratio: 0.25, bonus: 2 }] }, maxChargesOverride: 3, cooldownOverride: null,
+    effectDescription: "背水の極み——半分以下で確定ドラ+1、25%以下なら+2。飛び際の一撃が、最強になる。",
+    unlockDescription: "極み。紙一重こそ、最高じゃ——脆さがそのまま、伝説の火柱になる。" },
 ];
 
 // ゼロ・リサーチ（ルクス・ゼロ・lv-zero-search）— 山読み確定型の本設計テーブル（基準帯 Lv1〜5＋超越帯 Lv6〜10）。
