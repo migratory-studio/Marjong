@@ -339,8 +339,52 @@ const DORA_PULL_LEVELS = [
     unlockDescription: "極み。手の進みが同じなら、保険を捨ててでもドラを掴む——『ドラはぜーんぶ、わらわのものじゃ！』が現実になる。" },
 ];
 
+// ゼロ・リサーチ（ルクス・ゼロ・lv-zero-search）— 山読み確定型の本設計テーブル（基準帯 Lv1〜5＋超越帯 Lv6〜10）。
+// 基準帯＝「確定の完成」: 発動できる局数 maxHands が 1→2、確保候補の提示数 candidateCount が 1→2 へ
+// （Lv5＝フリー対戦のルクス・ゼロ＝ZeroSearchAbility 既定値と完全一致：1シャンテンから有効牌トップ2を
+//   提示→次のツモで確保・1局1回×1ゲーム2局。山に有効牌が無ければグレーアウト＝読みの材料、は全Lv不変）。
+// 超越帯 Lv6〜10 ＝「運の隣に立つ」: 相棒・賭羽ルイナの運命が宿り（skill-transcendence-policy＝
+// トリオ相方から graft・gamble-bet/dora-pull と同系のツモ偏重）、発動した局の残り、確定の一枚のあとも
+// ツモが有利牌へ寄る。Lv10＝同点ならドラ/赤5を引き寄せる＝『いい目だ』が機械に宿る——覇道編
+// 『揺らぎは、変数』（ep16）→『運の隣に立つ』（ep19）→『誤差も、悪くない』（ep20）とシンクロ。
+// runtimeParams の契約（ZeroSearchAbility のコンストラクタと対応）:
+//   maxHands / candidateCount / drawBias / lookaheadDepth / doraPreference
+const ZERO_SEARCH_LEVELS = [
+  { skillLevel: 1,  soulCost: 0,    runtimeParams: { maxHands: 1, candidateCount: 1, drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "1シャンテンで発動、山に生きる有効牌を1つ提示し、次のツモで確保＝聴牌を確定。1ゲーム1局。山に無ければ発動不可（＝出切っている、という読みの情報）。",
+    unlockDescription: "習得。山を読み、聴牌への最後の一枚を確定させる——イーシャンテン地獄を断つ芽生え。" },
+  { skillLevel: 2,  soulCost: 400,  runtimeParams: { maxHands: 2, candidateCount: 1, drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "山読み確保（候補1）を1ゲーム2局で使える。",
+    unlockDescription: "別の局でも読める（1ゲーム2局）。" },
+  { skillLevel: 3,  soulCost: 800,  runtimeParams: { maxHands: 2, candidateCount: 2, drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "確保候補が2つに——受けの広さを比べて選べる。1ゲーム2局。",
+    unlockDescription: "候補が2つ提示される。どちらの聴牌を取るか、選べるようになる。" },
+  { skillLevel: 4,  soulCost: 1400, runtimeParams: { maxHands: 2, candidateCount: 2, drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "候補2×1ゲーム2局。読みの前提となる枚数勘定が体に馴染む。",
+    unlockDescription: "河を数える手つきが安定する。読みの精度が据わる。" },
+  { skillLevel: 5,  soulCost: 2200, runtimeParams: { maxHands: 2, candidateCount: 2, drawBias: false, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "ゼロ・リサーチ・完成。候補トップ2×1ゲーム2局（フリー対戦のルクス・ゼロと同等）。",
+    unlockDescription: "完成基準。誤差ゼロの山読み——師匠・ルクス・ゼロと同等の確定力。" },
+  { skillLevel: 6,  soulCost: 2800, runtimeParams: { maxHands: 2, candidateCount: 2, drawBias: true, lookaheadDepth: 2, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "確保に加え、発動した局の残り、ツモが有利牌へ寄る（運の追い風・先読み2候補）。",
+    unlockDescription: "超越域へ。確定の一枚のあとに、追い風が吹き始める——運の隣に立つ、最初の一歩。" },
+  { skillLevel: 7,  soulCost: 3600, runtimeParams: { maxHands: 2, candidateCount: 2, drawBias: true, lookaheadDepth: 4, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "発動した局のツモ偏重（先読み4候補）。",
+    unlockDescription: "先読みが4候補に。追い風の再現性が上がる。" },
+  { skillLevel: 8,  soulCost: 4600, runtimeParams: { maxHands: 2, candidateCount: 2, drawBias: true, lookaheadDepth: 6, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "発動した局のツモ偏重（先読み6候補）。",
+    unlockDescription: "先読みが6候補に。計算と運が、噛み合い始める。" },
+  { skillLevel: 9,  soulCost: 5800, runtimeParams: { maxHands: 2, candidateCount: 2, drawBias: true, lookaheadDepth: 8, doraPreference: false }, maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "発動した局のツモ偏重（先読み8候補＝最大）。",
+    unlockDescription: "追い風が読みの全域に届く——運の隣に、立った。" },
+  { skillLevel: 10, soulCost: 7200, runtimeParams: { maxHands: 2, candidateCount: 2, drawBias: true, lookaheadDepth: 8, doraPreference: true },  maxChargesOverride: null, cooldownOverride: null,
+    effectDescription: "発動した局、ツモが有利牌へ寄り、同点ならドラ/赤5を引き寄せる（先読み8候補）——誤差も、悪くない。",
+    unlockDescription: "極み。同じ伸びなら、ドラ・赤5まで寄ってくる——機械に『いい目だ』が宿る。誤差も、悪くない。" },
+];
+
 export const SKILL_LEVEL_MASTER = {
   "lv-lucky-draw": LUCKY_DRAW_LEVELS,
+  "lv-zero-search": ZERO_SEARCH_LEVELS,
   "lv-muddy-lotus": MUDDY_LOTUS_LEVELS,
   "lv-gamble-bet": GAMBLE_BET_LEVELS,
   "lv-amber-shield": AMBER_SHIELD_LEVELS,

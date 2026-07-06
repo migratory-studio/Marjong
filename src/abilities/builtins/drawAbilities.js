@@ -175,10 +175,23 @@ export function zeroSearchEffectiveKinds(counts, numMelds) {
 // 走査し、聴牌へ進む有効牌のうち「聴牌後の待ちが広い順トップ2」を候補にする。プレイヤー
 // （CPU/フォールバックは自動）が1つ選ぶと、次のツモで確実にその牌を手繰り寄せて聴牌を
 // 確定させる。山に有効牌が無ければ発動できない（＝場に出切っている合図＝読みの材料）。
+//
+// params（skillLevelMaster lv-zero-search の runtimeParams・§10.5 Phase 7）:
+//   maxHands       … 1ゲームに発動できる局数（既定2＝フリー対戦のルクス・ゼロ）
+//   candidateCount … 確保候補として提示する有効牌の数（既定2＝トップ2）
+//   drawBias       … 超越帯（Lv6+）: 発動した局の残り、ツモが有利牌へ寄る
+//                    ＝相棒・賭羽ルイナの運命が宿る（skill-transcendence-policy）＝「運の隣に立つ」
+//   lookaheadDepth … ツモ偏重の走査窓（候補窓 peekLive(8) が天井＝8で最大）
+//   doraPreference … 伸びが同点ならドラ/赤5を引き寄せる（Lv10＝「いい目だ」が宿る）
 const ZERO_SEARCH_MAX_HANDS = 2;
 export class ZeroSearchAbility extends Ability {
   constructor(params = {}) {
-    super(abilityDef("zero-search"));
+    super({ ...abilityDef("zero-search"), ...params });
+    this.maxHands = params.maxHands ?? ZERO_SEARCH_MAX_HANDS;
+    this.candidateCount = params.candidateCount ?? 2;
+    this.drawBias = params.drawBias ?? false;
+    this.lookaheadDepth = params.lookaheadDepth ?? 8;
+    this.doraPreference = params.doraPreference ?? false;
     this._handsUsed = 0;        // この能力を使った局数（ゲーム通算）
     this._usedThisHand = false; // 今の局で既に発動したか
     this._targetKind = params.targetKind ?? null; // 確保する有効牌（apply で確定）
@@ -213,12 +226,12 @@ export class ZeroSearchAbility extends Ability {
     const hasRed = (k) => liveTiles.some((t) => t.kind === k && t.red);
     const isDora = (k) => doraKinds.has(k) || hasRed(k);
     live.sort((a, b) => b.breadth - a.breadth || (isDora(b.kind) - isDora(a.kind)) || a.kind - b.kind);
-    return live.slice(0, 2).map((e) => e.kind);
+    return live.slice(0, this.candidateCount).map((e) => e.kind);
   }
 
   // 1シャンテンの自手番でのみ発動可・回数/使用局数の上限を満たし、かつ生有効牌が在る。
   activationCondition(api) {
-    if (!(this._usedThisHand || this._handsUsed < ZERO_SEARCH_MAX_HANDS)) return false;
+    if (!(this._usedThisHand || this._handsUsed < this.maxHands)) return false;
     const p = api.me;
     if (shanten(p.counts(), p.numMeldSets()) !== 1) return false;
     return this.liveCandidates(api).length > 0;
@@ -229,7 +242,7 @@ export class ZeroSearchAbility extends Ability {
     const p = api.me;
     const is1shanten = shanten(p.counts(), p.numMeldSets()) === 1;
     const visible =
-      this.ready && this._handsUsed < ZERO_SEARCH_MAX_HANDS && is1shanten && !this.active;
+      this.ready && this._handsUsed < this.maxHands && is1shanten && !this.active;
     const candidates = visible ? this.liveCandidates(api) : [];
     return { visible, candidates };
   }
@@ -250,20 +263,43 @@ export class ZeroSearchAbility extends Ability {
   }
 
   [Hooks.MODIFY_DRAW](ctx, api) {
-    if (!this.active) return undefined;
-    // 発動した次のツモ1回で解決する（命中・失敗どちらでも使い切り）。
-    this.active = false;
-    const k = this._targetKind;
-    if (k == null) return undefined;
-    // 全山（王牌除く）から targetKind に一致する最初の牌を手繰り寄せる。
-    const all = ctx.wall.peekLive(ctx.wall.liveRemaining);
-    const hit = all.find((t) => t.kind === k);
-    if (hit) {
-      api.log(`「捕捉——確保する」${kindLabel(k)}を山から手繰り寄せた（聴牌）`);
-      return hit;
+    if (this.active) {
+      // 発動した次のツモ1回で解決する（命中・失敗どちらでも使い切り）。
+      this.active = false;
+      const k = this._targetKind;
+      if (k != null) {
+        // 全山（王牌除く）から targetKind に一致する最初の牌を手繰り寄せる。
+        const all = ctx.wall.peekLive(ctx.wall.liveRemaining);
+        const hit = all.find((t) => t.kind === k);
+        if (hit) {
+          api.log(`「捕捉——確保する」${kindLabel(k)}を山から手繰り寄せた（聴牌）`);
+          return hit;
+        }
+      }
+      // 万一山から消えていれば通常ツモ（フォールバック）→超越帯の偏重には落とす。
     }
-    // 万一山から消えていれば通常ツモ（フォールバック）。
-    return undefined;
+    // 超越帯（drawBias・Lv6+）: 発動した局の残り、ツモが有利牌へ寄る＝確定の一枚のあとも
+    // 運の追い風が続く（相棒・ルイナの運命が宿る＝「運の隣に立つ」）。発動した局にだけ働く。
+    if (!this.drawBias || !this._usedThisHand) return undefined;
+    const player = ctx.player;
+    const baseCounts = tilesToCounts(player.hand);
+    const doraKinds = this.doraPreference ? new Set(ctx.wall?.doraKinds?.() ?? []) : null;
+    const isDora = (t) => !!t && (t.red || doraKinds.has(t.kind));
+    let best = ctx.defaultTile;
+    let bestScore = -Infinity;
+    for (const tile of ctx.candidates.slice(0, this.lookaheadDepth)) {
+      baseCounts[tile.kind]++;
+      const score = handPotential(baseCounts, player.melds.length);
+      baseCounts[tile.kind]--;
+      if (score > bestScore) {
+        bestScore = score;
+        best = tile;
+      } else if (doraKinds && score === bestScore && isDora(tile) && !isDora(best)) {
+        best = tile; // 伸びが同点ならドラ/赤5を引き寄せる（「いい目だ」が宿る）
+      }
+    }
+    if (best && best !== ctx.defaultTile) api.log(`有利牌を引き寄せた`);
+    return best;
   }
 }
 

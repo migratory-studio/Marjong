@@ -145,5 +145,79 @@ function makeApi(handKinds, numMelds, wall) {
   ok("リセット後は再び発動可", ab.activationCondition(makeApi(handKinds, 0, wall)) === true);
 }
 
+// ---- 4. Phase7 結線（lv-zero-search）: 基準帯テーブル / Lv5≡フリー対戦 / 超越帯のツモ偏重 ----
+{
+  const { skillRuntimeAbilityParams } = await import("../src/data/skillLevelMaster.js");
+  const ab = (lv) => new ZeroSearchAbility(skillRuntimeAbilityParams("lv-zero-search", lv));
+
+  // テーブル期待値。
+  const lv1 = skillRuntimeAbilityParams("lv-zero-search", 1);
+  ok("Lv1: maxHands=1 / candidateCount=1 / bias無し",
+    lv1.maxHands === 1 && lv1.candidateCount === 1 && lv1.drawBias === false);
+  const lv3 = skillRuntimeAbilityParams("lv-zero-search", 3);
+  ok("Lv3: maxHands=2 / candidateCount=2（現行数値に到達）", lv3.maxHands === 2 && lv3.candidateCount === 2);
+  const lv6 = skillRuntimeAbilityParams("lv-zero-search", 6);
+  ok("Lv6: bias有効 / lookahead=2", lv6.drawBias === true && lv6.lookaheadDepth === 2);
+  const lv10 = skillRuntimeAbilityParams("lv-zero-search", 10);
+  ok("Lv10: lookahead=8 / doraPreference=true（『いい目だ』が宿る）",
+    lv10.lookaheadDepth === 8 && lv10.doraPreference === true);
+
+  // Lv5 ≡ フリー対戦（無param生成と一致）。
+  const free = new ZeroSearchAbility();
+  const l5 = ab(5);
+  ok("Lv5≡フリー対戦: maxHands=2 / candidateCount=2 / bias無しで一致",
+    free.maxHands === 2 && l5.maxHands === 2 && free.candidateCount === 2 && l5.candidateCount === 2 &&
+    free.drawBias === false && l5.drawBias === false);
+
+  // candidateCount=1（Lv1）: 提示候補が1つに切り詰められる。
+  const handKinds = [M(1), M(2), M(3), M(4), M(5), M(6), M(7), M(8), M(9), P(5), S(1), S(3), S(5), S(7)];
+  {
+    const wall = mockWall([P(5), S(2), S(4), S(6)]);
+    ok("Lv1: liveCandidates は候補1つまで", ab(1).liveCandidates(makeApi(handKinds, 0, wall)).length === 1);
+  }
+
+  // 超越帯のツモ偏重（発動した局の残りだけ働く）。
+  // bias 用 ctx: player.hand（tile配列）/ melds / candidates / defaultTile / wall。
+  const biasCtx = (candKinds, doraKinds = []) => {
+    const hand = handKinds.map((k) => tile(k));
+    const candidates = candKinds.map(([k, red]) => tile(k, red));
+    return { player: { hand, melds: [] }, wall: mockWall([], doraKinds), candidates, defaultTile: candidates[0] };
+  };
+  const noop = { me: {}, state: {}, log() {} };
+
+  // Lv5（bias無し）: 発動局でも素通し。
+  {
+    const a = ab(5); a._usedThisHand = true;
+    ok("Lv5: bias無し＝MODIFY_DRAW は素通し(undefined)",
+      a[Hooks.MODIFY_DRAW](biasCtx([[M(1), false], [P(5), false]]), noop) === undefined);
+  }
+  // Lv6: 未発動局は素通し／発動局は有効牌（5筒＝雀頭化で聴牌）を引き寄せる。
+  {
+    const a = ab(6);
+    ok("Lv6: 未発動局は素通し(undefined)",
+      a[Hooks.MODIFY_DRAW](biasCtx([[M(1), false], [P(5), false]]), noop) === undefined);
+    a._usedThisHand = true;
+    const picked = a[Hooks.MODIFY_DRAW](biasCtx([[M(1), false], [P(5), false]]), noop);
+    ok("Lv6: 発動局は有利牌（5筒）を引き寄せる", picked && picked.kind === P(5));
+  }
+  // Lv10: 伸びが同点なら赤5/ドラを引き寄せる（無関係牌2枚＝同点で赤が勝つ）。
+  {
+    const a = ab(10); a._usedThisHand = true;
+    const picked = a[Hooks.MODIFY_DRAW](biasCtx([[M(1), false], [P(9), true]]), noop);
+    ok("Lv10: 伸び同点なら赤5を引き寄せる（doraPreference）", picked && picked.kind === P(9) && picked.red === true);
+  }
+  // 確保（target 解決）が bias より優先される＝既存機能と共存。
+  {
+    const a = ab(10);
+    const wall = mockWall([S(9), P(5), S(2)]);
+    const game = { wall };
+    const player = { counts: () => handCounts(...handKinds), numMeldSets: () => 0, character: { name: "x" } };
+    a.apply(game, player, { targetKind: P(5) }); a.activate();
+    const ctx = { player: { ...player, hand: handKinds.map((k) => tile(k)), melds: [] }, wall, candidates: [tile(M(1))], defaultTile: null };
+    const chosen = a[Hooks.MODIFY_DRAW](ctx, noop);
+    ok("Lv10: active 中は確保（targetKind）が bias より優先", chosen && chosen.kind === P(5));
+  }
+}
+
 console.log(fails === 0 ? "\nALL PASS" : `\n${fails} FAIL`);
 process.exit(fails === 0 ? 0 : 1);

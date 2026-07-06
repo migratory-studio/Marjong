@@ -145,6 +145,21 @@ export const SKILL_TEMPLATE_MASTER = [
     initialSkillLevel: 1,
     isEnabled: true,
   },
+  // ---- ルクス・ゼロ（攻撃系＝山読み確定型）----
+  {
+    skillTemplateId: "tmpl-zero-search",
+    runtimeAbilityId: "zero-search",
+    name: "ゼロ・リサーチ",
+    description: "1シャンテンから山を読み、聴牌への最後の一枚を確定で手繰り寄せる精密機械型。イーシャンテン地獄を力ずくで断つ。",
+    familyId: "draw",
+    paramAffinity: ["read", "speed"], // 山読み＝読み(主)・最短経路＝速度(副)
+    rarity: "rare",
+    mentorCharacterIds: ["yobinin"],
+    integrationTier: "engine_assisted",
+    levelTableId: "lv-zero-search",
+    initialSkillLevel: 1,
+    isEnabled: true,
+  },
   {
     skillTemplateId: "tmpl-amber-shield",
     runtimeAbilityId: "amber-shield",
@@ -163,7 +178,7 @@ export const SKILL_TEMPLATE_MASTER = [
 
 // 初期師匠候補（major_update_specification.md §9.3：攻撃 / 守備 / ギャンブルの3系統）。
 // 既存キャラ(characterMaster)の id を指す。Phase 2A のマイキャラ作成で師匠選択に使う。
-export const INITIAL_MENTOR_IDS = ["shiyue", "bibi", "kakeha_ruina", "kuidoshi", "doranie"];
+export const INITIAL_MENTOR_IDS = ["shiyue", "bibi", "kakeha_ruina", "kuidoshi", "doranie", "yobinin"];
 
 export function templatesForMentor(mentorCharacterId) {
   return SKILL_TEMPLATE_MASTER.filter(
