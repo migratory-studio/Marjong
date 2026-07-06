@@ -179,33 +179,37 @@ export function zeroSearchEffectiveKinds(counts, numMelds) {
 // params（skillLevelMaster lv-zero-search の runtimeParams・§10.5 Phase 7）:
 //   maxHands       … 1ゲームに発動できる局数（既定2＝フリー対戦のルクス・ゼロ）
 //   candidateCount … 確保候補として提示する有効牌の数（既定2＝トップ2）
-//   drawBias       … 超越帯（Lv6+）: 発動した局の残り、ツモが有利牌へ寄る
-//                    ＝相棒・賭羽ルイナの運命が宿る（skill-transcendence-policy）＝「運の隣に立つ」
-//   lookaheadDepth … ツモ偏重の走査窓（候補窓 peekLive(8) が天井＝8で最大）
-//   doraPreference … 伸びが同点ならドラ/赤5を引き寄せる（Lv10＝「いい目だ」が宿る）
+//   fallbackDraw   … 超越帯（Lv9+）:「該当なし」（聴牌を確定できる有効牌が山に無い）でも発動できる
+//                    ＝“誤差の一打”。確定の保証を捨て、山に生きる中で最も手が進む一枚を掴む
+//                    （skill-transcendence-policy＝能力自身が極まる型。ep20『誤差も、悪くない』のメカ化）
+//   fallbackCount  … 誤差の一打の提示候補数（Lv9=1 → Lv10=2）
+//   doraPreference … 誤差の一打の同点タイブレークでドラ/赤5を優先（Lv10）
 const ZERO_SEARCH_MAX_HANDS = 2;
 export class ZeroSearchAbility extends Ability {
   constructor(params = {}) {
     super({ ...abilityDef("zero-search"), ...params });
     this.maxHands = params.maxHands ?? ZERO_SEARCH_MAX_HANDS;
     this.candidateCount = params.candidateCount ?? 2;
-    this.drawBias = params.drawBias ?? false;
-    this.lookaheadDepth = params.lookaheadDepth ?? 8;
+    this.fallbackDraw = params.fallbackDraw ?? false;
+    this.fallbackCount = params.fallbackCount ?? 1;
     this.doraPreference = params.doraPreference ?? false;
     this._handsUsed = 0;        // この能力を使った局数（ゲーム通算）
     this._usedThisHand = false; // 今の局で既に発動したか
     this._targetKind = params.targetKind ?? null; // 確保する有効牌（apply で確定）
+    this._fallbackMode = false; // 今回の確保が“誤差の一打”か（ログ・演出用）
   }
   resetForGame() {
     super.resetForGame();
     this._handsUsed = 0;
     this._usedThisHand = false;
     this._targetKind = null;
+    this._fallbackMode = false;
   }
   resetForHand() {
     super.resetForHand();
     this._usedThisHand = false;
     this._targetKind = null;
+    this._fallbackMode = false;
   }
 
   // 残る生牌（王牌除く・全山）に在って、聴牌へ進む有効牌の候補トップ2を返す。
@@ -229,29 +233,81 @@ export class ZeroSearchAbility extends Ability {
     return live.slice(0, this.candidateCount).map((e) => e.kind);
   }
 
+  // 超越帯（fallbackDraw・Lv9+）:「該当なし」の先の候補＝“誤差の一打”。
+  // 聴牌を確定できる有効牌が山に無いとき、生牌 k のうち「最良打牌後の14枚形（H−d＋k）の
+  // handPotential を最大化する k」をトップ fallbackCount まで返す。聴牌の保証は無い＝
+  // 計算の外の一枚を、それでも山に生きる中の最善で掴む（ep20『誤差も、悪くない』）。
+  fallbackKinds(api) {
+    const p = api.me;
+    const wall = api.state.wall;
+    if (!wall) return [];
+    const liveTiles = wall.peekLive(wall.liveRemaining);
+    const liveCounts = tilesToCounts(liveTiles);
+    const doraKinds = new Set(wall.doraKinds?.() ?? []);
+    const hasRed = (k) => liveTiles.some((t) => t.kind === k && t.red);
+    const isDora = (k) => doraKinds.has(k) || hasRed(k);
+    const numMelds = p.numMeldSets();
+    const c = p.counts();
+    const scoreByKind = new Map();
+    for (let d = 0; d < 34; d++) {
+      if (c[d] === 0) continue;
+      c[d]--; // 打牌 d（13枚）
+      for (let k = 0; k < 34; k++) {
+        if (liveCounts[k] === 0 || c[k] >= 4) continue;
+        c[k]++; // k をツモった14枚形
+        const s = handPotential(c, numMelds);
+        c[k]--;
+        const prev = scoreByKind.get(k);
+        if (prev == null || s > prev) scoreByKind.set(k, s);
+      }
+      c[d]++;
+    }
+    const out = [...scoreByKind.entries()].map(([kind, score]) => ({ kind, score }));
+    out.sort((a, b) =>
+      b.score - a.score ||
+      (this.doraPreference ? (isDora(b.kind) - isDora(a.kind)) : 0) ||
+      a.kind - b.kind);
+    return out.slice(0, this.fallbackCount).map((e) => e.kind);
+  }
+
   // 1シャンテンの自手番でのみ発動可・回数/使用局数の上限を満たし、かつ生有効牌が在る。
+  // 超越帯（fallbackDraw）は生有効牌が無くても“誤差の一打”候補が在れば発動できる。
   activationCondition(api) {
     if (!(this._usedThisHand || this._handsUsed < this.maxHands)) return false;
     const p = api.me;
     if (shanten(p.counts(), p.numMeldSets()) !== 1) return false;
-    return this.liveCandidates(api).length > 0;
+    if (this.liveCandidates(api).length > 0) return true;
+    return this.fallbackDraw && this.fallbackKinds(api).length > 0;
   }
 
   // main.js 能力バー用の表示状態。visible=出すか / candidates=確保候補の kind 配列。
+  // isFallback=候補が“誤差の一打”（確定なし）のとき true（表示側の演出フック・現状は情報のみ）。
   uiState(api) {
     const p = api.me;
     const is1shanten = shanten(p.counts(), p.numMeldSets()) === 1;
     const visible =
       this.ready && this._handsUsed < this.maxHands && is1shanten && !this.active;
-    const candidates = visible ? this.liveCandidates(api) : [];
-    return { visible, candidates };
+    let candidates = visible ? this.liveCandidates(api) : [];
+    let isFallback = false;
+    if (visible && candidates.length === 0 && this.fallbackDraw) {
+      candidates = this.fallbackKinds(api);
+      isFallback = candidates.length > 0;
+    }
+    return { visible, candidates, isFallback };
   }
 
   // 即時適用（apply→activate の順）。確保する有効牌を確定する。params.targetKind が
   // 指定（人間UI）ならそれを、未指定（CPU/フォールバック）なら最良候補（先頭）を採る。
+  // 生有効牌が無ければ超越帯（fallbackDraw）だけ“誤差の一打”候補に落ちる。
   // 候補が無ければ false でチャージ消費せず中断する。
   apply(game, player, params = {}) {
-    const candidates = this.liveCandidates(new AbilityApiLite(game, player));
+    const api = new AbilityApiLite(game, player);
+    let candidates = this.liveCandidates(api);
+    this._fallbackMode = false;
+    if (candidates.length === 0 && this.fallbackDraw) {
+      candidates = this.fallbackKinds(api);
+      this._fallbackMode = candidates.length > 0;
+    }
     if (candidates.length === 0) return false;
     const want = params.targetKind;
     this._targetKind = (want != null && candidates.includes(want)) ? want : candidates[0];
@@ -263,43 +319,22 @@ export class ZeroSearchAbility extends Ability {
   }
 
   [Hooks.MODIFY_DRAW](ctx, api) {
-    if (this.active) {
-      // 発動した次のツモ1回で解決する（命中・失敗どちらでも使い切り）。
-      this.active = false;
-      const k = this._targetKind;
-      if (k != null) {
-        // 全山（王牌除く）から targetKind に一致する最初の牌を手繰り寄せる。
-        const all = ctx.wall.peekLive(ctx.wall.liveRemaining);
-        const hit = all.find((t) => t.kind === k);
-        if (hit) {
-          api.log(`「捕捉——確保する」${kindLabel(k)}を山から手繰り寄せた（聴牌）`);
-          return hit;
-        }
-      }
-      // 万一山から消えていれば通常ツモ（フォールバック）→超越帯の偏重には落とす。
+    if (!this.active) return undefined;
+    // 発動した次のツモ1回で解決する（命中・失敗どちらでも使い切り）。
+    this.active = false;
+    const k = this._targetKind;
+    if (k == null) return undefined;
+    // 全山（王牌除く）から targetKind に一致する最初の牌を手繰り寄せる。
+    const all = ctx.wall.peekLive(ctx.wall.liveRemaining);
+    const hit = all.find((t) => t.kind === k);
+    if (hit) {
+      api.log(this._fallbackMode
+        ? `「……該当なし。——構わない」計算の外の一枚、${kindLabel(k)}を手繰り寄せた`
+        : `「捕捉——確保する」${kindLabel(k)}を山から手繰り寄せた（聴牌）`);
+      return hit;
     }
-    // 超越帯（drawBias・Lv6+）: 発動した局の残り、ツモが有利牌へ寄る＝確定の一枚のあとも
-    // 運の追い風が続く（相棒・ルイナの運命が宿る＝「運の隣に立つ」）。発動した局にだけ働く。
-    if (!this.drawBias || !this._usedThisHand) return undefined;
-    const player = ctx.player;
-    const baseCounts = tilesToCounts(player.hand);
-    const doraKinds = this.doraPreference ? new Set(ctx.wall?.doraKinds?.() ?? []) : null;
-    const isDora = (t) => !!t && (t.red || doraKinds.has(t.kind));
-    let best = ctx.defaultTile;
-    let bestScore = -Infinity;
-    for (const tile of ctx.candidates.slice(0, this.lookaheadDepth)) {
-      baseCounts[tile.kind]++;
-      const score = handPotential(baseCounts, player.melds.length);
-      baseCounts[tile.kind]--;
-      if (score > bestScore) {
-        bestScore = score;
-        best = tile;
-      } else if (doraKinds && score === bestScore && isDora(tile) && !isDora(best)) {
-        best = tile; // 伸びが同点ならドラ/赤5を引き寄せる（「いい目だ」が宿る）
-      }
-    }
-    if (best && best !== ctx.defaultTile) api.log(`有利牌を引き寄せた`);
-    return best;
+    // 万一山から消えていれば通常ツモ（フォールバック）。
+    return undefined;
   }
 }
 

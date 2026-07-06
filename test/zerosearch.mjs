@@ -145,77 +145,97 @@ function makeApi(handKinds, numMelds, wall) {
   ok("リセット後は再び発動可", ab.activationCondition(makeApi(handKinds, 0, wall)) === true);
 }
 
-// ---- 4. Phase7 結線（lv-zero-search）: 基準帯テーブル / Lv5≡フリー対戦 / 超越帯のツモ偏重 ----
+// ---- 4. Phase7 結線（lv-zero-search）: 基準帯テーブル / Lv5≡フリー対戦 / 超越帯＝誤差の一打 ----
 {
   const { skillRuntimeAbilityParams } = await import("../src/data/skillLevelMaster.js");
   const ab = (lv) => new ZeroSearchAbility(skillRuntimeAbilityParams("lv-zero-search", lv));
 
   // テーブル期待値。
   const lv1 = skillRuntimeAbilityParams("lv-zero-search", 1);
-  ok("Lv1: maxHands=1 / candidateCount=1 / bias無し",
-    lv1.maxHands === 1 && lv1.candidateCount === 1 && lv1.drawBias === false);
+  ok("Lv1: maxHands=1 / candidateCount=1 / fallback無し",
+    lv1.maxHands === 1 && lv1.candidateCount === 1 && lv1.fallbackDraw === false);
   const lv3 = skillRuntimeAbilityParams("lv-zero-search", 3);
   ok("Lv3: maxHands=2 / candidateCount=2（現行数値に到達）", lv3.maxHands === 2 && lv3.candidateCount === 2);
   const lv6 = skillRuntimeAbilityParams("lv-zero-search", 6);
-  ok("Lv6: bias有効 / lookahead=2", lv6.drawBias === true && lv6.lookaheadDepth === 2);
+  ok("Lv6: candidateCount=3（読みの網が広がる）/ fallback無し", lv6.candidateCount === 3 && lv6.fallbackDraw === false);
+  const lv7 = skillRuntimeAbilityParams("lv-zero-search", 7);
+  ok("Lv7: maxHands=3（1ゲーム3局）", lv7.maxHands === 3);
+  const lv9 = skillRuntimeAbilityParams("lv-zero-search", 9);
+  ok("Lv9: fallbackDraw=true / fallbackCount=1（誤差の一打・解禁）",
+    lv9.fallbackDraw === true && lv9.fallbackCount === 1);
   const lv10 = skillRuntimeAbilityParams("lv-zero-search", 10);
-  ok("Lv10: lookahead=8 / doraPreference=true（『いい目だ』が宿る）",
-    lv10.lookaheadDepth === 8 && lv10.doraPreference === true);
+  ok("Lv10: fallbackCount=2 / doraPreference=true（誤差の一打・研ぎ澄まし）",
+    lv10.fallbackDraw === true && lv10.fallbackCount === 2 && lv10.doraPreference === true);
 
   // Lv5 ≡ フリー対戦（無param生成と一致）。
   const free = new ZeroSearchAbility();
   const l5 = ab(5);
-  ok("Lv5≡フリー対戦: maxHands=2 / candidateCount=2 / bias無しで一致",
+  ok("Lv5≡フリー対戦: maxHands=2 / candidateCount=2 / fallback無しで一致",
     free.maxHands === 2 && l5.maxHands === 2 && free.candidateCount === 2 && l5.candidateCount === 2 &&
-    free.drawBias === false && l5.drawBias === false);
+    free.fallbackDraw === false && l5.fallbackDraw === false);
 
-  // candidateCount=1（Lv1）: 提示候補が1つに切り詰められる。
+  // candidateCount: Lv1=1つに切り詰め / Lv6=3つまで広がる。
   const handKinds = [M(1), M(2), M(3), M(4), M(5), M(6), M(7), M(8), M(9), P(5), S(1), S(3), S(5), S(7)];
   {
     const wall = mockWall([P(5), S(2), S(4), S(6)]);
     ok("Lv1: liveCandidates は候補1つまで", ab(1).liveCandidates(makeApi(handKinds, 0, wall)).length === 1);
+    ok("Lv6: liveCandidates は候補3つまで", ab(6).liveCandidates(makeApi(handKinds, 0, wall)).length === 3);
   }
 
-  // 超越帯のツモ偏重（発動した局の残りだけ働く）。
-  // bias 用 ctx: player.hand（tile配列）/ melds / candidates / defaultTile / wall。
-  const biasCtx = (candKinds, doraKinds = []) => {
-    const hand = handKinds.map((k) => tile(k));
-    const candidates = candKinds.map(([k, red]) => tile(k, red));
-    return { player: { hand, melds: [] }, wall: mockWall([], doraKinds), candidates, defaultTile: candidates[0] };
-  };
-  const noop = { me: {}, state: {}, log() {} };
+  // 超越帯＝誤差の一打（fallbackDraw）。有効牌ゼロの山（該当なし）で挙動が分かれる。
+  // deadWall: 有効牌（5p/2s/4s/6s）が一切無いが、手に近い牌（9m=789mに絡む・1p=無関係）は生きている。
+  {
+    const deadWall = mockWall([M(9), P(1), P(9), S(9)]);
+    // Lv5（fallback無し）: 該当なしは従来どおり発動不可。
+    ok("Lv5: 該当なし→従来どおり activationCondition=false",
+      ab(5).activationCondition(makeApi(handKinds, 0, deadWall)) === false);
+    // Lv9: 該当なしでも発動可＝誤差の一打が解禁。
+    const a9 = ab(9);
+    const api9 = makeApi(handKinds, 0, deadWall);
+    ok("Lv9: 該当なしでも activationCondition=true（誤差の一打）", a9.activationCondition(api9) === true);
+    ok("Lv9: fallbackKinds が候補を返す（候補1）", a9.fallbackKinds(api9).length === 1);
+    const ui9 = a9.uiState(api9);
+    ok("Lv9: uiState は候補あり・isFallback=true", ui9.visible === true && ui9.candidates.length === 1 && ui9.isFallback === true);
+    // Lv10: 候補2つ。
+    ok("Lv10: fallbackKinds は候補2つ", ab(10).fallbackKinds(makeApi(handKinds, 0, deadWall)).length === 2);
+    // 生有効牌があるときは通常確保が優先＝isFallback は立たない。
+    const liveWall = mockWall([P(5), M(9)]);
+    const uiLive = ab(9).uiState(makeApi(handKinds, 0, liveWall));
+    ok("Lv9: 生有効牌があれば通常候補・isFallback=false", uiLive.candidates.includes(P(5)) && uiLive.isFallback === false);
+  }
 
-  // Lv5（bias無し）: 発動局でも素通し。
+  // 誤差の一打の解決: apply（候補ゼロ→fallback 採用・_fallbackMode）→ MODIFY_DRAW で山から掴む。
   {
-    const a = ab(5); a._usedThisHand = true;
-    ok("Lv5: bias無し＝MODIFY_DRAW は素通し(undefined)",
-      a[Hooks.MODIFY_DRAW](biasCtx([[M(1), false], [P(5), false]]), noop) === undefined);
-  }
-  // Lv6: 未発動局は素通し／発動局は有効牌（5筒＝雀頭化で聴牌）を引き寄せる。
-  {
-    const a = ab(6);
-    ok("Lv6: 未発動局は素通し(undefined)",
-      a[Hooks.MODIFY_DRAW](biasCtx([[M(1), false], [P(5), false]]), noop) === undefined);
-    a._usedThisHand = true;
-    const picked = a[Hooks.MODIFY_DRAW](biasCtx([[M(1), false], [P(5), false]]), noop);
-    ok("Lv6: 発動局は有利牌（5筒）を引き寄せる", picked && picked.kind === P(5));
-  }
-  // Lv10: 伸びが同点なら赤5/ドラを引き寄せる（無関係牌2枚＝同点で赤が勝つ）。
-  {
-    const a = ab(10); a._usedThisHand = true;
-    const picked = a[Hooks.MODIFY_DRAW](biasCtx([[M(1), false], [P(9), true]]), noop);
-    ok("Lv10: 伸び同点なら赤5を引き寄せる（doraPreference）", picked && picked.kind === P(9) && picked.red === true);
-  }
-  // 確保（target 解決）が bias より優先される＝既存機能と共存。
-  {
-    const a = ab(10);
-    const wall = mockWall([S(9), P(5), S(2)]);
-    const game = { wall };
+    const deadWall = mockWall([M(9), P(1), P(9), S(9)]);
+    const a = ab(9);
+    const game = { wall: deadWall };
     const player = { counts: () => handCounts(...handKinds), numMeldSets: () => 0, character: { name: "x" } };
-    a.apply(game, player, { targetKind: P(5) }); a.activate();
-    const ctx = { player: { ...player, hand: handKinds.map((k) => tile(k)), melds: [] }, wall, candidates: [tile(M(1))], defaultTile: null };
-    const chosen = a[Hooks.MODIFY_DRAW](ctx, noop);
-    ok("Lv10: active 中は確保（targetKind）が bias より優先", chosen && chosen.kind === P(5));
+    const applied = a.apply(game, player, {});
+    ok("Lv9: 該当なしで apply 成功（誤差の一打モード）", applied === true && a._fallbackMode === true);
+    a.activate();
+    const ctx = { player, wall: deadWall };
+    const chosen = a[Hooks.MODIFY_DRAW](ctx, { me: player, state: { wall: deadWall }, log() {} });
+    ok("Lv9: MODIFY_DRAW が fallback 対象を山から掴む", chosen != null && a._targetKind === chosen.kind);
+    ok("Lv9: 解決後 active が下りる（使い切り）", a.active === false);
+    // 生有効牌があるときの apply は従来どおり＝_fallbackMode は立たない。
+    const b = ab(9);
+    b.apply({ wall: mockWall([P(5)]) }, player, { targetKind: P(5) });
+    ok("Lv9: 生有効牌ありの apply は通常確保（_fallbackMode=false）", b._fallbackMode === false && b._targetKind === P(5));
+  }
+
+  // doraPreference（Lv10）: fallback の同点タイブレークで赤5/ドラを優先する。
+  {
+    // 手と無関係の孤立牌 1p / 9p(赤フラグ) のみが生きている山＝スコア同点。
+    // mockWall は kind 配列受けなので、赤入りの live は直接組む。
+    const live = [tile(P(1)), tile(P(9), true)];
+    const wall = { live, liveRemaining: live.length, peekLive(n) { return live.slice(0, n); }, doraKinds() { return []; } };
+    const a10 = ab(10);
+    const kinds = a10.fallbackKinds(makeApi(handKinds, 0, wall));
+    const a9 = ab(9);
+    const kinds9 = a9.fallbackKinds(makeApi(handKinds, 0, wall));
+    // 1p と 9p はどちらも手に絡まない孤立牌＝スコア同点。Lv10 は赤5持ちの 9p を先頭へ、Lv9 は kind 昇順で 1p。
+    ok("Lv10: 同点なら赤5持ちの牌種を先頭に（doraPreference）", kinds[0] === P(9));
+    ok("Lv9: doraPreference 無しは kind 昇順（1筒が先頭）", kinds9[0] === P(1));
   }
 }
 

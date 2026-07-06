@@ -89,10 +89,15 @@ export function decideAbilityActivations(game, playerIndex) {
     }
     // zero-search（ゼロ・リサーチ）: 自手番1シャンテンで生有効牌が在れば発動し、最良
     // 候補（待ち広い順トップ）を確保する。候補算出は能力本体の liveCandidates に委ねる。
+    // 超越帯（fallbackDraw・Lv9+）は生有効牌が無くても“誤差の一打”で発動する
+    // （targetKind 未指定＝apply がフォールバック最良を採る）。
     if (ab.id === "zero-search") {
       if (sh === 1 && typeof ab.liveCandidates === "function") {
-        const cands = ab.liveCandidates(game.abilities.apiFor(p));
+        const api = game.abilities.apiFor(p);
+        const cands = ab.liveCandidates(api);
         if (cands.length > 0) out.push({ id: ab.id, params: { targetKind: cands[0] } });
+        else if (ab.fallbackDraw && typeof ab.fallbackKinds === "function" && ab.fallbackKinds(api).length > 0)
+          out.push({ id: ab.id, params: {} });
       }
       continue;
     }

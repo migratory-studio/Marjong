@@ -213,9 +213,10 @@ export const MENTOR_SKILL_TRACK = {
     { scenarioId: "mentor-doranie-bond-19", level: 9 },  // 運は作るものじゃ＝哲学の完成
     { scenarioId: "mentor-doranie-bond-20", level: 10 }, // 最高なのじゃ＝ドラを注ぐ極み（弟子Lv10と同時期）
   ],
-  // ルクス・ゼロ＝超越帯（lv-zero-search Lv6〜10）＝「運の隣に立つ」。相棒・賭羽ルイナの運命
-  // （発動局のツモ偏重＝運を消す機械に、運の追い風が宿る）が段階的に極まる（test/zerosearch.mjs）。
-  // 覇道編＝運との和解アーク（揺らぎは変数→運の隣に立つ→誤差も、悪くない）と同期。
+  // ルクス・ゼロ＝超越帯（lv-zero-search Lv6〜10）＝能力自身が極まる型（相棒 graft なし）。
+  // 前半=読みの網の拡大（候補3→4・局数3）、後半=「該当なし」の反転＝聴牌を確定できる有効牌が
+  // 山に無くても発動できる“誤差の一打”（Lv9解禁→Lv10研ぎ澄まし。test/zerosearch.mjs）。
+  // 覇道編＝運との和解アーク（揺らぎは変数→運の隣に立つ(ep19=Lv9)→誤差も、悪くない(ep20=Lv10)）と同期。
   yobinin: [
     { scenarioId: "mentor-yobinin-bond-16", level: 6 },  // 揺らぎは、変数＝委ねる一打・信条が形を変える
     { scenarioId: "mentor-yobinin-bond-17", level: 7 },  // トリオ結成＝運命の女を口説く

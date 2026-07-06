@@ -391,8 +391,8 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
   ok("ルクス: ep20読了で技 Lv10（誤差も、悪くない）", mentorSkillLevel(yprof("mentor-yobinin-bond-20"), "yobinin") === 10);
   // 師匠導線：ピッカーに出るための2条件（シナリオ＋能力テンプレ）が両方立っている
   ok("ルクス: templatesForMentor に1件以上（tmpl-zero-search）", templatesForMentor("yobinin").length >= 1);
-  ok("ルクス: 基準帯(Lv5)は運の追い風無し・超越帯(Lv6)で drawBias が宿る",
-    skillRuntimeAbilityParams("lv-zero-search", 5).drawBias === false && skillRuntimeAbilityParams("lv-zero-search", 6).drawBias === true);
+  ok("ルクス: 基準帯(Lv5)は該当なし=発動不可・Lv9で“誤差の一打”（fallbackDraw）が解禁",
+    skillRuntimeAbilityParams("lv-zero-search", 5).fallbackDraw === false && skillRuntimeAbilityParams("lv-zero-search", 9).fallbackDraw === true);
 }
 
 console.log(fails ? `\n${fails} FAILED` : "\nALL PASS");
