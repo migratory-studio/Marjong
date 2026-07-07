@@ -357,5 +357,22 @@
   </div><!-- /#stage-viewport -->
 
   <script type="module" src="src/main.js"></script>
+
+  <!-- Service Worker 登録: 更新後に古い JS を掴み続けないよう「ネット優先」で配る（sw.js）。
+       更新を検知したら一度だけ静かに再読込して最新コードへ差し替える（初回インストール時は再読込しない）。 -->
+  <script>
+    if ("serviceWorker" in navigator) {
+      var __hadController = !!navigator.serviceWorker.controller;
+      var __reloaded = false;
+      navigator.serviceWorker.addEventListener("controllerchange", function () {
+        if (__reloaded || !__hadController) return; // 初回インストールでは再読込しない（更新時のみ）
+        __reloaded = true;
+        location.reload();
+      });
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).catch(function () {});
+      });
+    }
+  </script>
 </body>
 </html>
