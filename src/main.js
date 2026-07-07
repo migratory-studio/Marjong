@@ -1119,27 +1119,31 @@ function openMentorSelect(draft) {
   goScreen("mentor-select-screen");
 }
 
-// 作成直後：プロローグを観るか確認 → 観るなら再生、あとでなら師弟ホームへ。
+// 作成直後：プロローグ（任意の手書き前口上）を観るか確認。
+// 観る/とばす どちらでも、続けて第1話（bond-01）を本編として再生する
+//（第1話の読了で既読化＋絆が入り、第2話の解禁ゲート＝read(ep1)+絆Lv2 が満たされる）。
+// ※プロローグは第1話とは別物。プロローグだけでは第1話は既読化されない＝第2話が解禁されない、
+//   という詰まりを塞ぐため、作成直後は必ず第1話へ橋渡しする。
 function promptPrologue(avatar) {
   showConfirm({
     title: "プロローグ",
     message: "あなたの物語が、ここから始まります。\n出発のプロローグを観ますか？",
     confirmLabel: "観る",
-    cancelLabel: "あとで（とばす）",
+    cancelLabel: "とばす",
     danger: false,
-    onConfirm: () => playPrologueThenHome(avatar),
-    onCancel: () => openMentorHome(),
+    onConfirm: () => playPrologueThenFirstChapter(avatar),
+    onCancel: () => playFirstChapterThenHome(avatar), // プロローグは飛ばすが、第1話は本編として観る
   });
 }
 
-// プロローグ（手書き・mentor-aware）を再生してから師弟ホームへ。
-function playPrologueThenHome(avatar) {
+// プロローグ（手書き・mentor-aware）を再生 → そのまま第1話へ自然につなぐ。
+function playPrologueThenFirstChapter(avatar) {
   const mentor = CHARACTER_MASTER.find((c) => c.id === avatar?.mentorCharacterId) || null;
   showScreen("scenario-screen");
   playScenario(null, {
     audio,
     lines: buildPrologueLines({ avatar, mentor }),
-    onEnd: () => openMentorHome(),
+    onEnd: () => playFirstChapterThenHome(avatar),
   });
 }
 
@@ -1310,7 +1314,8 @@ function showCompletedReplaceModal(host, profile, ca, av, done) {
   });
 }
 
-// マイキャラ作成直後、その師匠の第1章（sortOrder 先頭・unlock=always）を自動再生する。
+// マイキャラ作成直後、その師匠の第1章（sortOrder 先頭・unlock=always）を本編として再生し、
+// 読了で既読化＋初回ソウル＋絆を確定してから師弟ホームへ（promptPrologue から必ず経由する）。
 function playFirstChapterThenHome(avatar) {
   const first = scenariosForMentor(avatar?.mentorCharacterId)[0];
   if (!first) { openMentorHome(); return; }
