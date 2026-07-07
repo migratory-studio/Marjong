@@ -23167,8 +23167,270 @@ export const SCENARIO_LINE_MASTER = [
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 1,
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 33,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——数日後。町の雀荘に、一通の招待状が届いた。金の箔押しに、九つの蓮の紋。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-playful",
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 34,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "来たのじゃ！　九蓮宝燈杯——頂点の卓じゃ！",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 35,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "要項の紙は、そっけない一行で終わっていた。『形式は当日、会場にて告げる』。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 36,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "center",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ふぉっふぉ、最後の最後まで伏せ牌とはのう。よいよい——めくる楽しみが増えたわい。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 37,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "夜。閉店後の雀荘に、青い光がひとつ増えた。検証用の端末を提げて、ルクス・ゼロが立っている。",
+    "characterEffect": "fade_in",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "bgmId": "bgm-night"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 38,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "serious"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……検証は、最終段階に入る。同行する。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 39,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "素直に『一緒に打ちたい』と言わぬか、ゼロや！",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 40,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……訂正の必要を、認めない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 41,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "軽口の応酬を聞きながら、卓を拭く。この騒がしさのまま、頂点に挑むのだ。——不思議と、指先は静かだった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 42,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "弟子よ。掟は、覚えておるな？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 43,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "serious"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——降りるでない。一緒に張るのじゃ。あの日の掟を、口にするより先に頷いていた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 44,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "それでよい！　賭けじゃ賭けじゃ、ぜーんぶ乗せじゃ！",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "flare"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 45,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23184,61 +23446,15 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "最後の宝——九蓮宝燈杯。九つ目の至宝だけは、当日、会場で形式が告げられるという。",
+    "text": "——当日。静まり返った会場に、係員の声が響く。本大会は、三人一組。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
     "bgmId": "bgm-tension"
   },
   {
-    "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 2,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "doranie",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "yobinin",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "係員の声が、静まり返った会場に響く。本大会は——三人一組。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 3,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "doranie",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "yobinin",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "弟子と、天使と、機械。顔を見合わせるより早く、隣で金色が跳ねた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 4,
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 46,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23254,15 +23470,15 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "doranie",
     "speakerNameOverride": null,
-    "text": "三人じゃ！　ふぉっふぉ、天の采配というやつじゃな！　賭けじゃ賭けじゃ、全部乗せじゃ！",
+    "text": "三人じゃ！　ふぉっふぉ、天の采配というやつじゃな！",
     "characterEffect": "jump",
     "screenEffect": "none",
     "effectDurationMs": 500,
-    "emoteId": "flare"
+    "emoteId": "joy"
   },
   {
-    "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 5,
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 47,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23284,8 +23500,103 @@ export const SCENARIO_LINE_MASTER = [
     "effectDurationMs": 0
   },
   {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 48,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "まあまあ、と二人の間に割って入る。頂点を懸けた朝も、この並びは今日も騒がしい。——悪くない騒がしさだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-19",
+    "lineNo": 49,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九蓮宝燈。九つの蓮が繋がるとき、九蓮宝士が生まれる。その頂へ——三人で、卓に着く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
+  },
+  {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 6,
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九蓮宝燈杯、決勝。最後まで勝ち残った強豪の圧は、これまでのどの卓とも違った。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-battle",
+    "seId": "se-shuffle"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 2,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一打ごとに空気が張り詰める。役満級の伝説を持つ打ち手ばかりが、頂点の紋章へ手を伸ばしてくる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 3,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23301,84 +23612,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "doranie",
     "speakerNameOverride": null,
-    "text": "ゼロやは相変わらず固いのう！　よいか、頂点の卓ぞ？　騒がずしてどうするのじゃ！",
+    "text": "ふぉっふぉ……よい卓じゃ。下界の頂は、こうでなくてはのう！",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 7,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "doranie",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "yobinin",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "まあまあ、と二人の間に割って入る。頂点を懸けた大一番でも、この並びは今日も騒がしい。——不思議と、悪くない騒がしさだ。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 8,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "doranie",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "yobinin",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "九蓮宝燈。九つの蓮が繋がるとき、九蓮宝士が生まれる。その頂へ——三人で、卓に着いた。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0,
-    "seId": "se-shuffle"
-  },
-  {
-    "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 9,
-    "backgroundId": "bg-hall",
-    "standings": [
-      {
-        "characterId": "doranie",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "yobinin",
-        "position": "right",
-        "standingId": "default"
-      }
-    ],
-    "speakerCharacterId": null,
-    "speakerNameOverride": null,
-    "text": "決勝の卓は、熾烈を極めた。最後まで勝ち残った強豪たち——攻めの圧が、これまでのどの卓とも違う。",
-    "characterEffect": "none",
-    "screenEffect": "none",
-    "effectDurationMs": 0
-  },
-  {
-    "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 10,
+    "lineNo": 4,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23401,7 +23642,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 11,
+    "lineNo": 5,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23424,7 +23665,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 12,
+    "lineNo": 6,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23447,7 +23688,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 13,
+    "lineNo": 7,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23463,14 +23704,37 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "山を読む声が、危険を先回りして消していく。読み切れない分は、自分の一打で堰き止める。防波堤になれ——掟の通り、一緒に張りながら。",
+    "text": "山を読む声が、危険を先回りして消していく。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 14,
+    "lineNo": 8,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "読み切れない分は、自分の一打で堰き止める。防波堤になれ——掟の通り、一緒に張りながら。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 9,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23493,7 +23757,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 15,
+    "lineNo": 10,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23516,7 +23780,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 16,
+    "lineNo": 11,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23539,7 +23803,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 17,
+    "lineNo": 12,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23563,7 +23827,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 18,
+    "lineNo": 13,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23579,14 +23843,37 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "降りるでない、一緒に張るのじゃ——あの日の掟が、二人の実りを経て、いま三人の形で返っている。誰が欠けても、この均衡はなかった。",
+    "text": "降りるでない、一緒に張るのじゃ——あの日の掟が、二人の実りを経て、いま三人の形で返っている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 19,
+    "lineNo": 14,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "誰が欠けても、この均衡はなかった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 15,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23610,7 +23897,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 20,
+    "lineNo": 16,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23633,7 +23920,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 21,
+    "lineNo": 17,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23656,7 +23943,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 22,
+    "lineNo": 18,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23672,14 +23959,37 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "そのとき、隣で天使が自分の手牌を一瞥した。——後で聞けば、聴牌目前の上々の手だったという。",
+    "text": "そのとき、隣で天使が自分の手牌を一瞥した。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 23,
+    "lineNo": 19,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——後で聞けば、聴牌目前の上々の手だったという。跳満は、堅かったと。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 20,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23702,7 +24012,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 24,
+    "lineNo": 21,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23727,13 +24037,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 25,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "doranie",
         "position": "left",
-        "standingId": "serious"
+        "standingId": "default"
       },
       {
         "characterId": "yobinin",
@@ -23750,7 +24060,30 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 26,
+    "lineNo": 23,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "思わず顔を上げる。“何を——”。天使はこちらを見もせず、嶺上の牌を引いて、当たり前のように河へ置いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23774,7 +24107,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 27,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23797,7 +24130,30 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 28,
+    "lineNo": 26,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "会場が、ざわめき始める。頂点の卓で自分の和了を捨てる打ち手など、誰も見たことがないのだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 27,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23820,7 +24176,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 29,
+    "lineNo": 28,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23836,14 +24192,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "一巡。天使は自分の手を進める素振りもなく、牌を引いては静かに河へ置く。次のカンの種を、探すように。",
+    "text": "一巡。天使は手を進める素振りもなく、牌を引いては静かに河へ置く。次の槓の種を、探すように。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 30,
+    "lineNo": 29,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23866,7 +24222,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 31,
+    "lineNo": 30,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23889,7 +24245,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 32,
+    "lineNo": 31,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -23913,13 +24269,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 33,
+    "lineNo": 32,
     "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "doranie",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "yobinin",
@@ -23929,7 +24285,31 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "めくれた表示牌に、会場がどよめく。また、萬子。手の中でドラがひとつ、またひとつと数を増していく。指先が、熱い。",
+    "text": "めくれた表示牌に、会場がどよめく。また、萬子。手の中でドラがひとつ、またひとつと数を増していく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 33,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指先が、熱い。九つの蓮の芽が、光の脈を持ち始めている。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23952,7 +24332,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "相手たちの手が、止まった。これほどドラが暴かれた場では、押し返す一打がそのまま命取りになる。攻めの卓が——受けの卓に、変わる。",
+    "text": "相手たちの手が、止まった。これほどドラが暴かれた場では、押し返す一打がそのまま命取りになる。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23975,7 +24355,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "空いた道を、まっすぐに走る。一枚引くたび、九つの蓮がひとつずつ形になっていく。",
+    "text": "攻めの卓が——受けの卓に、変わる。空いた道を、まっすぐに走る。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
@@ -23983,6 +24363,29 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-doranie-bond-20",
     "lineNo": 36,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一枚引くたび、九つの蓮がひとつずつ形になっていく。光を吸って、手牌が重くなっていく。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 37,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24006,7 +24409,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 37,
+    "lineNo": 38,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24022,14 +24425,61 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "三枚目の新ドラが、灯る。それもまた、この手の中にいた。積み上がった光の行き先は、ぜんぶ——この手牌の上だ。",
+    "text": "三枚目の新ドラが、灯る。それもまた、この手の中にいた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-flash"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 39,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "気づけば、卓の上の光という光が、残らずこの手に集まっていた。まるで、そう仕向けられたかのように。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 38,
+    "lineNo": 40,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "いや——仕向けたのだ。この天使が。自分の和了と引き換えに、三度の賭けで。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 41,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24053,13 +24503,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 39,
+    "lineNo": 42,
     "backgroundId": "bg-hall",
     "standings": [
       {
         "characterId": "doranie",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "yobinin",
@@ -24069,7 +24519,30 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "一発の申し子が、自分の和了を捨てて、その全部をこちらの手に注いだ。応える方法は、ひとつだ。——山に、手を伸ばす。",
+    "text": "いつもの決め台詞と、同じ言葉。意味だけが、まるごと裏返っている。一発の申し子が、その全部を注いだ先は——この手だ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 43,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "応える方法は、ひとつしかない。——山に、手を伸ばす。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -24077,7 +24550,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 40,
+    "lineNo": 44,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24100,7 +24573,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 41,
+    "lineNo": 45,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24116,14 +24589,60 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "会場は、水を打ったように静まっている。指先が、一枚をつまむ。引き寄せる。——開く。",
+    "text": "会場は、水を打ったように静まっている。誰も、瞬きすらしない。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 42,
+    "lineNo": 46,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "指先が、一枚をつまむ。重い。あの日の掟も、前夜の頷きも、三度の槓も——ぜんぶ、この一枚に乗っている。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 47,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "引き寄せる。——開く。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 48,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24148,7 +24667,30 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 43,
+    "lineNo": 49,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "一拍、遅れて。世界が、音を思い出す。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 50,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24164,14 +24706,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "一拍遅れて、会場が爆ぜた。地鳴りのような歓声。伝説の役と、それを照らし続けた三度のカン——誰も見たことのない優勝だった。",
+    "text": "会場が、爆ぜた。地鳴りのような歓声。伝説の役と、それを照らし続けた三度の槓——誰も見たことのない優勝だった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 44,
+    "lineNo": 51,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24195,7 +24737,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 45,
+    "lineNo": 52,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24211,14 +24753,37 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": "doranie",
     "speakerNameOverride": null,
-    "text": "やったのじゃー！　ふぉっふぉっふぉ！　下界の麻雀は、最高じゃのう！　……いや。",
+    "text": "やったのじゃー！　ふぉっふぉっふぉ！",
     "characterEffect": "jump",
     "screenEffect": "none",
     "effectDurationMs": 500
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 46,
+    "lineNo": 53,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "下界の麻雀は、最高じゃのう！　……いや。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 54,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24234,14 +24799,14 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "首を、振る。あの公園の夜に言葉にならなかった何かが——いま、満面の笑みの形で、言葉になる。",
+    "text": "首を、振る。公園のブランコで言葉にならなかった何かが——いま、満面の笑みの形で、輪郭を持つ。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 47,
+    "lineNo": 55,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -24265,7 +24830,77 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 48,
+    "lineNo": 56,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "天使が、両腕を広げて飛び込んでくる。受け止めた金色は、あんなに大きな博打を打つくせに——羽根のように、軽い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 57,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……検証結果。三人の勝率は、解析不能。——だが、再現性はある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 58,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "yobinin",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ふぉっふぉ！　それをのう、下界では『相棒』と呼ぶのじゃ！",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 59,
     "backgroundId": "bg-parlor",
     "standings": [
       {
@@ -24285,7 +24920,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 49,
+    "lineNo": 60,
     "backgroundId": "bg-parlor",
     "standings": [
       {
@@ -24303,7 +24938,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 50,
+    "lineNo": 61,
     "backgroundId": "bg-parlor",
     "standings": [
       {
@@ -24321,7 +24956,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 51,
+    "lineNo": 62,
     "backgroundId": "bg-parlor",
     "standings": [
       {
@@ -24339,13 +24974,13 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 52,
+    "lineNo": 63,
     "backgroundId": "bg-parlor",
     "standings": [
       {
         "characterId": "doranie",
         "position": "left",
-        "standingId": "smile"
+        "standingId": "default"
       },
       {
         "characterId": "kakeha_ruina",
@@ -24362,7 +24997,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 53,
+    "lineNo": 64,
     "backgroundId": "bg-parlor",
     "standings": [
       {
@@ -24385,7 +25020,30 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-doranie-bond-20",
-    "lineNo": 54,
+    "lineNo": 65,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "当たり前じゃ。わらわが選んだ弟子ぞ？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 66,
     "backgroundId": "bg-parlor",
     "standings": [
       {
@@ -24401,10 +25059,81 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "明るい笑い声が、雀荘の灯りに混ざって続いていく。——最高の卓は、今日もここにある。",
+    "text": "胸を張る天使に、羽根帽子が肩をすくめる。それから天使は、くるりとこちらへ向き直った。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 67,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——初めて会った日と、同じ顔で。同じ言葉を、せがみに来る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 68,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "のう、弟子よ！　次はどの卓で打つ？　——組もうぞ、組もうぞ！",
+    "characterEffect": "jump",
+    "screenEffect": "none",
+    "effectDurationMs": 500,
+    "emoteId": "sparkle"
+  },
+  {
+    "scenarioId": "mentor-doranie-bond-20",
+    "lineNo": 69,
+    "backgroundId": "bg-parlor",
+    "standings": [
+      {
+        "characterId": "doranie",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "答えの代わりに、山を崩して牌を混ぜる。じゃら、と鳴る音が、返事だった。——最高の卓は、今日もここにある。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-01",

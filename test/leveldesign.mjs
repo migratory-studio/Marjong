@@ -381,8 +381,10 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
   ok("ドラニエル: ep2〜20は前話 scenario_read で連鎖（読了チェーン）",
     dch.slice(1).every((s, i) => readVal(i + 2) === dch[i].scenarioId));
   ok("ドラニエル: ep13 はフィナーレ翌月解禁（一気読み防止＝scenario_read_prev_month）", hasType(13, "scenario_read_prev_month"));
-  ok("ドラニエル: won階段 ep11=1 / ep12=2 / ep16=4 / ep17=5 / ep19=7 / ep20=8",
-    wonVal(11) === 1 && wonVal(12) === 2 && wonVal(16) === 4 && wonVal(17) === 5 && wonVal(19) === 7 && wonVal(20) === 8);
+  // 2026-07 テンポ改修（凌雲編と同型）: ep19=won8（天地神玉決着＋九蓮宝燈杯への送り出し）→
+  // 最終大会の優勝はプレイヤーの手で → ep20=won9（優勝後エピローグ）＝スタッフロールが9つ目の優勝より先に来ない。
+  ok("ドラニエル: won階段 ep11=1 / ep12=2 / ep16=4 / ep17=5 / ep19=8 / ep20=9",
+    wonVal(11) === 1 && wonVal(12) === 2 && wonVal(16) === 4 && wonVal(17) === 5 && wonVal(19) === 8 && wonVal(20) === 9);
 
   // 技Lv＝超越帯（lv-dora-pull）＝紙HP反転アーク（ep16→6 … ep20→10）と同期
   const dprof = (...ids2) => ({ scenarioProgress: ids2.map((id) => ({ scenarioId: id })) });

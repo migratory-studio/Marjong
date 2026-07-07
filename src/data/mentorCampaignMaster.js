@@ -93,12 +93,13 @@ export const MENTOR_CAMPAIGN = {
     { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "pair" },                    // 弟子＋凌雲の二人で九蓮宝士
   ],
   // ドラニエル（博打・ドラ寄せ）：宝順はシナリオ正典（masters/mentor-doranie-bond-*）＝design/doranie.json
-  //   campaignTreasureOrder と同期。won ゲート数列はルイナ編と同型（won1→2→4→5→7→8）：
+  //   campaignTreasureOrder と同期。won ゲート数列は won1→2→4→5→8→9（2026-07 テンポ改修＝凌雲編と同型）：
   //     ep11=chin-iki（清一器・won1＝弟子の初宝）／ep12=ji-peeko（至盃口・won2＝師弟編フィナーレ「差し向かい」
   //     ＝公式ペア戦は師弟共闘・1対1は夜の非公式卓）／ep16=kyou-sharin（鏡車輪・won4「二人なら飛ばぬ」）／
   //     ep17「三人はもっと最高じゃ」=トリオ結成（弟子＋ドラニエル＋ルクス・ゼロ）→tenankou（天の宝×天使）／
-  //     ep19=tenchi-shingyoku（天地神玉・won7「運は作るものじゃ」）／ep20=kyuuren（won8）＝team で九蓮宝士
-  //     （最終局＝ドラを全部弟子に注ぐ「ドラはぜーんぶ、ぬしのものじゃ！」）。
+  //     ep19=tenchi-shingyoku（天地神玉・won8「運は作るものじゃ」＝二幕構成：決着＋九蓮宝燈杯『三人一組』告知
+  //     〜出陣の送り出しで幕→優勝はプレイヤーの手で）／ep20=kyuuren（won9＝優勝後エピローグ）＝team で九蓮宝士
+  //     （最終局＝ドラを全部弟子に注ぐ「ドラはぜーんぶ、ぬしのものじゃ！」＋口癖の反転＋ep1「組もうぞ」円環）。
   doranie: [
     { id: "chin-iki",         oppLv: 3 },                        // 個人（三人打ち）・ep11（won1）
     { id: "ji-peeko",         oppLv: 5 },                        // ペア・ep12フィナーレ（師弟共闘／won2）
@@ -157,7 +158,7 @@ export const MENTOR_EPILOGUE_SCENARIO = {
   bibi: "mentor-bibi-bond-20", // 20話＝九蓮宝燈（solo4＝弟子ひとりの卓）の単独優勝を見届け、手を放して見送る。ビビ自身も道へ（殻破り完成）
   kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝九蓮宝燈を弟子の大捲りで制覇＋後日譚（design/ruina.json）
   kuidoshi: "mentor-kuidoshi-bond-20", // 20話「天衣無縫」＝優勝の瞬間から・2人で九蓮宝士・虎の檻ミラーの後日譚（読了でスタッフロール）
-  doranie: "mentor-doranie-bond-20", // 20話「最高なのじゃ」＝トリオで九蓮宝士・口癖の反転＋明るい後日譚（design/doranie.json）
+  doranie: "mentor-doranie-bond-20", // 20話「最高なのじゃ」＝won9（優勝後）解禁。決勝の全貌（三カン→ドラはぜーんぶぬしのものじゃ→九蓮ツモ）＋口癖の反転＋明るい後日譚（design/doranie.json）
   yobinin: "mentor-yobinin-bond-20", // 20話「誤差も、悪くない」＝グレーアウトの最終局に確定のない一打・観測継続宣言で幕（design/yobinin.json）
 };
 export function isMentorEpilogue(scenarioId) {
