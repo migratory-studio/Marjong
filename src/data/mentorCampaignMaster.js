@@ -58,9 +58,11 @@ export const MENTOR_CAMPAIGN = {
     { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "solo4", requireScenario: "mentor-bibi-bond-19" },
   ],
   // 賭羽ルイナ（博徒）：師弟編=個人戦中心（ソロの美学）→覇道編=ペア（弟子と二人）→トリオ（ドラニエル加入）。
-  //   宝順はシナリオ正典（masters/mentor-kakeha_ruina-bond-*）と同期：
+  //   宝順はシナリオ正典（masters/mentor-kakeha_ruina-bond-*）＝design/ruina.json campaignTreasureOrder と同期：
   //     ep12=musou-kan(国士)＝師弟編フィナーレ(won2)／ep17「三人で、張る」=トリオ結成→daisanken／
-  //     ep20=kyuuren＝弟子+ルイナ+ドラニエルの team で九蓮宝士（ソロ→トリオ反転の到達点）。
+  //     ep19=tenankou（won8「あんたに、張る」＝二幕構成：天暗刻決着＋九蓮宝燈杯『三人一組』告知〜出陣の
+  //     送り出しで幕→優勝はプレイヤーの手で）／ep20=kyuuren（won9＝優勝後エピローグ）＝弟子+ルイナ+
+  //     ドラニエルの team で九蓮宝士（ソロ→トリオ反転の到達点）。2026-07 テンポ改修＝凌雲/ドラニエル編と同型。
   kakeha_ruina: [
     { id: "menzen-kaiken",    oppLv: 2 },                        // 個人
     { id: "musou-kan",        oppLv: 4 },                        // 個人・ep12フィナーレ（国士無双／won2）
@@ -69,9 +71,9 @@ export const MENTOR_CAMPAIGN = {
     { id: "kyou-sharin",      oppLv: 6 },                        // ペア（これを取ると5個目＝won5でep17「三人で、張る」が解禁→次の団体戦へ）
     // 団体（弟子＋ルイナ＋ドラニエル）。ep17「三人で、張る」でトリオ結成＝その章を読むまで挑めない。
     { id: "daisanken",        oppLv: 7, requireScenario: "mentor-kakeha_ruina-bond-17" },
-    { id: "tenchi-shingyoku", oppLv: 8 },                        // ペア・ep19（won7）
-    { id: "tenankou",         oppLv: 9 },                        // 団体
-    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ルイナ＋ドラニエルのトリオで九蓮宝士
+    { id: "tenchi-shingyoku", oppLv: 8 },                        // ペア（オフスクリーン）
+    { id: "tenankou",         oppLv: 9 },                        // 団体・ep19「あんたに、張る」（won8・二幕構成）
+    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ルイナ＋ドラニエルのトリオで九蓮宝士（ep20=won9）
   ],
   // 凌雲（リン・ユン／守り・盾）：師弟編=個人戦で「不動の受け」を磨く→覇道編=ペア（弟子と二人）＋
   //   団体（弟子＋凌雲＋詩玥）→最終はペア（弟子＋凌雲の二人で九蓮宝士）。宝順は design/ryuuun.json と同期：
@@ -109,16 +111,18 @@ export const MENTOR_CAMPAIGN = {
     // 団体（弟子＋ドラニエル＋ルクス・ゼロ）。ep17でトリオ結成＝その章を読むまで挑めない。
     { id: "tenankou",         oppLv: 8, requireScenario: "mentor-doranie-bond-17" },
     { id: "daisanken",        oppLv: 9 },                        // 団体（オフスクリーン）
-    { id: "tenchi-shingyoku", oppLv: 9 },                        // ペア・ep19「運は作るものじゃ」（won7）
-    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ドラニエル＋ルクスのトリオで九蓮宝士
+    { id: "tenchi-shingyoku", oppLv: 9 },                        // ペア・ep19「運は作るものじゃ」（won8・二幕構成）
+    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ドラニエル＋ルクスのトリオで九蓮宝士（ep20=won9）
   ],
   // ルクス・ゼロ（精密機械・ゼロ・リサーチ）：宝順はシナリオ正典（masters/mentor-yobinin-bond-*）＝
   //   design/yobinin.json campaignTreasureOrder と同期。won ゲート数列はルイナ/ドラニエル編と同型：
   //     ep11=chin-iki（清一器・won1＝一色に研ぎ澄ます＝誤差を消す純化）／ep12=menzen-kaiken（門前開鍵・won2
   //     ＝『孤独な試練を独力で開くマスターキー』＝単独の機械のテーマ宝で師弟決勝対峙「割り切れない」）／
   //     ep16=kyou-sharin（鏡車輪・won4「揺らぎは、変数」）／ep17「検証のため、貴殿が必要だ」=トリオ結成
-  //     （弟子＋ルクス＋ルイナ＝機械がルイナを口説く）→daisanken／ep19=tenankou（won7「運の隣に立つ」）／
-  //     ep20=kyuuren（won8）＝team＝グレーアウトの最終局に確定のない一打→『誤差も、悪くない』。
+  //     （弟子＋ルクス＋ルイナ＝機械がルイナを口説く）→daisanken／ep19=tenankou（won8「運の隣に立つ」＝
+  //     二幕構成：決着＋九蓮宝燈杯『三人一組』告知〜出陣の送り出しで幕→優勝はプレイヤーの手で）／
+  //     ep20=kyuuren（won9＝優勝後エピローグ）＝team＝グレーアウトの最終局に確定のない一打→『誤差も、
+  //     悪くない』。2026-07 テンポ改修＝凌雲/ドラニエル編と同型。
   yobinin: [
     { id: "chin-iki",         oppLv: 3 },                        // 個人（三人打ち）・ep11（won1）
     { id: "menzen-kaiken",    oppLv: 4 },                        // 個人・ep12フィナーレ（師弟対峙／won2）
@@ -128,8 +132,8 @@ export const MENTOR_CAMPAIGN = {
     // 団体（弟子＋ルクス・ゼロ＋賭羽ルイナ）。ep17でトリオ結成＝その章を読むまで挑めない。
     { id: "daisanken",        oppLv: 8, requireScenario: "mentor-yobinin-bond-17" },
     { id: "tenchi-shingyoku", oppLv: 9 },                        // ペア（オフスクリーン）
-    { id: "tenankou",         oppLv: 9 },                        // 団体・ep19「運の隣に立つ」（won7）
-    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ルクス＋ルイナのトリオで九蓮宝士
+    { id: "tenankou",         oppLv: 9 },                        // 団体・ep19「運の隣に立つ」（won8・二幕構成）
+    { id: "kyuuren-houtou",    oppLv: 11, finalFormat: "team" }, // 弟子＋ルクス＋ルイナのトリオで九蓮宝士（ep20=won9）
   ],
 };
 
@@ -156,10 +160,10 @@ export const MENTOR_FINALE_SCENARIO = {
 export const MENTOR_EPILOGUE_SCENARIO = {
   shiyue: "mentor-shiyue-bond-20",
   bibi: "mentor-bibi-bond-20", // 20話＝九蓮宝燈（solo4＝弟子ひとりの卓）の単独優勝を見届け、手を放して見送る。ビビ自身も道へ（殻破り完成）
-  kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝九蓮宝燈を弟子の大捲りで制覇＋後日譚（design/ruina.json）
+  kakeha_ruina: "mentor-kakeha_ruina-bond-20", // 20話「いい目に、する」＝won9（優勝後）解禁。決勝の全貌（大博打大捲り→いい目に、する）＋後日譚（design/ruina.json）
   kuidoshi: "mentor-kuidoshi-bond-20", // 20話「天衣無縫」＝優勝の瞬間から・2人で九蓮宝士・虎の檻ミラーの後日譚（読了でスタッフロール）
   doranie: "mentor-doranie-bond-20", // 20話「最高なのじゃ」＝won9（優勝後）解禁。決勝の全貌（三カン→ドラはぜーんぶぬしのものじゃ→九蓮ツモ）＋口癖の反転＋明るい後日譚（design/doranie.json）
-  yobinin: "mentor-yobinin-bond-20", // 20話「誤差も、悪くない」＝グレーアウトの最終局に確定のない一打・観測継続宣言で幕（design/yobinin.json）
+  yobinin: "mentor-yobinin-bond-20", // 20話「誤差も、悪くない」＝won9（優勝後）解禁。グレーアウトの最終局に確定のない一打・観測継続宣言で幕（design/yobinin.json）
 };
 export function isMentorEpilogue(scenarioId) {
   return Object.values(MENTOR_EPILOGUE_SCENARIO).includes(scenarioId);
