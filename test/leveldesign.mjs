@@ -338,8 +338,10 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
   ok("ルイナ: ep2〜20は前話 scenario_read で連鎖（読了チェーン）",
     rch.slice(1).every((s, i) => readVal(i + 2) === rch[i].scenarioId));
   ok("ルイナ: ep13 はフィナーレ翌月解禁（一気読み防止＝scenario_read_prev_month）", hasType(13, "scenario_read_prev_month"));
-  ok("ルイナ: won階段 ep12=2 / ep17=5 / ep19=7 / ep20=8",
-    wonVal(12) === 2 && wonVal(17) === 5 && wonVal(19) === 7 && wonVal(20) === 8);
+  // 2026-07 テンポ改修（凌雲/ドラニエル編と同型）: ep19=won8（天暗刻決着＋九蓮宝燈杯への送り出し）→
+  // 最終大会の優勝はプレイヤーの手で → ep20=won9（優勝後エピローグ）＝スタッフロールが9つ目の優勝より先に来ない。
+  ok("ルイナ: won階段 ep12=2 / ep17=5 / ep19=8 / ep20=9",
+    wonVal(12) === 2 && wonVal(17) === 5 && wonVal(19) === 8 && wonVal(20) === 9);
 
   // 技Lv＝超越帯（lv-gamble-bet）＝「運命を手繰る」ツモ偏重が宿る（詩玥のlucky-drawメカ流用）
   const rprof = (...ids) => ({ scenarioProgress: ids.map((id) => ({ scenarioId: id })) });
@@ -426,8 +428,10 @@ ok("絆Lv12（いちばん奥の言葉）は余生で届く（40ヶ月目以内�
   ok("ルクス: ep2〜20は前話 scenario_read で連鎖（読了チェーン）",
     ych.slice(1).every((s, i) => readVal(i + 2) === ych[i].scenarioId));
   ok("ルクス: ep13 はフィナーレ翌月解禁（一気読み防止＝scenario_read_prev_month）", hasType(13, "scenario_read_prev_month"));
-  ok("ルクス: won階段 ep11=1 / ep12=2 / ep16=4 / ep17=5 / ep19=7 / ep20=8",
-    wonVal(11) === 1 && wonVal(12) === 2 && wonVal(16) === 4 && wonVal(17) === 5 && wonVal(19) === 7 && wonVal(20) === 8);
+  // 2026-07 テンポ改修（凌雲/ドラニエル編と同型）: ep19=won8（天暗刻決着＋九蓮宝燈杯への送り出し）→
+  // 最終大会の優勝はプレイヤーの手で → ep20=won9（優勝後エピローグ）＝スタッフロールが9つ目の優勝より先に来ない。
+  ok("ルクス: won階段 ep11=1 / ep12=2 / ep16=4 / ep17=5 / ep19=8 / ep20=9",
+    wonVal(11) === 1 && wonVal(12) === 2 && wonVal(16) === 4 && wonVal(17) === 5 && wonVal(19) === 8 && wonVal(20) === 9);
 
   // 技Lv＝超越帯（lv-zero-search）＝運との和解アーク（ep16→6 … ep20→10）と同期
   const yprof = (...ids2) => ({ scenarioProgress: ids2.map((id) => ({ scenarioId: id })) });

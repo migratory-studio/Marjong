@@ -2432,7 +2432,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 7
+        "value": 8
       }
     ],
     "firstReadReward": {
@@ -2498,7 +2498,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 7
+        "value": 8
       }
     ],
     "firstReadReward": {
@@ -2506,7 +2506,7 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 190,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   },
   {
     "scenarioId": "mentor-bibi-bond-20",
@@ -2564,7 +2564,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 8
+        "value": 9
       }
     ],
     "firstReadReward": {
@@ -2630,7 +2630,7 @@ export const SCENARIO_MASTER = [
       },
       {
         "type": "tournament_won",
-        "value": 8
+        "value": 9
       }
     ],
     "firstReadReward": {
@@ -2638,6 +2638,6 @@ export const SCENARIO_MASTER = [
     },
     "sortOrder": 200,
     "isEnabled": true,
-    "scenarioVersion": 1
+    "scenarioVersion": 2
   }
 ];

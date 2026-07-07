@@ -33294,6 +33294,310 @@ export const SCENARIO_LINE_MASTER = [
   {
     "scenarioId": "mentor-kakeha_ruina-bond-19",
     "lineNo": 19,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——数日後。ルイナの行きつけのバーに、一通の招待状が届いた。金の箔押しに、九つの蓮の紋。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-night",
+    "seId": "se-door"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 20,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "へえ。——来たね、九蓮宝燈杯。頂点の卓からの、お呼ばれだ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 21,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "要項の紙は、そっけない一行で結ばれていた。『形式は当日、会場にて告げる』。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 22,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "最後まで、手の内は伏せる、かい。……いいねえ。底の見えない卓ほど、張り甲斐があるってものさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 23,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "ふぉっふぉ、望むところじゃ！　のう、ルイナ、景気づけに賭け金を先に積まぬか？",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 24,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "気が早いよ、あんたは。——それに、あたしが賭けるものなら、とっくに決まってる。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 25,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "紫の流し目が、カウンター越しに、まっすぐこちらへ滑ってくる。躍っていたチップが、指先で、ぴたりと止まった。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 26,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "あんただよ。——この大一番、あたしの張り先は、最初から一つしか、ないのさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 27,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "胸の奥が、じわりと熱を持つ。……応え方なら、もう知っている。グラスを置いて、まっすぐに頷き返した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 28,
+    "backgroundId": "bg-bar",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "その顔じゃ！　ふぉっふぉ、これでこそ賭けよ。——わらわも、ぜーんぶ乗ったぞ！",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "emoteId": "joy"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 29,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "——当日。静まり返った会場に、係員の声が響く。本大会は、三人一組。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
+    "seId": "se-bell"
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 30,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "kakeha_ruina",
+    "speakerNameOverride": null,
+    "text": "三人、ときたか。……ふふ。役者なら、最初から揃ってるさ。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 31,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "kakeha_ruina",
+        "position": "left",
+        "standingId": "smile"
+      },
+      {
+        "characterId": "doranie",
+        "position": "right",
+        "standingId": "smile"
+      }
+    ],
+    "speakerCharacterId": "doranie",
+    "speakerNameOverride": null,
+    "text": "わらわたちのための舞台、というわけじゃな！　腕が鳴るのじゃ！",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-kakeha_ruina-bond-19",
+    "lineNo": 32,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -33312,11 +33616,12 @@ export const SCENARIO_LINE_MASTER = [
     "text": "さあ、いよいよ最後だ。——あんたの『いい目』が、どこまで届くか。あたしも、ドラニエルも、見届けさせてもらうよ。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "bgmId": "bgm-resolve"
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-19",
-    "lineNo": 20,
+    "lineNo": 33,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -33332,10 +33637,11 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "頂(いただき)は、すぐそこ。底の見えない人の隣で、自分の『いい目だ』を握りしめる。——次の卓で、ついに、並んでみせる。",
+    "text": "頂は、すぐそこ。底の見えない人の隣で、自分の『いい目だ』を握りしめる。——この卓で、ついに、並んでみせる。",
     "characterEffect": "none",
     "screenEffect": "none",
-    "effectDurationMs": 0
+    "effectDurationMs": 0,
+    "seId": "se-shuffle"
   },
   {
     "scenarioId": "mentor-kakeha_ruina-bond-20",
@@ -33355,7 +33661,7 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "最後の宝、九蓮宝燈。これを制すれば——九蓮宝士。頂点だ。弟子と、ルイナと、ドラニエル。三人で、その卓に着いた。",
+    "text": "九蓮宝燈杯、決勝。これを制すれば——九蓮宝士。頂点だ。弟子と、ルイナと、ドラニエル。三人で、最後の卓に着いた。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -65484,32 +65790,154 @@ export const SCENARIO_LINE_MASTER = [
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 1,
-    "backgroundId": "bg-hall",
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 33,
+    "backgroundId": "bg-basement",
     "standings": [
       {
         "characterId": "yobinin",
-        "position": "left",
-        "standingId": "default"
-      },
-      {
-        "characterId": "kakeha_ruina",
-        "position": "right",
+        "position": "center",
         "standingId": "default"
       }
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "最後の宝——九蓮宝燈。九つ目の至宝だけは、会場に立つまで、形式が分からない。",
+    "text": "——数日後。地下の解析室に、一通の招待状が届いた。金の箔押しに、九つの蓮の紋。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
-    "bgmId": "bgm-tension"
+    "bgmId": "bgm-night",
+    "seId": "se-door"
   },
   {
-    "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 2,
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 34,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "九蓮宝燈杯。……検証は、最終局面に入る。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 35,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "端末の青い光が、要項の紙面を走査していく。そして——最後の一行で、止まった。『形式は当日、会場にて告げる』。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 36,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "形式、不明。人数、不明。事前の計算、不能。……変数が、多い。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 37,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "かつてのこの人なら、その一行ごと睨みつけていただろう。だが今日の機械は——端末を、静かに閉じた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 38,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "……問題ない。揺らぎは、変数だ。読みに、織り込む。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 39,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": "yobinin",
+    "speakerNameOverride": null,
+    "text": "それに——隣の変数は、実証済みだ。貴殿と、ルイナ。……不足は、ない。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 40,
+    "backgroundId": "bg-basement",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "center",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "平坦な声のまま。けれどそれが、この人なりの信頼の言い方だと、もう知っている。深く、頷き返した。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 41,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65525,15 +65953,16 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "告げられた人数は——『3人』。弟子と、機械と、運命の女。この三人で挑めと、宝が言っている。",
+    "text": "——当日。静まり返った会場に、係員の声が響く。本大会は、三人一組。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
+    "bgmId": "bgm-tension",
     "seId": "se-bell"
   },
   {
-    "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 3,
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 42,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65555,8 +65984,8 @@ export const SCENARIO_LINE_MASTER = [
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 4,
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 43,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65578,8 +66007,8 @@ export const SCENARIO_LINE_MASTER = [
     "effectDurationMs": 0
   },
   {
-    "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 5,
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 44,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65595,7 +66024,30 @@ export const SCENARIO_LINE_MASTER = [
     ],
     "speakerCharacterId": null,
     "speakerNameOverride": null,
-    "text": "計算。計算外。運命。設計図の違う三つの歯車が、頂点の卓に着いた。",
+    "text": "計算。計算外。運命。設計図の違う三つの歯車が、居並ぶ強豪の間を抜けて、頂点の卓へ向かう。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-19",
+    "lineNo": 45,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九つの蓮が繋がるとき、九蓮宝士が生まれる。読みも、保証も、まだ何もない。——ただ、隣に二人いる。卓へ向かう足は、揺れなかった。",
     "characterEffect": "none",
     "screenEffect": "none",
     "effectDurationMs": 0,
@@ -65603,7 +66055,32 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 6,
+    "lineNo": 1,
+    "backgroundId": "bg-hall",
+    "standings": [
+      {
+        "characterId": "yobinin",
+        "position": "left",
+        "standingId": "default"
+      },
+      {
+        "characterId": "kakeha_ruina",
+        "position": "right",
+        "standingId": "default"
+      }
+    ],
+    "speakerCharacterId": null,
+    "speakerNameOverride": null,
+    "text": "九蓮宝燈杯、決勝。計算。計算外。運命。——設計図の違う三つの歯車が、頂点の卓に着いた。",
+    "characterEffect": "none",
+    "screenEffect": "none",
+    "effectDurationMs": 0,
+    "seId": "se-shuffle",
+    "bgmId": "bgm-tension"
+  },
+  {
+    "scenarioId": "mentor-yobinin-bond-20",
+    "lineNo": 2,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65626,7 +66103,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 7,
+    "lineNo": 3,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65649,7 +66126,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 8,
+    "lineNo": 4,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65672,7 +66149,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 9,
+    "lineNo": 5,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65695,7 +66172,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 10,
+    "lineNo": 6,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65718,7 +66195,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 11,
+    "lineNo": 7,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65741,7 +66218,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 12,
+    "lineNo": 8,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65764,7 +66241,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 13,
+    "lineNo": 9,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65787,7 +66264,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 14,
+    "lineNo": 10,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65810,7 +66287,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 15,
+    "lineNo": 11,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65834,7 +66311,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 16,
+    "lineNo": 12,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65857,7 +66334,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 17,
+    "lineNo": 13,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65880,7 +66357,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 18,
+    "lineNo": 14,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65903,7 +66380,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 19,
+    "lineNo": 15,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65926,7 +66403,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 20,
+    "lineNo": 16,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65950,7 +66427,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 21,
+    "lineNo": 17,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65973,7 +66450,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 22,
+    "lineNo": 18,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -65996,7 +66473,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 23,
+    "lineNo": 19,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66019,7 +66496,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 24,
+    "lineNo": 20,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66042,7 +66519,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 25,
+    "lineNo": 21,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66065,7 +66542,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 26,
+    "lineNo": 22,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66088,7 +66565,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 27,
+    "lineNo": 23,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66111,7 +66588,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 28,
+    "lineNo": 24,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66134,7 +66611,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 29,
+    "lineNo": 25,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66157,7 +66634,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 30,
+    "lineNo": 26,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66181,7 +66658,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 31,
+    "lineNo": 27,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66204,7 +66681,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 32,
+    "lineNo": 28,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66227,7 +66704,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 33,
+    "lineNo": 29,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66250,7 +66727,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 34,
+    "lineNo": 30,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66273,7 +66750,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 35,
+    "lineNo": 31,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66297,7 +66774,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 36,
+    "lineNo": 32,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66320,7 +66797,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 37,
+    "lineNo": 33,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66343,7 +66820,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 38,
+    "lineNo": 34,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66367,7 +66844,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 39,
+    "lineNo": 35,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66392,7 +66869,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 40,
+    "lineNo": 36,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66415,7 +66892,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 41,
+    "lineNo": 37,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66438,7 +66915,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 42,
+    "lineNo": 38,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66461,7 +66938,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 43,
+    "lineNo": 39,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66485,7 +66962,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 44,
+    "lineNo": 40,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66508,7 +66985,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 45,
+    "lineNo": 41,
     "backgroundId": "bg-hall",
     "standings": [
       {
@@ -66532,7 +67009,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 46,
+    "lineNo": 42,
     "backgroundId": "bg-basement",
     "standings": [
       {
@@ -66551,7 +67028,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 47,
+    "lineNo": 43,
     "backgroundId": "bg-basement",
     "standings": [
       {
@@ -66569,7 +67046,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 48,
+    "lineNo": 44,
     "backgroundId": "bg-basement",
     "standings": [
       {
@@ -66587,7 +67064,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 49,
+    "lineNo": 45,
     "backgroundId": "bg-basement",
     "standings": [
       {
@@ -66605,7 +67082,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 50,
+    "lineNo": 46,
     "backgroundId": "bg-bar",
     "standings": [
       {
@@ -66630,7 +67107,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 51,
+    "lineNo": 47,
     "backgroundId": "bg-bar",
     "standings": [
       {
@@ -66653,7 +67130,7 @@ export const SCENARIO_LINE_MASTER = [
   },
   {
     "scenarioId": "mentor-yobinin-bond-20",
-    "lineNo": 52,
+    "lineNo": 48,
     "backgroundId": "bg-bar",
     "standings": [
       {
