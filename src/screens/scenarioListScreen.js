@@ -157,7 +157,8 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
         const playFn = () => onPlay?.(s.scenarioId, async () => {
           const fresh = await repository.loadProfile();
           const res = markScenarioRead(fresh, s);
-          if (res.firstRead) await repository.saveProfile(res.profile);
+          // 保存は newlyRead で判断（firstRead=初回ソウルだと、台帳既載時に既読/絆が保存されず詰まる）。
+          if (res.newlyRead) await repository.saveProfile(res.profile);
           // 絆は数値で見せない（CLAUDE.md ピラー1）。Lv 上昇は質的な一言で滲ませる。
           const bondNote = res.bondUp ? "　…師匠との距離が、少し縮まった気がする。" : "";
           await render(res.soul ? `「${s.title}」を読了！　ソウル +${res.soul}${bondNote}` : null);

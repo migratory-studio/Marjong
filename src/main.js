@@ -1325,7 +1325,7 @@ function playFirstChapterThenHome(avatar) {
     onEnd: async () => {
       const fresh = await profileRepo.loadProfile();
       const res = markScenarioRead(fresh, first); // 既読化＋初回ソウル
-      if (res.firstRead) await profileRepo.saveProfile(res.profile);
+      if (res.newlyRead) await profileRepo.saveProfile(res.profile); // 既読/絆が変わったら保存（初回ソウルの有無に依らない）
       openMentorHome();
     },
   });
@@ -3243,7 +3243,7 @@ async function openMentorSub(target, payload) {
       onEnd: async () => {
         const fresh = await profileRepo.loadProfile();
         const res = markScenarioRead(fresh, s);
-        if (res.firstRead) await profileRepo.saveProfile(res.profile);
+        if (res.newlyRead) await profileRepo.saveProfile(res.profile); // 既読/絆が変わったら保存（初回ソウルの有無に依らない）
         rollCreditsIfEpilogue(s.scenarioId, () => openMentorHome({ scenarioRead: { title: s.title, soul: res.soul, bondUp: res.bondUp } }));
       },
     });

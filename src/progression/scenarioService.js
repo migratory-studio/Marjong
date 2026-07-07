@@ -20,10 +20,14 @@ export function isScenarioRead(profile, scenarioId) {
 }
 
 // シナリオを既読化し、初回だけ firstReadReward.soul と（師匠の bond シナリオなら）絆を付与する。
-// 返り値: { profile, firstRead, soul, bondUp }。既読なら profile 不変・firstRead=false。
+// 返り値: { profile, newlyRead, firstRead, soul, bondUp }。既読なら profile 不変・全フラグ false。
+//   newlyRead … 未読→既読へ遷移した（＝この呼び出しで既読フラグ/絆が変わった）。呼び出し側は
+//               これで保存要否を判断すること。firstRead（初回ソウル付与）で判断してはいけない：
+//               rewardLedger はアカウント共通（弟子を消しても残る）なので、同名で作り直す等で
+//               既に台帳にキーがあると firstRead=false になり、既読・絆の更新が保存されず詰まる。
 export function markScenarioRead(profile, scenario) {
   const id = scenario.scenarioId;
-  if (isScenarioRead(profile, id)) return { profile, firstRead: false, soul: 0, bondUp: false };
+  if (isScenarioRead(profile, id)) return { profile, newlyRead: false, firstRead: false, soul: 0, bondUp: false };
 
   let progressed = {
     ...profile,
@@ -49,7 +53,7 @@ export function markScenarioRead(profile, scenario) {
 
   const amount = scenario.firstReadReward?.soul ?? 0;
   const { profile: next, granted } = grantSoulOnce(progressed, ledgerKey(id), amount);
-  return { profile: next, firstRead: granted, soul: granted ? amount : 0, bondUp };
+  return { profile: next, newlyRead: true, firstRead: granted, soul: granted ? amount : 0, bondUp };
 }
 
 // ------------------------------------------------- 解禁済み・未読の章（モーダル通知と大会ゲートの共通土台）
