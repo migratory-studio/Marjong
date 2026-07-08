@@ -58,6 +58,7 @@ import { createAbility } from "./abilities/registry.js";
 import { newRun, enemyUnitForFloor, previewBossChars, seatedAllies, partyOrder, runWiped, survivorCount, rogueliteDamageDeltas, explainRogueliteDamage, handsForType, healParty, rollHangover, rollDraft, carrySlotsFor, REGEN_FRAC, shopStock, buyShopItem, shrineOffers, serializeRun, deserializeRun, recruitCandidates, swapPartyMember, growMaxHp, floorOverride, floorWeightMap, chapterEconomy, rollTableSize, tableSizeLabel, isSoloTable, TABLE_SIZE_DIST, gainAbilitySource, spendAbilitySource, ABILITY_SOURCE_MAX, ROGUELITE_SOLO_PENALTY } from "./roguelite/run.js";
 import { bossMemoryTier, readBossTally, recordBossOutcome, withBossTally } from "./roguelite/bossMemory.js";
 import { chaptersWithState, chapterById, firstChapterId, canOrbUnlock, nextChapterAfter } from "./data/rogueliteChapterMaster.js";
+import { ROGUELITE_BEAT_MASTER, beatForFloor } from "./data/rogueliteBeatMaster.js";
 import { biomeOf, biomeMods, bandOfFloor, biomeEffectChips, biomeForBand } from "./data/rogueliteBiomeMaster.js";
 import { applyCard, applyEffect, clusterDealMul, clusterLevelUp, recomputeClusterCount } from "./roguelite/cardEffects.js";
 import { cardById, isGrantCard, ROGUELITE_CARD_MASTER, clusterOf } from "./data/rogueliteCardMaster.js";
@@ -2074,7 +2075,7 @@ async function startRogueliteRun(partyChars, chapterId = null) {
   applyShopBuffsToRun(run, profile?.rogueliteShopBuffs); // 宝珠ショップで買った恒久バフを開始時に反映
   // ボス記憶（提案B）：プロフィールの通算勝敗をランへ持ち込む（対局前口上の出し分けに使う・ラン内で更新→永続）。
   // 潜行履歴（提案B スライス2）：過去最深・撤退回数を持ち込み、相棒のセリフ ctx（rlVoiceCtx）に効かせる。
-  rogueliteState = { run, bossTally: readBossTally(profile), bestFloor: profile?.roguelite?.bestFloor || 0, retreatCount: profile?.roguelite?.retreats || 0, resolveClimb: profile?.roguelite?.resolve?.climb || 0, chaptersCleared: [...(profile?.roguelite?.chaptersCleared || [])] };
+  rogueliteState = { run, bossTally: readBossTally(profile), bestFloor: profile?.roguelite?.bestFloor || 0, retreatCount: profile?.roguelite?.retreats || 0, resolveClimb: profile?.roguelite?.resolve?.climb || 0, chaptersCleared: [...(profile?.roguelite?.chaptersCleared || [])], beatsSeen: [...(profile?.roguelite?.beatsSeen || [])] };
   setRlRunId(run.seed); // このランのイベントを run_id=seed で束ねる
   rlLog("run_start", { seed: run.seed, party: run.party.map((p) => p.id), ...rlBuffSnap(run) });
   saveRogueliteRun(run); // 中断ランの一時保存（floor1 初期状態）
@@ -2100,7 +2101,7 @@ async function resumeRogueliteRun(run) {
   // ボス記憶（提案B）：再開時もプロフィールから通算勝敗を復元（口上の出し分け用）。
   let resumeProfile = null;
   try { resumeProfile = await profileRepo.loadProfile(); } catch { /* 読込失敗は空タリーで継続 */ }
-  rogueliteState = { run, bossTally: readBossTally(resumeProfile), bestFloor: resumeProfile?.roguelite?.bestFloor || 0, retreatCount: resumeProfile?.roguelite?.retreats || 0, resolveClimb: resumeProfile?.roguelite?.resolve?.climb || 0, chaptersCleared: [...(resumeProfile?.roguelite?.chaptersCleared || [])] };
+  rogueliteState = { run, bossTally: readBossTally(resumeProfile), bestFloor: resumeProfile?.roguelite?.bestFloor || 0, retreatCount: resumeProfile?.roguelite?.retreats || 0, resolveClimb: resumeProfile?.roguelite?.resolve?.climb || 0, chaptersCleared: [...(resumeProfile?.roguelite?.chaptersCleared || [])], beatsSeen: [...(resumeProfile?.roguelite?.beatsSeen || [])] };
   setRlRunId(run.seed); // 再開＝同じ run_id（seed）でログが繋がる
   rlLog("run_resume", { seed: run.seed, floor: run.floor, ...rlBuffSnap(run) });
   try { await charImages.load(run.party.map((m) => m.char).filter((c) => c && !c.isMob)); } catch { /* 画像はフォールバック */ }
@@ -2637,6 +2638,35 @@ async function persistChapterCleared(chapId) {
   } catch { /* 永続失敗は finishRogueliteRun の reached>=clearFloor が拾う（冪等） */ }
 }
 
+// 章の記憶ビート（紙芝居・提案Bナラティブ層）：配役ボス階の本戦を退けた直後、未読なら1本返す。
+// 発火条件＝ボス階×本戦（追撃でない）×勝利（呼び元で runWiped 判定後）×初回（beatsSeen 未収載）。
+function pendingChapterBeat(run) {
+  if (rogueliteState?.floorType?.enemy !== "boss" || rogueliteState?.pursuing) return null;
+  const beat = beatForFloor(run.chapterId, run.floor);
+  if (!beat) return null;
+  if ((rogueliteState?.beatsSeen || []).includes(beat.id)) return null;
+  return beat;
+}
+// 既読化＝観終わったときに刻む（途中でブラウザが落ちたら次回また観られる＝物語を取りこぼさない側に倒す）。
+function markBeatSeenNow(beatId) {
+  if (rogueliteState) {
+    const cur = rogueliteState.beatsSeen || [];
+    if (!cur.includes(beatId)) rogueliteState.beatsSeen = [...cur, beatId];
+  }
+  rlLog("beat_seen", { beat: beatId });
+  persistBeatSeen(beatId);
+}
+async function persistBeatSeen(beatId) {
+  try {
+    const p = await profileRepo.loadProfile();
+    if (!p) return;
+    const cur = Array.isArray(p.roguelite?.beatsSeen) ? p.roguelite.beatsSeen : [];
+    if (cur.includes(beatId)) return;
+    p.roguelite = { ...(p.roguelite || {}), beatsSeen: [...cur, beatId] };
+    await profileRepo.saveProfile(p);
+  } catch { /* 永続失敗＝次回また観られるだけ（既読ロストで物語は失わない） */ }
+}
+
 async function launchRogueliteBattle(run, floorType, opts = {}) {
   teamBattleData = null; humanIndex = 0; selectedRounds = 1; // 東風を外枠に、局数上限で短く決着
   rogueliteState.pursuing = false;
@@ -2838,6 +2868,7 @@ function onRogueliteBattleEnd(result) {
   // 大章 踏破モーメント（提案B §3.1 ＋ ディレクション 2026-06-27）：clearFloor の主（大章ボス）を初めて退けたら、
   //   そこで「クリアで一区切り」＝盛大な踏破演出 → ランを締めて拠点へ帰還する（大章＝完走できる有限ダンジョン）。
   //   ※ F10/F20 等の中ボスは clearFloor でない＝この分岐に入らず、通常どおりドラフトして登り続ける。
+  const afterBeat = () => {
   if (isChapterClearFloorWin(run)) {
     const firstClear = isFirstChapterClear(run);     // 初回だけ「次の記憶が開かれた」＋解禁の永続
     if (firstClear) markChapterClearedNow(run);      // chaptersCleared へ永続（次章解禁）
@@ -2853,6 +2884,25 @@ function onRogueliteBattleEnd(result) {
     });
   } else {
     showDraft();
+  }
+  };
+  // 記憶ビート（提案Bナラティブ層）：配役ボス階の本戦を初めて退けたら、短い群像シーン（紙芝居）を
+  // 一度だけ挟む（B1=F10/B2=F20/B3=F30）。B3 は踏破演出の前＝物語の答え→「踏 破」印の順。
+  // 既読・章外・追撃・通常階は素通り（従来フロー不変）。
+  const beat = pendingChapterBeat(run);
+  if (beat) {
+    showScreen("scenario-screen");
+    playScenario(null, {
+      audio, lines: beat.lines,
+      onEnd: () => {
+        markBeatSeenNow(beat.id);           // 観終わってから既読（途中離脱は次回また観られる）
+        goScreen("roguelite-screen");
+        enterRogueliteAmbience();           // 紙芝居のBGM/背景から館のアンビエンスへ復帰
+        afterBeat();
+      },
+    });
+  } else {
+    afterBeat();
   }
   }; // ← proceedAfterBattle ここまで
 
@@ -2909,6 +2959,8 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false, clear
   const orbsTotal = (profile?.orbs || 0) + orbsEarned;
   // ボス記憶（提案B）：ラン内で最新化した bossTally を保全（mid-runのpersistと競合しても上書きで失わない）。
   const liveBossTally = rogueliteState?.bossTally ?? prev.bossTally ?? {};
+  // 記憶ビート既読も同様にラン内の最新値を保全（mid-run persist の非同期完了を待たない）。
+  const liveBeatsSeen = rogueliteState?.beatsSeen ?? prev.beatsSeen ?? [];
   // 撤退癖（提案B スライス2）：撤退で帰還したランだけ通算撤退回数を+1（相棒のセリフ ctx rlRetreatHabit の源）。
   const nextRetreats = (prev.retreats || 0) + (retreated ? 1 : 0);
   // 大章の解禁（提案B §3.1 ①）：登っていた記憶の踏破階(clearFloor)に届いていれば、その章を踏破済へ。
@@ -2921,7 +2973,7 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false, clear
   // 進捗（到達・通算）は即保存（離脱しても失わない）。引き継ぎは選択後に上書き。
   if (profile) {
     // chaptersUnlocked（宝珠先行解禁）/ resolve（双方向2択の通算）はこのランで触らないが、明示構築のため必ず引き継ぐ（ドロップ防止）。
-    let next = { ...profile, orbs: orbsTotal, roguelite: { bestFloor: best, runs: (prev.runs || 0) + 1, carry: prev.carry || [], bossTally: liveBossTally, retreats: nextRetreats, chaptersCleared: nextCleared, chaptersUnlocked: prev.chaptersUnlocked || [], resolve: prev.resolve || { climb: 0, rest: 0 } } };
+    let next = { ...profile, orbs: orbsTotal, roguelite: { bestFloor: best, runs: (prev.runs || 0) + 1, carry: prev.carry || [], bossTally: liveBossTally, retreats: nextRetreats, chaptersCleared: nextCleared, chaptersUnlocked: prev.chaptersUnlocked || [], resolve: prev.resolve || { climb: 0, rest: 0 }, beatsSeen: liveBeatsSeen } };
     if (coFightExp > 0) for (const m of run.party) next = addCompanionBondExp(next, m.char?.id || m.id, coFightExp);
     try { await profileRepo.saveProfile(next); } catch { /* 保存失敗は無視 */ }
   }
@@ -2953,6 +3005,7 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false, clear
             bossTally: p.roguelite?.bossTally ?? liveBossTally,
             retreats: p.roguelite?.retreats ?? nextRetreats,
             chaptersCleared: p.roguelite?.chaptersCleared ?? nextCleared,
+            beatsSeen: p.roguelite?.beatsSeen ?? liveBeatsSeen,
           };
           await profileRepo.saveProfile(p);
         }
@@ -6384,6 +6437,9 @@ function showDebugMenu() {
       <div class="dbg-row"><label>所持: <span class="dbg-orb-now">…</span></label>
         <button type="button" class="dbg-btn dbg-mini dbg-orb-add" data-orbs="100">+100</button>
         <button type="button" class="dbg-btn dbg-mini dbg-orb-add" data-orbs="300">+300</button></div>
+      <div class="dbg-sec">楼光の館 記憶ビート（紙芝居プレビュー）</div>
+      <div class="dbg-row"><label>再生</label>
+        ${ROGUELITE_BEAT_MASTER.map((b) => `<button type="button" class="dbg-btn dbg-mini dbg-beat" data-beat="${b.id}">${b.title}</button>`).join("")}</div>
       <div class="dbg-note">※ ?debug=tsumoreba 起動時のみ表示／該当キャラでフリー対戦すると反映</div>
     </div>
     <div class="naki-fx" id="dbg-naki-host"></div>
@@ -6451,7 +6507,19 @@ function showDebugMenu() {
       renderYakumanInto(cutinHost, ch, type, { title: ymTitleSel.value, name: ymSel.value }, WIN_CALL_WAIT.yakuman - 100);
     }
   };
-  ov.querySelectorAll(".dbg-btn").forEach((b) => b.addEventListener("click", () => { audio.playClick?.(); play(b.dataset.fx); }));
+  // 記憶ビートのプレビュー再生（実機feel確認用＝本番と同じ playScenario 経路。既読には触れない）。
+  for (const b of ov.querySelectorAll(".dbg-beat")) {
+    b.addEventListener("click", () => {
+      audio.playClick?.();
+      const beat = ROGUELITE_BEAT_MASTER.find((x) => x.id === b.dataset.beat);
+      if (!beat) return;
+      const backTo = document.querySelector(".screen:not(.hidden)")?.id || "home-screen";
+      ov.remove();
+      showScreen("scenario-screen");
+      playScenario(null, { audio, lines: beat.lines, onEnd: () => goScreen(backTo) });
+    });
+  }
+  ov.querySelectorAll(".dbg-btn:not(.dbg-beat)").forEach((b) => b.addEventListener("click", () => { audio.playClick?.(); play(b.dataset.fx); }));
   ov.querySelector(".dbg-close").addEventListener("click", () => { audio.playClick?.(); ov.remove(); });
 }
 

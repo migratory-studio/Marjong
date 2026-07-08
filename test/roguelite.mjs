@@ -1290,4 +1290,48 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   eq(full.coins, 999, "購入不可なら光貨は減らない");
 }
 
+// ---------- 記憶ビート（提案Bナラティブ層・紙芝居マスタ整合）----------
+{
+  const { ROGUELITE_BEAT_MASTER, beatForFloor } = await import("../src/data/rogueliteBeatMaster.js");
+  const { BACKGROUND_MASTER } = await import("../src/data/backgroundMaster.js");
+  const { BGM_MASTER, SE_MASTER } = await import("../src/data/scenarioAudioMaster.js");
+  const { CHARACTER_MASTER } = await import("../src/data/characterMaster.js");
+  const charIds = new Set(CHARACTER_MASTER.map((c) => c.id));
+
+  ok(ROGUELITE_BEAT_MASTER.length >= 3, "ビートが3本以上（B1/B2/B3）");
+  const ids = new Set(ROGUELITE_BEAT_MASTER.map((b) => b.id));
+  eq(ids.size, ROGUELITE_BEAT_MASTER.length, "ビートidはユニーク");
+  for (const b of ROGUELITE_BEAT_MASTER) {
+    const chap = chapterById(b.chapterId);
+    ok(chap && !chap.comingSoon, `${b.id}: 章が実在（comingSoonでない）`);
+    ok(b.floor >= 1 && b.floor <= chap.clearFloor, `${b.id}: floor が章の踏破階以内`);
+    ok(chap.bossFloors && Array.isArray(chap.bossFloors[b.floor]), `${b.id}: 配役ボス階（bossFloors）に一致＝必ずボス戦後に出る`);
+    ok(Array.isArray(b.lines) && b.lines.length >= 3, `${b.id}: 本文がある`);
+    b.lines.forEach((l, i) => {
+      eq(l.lineNo, i + 1, `${b.id}: lineNo 連番`);
+      ok(typeof l.text === "string" && l.text.length > 0 && l.text.length <= 120, `${b.id}#${l.lineNo}: 本文が空でなく長すぎない`);
+      ok(BACKGROUND_MASTER[l.backgroundId], `${b.id}#${l.lineNo}: 背景 ${l.backgroundId} が実在（実リソースのみ方針）`);
+      if (l.bgmId) ok(BGM_MASTER[l.bgmId], `${b.id}#${l.lineNo}: BGM ${l.bgmId} が実在`);
+      if (l.seId) ok(SE_MASTER[l.seId], `${b.id}#${l.lineNo}: SE ${l.seId} が実在`);
+      for (const s of l.standings || []) ok(charIds.has(s.characterId), `${b.id}#${l.lineNo}: 立ち絵 ${s.characterId} が実在`);
+      if (l.speakerCharacterId) {
+        ok(charIds.has(l.speakerCharacterId), `${b.id}#${l.lineNo}: 話者 ${l.speakerCharacterId} が実在`);
+        ok((l.standings || []).some((s) => s.characterId === l.speakerCharacterId), `${b.id}#${l.lineNo}: 話者は立ち絵に出ている`);
+      }
+      // 話者は章の群像（cast）に限る＝相棒(任意キャラ)に台詞を書かない設計制約。
+      if (l.speakerCharacterId) ok(chap.cast.some((c) => c.id === l.speakerCharacterId), `${b.id}#${l.lineNo}: 話者が章の群像`);
+    });
+  }
+  // 章踏破階（F30）にビートがある＝B3「空席の卓」→踏破演出の順が成立する。
+  const mentor = chapterById("mentor");
+  ok(beatForFloor("mentor", mentor.clearFloor), "踏破階にビートB3がある");
+  // 引き当てヘルパ：配役外の階・別章は null。
+  eq(beatForFloor("mentor", 15), null, "配役外の階はビートなし");
+  eq(beatForFloor("memory_two", 10), null, "別章はビートなし");
+  // 師（先代）は名を出さず声だけ＝speakerCharacterId なし・名義は「？？？」。
+  const b3 = beatForFloor("mentor", mentor.clearFloor);
+  const master = b3.lines.find((l) => l.speakerNameOverride === "？？？");
+  ok(master && !master.speakerCharacterId && (master.standings || []).length === 0, "先代は声のみ（立ち絵・キャラid無し）");
+}
+
 console.log(`roguelite.mjs: ${n} checks passed`);

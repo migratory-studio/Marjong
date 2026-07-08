@@ -121,6 +121,24 @@
 
 **次の着手候補**：①scenario-forge で上記要件を実行（姚玖/春嬋 design から）②双方向2択を章intro/群像相槌へ拡張③提案Dの宝珠ショップ本体との統合④踏破演出の F30 実機feel確認＋群像固有 rlChapterClear。
 
+### 2026-07-07 大1章シナリオ確定＋記憶ビート（紙芝居）実装完了
+**握った方針（たたき承認）**：章の縦軸の答え＝「塔の記憶は、亡き師が弟子たちを見ていたまなざし」。
+F30 のペイオフ＝**空席の卓**（空いていたのは“次の世代の席”＝プレイヤーは試されていたのでなく**待たれていた**＝章スケールの反転）。
+師は声のみ（名・顔なし＝正典どおり盛らない）。正典＝`docs/roguelite-ch1-scenario-draft.md`（設計意図）＋`src/data/rogueliteBeatMaster.js`（本文）。
+- **記憶ビート3本**（B1=F10「降りない人」違和感／B2=F20「同期三人」確信／B3=F30「空席の卓」反転→踏破演出へ接続）。
+  姚玖/春嬋は scenario-forge design **確定済みだった**（yao_chu/chun_chan designVersion2）＝確定口調で本実装
+  （姚玖「揃うと、いいな」・春嬋「間に合わせる」の口癖反転を B3 の締めに使用）。
+- **器（S1）**：`rogueliteBeatMaster.js`（lines＝scenarioPlayer 行形式・`beatForFloor`）＋ `playScenario(null,{lines})` インライン再生。
+  発火＝`proceedAfterBattle` 末尾（配役ボス階×本戦×勝利×初回）。B3 は踏破演出モーダルの**前**。
+  既読＝`profile.roguelite.beatsSeen[]`（bossTally と同作法・観終わった時に既読化・finishRogueliteRun で liveBeatsSeen 保全）。
+- **DEBUGプレビュー**：?debug=tsumoreba → 🐛 → 「楼光の館 記憶ビート」で3本を本番同経路（playScenario）再生（既読には触れない）。
+- 回帰：`test/roguelite.mjs` **1424 passed**（ビートマスタ整合＝背景/BGM/SE/立ち絵の実在・話者=章cast限定・先代=声のみ・踏破階にB3）／smoke ✅。
+  実機1280×720で B1/B2/B3 通し再生・立ち絵差分（廃墟→和室の回想で三人）・？？？表示・終了復帰・ノースクロール・コンソールエラー0確認。
+  ※ `roguelite-balance.mjs --assert` は9 passed＋1 FAIL（中堅greedy p10≥55=21）だが **clean tree(HEAD)でも同一再現＝既存ドリフト**
+  （balance simは本変更ファイルを一切importしない）。別途バランス回で扱う。
+- **残（次スライス候補）**：S2「最奥の一局」（章踏破後・シルエット先代と二麻1局の儀式マス）／S3 記憶の欠片（bossTally言語化）／
+  S4 F20ペア掛け合い口上／B4 周回ドリップ（雪辱・通算節目の小記憶片）／大2章題材＝案a「灯を継がぬ者たち」推し（実装しない・たたきのみ）。
+
 ---
 
 ## 1. 現在地（提案A 完了済み）
