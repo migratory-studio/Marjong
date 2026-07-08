@@ -24,8 +24,19 @@ if (process.env.HPCAP) BUFF_TUNE.hpMulCap = Number(process.env.HPCAP); // 累積
 import { shopStock, buyShopItem, shrineOffers } from "../src/roguelite/run.js";
 import { ROGUELITE_CARD_MASTER, RARITY_WEIGHTS, drawCards, cardById } from "../src/data/rogueliteCardMaster.js";
 import { floorTypeById, drawFloorChoices, coinsForClear, forgeCost } from "../src/data/rogueliteFloorMaster.js";
+import { chapterById } from "../src/data/rogueliteChapterMaster.js";
 
 const ASSERT = process.argv.includes("--assert");
+
+// ---- 章別難度の計測（CHAPTER=章id で tuning/bossHpMul を run に適用。未指定=グローバル既定＝従来挙動） ----
+//   例: CHAPTER=memory_two CLEARFLOOR=40 node test/roguelite-balance.mjs --clearrate
+// あわせて宝珠ショップの恒久バフ持ちを ORB=deal:1,take:2,hp:1,coins:1 / CLUSTERCAP=1|2 で模せる
+// （main.js applyShopBuffsToRun と同式。未指定=バフ無し・流派2段＝従来のまま）。
+const CHAP = process.env.CHAPTER ? chapterById(process.env.CHAPTER) : null;
+if (process.env.CHAPTER && !CHAP) { console.error(`CHAPTER=${process.env.CHAPTER} は章マスタに無い`); process.exit(1); }
+const ORB = {}; // {deal,take,hp,coins} 各Lv
+for (const kv of (process.env.ORB || "").split(",").filter(Boolean)) { const [k, v] = kv.split(":"); ORB[k.trim()] = Number(v) || 0; }
+const CLUSTER_CAP = Number(process.env.CLUSTERCAP || 2);
 
 // ---- 校正ノブ（run.js の RL_TUNE を環境変数で上書きして掃引）。深度倍率/上限は本体側で適用される。 ----
 if (process.env.REGEN) RL_TUNE.regenFrac = Number(process.env.REGEN);
@@ -95,8 +106,10 @@ function allyStrengthOf(run, member) {
   s += Math.max(0, (run.skillLevel || 1) - 1) * 4; // スキルLvで能力が強化＝実効プレイ強度UPの近似
   return s;
 }
-function enemyStrengthOf(floor, seed) {
-  return avg(paramsFromLv(localEnemyLv(floor), seed));
+function enemyStrengthOf(floor, seed, lvSlope = null) {
+  // 章tuningの enemyLvSlope があればそれで敵Lvを引く（未指定=従来 TUNE.enemyLvSlope）。
+  const lv = lvSlope != null ? Math.max(1, Math.min(10, Math.round(1 + (floor - 1) * lvSlope))) : localEnemyLv(floor);
+  return avg(paramsFromLv(lv, seed));
 }
 
 // 追撃モーダルの続行判断（近似）：局終わりに着卓2人のHPが健全なら「続ける」＝実入り上乗せを狙う。
@@ -126,9 +139,9 @@ function simBattle(run, rng, floorType) {
   const aStr = (m) => (m.hungover ? m.baseStrength : allyStrengthOf(run, m)); // 二日酔いは付与能力ぶんの底上げ無し
   const strength = [
     aStr(allies[0]),
-    enemyStrengthOf(run.floor, `${run.seed}:e0:${run.floor}`) + lvBump * 6,
+    enemyStrengthOf(run.floor, `${run.seed}:e0:${run.floor}`, run.tuning?.enemyLvSlope) + lvBump * 6,
     aStr(allies[1]),
-    enemyStrengthOf(run.floor, `${run.seed}:e1:${run.floor}`) + lvBump * 6,
+    enemyStrengthOf(run.floor, `${run.seed}:e1:${run.floor}`, run.tuning?.enemyLvSlope) + lvBump * 6,
   ];
   const weights = strength.map((s) => LEAGUE_SIM.weightBase + Math.max(0, s) * LEAGUE_SIM.weightPerStrength);
   const pick = (excl = -1) => {
@@ -258,7 +271,7 @@ const isActive = (policy) => policy !== "none";
 // 戦いの質でスケールした回復（本番 onRogueliteBattleEnd と同じ式）。
 const regenAll = (run, res = {}) => {
   const perf = Math.max(0.25, Math.min(1.3, 0.25 + (res.hpRatio ?? 0.5) * 0.85 + (res.koAny ? 0.25 : 0)));
-  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * TUNE.regenFrac * perf)); // トんだメンバーは回復しない
+  for (const m of run.party) if (m.hp > 0) m.hp = Math.min(m.hpMax, m.hp + Math.round(m.hpMax * ((run.tuning?.regenFrac ?? TUNE.regenFrac)) * perf)); // トんだメンバーは回復しない（章tuningのregenFracを優先）
 };
 
 // 合計HPで競り負けたら、その卓で打っていた2人（着卓メンバー）だけ最大HPのこの割合だけダメージ
@@ -300,10 +313,16 @@ function mkRun({ avatarHpMax, baseStrength, carry = [] }, seed) {
     { id: "pal", char: { id: "pal", abilities: [], stats: { startingPoints: avatarHpMax } }, avatarHpMax, baseStrength },
     { id: "pal2", char: { id: "pal2", abilities: [], stats: { startingPoints: avatarHpMax } }, avatarHpMax, baseStrength },
   ];
-  const run = newRun(party, seed);
-  run.clusterTierCap = 2; // 流派2段目まで解放した「終盤(ショップ解禁後)」の均衡を検証する（既定の1段目はこの上位互換で必ず終了側）。
+  // CHAPTER 指定時は章の tuning/bossHpMul を通す（本体 startRogueliteRun と同経路）。未指定=null＝グローバル既定。
+  const run = newRun(party, seed, CHAP?.id || null, null, null, CHAP?.tuning || null, CHAP ? { bossHpMul: CHAP.bossHpMul ?? null } : null);
+  run.clusterTierCap = CLUSTER_CAP; // 既定2＝流派2段目まで解放した「終盤(ショップ解禁後)」の均衡を検証（CLUSTERCAP=1で無購入を模す）。
   for (const m of run.party) m.baseStrength = baseStrength;
   for (const id of carry) { const c = cardById(id); if (c) applyCard(run, c); }
+  // 宝珠ショップ恒久バフ（ORB env）。main.js applyShopBuffsToRun と同式。
+  if (ORB.deal) run.mods.dealMul = (run.mods.dealMul || 1) * (1 + 0.04 * ORB.deal);
+  if (ORB.take) run.mods.takeMul = (run.mods.takeMul || 1) * Math.max(0.1, 1 - 0.03 * ORB.take);
+  if (ORB.coins) run.coins = (run.coins || 0) + 25 * ORB.coins;
+  if (ORB.hp) { const mul = 1 + 0.03 * ORB.hp; for (const m of run.party) { m.hpMax = Math.round(m.hpMax * mul); m.baseHp = m.hpMax; m.hp = m.hpMax; } }
   return run;
 }
 
