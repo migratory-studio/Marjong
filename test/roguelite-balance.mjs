@@ -5,6 +5,11 @@
 // 実麻雀エンジンは回さず、leagueAutoSim と同じ強度モデル（param平均→局取り重み＋打点分布）で
 // 1局ずつ和了者と点移動を抽選し、run.js の rogueliteDamageDeltas で点棒→HP に写す（本番と同経路）。
 // これで「階層が深いほど敵HPと強度が上がる中、味方がHPを保って踏破し続けられるか」を測る。
+//
+// 2026-07 追撃仕様（2bc1a9f: 1戦=1ゲーム・1局目必須＋局終わりの追撃モーダルで最大 baseHands 局）に追随：
+// シムは「着卓2人が健全(>0.55)なら続行」でモーダル選択を近似し、追撃の実入り（光貨 pursueMul／
+// ドラフト高レアバイアス）も main.js と同経路で乗せる。経緯と実測の全表は
+// docs/roguelite-balance-recalibration-2026-07.md（深層マラソン問題のディレクター提案も同doc）。
 
 import { makeRng, paramsFromLv, PARAM_KEYS } from "../src/autobattle/autoBattle.js";
 import { LEAGUE_SIM } from "../src/autobattle/leagueAutoSim.js";
@@ -94,10 +99,26 @@ function enemyStrengthOf(floor, seed) {
   return avg(paramsFromLv(localEnemyLv(floor), seed));
 }
 
+// 追撃モーダルの続行判断（近似）：局終わりに着卓2人のHPが健全なら「続ける」＝実入り上乗せを狙う。
+// 実機は任意選択（1局目必須・上限=baseHands）。閾値は旧pursueゲートと同じ0.55。PURSUEGATE env で掃引可。
+const PURSUE_HP_GATE = Number(process.env.PURSUEGATE ?? 0.55);
+// 追撃でドラフトの高レアバイアス(ko扱い +0.35)を得る本番挙動（main.js onRogueliteBattleEnd）。
+// PURSUEDRAFT=0 で切って「実撃破のみバイアス」の what-if を掃引できる（ゲーム側レバー検討用）。
+const PURSUE_DRAFT_BIAS = process.env.PURSUEDRAFT !== "0";
+// 戦後HPの hpMax 超過持ち出し（オーバーヒール）。本番は書き戻しをクランプしない（main.js 2786）＝既定1。
+// OVERHEAL=0 で「器を超えた点棒は持ち出せない」レバーの what-if を掃引できる（実測：効果なし＝regenが実質クランプ）。
+const OVERHEAL_CARRY = process.env.OVERHEAL !== "0";
+// 【未実装機構の what-if】深層の敵和了に「最大HP比の下限ダメージ」を敷く＝lethalCap（上限）の鏡像。
+// 味方HPがカード成長で敵打点を追い越すと理論上ランが終わらなくなる構造への対案。LETHALFLOOR=開始階,傾き
+// （例 "60,0.005"＝F60から1階ごとに+0.5%、上限50%）。未指定＝現行仕様どおり（off）。
+const LF = (process.env.LETHALFLOOR || "").split(",").map(Number);
+const lethalFloorFrac = (floor) => (LF.length === 2 && Number.isFinite(LF[0]))
+  ? Math.min(0.5, Math.max(0, (floor - LF[0]) * LF[1])) : 0;
+
 // ---- 1戦の抽選（leagueAutoSim 流の局取り×打点 → HP写像） ----
-function simBattle(run, rng, floorType, pursue = false) {
+function simBattle(run, rng, floorType) {
   const allies = seatedAllies(run);
-  const enemy = enemyUnitForFloor(run, floorType, pursue ? ":p" : "");
+  const enemy = enemyUnitForFloor(run, floorType, "");
   const roles = ["ally", "enemy", "ally", "enemy"];
   const hp = [allies[0].hp, enemy.members[0].stats.startingPoints, allies[1].hp, enemy.members[1].stats.startingPoints];
   const hpMax = [allies[0].hpMax, hp[1], allies[1].hpMax, hp[3]];
@@ -119,9 +140,15 @@ function simBattle(run, rng, floorType, pursue = false) {
   };
   const allyDownNow = () => hp[0] <= 0 && hp[2] <= 0;
   const enemyDownNow = () => hp[1] <= 0 && hp[3] <= 0;
-  const hands = pursue ? 1 : (floorType?.baseHands || 1);
+  // 1戦＝1ゲーム（2026-06-30 追撃仕様）：1局目は必ず打ち、以降は「局終わり」に続行可否を選べる
+  // （同卓・HP継続・上限=baseHands）。シムは PURSUE_HP_GATE でその選択を近似する。
+  const hands = floorType?.baseHands || 1;
+  let handsPlayed = 0;
   for (let h = 0; h < hands; h++) {
     if (allyDownNow() || enemyDownNow()) break; // 決着（全滅 or 撃破）で即終了
+    // 追撃モーダル：2局目以降は着卓2人が健全なときだけ続行（消耗していたら1局で締める）。
+    if (h > 0 && Math.min(hp[0] / hpMax[0], hp[2] / hpMax[2]) <= PURSUE_HP_GATE) break;
+    handsPlayed += 1;
     if (rng() < LEAGUE_SIM.drawRate) continue;
     const w = pick();
     const tsumo = rng() < LEAGUE_SIM.tsumoRate;
@@ -151,11 +178,14 @@ function simBattle(run, rng, floorType, pursue = false) {
       if (cm > 1.0001) battleMods = { dealMul: cm };
     }
     const hpd = rogueliteDamageDeltas(run, { deltas, roles, winnerSeat: w, hpMax, battleMods }); // 深度倍率/一撃死上限/流派シナジーを本体側で適用
+    // what-if：深層の下限ダメージ（LETHALFLOOR 指定時のみ）。敵和了で払う味方席に最大HP比の最低被ダメを敷く。
+    const lfFrac = roles[w] === "enemy" ? lethalFloorFrac(run.floor) : 0;
+    if (lfFrac > 0) for (let i = 0; i < 4; i++) if (roles[i] === "ally" && hpd[i] < 0) hpd[i] = Math.min(hpd[i], -Math.round(hpMax[i] * lfFrac));
     for (let i = 0; i < 4; i++) hp[i] = Math.max(0, hp[i] + hpd[i]);
   }
-  // 結果反映：味方HPを run へ戻す（回復しない＝消耗が累積する）。
-  allies[0].hp = hp[0];
-  if (allies[1] !== allies[0]) allies[1].hp = hp[2];
+  // 結果反映：味方HPを run へ戻す（回復しない＝消耗が累積する）。本番同様、既定では hpMax 超過も持ち出す。
+  allies[0].hp = OVERHEAL_CARRY ? hp[0] : Math.min(hpMax[0], hp[0]);
+  if (allies[1] !== allies[0]) allies[1].hp = OVERHEAL_CARRY ? hp[2] : Math.min(hpMax[2], hp[2]);
   const allyDown = allyDownNow();
   const enemyDown = enemyDownNow();
   const allyHp = Math.max(0, hp[0]) + Math.max(0, hp[2]);
@@ -164,7 +194,8 @@ function simBattle(run, rng, floorType, pursue = false) {
   // 踏破＝全滅しなければ次へ（生存レース）。撃破(enemyDown)は早期決着＋高レアの燃料。
   const cleared = !allyDown;
   // outHpRace＝合計HPで競り負け。本番 onRogueliteBattleEnd の全員ペナルティ判定に対応。
-  return { cleared, allyDown, enemyDown, koAny: hp[1] <= 0 || hp[3] <= 0, hpRatio: allyFull ? allyHp / allyFull : 0, outHpRace: allyHp < enemyHp };
+  // pursued＝1局で締めず追撃した（実入り上乗せ：光貨 pursueMul＋ドラフト高レアバイアス）。
+  return { cleared, allyDown, enemyDown, koAny: hp[1] <= 0 || hp[3] <= 0, hpRatio: allyFull ? allyHp / allyFull : 0, outHpRace: allyHp < enemyHp, pursued: handsPlayed > 1 };
 }
 
 // ---- ドラフト方針（greedy / none） ----
@@ -254,19 +285,10 @@ function stepFloor(run, rng, policy, floorWins = null) {
   applyHpRacePenalty(run, res, seated); // 合計HP敗北なら着卓2人に20%（全滅判定の前）
   if (runWiped(run)) return false; // ゲームオーバー＝生存1人以下（復活なし）
   run.cleared += 1; regenAll(run, res);
-  run.coins = (run.coins || 0) + coinsForClear({ floor: run.floor, kind: floorType.enemy || "mob", ko: res.koAny }) * (floorType.kind === "gamble" ? 2 : 1);
+  // 実入りは main.js onRogueliteBattleEnd と同経路：追撃で光貨 pursueMul・ドラフトは ko/追撃で高レアバイアス。
+  run.coins = (run.coins || 0) + coinsForClear({ floor: run.floor, kind: floorType.enemy || "mob", ko: res.koAny, pursue: res.pursued }) * (floorType.kind === "gamble" ? 2 : 1);
   const pick = PICKERS[policy];
-  let c = pick(rollDraft(run, { ko: res.koAny, hpRatio: res.hpRatio })); if (c) applyCard(run, c);
-  // 追撃（greedy・HP健全なら pursueMax 回まで）
-  let remaining = floorType.pursueMax || 0;
-  while (isActive(policy) && remaining > 0 && Math.min(...run.party.map((m) => m.hp / m.hpMax)) > 0.55) {
-    const pr = simBattle(run, rng, floorType, true);
-    applyHpRacePenalty(run, pr, seated); // 追撃でも合計HP敗北なら着卓2人に20%
-    if (runWiped(run)) return false; // 追撃中の全滅（生存1人以下）＝没収
-    run.cleared += 1; regenAll(run, pr);
-    c = pick(rollDraft(run, { ko: true, hpRatio: pr.hpRatio })); if (c) applyCard(run, c);
-    remaining -= 1;
-  }
+  const c = pick(rollDraft(run, { ko: res.koAny || (PURSUE_DRAFT_BIAS && res.pursued), hpRatio: res.hpRatio })); if (c) applyCard(run, c);
   run.floor += 1;
   return true;
 }
@@ -286,12 +308,18 @@ function mkRun({ avatarHpMax, baseStrength, carry = [] }, seed) {
 }
 
 // ---- 1ラン（always-continue＝撤退せず限界まで）。深度＝到達フロア(run.floor)。 ----
+// TRACE=1 で10階ごとにパーティ状態（HP/hpMax/強度/スキルLv/主要mods）を標準出力（深層生存の主因調査用）。
 function simRun(profile, seed) {
   const run = mkRun(profile, seed);
   const rng = makeRng(`${seed}:battle`);
   let guard = 0;
   while (guard++ < (Number(process.env.GUARD) || 200)) {
     const before = run.floor;
+    if (process.env.TRACE && run.floor % 10 === 1) {
+      const p = run.party.map((m) => `${Math.round(m.hp / 100)}/${Math.round(m.hpMax / 100)}`).join(" ");
+      const s = allyStrengthOf(run, run.party[0]);
+      console.log(`F${run.floor}\thp(百)=${p}\tstr=${s}\tskillLv=${run.skillLevel}\tdealMul=${(run.mods.dealMul || 1).toFixed(2)}\ttakeReduce=${(run.mods.takeReduce || 0).toFixed(2)}\ttakeCap=${run.mods.takeCap ?? "-"}\tgrants=${run.mods.grantedAbilityIds.length}\tdmgMul=${floorDamageMul(run.floor).toFixed(1)}\tlethal=${(Math.min(1, RL_TUNE.lethalCapBase + Math.max(0, run.floor - RL_TUNE.lethalCapFadeStart) * RL_TUNE.lethalCapFadeSlope)).toFixed(2)}`);
+    }
     if (!stepFloor(run, rng, profile.picker || "none")) break;
     // 館の気脈：フロアを進むほど味方の最大HPも緩やかに底上げ（本番 growMaxHp と同経路）。
     // 既定は本番値 FLOOR_HP_GROWTH。GROWHP env を渡すとその値で掃引（本番ロジックを一時上書き）。
@@ -425,13 +453,17 @@ function assertTargets() {
   const midNone = montecarlo({ ...TIERS[1], picker: "none" }, N);
   const strong = montecarlo({ ...TIERS[2], picker: "greedy" }, N);
   const weak = montecarlo({ ...TIERS[0], picker: "none" }, N);
-  // 目標帯（翻数係数モデル・深度＝到達フロア）。一撃死クジを廃し「点棒の殴り合い＝深く潜れる」へ再校正。
-  //   ねらい：無バフでも数十階・バフ＋育成で100階級（"100いっちゃってOK"）。最適化の神引きは尾を引くが
-  //   現実的プレイ(p10〜median)が指標。深度バンドは尾(p90)でなく median/p10 で締める。
-  ok(midNone.median >= 25 && midNone.median <= 85, `無策(中堅none) 数十階で消耗死 25〜85 (=${midNone.median})`);
-  ok(midNone.p10 >= 15, `不運な無策でも序盤即死しない p10≥15 (=${midNone.p10})`);
+  // 目標帯（翻数係数モデル・深度＝到達フロア）。2026-07 追撃仕様（1戦=最大2〜3局・任意続行）への
+  // シム追随で再校正（詳細: docs/roguelite-balance-recalibration-2026-07.md）。
+  //   ・製品のランは大章クリア階（F30/F40）で帰還する有限ダンジョン（6f18643）＝深度は「F30/F40へ
+  //     どれだけ余裕をもって届くか」の proxy。深度バンドは尾(p90)でなく median/p10 で締める。
+  //   ・深度は GUARD=200 で打ち切り＝201 は「F200超」の意（非打ち切り実測 中堅greedy median≒316）。
+  ok(midNone.median >= 18 && midNone.median <= 60, `無策(中堅none) 数十階で消耗死 18〜60 (=${midNone.median})`);
+  ok(midNone.p10 >= 13, `不運な無策でも序盤即死しない p10≥13 (=${midNone.p10})`);
   ok(mid.median >= midNone.median + 30, `バフ＋進路選択が無策より遥かに深い (+30超: ${mid.median} vs ${midNone.median})`);
-  ok(mid.median >= 90 && mid.median <= 260, `中堅greedy median 90〜260（100階級で必ず終わる帯） (=${mid.median})`);
+  // 下限90＝「コミットした中堅がF30/F40を余裕で踏破できる地力」の proxy。上限は GUARD 打ち切りで
+  // 実質検査不能（深層マラソン問題＝エンドレス復活時の宿題。ディレクター判断待ち。同docの提案①参照）。
+  ok(mid.median >= 90, `中堅greedy median ≥90（F30/F40有限ダンジョンを余裕で踏破する proxy） (=${mid.median})`);
   ok(mid.p10 >= 55, `中堅greedy は安定して深く潜れる p10≥55 (=${mid.p10})`);
   ok(strong.median >= mid.median - 10, `育成完了 ≳ 中堅 (${strong.median} ≳ ${mid.median})`);
   ok(weak.median <= midNone.median + 5, `弱弟子(none) ≲ 中堅(none) (${weak.median} ≲ ${midNone.median})`);
@@ -441,8 +473,10 @@ function assertTargets() {
   for (const cl of ["flush", "guard", "tempo", "value", "gamble"]) clMeds[cl] = montecarlo({ ...TIERS[1], picker: cl }, CN).median;
   const cv = Object.values(clMeds);
   const clLo = Math.min(...cv), clHi = Math.max(...cv);
+  // ※ 深度が GUARD 打ち切り(201)に張り付くとスプレッドは 1.0 側へ寄る（=検査が甘くなる）。
+  //   打ち切り前の帯で開いた場合（弱体化の回帰）は従来どおり検出できる。
   ok(clHi / Math.max(1, clLo) <= 1.5, `流派間スプレッド hi/lo ≤1.5＝一意最適解なし (=${(clHi / clLo).toFixed(2)} ${JSON.stringify(clMeds)})`);
-  ok(cv.every((m) => m >= 70 && m <= 260), `各流派が成立帯(70〜260)で必ず終わる (=${JSON.stringify(clMeds)})`);
+  ok(cv.every((m) => m >= 70), `各流派が成立帯(≥70)に届く (=${JSON.stringify(clMeds)})`);
   ok(cv.every((m) => m >= midNone.median + 20), `各流派が無策より明確に深い (+20超 vs none=${midNone.median}: ${JSON.stringify(clMeds)})`);
   // レア度（bias0）
   const cnt = { common: 0, rare: 0, epic: 0, legendary: 0 }; const RN = 30000;
