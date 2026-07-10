@@ -81,9 +81,10 @@ export const ROGUELITE_CHAPTER_MASTER = [
     subtitle: "第二の記憶",
     blurb: "まだ、ここには何も刻まれていない。やがて新たな記憶が、この塔に綴られる。",
     aim: "",
-    // 群像＝ボス配役から立つ3人（ディレクション確定 2026-07-09）。物語・title等は引き続き未定。
+    // 群像＝ボス配役から立つ3人（2026-07-09確定→07-10 ルクス⇔焔交換＝全員gambler「炎を賭す者たち」）。
+    // プロット正典＝docs/roguelite-ch2-scenario-plot.md（タイトルD案「炎を賭す者たちの記憶」・ビートはたたき）。
     cast: [
-      { id: "yobinin", name: "ルクス・ゼロ" }, { id: "kakeha_ruina", name: "賭羽ルイナ" }, { id: "doranie", name: "ドラニエル" },
+      { id: "homura", name: "焔" }, { id: "kakeha_ruina", name: "賭羽ルイナ" }, { id: "doranie", name: "ドラニエル" },
     ],
     unlock: "mentor",
     // ── 難易度はディレクション確定（2026-07-08初版→2026-07-09 新シム[追撃モーダル追随 8c60084]で再校正）。
@@ -96,14 +97,15 @@ export const ROGUELITE_CHAPTER_MASTER = [
     //    実測（中堅greedy・N=800）：大1章F30=96.4%に対し 無宝珠78.5%／宝珠若干+4.3pt／フル+9.1pt。
     //    再検証: CHAPTER=memory_two CLEARFLOOR=40 CLUSTERCAP=1 node test/roguelite-balance.mjs --clearrate
     clearFloor: 40,
-    // フロア別ボス配役（ディレクション確定 2026-07-09）。門は名もなき手練れが固め、
+    // フロア別ボス配役（2026-07-09確定→07-10 F30をルクス→焔へ交換）。門は名もなき手練れが固め、
     // 塔の核心（F30〜）でようやく「顔」が現れる段階構成：
-    //   F10・F20＝ネームドモブ2枠（無名の門番）／F30＝ネームドモブ＋ルクス・ゼロ／F40＝賭羽ルイナ＋ドラニエル（大詰め・相棒同卓）。
+    //   F10・F20＝ネームドモブ2枠（灰＝賭けて燃え尽きた無名の門番）／F30＝ネームドモブ＋焔（燃えたままの火）／
+    //   F40＝賭羽ルイナ＋ドラニエル（大詰め・配る者と自称天使）。
     //   配役キャラが編成中なら自動でモブに退避（run.js plannedBossSlots）。
     bossFloors: {
       10: ["$mob", "$mob"],
       20: ["$mob", "$mob"],
-      30: ["$mob", "yobinin"],
+      30: ["$mob", "homura"],
       40: ["kakeha_ruina", "doranie"],
     },
     tuning: {
