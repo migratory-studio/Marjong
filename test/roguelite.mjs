@@ -1022,6 +1022,34 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   const pairTexts = ["kakeha_ruina", "doranie", "shiyue", "kuidoshi"].flatMap((id) =>
     (CHARACTER_VOICE_MASTER[id] || []).filter((e) => e.event === "rlBossIntroPair" || e.event === "rlBossIntroPairReply").map((e) => e.text)).join(" ");
   ok(!/いい目に、する|ぬしらと打つ麻雀|誤差も、悪くない/.test(pairTexts), "ペア口上に口癖の反転形が無い");
+
+  // 大2章の章文脈ドリップ（scenario-forge rouko-ch2 パイプライン産・2026-07-11 取り込み）：
+  //   rlChapter:"memory_two" 条件付きラインが4キャラに存在し、章外の抽選には決して混ざらない。
+  {
+    const ch2LineCount = (id) => (CHARACTER_VOICE_MASTER[id] || []).filter((e) => e.cond?.rlChapter === "memory_two").length;
+    for (const [id, min] of [["homura", 9], ["kakeha_ruina", 9], ["doranie", 9], ["shiyue", 6]]) {
+      ok(ch2LineCount(id) >= min, `大2章 章文脈ライン ≥${min}: ${id} (=${ch2LineCount(id)})`);
+    }
+    // ボス側3人は章文脈の rlBossIntro 上乗せで各tier3本以上（既存固有≥1＋rouko-ch2の章文脈2）。
+    for (const id of ["homura", "kakeha_ruina", "doranie"]) {
+      for (const tier of ["first", "rematch", "revenge"]) {
+        const n = (CHARACTER_VOICE_MASTER[id] || []).filter((e) => e.event === "rlBossIntro" && e.cond?.bossMemoryTier === tier).length;
+        ok(n >= 3, `rlBossIntro ${tier} が厚い: ${id} (=${n})`);
+      }
+    }
+    // 章条件付きの本文は章外（rlChapter 未供給）の抽選候補に決して入らない（cond不一致でフィルタ）。
+    const ch2Texts = new Set((CHARACTER_VOICE_MASTER.shiyue || []).filter((e) => e.cond?.rlChapter === "memory_two").map((e) => e.text));
+    let leaked = false;
+    for (let i = 0; i < 80; i++) if (ch2Texts.has(pickVoiceLine("shiyue", "rlChapterIntro", {}))) { leaked = true; break; }
+    ok(!leaked, "大2章の章文脈ラインは章外の rlChapterIntro に漏れない");
+    // 反転形・懲罰語・システム用語の総ざらい（4キャラの全 rl* ライン）。
+    const allRl = ["homura", "kakeha_ruina", "doranie", "shiyue"].flatMap((id) =>
+      (CHARACTER_VOICE_MASTER[id] || []).filter((e) => e.event.startsWith("rl")).map((e) => e.text)).join(" ");
+    ok(!/いい目に、する|ぬしらと打つ麻雀|誤差も、悪くない/.test(allRl), "rl系全ラインに口癖の反転形が無い");
+    const ch2All = ["homura", "kakeha_ruina", "doranie", "shiyue"].flatMap((id) =>
+      (CHARACTER_VOICE_MASTER[id] || []).filter((e) => e.cond?.rlChapter === "memory_two").map((e) => e.text)).join(" ");
+    ok(!/没収|力尽き/.test(ch2All), "大2章ラインに懲罰語が無い");
+  }
 }
 
 // ---------- 提案B スライス2：相棒が潜行履歴に反応（固有性）＋群像の二人相槌 ----------

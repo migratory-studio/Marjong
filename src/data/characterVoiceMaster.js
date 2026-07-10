@@ -102,6 +102,15 @@ const SHIYUE = [
   L("rlBossIntroPair", { pairWith: "kuidoshi" }, "あっ、来たヨ来たヨ！　凌雲、我たちの記憶に挑戦者ネ！"),
   L("rlBossIntroPairReply", { pairWith: "kuidoshi" }, "わかってるヨ！　でも先に楽しみが来ちゃうネ——ツモれば勝ち、ヨ！"),
 
+  // ── 楼光・大2章「炎を賭す者たちの記憶」の章文脈セリフ（scenario-forge rouko-ch2 パイプライン産・2026-07-11）。
+  //    rlChapter/bossMemoryTier 条件付き＝章外では既存汎用へフォールバック。正典=E:/AI/scenario-forge/masters/rouko-ch2.requirements.md
+  L("rlChapterIntro", { rlChapter: "memory_two" }, "今度は、知らない誰かの夜を読む番ネ。我（ウォ）のいない記憶って——なんだか、うずうずするヨ。"),
+  L("rlChapterIntro", { rlChapter: "memory_two" }, "灰ばっかりの層、なんだよネ……ふふ、でもそういう頁ほど、めくった時が楽しみなんダヨ。"),
+  L("rlChapterClear", { rlChapter: "memory_two" }, "最後まで読んだヨ。誰にも見られなかった夜が、こんなに熱いなんて……我（ウォ）、ぜんぶ覚えとくネ。"),
+  L("rlChapterClear", { rlChapter: "memory_two" }, "よその卓の火なのに、我（ウォ）の胸まで移ってきたヨ。ふふ……帰り道、ずっとあったかいネ。"),
+  L("rlWipe", { rlChapter: "memory_two" }, "ここまで、だったネ。でも我（ウォ）は見てたヨ——君の火、ちゃんと燃えてた。次は、もっと派手に燃やそ？"),
+  L("rlWipe", { rlChapter: "memory_two" }, "読みかけの頁で散っただけネ。この夜の続き、我（ウォ）はまだめくりたいヨ——ね、また来よ？"),
+
   // 対局開始
   L("matchStart", {}, "さーて、今日も派手にツモってくヨ。ついてきて、ネ？"),
   L("matchStart", {}, "我（ウォ）のツモ、抜けるもんなら抜いてみるダヨ？　ふふっ。"),
@@ -313,6 +322,26 @@ const RUINA = [
   // 楼光・ボスペア掛け合い口上（相方=ドラニエルのときだけ。口火/受けの両役を持ち、順は run seed で決まる）。
   L("rlBossIntroPair", { pairWith: "doranie" }, "……おや、噂の顔が来たね。ドラニエル、あんたの言ったとおりだ。"),
   L("rlBossIntroPairReply", { pairWith: "doranie" }, "はいはい、乗った。——さあ、あんたの火を見せてもらおうか。"),
+
+  // ── 楼光・大2章「炎を賭す者たちの記憶」の章文脈セリフ（scenario-forge rouko-ch2 パイプライン産・2026-07-11）。
+  //    rlChapter/bossMemoryTier 条件付き＝章外では既存汎用へフォールバック。正典=E:/AI/scenario-forge/masters/rouko-ch2.requirements.md
+  L("rlBossIntro", { bossMemoryTier: "first" }, "初めての顔だね。……いい火だ。灰にしとくには、惜しいくらいだ。"),
+  L("rlBossIntro", { bossMemoryTier: "first" }, "へえ……この夜の底で、まだ火を絶やしてない顔がいたとはね。どれ、値踏みさせてもらうよ。"),
+  L("rlBossIntro", { bossMemoryTier: "rematch" }, "噂は届いてるよ。あんたの夜、もう下の連中の語り草さ。……さあ、続きを綴ろうじゃないか。"),
+  L("rlBossIntro", { bossMemoryTier: "rematch" }, "ふふ、覚えてるよ。あの夜はあんたの取り分だった。……さて、今夜の目は、どう転ぶかね。"),
+  L("rlBossIntro", { bossMemoryTier: "revenge" }, "前の夜を、取り返しに来たね？……いいねえ。負けた夜ほど、いい賭けの種はないのさ。"),
+  L("rlBossIntro", { bossMemoryTier: "revenge" }, "あの夜、忘れてない顔だね。……上等。灰にならない客ってのは、そういう顔をしてるのさ。"),
+  L("rlBossIntroPair", { pairWith: "doranie" }, "ドラニエル、見てごらん。灰の夜を抜けて、ここまで来た火だ。……悪くない賭けになりそうだね。"),
+  L("rlBossIntroPairReply", { pairWith: "doranie" }, "ふふ、はしゃぐじゃないか。……ま、あたしの読みも同じさ。今夜は、いい卓になるよ。"),
+  L("rlChapterIntro", { rlChapter: "memory_two" }, "この層は、灰の匂いが濃いね。……いい賭場の匂いでもある。さ、読みにいこうか、相棒。"),
+  L("rlChapterIntro", { rlChapter: "memory_two" }, "読まれずに積もった夜ってのは、燃え残りの宝の山さ。……あたしらが最初の客だよ。"),
+  L("rlChapterClear", { rlChapter: "memory_two" }, "最後の頁まで、付き合ったね。……もうあんたは他人の夜の客じゃない。——語られる側さ。"),
+  L("rlChapterClear", { rlChapter: "memory_two" }, "いい登りっぷりだった。……あんたの火も、もう配られはじめてる。減りやしないから、安心しな。"),
+  L("rlWipe", { rlChapter: "memory_two" }, "塔に振り落とされた、それだけのことさ。……あんたが灰の夜に点した火は、ちゃんと残ってる。"),
+  L("rlWipe", { rlChapter: "memory_two" }, "ここで読み止し、か。……いいさ、頁は逃げない。あんたの夜も、消えやしないよ。"),
+  L("rlBuff", { rlChapter: "memory_two" }, "お、いい拾い物だ。灰の夜にも、張り札は落ちてるもんだねえ。"),
+  L("rlPursue", { rlChapter: "memory_two" }, "追い風だ、乗りな。……灰の層じゃ、熾きた火が一番の道しるべさ。"),
+  L("rlRetreat", { rlChapter: "memory_two" }, "卓を立つのかい。……いい読みだ。火種は懐に入れて、持って帰りな。"),
 
   // 対局開始
   L("matchStart", {}, "さあ、運命のサイは振られた。——あんたも、張りな?"),
@@ -914,6 +943,26 @@ const DORANIE = [
   // 楼光・ボスペア掛け合い口上（相方=ルイナのときだけ）。賭けの加速装置コンビ＝煽って乗せる。
   L("rlBossIntroPair", { pairWith: "kakeha_ruina" }, "のうルイナ! わらわ、この登り手と打ちたいのじゃ! 張るぞ張るぞ!"),
   L("rlBossIntroPairReply", { pairWith: "kakeha_ruina" }, "じゃろう? わらわの目に狂いはないのじゃ! さあ、最高の勝負をしようぞ!"),
+
+  // ── 楼光・大2章「炎を賭す者たちの記憶」の章文脈セリフ（scenario-forge rouko-ch2 パイプライン産・2026-07-11）。
+  //    rlChapter/bossMemoryTier 条件付き＝章外では既存汎用へフォールバック。正典=E:/AI/scenario-forge/masters/rouko-ch2.requirements.md
+  L("rlBossIntro", { bossMemoryTier: "first" }, "ふぉっふぉ、灰の層に新しい火が来たのう！　どれ、ぬしの火、わらわが検分してやるのじゃ！"),
+  L("rlBossIntro", { bossMemoryTier: "first" }, "ふむ、まだ灰を被っておらん火じゃのう。……よし、わらわと張り合うてみるか？　悪くない賭けじゃぞ！"),
+  L("rlBossIntro", { bossMemoryTier: "rematch" }, "また会うたのう！　わらわの負けた夜、灰の連中がもう語っておるそうな。ふぉっふぉ、愉快じゃ！"),
+  L("rlBossIntro", { bossMemoryTier: "rematch" }, "ぬしとの卓、天界の退屈が吹き飛ぶ面白さでのう！　ささ、座れ座れ！　続きを張ろうぞ！"),
+  L("rlBossIntro", { bossMemoryTier: "revenge" }, "前はわらわが飛ばしたのう。……なに、根に持つでない。次はぬしの目が熾きる番かもしれんぞ？"),
+  L("rlBossIntro", { bossMemoryTier: "revenge" }, "負けた夜を取り返しに来たか！　それでこそ賭け手よ——灰の層でいちばんの大勝負と参ろうぞ！"),
+  L("rlBossIntroPair", { pairWith: "kakeha_ruina" }, "見よルイナ、ここまで登ってきた火じゃ！　灰に埋もれさすには惜しかろう？　わらわはこの目に賭ける！"),
+  L("rlBossIntroPairReply", { pairWith: "kakeha_ruina" }, "待ちかねたぞ！　この夜は、天界の帳面に載せてやろう。——心して張るがよい！"),
+  L("rlChapterIntro", { rlChapter: "memory_two" }, "灰の積もる層じゃと？　上等よ。わらわとぬしで、端から読んでやろうぞ！"),
+  L("rlChapterIntro", { rlChapter: "memory_two" }, "暗い層じゃのう。……なに、ちょうどよい。ぬしの火が映えるというものじゃ！"),
+  L("rlChapterClear", { rlChapter: "memory_two" }, "ふぉっふぉ、灰の層を終いまで読んだぞ！　ぬしの夜はもう、名もなき連中のいちばんの土産よ！"),
+  L("rlChapterClear", { rlChapter: "memory_two" }, "登り仕舞いじゃ！　のう、気づいたか？　顔のなかった影ども、別れ際はみな、ぬしを向いておったぞ！"),
+  L("rlWipe", { rlChapter: "memory_two" }, "灰をかぶっただけじゃ、消えてはおらんぞ。ぬしの夜はもう誰かが覚えておる。——また燃やしに来ようぞ！"),
+  L("rlWipe", { rlChapter: "memory_two" }, "むう、今夜はここまでかのう。なに、しょげるでない！　賭けた火は灰の下で熾きておるわ。次で拾うのじゃ！"),
+  L("rlBuff", { rlChapter: "memory_two" }, "おお、灰の中から掘り出し物じゃ！　ぬし、火種を見つける才があるのう！"),
+  L("rlPursue", { rlChapter: "memory_two" }, "追うのじゃ！　熾きた火は、冷める前に賭けるが吉ぞ！"),
+  L("rlRetreat", { rlChapter: "memory_two" }, "退くのも手じゃ。火は消すでないぞ——懐で温めて、また張りに来ればよいのじゃ！"),
 
   L("matchStart", {}, "ふぉっふぉ、始めようぞ! 下界の麻雀は、最高じゃのう!"),
   L("matchStart", {}, "さあ張れ張れ! わらわが、派手に荒らしてやるぞ!"),
@@ -1602,6 +1651,24 @@ const NEBULA = [
 // 1巡目に全てを賭ける博打型。満貫以上で1.5倍、未満は固定点の諸刃。熱血の男・一人称「俺」。
 // 火のモチーフ全開で、負けても絶対に湿らない。安手には本気で悔しがる。
 const HOMURA = [
+
+  // ── 楼光・大2章「炎を賭す者たちの記憶」の章文脈セリフ（scenario-forge rouko-ch2 パイプライン産・2026-07-11）。
+  //    rlChapter/bossMemoryTier 条件付き＝章外では既存汎用へフォールバック。正典=E:/AI/scenario-forge/masters/rouko-ch2.requirements.md
+  L("rlBossIntro", { bossMemoryTier: "first" }, "おう、新顔! いい火ィ持ってんな。この灰ん中を、そいつでどこまで照らせる? ……見せてみろよ、でかいやつをさ"),
+  L("rlBossIntro", { bossMemoryTier: "first" }, "ここだけ明るくて驚いたか? 俺が毎晩燃やしてる卓だ。……登ってきた火なら、遠慮すんな。卓はあったまってるぜ"),
+  L("rlBossIntro", { bossMemoryTier: "rematch" }, "また来たか! お前に燃やされたあの夜な、灰の連中がもう語ってやがるぜ。……なら俺は、賭け直すだけよ"),
+  L("rlBossIntro", { bossMemoryTier: "rematch" }, "前はお前の火のほうがでかかった。……けどな、俺の卓は毎晩燃えてんだ。今夜の俺は、あの夜より熱いぜ"),
+  L("rlBossIntro", { bossMemoryTier: "revenge" }, "前の夜は、よく燃えたなあ。……取り返しに来たんだろ? 来いよ。今夜はもっとでかく燃やしてやる"),
+  L("rlBossIntro", { bossMemoryTier: "revenge" }, "あの夜のお前の顔、覚えてるぜ。悔しさってのはな、一等いい薪なんだ。……くべて来いよ、全部"),
+  L("rlChapterIntro", { rlChapter: "memory_two" }, "辛気くせえ灰の層だぜ。……だからこそ、だろ? 湿気た夜ごとまとめて、燃やしに行こうや。ついて来な、相棒!"),
+  L("rlChapterIntro", { rlChapter: "memory_two" }, "誰にも見られなかった夜、か。……なら俺らが読みに行こうぜ。火ぃ点けりゃ、顔まで見えるようになるさ"),
+  L("rlChapterClear", { rlChapter: "memory_two" }, "読み切ったな、相棒! 誰にも見られなかった夜が、今夜はちゃんと燃えてた。……いい火だったなあ。俺、忘れねえよ"),
+  L("rlChapterClear", { rlChapter: "memory_two" }, "登り切っちまったな。……なあ、わかったぜ。灰ってのは消えた火じゃねえ、まだ熾きてる火なんだ。この層、嫌いじゃなくなったよ"),
+  L("rlWipe", { rlChapter: "memory_two" }, "灰を浴びただけだ、しけた顔すんな! 見てきただろ、灰の下でも火は熾きてる。……俺たちの夜も、ちゃんと残ってるぜ"),
+  L("rlWipe", { rlChapter: "memory_two" }, "今夜の火は塔に預けた、それだけのことよ。湿気てる暇はねえぜ——次の夜の焚きつけは、もう俺たちの中にある"),
+  L("rlBuff", { rlChapter: "memory_two" }, "おっ、いいもん拾ったな! 夜はまだ長え——火力の足しにしてこうぜ!"),
+  L("rlPursue", { rlChapter: "memory_two" }, "追うぞ、相棒! 火の回りがいい夜は、燃やし切るまで止まんねえのが礼儀だぜ!"),
+  L("rlRetreat", { rlChapter: "memory_two" }, "退くか……いいぜ、それも火の使い方だ。灰を増やすだけの夜なら、火種ごと持って帰ろうや"),
   L("matchStart", {}, "燃えてきたぜ……! さあ勝負だ! 一巡目から全部懸ける!"),
   L("matchStart", {}, "火は点けた。あとは燃え上がるだけだ——行くぞ!"),
   L("agari", { scoreTier: "yakuman" }, "役満だぁッ!! 見たか、これが俺の炎だ!!"),

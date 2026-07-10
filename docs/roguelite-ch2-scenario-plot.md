@@ -199,5 +199,8 @@ bg-rain・bg-bar・黒で受ける。bg-festival の昼の明るさは「灰の�
    2026-07-10。語彙拡張＝rouko-ch1 §2 の残置分と ch2 追加event（rlChapterClear/rlBossIntroPair/Reply・cond rlChapter/pairWith）を
    一括登録する指示込み）。
 5. ✅ S2 F40ペア掛け合い口上（§5参照・詩玥×凌雲も同時実装）。
-6. 残：forge パイプライン実行（brief→writer→validate→lore-check→emit→本体取り込み）。
+6. ✅ forge パイプライン実行（2026-07-11）＝writer 4ユニット並行→機械validate→3レンズ審査（口調/正典NG/章文脈）→
+   指摘5行修正（must-fix 1＝ドラニエルのB1先食い、nice 4）→本体 characterVoiceMaster.js へ55行取り込み。
+   基盤整備も同時：voice-vocab.json に rl系12event 登録（ch1残置解消）・validator部分スコープ対応・
+   characters.json 3人同期（ruina/doranie=design v3 apply・焔=scenarioVoiceNote新設）。
 7. 残：実機通し（ビートはDEBUGプレビュー確認済み。F40実ラン通しはテストプレイでも可）。
