@@ -5743,7 +5743,10 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-bossintro-name { font-family: var(--font-min, "Shippori Mincho", serif); font-size: 21px; font-weight: 700; letter-spacing: .06em; color: var(--c, var(--rl-gold)); }
 .rl-bossintro-line { font-size: 14px; line-height: 1.7; color: #d8d2df; max-width: 320px; }
 .rl-bossintro-go { margin-top: 4px; }
-@media (prefers-reduced-motion: reduce) { .rl-bossintro-card { animation: none; } }
+/* ペア掛け合い口上：2人目（受け）のセリフをワンテンポ遅らせて会話に見せる（rlBanter と同じ呼吸） */
+@keyframes rl-pair-reply { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.rl-bossintro-pair .rl-bossintro-boss:nth-child(2) .rl-bossintro-line { opacity: 0; animation: rl-pair-reply .45s ease .95s forwards; }
+@media (prefers-reduced-motion: reduce) { .rl-bossintro-card { animation: none; } .rl-bossintro-pair .rl-bossintro-boss:nth-child(2) .rl-bossintro-line { opacity: 1; animation: none; } }
 
 /* ============================================================
    楼光の館・大章選択ハブ「記憶の塔」（提案B §3.1 ①）

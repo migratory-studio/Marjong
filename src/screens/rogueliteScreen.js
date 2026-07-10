@@ -1180,10 +1180,11 @@ export function showRogueliteChapterClear(container, opts = {}) {
 
 // ---- ボス対局前口上（提案B・「ボスが覚えている」）。tier名はUIに出さず、口上の変化で気づかせる ----
 export function showRogueliteBossIntro(container, opts = {}) {
-  const { bosses = [], floor = 1, charImages = null, onProceed } = opts;
+  const { bosses = [], floor = 1, charImages = null, onProceed, pair = false } = opts;
   if (!container || !bosses.length) { onProceed?.(); return; }
   const ov = document.createElement("div");
-  ov.className = "rl-overlay rl-bossintro";
+  // pair=掛け合い口上（口火→受け）。2人目のセリフをワンテンポ遅らせて「会話」に見せる（CSS側で遅延）。
+  ov.className = `rl-overlay rl-bossintro${pair ? " rl-bossintro-pair" : ""}`;
   const panel = (b) => {
     const c = b.char || {};
     const u = charImages?.url?.(c, "portrait") || charImages?.url?.(c, "icon") || "";

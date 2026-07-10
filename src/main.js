@@ -2570,13 +2570,28 @@ async function showBossIntroThenBattle(run, floorType) {
   const bossChars = previewBossChars(run, floorType);
   if (!bossChars.length) { launchRogueliteBattle(run, floorType); return; }
   const tally = rogueliteState?.bossTally || {};
-  const bosses = bossChars.map((c) => ({
+  let bosses = bossChars.map((c) => ({
     char: c,
     line: vline(c.id, "rlBossIntro", { bossMemoryTier: bossMemoryTier(tally[c.id]) }),
   }));
+  // ペア掛け合い口上（大1章S4/大2章S2）：配役2人が固有の「口火＋受け」を両方持つコンビのときだけ、
+  // 個別口上を掛け合い（口火→ワンテンポ遅れて受け）へ差し替える。無ければ従来の個別口上のまま。
+  // どちらが口火かは run seed で決まる（両台本を周回で使い分け）。配役キャラ編成中のモブ退避時は
+  // previewBossChars が2人揃わない＝自然にフォールバック。
+  let pair = false;
+  if (bossChars.length === 2) {
+    const rng = makeRng(`${run.seed}:pairintro:${run.floor}`);
+    const [x, y] = bossChars;
+    const orders = rng() < 0.5 ? [[x, y], [y, x]] : [[y, x], [x, y]];
+    for (const [a, b] of orders) {
+      const open = vline(a.id, "rlBossIntroPair", { pairWith: b.id, bossMemoryTier: bossMemoryTier(tally[a.id]) });
+      const reply = open && vline(b.id, "rlBossIntroPairReply", { pairWith: a.id, bossMemoryTier: bossMemoryTier(tally[b.id]) });
+      if (open && reply) { bosses = [{ char: a, line: open }, { char: b, line: reply }]; pair = true; break; }
+    }
+  }
   try { await charImages.load(bossChars.filter((c) => c && !c.isMob)); } catch { /* 画像はフォールバック */ }
   showRogueliteBossIntro(el("roguelite-screen"), {
-    bosses, floor: run.floor, charImages,
+    bosses, pair, floor: run.floor, charImages,
     onProceed: () => launchRogueliteBattle(run, floorType),
   });
 }

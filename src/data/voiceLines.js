@@ -83,6 +83,9 @@ function condMatches(cond, ctx) {
   // bossMemoryTier: 楼光の館・ボスが"覚えている"段階（"first"|"rematch"|"revenge"）。
   // ctx.bossMemoryTier（bossMemory.js の bossMemoryTier で算出）と一致したときだけ候補。未供給は不一致扱い。
   if (cond.bossMemoryTier && cond.bossMemoryTier !== ctx.bossMemoryTier) return false;
+  // pairWith: 楼光の館・ボス2人が特定コンビのときだけ出る掛け合い口上（rlBossIntroPair/Reply）。
+  // ctx.pairWith＝同卓のもう一人の charId。一致したときだけ候補（未供給は不一致扱い）。
+  if (cond.pairWith && cond.pairWith !== ctx.pairWith) return false;
   // ── 楼光の館・相棒が「あなたの潜行履歴」に反応（提案B スライス2／固有性）。供給は src/main.js の rlVoiceCtx ──
   // rlChapter: 登っている記憶（大章）id。章ごとの専用セリフを解放。未供給は不一致扱い。
   if (cond.rlChapter && cond.rlChapter !== ctx.rlChapter) return false;

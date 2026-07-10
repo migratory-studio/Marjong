@@ -1006,6 +1006,22 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   eq(pickVoiceLine("shiyue", "rlBossIntro", {}), null, "tier未指定では rlBossIntro は出ない");
   // 詩玥/凌雲は先行の固有口上を持つ（汎用モックと差し替わっている）。
   ok(pickVoiceLine("shiyue", "rlBossIntro", { bossMemoryTier: "first" }).includes("ツモれば勝ち"), "詩玥は固有のボス口上");
+
+  // ペア掛け合い口上（大1章S4=詩玥×凌雲／大2章S2=ルイナ×ドラニエル）：
+  // 該当コンビのときだけ「口火＋受け」が両方向で解決し、相方違い・未所持キャラは null＝従来の個別口上へ。
+  for (const [a, b] of [["kakeha_ruina", "doranie"], ["shiyue", "kuidoshi"]]) {
+    ok(typeof pickVoiceLine(a, "rlBossIntroPair", { pairWith: b }) === "string", `rlBossIntroPair 口火: ${a}×${b}`);
+    ok(typeof pickVoiceLine(b, "rlBossIntroPairReply", { pairWith: a }) === "string", `rlBossIntroPairReply 受け: ${b}`);
+    ok(typeof pickVoiceLine(b, "rlBossIntroPair", { pairWith: a }) === "string", `rlBossIntroPair 逆順の口火: ${b}×${a}`);
+    ok(typeof pickVoiceLine(a, "rlBossIntroPairReply", { pairWith: b }) === "string", `rlBossIntroPairReply 逆順の受け: ${a}`);
+    eq(pickVoiceLine(a, "rlBossIntroPair", { pairWith: "mamori" }), null, `相方違いはペア口上なし: ${a}`);
+    eq(pickVoiceLine(a, "rlBossIntroPair", {}), null, `pairWith未供給ではペア口上なし: ${a}`);
+  }
+  eq(pickVoiceLine("mamori", "rlBossIntroPair", { pairWith: "shiyue" }), null, "ペア口上を持たないキャラは null＝個別口上フォールバック");
+  // 口癖はそのまま（反転は各師匠編ep20の切り札＝楼光では使わない）。
+  const pairTexts = ["kakeha_ruina", "doranie", "shiyue", "kuidoshi"].flatMap((id) =>
+    (CHARACTER_VOICE_MASTER[id] || []).filter((e) => e.event === "rlBossIntroPair" || e.event === "rlBossIntroPairReply").map((e) => e.text)).join(" ");
+  ok(!/いい目に、する|ぬしらと打つ麻雀|誤差も、悪くない/.test(pairTexts), "ペア口上に口癖の反転形が無い");
 }
 
 // ---------- 提案B スライス2：相棒が潜行履歴に反応（固有性）＋群像の二人相槌 ----------
