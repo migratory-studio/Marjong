@@ -165,15 +165,15 @@ export const ROGUELITE_BEAT_MASTER = [
     lines: buildLines("memory_two-b2", [
       { bg: "bg-ruins", bgm: "bgm-mystery", se: "se-door", stand: [], text:
         "扉の奥——雨に濡れた路地裏の卓。無言で打ち続ける影たち。ここにも、顔はない。" },
-      { bg: "bg-street", stand: [st("doranie", "center")], speaker: "doranie", text:
+      { bg: "bg-rain", stand: [st("doranie", "center")], speaker: "doranie", text:
         "わらわ、天界におった頃は、下界の卓がぜんぶ見えておったのじゃ。" },
-      { bg: "bg-street", stand: [st("doranie", "center")], speaker: "doranie", text:
+      { bg: "bg-rain", stand: [st("doranie", "center")], speaker: "doranie", text:
         "……じゃがな、この層の夜は——天界の帳面にも、無い。" },
-      { bg: "bg-street", stand: [st("doranie", "center")], speaker: "doranie", text:
+      { bg: "bg-rain", stand: [st("doranie", "center")], speaker: "doranie", text:
         "誰も見ておらん。天も見ておらん。そういう夜が、こんなに積もっておったとはのう……。" },
-      { bg: "bg-street", stand: [st("doranie", "center")], text:
+      { bg: "bg-rain", stand: [st("doranie", "center")], text:
         "積もった灰の、ずっと奥。——ひとつだけ、火の色が見える。" },
-      { bg: "bg-street", stand: [st("doranie", "center")], speaker: "doranie", text:
+      { bg: "bg-rain", stand: [st("doranie", "center")], speaker: "doranie", text:
         "……おかしいのじゃ。灰の層のくせに、あそこだけ——燃えたままじゃぞ？" },
       { bg: "bg-ruins", stand: [], text:
         "誰にも見られないまま、燃え続けている火が——この先に、いる。" },
@@ -189,7 +189,7 @@ export const ROGUELITE_BEAT_MASTER = [
     title: "燃えたまま",
     lines: buildLines("memory_two-b3", [
       { bg: "bg-ruins", bgm: "bgm-warm", se: "se-door", stand: [], text:
-        "扉の奥——夜の露店通り。ひとつの卓だけが、明るい。" },
+        "扉の奥——賑わう露店通り。この灰の層で、ここだけが——真昼のように、明るい。" },
       { bg: "bg-festival", stand: [], text:
         "卓を囲む顔が、見える。灰の層で初めて見る、名もなき者たちの顔。——火が、照らしている。" },
       { bg: "bg-festival", stand: [st("homura", "center")], speaker: "homura", text:
