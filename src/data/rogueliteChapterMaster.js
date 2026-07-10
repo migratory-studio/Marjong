@@ -88,8 +88,8 @@ export const ROGUELITE_CHAPTER_MASTER = [
     ],
     unlock: "mentor",
     // ── 難易度はディレクション確定（2026-07-08初版→2026-07-09 新シム[追撃モーダル追随 8c60084]で再校正）。
-    //    中身（cast/bossFloors/物語）は引き続き未定＝埋めない。
-    //    設計意図・実測データ・再検証手順は docs/roguelite-ch2-difficulty-design.md が正典。
+    //    cast/bossFloors/物語（記憶ビート）も確定済み（2026-07-10 開通）＝この章は遊べる。
+    //    難度の設計意図・実測データ・再検証手順は docs/roguelite-ch2-difficulty-design.md が正典。
     //    形：被ダメ深度はF1〜25ほぼ大1章並み、F28から二次加速＋F27から一撃死上限フェード。
     //    ただし新シム校正の主役は深度倍率でなく「安手の削り」(hanTier底上げ)＋踏破回復の絞り(regen 0.20)。
     //    追撃仕様下では“痛くする→続行を控える→総被弾減”の相殺で深度倍率単独は壁にならない

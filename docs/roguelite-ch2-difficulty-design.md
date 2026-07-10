@@ -1,7 +1,7 @@
 # 楼光の館・大2章 難易度設計（F40踏破）
 
 **ステータス**: ディレクション確定（2026-07-08初版 → **2026-07-09 新シムで再校正済み**）。数値は `src/data/rogueliteChapterMaster.js` の `memory_two` に結線済み。
-**スコープ**: 難易度＋ボス配役。物語（title / blurb / aim / tone演出 / 記憶ビート）は未定のまま＝`comingSoon: true` を維持し、章は封じたまま。
+**スコープ**: 難易度＋ボス配役（本書の正典範囲）。物語（title / blurb / 記憶ビートB1-B4）は 2026-07-10 に確定・実装済み＝`comingSoon` 解除で章は開通（シナリオ正典＝docs/roguelite-ch2-scenario-plot.md）。
 
 **ボス配役**（2026-07-09確定→07-10 F30をルクス→焔へ交換）: F10・F20＝ネームドモブ×2（無名の門番）／F30＝ネームドモブ＋焔(homura)／F40＝賭羽ルイナ(kakeha_ruina)＋ドラニエル(doranie)。塔の核心で初めて「顔」が現れる段階構成。cast＝この3人＝**全員gambler**（bossPoolフォールバック兼章紹介の群像）。配役キャラが編成中なら自動でモブ退避（既存挙動）。シナリオ正典＝docs/roguelite-ch2-scenario-plot.md（「炎を賭す者たちの記憶」）。
 
