@@ -1067,7 +1067,7 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
 // ---------- 提案B 大章（記憶）選択ハブ：マスタ整合＋解禁ツリー ----------
 {
   // マスタ整合：id一意・必須文言・tone妥当・unlock参照は実在id・clearFloor>0。
-  // ※ 大2章は comingSoon（空＝予告枠）なので aim/cast/blurb は緩める（中身を勝手に増やさない方針）。
+  // ※ 大2章は 2026-07-10 開通（「炎を賭す者たちの記憶」・comingSoon 解除）＝全playable章に cast/文言を要求。
   const cids = new Set();
   const validTones = new Set(["gold", "jade", "ember", "ash"]);
   for (const ch of ROGUELITE_CHAPTER_MASTER) {
@@ -1087,19 +1087,26 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   const ch1cast = new Set((chapterById(firstChapterId()).cast || []).map((p) => p.id));
   for (const id of ["shiyue", "kuidoshi", "mamori", "yao_chu", "chun_chan"]) ok(ch1cast.has(id), `大1章 cast に ${id} を含む`);
 
-  // 解禁ロジック：踏破有無に関わらず、遊べるのは大1章のみ（大2章は comingSoon＝常に封）。
+  // 解禁ロジック：踏破0なら遊べるのは大1章のみ。大2章は大1章踏破で開く（解禁ツリー）。
   const open0 = chaptersWithState([]);
   eq(open0.filter((c) => c.unlocked).length, 1, "踏破0なら解禁は1本だけ");
   ok(open0.find((c) => c.id === firstChapterId()).unlocked, "踏破0でも最初の記憶は解禁");
-  const coming = ROGUELITE_CHAPTER_MASTER.find((c) => c.comingSoon);
-  ok(coming, "大2章＝comingSoon プレースホルダが存在（空）");
-  ok(!isChapterUnlocked(coming, []), "comingSoon は未踏破では封");
-  ok(!isChapterUnlocked(coming, [firstChapterId()]), "comingSoon は大1章踏破でも開かない（中身が空）");
+  const ch2 = chapterById("memory_two");
+  ok(ch2 && !ch2.comingSoon, "大2章は開通済み（炎を賭す者たちの記憶）");
+  eq(ch2.title, "炎を賭す者たちの記憶", "大2章タイトル（D案・2026-07-10確定）");
+  ok(!isChapterUnlocked(ch2, []), "大2章は未踏破では封");
+  ok(isChapterUnlocked(ch2, [firstChapterId()]), "大1章踏破で大2章が開く");
+  // 配役＝全員gambler（焔/ルイナ/ドラニエル）＋ F30=焔・F40=ルイナ＆ドラニエル。
+  const ch2cast = new Set((ch2.cast || []).map((p) => p.id));
+  for (const id of ["homura", "kakeha_ruina", "doranie"]) ok(ch2cast.has(id), `大2章 cast に ${id} を含む`);
+  eq((ch2.bossFloors[30] || []).join(","), "$mob,homura", "大2章 F30 配役＝モブ＋焔");
+  eq((ch2.bossFloors[40] || []).join(","), "kakeha_ruina,doranie", "大2章 F40 配役＝ルイナ＋ドラニエル");
   eq(chaptersWithState([firstChapterId()]).find((c) => c.id === firstChapterId()).cleared, true, "踏破済フラグが立つ");
   // 大1章の踏破階＝F30（周回案・3ボス群像／2026-06-26）。10だと1ボスで薄い → 30へ。
   eq(chapterById("mentor").clearFloor, 30, "大1章 clearFloor=30（F30踏破）");
-  // 次章解禁ヘルパ：大1章を踏破しても、次は comingSoon（空）なので「開く中身」は無い＝null（踏破演出は予告に留める）。
-  eq(nextChapterAfter("mentor"), null, "mentor の次は comingSoon＝nextChapterAfter は null（嘘の解禁を出さない）");
+  eq(ch2.clearFloor, 40, "大2章 clearFloor=40（F40踏破・難度設計どおり）");
+  // 次章解禁ヘルパ：大1章踏破で「開く中身」＝大2章（踏破演出が解禁を告げられる）。
+  eq(nextChapterAfter("mentor")?.id, "memory_two", "mentor の次＝大2章が開く（2026-07-10 開通）");
   eq(nextChapterAfter(null), null, "nextChapterAfter(null)=null（保険）");
   // newRun は chapterId / bossPool を保持し、serialize/deserialize で往復する。
   const r = newRun([{ id: "shiyue", char: { id: "shiyue" } }], "chap-seed", "mentor", ["kuidoshi", "mamori", "yao_chu"]);
@@ -1325,9 +1332,14 @@ ok(rarityBiasFor({}) >= 0 && rarityBiasFor({ ko: true, hpRatio: 1, floor: 30 }) 
   // 章踏破階（F30）にビートがある＝B3「空席の卓」→踏破演出の順が成立する。
   const mentor = chapterById("mentor");
   ok(beatForFloor("mentor", mentor.clearFloor), "踏破階にビートB3がある");
-  // 引き当てヘルパ：配役外の階・別章は null。
+  // 大2章（2026-07-10 開通）：全配役ボス階（F10/20/30/40）にビートがあり、踏破階＝B4「配られた夜」。
+  const ch2b = chapterById("memory_two");
+  for (const f of [10, 20, 30, 40]) ok(beatForFloor("memory_two", f), `大2章 F${f} にビートがある`);
+  eq(beatForFloor("memory_two", ch2b.clearFloor).id, "memory_two-b4", "大2章の踏破階＝B4（配られた夜）");
+  // 引き当てヘルパ：配役外の階・存在しない章は null。
   eq(beatForFloor("mentor", 15), null, "配役外の階はビートなし");
-  eq(beatForFloor("memory_two", 10), null, "別章はビートなし");
+  eq(beatForFloor("memory_two", 15), null, "配役外の階はビートなし（大2章）");
+  eq(beatForFloor("memory_three", 10), null, "存在しない章はビートなし");
   // 師（先代）は名を出さず声だけ＝speakerCharacterId なし・名義は「？？？」。
   const b3 = beatForFloor("mentor", mentor.clearFloor);
   const master = b3.lines.find((l) => l.speakerNameOverride === "？？？");
