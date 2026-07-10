@@ -180,20 +180,24 @@ bg-rain・bg-bar・黒で受ける。bg-festival の昼の明るさは「灰の�
 
 - **S1. ビートB1〜B4実装**：既存器そのまま（`rogueliteBeatMaster.js` に chapterId:"memory_two"・floor 10/20/30/40 の4本、
   B4は踏破演出の前＝大1章B3と同型）。回帰の話者整合（話者⊆章cast）は現castで通る。**章メタ更新＋comingSoon解除も同時**。
-- **S2. F40ペア掛け合い口上**：大1章S4と同型の掛け合いスロット。ルイナ×ドラニエルは正典上
-  「賭けの加速装置」コンビ＝掛け合いが一番安く立つ配役（『張るぞルイナ！』『いいね、乗った』）。
+- **S2. F40ペア掛け合い口上 — ✅実装済み（2026-07-10）**：新event `rlBossIntroPair`（口火）/`rlBossIntroPairReply`（受け）
+  ＋cond `pairWith`。配役2人が固有の口火＋受けを持つコンビのときだけ個別口上を掛け合いへ差し替え（口火順は
+  run seed・受けはワンテンポ遅延表示・該当なし/モブ退避は個別口上へフォールバック）。ルイナ×ドラニエルに加え、
+  大1章S4の詩玥×凌雲（F20）も同時実装。台本はクロス組み合わせ（Aの口火×Bの受け）でも噛み合う設計。
 - **S3. 賭場の層フレーバー（任意・要バランス再計測）**：章の floors override で gamble/shop の重みを少し上げると
   「賭場の記憶」の体感が出る。**ただし難度は校正済みのため、やるなら CHAPTER=memory_two の clearrate 再計測必須**。
   既定は変更なし推奨（物語はビートとセリフで出す）。
-- **S4. 残タスク（大1章からの持ち越し・本章に関係）**：world.md への楼光（記憶の塔）追記が未反映
-  （rouko-ch1 要件のブロッカー②）。大2章の scenario-forge 要件を切る前に済ませたい。
+- **S4. world.md 楼光追記 — ✅済（2026-07-10）**：`reference/world.md` **§13** に楼光の舞台設定を追記
+  （記憶の像・非懲罰・両章の縦軸・口癖反転禁止）。rouko-ch1 要件のブロッカー②を解消。
 
 ## 6. 制作順
 
 1. ✅ タイトルD案・配役（焔⇔ルクス交換）ディレクション確定（2026-07-10）。
 2. ✅ プロット承認→ B1〜B4本文実装（`rogueliteBeatMaster.js`・焔=HOMURA口調準拠）。
 3. ✅ S1実装（ビート4本＋章メタ＋comingSoon解除＋回帰1666件PASS。テストは新方針=大2章開通に更新済み）。
-4. 残：ドリップ層の scenario-forge 要件発行（rouko-ch2.requirements.md・§4の音叉を核に。
-   前提＝world.md 楼光追記［S4］を先に）。
-5. 残：S2 F40ペア掛け合い口上（小・磨き）。
-6. 残：実機通し（F40まで＝DEBUGレバー使用）→テストプレイへ。
+4. ✅ world.md §13 楼光追記＋ドリップ層の scenario-forge 要件発行（`E:/AI/scenario-forge/masters/rouko-ch2.requirements.md`・
+   2026-07-10。語彙拡張＝rouko-ch1 §2 の残置分と ch2 追加event（rlChapterClear/rlBossIntroPair/Reply・cond rlChapter/pairWith）を
+   一括登録する指示込み）。
+5. ✅ S2 F40ペア掛け合い口上（§5参照・詩玥×凌雲も同時実装）。
+6. 残：forge パイプライン実行（brief→writer→validate→lore-check→emit→本体取り込み）。
+7. 残：実機通し（ビートはDEBUGプレビュー確認済み。F40実ラン通しはテストプレイでも可）。
