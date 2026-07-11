@@ -2883,11 +2883,20 @@ function onRogueliteBattleEnd(result) {
   // 大章 踏破モーメント（提案B §3.1 ＋ ディレクション 2026-06-27）：clearFloor の主（大章ボス）を初めて退けたら、
   //   そこで「クリアで一区切り」＝盛大な踏破演出 → ランを締めて拠点へ帰還する（大章＝完走できる有限ダンジョン）。
   //   ※ F10/F20 等の中ボスは clearFloor でない＝この分岐に入らず、通常どおりドラフトして登り続ける。
-  const afterBeat = () => {
-  if (isChapterClearFloorWin(run)) {
-    const firstClear = isFirstChapterClear(run);     // 初回だけ「次の記憶が開かれた」＋解禁の永続
-    if (firstClear) markChapterClearedNow(run);      // chaptersCleared へ永続（次章解禁）
+  // 踏破の確定は「勝った瞬間」に前倒しで行う（2026-07-11 修正）：従来は帰還ボタン到達まで
+  //   finishRogueliteRun（＝一時セーブ削除）が呼ばれず、ビート/踏破演出の途中で離脱すると出陣時の
+  //   F=clearFloor セーブが残り「踏破後なのに『続きから？』の再開モーダルが出る」矛盾があった。
+  //   勝負が決した時点で ①踏破・次章解禁を即永続 ②一時セーブを破棄（再開に意味がない＝帰還のみ）。
+  //   ※途中離脱時はラン終端の持ち帰り（carry/宝珠 commit）だけが失われるが、全滅0枠と同等の軽い損＝許容。
+  const chapterClearWin = isChapterClearFloorWin(run);
+  const firstClear = chapterClearWin && isFirstChapterClear(run); // markChapterClearedNow が集合を書き換える前に判定
+  if (chapterClearWin) {
+    if (firstClear) markChapterClearedNow(run);      // chaptersCleared へ即永続（次章解禁）
     else run.chapterCleared = true;                  // 既踏破の章でも多重発火は防ぐ（ランフラグ）
+    clearSavedRogueliteRun();
+  }
+  const afterBeat = () => {
+  if (chapterClearWin) {
     const chap = chapterById(run.chapterId);
     const lead = rlLead();
     showRogueliteChapterClear(host, {
