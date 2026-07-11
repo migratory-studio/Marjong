@@ -829,8 +829,9 @@ export function showRogueliteDeploy(container, opts = {}) {
   const sizeName = tableSizeLabel(tableSize); // 四麻/三麻/二麻
   const baseLabel = isBoss ? "ボス戦" : (floorType?.elite ? "強敵戦" : (floorType?.name || "戦闘"));
   const battleLabel = `${sizeName}・${baseLabel}`;
+  // ボス新ルール（2026-07-11）：挑む前に賭け金を明示——勝ち抜くまで終わらない・退けば全滅と同じ。
   const enemyNote = isBoss
-    ? (solo ? `館の主が待つ。${sizeName}・一人で挑む大一番。` : "館の主が待つ。逃げ場のない大一番。")
+    ? `${solo ? `館の主が待つ。${sizeName}・一人で挑む大一番。` : "館の主が待つ。逃げ場のない大一番。"}⚠ この卓は<strong>勝ち抜くまで終わらない</strong>——合計HPで上回って締めるか、撤退（<strong>全滅と同じ・持ち帰り無し</strong>）か。`
     : (solo ? `${sizeName}・相棒なしの一人打ち。着順ペナルティ（${soloPenaltyHint(tableSize)}）。` : (floorType?.blurb || "卓に着く二人で挑む。"));
   const src = run.abilitySource ?? 0;
 
@@ -1020,7 +1021,19 @@ function standingsRowsHtml(standings, charImages) {
 
 // 結末バナー（このページの主役＝signature）。いま追撃をやめたら何が起きるかを断定で読み上げる。
 //   上回り=金の「突破」印 / 競り負け=朱の警告帯（着卓全員に -○○%）。護符所持なら身代わり予告を添える。
-function pursueVerdictHtml(standings) {
+function pursueVerdictHtml(standings, bossRule = false) {
+  if (bossRule) {
+    // ボスの卓＝勝ち抜くまで終わらない（2026-07-11 ディレクション）。素通り（ペナルティ踏破）は無い。
+    return standings.behind
+      ? `<div class="rl-verdict is-behind" role="status">
+          <span class="rl-verdict-seal">現在 ${ordinal(standings.allyRank)}</span>
+          <span class="rl-verdict-body"><b>ボスの卓は、勝ち抜くまで終わらない。</b>HPで上回るまで追撃を続けるか——退いてランを終えるか（<b>全滅と同じ・持ち帰り無し</b>）。</span>
+        </div>`
+      : `<div class="rl-verdict is-ahead" role="status">
+          <span class="rl-verdict-seal">制圧</span>
+          <span class="rl-verdict-body">いま<b>HPで上回って</b>います。ここで締めれば、<b>この階の主を制した</b>ことになります。</span>
+        </div>`;
+  }
   if (standings.behind) {
     const pct = standings.penaltyPct;
     const ward = standings.warded
@@ -1040,41 +1053,66 @@ function pursueVerdictHtml(standings) {
 // 局終わりの追撃モーダル（インゲーム）。同じ卓・HPを引き継いで次局（東2局/東3局…）を戦うか確認する。
 // onPursue=次局へ／onStop=この対局を締める（戦果を確定）。standings があれば卓上順位＋結末を提示する。
 export function showRoguelitePursue(container, opts = {}) {
-  const { floor = 1, nextLabel = "次局", run, charImages = null, standings = null, leadLine, leadChar, onPursue, onStop } = opts;
+  const { floor = 1, nextLabel = "次局", run, charImages = null, standings = null, leadLine, leadChar, onPursue, onStop, bossRule = false } = opts;
   if (!container) { onStop?.(); return; }
   const ov = document.createElement("div");
   ov.className = "rl-overlay rl-continue";
   const speakHtml = (leadLine && leadChar)
     ? `<div class="rl-modal-speak" style="--c:${leadChar.color || "var(--accent)"}"><b>${leadChar.name}</b>「${leadLine}」</div>` : "";
+  const bossBehind = bossRule && !!standings?.behind;
   // 結末（突破 or ペナルティ）でボタン文言を寄せる。やめる側＝確定する内容を、追撃側＝伸るリスクを言う。
-  const stopLabel = standings
-    ? (standings.behind
-        ? `退いて締める<small>−${standings.penaltyPct}% を受けて踏破</small>`
-        : `ここで踏破<small>無傷で戦果を確定</small>`)
-    : `ここで充分<small>戦果を確定して進む</small>`;
+  // ボスの卓（2026-07-11）＝素通りが無い：上回っていれば「制する」、及ばなければ「退く＝全滅と同じ」。
+  const stopLabel = bossRule
+    ? (bossBehind
+        ? `撤退する<small>⚠ 全滅と同じ・持ち帰り無し</small>`
+        : `この階を制する<small>勝ち抜けて戦果を確定</small>`)
+    : standings
+      ? (standings.behind
+          ? `退いて締める<small>−${standings.penaltyPct}% を受けて踏破</small>`
+          : `ここで踏破<small>無傷で戦果を確定</small>`)
+      : `ここで充分<small>戦果を確定して進む</small>`;
+  const pursueLabel = bossRule
+    ? (bossBehind ? `追撃を続ける<small>${nextLabel}へ——上回るまで</small>` : `さらに追う<small>撃破・高レアを狙う</small>`)
+    : `追撃する<small>${nextLabel}へ</small>`;
+  const noteHtml = bossRule
+    ? `<p class="rl-continue-note rl-pursue-sub">館の主との大一番——同じ卓・HPのまま <strong>${nextLabel}</strong> へ。<strong>合計HPで上回って締める</strong>まで、この卓に途中の踏破は無い。</p>`
+    : `<p class="rl-continue-note rl-pursue-sub">追撃すると同じ卓・HPのまま <strong>${nextLabel}</strong> へ。深追いは<strong>撃破・高レア戦利品</strong>を狙えるが、削られれば順位もHPも崩れる。</p>`;
   const bodyHtml = standings
     ? `<div class="rl-pursue-standings">
          <div class="rl-stand-cap">卓上の順位 — 点数（=HP）</div>
          ${standingsRowsHtml(standings, charImages)}
        </div>
-       ${pursueVerdictHtml(standings)}
-       <p class="rl-continue-note rl-pursue-sub">追撃すると同じ卓・HPのまま <strong>${nextLabel}</strong> へ。深追いは<strong>撃破・高レア戦利品</strong>を狙えるが、削られれば順位もHPも崩れる。</p>`
+       ${pursueVerdictHtml(standings, bossRule)}
+       ${noteHtml}`
     : `<div class="rl-hp-list">${partyHpRows(run, charImages)}</div>
        <p class="rl-continue-note">この卓・HPをそのまま引き継いで <strong>${nextLabel}</strong> を戦う。深追いするほど<strong>撃破・戦利品（高レア）</strong>を狙えるが、削られれば<strong>没収</strong>に近づく。</p>`;
+  // ボスで劣勢のとき＝追撃側を主ボタンに（既定の押しやすい位置を「続ける」に寄せる）。撤退は危険ボタン扱い。
+  const stopClass = bossBehind ? "rl-retreat rl-pursue-btn rl-boss-yield" : "rl-start";
+  const pursueClass = bossBehind ? "rl-start" : "rl-retreat rl-pursue-btn";
   ov.innerHTML = `
     <div class="rl-modal rl-pursue-modal">
-      <div class="rl-modal-head">第 ${floor} 階・局終わり — このまま追撃しますか？${coinBadge(run?.coins || 0)}</div>
+      <div class="rl-modal-head">${bossRule ? `第 ${floor} 階・局終わり — 館の主との大一番` : `第 ${floor} 階・局終わり — このまま追撃しますか？`}${coinBadge(run?.coins || 0)}</div>
       ${speakHtml}
       ${bodyHtml}
       <div class="rl-continue-btns">
-        <button type="button" class="rl-start" id="rl-go">${stopLabel}</button>
-        <button type="button" class="rl-retreat rl-pursue-btn" id="rl-pursue">追撃する<small>${nextLabel}へ</small></button>
+        <button type="button" class="${stopClass}" id="rl-go">${stopLabel}</button>
+        <button type="button" class="${pursueClass}" id="rl-pursue">${pursueLabel}</button>
       </div>
     </div>`;
   container.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("is-open"));
   ov.querySelector("#rl-pursue")?.addEventListener("click", () => { ov.remove(); onPursue?.(); });
-  ov.querySelector("#rl-go")?.addEventListener("click", () => { ov.remove(); onStop?.(); });
+  const goBtn = ov.querySelector("#rl-go");
+  if (bossBehind) {
+    // ラン終了級の操作は二段確認（誤タップ一発で全てを失わない）。
+    let armed = false;
+    goBtn?.addEventListener("click", () => {
+      if (!armed) { armed = true; goBtn.innerHTML = `本当に退く？<small>もう一度押すとラン終了（全滅と同じ・持ち帰り無し）</small>`; return; }
+      ov.remove(); onStop?.();
+    });
+  } else {
+    goBtn?.addEventListener("click", () => { ov.remove(); onStop?.(); }, { once: true });
+  }
 }
 
 // ---- 層（バイオーム）入場演出 ----

@@ -31,8 +31,10 @@ export const ROGUELITE_FLOOR_MASTER = [
   },
   {
     id: "boss", name: "ボス", kind: "battle", enemy: "boss",
-    baseHands: 3, pursueMax: 0, weight: 0, // 10階ごとに強制配置（抽選プール外）
-    blurb: "館の主。追撃で東3局まで・避けられぬ大一番。",
+    // 勝ち抜くまで終わらない大一番（2026-07-11 ディレクション）：局数上限は実質無効（99）。
+    // 決着は「合計HPで上回って締める（制圧）／撤退（全滅と同じ・持ち帰り無し）／トビ」のみ。
+    baseHands: 99, pursueMax: 0, weight: 0, // 10階ごとに強制配置（抽選プール外）
+    blurb: "館の主。勝ち抜くまで終わらぬ大一番——退けば、全てを失う。",
   },
   {
     id: "rest", name: "休息", kind: "rest",

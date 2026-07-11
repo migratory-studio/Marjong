@@ -2683,8 +2683,13 @@ async function persistBeatSeen(beatId) {
 }
 
 async function launchRogueliteBattle(run, floorType, opts = {}) {
-  teamBattleData = null; humanIndex = 0; selectedRounds = 1; // 東風を外枠に、局数上限で短く決着
+  // 外枠：通常＝東風＋局数上限で短く決着。ボス＝勝ち抜くまで終わらない（2026-07-11 ディレクション）：
+  //   風の外枠を実質無効化（99）し、決着は「HPで上回って締める／撤退（全滅と同じ）／トビ」のみ。
+  //   局数上限はマスタ（boss.baseHands=99）が担う＝毎局の追撃モーダルがループの主役になる。
+  const bossRule = floorType?.enemy === "boss";
+  teamBattleData = null; humanIndex = 0; selectedRounds = bossRule ? 99 : 1;
   rogueliteState.pursuing = false;
+  rogueliteState.bossYield = false; // ボス戦の「撤退（全滅と同じ）」選択フラグ（局終わりモーダルで立てる）
   // 1戦＝1ゲーム（1局目は必ず打ち、以降は局終わりの追撃モーダルで続行可否を確認）。maxHands は上限。
   rogueliteHandLimit = handsForType(floorType, floorOverride(run, floorType.id)); // 章ごとに局数上限を上書き可
   // 卓サイズ（4=ペア2v2 / 3=三麻ソロ1v2 / 2=二麻ソロ1v1）。
@@ -2782,13 +2787,16 @@ function onRogueliteBattleEnd(result) {
   const enemyEndHp = roles.reduce((a, ro, i) => a + (ro === "enemy" ? (hpArr[i] ?? 0) : 0), 0);
   const enemyTopHp = roles.reduce((a, ro, i) => (ro === "enemy" ? Math.max(a, hpArr[i] ?? 0) : a), 0);
   const dominated = allyEndHp > enemyEndHp; // 自パーティのHP合計が相手を上回って決着したか（計測ログ用）
+  // ボスの卓（2026-07-11 ディレクション）＝勝ち抜くまで終わらない：劣勢のまま締める道が無いので
+  // 点負けペナルティ（競り負け/ソロ着順）はボス戦では発生しない（勝ち抜け or 撤退=全滅と同じ or トビ）。
+  const isBossFight = rogueliteState?.floorType?.enemy === "boss";
   // 点負け：ペア=合計HPで競り負け / ソロ=「着順」で段階ペナルティ（1位=無傷・下位ほど痛い）。
   //   ソロ着順 = 1 + 自分よりHPが多い敵の数（同点は自分を上位扱い＝1位なら無傷）。
   const soloRank = solo ? 1 + roles.reduce((a, ro, i) => a + (ro === "enemy" && (hpArr[i] ?? 0) > (hpArr[0] ?? 0) ? 1 : 0), 0) : 0;
-  const penaltyFrac = solo
+  const penaltyFrac = isBossFight ? 0 : solo
     ? (ROGUELITE_SOLO_PENALTY[pairBattleData?.tableSize]?.[soloRank] || 0)
     : ROGUELITE_HP_LOSS_PENALTY_FRAC;
-  const outHpRace = solo ? (penaltyFrac > 0) : (allyEndHp < enemyEndHp);
+  const outHpRace = isBossFight ? false : solo ? (penaltyFrac > 0) : (allyEndHp < enemyEndHp);
   // 競り守りの護符（trigger/on=hpRace）：点負けの痛手をラン中1回だけ無効化。持っていれば自動発動して消える。
   const warded = outHpRace && consumeHpRaceSaver(run);
   const applyPenalty = outHpRace && !warded; // 実際にペナルティを与えるか（護符で防げば与えない）
@@ -2804,6 +2812,15 @@ function onRogueliteBattleEnd(result) {
   for (const m of seated) m.hungover = false;
   rogueliteState.battleMods = null; rogueliteState.enduredSeats = null; // 「次の1戦だけ」効果は終了
   pairBattleData = null; honestCtx = null;
+  // ボス戦の撤退（2026-07-11）：劣勢のまま「撤退する」を選んだ＝ラン終了（全滅と同じ重さ・持ち帰り無し）。
+  // 挑んだ記録はボスが覚えている（敗北として刻む＝次回は雪辱口上）。HPの書き戻しは済んでいる。
+  if (isBossFight && rogueliteState.bossYield) {
+    rogueliteState.bossYield = false;
+    recordBossEncounter(run, false);
+    rlLog("boss_yield", { floor: run.floor });
+    finishRogueliteRun(run, { wiped: true }); // 撤退＝全滅扱い（ディレクション確定・0枠）
+    return;
+  }
   // 合計HP敗北ペナルティ対象（着卓2人・生存のみ）。被弾演出は #game-screen がまだ可視のうちに出す。
   // ── #damage-overlay は #game-screen の子。先に roguelite 画面へ切り替えると display:none の中に
   //    入り、「SEだけ鳴って何も見えない・HPも減って見えない」状態になる（過去はそれで全回復に見えた）。
@@ -5352,14 +5369,22 @@ function promptRoguelitePursueInGame(onPursue, onStop) {
   const run = rogueliteState?.run;
   if (!run) { onPursue?.(); return; }
   const lead = rlLead();
+  const standings = rogueliteTableStandings(run);
+  // ボスの卓（2026-07-11）＝勝ち抜くまで終わらない。劣勢での「やめる」は素通りでなく
+  // 撤退＝ラン終了（全滅と同じ重さ・持ち帰り無し）。フラグを立てて onRogueliteBattleEnd が引き取る。
+  const bossRule = rogueliteState?.floorType?.enemy === "boss";
+  const stop = (bossRule && standings?.behind)
+    ? () => { rogueliteState.bossYield = true; onStop?.(); }
+    : onStop;
   showRoguelitePursue(el("game-screen"), {
     floor: run.floor,
     nextLabel: game?.roundLabel?.() || "次局",
     run, charImages,
-    standings: rogueliteTableStandings(run),
+    standings,
+    bossRule,
     leadChar: lead,
     leadLine: lead ? vline(lead.id, "rlPursue", rlVoiceCtx()) : null,
-    onPursue, onStop,
+    onPursue, onStop: stop,
   });
 }
 

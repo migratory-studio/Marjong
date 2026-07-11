@@ -51,6 +51,7 @@ if (process.env.DEALSLOPE) RL_TUNE.dealDepthSlope = Number(process.env.DEALSLOPE
 if (process.env.CAPBASE) RL_TUNE.lethalCapBase = Number(process.env.CAPBASE);
 if (process.env.CAPFADE) RL_TUNE.lethalCapFadeStart = Number(process.env.CAPFADE);
 if (process.env.CAPSLOPE) RL_TUNE.lethalCapFadeSlope = Number(process.env.CAPSLOPE);
+if (process.env.BOSSBASE) RL_TUNE.bossBaseHpMul = Number(process.env.BOSSBASE); // ボスHP基礎倍率の掃引（2026-07-11 必勝制）
 const TUNE = {
   regenFrac: RL_TUNE.regenFrac,
   enemyLvSlope: Number(process.env.LVSLOPE ?? 0.6), // 敵Lvの階層あたり傾き（敵強度モデル＝シム専用）
@@ -156,11 +157,17 @@ function simBattle(run, rng, floorType) {
   // 1戦＝1ゲーム（2026-06-30 追撃仕様）：1局目は必ず打ち、以降は「局終わり」に続行可否を選べる
   // （同卓・HP継続・上限=baseHands）。シムは PURSUE_HP_GATE でその選択を近似する。
   const hands = floorType?.baseHands || 1;
+  // ボスの卓（2026-07-11 必勝制）：勝ち抜くまで終わらない。局終わりに合計HPで上回っていれば
+  // 「制圧」で締める（＝実機の勝ち抜けボタンを押す近似）。上回れないまま全滅すればラン終了。
+  // 撤退（全滅と同じ）はシムでは選ばない＝always-continue（限界まで押す）の従来思想どおり。
+  const bossRule = floorType?.enemy === "boss";
+  const aheadNow = () => (Math.max(0, hp[0]) + Math.max(0, hp[2])) > (Math.max(0, hp[1]) + Math.max(0, hp[3]));
   let handsPlayed = 0;
   for (let h = 0; h < hands; h++) {
     if (allyDownNow() || enemyDownNow()) break; // 決着（全滅 or 撃破）で即終了
-    // 追撃モーダル：2局目以降は着卓2人が健全なときだけ続行（消耗していたら1局で締める）。
-    if (h > 0 && Math.min(hp[0] / hpMax[0], hp[2] / hpMax[2]) <= PURSUE_HP_GATE) break;
+    if (bossRule && h > 0 && aheadNow()) break; // ボス：上回った局終わりに勝ち抜け（banked win）
+    // 追撃モーダル：2局目以降は着卓2人が健全なときだけ続行（消耗していたら1局で締める）。ボスは対象外（引けない）。
+    if (!bossRule && h > 0 && Math.min(hp[0] / hpMax[0], hp[2] / hpMax[2]) <= PURSUE_HP_GATE) break;
     handsPlayed += 1;
     if (rng() < LEAGUE_SIM.drawRate) continue;
     const w = pick();
@@ -204,11 +211,12 @@ function simBattle(run, rng, floorType) {
   const allyHp = Math.max(0, hp[0]) + Math.max(0, hp[2]);
   const enemyHp = Math.max(0, hp[1]) + Math.max(0, hp[3]);
   const allyFull = hpMax[0] + hpMax[2];
-  // 踏破＝全滅しなければ次へ（生存レース）。撃破(enemyDown)は早期決着＋高レアの燃料。
-  const cleared = !allyDown;
-  // outHpRace＝合計HPで競り負け。本番 onRogueliteBattleEnd の全員ペナルティ判定に対応。
+  // 踏破＝通常戦は「全滅しなければ次へ」（生存レース）。ボス（必勝制）は「上回り or 撃破」のみ踏破＝
+  // 上回れないまま息切れ（99局到達）した場合も敗北扱い（実機なら撤退＝全滅と同じ）。
+  const cleared = bossRule ? (!allyDown && (enemyDown || allyHp > enemyHp)) : !allyDown;
+  // outHpRace＝合計HPで競り負け。本番 onRogueliteBattleEnd の全員ペナルティ判定に対応（ボスは対象外）。
   // pursued＝1局で締めず追撃した（実入り上乗せ：光貨 pursueMul＋ドラフト高レアバイアス）。
-  return { cleared, allyDown, enemyDown, koAny: hp[1] <= 0 || hp[3] <= 0, hpRatio: allyFull ? allyHp / allyFull : 0, outHpRace: allyHp < enemyHp, pursued: handsPlayed > 1 };
+  return { cleared, allyDown, enemyDown, koAny: hp[1] <= 0 || hp[3] <= 0, hpRatio: allyFull ? allyHp / allyFull : 0, outHpRace: bossRule ? false : allyHp < enemyHp, pursued: handsPlayed > 1 };
 }
 
 // ---- ドラフト方針（greedy / none） ----
@@ -295,8 +303,10 @@ function stepFloor(run, rng, policy, floorWins = null) {
   if (floorWins && res.cleared) floorWins[run.floor] = (floorWins[run.floor] || 0) + 1;
   // 着卓した2人の二日酔いは消費
   const seated = seatedAllies(run); seated[0].hungover = false; if (seated[1] !== seated[0]) seated[1].hungover = false;
-  applyHpRacePenalty(run, res, seated); // 合計HP敗北なら着卓2人に20%（全滅判定の前）
+  applyHpRacePenalty(run, res, seated); // 合計HP敗北なら着卓2人に20%（全滅判定の前・ボスは outHpRace=false）
   if (runWiped(run)) return false; // ゲームオーバー＝生存1人以下（復活なし）
+  // ボス必勝制（2026-07-11）：上回れないまま終わった＝撤退（全滅と同じ）＝ラン終了。
+  if (floorType.enemy === "boss" && !res.cleared) return false;
   run.cleared += 1; regenAll(run, res);
   // 実入りは main.js onRogueliteBattleEnd と同経路：追撃で光貨 pursueMul・ドラフトは ko/追撃で高レアバイアス。
   run.coins = (run.coins || 0) + coinsForClear({ floor: run.floor, kind: floorType.enemy || "mob", ko: res.koAny, pursue: res.pursued }) * (floorType.kind === "gamble" ? 2 : 1);
@@ -314,7 +324,7 @@ function mkRun({ avatarHpMax, baseStrength, carry = [] }, seed) {
     { id: "pal2", char: { id: "pal2", abilities: [], stats: { startingPoints: avatarHpMax } }, avatarHpMax, baseStrength },
   ];
   // CHAPTER 指定時は章の tuning/bossHpMul を通す（本体 startRogueliteRun と同経路）。未指定=null＝グローバル既定。
-  const run = newRun(party, seed, CHAP?.id || null, null, null, CHAP?.tuning || null, CHAP ? { bossHpMul: CHAP.bossHpMul ?? null } : null);
+  const run = newRun(party, seed, CHAP?.id || null, null, null, CHAP?.tuning || null, CHAP ? { bossHpMul: process.env.BOSSCH2 ? Number(process.env.BOSSCH2) : (CHAP.bossHpMul ?? null) } : null); // BOSSCH2=章ボス倍率の掃引
   run.clusterTierCap = CLUSTER_CAP; // 既定2＝流派2段目まで解放した「終盤(ショップ解禁後)」の均衡を検証（CLUSTERCAP=1で無購入を模す）。
   for (const m of run.party) m.baseStrength = baseStrength;
   for (const id of carry) { const c = cardById(id); if (c) applyCard(run, c); }
@@ -478,12 +488,16 @@ function assertTargets() {
   //     どれだけ余裕をもって届くか」の proxy。深度バンドは尾(p90)でなく median/p10 で締める。
   //   ・深度は GUARD=200 で打ち切り＝201 は「F200超」の意（非打ち切り実測 中堅greedy median≒316）。
   ok(midNone.median >= 18 && midNone.median <= 60, `無策(中堅none) 数十階で消耗死 18〜60 (=${midNone.median})`);
-  ok(midNone.p10 >= 13, `不運な無策でも序盤即死しない p10≥13 (=${midNone.p10})`);
+  // 2026-07-11 ボス必勝制：F10ボスが最初の「本物の関門」＝不運な無策はそこで散る（p10=10 は
+  // 「F10ボスまでは必ず届く」の意）。それより手前（F3等）で即死しないことを下限で担保する。
+  ok(midNone.p10 >= 9, `不運な無策でも最初のボス(F10)までは届く p10≥9 (=${midNone.p10})`);
   ok(mid.median >= midNone.median + 30, `バフ＋進路選択が無策より遥かに深い (+30超: ${mid.median} vs ${midNone.median})`);
   // 下限90＝「コミットした中堅がF30/F40を余裕で踏破できる地力」の proxy。上限は GUARD 打ち切りで
   // 実質検査不能（深層マラソン問題＝エンドレス復活時の宿題。ディレクター判断待ち。同docの提案①参照）。
   ok(mid.median >= 90, `中堅greedy median ≥90（F30/F40有限ダンジョンを余裕で踏破する proxy） (=${mid.median})`);
-  ok(mid.p10 >= 55, `中堅greedy は安定して深く潜れる p10≥55 (=${mid.p10})`);
+  // 2026-07-11 ボス必勝制：下振れランは早期ボス（F10/F20）で散り得る＝p10 はボス階級に落ちる。
+  // 「深く潜れる」担保は median（≥90・上のアサート）が主役。p10 は「2つ目のボス圏まで届く」下限に再バンド。
+  ok(mid.p10 >= 15, `中堅greedy の下振れでも2つ目のボス圏まで届く p10≥15 (=${mid.p10})`);
   ok(strong.median >= mid.median - 10, `育成完了 ≳ 中堅 (${strong.median} ≳ ${mid.median})`);
   ok(weak.median <= midNone.median + 5, `弱弟子(none) ≲ 中堅(none) (${weak.median} ≲ ${midNone.median})`);
   // 流派均衡（提案A・P1「唯一最適解を作らない」）：どの流派に寄せても近い深度＝一意最適解がない。

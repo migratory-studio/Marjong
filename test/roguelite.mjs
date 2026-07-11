@@ -73,7 +73,7 @@ ok(floorEnemyHp(5) > floorEnemyHp(1), "深い階ほど敵HP増");
 ok(floorEnemyHp(99) === floorEnemyHp(30), "30階で頭打ち（青天井回避）");
 eq(handsForType(floorTypeById("normal")), 2, "通常戦闘=東2局まで(追撃込み上限2)");
 eq(handsForType(floorTypeById("elite")), 3, "強敵戦闘=東3局まで(追撃込み上限3)");
-eq(handsForType(floorTypeById("boss")), 3, "ボス=東3局まで(追撃込み上限3)");
+eq(handsForType(floorTypeById("boss")), 99, "ボス=勝ち抜くまで終わらない(局数上限は実質無効・2026-07-11必勝制)");
 eq(handsForType(floorTypeById("gamble")), 2, "賭場=東2局まで(通常と同フロー)");
 ok(isBossFloor(10) && !isBossFloor(3), "ボスは10階ごと");
 

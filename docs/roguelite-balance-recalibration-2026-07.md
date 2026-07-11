@@ -93,3 +93,17 @@ GUARD=500 MCN=800 node test/roguelite-balance.mjs --fast   # 深層の素の分�
 TRACE=1 MCN=1 GUARD=500 node test/roguelite-balance.mjs --fast  # 1ランの成長内訳
 DACCEL=0.12 GUARD=500 MCN=800 node test/roguelite-balance.mjs --fast  # 提案①の当たり
 ```
+
+## 7. ボス必勝制（2026-07-11 ディレクション）— 台帳追記
+
+「ボスはHP差がありすぎて競り負けが既定路線＝勝った気がしない」を受け、ボス戦のルールを変更：
+**勝ち抜くまで終わらない**（局数上限を実質撤廃・毎局の追撃モーダルで「制圧して締める／続ける／撤退」）。
+撤退＝全滅と同じ重さ（持ち帰り0枠・ディレクション確定）。点負けペナルティ（競り負け20%/ソロ着順）はボス戦から廃止。
+
+- HP再調整：`RL_TUNE.bossBaseHpMul` 1.3→0.8／大2章 `bossHpMul` 1.5→0.7（掃引の全表は本セッションログ・要点は
+  docs/roguelite-ch2-difficulty-design.md 追記）。
+- シム：simBattle にボス必勝制（上回った局終わりに banked win／上回れず終了=ラン終了）、stepFloor にボス敗北=即ラン終了。
+  掃引ノブ BOSSBASE（グローバル基礎）/ BOSSCH2（章倍率）。
+- --assert 再バンド：midNone.p10 ≥13→**≥9**（F10ボス=最初の関門で不運な無策が散るのは仕様）、
+  mid.p10 ≥55→**≥15**（下振れランは早期ボスで散る。深さの担保は median≥90 が主役）。
+- 実測（N=1200）：大1章F30 弱55.3/中堅83.8/育成96.2％、大2章F40 無宝珠72.8/若干78.8/育成90.2％。

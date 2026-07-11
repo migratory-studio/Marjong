@@ -53,6 +53,11 @@ export const RL_TUNE = {
   lethalCapFadeStart: 40,   // この階まで上限は固定（中盤までは満タン一撃死なし）
   lethalCapFadeSlope: 0.02, // 1階あたり上限が緩む量（F62前後で1.0＝即死復活。深層エンドレスは終わる）
   tsumoCapMul: 0.7,         // ツモ被弾の席あたり上限＝ron上限×この値。「ツモられてもトビまではしない（が痛い）」。
+  // ボスHPの基礎倍率（2026-07-11「勝ち抜くまで終わらない」ルール化に伴い 1.3→0.8 へ再調整）。
+  // 旧1.3＝「3局を耐えるスポンジ」／新0.8＝「合計HPで上回れる壁」（F10でボス合計≒味方合計×1.27＝
+  // 2〜3勝局で逆転可能）。ボスの脅威はHP量でなく Lv+2 の腕前と必勝制ルールそのものが担う。
+  // 章ごとの追加倍率は over.bossHpMul（乗算）。実測: test/roguelite-balance.mjs BOSSBASE 掃引（2026-07-11）。
+  bossBaseHpMul: 0.8,
 };
 
 // 大章ごとの難度オーバーライド解決。run.tuning（章マスタの tuning）が key を持てばそれ、無ければ既定。
@@ -488,7 +493,7 @@ export function previewBossChars(run, floorType = null, salt = "") {
 export function enemyUnitForFloor(run, floorType = null, salt = "") {
   const floor = run.floor;
   const kind = floorType?.enemy || (isBossFloor(floor) ? "boss" : "mob");
-  const hpMul = (kind === "boss" ? 1.3 : kind === "named" ? 1.2 : 1) * (kind === "boss" ? (run.over?.bossHpMul || 1) : 1); // 章ごとボスHP倍率
+  const hpMul = (kind === "boss" ? RL_TUNE.bossBaseHpMul : kind === "named" ? 1.2 : 1) * (kind === "boss" ? (run.over?.bossHpMul || 1) : 1); // ボス基礎×章ごとボスHP倍率
   const lvBump = kind === "boss" ? 2 : kind === "named" ? 1 : 0;
   const hp = Math.round(floorEnemyHp(floor, run.tuning) * hpMul);
   const lv = Math.min(10, floorEnemyLv(floor, run.tuning) + lvBump + (biomeMods(run).enemyLvAdd || 0)); // 層で強敵化（喧噪の都）
