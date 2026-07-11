@@ -880,6 +880,7 @@ function buildSelectScreen() {
     selectedPairBattle = false;
     selectedTeamCount = 4;
     selectedPlayers = 4;
+    selectedRounds = 1; // 楼光ボス戦（=99）等の残留を掃除（Game側の東風クランプ頼みにしない）
     battleModeToggle.querySelectorAll(".mode-btn").forEach((b) =>
       b.classList.toggle("selected", b.dataset.battle === "normal"));
     el("normal-table-opts").classList.remove("hidden");
@@ -3008,7 +3009,10 @@ async function finishRogueliteRun(run, { wiped = false, retreated = false, clear
   // → 次の記憶が選択ハブで開く（解禁ツリー）。P8厳守＝物語フラグでなく「選択の解禁」のみ。
   const chap = chapterById(run.chapterId);
   const prevCleared = Array.isArray(prev.chaptersCleared) ? prev.chaptersCleared : [];
-  const nextCleared = (chap && reached >= chap.clearFloor && !prevCleared.includes(chap.id))
+  // 章踏破の冪等バックアップ（本判定は勝利の瞬間の markChapterClearedNow）。⚠ 敗北を除外すること：
+  // ボスは常に clearFloor に立つため、reached だけ見ると「大章ボスに撤退/全滅しても解禁」の裏抜けになる
+  // （2026-07-11 QA検出。必勝制で撤退が身近になり顕在化）。wiped=負け（全滅/ボス撤退）は解禁しない。
+  const nextCleared = (chap && !wiped && reached >= chap.clearFloor && !prevCleared.includes(chap.id))
     ? [...prevCleared, chap.id] : prevCleared;
   if (nextCleared !== prevCleared) rlLog("chapter_cleared", { chapter: chap.id, reached });
   // 進捗（到達・通算）は即保存（離脱しても失わない）。引き継ぎは選択後に上書き。

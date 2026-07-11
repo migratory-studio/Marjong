@@ -5195,7 +5195,7 @@ button.primary.danger:hover { color: #ffbcbc; }
 .rl-pursue-btn:hover { background: rgba(246,179,82,.15); }
 
 /* 追撃モーダル：卓上の順位（他グループの点数＝HP＋自分の順位）＋「やめたら何が起きるか」結末バナー */
-.rl-pursue-modal { width: min(720px, 90%); }
+.rl-pursue-modal { width: min(720px, 90%); max-height: 92vh; overflow-y: auto; } /* ボス必勝制で文言が増えても 720p からはみ出さない保険（モーダル内スクロール・画面は溢れない） */
 .rl-pursue-standings { display: flex; flex-direction: column; gap: 6px; margin: 2px 0 14px; }
 .rl-stand-cap { font-size: 11px; letter-spacing: .18em; color: var(--rl-gold); opacity: .82; text-align: left; margin-bottom: 2px; }
 .rl-stand-row { display: grid; grid-template-columns: 26px auto 96px 1fr auto; align-items: center; gap: 10px;
