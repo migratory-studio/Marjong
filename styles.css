@@ -2855,6 +2855,12 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   color: #fff3d0; text-shadow: 0 0 14px #000, 0 4px 8px #000, 0 0 28px #ffd34d;
 }
 
+/* 北抜きテロップ（三麻の抜きドラ。ポン/チーと同系、青銀＝北風の色）。 */
+.naki-call.kita-call {
+  -webkit-text-stroke: 2px #2e6da4;
+  text-shadow: 0 0 12px #000, 0 3px 6px #000, 0 0 24px #7ec8ff;
+}
+
 /* ===== 役満 専用の特別演出（長尺・新演出） =====
    回転する金光のレイ → 開幕の白フラッシュ → 立ち絵が下からせり上がり金のオーラ →
    「役満」の大書きがスラム → 役名 → 勝者名。最後に全体をフェードアウト。 */

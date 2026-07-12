@@ -288,6 +288,7 @@ const ACK_WAIT_DELAY = 3000;    // ms。ack 後これ以上次局が来なけれ
 let meldCalledFlag = false; // set by MELD_CALLED listener during a resolveCalls
 let abilityCutInFlag = false; // set by ABILITY_USED listener; CPU loop waits on it
 let riichiWaitFlag = false; // set by RIICHI_DECLARED listener; CPU loop waits one turn so the リーチ banner reads
+let kitaWaitFlag = false; // set by KITA_PULLED listener; the puller's next CPU action waits so the 北 banner reads
 const NAKI_WAIT = 1100; // ms pause to show the naki call banner
 const ABILITY_CUTIN_WAIT = 1700; // ms pause so the ability cut-in plays out
 const RIICHI_WAIT = 1400; // ms pause after a riichi declaration（ポン/カンと同様にテロップの間を取る）
@@ -4324,6 +4325,14 @@ function beginGame(seated, dealerIndex, opts = {}) {
     audio.playVoice(player.character.id, type);
     showNakiFx(player.index, type);
   });
+  // 北抜き (三麻): ポン/チーと同系の発声演出（キャラの "kita" ボイス→無ければ共有 naki SE
+  // ＋席テロップ「北」）。抜いた本人はこの後もう一度行動するので、CPU はその再行動を
+  // 一拍遅らせてテロップを読ませる（人間は自分の打牌操作が挟まるぶん間は不要）。
+  game.bus.on(Events.KITA_PULLED, ({ player }) => {
+    if (!player.isHuman || autoPlay) kitaWaitFlag = true;
+    audio.playVoice(player.character.id, "kita");
+    showKitaFx(player.index);
+  });
   // Ability cut-in: big skill-name text + bust-up sweeping across, with a wait.
   game.bus.on(Events.ABILITY_USED, ({ player, name }) => {
     abilityCutInFlag = true;
@@ -4433,8 +4442,9 @@ const LocalController = {
   async decideTurn(game, seat) {
     const actor = game.players[seat];
     // 直前の手番でリーチが宣言されていたら、この手番を一拍ぶん遅らせて
-    // リーチのテロップを読ませる（一度きり消費）。
+    // リーチのテロップを読ませる（一度きり消費）。北抜き直後の再行動も同様。
     const riichiBeat = riichiWaitFlag; riichiWaitFlag = false;
+    const kitaBeat = kitaWaitFlag; kitaWaitFlag = false;
     if (actor.isHuman && !autoPlay) {
       // After own riichi: auto-tsumogiri the drawn tile (unless tsumo is available).
       const opts = game.actionOptions(seat);
@@ -4446,8 +4456,8 @@ const LocalController = {
     // CPU 席、またはオート観戦 ON で AI に委ねた人間席。どちらも同じ判断ルート。
     clearActions();
     // A fired ability sets abilityCutInFlag (ON_... listener) and extends the pause so it reads.
-    // 直前のリーチ宣言も同様に間を取る（能力カットインを優先）。
-    const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : riichiBeat ? RIICHI_WAIT : CPU_DELAY;
+    // 直前のリーチ宣言/北抜きも同様に間を取る（能力カットインを優先）。
+    const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : riichiBeat ? RIICHI_WAIT : kitaBeat ? NAKI_WAIT : CPU_DELAY;
     await delay(wait);
     return decideDiscard(game, seat);
   },
@@ -5441,6 +5451,11 @@ function appendNextButton(box, r) {
 // Big "ポン/チー/カン" banner near the calling player's seat (auto-fades).
 function showNakiFx(playerIndex, type) {
   showSeatCall(playerIndex, { pon: "ポン", chi: "チー", kan: "カン" }[type] || type, "naki-call");
+}
+
+// Big "北" banner near the puller's seat — 北抜き(三麻)もポン/チー同様の発声感で見せる。
+function showKitaFx(playerIndex) {
+  showSeatCall(playerIndex, "北", "naki-call kita-call");
 }
 
 // Big "ロン/ツモ" banner near the winner's seat before the result screen.
@@ -6469,6 +6484,7 @@ function showDebugMenu() {
         <button type="button" class="dbg-btn" data-fx="pon">ポン</button>
         <button type="button" class="dbg-btn" data-fx="chi">チー</button>
         <button type="button" class="dbg-btn" data-fx="kan">カン</button>
+        <button type="button" class="dbg-btn" data-fx="kita">北抜き</button>
       </div>
       <div class="dbg-row"><label>満貫カットイン</label>
         <button type="button" class="dbg-btn dbg-mini" data-fx="mangan-ron">ロン</button>
@@ -6552,6 +6568,9 @@ function showDebugMenu() {
     } else if (fx === "pon" || fx === "chi" || fx === "kan") {
       audio.playVoice(ch.id, fx);
       spawnCall(nakiHost, CENTER, { pon: "ポン", chi: "チー", kan: "カン" }[fx], "naki-call");
+    } else if (fx === "kita") {
+      audio.playVoice(ch.id, "kita");
+      spawnCall(nakiHost, CENTER, "北", "naki-call kita-call");
     } else if (fx.startsWith("mangan")) {
       audio.playWinHit();
       playCutIn(ch, { charLabel: ch.name, bigLabel: type === "tsumo" ? "ツモ" : "ロン", kind: "win", variant: "band", dur: WIN_CALL_WAIT.mangan - 100, host: cutinHost });

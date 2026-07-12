@@ -612,6 +612,7 @@ export class Game {
     p.drawnTileId = null;
     this._sortHand(p);
     this.log(`${p.character.name} が北抜き（抜きドラ ${p.kita.length}）`);
+    this.bus.emit(Events.KITA_PULLED, { player: p, count: p.kita.length });
     const repl = this.wall.drawReplacement();
     if (!repl) { this._exhaustiveDraw(); return true; }
     p.hand.push(repl);

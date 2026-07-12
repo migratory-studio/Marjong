@@ -21,6 +21,7 @@ export const Events = {
   TILE_DRAWN: "tile-drawn",
   TILE_DISCARDED: "tile-discarded",
   MELD_CALLED: "meld-called",
+  KITA_PULLED: "kita-pulled", // 北抜き (sanma nuki-dora) — UI shows a pon/chi-style call
   RIICHI_DECLARED: "riichi-declared",
   HAND_WON: "hand-won",
   HAND_DRAWN: "hand-drawn", // exhaustive draw (ryuukyoku)
