@@ -33,8 +33,13 @@ export function decideDiscard(game, playerIndex) {
     return { type: "discard", tileId: tile.id, riichi: true };
   }
 
-  // If already riichi, must tsumogiri (discard the drawn tile).
+  // If already riichi: kan when legal (engine offers only wait-preserving closed
+  // kans of the drawn tile — new dora + rinshan draw is a pure gain), else tsumogiri.
   if (p.riichi) {
+    if (opts.kans.length > 0) {
+      const k = opts.kans[0];
+      return { type: "kan", kind: k.kind, kanType: k.type };
+    }
     return { type: "discard", tileId: p.drawnTileId, riichi: false };
   }
 

@@ -204,8 +204,18 @@ export class Game {
     // kans (closed kan / added kan)
     opts.kans = this._kanOptions(p);
     // 北抜き (sanma only): pull a North tile from hand as nuki-dora.
-    opts.nuki = this.sanma && !p.riichi && p.hand.some((t) => t.kind === 30);
+    // リーチ後は「いまツモった北」だけ抜ける（手牌の北は聴牌形の一部＝抜くと手が変わる）。
+    opts.nuki = this.sanma && (p.riichi ? this._riichiNukiLegal(p) : p.hand.some((t) => t.kind === 30));
     return opts;
+  }
+
+  // リーチ後の北抜きの合法判定: ツモ牌が北で、かつ北が和了牌でないこと。
+  // 和了牌の北は「ツモ和了する／ツモ切って見逃す（河に乗りフリテン）」の二択に寄せる。
+  _riichiNukiLegal(p) {
+    if (!this._lastDraw || this._lastDraw.kind !== 30) return false;
+    const counts = p.counts();
+    counts[30]--; // リーチ時の13枚
+    return !waits(counts, p.numMeldSets()).includes(30);
   }
 
   // -------------------------------------------------------- manual abilities
@@ -329,14 +339,32 @@ export class Game {
         kans.push({ type: MeldType.KAN_ADDED, kind: m.tiles[0].kind });
       }
     }
-    // can't kan after riichi unless it doesn't change the wait (simplified: forbid)
-    return p.riichi ? [] : kans;
+    // リーチ後は「いまツモった牌での暗槓」だけ、待ちが変わらない場合に限り可（送り槓禁止）。
+    if (p.riichi) return kans.filter((x) => x.type === MeldType.KAN_CLOSED && this._riichiKanLegal(p, x.kind));
+    return kans;
+  }
+
+  // リーチ後の暗槓の合法判定。ツモ牌そのものであること・和了牌でないこと・槓の前後で
+  // 待ちが一致すること（＝手の解釈を崩す送り槓を封じる）の3条件。
+  _riichiKanLegal(p, kind) {
+    if (!this._lastDraw || this._lastDraw.kind !== kind) return false;
+    const before = p.counts();
+    before[kind]--; // リーチ時の13枚（ツモ牌を除く）
+    const bw = waits(before, p.numMeldSets());
+    if (bw.length === 0 || bw.includes(kind)) return false;
+    const after = p.counts();
+    after[kind] -= 4; // 槓子は完成面子1つとして数える
+    const aw = waits(after, p.numMeldSets() + 1);
+    return aw.length === bw.length && aw.every((k, i) => k === bw[i]);
   }
 
   // --------------------------------------------------------------- discard
   discard(playerIndex, tileId, declareRiichi = false) {
     const p = this.players[playerIndex];
     if (this.phase !== Phase.AWAIT_DISCARD || this.turn !== playerIndex) return;
+    // リーチ後の手出しは不可（ツモ切りのみ）。リーチ中にカン/北抜きの選択UIを開くため、
+    // エンジン側でも打牌をツモ牌に限定して手崩れを封じる。
+    if (p.riichi && tileId !== p.drawnTileId) return;
     const idx = p.hand.findIndex((t) => t.id === tileId);
     if (idx < 0) return;
     const tile = p.hand.splice(idx, 1)[0];
@@ -604,8 +632,11 @@ export class Game {
     if (!this.sanma) return false;
     if (this.phase !== Phase.AWAIT_DISCARD || this.turn !== playerIndex) return false;
     const p = this.players[playerIndex];
-    if (p.riichi) return false;
-    const i = p.hand.findIndex((t) => t.kind === 30);
+    // リーチ後は「いまツモった北」だけ（手牌に組み込んだ北は抜けない）。和了牌の北も不可。
+    if (p.riichi && !this._riichiNukiLegal(p)) return false;
+    const i = p.riichi
+      ? p.hand.findIndex((t) => t.kind === 30 && t.id === p.drawnTileId)
+      : p.hand.findIndex((t) => t.kind === 30);
     if (i < 0) return false;
     const tile = p.hand.splice(i, 1)[0];
     p.kita.push(tile);
@@ -628,6 +659,8 @@ export class Game {
   declareKan(playerIndex, kind, type) {
     const p = this.players[playerIndex];
     if (this.phase !== Phase.AWAIT_DISCARD || this.turn !== playerIndex) return;
+    // リーチ後は待ちの変わらないツモ牌の暗槓だけ（不正入力・オンライン intent もここで弾く）。
+    if (p.riichi && !this._kanOptions(p).some((x) => x.type === type && x.kind === kind)) return;
     if (type === MeldType.KAN_CLOSED) {
       const tiles = [];
       for (let n = 0; n < 4; n++) {

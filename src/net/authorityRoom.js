@@ -143,7 +143,9 @@ export class AuthorityRoom {
     while (true) {
       const opts = g.actionOptions(seat);
       // リーチ中/強制ツモ切りは権威が自動で裁く（クライアントに委ねない＝L2 と同じ思想）。
-      if ((p.riichi && opts && !opts.tsumo) || (opts && opts.forcedTsumogiri && !opts.tsumo)) {
+      // リーチ中でも選択肢（ツモ/待ち不変カン/北抜き）があるときはクライアントに委ねる。
+      const riichiNoChoice = p.riichi && opts && !opts.tsumo && opts.kans.length === 0 && !opts.nuki;
+      if (riichiNoChoice || (opts && opts.forcedTsumogiri && !opts.tsumo)) {
         return { type: "discard", tileId: p.drawnTileId, riichi: false };
       }
       // 人間UIの描画材料を権威が計算して同梱（レプリカでは actionOptions 等を再計算できないため）。
@@ -170,6 +172,7 @@ export class AuthorityRoom {
       }
       if (intent.action === "tsumo") return { type: "tsumo" };
       if (intent.action === "kan") return { type: "kan", kind: intent.kind, kanType: intent.kanType };
+      if (intent.action === "nuki") return { type: "nuki" };
       return { type: "discard", tileId: intent.tileId, riichi: !!intent.riichi };
     }
   }

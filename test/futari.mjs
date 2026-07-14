@@ -6,6 +6,7 @@ import { CHARACTERS, instantiateAbilities } from "../src/characters/characters.j
 import { decideDiscard, decideCall, decideAbilityActivations } from "../src/ai/simpleAI.js";
 import { Wall } from "../src/core/wall.js";
 import { doraFromIndicator, makeKind } from "../src/core/tiles.js";
+import { MeldType } from "../src/core/meld.js";
 
 let failures = 0;
 const assert = (cond, msg) => { if (!cond) { console.error("FAIL:", msg); failures++; } };
@@ -74,7 +75,7 @@ function autoplay(game, maxSteps = 50000) {
       if (!d) { assert(false, "no discard decision"); break; }
       if (d.type === "tsumo") game.doTsumo(idx);
       else if (d.type === "kan") {
-        assert(d.kanType === "closed" || d.kanType === undefined, "futari kan must be closed (ankan)");
+        assert(d.kanType === MeldType.KAN_CLOSED || d.kanType === undefined, "futari kan must be closed (ankan)");
         game.declareKan(idx, d.kind, d.kanType);
       }
       else game.discard(idx, d.tileId, d.riichi);

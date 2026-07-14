@@ -4446,9 +4446,12 @@ const LocalController = {
     const riichiBeat = riichiWaitFlag; riichiWaitFlag = false;
     const kitaBeat = kitaWaitFlag; kitaWaitFlag = false;
     if (actor.isHuman && !autoPlay) {
-      // After own riichi: auto-tsumogiri the drawn tile (unless tsumo is available).
+      // After own riichi: auto-tsumogiri the drawn tile unless there is a real
+      // choice to make (tsumo / wait-preserving kan / kita pull).
       const opts = game.actionOptions(seat);
-      if (actor.riichi && opts && !opts.tsumo) return autoTsumogiri(actor, "リーチ中（自動ツモ切り）");
+      if (actor.riichi && opts && !opts.tsumo && opts.kans.length === 0 && !opts.nuki) {
+        return autoTsumogiri(actor, "リーチ中（自動ツモ切り）");
+      }
       // JaneDoe で強制ツモ切りにされている: ツモ和了以外は自動でツモ切り。
       if (opts && opts.forcedTsumogiri && !opts.tsumo) return autoTsumogiri(actor, "強制ツモ切り中");
       return waitHumanTurn(seat); // 打牌/ツモ/カンの決定、または SWITCH_TO_AI
@@ -4524,6 +4527,7 @@ function waitHumanTurn(seat) {
 function turnIntent(d) {
   if (d.type === "tsumo") return { type: "intent.discard", action: "tsumo" };
   if (d.type === "kan") return { type: "intent.discard", action: "kan", kind: d.kind, kanType: d.kanType };
+  if (d.type === "nuki") return { type: "intent.discard", action: "nuki" };
   return { type: "intent.discard", tileId: d.tileId, riichi: !!d.riichi };
 }
 function resolveHumanTurn(decision) {
@@ -4646,9 +4650,13 @@ function setSelectedTile(tileId) {
   updateDiscardHint();
 }
 
-// 打牌ヒントの文言（選択前/選択後・リーチ宣言牌選択中・リコール中で出し分け）。
+// 打牌ヒントの文言（選択前/選択後・リーチ宣言牌選択中・リーチ中・リコール中で出し分け）。
 function discardHintText() {
   if (recallMode) return "河から手牌へ戻す牌を選んでください（ツモ牌は河へ・ロン不可）";
+  // リーチ中に手動になるのはツモ/カン/北抜きの選択があるときだけ。打牌はツモ切りに限る。
+  if (game.players[game.turn]?.riichi) {
+    return selectedTileId !== null ? "もう一度タップでツモ切り" : "リーチ中：ボタンで選ぶか、ツモ牌をタップしてツモ切り";
+  }
   if (selectedTileId !== null) return riichiMode ? "もう一度タップでリーチ宣言（別の牌で選び直し）" : "もう一度タップで打牌（別の牌で選び直し）";
   return riichiMode ? "リーチ宣言牌をタップ → もう一度で確定" : "牌をタップして選択 → もう一度で打牌";
 }
@@ -4735,8 +4743,8 @@ function showHumanActions() {
   setSelectedTile(null);
 
   // 初回オンボーディング: まだ一度も自力で打牌していない人にだけ、手牌を指すコーチマークを出す。
-  // リーチ宣言牌選択中・リコール選択中・オート中は邪魔なので出さない（描画は次の render() で反映）。
-  renderer.showHandCoach = !handHintShown() && !recallMode && !riichiMode && !autoPlay;
+  // リーチ宣言牌選択中・リーチ中（カン/北抜き選択）・リコール選択中・オート中は邪魔なので出さない。
+  renderer.showHandCoach = !handHintShown() && !recallMode && !riichiMode && !autoPlay && !game.players[idx]?.riichi;
 
   const bar = el("action-bar");
   if (opts.tsumo) bar.appendChild(mkBtn("ツモ和了", "btn-tsumo", () => resolveHumanTurn({ type: "tsumo" })));
@@ -4755,13 +4763,10 @@ function showHumanActions() {
     }));
   }
   // 北抜き (三麻): pull a North tile as nuki-dora, then act again (no turn passes).
+  // resolver 経由で pump が適用→同席を再処理するので、通常時は行動UIが開き直され、
+  // リーチ中は「抜いた後に選択肢が無ければ自動ツモ切り」へ自然に戻る。
   if (opts.nuki) {
-    bar.appendChild(mkBtn("北抜き", "btn-kan", () => {
-      clearActions();
-      game.nukiKita(idx);
-      showHumanActions();
-      render();
-    }));
+    bar.appendChild(mkBtn("北抜き", "btn-kan", () => resolveHumanTurn({ type: "nuki" })));
   }
 
   // Ability activation buttons / indicators (発動種別ごと)。These go in the side

@@ -445,11 +445,15 @@ export class CanvasRenderer {
     for (const t of tiles) {
       if (t === "gap") { x += drawnGap; continue; }
       const dangerLevel = this.danger ? this.danger.get(t.kind) : 0;
+      const myTurn = this.game.phase === Phase.AWAIT_DISCARD && this.game.turn === p.index;
       const canPick =
-        this.game.phase === Phase.AWAIT_DISCARD &&
-        this.game.turn === p.index &&
+        myTurn &&
+        // リーチ後の打牌はツモ切りだけ（カン/北抜き選択で手番UIが開いても手牌は崩せない）。
+        (!p.riichi || t.id === p.drawnTileId) &&
         (!this.riichiMode || (this.riichiKinds && this.riichiKinds.includes(t.kind)));
-      const dim = this.riichiMode && this.riichiKinds && !this.riichiKinds.includes(t.kind);
+      const dim =
+        (this.riichiMode && this.riichiKinds && !this.riichiKinds.includes(t.kind)) ||
+        (myTurn && p.riichi && t.id !== p.drawnTileId);
       // 押せる牌は一段持ち上げ、ホバー中／2タップ選択中の牌はさらに上げる。
       // 当たり判定(ty)も同じだけずらして見た目と一致させる。
       const hovered = canPick && this.hoverTileId === t.id;
