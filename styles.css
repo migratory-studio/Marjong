@@ -2362,15 +2362,26 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   font-size: 12px; line-height: 1.35;
 }
 .model-advice.hidden { display: none; }
+/* 栞の板書は「黒板」。木枠＋艶消しの緑＋白チョークで、卓の一角を教室にする
+   （docs/character-ingame-fx-plan.md 2-4）。助言の中身は変えず、誰の助言かを見せる。 */
 .model-advice .ma-block {
-  background: linear-gradient(180deg, #14302a, #0e231f);
-  border: 1px solid #2f9e7e; border-radius: 8px;
-  padding: 6px 9px; color: #eaf6f1;
-  box-shadow: 0 3px 10px #0007;
+  background:
+    linear-gradient(180deg, #2b4238, #22362e),
+    repeating-linear-gradient(115deg, #ffffff05 0 2px, transparent 2px 7px);
+  border: 3px solid #6b4a2f; border-radius: 4px;
+  box-shadow: 0 3px 12px #0008, inset 0 0 18px #0000004d;
+  padding: 7px 10px; color: #f2f7f2;
+  text-shadow: 0 1px 0 #00000055;
+}
+/* 「栞の板書」見出しの前に置く、白いチョークの一本線 */
+.model-advice .ma-title::before {
+  content: ""; display: inline-block; vertical-align: middle;
+  width: 10px; height: 3px; margin-right: 5px; border-radius: 1px;
+  background: #f4f7f2; box-shadow: 0 0 4px #ffffff66;
 }
 .model-advice .ma-title {
   font-size: 10px; font-weight: 800; letter-spacing: .04em;
-  color: #7fe0c2; margin-bottom: 3px;
+  color: #dff0e6; margin-bottom: 3px; /* 白チョーク */
 }
 .model-advice .ma-line { white-space: nowrap; }
 .model-advice .ma-comeback .ma-line:first-of-type { color: #f6d24a; font-weight: 700; }
@@ -2622,6 +2633,273 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   100% { opacity: 0; transform: translate(-50%, -50%) scale(.9) rotate(0deg); }
 }
 
+
+/* ============================================================================
+   能力の持続レイヤー（キャラ別インゲーム演出の共通の器）
+   ---------------------------------------------------------------------------
+   「能力＝そのキャラが見ている世界を、一局だけプレイヤーに貸す」という物差しで、
+   発動中のあいだ卓の左下にそのキャラの"視界"を出す（正典 docs/character-ingame-fx-plan.md）。
+   器は共通・中身はキャラ別。単発FXは 0.6s 以内、持続表示は発動局のみ＝連戦のテンポを殺さない。
+   ========================================================================== */
+.ability-aura {
+  /* 卓の左下。手牌(下端~86px＋持ち上げ分)と action-bar(右下 bottom:112px) のどちらとも
+     被らない高さに置く。左側は上家の手牌が縦に並ぶだけなので、この帯が唯一の空きになる。 */
+  position: absolute; left: 10px; bottom: 108px; z-index: 24;
+  display: flex; flex-direction: column; gap: 6px;
+  max-width: 232px; pointer-events: none;
+  font-size: 12px; line-height: 1.35;
+}
+.ability-aura.hidden { display: none; }
+.aura-panel {
+  border-radius: 9px; padding: 7px 10px;
+  box-shadow: 0 4px 14px #0009; backdrop-filter: blur(2px);
+  animation: auraIn .35s ease-out both;
+}
+.aura-panel.aura-out { animation: auraOut .3s ease-in both; }
+.aura-title {
+  font-size: 11px; font-weight: 800; letter-spacing: .08em;
+  display: flex; align-items: baseline; gap: 6px;
+}
+.aura-note { font-size: 11px; margin-top: 3px; opacity: .85; }
+@keyframes auraIn  { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes auraOut { from { opacity: 1; } to { opacity: 0; transform: translateY(6px); } }
+
+/* ---- 姚玖「老頭の庭」: 么九を引くたび庭に灯がともる ---- */
+.aura-garden {
+  background: linear-gradient(180deg, #10140fee, #080a07ee);
+  border: 1px solid #4b3a1f; color: #e8d9bd;
+  position: relative; overflow: hidden;
+}
+.aura-garden .aura-title { color: #c9a25e; }
+.aura-garden.lit { border-color: #a8791f; box-shadow: 0 4px 14px #0009, 0 0 18px #f0a23c33; }
+.garden-lanterns { display: flex; gap: 3px; margin: 5px 0 1px; }
+.lantern {
+  width: 11px; height: 15px; border-radius: 2px 2px 3px 3px;
+  background: #23261f; border: 1px solid #383c30;
+}
+.lantern.on {
+  background: linear-gradient(180deg, #ffd489, #f0a23c);
+  border-color: #ffcc7a; box-shadow: 0 0 7px #f0a23caa;
+}
+.lantern.just { animation: lanternPop .55s ease-out both; }
+@keyframes lanternPop {
+  0%   { transform: scale(.5); box-shadow: 0 0 0 #f0a23c00; }
+  45%  { transform: scale(1.35); box-shadow: 0 0 16px #ffd489; }
+  100% { transform: scale(1); box-shadow: 0 0 7px #f0a23caa; }
+}
+/* 満月: 么九が13種そろう／国士テンパイで庭の隅に昇る */
+.garden-moon {
+  position: absolute; right: 8px; top: 6px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffbe8, #f4dfa0);
+  box-shadow: 0 0 14px #ffe9a8cc, 0 0 30px #ffd97a55;
+  animation: moonRise .8s ease-out both;
+}
+@keyframes moonRise {
+  from { opacity: 0; transform: translateY(10px) scale(.7); }
+  to   { opacity: 1; transform: none; }
+}
+/* 発動中は卓が夜に沈む（四隅を落とす）。灯が9つ以上ともると夜が明るむ。 */
+.table-wrap.aura-night::after {
+  content: ""; position: absolute; inset: 0; z-index: 23; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 46%, #05070a99 100%);
+  transition: opacity .6s ease;
+}
+.table-wrap.aura-night.aura-night-lit::after { opacity: .45; }
+
+/* ---- 春嬋「韋駄天の中張」: 走った距離が見える ---- */
+.aura-sprint {
+  background: linear-gradient(180deg, #0c1f1eee, #071413ee);
+  border: 1px solid #2b7d74; color: #dff5f1;
+}
+.aura-sprint .aura-title { color: #46c2b5; }
+.aura-sprint.rush { border-color: #46c2b5; box-shadow: 0 4px 14px #0009, 0 0 18px #46c2b544; }
+.step-marks { display: flex; gap: 5px; margin: 6px 0 2px; height: 13px; align-items: center; }
+/* 一歩＝翠のシェブロン（走った距離が右へ伸びていく）。絵文字だと色がテーマから浮くので描画で作る。 */
+.step-mark {
+  width: 7px; height: 11px; opacity: .9;
+  border-right: 2.5px solid #7fe6d8; border-top: 2.5px solid #7fe6d8;
+  transform: rotate(45deg);
+  animation: stepPop .45s ease-out both;
+}
+@keyframes stepPop {
+  0%   { opacity: 0; transform: rotate(45deg) translate(-6px, 6px) scale(.7); }
+  60%  { opacity: 1; transform: rotate(45deg) translate(2px, -2px) scale(1.15); }
+  100% { opacity: .9;  transform: rotate(45deg); }
+}
+.sprint-badge {
+  margin-left: auto; font-size: 11px; font-weight: 900; letter-spacing: .1em;
+  color: #0a1614; background: #46c2b5; border-radius: 4px; padding: 1px 6px;
+  animation: lanternPop .5s ease-out both;
+}
+/* 足跡テロップ（席の横に「一歩」「二歩」…） */
+.step-call {
+  position: absolute; z-index: 26; pointer-events: none;
+  font-size: 20px; font-weight: 900; color: #bff0e8;
+  text-shadow: 0 2px 8px #000c, 0 0 14px #46c2b5aa;
+  opacity: 0; transform: translate(-50%, -50%) translateX(-14px);
+  transition: opacity .18s ease-out, transform .5s cubic-bezier(.2,.7,.2,1);
+}
+.step-call.show { opacity: 1; transform: translate(-50%, -50%) translateX(14px); }
+/* 聴牌到達の一閃（画面を横切る風） */
+.sprint-flash {
+  position: absolute; inset: 0; z-index: 27; pointer-events: none; overflow: hidden;
+}
+.sprint-flash::before {
+  content: ""; position: absolute; top: 0; bottom: 0; width: 42%;
+  background: linear-gradient(100deg, transparent, #9ff0e455, #ffffff88, #9ff0e455, transparent);
+  animation: sprintSweep .55s cubic-bezier(.3,.6,.2,1) both;
+}
+@keyframes sprintSweep {
+  from { left: -45%; }
+  to   { left: 105%; }
+}
+/* ツモ牌FXの色バリアント（既定=詩玥の金）。姚玖=橙の灯、春嬋=翠の風 */
+.tsumo-fx.fx-lantern .tsumo-fx-ring { border-color: #ffbe6a; box-shadow: 0 0 14px #f0a23c, inset 0 0 8px #f0a23c; }
+.tsumo-fx.fx-lantern .tsumo-fx-glow { background: radial-gradient(closest-side, rgba(240,162,60,.55), rgba(240,162,60,0)); }
+.tsumo-fx.fx-lantern .tsumo-fx-spark { color: #ffe3b0; text-shadow: 0 0 10px #f0a23c; }
+.tsumo-fx.fx-wind .tsumo-fx-ring { border-color: #7fe6d8; box-shadow: 0 0 14px #46c2b5, inset 0 0 8px #46c2b5; }
+.tsumo-fx.fx-wind .tsumo-fx-glow { background: radial-gradient(closest-side, rgba(70,194,181,.5), rgba(70,194,181,0)); }
+.tsumo-fx.fx-wind .tsumo-fx-spark { color: #d8fff8; text-shadow: 0 0 10px #46c2b5; }
+
+
+/* ============================================================================
+   ルクス・ゼロ「ゼロ・リサーチ」— 山を照らす計器
+   走査 → 捕捉（予約）→ 次のツモで回収、という因果を目に見える形にするためのUI。
+   無機質・等幅・シアン＝彼の人格そのものを操作画面にする（素のボタン列にしない）。
+   ========================================================================== */
+.lux-scan {
+  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+  z-index: 28; min-width: 330px; max-width: 420px;
+  background: linear-gradient(180deg, #060d12f2, #030709f7);
+  border: 1px solid #2f6d8e; border-radius: 10px;
+  box-shadow: 0 10px 40px #000c, 0 0 26px #4ea1d322;
+  color: #cfe6f4; padding: 12px 14px 11px;
+  font-family: "SFMono-Regular", Consolas, "Courier New", monospace;
+  animation: luxIn .22s ease-out both;
+}
+.lux-scan.hidden, .lux-alert.hidden { display: none; }
+@keyframes luxIn { from { opacity: 0; transform: translate(-50%, -46%); } to { opacity: 1; } }
+.lux-head {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: 11px; letter-spacing: .18em; color: #4ea1d3;
+  border-bottom: 1px solid #1d4256; padding-bottom: 6px; margin-bottom: 8px;
+}
+.lux-head .lux-tag { font-weight: 800; }
+.lux-head .lux-meta { margin-left: auto; color: #6f93a8; letter-spacing: .06em; }
+.lux-rows { display: flex; flex-direction: column; gap: 6px; }
+.lux-row {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: #0a1a24; border: 1px solid #27596f; border-radius: 7px;
+  padding: 8px 10px; cursor: pointer; color: #e6f4fb;
+  font-family: inherit; font-size: 13px; text-align: left;
+}
+.lux-row:hover { border-color: #4ea1d3; background: #0e2534; box-shadow: 0 0 12px #4ea1d344; }
+.lux-row .lux-tile { font-size: 16px; font-weight: 800; color: #9fd8f5; min-width: 46px; }
+.lux-row .lux-num { color: #7fb6d0; font-size: 11px; letter-spacing: .06em; }
+.lux-row .lux-num b { color: #d6f0ff; font-weight: 700; }
+.lux-foot { display: flex; align-items: center; margin-top: 9px; }
+.lux-note { font-size: 11px; color: #86a6b8; letter-spacing: .04em; }
+.lux-cancel {
+  margin-left: auto; background: none; border: 1px solid #2c4a5a; border-radius: 6px;
+  color: #8fb2c4; font-family: inherit; font-size: 11px; padding: 4px 10px; cursor: pointer;
+}
+.lux-cancel:hover { border-color: #4ea1d3; color: #cfe6f4; }
+/* 誤差の一打（超越帯 Lv9+）: 計器がいちど ERROR を吐き、そのうえで掴みにいく＝反転 */
+.lux-scan.fallback { border-color: #8e6a2f; box-shadow: 0 10px 40px #000c, 0 0 26px #f0a23c22; }
+.lux-scan.fallback .lux-head { color: #f0a23c; border-bottom-color: #5a4520; }
+.lux-scan.fallback .lux-row { border-color: #6b5426; }
+.lux-scan.fallback .lux-row:hover { border-color: #f0a23c; box-shadow: 0 0 12px #f0a23c44; }
+.lux-err { color: #ffb765; font-size: 12px; margin-bottom: 8px; letter-spacing: .04em; }
+.lux-err b { display: block; color: #ffd9a8; font-size: 13px; margin-top: 3px; letter-spacing: .02em; }
+
+/* 「該当なし」告知（能力が使えない＝場に出切っている、という読みの材料） */
+.lux-alert {
+  /* 卓の中央上（中央情報パネルのすぐ上）。対面の伏せ牌に被らない高さに置く。 */
+  position: absolute; left: 50%; top: 40%; transform: translateX(-50%);
+  z-index: 28; pointer-events: none;
+  background: #050c11ee; border: 1px solid #2f6d8e; border-radius: 8px;
+  padding: 8px 14px; color: #cfe6f4;
+  font-family: "SFMono-Regular", Consolas, "Courier New", monospace;
+  box-shadow: 0 8px 26px #000a;
+  animation: luxAlertIn .3s ease-out both;
+}
+.lux-alert .la-tag { font-size: 11px; letter-spacing: .18em; color: #ff9c6b; font-weight: 800; }
+.lux-alert .la-main { font-size: 13px; margin-top: 3px; }
+.lux-alert .la-sub { font-size: 11px; color: #86a6b8; margin-top: 2px; }
+.lux-alert.out { animation: luxAlertOut .4s ease-in both; }
+@keyframes luxAlertIn  { from { opacity: 0; transform: translate(-50%, -8px); } to { opacity: 1; transform: translateX(-50%); } }
+@keyframes luxAlertOut { from { opacity: 1; } to { opacity: 0; transform: translate(-50%, -6px); } }
+
+/* 捕捉（予約）の光点: 山＝卓中央に刺さり、次のツモで手牌へ流れ込む */
+.lux-point {
+  position: absolute; z-index: 26; pointer-events: none;
+  width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%;
+  background: radial-gradient(circle, #eaf8ff, #4ea1d3 55%, #4ea1d300 70%);
+  box-shadow: 0 0 14px #4ea1d3, 0 0 30px #4ea1d366;
+  animation: luxPulse 1.4s ease-in-out infinite;
+  transition: left .42s cubic-bezier(.3,.1,.2,1), top .42s cubic-bezier(.3,.1,.2,1), opacity .2s ease;
+}
+@keyframes luxPulse { 0%,100% { transform: scale(1); opacity: .95; } 50% { transform: scale(1.45); opacity: .6; } }
+.tsumo-fx.fx-scan .tsumo-fx-ring { border-color: #9fd8f5; box-shadow: 0 0 14px #4ea1d3, inset 0 0 8px #4ea1d3; }
+.tsumo-fx.fx-scan .tsumo-fx-glow { background: radial-gradient(closest-side, rgba(78,161,211,.55), rgba(78,161,211,0)); }
+.tsumo-fx.fx-scan .tsumo-fx-spark { color: #dff3ff; text-shadow: 0 0 10px #4ea1d3; }
+
+
+/* ============================================================================
+   篠宮 栞「答え合わせ」— 対局後に一度だけ開く黒板
+   模範解答は“プレイヤーを賢くする道具”なので、放っておくと誰の能力でもよくなる。
+   だから対局のあとに彼女が一言だけ返す。取り上げるのは正答率ではなく、
+   「わたしが選ばなかった牌」を切ったその一打（docs/character-ingame-fx-plan.md 2-4）。
+   ========================================================================== */
+.shiori-review {
+  position: absolute; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  background: #04080699; backdrop-filter: blur(2px);
+  animation: srIn .3s ease-out both;
+}
+.shiori-review.hidden { display: none; }
+@keyframes srIn { from { opacity: 0; } to { opacity: 1; } }
+.sr-card {
+  position: relative; display: flex; align-items: stretch; gap: 0;
+  width: min(560px, 86%); min-height: 196px;
+  background: linear-gradient(180deg, #2b4238, #1e302a);
+  border: 5px solid #6b4a2f; border-radius: 6px;
+  box-shadow: 0 18px 50px #000b, inset 0 0 30px #00000055;
+  overflow: hidden;
+  animation: srCard .34s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes srCard { from { transform: translateY(14px) scale(.97); } to { transform: none; } }
+.sr-portrait { width: 148px; flex: none; overflow: hidden; background: #16241f; position: relative; }
+/* 立ち絵は fillPortrait（相棒ボードと同じ imagePos）で入れたうえで、この枠では顔に寄せる。
+   absolute で敷くことでカードの高さは本文（黒板の文章）が決め、絵が縦に引き伸ばさない。
+   裾のマスクは黒板側では不要なので打ち消す。 */
+.sr-portrait .self-portrait {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: top center; display: block;
+  -webkit-mask-image: none; mask-image: none;
+}
+.sr-body { flex: 1 1 auto; padding: 14px 16px 13px; color: #f2f7f2; text-shadow: 0 1px 0 #00000055; }
+.sr-head {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 800; letter-spacing: .1em; color: #dff0e6; margin-bottom: 8px;
+}
+.sr-head::before {
+  content: ""; width: 12px; height: 3px; border-radius: 1px;
+  background: #f4f7f2; box-shadow: 0 0 4px #ffffff66;
+}
+.sr-line { font-size: 14px; line-height: 1.75; }
+.sr-tile {
+  display: inline-block; margin: 0 2px; padding: 1px 7px;
+  border: 1px solid #7fe0c2; border-radius: 4px; color: #d7fff0; font-weight: 800;
+}
+.sr-sub { margin-top: 9px; font-size: 11px; color: #a8c4b6; letter-spacing: .03em; }
+.sr-close {
+  margin-top: 12px; background: #2f9e7e; border: none; border-radius: 6px;
+  color: #06231a; font-weight: 800; font-size: 13px; padding: 7px 16px; cursor: pointer;
+}
+.sr-close:hover { background: #3fb894; }
+
 /* 常時能力の常設バッジ: 立ち絵の左上に重ね、手番に関係なく見せる。空なら畳む。 */
 .self-abilities {
   position: absolute; left: 8px; top: 8px; right: 8px; z-index: 3;
@@ -2787,9 +3065,12 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   font-size: 76px; font-weight: 900; letter-spacing: 2px; line-height: 1.02; color: #fff;
   text-shadow: 0 0 16px #000, 0 4px 12px #000; -webkit-text-stroke: 2px #0009;
 }
+/* 能力カットインの副題＝「その能力が“自分に”何をするのか」の一行。技名より一段落とし、
+   読める長さの文として見せる（旧36pxの大書きは未使用のまま残っていた値）。 */
 .cutin-band[data-variant="bold"] .cutin-sub {
-  font-size: 36px; font-weight: 900; letter-spacing: 5px; margin-top: 6px;
-  color: #ffe9a8; text-shadow: 0 0 12px #000, 0 3px 8px #000;
+  font-size: 19px; font-weight: 700; letter-spacing: 1px; margin-top: 10px;
+  color: #ffe9a8; text-shadow: 0 0 10px #000, 0 2px 6px #000;
+  max-width: calc(var(--stage-w) * 0.55); /* 固定ステージ基準（vw はスケールと無関係になる） */
 }
 @keyframes cutinBand {
   0%   { transform: translateX(-58%) skewX(-8deg); opacity: 0; }

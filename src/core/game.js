@@ -234,7 +234,9 @@ export class Game {
     if (typeof ab.apply === "function" && !ab.apply(this, p, params)) return false;
     ab.activate();
     this.log(`${p.character.name} が能力「${ab.name}」を発動`);
-    this.bus.emit(Events.ABILITY_USED, { index: playerIndex, player: p, name: ab.name });
+    // abilityId/params も載せる：UI 側が「その能力が“自分に”何をするのか」を
+    // カットインの副題として出せるようにするため（対象付き能力は params.targetIndex）。
+    this.bus.emit(Events.ABILITY_USED, { index: playerIndex, player: p, name: ab.name, abilityId: ab.id, params });
     this.emitState();
     return true;
   }
@@ -292,6 +294,9 @@ export class Game {
         // 常設バッジ/パネル用の任意フィールド（持たない能力は null）。
         meter: ui ? ui.meter ?? null : null,
         status: ui ? ui.status ?? null : null,
+        // 演出用の任意フィールド（ゼロ・リサーチの計器UIが読む走査レポート／誤差の一打か）。
+        scan: ui ? ui.scan ?? null : null,
+        isFallback: ui ? !!ui.isFallback : false,
       };
     });
   }

@@ -212,25 +212,52 @@ export class ZeroSearchAbility extends Ability {
     this._fallbackMode = false;
   }
 
-  // 残る生牌（王牌除く・全山）に在って、聴牌へ進む有効牌の候補トップ2を返す。
-  // breadth 降順→同点はドラ/赤5を優先→なお同点は kind 昇順。生牌に無い種類は除外。
-  liveCandidates(api) {
+  // 走査の生データ（有効牌ランキング＋残り生牌）を1回で作る。zeroSearchEffectiveKinds は
+  // 重い（34×34のシャンテン評価）ので、liveCandidates と scanReport で使い回す。
+  _scan(api) {
     const p = api.me;
     const wall = api.state.wall;
-    if (!wall) return [];
-    const ranked = zeroSearchEffectiveKinds(p.counts(), p.numMeldSets());
+    if (!wall) return null;
+    const liveTiles = wall.peekLive(wall.liveRemaining);
+    return {
+      wall,
+      liveTiles,
+      liveCounts: tilesToCounts(liveTiles),
+      ranked: zeroSearchEffectiveKinds(p.counts(), p.numMeldSets()),
+    };
+  }
+
+  // 残る生牌（王牌除く・全山）に在って、聴牌へ進む有効牌の候補トップ2を返す。
+  // breadth 降順→同点はドラ/赤5を優先→なお同点は kind 昇順。生牌に無い種類は除外。
+  liveCandidates(api, scan = this._scan(api)) {
+    if (!scan) return [];
+    const { wall, liveTiles, liveCounts, ranked } = scan;
     if (ranked.length === 0) return [];
     // 全山（王牌除く）の残り生牌に在る種類だけに絞る。
-    const liveCounts = tilesToCounts(wall.peekLive(wall.liveRemaining));
     const live = ranked.filter((e) => liveCounts[e.kind] > 0);
     if (live.length === 0) return [];
     // 同点タイブレーク用にドラ/赤5判定を用意（広い順が主、ドラは従）。
     const doraKinds = new Set(wall.doraKinds?.() ?? []);
-    const liveTiles = wall.peekLive(wall.liveRemaining);
     const hasRed = (k) => liveTiles.some((t) => t.kind === k && t.red);
     const isDora = (k) => doraKinds.has(k) || hasRed(k);
     live.sort((a, b) => b.breadth - a.breadth || (isDora(b.kind) - isDora(a.kind)) || a.kind - b.kind);
     return live.slice(0, this.candidateCount).map((e) => e.kind);
+  }
+
+  // 走査レポート（main.js の計器UIが読む表示データ）。候補ごとの待ち幅と山の残り枚数に
+  // 加えて、「聴牌へ進む有効牌なのに山に一枚も残っていない種類」＝ deadKinds を返す。
+  // これは能力が使えない理由そのものだが、ルクスにとっては“場に出切っている”という
+  // 読みの材料でもある（docs/character-ingame-fx-plan.md 2-3 #3）。
+  scanReport(api, candidates, isFallback, scan) {
+    if (!scan) return null;
+    const { liveCounts, ranked } = scan;
+    const breadthOf = new Map(ranked.map((e) => [e.kind, e.breadth]));
+    return {
+      liveRemaining: scan.wall.liveRemaining,
+      isFallback,
+      rows: candidates.map((k) => ({ kind: k, breadth: breadthOf.get(k) ?? 0, live: liveCounts[k] || 0 })),
+      deadKinds: ranked.filter((e) => (liveCounts[e.kind] || 0) === 0).map((e) => e.kind),
+    };
   }
 
   // 超越帯（fallbackDraw・Lv9+）:「該当なし」の先の候補＝“誤差の一打”。
@@ -287,13 +314,15 @@ export class ZeroSearchAbility extends Ability {
     const is1shanten = shanten(p.counts(), p.numMeldSets()) === 1;
     const visible =
       this.ready && this._handsUsed < this.maxHands && is1shanten && !this.active;
-    let candidates = visible ? this.liveCandidates(api) : [];
+    const scan = visible ? this._scan(api) : null;
+    let candidates = visible ? this.liveCandidates(api, scan) : [];
     let isFallback = false;
     if (visible && candidates.length === 0 && this.fallbackDraw) {
       candidates = this.fallbackKinds(api);
       isFallback = candidates.length > 0;
     }
-    return { visible, candidates, isFallback };
+    // scan は「計器UI（走査モーダル）」と「該当なしの河ハイライト」の表示データ。
+    return { visible, candidates, isFallback, scan: visible ? this.scanReport(api, candidates, isFallback, scan) : null };
   }
 
   // 即時適用（apply→activate の順）。確保する有効牌を確定する。params.targetKind が

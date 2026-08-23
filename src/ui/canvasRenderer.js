@@ -54,12 +54,15 @@ export class CanvasRenderer {
     // 右サイドの相棒ボードに集約済みで、卓上にはHPバーを描かない。
   }
 
-  setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false, best = null } = {}) {
+  setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false, best = null, deadKinds = null } = {}) {
     this.riichiMode = riichiMode;
     this.riichiKinds = riichiKinds;
     this.danger = danger; // Map kind -> level
     this.recallMode = recallMode; // リコール・ディール: 自分の河の牌を選択中
     this.best = best; // 模範解答: Map kind -> rank(1..3)。null=非表示
+    // ゼロ・リサーチ（ルクス）の「該当なし」告知中だけ立つ Set<kind>。全員の河の該当牌を
+    // シアンで囲み、「その牌はもう場に出切っている」ことを目に見える証明として示す。
+    this.deadKinds = deadKinds;
   }
 
   render() {
@@ -515,26 +518,38 @@ export class CanvasRenderer {
     ctx.restore();
   }
 
-  // 模範解答（灯子）— 牌効率トップ3の打牌候補に ①②③ を灯す。先生の助言＝落ち着いた
-  // 翠のバッジを牌の左上角に重ねる。danger(右上系)・doraStar(上中央)とは位置で住み分ける。
+  // 模範解答（篠宮 栞）— 牌効率トップ3の打牌候補に「栞（しおり）」を挟む。丸数字ではなく
+  // 本に挟む紙のしおりの形にして、能力名と持ち主の名前がそのまま絵になるようにしてある
+  // （docs/character-ingame-fx-plan.md 2-4）。牌の左上に垂らし、danger(右上系)・
+  // doraStar(上中央)とは位置で住み分ける。1位ほど長く濃い＝迷ったときの優先度が読める。
   _bestMark(x, y, w, h, rank) {
     const ctx = this.ctx;
-    const r = 9;
-    const cx = x + r - 3;
-    const cy = y + r - 3;
+    const bw = 11;                       // しおりの幅
+    const bh = [26, 22, 19][rank - 1] || 19; // 順位が上ほど長く垂れる
+    const bx = x + 3;
+    const by = y - 4;                    // 牌の上端から少し飛び出して「挟んである」感を出す
+    const tail = 6;                      // 下端の V 字カット
+    const alpha = [1, 0.86, 0.72][rank - 1] || 0.72;
     ctx.save();
+    ctx.globalAlpha = alpha;
     ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.moveTo(bx, by);
+    ctx.lineTo(bx + bw, by);
+    ctx.lineTo(bx + bw, by + bh);
+    ctx.lineTo(bx + bw / 2, by + bh - tail);
+    ctx.lineTo(bx, by + bh);
+    ctx.closePath();
     ctx.fillStyle = "#2f9e7e"; // 翠（先生の色）
     ctx.fill();
-    ctx.lineWidth = 1.5;
-    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = "#eafff7";
     ctx.stroke();
+    ctx.globalAlpha = 1;
     ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 12px sans-serif";
+    ctx.font = "bold 10px sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText(String(rank), cx, cy + 0.5);
+    ctx.fillText(String(rank), bx + bw / 2, by + 8);
     ctx.restore();
   }
 
@@ -691,6 +706,14 @@ export class CanvasRenderer {
       this._drawTileAt(rowX, ly, t.kind, {
         scale, red: t.red, riichi: t.riichiTile, sideways, ronImmune: t.ronImmune,
       });
+      // ルクスの走査結果「出切っている有効牌」を河で光らせる（告知中のみ）。
+      if (this.deadKinds && this.deadKinds.has(t.kind)) {
+        ctx.save();
+        ctx.strokeStyle = "#4ea1d3"; ctx.lineWidth = 2;
+        ctx.shadowColor = "#4ea1d3"; ctx.shadowBlur = 8;
+        roundRect(ctx, rowX - 1, ly - 1, slotW + 2, th + 2, 5 * scale); ctx.stroke();
+        ctx.restore();
+      }
       // リコール選択中は自分の河の牌を選べることを縁取りで示す。
       if (selfHitboxes) {
         if (this.recallMode) {

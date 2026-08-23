@@ -306,6 +306,17 @@
         <!-- 模範解答（栞 Lv7+/Lv10）の卓上HUD。トップ捲り条件・押し引き判断を板書する。
              手牌は卓の下端なので左上に置いて被らせない。中身が空のときは CSS で隠す。 -->
         <div id="model-advice" class="model-advice hidden" aria-live="polite"></div>
+        <!-- 能力の持続レイヤー（キャラ別インゲーム演出の共通の器）。発動中だけ卓の左下に
+             そのキャラの"視界"を出す（姚玖=夜の庭 / 春嬋=韋駄天 / ルクス=走査…）。
+             中身はキャラ別・器は共通。局が終わる/能力が切れたら畳む。 -->
+        <div id="ability-aura" class="ability-aura hidden" aria-hidden="true"></div>
+        <!-- ルクス・ゼロ「ゼロ・リサーチ」の計器。走査結果から確保する有効牌を選ぶモーダル
+             （#lux-scan）と、「該当なし＝場に出切っている」を告げる一過性の警告（#lux-alert）。 -->
+        <div id="lux-scan" class="lux-scan hidden"></div>
+        <div id="lux-alert" class="lux-alert hidden" aria-hidden="true"></div>
+        <!-- 篠宮 栞「答え合わせ」。対局のあとに一度だけ、彼女が“あなたが選んだ一打”を
+             振り返る（模範解答＝道具にキャラを宿すための、彼女だけの後日談）。 -->
+        <div id="shiori-review" class="shiori-review hidden"></div>
         <div id="ability-cutin" class="ability-cutin hidden"></div>
         <div id="win-overlay" class="win-overlay hidden"></div>
         <div id="damage-overlay" class="damage-overlay hidden"></div>

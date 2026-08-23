@@ -24,6 +24,7 @@ export const ABILITY_MASTER = {
     chargeScope: "game",
     maxCharges: 2,
     cooldown: 0,
+    enemyNote: "{name}のツモが、この局だけ手に噛み合う",
   },
   "summon-tile": {
     name: "牌寄せ",
@@ -33,6 +34,7 @@ export const ABILITY_MASTER = {
     chargeScope: "hand",
     maxCharges: 1,
     cooldown: 0,
+    enemyNote: "{name}が次のツモで、欲しい牌を呼ぶ",
   },
   "zero-search": {
     name: "ゼロ・リサーチ",
@@ -42,6 +44,7 @@ export const ABILITY_MASTER = {
     chargeScope: "hand",
     maxCharges: 1,
     cooldown: 0,
+    enemyNote: "{name}が次のツモで、聴牌を確定させる",
   },
   "omni-chi": {
     name: "全方位チー",
@@ -60,6 +63,7 @@ export const ABILITY_MASTER = {
     chargeScope: "hand",
     maxCharges: 1,
     cooldown: 0,
+    enemyNote: "{name}が河の牌を1枚、手に戻した",
   },
   "danger-sense": {
     // 真守の口癖をそのまま技名に（詩玥「ツモれば勝ち」と同じネームド化の手法）。
@@ -88,6 +92,7 @@ export const ABILITY_MASTER = {
     chargeScope: "game",
     maxCharges: 2,
     cooldown: 0,
+    enemyNote: "{name}のツモが、この局は么九牌に偏る",
   },
   "chunchan": {
     name: "韋駄天の中張",
@@ -97,6 +102,7 @@ export const ABILITY_MASTER = {
     chargeScope: "game",
     maxCharges: 2,
     cooldown: 0,
+    enemyNote: "{name}のツモが、この局は2〜8に偏る",
   },
   "nebula-curse": {
     name: "暗黒星",
@@ -115,6 +121,7 @@ export const ABILITY_MASTER = {
     chargeScope: "hand",
     maxCharges: 2,
     cooldown: 0,
+    enemyNote: "新ドラがめくられた——打点は全員に乗る",
   },
   "homura": {
     name: "大物手の焔",
@@ -124,6 +131,7 @@ export const ABILITY_MASTER = {
     chargeScope: "game",
     maxCharges: 2,
     cooldown: 0,
+    enemyNote: "この局の{name}は、満貫以上なら1.5倍",
   },
   "jane-doe": {
     name: "沈黙の処方箋",
@@ -133,6 +141,7 @@ export const ABILITY_MASTER = {
     chargeScope: "game",
     maxCharges: 2,
     cooldown: 0,
+    enemyNote: "{target}の打牌が、3巡のあいだ封じられた",
   },
   "kakeha-bet": {
     name: "大博打",
@@ -142,6 +151,7 @@ export const ABILITY_MASTER = {
     chargeScope: "game",
     maxCharges: 2,
     cooldown: 0,
+    enemyNote: "{name}が点棒を賭けた——この局のアガりが膨らむ",
   },
   "muddy-lotus": {
     name: "泥中の蓮",
@@ -169,6 +179,7 @@ export const ABILITY_MASTER = {
     chargeScope: "game",
     maxCharges: 2,
     cooldown: 0,
+    enemyNote: "6打牌のあいだ、{name}から点棒は奪えない",
   },
   "amber-shield": {
     name: "琥珀の盾",
@@ -199,5 +210,8 @@ export function abilityDef(id) {
     chargeScope: def.chargeScope === "game" ? "game" : "hand",
     maxCharges: def.maxCharges ?? Infinity,
     cooldown: def.cooldown ?? 0,
+    // 相手から見た一文（能力カットインの副題）。{name}=発動者 / {target}=対象者。
+    // 「何をされたのか分からないまま局が進む」を無くすための表示専用フィールド。
+    enemyNote: def.enemyNote ?? "",
   };
 }

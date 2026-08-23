@@ -77,7 +77,7 @@ import { showCreditsRoll } from "./screens/creditsRoll.js";
 import { evaluateSuccession } from "./progression/successionResult.js";
 import { buildCompletedAvatar, addCompletedAvatar, markGraduated, deshiCharFrom, completedAvatarToChar } from "./progression/completedAvatar.js";
 import { MeldType } from "./core/meld.js";
-import { kindLabel } from "./core/tiles.js";
+import { kindLabel, isTerminalOrHonor } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
 import { shanten } from "./core/rules/shanten.js";
 import { bestDiscardRanking } from "./abilities/builtins/teacherAbility.js";
@@ -91,6 +91,13 @@ import { isDebugMode } from "./app/debug.js";
 import { applyMatchToCompanion, addCompanionBondExp, detectPlayStyle, topPlayStyle } from "./progression/companionBond.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
+// 春嬋「韋駄天の中張」発動中は場の見せ待ちそのものを詰める（韋駄天バッジ点灯でさらに速く）。
+// 中張が来ること自体はプレイヤーから見て当たり前すぎて気づけないので、"速い"を時間で
+// 体感させる＝ロジックには一切触れず、CPU の間合いだけを短くする演出（docs/character-ingame-fx-plan.md）。
+function cpuDelayNow() {
+  if (!humanAbilityActive("chunchan")) return CPU_DELAY;
+  return auraFx.rush ? 260 : 380;
+}
 
 // 対局ごとのセリフセット。シナリオ戦が指定すると、その対局中の全セリフ解決で
 // ctx.voiceSet として参照され、一致する専用セリフを解放する（未指定なら通常のみ）。
@@ -4297,6 +4304,11 @@ function beginGame(seated, dealerIndex, opts = {}) {
     audio.playShuffle();
     // 得点推移の記録：各局のはじまり＝直前までの持ち点スナップショット（全員ぶん）。
     scoreHistory.push({ label: game.roundLabel(), points: game.players.map((p) => p.points) });
+    // 能力の持続レイヤーは1局ぶんの蓄積（灯の数・歩数）なので局頭で畳んで数え直す。
+    resetAbilityAuraState();
+    clearAbilityAura();
+    resetLuxWatch();
+    resetShioriReview(); // 前の対局の「答え合わせ」が連戦に持ち越されないよう畳む
   });
   // Riichi declaration: chime/voice + a seat テロップ (ポン/カンと同系). The flag
   // extends the *next* CPU turn by RIICHI_WAIT so the banner reads (宣言後ウェイト).
@@ -4334,10 +4346,10 @@ function beginGame(seated, dealerIndex, opts = {}) {
     showKitaFx(player.index);
   });
   // Ability cut-in: big skill-name text + bust-up sweeping across, with a wait.
-  game.bus.on(Events.ABILITY_USED, ({ player, name }) => {
+  game.bus.on(Events.ABILITY_USED, ({ player, name, abilityId, params }) => {
     abilityCutInFlag = true;
     audio.playVoice(player.character.id, "ability"); // no clip -> shared naki SE
-    showAbilityCutIn(player, name);
+    showAbilityCutIn(player, name, enemyNoteFor(player, abilityId, params));
   });
   // 局中マイクロ反応（自分の状況に応じた一言をバストアップのセリフ枠へ）。
   setupMatchTalk(game);
@@ -4460,7 +4472,7 @@ const LocalController = {
     clearActions();
     // A fired ability sets abilityCutInFlag (ON_... listener) and extends the pause so it reads.
     // 直前のリーチ宣言/北抜きも同様に間を取る（能力カットインを優先）。
-    const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : riichiBeat ? RIICHI_WAIT : kitaBeat ? NAKI_WAIT : CPU_DELAY;
+    const wait = abilityCutInFlag ? ABILITY_CUTIN_WAIT : riichiBeat ? RIICHI_WAIT : kitaBeat ? NAKI_WAIT : cpuDelayNow();
     await delay(wait);
     return decideDiscard(game, seat);
   },
@@ -4507,6 +4519,7 @@ async function stepTurn() {
 // 手番決定(打牌/ツモ/カン/北抜き)を実エンジンへ適用する唯一の口。CPU/人間/(将来)権威で共有。
 function applyTurnDecision(seat, d) {
   if (!d) return;
+  if (seat === humanIndex) noteShioriChoice(d); // 栞: 打牌が確定する直前に模範解答と突き合わせる
   if (d.type === "tsumo") { game.doTsumo(seat); return; }
   if (d.type === "kan") { game.declareKan(seat, d.kind, d.kanType); return; }
   if (d.type === "nuki") { game.nukiKita(seat); return; }
@@ -4867,25 +4880,58 @@ function showHumanActions() {
   }
 }
 
-// ゼロ・リサーチ（ルクス・ゼロ）の有効牌選択バー。確保候補（待ち広い順トップ2）を
-// 牌ラベルで並べ、選ぶと次のツモでその牌を確定で手繰り寄せる。
+// ゼロ・リサーチ（ルクス・ゼロ）の走査計器。素のボタン列ではなく「山を照らす計器」として
+// 出す＝無機質な彼の人格そのものを操作画面にする（docs/character-ingame-fx-plan.md 2-3）。
+// 候補には待ちの広さ（breadth）と山の残り枚数を数値で添える。超越帯の“誤差の一打”は
+// いちど ERROR を吐いたうえで掴みにいく＝反転を演出で見せる。
 function showLuxCandidates(idx) {
   clearActions();
-  const bar = el("action-bar");
-  const label = document.createElement("span");
-  label.style.cssText = "align-self:center;color:#4ea1d3;font-weight:700;margin-right:8px;";
-  label.textContent = "確保する有効牌を選択:";
-  bar.appendChild(label);
-  const status = (online ? (online.opts?.abilityStatus || []) : game.abilityStatus(idx)).find((a) => a.id === "zero-search");
+  const list = online ? (online.opts?.abilityStatus || []) : game.abilityStatus(idx);
+  const status = list.find((a) => a.id === "zero-search");
   const candidates = (status && status.candidates) || [];
-  for (const kind of candidates) {
-    bar.appendChild(mkBtn(kindLabel(kind), "btn-ability", () => fireAbility(idx, "zero-search", { targetKind: kind })));
-  }
-  bar.appendChild(mkBtn("キャンセル", "btn-skip", () => {
+  const scan = (status && status.scan) || null;
+  const isFallback = !!(status && (status.isFallback || scan?.isFallback));
+  const host = el("lux-scan");
+  if (!host) return;
+  const rowOf = (kind) => {
+    const d = scan?.rows?.find((r) => r.kind === kind);
+    const nums = d
+      ? `<span class="lux-num">待ち <b>${d.breadth}</b>種 ／ 山に <b>${d.live}</b>枚</span>`
+      : `<span class="lux-num">走査済み</span>`;
+    return `<button type="button" class="lux-row" data-kind="${kind}">
+        <span class="lux-tile">${kindLabel(kind)}</span>${nums}</button>`;
+  };
+  const remaining = scan?.liveRemaining ?? (game?.wall?.liveRemaining ?? "--");
+  host.className = "lux-scan" + (isFallback ? " fallback" : "");
+  host.innerHTML = `
+    <div class="lux-head">
+      <span class="lux-tag">LUX SCAN</span>
+      <span>${isFallback ? "該当なし — 再走査" : "走査完了"}</span>
+      <span class="lux-meta">残牌 ${remaining}</span>
+    </div>
+    ${isFallback ? `<div class="lux-err">ERROR: 聴牌を確定できる牌は、山に無い<b>——構わない。計算の外の一枚を掴む</b></div>` : ""}
+    <div class="lux-rows">${candidates.map(rowOf).join("")}</div>
+    <div class="lux-foot">
+      <span class="lux-note">${isFallback ? "確定の保証なし・最も手が伸びる一枚" : "捕捉した牌は次のツモで確保される"}</span>
+      <button type="button" class="lux-cancel">中止</button>
+    </div>`;
+  host.classList.remove("hidden");
+  host.querySelectorAll(".lux-row").forEach((b) => b.addEventListener("click", () => {
+    const kind = Number(b.dataset.kind);
+    luxReserveKind = kind; // 次のツモで回収する（＝予約→回収の因果を見せる）
+    fireAbility(idx, "zero-search", { targetKind: kind });
+    playLuxReserveFx(kind);
+  }));
+  host.querySelector(".lux-cancel")?.addEventListener("click", () => {
     luxMode = false;
     showHumanActions();
     render();
-  }));
+  });
+}
+// 計器を畳む（clearActions から毎回呼ぶ＝発動・キャンセル・手番終了のいずれでも閉じる）。
+function hideLuxScan() {
+  const host = el("lux-scan");
+  if (host && !host.classList.contains("hidden")) { host.classList.add("hidden"); host.innerHTML = ""; }
 }
 
 // 強制ツモ切り（JaneDoe）の対象選択バー。リーチ中の相手は選べない。
@@ -4963,6 +5009,7 @@ function refreshHighlights() {
     danger: currentDanger(),
     recallMode,
     best: currentBest(),
+    deadKinds: luxDeadKinds, // ルクス「該当なし」告知中だけ、河の該当牌を光らせる
   });
 }
 
@@ -4993,6 +5040,86 @@ function currentBest() {
   const map = new Map();
   for (const b of info) map.set(b.kind, b.rank);
   return map;
+}
+
+// ── 篠宮 栞「答え合わせ」───────────────────────────────────────────────
+// 模範解答は“プレイヤーを賢くする道具”なので、放っておけば誰の能力でも成立してしまう。
+// だから対局のあとに一度だけ、彼女が「あなたが選んだ一打」を振り返る。取り上げるのは
+// 正答率ではなく、"わたしが選ばなかった牌" を切った一打ひとつ——教える側に居続けた
+// 彼女が、正解のない一打の前で立ち止まる、その入口（docs/character-ingame-fx-plan.md 2-4）。
+let shioriMiss = null;        // { round, kind, top:[kind...], result } | null
+let shioriReviewTimer = null; // 対局終了→答え合わせを開くまでの遅延（対局を抜けたら必ず解除する）
+// 答え合わせを畳んで予約も解除する。連戦（大会の節送り・楼光の潜行・対戦ホーム復帰）は
+// リロードを挟まないので、次の対局が始まる前にここで必ず後始末する。
+function resetShioriReview() {
+  clearTimeout(shioriReviewTimer);
+  shioriReviewTimer = null;
+  const host = el("shiori-review");
+  if (host) { host.classList.add("hidden"); host.innerHTML = ""; }
+}
+function humanHasAbility(abilityId) {
+  const p = !online && game ? game.players[humanIndex] : null;
+  return !!p && (p.abilities || []).some((a) => a.id === abilityId);
+}
+// 人間の打牌が決まる直前に呼び、模範解答の3手と突き合わせて「外した一打」を覚えておく。
+// オート代行中の打牌は“あなたの選択”ではないので数えない。
+function noteShioriChoice(d) {
+  if (online || autoPlay || !game || !d || d.tileId == null) return;
+  if (!humanHasAbility("model-answer")) return;
+  // 強制ツモ切り中（JaneDoe「沈黙の処方箋」）は打牌を選べていない＝答え合わせの対象外。
+  if (game.players[humanIndex]?.forcedTsumogiri > 0) return;
+  const best = currentBest();
+  if (!best || best.size === 0) return;
+  const p = game.players[humanIndex];
+  const tile = (p.hand || []).find((t) => t.id === d.tileId);
+  if (!tile || best.has(tile.kind)) return;
+  shioriMiss = {
+    round: game.roundLabel(),
+    kind: tile.kind,
+    top: [...best.entries()].sort((a, b) => a[1] - b[1]).map(([k]) => k),
+    result: null,
+  };
+}
+// その一打の局がどう終わったかを紐づける（結末まで込みで振り返れるように）。
+function noteShioriResult(kind) {
+  if (shioriMiss && !shioriMiss.result) shioriMiss.result = kind || "none";
+}
+// 対局終了後に開く黒板。miss があればその一打を、無ければ「示した通りに打った日」を返す。
+function showShioriReview(onClose) {
+  const host = el("shiori-review");
+  const c = charById("teacher") || game?.players?.[humanIndex]?.character;
+  if (!host || !c) { onClose?.(); return; }
+  const miss = shioriMiss;
+  // 文言はマスタ（characterVoiceMaster の "review"）。cond.reviewMiss＝外した一打の有無、
+  // cond.lastHandResult＝その一打を打った局の結末で分岐する。{tile} は表示側で差し替え。
+  const raw = vline(c.id, "review", { reviewMiss: !!miss, lastHandResult: miss?.result || "draw" });
+  if (!raw) { onClose?.(); return; }
+  const tileTag = miss ? `<span class="sr-tile">${esc(kindLabel(miss.kind))}</span>` : "";
+  const topTag = miss ? miss.top.map((k) => kindLabel(k)).join("・") : "";
+  const line = esc(raw).split("\n").join("<br>").replace("{tile}", tileTag);
+  const sub = miss ? `${esc(miss.round)}／わたしの三手：${esc(topTag)}` : "外した一打：なし";
+  host.innerHTML = `
+    <div class="sr-card">
+      <div class="sr-portrait"></div>
+      <div class="sr-body">
+        <div class="sr-head">今日の答え合わせ</div>
+        <div class="sr-line">${line}</div>
+        <div class="sr-sub">${sub}</div>
+        <button type="button" class="sr-close">ありがとうございました</button>
+      </div>
+    </div>`;
+  // 立ち絵は相棒ボードと同じ寄せ（imagePos）で入れる＝どの画面でも同じ「彼女の顔」になる。
+  const pf = host.querySelector(".sr-portrait");
+  if (pf) {
+    fillPortrait(pf, c);
+    // この枠は縦長なので、全身立ち絵のままだと顔が小さくなる。上端基準で寄せて
+    // バストアップにする（キャラ別オフセットより、この枠での見え方を優先）。
+    const img = pf.querySelector("img");
+    if (img) { img.style.transform = "scale(1.7)"; img.style.transformOrigin = "top center"; }
+  }
+  host.classList.remove("hidden");
+  const close = () => { host.classList.add("hidden"); host.innerHTML = ""; onClose?.(); };
+  host.querySelector(".sr-close")?.addEventListener("click", close);
 }
 
 // オンライン用ローカル計算。模範解答を持つキャラのときだけ、自分の手牌（14枚相当＝打牌局面）
@@ -5044,10 +5171,13 @@ function render() {
     danger: currentDanger(),
     recallMode,
     best: currentBest(),
+    deadKinds: luxDeadKinds, // ルクス「該当なし」告知中だけ、河の該当牌を光らせる
   });
   renderer.render();
   updateHpBoard(); // 右側の相棒ボードのHP/手番ハイライトを最新状態に同期
   updateModelAnswerHud(); // 栞 Lv7+/Lv10 の卓上HUD（捲り条件・押し引き）を同期
+  updateAbilityAura();    // 能力の持続レイヤー（姚玖の庭・春嬋の韋駄天…）を同期
+  updateLuxWatch();       // ルクス「該当なし＝場に出切っている」の告知を監視
 }
 
 // ----------------------------------------------------------------- results
@@ -5573,6 +5703,47 @@ function showTransientSpeaker(character, event, ctx, { side = "left", duration =
     sp.classList.remove("show");
     setTimeout(() => { if (sp.parentNode === host) host.removeChild(sp); }, 360);
   }, duration);
+}
+
+// 任意テキストの単発スピーカー（マスタ非経由）。event に紐づかない一度きりの台詞——
+// キャラ同士の掛け合いなど——に使う。表示先・畳み方は showTransientSpeaker と同じ。
+function showSpeakerText(character, text, { side = "left", duration = 2800 } = {}) {
+  const host = el("speaker-fx");
+  if (!host || !character || !text) return;
+  clearTimeout(speakerFxTimer);
+  host.innerHTML = "";
+  const sp = buildSpeakerEl(character, text, side);
+  host.appendChild(sp);
+  requestAnimationFrame(() => sp.classList.add("show"));
+  speakerFxTimer = setTimeout(() => {
+    sp.classList.remove("show");
+    setTimeout(() => { if (sp.parentNode === host) host.removeChild(sp); }, 360);
+  }, duration);
+}
+
+// ── 卓上の掛け合い ────────────────────────────────────────────────────────
+// 同卓の2人が互いに向けた口上（"tableBanter"）と返し（"tableBanterReply"）をマスタに
+// 持っているとき、東1局に一度だけ一往復を交わす。文言は characterVoiceMaster 側にあり、
+// ここは「誰と誰が・いつ喋るか」だけを決める（楼光のボス口上 rlBossIntroPair と同じ形）。
+// どちらが人間側かに関係なく出す＝「誰と打っているかで卓の景色が変わる」（固有性）。
+// 現状の実装は姚玖×春嬋（先代の養子＝庭番の兄妹・world.md §12）。
+let tableBanterDone = false;
+function maybeTableBanter() {
+  if (tableBanterDone || online || !game) return;
+  const chars = game.players.map((p) => p.character).filter(Boolean);
+  for (const a of chars) {
+    for (const b of chars) {
+      if (a === b) continue;
+      const open = vline(a.id, "tableBanter", { pairWith: b.id });
+      const reply = open && vline(b.id, "tableBanterReply", { pairWith: a.id });
+      if (!open || !reply) continue;
+      tableBanterDone = true;
+      // 局頭の自分のひと言(1200ms)・相方相槌(2200ms)と重ならないよう後ろへずらす。
+      setTimeout(() => showSpeakerText(a, open, { side: "left", duration: 2500 }), 2900);
+      setTimeout(() => showSpeakerText(b, reply, { side: "right", duration: 2800 }), 5600);
+      return;
+    }
+  }
 }
 
 // RPG-style HP/damage sequence shown after the 和了 card (points = HP). Lists the
@@ -6373,14 +6544,33 @@ function playCutIn(character, { charLabel, bigLabel, subLabel = "", kind = "", v
   }, dur);
 }
 
-// 能力発動カットイン（大胆な全身立ち絵）。CSS animation runs for ABILITY_CUTIN_WAIT.
-function showAbilityCutIn(player, name) {
-  playCutIn(player.character, { charLabel: player.character.name, bigLabel: name, variant: "bold", dur: ABILITY_CUTIN_WAIT });
+// 他家の能力が「自分に何をするのか」を一行にする（カットインの副題）。これまで敵の能力は
+// 名前だけが流れ、何をされたのか分からないまま局が進んでいた＝敵キャラの印象が残らない
+// 最大の原因だった（docs/character-ingame-fx-plan.md 3-2）。文言は abilityMaster.enemyNote。
+// 自分の発動には出さない（自分で選んでいるので説明は要らない）。
+function enemyNoteFor(player, abilityId, params) {
+  if (!abilityId || !game || player.index === humanIndex) return "";
+  const note = abilityDef(abilityId).enemyNote;
+  if (!note) return "";
+  const targetIdx = params?.targetIndex;
+  const targetName = targetIdx === humanIndex ? "あなた"
+    : (game.players[targetIdx]?.character?.name || "");
+  if (note.includes("{target}") && !targetName) return "";
+  return note.replace("{name}", player.character.name).replace("{target}", targetName);
 }
 
-// 「幸運のツモ」（詩玥）発動中の特別ツモ演出。自分のツモ牌に金色のリングが
-// シュンッと収束する小エフェクト（自分視点専用）。位置は手牌ヒットボックス→画面座標へ変換。
-function playLuckyTsumoFx(tileId) {
+// 能力発動カットイン（大胆な全身立ち絵）。CSS animation runs for ABILITY_CUTIN_WAIT。
+// subLabel には「自分にとって何が起きるか」（他家の発動時のみ）を添える。
+function showAbilityCutIn(player, name, subLabel = "") {
+  playCutIn(player.character, { charLabel: player.character.name, bigLabel: name, subLabel, variant: "bold", dur: ABILITY_CUTIN_WAIT });
+}
+
+// 卓上の1牌に重ねる小エフェクト（自分視点専用）。位置は手牌ヒットボックス→画面座標へ変換。
+// variant でキャラ別の色に振り分ける（既定＝詩玥「幸運のツモ」の金リング）:
+//   ""           … 金（詩玥・幸運のツモ）
+//   "fx-lantern" … 橙（姚玖・老頭の庭＝么九にともる灯）
+//   "fx-wind"    … 翠（春嬋・韋駄天＝駆け抜ける風）
+function playTileFx(tileId, variant = "") {
   if (!renderer || !game) return;
   const cv = el("table");
   const hb = (renderer.handHitboxes || []).find((h) => h.tileId === tileId);
@@ -6388,7 +6578,7 @@ function playLuckyTsumoFx(tileId) {
   const r = cv.getBoundingClientRect();
   const sx = r.width / cv.width, sy = r.height / cv.height;
   const fx = document.createElement("div");
-  fx.className = "tsumo-fx";
+  fx.className = "tsumo-fx" + (variant ? ` ${variant}` : "");
   fx.style.left = `${r.left + (hb.x + hb.w / 2) * sx}px`;
   fx.style.top = `${r.top + (hb.y + hb.h / 2) * sy}px`;
   fx.style.setProperty("--w", `${hb.w * sx}px`);
@@ -6398,19 +6588,284 @@ function playLuckyTsumoFx(tileId) {
   requestAnimationFrame(() => fx.classList.add("go"));
   setTimeout(() => fx.remove(), 700);
 }
+// 「幸運のツモ」（詩玥）発動中の特別ツモ演出（金リング）。
+function playLuckyTsumoFx(tileId) { playTileFx(tileId); }
 
 let lastLuckyFxTileId = null;
-// 自分(人間)が「幸運のツモ」発動中なら、いまのツモ牌に特別ツモ演出を一度だけ出す。
-// 発動時＋発動中の各ツモで呼ぶ。同じツモ牌では二重発火しない。オンラインはローカル
-// 描画座標を持たないので対象外（自分視点のオフライン演出）。
+// 自分(人間)のツモ演出をまとめて面倒を見る。発動時＋発動中の各ツモで呼ぶ。
+//   ・詩玥「幸運のツモ」… 発動中は毎ツモ、金のリング（同じツモ牌では二重発火しない）
+//   ・ルクス「ゼロ・リサーチ」… 捕捉した牌を引いた瞬間、山の光点が手牌へ流れ込む
+// オンラインはローカル描画座標を持たないので対象外（自分視点のオフライン演出）。
 function maybePlayLuckyTsumoFx() {
   if (online || !game) return;
   const p = game.players[humanIndex];
   if (!p || p.drawnTileId == null) return;
+  maybePlayLuxCaptureFx();
   if (!(p.abilities || []).some((a) => a.id === "lucky-draw" && a.isActive)) return;
   if (p.drawnTileId === lastLuckyFxTileId) return;
   lastLuckyFxTileId = p.drawnTileId;
   playLuckyTsumoFx(p.drawnTileId);
+}
+
+// ============================================================================
+// 能力の持続レイヤー（キャラ別インゲーム演出の共通の器）
+// ---------------------------------------------------------------------------
+// 「能力＝そのキャラが見ている世界を、一局だけプレイヤーに貸す」という物差しの実装
+// （正典 docs/character-ingame-fx-plan.md）。発動中のあいだ卓の左下にそのキャラの"視界"を
+// 出し、能力が切れる／局が終わると畳む。器（#ability-aura とパネルの出し入れ）は共通で
+// 中身だけキャラ別に差す＝新しいキャラの持続演出は sync 関数を1本足すだけで増やせる。
+// 自分視点のオフライン演出（オンラインはレプリカで能力を回さないので対象外）。
+// ============================================================================
+const auraFx = {
+  kind: null,      // 今の局で出したオーラ種別（"yaochu"|"chunchan"）。能力が切れても局末まで残す＝余韻
+  seen: new Set(), // 姚玖: この局で一度でも手にした么九の種類（切っても消えない＝出会いの蓄積）
+  lanterns: 0,     // 姚玖: いま灯っている数（= seen.size。差分点灯の判定に持つ）
+  moon: false,     // 姚玖: 満月（么九13種そろう or 国士テンパイ）が昇ったか
+  steps: 0,        // 春嬋: 進んだ歩数（シャンテンが縮んだ回数）
+  rush: false,     // 春嬋: 韋駄天バッジ（3歩でテンポがさらに詰まる）
+};
+function resetAbilityAuraState() {
+  auraFx.kind = null; auraFx.seen.clear(); auraFx.lanterns = 0; auraFx.moon = false; auraFx.steps = 0; auraFx.rush = false;
+}
+// 人間プレイヤーがその能力を発動中か（オンライン/未開局は常に false）。
+function humanAbilityActive(abilityId) {
+  if (online || !game) return false;
+  const p = game.players[humanIndex];
+  return !!p && (p.abilities || []).some((a) => a.id === abilityId && a.isActive);
+}
+const tableWrapEl = () => document.querySelector("#game-screen .table-wrap");
+// オーラ本体を畳む（局終わり・能力切れ）。卓のビネットも一緒に落とす。
+function clearAbilityAura() {
+  const host = el("ability-aura");
+  if (!host) return;
+  if (!host.dataset.kind) return; // 既に畳んである
+  host.classList.add("hidden");
+  host.innerHTML = "";
+  delete host.dataset.kind;
+  tableWrapEl()?.classList.remove("aura-night", "aura-night-lit");
+}
+// 指定 kind のパネルを（無ければ）建てる。既にあるときは中身に触らず返す＝差分更新のため。
+function ensureAuraPanel(kind, html) {
+  const host = el("ability-aura");
+  if (!host) return null;
+  if (host.dataset.kind !== kind) {
+    host.dataset.kind = kind;
+    host.innerHTML = html;
+    host.classList.remove("hidden");
+  }
+  return host.firstElementChild;
+}
+
+// 手牌＋副露にある么九牌を「出会った種類」として庭に積む（灯は切っても消えない）。
+// 現在の手牌の種類数をそのまま映すと、么九を切るたび灯が消えて“夢が遠のく”表示になる。
+// 姚玖の庭は「今夜いくつの端に出会えたか」＝蓄積の器なので、一度ともった灯は残す。
+// 返り値は「いま手にしている么九の種類数」（国士テンパイ判定に使う・こちらは増減する）。
+function collectYaochuKinds(p) {
+  let held = 0;
+  const add = (k) => { if (isTerminalOrHonor(k)) { auraFx.seen.add(k); return true; } return false; };
+  const heldKinds = new Set();
+  for (const t of p.hand || []) if (add(t.kind)) heldKinds.add(t.kind);
+  for (const m of p.melds || []) for (const t of m.tiles || []) if (add(t.kind)) heldKinds.add(t.kind);
+  held = heldKinds.size;
+  return held;
+}
+
+// 姚玖「老頭の庭」— 么九を引くたび庭に灯がひとつともる。能力が当たらなかった局は庭が
+// 暗いままで、それ自体が「夢は遠い」という語りになる（引けた枚数ではなく"種類"で数える＝
+// 国士・混老頭という夢への距離そのもの）。
+function syncGardenAura(p) {
+  const panel = ensureAuraPanel("yaochu", `
+    <div class="aura-panel aura-garden">
+      <div class="aura-title">老頭の庭</div>
+      <div class="garden-lanterns">${'<span class="lantern"></span>'.repeat(13)}</div>
+      <div class="aura-note">今夜の灯り <b>0</b>／13</div>
+    </div>`);
+  if (!panel) return;
+  auraFx.kind = "yaochu";
+  tableWrapEl()?.classList.add("aura-night");
+  const held = collectYaochuKinds(p);
+  const n = Math.min(13, auraFx.seen.size);
+  if (n !== auraFx.lanterns) {
+    panel.querySelectorAll(".lantern").forEach((lamp, i) => {
+      if (i < n) {
+        if (!lamp.classList.contains("on")) {
+          lamp.classList.add("on", "just");
+          setTimeout(() => lamp.classList.remove("just"), 600);
+        }
+      } else lamp.classList.remove("on", "just");
+    });
+    const note = panel.querySelector(".aura-note b");
+    if (note) note.textContent = String(n);
+    // 灯が増えた瞬間だけ、いま引いた牌へ橙のリングを重ねる（么九を引き当てた合図）。
+    const drawn = (p.hand || []).find((t) => t.id === p.drawnTileId);
+    if (n > auraFx.lanterns && drawn && isTerminalOrHonor(drawn.kind)) playTileFx(drawn.id, "fx-lantern");
+    auraFx.lanterns = n;
+  }
+  // 灯が10を超えたら夜が明るむ＝夢（国士・混老頭）の射程に入った合図。
+  panel.classList.toggle("lit", n >= 10);
+  tableWrapEl()?.classList.toggle("aura-night-lit", n >= 10);
+  // 満月: 13種すべてに出会った、または国士テンパイ（＝いま手にしている種類で判定）。
+  // 1局に一度だけ昇り、口癖をテロップで置く。
+  if (!auraFx.moon && (n >= 13 || (held >= 12 && humanShanten() === 0))) {
+    auraFx.moon = true;
+    panel.insertAdjacentHTML("beforeend", `<span class="garden-moon"></span>`);
+    showSeatCall(humanIndex, "……揃うと、いいな", "step-call");
+  }
+}
+
+// 春嬋「韋駄天の中張」— 走った距離を見せる。中張が来ること自体は当たり前すぎて気づけない
+// ので、"速さ"という別チャネル（歩数＋場のテンポ短縮＝cpuDelayNow）に翻訳する。
+function syncSprintAura() {
+  const panel = ensureAuraPanel("chunchan", `
+    <div class="aura-panel aura-sprint">
+      <div class="aura-title">韋駄天の中張</div>
+      <div class="step-marks"></div>
+      <div class="aura-note">場のテンポが詰まっている</div>
+    </div>`);
+  if (!panel) return;
+  auraFx.kind = "chunchan";
+  const marks = panel.querySelector(".step-marks");
+  if (marks) {
+    for (let i = marks.childElementCount; i < Math.min(auraFx.steps, 8); i++) {
+      marks.insertAdjacentHTML("beforeend", `<span class="step-mark"></span>`);
+    }
+  }
+  const title = panel.querySelector(".aura-title");
+  if (auraFx.rush && title && !title.querySelector(".sprint-badge")) {
+    title.insertAdjacentHTML("beforeend", `<span class="sprint-badge">疾走</span>`);
+    const note = panel.querySelector(".aura-note");
+    if (note) note.textContent = "——もっと速く";
+  }
+  panel.classList.toggle("rush", auraFx.rush);
+}
+
+// 発動中の能力に合わせて持続レイヤーを同期する（render から毎回呼ぶ）。
+// 新しいキャラの持続演出を足すときは、ここに1行と sync 関数を1本。
+function updateAbilityAura() {
+  const p = !online && game ? game.players[humanIndex] : null;
+  if (!p) { clearAbilityAura(); return; }
+  // 能力は局の終わりに切れるが、オーラは局末（＝次局の配牌）まで残す。和了/流局の結果を
+  // 見ているあいだも「今夜の灯り」「走った歩数」が卓に残る＝その局の余韻になる。
+  if (humanAbilityActive("rootou") || auraFx.kind === "yaochu") { syncGardenAura(p); return; }
+  if (humanAbilityActive("chunchan") || auraFx.kind === "chunchan") { syncSprintAura(); return; }
+  clearAbilityAura();
+}
+
+// ============================================================================
+// ルクス・ゼロ「ゼロ・リサーチ」の演出 — 捕捉（予約）→ 回収 と「該当なし」の告知
+// ---------------------------------------------------------------------------
+// これまでは能力の結果（次のツモで有効牌が来る）しか見えなかった。捕捉した瞬間に山へ
+// 光点を刺し、それが次のツモで手牌へ流れ込むことで「予約→回収」の因果を目に見せる。
+// ============================================================================
+let luxReserveKind = null; // 捕捉して回収待ちの牌種（null=なし）
+let luxPointEl = null;     // 山に刺さっている光点の DOM
+function clearLuxPoint() {
+  if (luxPointEl) { luxPointEl.remove(); luxPointEl = null; }
+}
+// canvas 内座標 → table-wrap 内の絶対座標（オーバーレイ配置用）。
+function tablePointAt(cx, cy) {
+  const cv = el("table"), wrap = tableWrapEl();
+  if (!cv || !wrap) return null;
+  const r = cv.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
+  return { x: (r.left - wr.left) + cx * (r.width / cv.width), y: (r.top - wr.top) + cy * (r.height / cv.height) };
+}
+// 捕捉: 山（卓中央の残り牌表示のあたり）に光点を刺す。回収まで脈打って残る。
+function playLuxReserveFx() {
+  if (online) return;
+  clearLuxPoint();
+  const wrap = tableWrapEl();
+  const pos = tablePointAt(480, 318); // 中央パネル上部＝「残り牌」の高さ
+  if (!wrap || !pos) return;
+  const dot = document.createElement("div");
+  dot.className = "lux-point";
+  dot.style.left = `${pos.x}px`;
+  dot.style.top = `${pos.y}px`;
+  wrap.appendChild(dot);
+  luxPointEl = dot;
+}
+// 回収: 予約した牌を引いた瞬間、光点がその牌へ流れ込んで消える（＋シアンのツモFX）。
+function maybePlayLuxCaptureFx() {
+  if (online || !game || luxReserveKind == null) return;
+  const p = game.players[humanIndex];
+  const drawn = (p?.hand || []).find((t) => t.id === p.drawnTileId);
+  if (!drawn || drawn.kind !== luxReserveKind) return;
+  luxReserveKind = null;
+  const hb = (renderer?.handHitboxes || []).find((h) => h.tileId === drawn.id);
+  if (luxPointEl && hb) {
+    const pos = tablePointAt(hb.x + hb.w / 2, hb.y + hb.h / 2);
+    if (pos) { luxPointEl.style.left = `${pos.x}px`; luxPointEl.style.top = `${pos.y}px`; }
+    const dot = luxPointEl;
+    luxPointEl = null;
+    setTimeout(() => { dot.style.opacity = "0"; playTileFx(drawn.id, "fx-scan"); }, 430);
+    setTimeout(() => dot.remove(), 700);
+  } else {
+    clearLuxPoint();
+    playTileFx(drawn.id, "fx-scan");
+  }
+}
+
+// 「該当なし」の告知 — 1シャンテンなのに、聴牌を確定できる有効牌が山に尽きている状態。
+// 能力が使えない理由をグレーアウトで済ませず、"場に出切っている" という読みの材料として
+// 渡す（河の該当牌を光らせて証明を見せる）。1局に一度だけ。
+let luxDeadShown = false;
+let luxDeadKinds = null;  // 河ハイライト中の牌種（null=非表示）
+let luxDeadTimer = null;
+function resetLuxWatch() {
+  luxDeadShown = false; luxDeadKinds = null; luxReserveKind = null;
+  clearTimeout(luxDeadTimer); clearLuxPoint();
+  const host = el("lux-alert");
+  if (host) { host.classList.add("hidden"); host.classList.remove("out"); }
+}
+function updateLuxWatch() {
+  if (online || !game || luxDeadShown) return;
+  // abilityStatus() はルクスの走査（34×34のシャンテン評価）を回すので、評価するのは
+  // 「自分が打牌を選ぶ手番」だけに絞る。CPU手番中やホバー再描画では走らせない。
+  if (game.phase !== Phase.AWAIT_DISCARD || game.turn !== humanIndex) return;
+  const p = game.players[humanIndex];
+  if (!p || !(p.abilities || []).some((a) => a.id === "zero-search")) return;
+  const st = game.abilityStatus(humanIndex).find((a) => a.id === "zero-search");
+  const dead = st?.scan?.deadKinds || [];
+  if (!st?.visible || (st.candidates || []).length > 0 || dead.length === 0) return;
+  luxDeadShown = true;
+  luxDeadKinds = new Set(dead);
+  const host = el("lux-alert");
+  if (host) {
+    host.className = "lux-alert";
+    host.innerHTML = `
+      <div class="la-tag">NOT FOUND</div>
+      <div class="la-main">該当なし — 有効牌は場に出切っている</div>
+      <div class="la-sub">${dead.map((k) => kindLabel(k)).slice(0, 6).join(" / ")}　…河に光らせた</div>`;
+    host.classList.remove("hidden");
+  }
+  refreshHighlights(); // 河ハイライトを即反映（render 内から呼ばれるので再帰させない）
+  renderer?.render();
+  luxDeadTimer = setTimeout(() => {
+    host?.classList.add("out");
+    luxDeadKinds = null;
+    refreshHighlights();
+    renderer?.render();
+    setTimeout(() => { host?.classList.add("hidden"); host?.classList.remove("out"); }, 400);
+  }, 3200);
+}
+
+// 春嬋の「一歩」テロップ＋歩数の加算。3歩で韋駄天バッジが点き、場のテンポがさらに詰まる。
+const STEP_WORDS = ["一歩", "二歩", "三歩", "四歩", "五歩", "六歩", "七歩", "八歩"];
+function bumpSprintStep() {
+  if (!humanAbilityActive("chunchan")) return;
+  auraFx.steps++;
+  showSeatCall(humanIndex, STEP_WORDS[Math.min(auraFx.steps, STEP_WORDS.length) - 1], "step-call");
+  if (auraFx.steps >= 3) auraFx.rush = true;
+  updateAbilityAura();
+}
+// 聴牌に届いた瞬間の一閃（画面を横切る風）。春嬋の口癖「間に合わせる」の回収。
+function playSprintFlash() {
+  const wrap = tableWrapEl();
+  if (!wrap) return;
+  const fx = document.createElement("div");
+  fx.className = "sprint-flash";
+  wrap.appendChild(fx);
+  setTimeout(() => fx.remove(), 620);
+  showSeatCall(humanIndex, "——間に合った", "step-call");
 }
 
 // リーチ宣言: ポン/カンと同じ席テロップ。宣言後の間は riichiWaitFlag が次手番で取る。
@@ -6697,6 +7152,13 @@ function showGameOver() {
       sideEl.appendChild(sp);
       requestAnimationFrame(() => sp.classList.add("show"));
     }, reveal(0) * 1000 + 650);
+  }
+
+  // 栞（模範解答）を連れていた対局は、順位の捲りが落ち着いてから「答え合わせ」を開く。
+  // ここだけは能力の効果ではなく“彼女があなたの一打をどう見ていたか”を返す場（愛着＝蓄積）。
+  if (humanHasAbility("model-answer")) {
+    clearTimeout(shioriReviewTimer);
+    shioriReviewTimer = setTimeout(() => showShioriReview(), reveal(0) * 1000 + 1500);
   }
 
   // 得点推移：終局スナップショットを足し、どのモードでもグラフを開ける。
@@ -7251,6 +7713,7 @@ function updateSelfAbilities() {
   renderPassiveBadges(el("self-abilities"), humanIndex);
 }
 function clearActions() {
+  hideLuxScan(); // ルクスの走査計器は手番UIの再描画のたびに畳む（出すのは showLuxCandidates）
   el("action-bar").innerHTML = "";
   const ab = el("ability-bar");
   if (ab) ab.innerHTML = ""; // ability controls live in the side panel now
@@ -8202,10 +8665,13 @@ function resetMatchTalk() {
 // 対局のイベントに検出を配線（beginGame から一度だけ）。
 function setupMatchTalk(g) {
   resetMatchTalk();
+  tableBanterDone = false;   // 卓上の掛け合いは1対局に1回（東1局で消化）
+  shioriMiss = null;         // 栞の「答え合わせ」は対局ごとに取り直す
+  resetShioriReview();       // 予約済みの表示・開きっぱなしのモーダルも対局開始で解除
 
   // 「前の局」の結果を人間視点で記録（次局以降の相槌が ctx.lastHandResult で参照）。
-  g.bus.on(Events.HAND_WON, (r) => { lastHandResult = deriveHandResult(r); });
-  g.bus.on(Events.HAND_DRAWN, () => { lastHandResult = "draw"; });
+  g.bus.on(Events.HAND_WON, (r) => { lastHandResult = deriveHandResult(r); noteShioriResult(lastHandResult); });
+  g.bus.on(Events.HAND_DRAWN, () => { lastHandResult = "draw"; noteShioriResult("draw"); });
 
   // 局のはじまり：配牌直後に一言（シャッフルSEと被らないよう少し遅らせる）。
   g.bus.on(Events.HAND_STARTED, () => {
@@ -8214,6 +8680,7 @@ function setupMatchTalk(g) {
     setTimeout(() => fireSelfTalk("handStart", { force: true }), 1200);
     // ペア戦: 相方が局頭に声をかける（自分のひと言と被らないよう少しずらす）。
     setTimeout(() => firePartnerTalk("allyHandStart"), 2200);
+    maybeTableBanter(); // 掛け合いが成立するペア（姚玖×春嬋など）が同卓なら一度だけ
   });
 
   // 自分の打牌ごとに、ツモ切り連続・聴牌の出入り・進行の速さ/詰まりを見る。
@@ -8231,12 +8698,18 @@ function setupMatchTalk(g) {
 
     // 打牌後（13枚）のシャンテンで聴牌の出入りと進行を判定。
     const sh = humanShanten();
-    if (!matchTalk.wasTenpai && sh === 0) { matchTalk.wasTenpai = true; fireSelfTalk("tenpai", { force: true }); setTimeout(() => firePartnerTalk("allyTenpai"), 900); }
+    if (!matchTalk.wasTenpai && sh === 0) {
+      matchTalk.wasTenpai = true;
+      fireSelfTalk("tenpai", { force: true });
+      if (humanAbilityActive("chunchan")) playSprintFlash(); // 春嬋: 走り切った一閃「——間に合った」
+      setTimeout(() => firePartnerTalk("allyTenpai"), 900);
+    }
     else if (matchTalk.wasTenpai && sh > 0) { matchTalk.wasTenpai = false; fireSelfTalk("tenpaiDrop", { force: true }); }
 
     if (sh < matchTalk.prevShanten) {
       matchTalk.improveRun++;
       matchTalk.lastImprove = matchTalk.discards;
+      if (sh > 0) bumpSprintStep(); // 春嬋: 距離が詰まるたび足跡（聴牌の一歩だけは一閃に譲る）
       // 連続で手が進んだ＝さくさく（聴牌セリフと被らないよう sh>=1 のときだけ）。
       if (matchTalk.improveRun >= 2 && sh >= 1) fireSelfTalk("handSmooth");
     } else {
