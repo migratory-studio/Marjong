@@ -131,12 +131,18 @@ export function attachRecorder(game, { withTruth = false, onEvent = null } = {})
       // bannerType(pon/chi/kan) は鳴きバナー/SE 用（クライアントの描画 emit が使う）。
       push("meldCalled", { seat: player.index, bannerType: type, melds: serializeMelds(player) })
     ),
-    game.bus.on(Events.ABILITY_USED, ({ index, player, name }) =>
+    game.bus.on(Events.ABILITY_USED, ({ index, player, name, abilityId, params }) =>
       // 能力は ON で河↔手牌を直接書き換えるものがある(recall-deal)。当該席の手牌/河を併記して
       // レプリカを再同期する。granular な能力 Event 化はサーバ権威化(L4 / p0 §6)で行う。
+      //
+      // ★秘匿：params はそのまま流さない。ゼロ・リサーチの targetKind（＝次に引く牌）が
+      //   他家に漏れる。公開してよいのは「誰を対象にしたか」だけ（JaneDoe の強制ツモ切り等）で、
+      //   これはカットイン副題「◯◯の打牌が封じられた」の表示に使う。
       push("abilityUsed", {
         seat: index,
         name,
+        abilityId: abilityId || null,
+        targetSeat: Number.isInteger(params?.targetIndex) ? params.targetIndex : null,
         hand: player.hand.map(tileLite),
         discards: player.discards.map((t) => ({
           id: t.id, kind: t.kind, tsumogiri: !!t.tsumogiri, riichiTile: !!t.riichiTile,

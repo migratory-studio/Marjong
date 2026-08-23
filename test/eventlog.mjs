@@ -116,5 +116,47 @@ console.log(`  replayed ${totalEvents} events over ${totalHands} hands across ${
   assert(roundtrips, "every wire event JSON-roundtrips (serialisable for transport)");
 }
 
+// 能力 Event の公開情報チェック（キャラ別インゲーム演出／docs/character-ingame-fx-plan.md 3-2）。
+// カットイン副題「何をされたのか」を出すため abilityId と対象席を配信する一方で、
+// 秘匿 params（ゼロ・リサーチの targetKind＝次に引く牌）は絶対に流さないこと。
+{
+  const pick = (id) => CHARACTERS.find((c) => c.id === id);
+  const fxSeated = ["shiyue", "janedoe", "yao_chu", "chun_chan"]
+    .map((id) => ({ character: pick(id), abilities: instantiateAbilities(pick(id)) }));
+  const auth = new Game(fxSeated, -1, 20260823);
+  const { records } = attachRecorder(auth);
+  auth.startHand();
+  // 発動条件を満たす席があれば実際に撃って wire Event を作る。
+  const fire = (abilityId, params) => {
+    for (const p of auth.players) {
+      if (!(p.abilities || []).some((a) => a.id === abilityId)) continue;
+      try { auth.activateAbility(p.index, abilityId, params); } catch { /* 条件未達はスキップ */ }
+    }
+  };
+  fire("lucky-draw", {});
+  fire("rootou", {});
+  fire("chunchan", {});
+  // targetKind をわざと混ぜる：秘匿キーが wire Event に載らないことの確認用。
+  fire("jane-doe", { targetIndex: 1, targetKind: 5 });
+  const abilityEvents = records.filter((r) => r.type === "abilityUsed");
+  assert(abilityEvents.length > 0, "ability events were recorded for the checks below");
+  for (const ev of abilityEvents) {
+    assert("abilityId" in ev, "abilityUsed carries abilityId (" + ev.name + ")");
+    assert(!("params" in ev), "abilityUsed does not carry raw params (" + ev.name + ")");
+    assert(JSON.stringify(ev).indexOf("targetKind") === -1, "no targetKind anywhere in the wire event (" + ev.name + ")");
+    if (ev.abilityId === "jane-doe") assert(ev.targetSeat === 1, "jane-doe carries the public target seat");
+    else assert(ev.targetSeat == null, "non-targeted ability has no targetSeat (" + ev.abilityId + ")");
+  }
+  // レプリカ側で副題の材料（abilityId / targetIndex）が復元できること。
+  const replica = new Game(fxSeated.map((s) => ({ character: s.character, abilities: instantiateAbilities(s.character) })), 0, 1);
+  const seen = [];
+  replica.bus.on("ability-used", (e) => seen.push({ abilityId: e.abilityId, target: e.params ? e.params.targetIndex : undefined }));
+  for (const rec of records) applyEvent(replica, rec, replica.bus);
+  assert(seen.length === abilityEvents.length, "replica re-emits every ability event");
+  assert(seen.every((e) => e.abilityId), "replica receives abilityId for the cut-in sub label");
+  const jane = seen.find((e) => e.abilityId === "jane-doe");
+  if (jane) assert(jane.target === 1, "replica receives the target seat for jane-doe");
+}
+
 if (failures === 0) console.log("\n✅ eventlog determinism checks passed");
 else { console.error(`\n❌ ${failures} failure(s)`); process.exit(1); }

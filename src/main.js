@@ -95,6 +95,10 @@ const CPU_DELAY = 650; // ms between CPU actions (visualisation)
 // 中張が来ること自体はプレイヤーから見て当たり前すぎて気づけないので、"速い"を時間で
 // 体感させる＝ロジックには一切触れず、CPU の間合いだけを短くする演出（docs/character-ingame-fx-plan.md）。
 function cpuDelayNow() {
+  // ★対人戦では絶対に触らない。オンラインの進行ペースは権威(AuthorityRoom)の pacing が
+  //   握っていて、そこを能力で動かすと「ホストのクライアント都合で卓全員の速度が変わる」
+  //   ＝公平性と同期の問題になる。春嬋の"速さ"は対人戦では視覚（足跡・風・オーラ）で語る。
+  if (online) return CPU_DELAY;
   if (!humanAbilityActive("chunchan")) return CPU_DELAY;
   return auraFx.rush ? 260 : 380;
 }
@@ -4015,6 +4019,7 @@ function onlineClientMessage(msg) {
     online.opts = msg; // { options, abilityStatus, danger } を showHumanActions が使う
     showHumanActions();
     render(); // phase 確定後に再描画＝手牌ヒットボックスを正しい手番状態で再計算（打牌可に）
+    maybePlayLuckyTsumoFx(); // 対人戦のツモ演出（詩玥の金リング／ルクスの捕捉回収）はここが入口
     return;
   }
   if (msg.type === "evt.awaitCalls" && msg.seat === humanIndex) {
@@ -4547,6 +4552,8 @@ function resolveHumanTurn(decision) {
   if (online) {
     // オンライン: ローカルに適用せず Intent を権威へ送る（結果は bus 経由で描画される）。
     if (decision === SWITCH_TO_AI) return; // オンラインではオート観戦切替なし
+    // 打牌が確定する直前にだけ成立する突き合わせ（栞の答え合わせ）は、権威へ投げる前にここで。
+    noteShioriChoice(decision);
     clearActions();
     online.send(turnIntent(decision));
     return;
@@ -5058,13 +5065,16 @@ function resetShioriReview() {
   if (host) { host.classList.add("hidden"); host.innerHTML = ""; }
 }
 function humanHasAbility(abilityId) {
-  const p = !online && game ? game.players[humanIndex] : null;
-  return !!p && (p.abilities || []).some((a) => a.id === abilityId);
+  const p = game ? game.players[humanIndex] : null;
+  if (!p) return false;
+  // レプリカは能力インスタンスを持たないので、キャラ定義側（character.abilities）で判定する。
+  if (online) return !!p.character?.abilities?.some((a) => a.abilityId === abilityId);
+  return (p.abilities || []).some((a) => a.id === abilityId);
 }
 // 人間の打牌が決まる直前に呼び、模範解答の3手と突き合わせて「外した一打」を覚えておく。
 // オート代行中の打牌は“あなたの選択”ではないので数えない。
 function noteShioriChoice(d) {
-  if (online || autoPlay || !game || !d || d.tileId == null) return;
+  if (autoPlay || !game || !d || d.tileId == null) return;
   if (!humanHasAbility("model-answer")) return;
   // 強制ツモ切り中（JaneDoe「沈黙の処方箋」）は打牌を選べていない＝答え合わせの対象外。
   if (game.players[humanIndex]?.forcedTsumogiri > 0) return;
@@ -5729,7 +5739,7 @@ function showSpeakerText(character, text, { side = "left", duration = 2800 } = {
 // 現状の実装は姚玖×春嬋（先代の養子＝庭番の兄妹・world.md §12）。
 let tableBanterDone = false;
 function maybeTableBanter() {
-  if (tableBanterDone || online || !game) return;
+  if (tableBanterDone || !game) return;
   const chars = game.players.map((p) => p.character).filter(Boolean);
   for (const a of chars) {
     for (const b of chars) {
@@ -6597,11 +6607,11 @@ let lastLuckyFxTileId = null;
 //   ・ルクス「ゼロ・リサーチ」… 捕捉した牌を引いた瞬間、山の光点が手牌へ流れ込む
 // オンラインはローカル描画座標を持たないので対象外（自分視点のオフライン演出）。
 function maybePlayLuckyTsumoFx() {
-  if (online || !game) return;
+  if (!game) return;
   const p = game.players[humanIndex];
   if (!p || p.drawnTileId == null) return;
   maybePlayLuxCaptureFx();
-  if (!(p.abilities || []).some((a) => a.id === "lucky-draw" && a.isActive)) return;
+  if (!humanAbilityActive("lucky-draw")) return;
   if (p.drawnTileId === lastLuckyFxTileId) return;
   lastLuckyFxTileId = p.drawnTileId;
   playLuckyTsumoFx(p.drawnTileId);
@@ -6627,9 +6637,13 @@ const auraFx = {
 function resetAbilityAuraState() {
   auraFx.kind = null; auraFx.seen.clear(); auraFx.lanterns = 0; auraFx.moon = false; auraFx.steps = 0; auraFx.rush = false;
 }
-// 人間プレイヤーがその能力を発動中か（オンライン/未開局は常に false）。
+// 人間プレイヤーがその能力を発動中か。
+// オンラインはレプリカで能力を回さないので、権威が evt.awaitDiscard で送ってくる
+// abilityStatus（自席ぶんだけ・sendToSeat）の active を見る。自分の手番のたび更新され、
+// 局頭のリセットと合わせて「発動した局のあいだ立っている」状態を再現できる。
 function humanAbilityActive(abilityId) {
-  if (online || !game) return false;
+  if (!game) return false;
+  if (online) return (online.opts?.abilityStatus || []).some((a) => a.id === abilityId && a.active);
   const p = game.players[humanIndex];
   return !!p && (p.abilities || []).some((a) => a.id === abilityId && a.isActive);
 }
@@ -6742,7 +6756,7 @@ function syncSprintAura() {
 // 発動中の能力に合わせて持続レイヤーを同期する（render から毎回呼ぶ）。
 // 新しいキャラの持続演出を足すときは、ここに1行と sync 関数を1本。
 function updateAbilityAura() {
-  const p = !online && game ? game.players[humanIndex] : null;
+  const p = game ? game.players[humanIndex] : null;
   if (!p) { clearAbilityAura(); return; }
   // 能力は局の終わりに切れるが、オーラは局末（＝次局の配牌）まで残す。和了/流局の結果を
   // 見ているあいだも「今夜の灯り」「走った歩数」が卓に残る＝その局の余韻になる。
@@ -6771,7 +6785,6 @@ function tablePointAt(cx, cy) {
 }
 // 捕捉: 山（卓中央の残り牌表示のあたり）に光点を刺す。回収まで脈打って残る。
 function playLuxReserveFx() {
-  if (online) return;
   clearLuxPoint();
   const wrap = tableWrapEl();
   const pos = tablePointAt(480, 318); // 中央パネル上部＝「残り牌」の高さ
@@ -6785,7 +6798,7 @@ function playLuxReserveFx() {
 }
 // 回収: 予約した牌を引いた瞬間、光点がその牌へ流れ込んで消える（＋シアンのツモFX）。
 function maybePlayLuxCaptureFx() {
-  if (online || !game || luxReserveKind == null) return;
+  if (!game || luxReserveKind == null) return;
   const p = game.players[humanIndex];
   const drawn = (p?.hand || []).find((t) => t.id === p.drawnTileId);
   if (!drawn || drawn.kind !== luxReserveKind) return;
@@ -6817,13 +6830,14 @@ function resetLuxWatch() {
   if (host) { host.classList.add("hidden"); host.classList.remove("out"); }
 }
 function updateLuxWatch() {
-  if (online || !game || luxDeadShown) return;
+  if (!game || luxDeadShown) return;
   // abilityStatus() はルクスの走査（34×34のシャンテン評価）を回すので、評価するのは
   // 「自分が打牌を選ぶ手番」だけに絞る。CPU手番中やホバー再描画では走らせない。
   if (game.phase !== Phase.AWAIT_DISCARD || game.turn !== humanIndex) return;
-  const p = game.players[humanIndex];
-  if (!p || !(p.abilities || []).some((a) => a.id === "zero-search")) return;
-  const st = game.abilityStatus(humanIndex).find((a) => a.id === "zero-search");
+  if (!humanHasAbility("zero-search")) return;
+  // オンラインは権威が自席にだけ送ってきた走査結果を使う（レプリカでは能力を回せない）。
+  const list = online ? (online.opts?.abilityStatus || []) : game.abilityStatus(humanIndex);
+  const st = list.find((a) => a.id === "zero-search");
   const dead = st?.scan?.deadKinds || [];
   if (!st?.visible || (st.candidates || []).length > 0 || dead.length === 0) return;
   luxDeadShown = true;

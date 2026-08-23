@@ -170,7 +170,12 @@ function emitForEvent(game, evt) {
     }
     case "riichiDeclared": bus.emit(Events.RIICHI_DECLARED, { player: P(evt.seat) }); break;
     case "meldCalled": bus.emit(Events.MELD_CALLED, { player: P(evt.seat), type: evt.bannerType || "pon" }); break;
-    case "abilityUsed": bus.emit(Events.ABILITY_USED, { player: P(evt.seat), name: evt.name }); break;
+    // abilityId / targetSeat は「何をされたのか」をカットイン副題で見せるための公開情報だけ。
+    // （権威側 eventLog が targetKind 等の秘匿 params を落としている）
+    case "abilityUsed": bus.emit(Events.ABILITY_USED, {
+      player: P(evt.seat), name: evt.name, abilityId: evt.abilityId || null,
+      params: evt.targetSeat != null ? { targetIndex: evt.targetSeat } : {},
+    }); break;
     case "handWon": bus.emit(Events.HAND_WON, game.lastResult); break;
     case "handDrawn": bus.emit(Events.HAND_DRAWN, game.lastResult); break;
   }

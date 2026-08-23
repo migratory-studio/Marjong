@@ -187,9 +187,37 @@
 `cond.pairWith` は楼光のボス口上（`rlBossIntroPair` / `rlBossIntroPairReply`）と同じ仕組みの再利用。
 
 ### 制約
-- いずれも**自分視点のオフライン演出**（`online` 中は出さない）。オンラインはレプリカで能力を回さないため。
 - 単発FXは 0.6s 以内、持続表示は発動局のみ＝連戦テンポを殺さない（`docs/juice_backlog.md` の運用メモと同じ方針）。
-- オンラインの `applyEvent` は `abilityId` を配信していないので、敵能力の副題はオフラインのみ出る（将来やるならイベント側の拡張が要る）。
+- 演出は**自席の描画だけ**を触る。盤面・進行・乱数には一切干渉しない。
+
+---
+
+## 7. 対人戦（オンライン）での扱い ✅実装済み
+
+演出の実体が「進行速度」である春嬋だけが、対人戦で構造的な問題を持つ。オンラインの進行ペースは
+権威（`AuthorityRoom._pace`）が握っていて、そこを能力で動かすと**ホストのクライアント都合で卓全員の
+速度が変わる**（CPU代行席の速度も変わる）＝公平性と同期の問題になる。そこで次の3本をルールにした。
+
+| # | ルール | 該当 |
+|---|---|---|
+| 1 | **自席の情報だけで描ける演出は、対人戦でも出す** | 姚玖の庭・春嬋の足跡/一閃・卓上の掛け合い・ルクスの捕捉→回収・NOT FOUND・栞の答え合わせ・詩玥の金リング |
+| 2 | **進行速度に触る演出は、オフライン専用** | 春嬋のテンポ短縮（`cpuDelayNow` は `online` で即 `CPU_DELAY` を返す）。対人戦での"速さ"は視覚（足跡・風・オーラ）で語る |
+| 3 | **他家が絡む演出は、権威が送っている範囲でだけ出す** | 敵能力カットインの副題。`evt.abilityUsed` に `abilityId` と `targetSeat` を追加 |
+
+### 実装の要点
+- **発動中の判定**：`humanAbilityActive()` はオンラインでは権威が `evt.awaitDiscard` で自席にだけ送る
+  `abilityStatus`（`sendToSeat` 経路）の `active` を見る。自分の手番のたび更新され、局頭リセットと
+  合わせて「発動した局のあいだ立っている」状態を再現する。
+- **能力の所持判定**：レプリカは能力インスタンスを持たないので `character.abilities` で見る（`humanHasAbility`）。
+- **ツモ演出の入口**：オフラインは `waitHumanTurn` / `autoTsumogiri` / `fireAbility`、オンラインは
+  `evt.awaitDiscard` 受信時（`onlineClientMessage`）。
+- **栞の答え合わせ**：オンラインは `applyTurnDecision` を通らないので `resolveHumanTurn` の online 分岐で
+  突き合わせる。模範解答自体は `localModelAnswer`（クライアント計算）なので対人戦でも出る。
+- **★秘匿**：`evt.abilityUsed` に `params` を丸ごと載せてはいけない。**ゼロ・リサーチの `targetKind`
+  （＝次に引く牌）が他家に漏れる**。公開してよいのは `abilityId` と `targetSeat`（誰を対象にしたか）だけ。
+  `test/eventlog.mjs` に、この2点（abilityId が届く／targetKind がどこにも載らない）の回帰テストがある。
+- 栞の板書HUD（Lv7+）だけは対人戦で出ない：`comebackPlan` / `pushFoldAdvice` は権威が送っていないため
+  （ルール3のとおり、送られていない情報は出さない）。
 
 ---
 
