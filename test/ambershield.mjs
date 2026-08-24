@@ -143,5 +143,55 @@ const win = (a, me, res) => a[Hooks.ON_WIN]({ winner: me, result: res }, noopApi
   ok("resetForGame で満タンに戻る", a.shields === 2);
 }
 
+// ---- 6) 守り演出の材料: lastResult.guards（守り切った席と「本来の失点」）----
+// 守備キャラの成果は点棒が動かないことなので、deltas だけでは被ダメ演出から消えてしまう。
+// _settle が「本来いくら失うはずだったか」を残しているか（docs/character-ingame-fx-plan.md §8-3-1）。
+{
+  const { Game } = await import("../src/core/game.js");
+  const { CHARACTERS, instantiateAbilities } = await import("../src/characters/characters.js");
+  const pick = (id) => CHARACTERS.find((c) => c.id === id);
+  const seated = ["kuidoshi", "shiyue", "mamori", "chun_chan"]
+    .map((id) => ({ character: pick(id), abilities: instantiateAbilities(pick(id)) }));
+  const g = new Game(seated, -1, 4242);
+  g.startHand();
+  const shield = g.players[0].abilities.find((a) => a.id === "amber-shield");
+  ok("凌雲は盾を1枚持って始まる", shield && shield.shields === 1);
+  // 凌雲(席0)が満貫(8000)を放銃した体で精算する。
+  const raw = [0, 0, 0, 0];
+  raw[0] = -8000; raw[1] = 8000;
+  g._settle(raw, { reason: "ron", winnerIndex: 1, rank: "満貫", isYakuman: false });
+  const guards = g._lastGuards || [];
+  ok("守り切った席が guards に載る", guards.length === 1 && guards[0].seat === 0);
+  ok("本来の失点(raw)を保持している", guards[0] && guards[0].raw === -8000);
+  ok("実際の増減(adjusted)は0", guards[0] && guards[0].adjusted === 0);
+  ok("軽減額(blocked)が出ている", guards[0] && guards[0].blocked === 8000);
+  ok("盾を1枚使った", shield.shields === 0);
+  ok("勝者の取り分も同額ぶん減る（誰の点棒にもならない）", g.players[1].points === 14000);
+}
+
+// ---- 7) 超越帯の「半分は、受ける」= 軽減されても実損が残るケース ----
+// stripMitigation>0（Lv7+）は盾が剥がれつつ失点が半額になる＝guards に載るが adjusted<0。
+// UI 側はこのとき「守った」演出だけで済ませてはいけない（HPバー・トビ演出が要る）。
+{
+  const { Game } = await import("../src/core/game.js");
+  const { CHARACTERS, instantiateAbilities } = await import("../src/characters/characters.js");
+  const pick = (id) => CHARACTERS.find((c) => c.id === id);
+  const seated = ["kuidoshi", "shiyue", "mamori", "chun_chan"]
+    .map((id) => ({ character: pick(id), abilities: instantiateAbilities(pick(id)) }));
+  const g = new Game(seated, -1, 99);
+  g.startHand();
+  const shield = g.players[0].abilities.find((a) => a.id === "amber-shield");
+  shield.stripMitigation = 0.5; // Lv7+ 相当
+  const raw = [0, 0, 0, 0];
+  raw[0] = -2000; raw[1] = 2000; // 閾値未満（満貫未満）＝盾が剥がれる側
+  g._settle(raw, { reason: "ron", winnerIndex: 1, rank: "", isYakuman: false });
+  const gd = (g._lastGuards || [])[0];
+  ok("半額軽減でも guards に載る", !!gd && gd.seat === 0);
+  ok("本来の失点は -2000", gd && gd.raw === -2000);
+  ok("実損が残る（adjusted<0）", gd && gd.adjusted === -1000);
+  ok("軽減額は半分", gd && gd.blocked === 1000);
+  ok("持ち点も実際に減っている", g.players[0].points === 12000);
+}
+
 console.log(fails === 0 ? "\nALL PASS" : `\n${fails} FAILURE(S)`);
 process.exit(fails === 0 ? 0 : 1);

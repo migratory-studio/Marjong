@@ -878,6 +878,18 @@ export class Game {
     for (let i = 0; i < N; i++) {
       adjusted[i] = this.abilities.modifyPointDelta(this.players[i], rawDeltas[i] || 0, meta);
     }
+    // 能力で失点が軽減された席（琥珀の盾・身代わり人形など）を記録しておく。
+    // 「本来いくら失うはずだったか」は守りの演出（回避された未来を見せる）の材料。
+    // これが無いと守り切った席は deltas=0 になり、被ダメ演出から丸ごと消えてしまう
+    // （docs/character-ingame-fx-plan.md §8-0）。点棒の動きは全員に見える公開情報なので
+    // そのまま lastResult に載せてオンラインへも配信する。
+    this._lastGuards = [];
+    for (let i = 0; i < N; i++) {
+      const raw = rawDeltas[i] || 0;
+      if (raw < 0 && adjusted[i] > raw) {
+        this._lastGuards.push({ seat: i, raw, adjusted: adjusted[i], blocked: adjusted[i] - raw });
+      }
+    }
     const wi = meta && meta.winnerIndex;
     if ((meta?.reason === "ron" || meta?.reason === "tsumo") && wi != null) {
       let blocked = 0;
@@ -973,6 +985,9 @@ export class Game {
       winningTile,
       winningHand: this._handSnapshot(winner),
       deltas: this.players.map((q, i) => q.points - before[i]),
+      // 守りで失点が軽減された席（[{ seat, raw, adjusted, blocked }]）。守り切った席を
+      // 被ダメ演出に出し、勝者側に「奪えなかった」を伝えるための材料。
+      guards: this._lastGuards || [],
       // 能力で和了点が増減したとき、和了画面で「素点 → 増加!/減少! → 改変後」を出す材料。
       // 変化が無ければ null（演出も出さない）。オンラインのレプリカ側は未設定＝演出なし。
       scoreFx: scoreFx && scoreFx.steps && scoreFx.steps.length
@@ -1013,6 +1028,9 @@ export class Game {
       exhaustive: true, // 荒牌平局（山切れ）。四開槓等の途中流局と区別（楼光のノーテン罰符ダメージ用）。
       tenpai,
       deltas: this.players.map((p, i) => p.points - before[i]),
+      // 現状の守り（琥珀の盾・身代わり人形）はロン/ツモ限定なので流局では空になるが、
+      // 将来 draw 系に反応する守りが増えたときに黙って抜け落ちないよう、ここでも載せる。
+      guards: this._lastGuards || [],
     };
     this.bus.emit(Events.HAND_DRAWN, this.lastResult);
     this.log("流局");
@@ -1076,6 +1094,7 @@ export class Game {
       tsumo: true,
       nagashi: true,
       deltas: this.players.map((p, i) => p.points - before[i]),
+      guards: this._lastGuards || [],
     };
     this.bus.emit(Events.HAND_WON, this.lastResult);
     this.log("流し満貫");

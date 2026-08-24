@@ -179,6 +179,9 @@ export const ABILITY_MASTER = {
     chargeScope: "game",
     maxCharges: 2,
     cooldown: 0,
+    guardLabel: "身代わり人形",
+    guardStyle: "doll",
+    guardNote: "身代わりに阻まれた——点棒は誰のものにもならない",
     enemyNote: "6打牌のあいだ、{name}から点棒は奪えない",
   },
   "amber-shield": {
@@ -189,6 +192,9 @@ export const ABILITY_MASTER = {
     chargeScope: "game",
     maxCharges: 0,
     cooldown: 0,
+    guardLabel: "琥珀の盾",
+    guardStyle: "amber",
+    guardNote: "琥珀に阻まれた——点棒は動かない",
   },
 };
 
@@ -213,5 +219,14 @@ export function abilityDef(id) {
     // 相手から見た一文（能力カットインの副題）。{name}=発動者 / {target}=対象者。
     // 「何をされたのか分からないまま局が進む」を無くすための表示専用フィールド。
     enemyNote: def.enemyNote ?? "",
+    // 守りで失点を受け止める能力の表示（被ダメ演出の「守り切った席」で使う）。
+    //   guardLabel … その守りの名前（琥珀の盾／身代わり人形）
+    //   guardNote  … 勝った側へ渡す一文。守られた分は勝者の取り分からも引かれるので、
+    //                これが無いと「満貫をロンしたのに点が入らない」＝バグに見える。
+    guardLabel: def.guardLabel ?? "",
+    guardNote: def.guardNote ?? "",
+    //   guardStyle … 守りの見た目（"amber"=琥珀が固まる / "doll"=人形が砕ける）。
+    //                新しい守りキャラを足すときはここで見た目を選ぶ（UI側の id 決め打ちを避ける）。
+    guardStyle: def.guardStyle ?? "amber",
   };
 }

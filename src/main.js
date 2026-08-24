@@ -4314,6 +4314,8 @@ function beginGame(seated, dealerIndex, opts = {}) {
     clearAbilityAura();
     resetLuxWatch();
     resetShioriReview(); // 前の対局の「答え合わせ」が連戦に持ち越されないよう畳む
+    mamoriWarned = new Map(); // 真守の警告履歴は1局ぶん
+    recalledTileIds.clear();  // 回収マークも1局ぶん
   });
   // Riichi declaration: chime/voice + a seat テロップ (ポン/カンと同系). The flag
   // extends the *next* CPU turn by RIICHI_WAIT so the banner reads (宣言後ウェイト).
@@ -4630,6 +4632,9 @@ function onCanvasClick(ev) {
   if (recallMode) {
     for (const hb of renderer.riverHitboxes) {
       if (x >= hb.x && x <= hb.x + hb.w && y >= hb.y && y <= hb.y + hb.h) {
+        // 取引の因果（河→手牌 ／ ツモ牌→河）を見せてから発動する。座標は交換前に取る。
+        playRecallSwapFx(hb.tileId, actor.drawnTileId);
+        recalledTileIds.add(hb.tileId);
         fireAbility(actor.index, "recall-deal", { riverTileId: hb.tileId });
         return;
       }
@@ -5017,6 +5022,7 @@ function refreshHighlights() {
     recallMode,
     best: currentBest(),
     deadKinds: luxDeadKinds, // ルクス「該当なし」告知中だけ、河の該当牌を光らせる
+    recalled: recalledTileIds, // エージェント・RE: 河から手に戻した牌に諜報マーク
   });
 }
 
@@ -5033,7 +5039,34 @@ function currentDanger() {
   if (!info) return null;
   const map = new Map();
   for (const d of info) map.set(d.kind, d.level);
+  // 真守「見えていました」用に、この局で警告した最大レベルを覚えておく（局頭でリセット）。
+  // 推定が当たったかどうかが返らないと、警告はただの色で終わってしまう（§8-2-3）。
+  // ★手牌に実際にあった牌だけを積む：estimateDangerInfo は34種すべてを評価するので、
+  //   一度も持っていない牌まで拾うと「避けられましたね」がプレイヤーの見ていない警告に対して
+  //   出てしまう。手牌オーバーレイで色が付いた牌＝本人が判断した牌に限定する。
+  if (mamoriWarned) {
+    const inHand = new Set((game.players[humanIndex]?.hand || []).map((t) => t.kind));
+    for (const [k, lv] of map) if (inHand.has(k)) mamoriWarned.set(k, Math.max(mamoriWarned.get(k) || 0, lv));
+  }
   return map;
+}
+
+// ── 真守 由紀「見えていました」──────────────────────────────────────────────
+// 局が終わって手が開いたとき、警告していた牌が本当に当たり牌だったときだけ静かに示す。
+// 外れた局は黙る＝当てたぶんだけ「この人の目は信用できる」が積み上がる。
+let mamoriWarned = null; // Map<kind, level>（局ごと。null=未対局）
+// 和了結果から「見えていた一枚」を作る。橙(2)以上を警告していた牌が当たり牌だったときのみ。
+function mamoriInsight(r) {
+  if (!mamoriWarned || !humanHasAbility("danger-sense")) return null;
+  // ツモ和了は「誰かが切った牌」ではないので対象外（セリフが切る/避けるを前提にしている）。
+  if (r?.tsumo) return null;
+  const kind = typeof r?.winningTile === "number" ? r.winningTile : r?.winningTile?.kind;
+  if (kind == null) return null;
+  if ((mamoriWarned.get(kind) || 0) < 2) return null;
+  const dealtIn = r.loser === humanIndex;
+  const text = vline("mamori", "insight", { dealtIn });
+  if (!text) return null;
+  return { text: esc(text).replace("{tile}", `<b>${esc(kindLabel(kind))}</b>`), dealtIn };
 }
 
 // 模範解答（篠宮 栞）— 牌効率トップ3の打牌候補（kind→rank）。
@@ -5182,6 +5215,7 @@ function render() {
     recallMode,
     best: currentBest(),
     deadKinds: luxDeadKinds, // ルクス「該当なし」告知中だけ、河の該当牌を光らせる
+    recalled: recalledTileIds, // エージェント・RE: 河から手に戻した牌に諜報マーク
   });
   renderer.render();
   updateHpBoard(); // 右側の相棒ボードのHP/手番ハイライトを最新状態に同期
@@ -5756,6 +5790,28 @@ function maybeTableBanter() {
   }
 }
 
+// その席が何で守ったか（表示名・見た目・勝者へ渡す一文）をキャラの能力定義から引く。
+// レプリカでも読める静的マスタ（character.abilities）だけを見る＝対人戦でも動く。
+function guardDefOfSeat(i) {
+  for (const a of game?.players?.[i]?.character?.abilities || []) {
+    const def = abilityDef(a.abilityId);
+    if (def.guardLabel) return def;
+  }
+  return null;
+}
+// 「守りに阻まれた」説明（守った席ごとに1行）。守られたぶんは勝者の取り分からも引かれるので、
+// これが無いと「満貫をロンしたのに点が入らない」＝バグに見える（§8-3-2）。個人戦・団体戦・
+// ペア戦・楼光の館のいずれの被ダメ演出でも同じ文言を出す。
+function guardBlockedNotesHtml(r) {
+  // 凌雲とビビが同じ局で同時に守ることもある（ツモは支払者が複数）。合算1行だと内訳と
+  // 食い違うので、守った席ごとに1行ずつ出す。
+  return (r?.guards || []).map((g) => {
+    const def = guardDefOfSeat(g.seat);
+    if (!def?.guardNote || !(g.blocked > 0)) return "";
+    return `<div class="dmg-blocked-note">${esc(def.guardNote)}<span>−${g.blocked}</span></div>`;
+  }).join("");
+}
+
 // RPG-style HP/damage sequence shown after the 和了 card (points = HP). Lists the
 // winner + every player whose points changed, drains the losers' HP gauges with a
 // shake/flash and a floating -N, heals the winner (+N). セリフを読み切れるよう、
@@ -5858,9 +5914,15 @@ function showDamageFx(r, onDone) {
     };
   };
 
-  // Winner first, then anyone whose points moved (losers / tsumo payers).
+  // 守りで失点が軽減された席（琥珀の盾・身代わり人形）。点棒が動かないぶん deltas には
+  // 出ないので、ここを見て「守り切った席」も演出に出す（docs/character-ingame-fx-plan.md §8-3-1）。
+  const guards = r.guards || [];
+  const guardOf = (i) => guards.find((g) => g.seat === i) || null;
+
+  // Winner first, then anyone whose points moved (losers / tsumo payers) — 加えて、
+  // 点棒は動かなかったが守り切った席も。守備キャラの見せ場がここにしか無い。
   const order = [r.winner];
-  game.players.forEach((p, i) => { if (i !== r.winner && deltas[i]) order.push(i); });
+  game.players.forEach((p, i) => { if (i !== r.winner && (deltas[i] || guardOf(i))) order.push(i); });
 
   const rowHtml = (i) => {
     const c = game.players[i].character;
@@ -5868,16 +5930,21 @@ function showDamageFx(r, onDone) {
     const delta = deltas[i] || 0;
     const before = after - delta;
     const isWin = i === r.winner;
+    const guard = !isWin ? guardOf(i) : null;
     const busted = !isWin && after < 0; // 持ち点マイナス＝トビ（撃沈）
     const b = vis(before, i); // 開始時の見た目（周回対応）。ドレインで after の見た目へ動かす。
     const iconUrl = charImages.url(c, "icon") || charImages.url(c, "portrait");
     const face = faceMarkup(c, "dmg-face", iconUrl)
       || `<div class="dmg-face dmg-face-fb" style="--c:${c.color}">${[...c.name][0] || "?"}</div>`;
+    // 守り切った席は「回避された未来」を先に見せる：本来の失点が突き刺さり、守りの膜に
+    // 呑まれて砕け、実際の増減（0 か軽減後）だけが残る。
+    const gDef = guard ? guardDefOfSeat(i) : null;
+    const gKind = gDef?.guardStyle || "amber";
     return `
-      <div class="dmg-row ${isWin ? "is-win" : "is-loser"}${busted ? " is-down" : ""}" data-i="${i}" data-before="${before}" data-after="${after}">
+      <div class="dmg-row ${isWin ? "is-win" : "is-loser"}${busted ? " is-down" : ""}${guard ? " is-guard" : ""}" data-i="${i}" data-before="${before}" data-after="${after}">
         ${face}
         <div class="dmg-info">
-          <div class="dmg-name" style="color:${c.color}">${c.name}</div>
+          <div class="dmg-name" style="color:${c.color}">${c.name}${guard ? `<span class="dmg-guard-tag ${gKind}">${esc(gDef?.guardLabel || "守り")}</span>` : ""}</div>
           <div class="hpbar">
             <div class="hpfill-base" style="width:${b.basePct}%${b.baseBg ? `;background:${b.baseBg}` : ""}"></div>
             <div class="hpfill-ghost" style="width:${b.fillPct}%"></div>
@@ -5885,15 +5952,27 @@ function showDamageFx(r, onDone) {
           </div>
         </div>
         <div class="dmg-hp"><span class="dmg-hp-num">${before}</span></div>
-        <div class="dmg-pop ${isWin ? "heal" : "hit"}">${delta > 0 ? "+" : ""}${delta}</div>
+        ${guard ? `<div class="dmg-pop guard-raw">${guard.raw}</div><div class="dmg-guard-veil ${gKind}"></div>` : ""}
+        <div class="dmg-pop ${isWin ? "heal" : "hit"}${guard ? " guard-kept" : ""}">${delta > 0 ? "+" : ""}${delta}</div>
         ${busted ? `<div class="dmg-down-stamp">撃沈</div>` : ""}
       </div>`;
   };
+
+  // 勝った側への一行：守られたぶんは勝者の取り分からも引かれる（_settle）。説明が無いと
+  // 「満貫をロンしたのに点が入らない」＝バグに見える（§8-3-2）。
+  const blockedNote = guardBlockedNotesHtml(r);
+  // 真守「見えていました」：警告した牌が実際に当たり牌だったときだけ、局の終わりに一言。
+  const insight = mamoriInsight(r);
+  const insightNote = insight
+    ? `<div class="dmg-insight${insight.dealtIn ? " missed" : ""}">${insight.text}</div>`
+    : "";
 
   host.innerHTML = `
     <div class="dmg-card">
       <div class="dmg-head">${r.tsumo ? "ツモ和了" : "ロン和了"} — ダメージ</div>
       ${order.map(rowHtml).join("")}
+      ${blockedNote}
+      ${insightNote}
       <div class="dmg-hint">クリックで次へ（10秒で自動）</div>
     </div>`;
   host.classList.remove("hidden");
@@ -5935,6 +6014,21 @@ function showDamageFx(r, onDone) {
       const i = +row.dataset.i;
       const before = +row.dataset.before, after = +row.dataset.after;
       const a = vis(after, i);
+      // 守り切った席：「本来の失点 → 守りの膜が呑む → 実際の増減」を重ねて見せる
+      // （回避された未来を一度だけ実体化させる／§8-1）。揺らさない＝受け止めた。
+      // ★ここで return してはいけない。凌雲の超越帯（stripMitigation>0）は「盾が剥がれつつ
+      //   半額だけ受ける」＝軽減はされたが実損がある状態で、ゲージ更新もトビ演出も必要になる。
+      const g = guardOf(i);
+      if (g) {
+        row.classList.add("flash");
+        row.querySelector(".dmg-pop.guard-raw")?.classList.add("show");
+        const isDoll = !!row.querySelector(".dmg-guard-veil.doll");
+        setTimeout(() => {
+          row.classList.add("guarding");
+          audio.playSe(sePath(isDoll ? "紙を破く1.mp3" : "和太鼓でドドン.mp3"), 0.8);
+        }, 360);
+        setTimeout(() => row.querySelector(".dmg-pop.guard-kept")?.classList.add("show"), 780);
+      }
       const w = a.fillPct + "%";
       const fillEl = row.querySelector(".hpfill");
       fillEl.style.width = w;                                // bar snaps toward new HP
@@ -5946,8 +6040,9 @@ function showDamageFx(r, onDone) {
       setTimeout(() => { ghost.style.width = w; }, 430);     // chip-damage trail catches up
       row.classList.add("flash");
       const busted = i !== r.winner && after < 0;
-      if (i !== r.winner && !busted) row.classList.add("shake");
-      row.querySelector(".dmg-pop").classList.add("show");
+      // 守り切った席は揺らさない（受け止めた）。数字も guard-kept 側で出すのでここでは触らない。
+      if (i !== r.winner && !busted && !g) row.classList.add("shake");
+      if (!g) row.querySelector(".dmg-pop").classList.add("show");
       tweenNum(row.querySelector(".dmg-hp-num"), before, after, 850);
       // トビ（撃沈）: ゲージが空いた頃を狙ってダウン演出を炸裂させる。
       if (busted) {
@@ -6103,6 +6198,7 @@ function showTeamBattleDamageFx(r, onDone) {
       <div class="dmg-head">${r.tsumo ? "ツモ和了" : "ロン和了"} — ダメージ</div>
       <div class="tb-dmg-rows">${rows.map(rowHtml).join("")}</div>
       <div class="tb-totals">${totalHtml}</div>
+      ${guardBlockedNotesHtml(r)}
       ${flyHtml}
       <div class="tb-swap-block">
         <div class="tb-swap-label">${swapLabel}</div>
@@ -6401,6 +6497,7 @@ function showPairBattleDamageFx(r, onDone) {
       <div class="dmg-head">${r.tsumo ? "ツモ和了" : "ロン和了"} — ダメージ</div>
       <div class="tb-dmg-rows">${rows.map(rowHtml).join("")}</div>
       <div class="tb-totals">${totalHtml}</div>
+      ${guardBlockedNotesHtml(r)}
       <p class="tb-note">${isRl ? "※ 和了で敵のHPを削る。戦える味方が1人以下になれば没収。HPは休息/宴会フロア等で回復できる" : "※ ペア戦なので、HPはアイテムでのみ回復できます"}</p>
       ${calcRows.length ? `<button class="tb-calc-link" id="pb-calc-btn">🔍 ダメージ計算を見る</button>` : ""}
       <button class="btn tb-next-btn" id="pb-next-btn">次の局へ</button>
@@ -6633,9 +6730,10 @@ const auraFx = {
   moon: false,     // 姚玖: 満月（么九13種そろう or 国士テンパイ）が昇ったか
   steps: 0,        // 春嬋: 進んだ歩数（シャンテンが縮んだ回数）
   rush: false,     // 春嬋: 韋駄天バッジ（3歩でテンポがさらに詰まる）
+  dolls: -1,       // ビビ: 残っている人形の数（守りの窓。-1=未同期）
 };
 function resetAbilityAuraState() {
-  auraFx.kind = null; auraFx.seen.clear(); auraFx.lanterns = 0; auraFx.moon = false; auraFx.steps = 0; auraFx.rush = false;
+  auraFx.kind = null; auraFx.seen.clear(); auraFx.lanterns = 0; auraFx.dolls = -1; auraFx.moon = false; auraFx.steps = 0; auraFx.rush = false;
 }
 // 人間プレイヤーがその能力を発動中か。
 // オンラインはレプリカで能力を回さないので、権威が evt.awaitDiscard で送ってくる
@@ -6648,6 +6746,13 @@ function humanAbilityActive(abilityId) {
   return !!p && (p.abilities || []).some((a) => a.id === abilityId && a.isActive);
 }
 const tableWrapEl = () => document.querySelector("#game-screen .table-wrap");
+// 自席のその能力の表示状態（meter/status/candidates…）。オンラインは権威が自席にだけ
+// 送ってきた abilityStatus を使う（レプリカでは能力を回せない）。
+function humanAbilityStatus(abilityId) {
+  if (!game) return null;
+  const list = online ? (online.opts?.abilityStatus || []) : game.abilityStatus(humanIndex);
+  return list.find((a) => a.id === abilityId) || null;
+}
 // オーラ本体を畳む（局終わり・能力切れ）。卓のビネットも一緒に落とす。
 function clearAbilityAura() {
   const host = el("ability-aura");
@@ -6753,6 +6858,35 @@ function syncSprintAura() {
   panel.classList.toggle("rush", auraFx.rush);
 }
 
+// ビビ「身代わり人形」— 守りの窓（あと何回の自打牌ぶん守られているか）を人形の数で見せる。
+// 1体消えるたびに「あと何打、誰にも渡さないか」が見える＝押し引きの材料でもある。
+function syncDollAura() {
+  const st = humanAbilityStatus("bibi");
+  const max = st?.meter?.max ?? 6;
+  const left = st?.meter?.on ?? 0;
+  const panel = ensureAuraPanel("bibi", `
+    <div class="aura-panel aura-doll">
+      <div class="aura-title">身代わり人形</div>
+      <div class="doll-marks">${'<span class="doll"></span>'.repeat(max)}</div>
+      <div class="aura-note">あと <b>${max}</b> 打、誰にも渡さない</div>
+    </div>`);
+  if (!panel) return;
+  auraFx.kind = "bibi";
+  if (left !== auraFx.dolls) {
+    panel.querySelectorAll(".doll").forEach((d, i) => {
+      const spent = i >= left;
+      if (spent && !d.classList.contains("spent")) {
+        d.classList.add("spent", "just");
+        setTimeout(() => d.classList.remove("just"), 600);
+      } else if (!spent) d.classList.remove("spent", "just");
+    });
+    const note = panel.querySelector(".aura-note b");
+    if (note) note.textContent = String(left);
+    auraFx.dolls = left;
+  }
+  panel.classList.toggle("last", left > 0 && left <= 2); // 残りわずかは色で警告
+}
+
 // 発動中の能力に合わせて持続レイヤーを同期する（render から毎回呼ぶ）。
 // 新しいキャラの持続演出を足すときは、ここに1行と sync 関数を1本。
 function updateAbilityAura() {
@@ -6762,6 +6896,7 @@ function updateAbilityAura() {
   // 見ているあいだも「今夜の灯り」「走った歩数」が卓に残る＝その局の余韻になる。
   if (humanAbilityActive("rootou") || auraFx.kind === "yaochu") { syncGardenAura(p); return; }
   if (humanAbilityActive("chunchan") || auraFx.kind === "chunchan") { syncSprintAura(); return; }
+  if (humanAbilityActive("bibi") || auraFx.kind === "bibi") { syncDollAura(); return; }
   clearAbilityAura();
 }
 
@@ -6815,6 +6950,32 @@ function maybePlayLuxCaptureFx() {
     clearLuxPoint();
     playTileFx(drawn.id, "fx-scan");
   }
+}
+
+// ── エージェント・RE「リコール・ディール」──────────────────────────────────
+// 河↔手牌の交換は、これまで結果（手牌と河が入れ替わる）しか見えなかった。取り戻す光と
+// 手放す光をすれ違わせて、取引の因果を目に見せる（docs/character-ingame-fx-plan.md §8-2-4）。
+const recalledTileIds = new Set(); // この局で手に戻した牌（手牌の諜報マーク用）
+function playRecallSwapFx(riverTileId, drawnTileId) {
+  const wrap = tableWrapEl();
+  if (!wrap || !renderer) return;
+  const rh = (renderer.riverHitboxes || []).find((h) => h.tileId === riverTileId);
+  const hh = (renderer.handHitboxes || []).find((h) => h.tileId === drawnTileId);
+  const at = (hb) => (hb ? tablePointAt(hb.x + hb.w / 2, hb.y + hb.h / 2) : null);
+  const river = at(rh), hand = at(hh);
+  if (!river || !hand) return;
+  const fly = (from, to, cls) => {
+    const dot = document.createElement("div");
+    dot.className = `recall-dot ${cls}`;
+    dot.style.left = `${from.x}px`;
+    dot.style.top = `${from.y}px`;
+    wrap.appendChild(dot);
+    requestAnimationFrame(() => { dot.style.left = `${to.x}px`; dot.style.top = `${to.y}px`; });
+    setTimeout(() => { dot.style.opacity = "0"; }, 460);
+    setTimeout(() => dot.remove(), 780);
+  };
+  fly(river, hand, "in");  // 河の牌 → 手牌（取り戻す）
+  fly(hand, river, "out"); // ツモ牌 → 河（手放す＝ロンされない牌になる）
 }
 
 // 「該当なし」の告知 — 1シャンテンなのに、聴牌を確定できる有効牌が山に尽きている状態。
@@ -7709,6 +7870,9 @@ function mkPassiveIndicator(a, cls = "") {
   if (a.meter) wrap.appendChild(mkAbilityMeter(a.meter, a.status));
   return wrap;
 }
+// 常時能力のメーター（凌雲の盾など）の増減を覚えておき、変わった瞬間だけ演出を付ける。
+// 減＝琥珀が砕ける／増＝編み直される。key は `席:能力id`。
+const meterPrev = new Map();
 // プレイヤー idx のパッシブ(常時)能力バッジを host に流し込む（既存内容はクリア）。
 // 個人戦の立ち絵・団体/ペアの自ブロックで共用。cls でバッジの見た目を切り替える。
 function renderPassiveBadges(host, idx, cls = "self-ability") {
@@ -7718,7 +7882,16 @@ function renderPassiveBadges(host, idx, cls = "self-ability") {
   for (const a of list) {
     if (a.visible === false) continue;
     if (a.activation !== "passive") continue;
-    host.appendChild(mkPassiveIndicator(a, cls));
+    const node = mkPassiveIndicator(a, cls);
+    // 盾が1枚減った/増えた瞬間を見せる（守りの資源が動いたことが分かるように）。
+    const now = a.meter?.on;
+    if (now != null) {
+      const key = `${idx}:${a.id}`;
+      const prev = meterPrev.get(key);
+      if (prev != null && now !== prev) node.classList.add(now < prev ? "meter-break" : "meter-mend");
+      meterPrev.set(key, now);
+    }
+    host.appendChild(node);
   }
 }
 // 自分立ち絵の上の「常設バッジ」を、人間プレイヤーのパッシブ能力で更新する。
@@ -8680,6 +8853,7 @@ function resetMatchTalk() {
 function setupMatchTalk(g) {
   resetMatchTalk();
   tableBanterDone = false;   // 卓上の掛け合いは1対局に1回（東1局で消化）
+  meterPrev.clear();         // 盾など常時メーターの増減演出は対局ごとに取り直す
   shioriMiss = null;         // 栞の「答え合わせ」は対局ごとに取り直す
   resetShioriReview();       // 予約済みの表示・開きっぱなしのモーダルも対局開始で解除
 

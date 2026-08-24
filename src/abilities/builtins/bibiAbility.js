@@ -51,6 +51,17 @@ export class BibiAbility extends Ability {
     this._usedThisHand = false;
   }
 
+  // UI へ「守りの窓」（あと何回の自打牌ぶん守られているか）を渡す。これが無いと
+  // 残り何打牌守られているのかが誰にも分からず、押し引きの判断材料が消えてしまう
+  // （docs/character-ingame-fx-plan.md §8-2-2）。発動していない間はメーターを出さない。
+  uiState(_api) {
+    return {
+      visible: true,
+      meter: this.active ? { on: this._discardsLeft, max: this.discardWindow, label: "守り" } : null,
+      status: this.active ? "armed" : null,
+    };
+  }
+
   // 1局1回。効果は窓ぶんの打牌で切れて active が false に戻るため、active だけでは
   // 同一局の再発動を弾けない。専用フラグで「この局はもう使った」を担保する。
   activationCondition(_api) {
@@ -74,7 +85,7 @@ export class BibiAbility extends Ability {
     this._discardsLeft--;
     if (this._discardsLeft <= 0) {
       this.active = false;
-      api.log(`守りが切れた`);
+      api.log(`「……もう、守れない」——最後の人形が静かに消えた`);
     }
   }
 

@@ -19,6 +19,7 @@
 //   { playStyleTag }         topPlayStyle(playerHistory) → cond.playStyleTag で多用打ち筋参照
 //   { firstMeet }            まだ一度も一緒に打っていない（totalMatches===0） → cond.firstMeet で初対面の出迎え
 //   { reviewMiss }           栞「答え合わせ」: その対局に“模範解答から外れた一打”があったか → cond.reviewMiss
+//   { dealtIn }              真守「見えていました」: 警告した牌を自分が切って放銃したか → cond.dealtIn
 //   { bossMemoryTier }       楼光の館・ボスが覚えている段階（"first"|"rematch"|"revenge"）→ cond.bossMemoryTier
 //                            （bossMemory.js の bossMemoryTier(profile.roguelite.bossTally[charId]) で算出）
 //   ── 楼光の館・相棒が潜行履歴に反応（提案B スライス2・固有性。供給は main.js rlVoiceCtx） ──
@@ -79,6 +80,9 @@ function condMatches(cond, ctx) {
   if (cond.playStyleTag   && cond.playStyleTag   !== ctx.playStyleTag)   return false;
   // firstMeet: 初対面か（対戦ホームの出迎え用）。true/false を ctx.firstMeet と厳密一致で評価。
   if (cond.firstMeet != null && Boolean(ctx.firstMeet) !== cond.firstMeet) return false;
+  // dealtIn: 真守「見えていました」で、その牌を自分が切って放銃したか（true）／避けたか（false）。
+  // true/false を ctx.dealtIn と厳密一致で評価（未供給は false 扱い）。
+  if (cond.dealtIn != null && Boolean(ctx.dealtIn) !== cond.dealtIn) return false;
   // reviewMiss: 栞「答え合わせ」で、その対局に“わたしが選ばなかった一打”があったか。
   // true/false を ctx.reviewMiss と厳密一致で評価（未供給は false 扱い）。
   if (cond.reviewMiss != null && Boolean(ctx.reviewMiss) !== cond.reviewMiss) return false;

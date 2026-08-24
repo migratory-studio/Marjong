@@ -2707,6 +2707,55 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 }
 .table-wrap.aura-night.aura-night-lit::after { opacity: .45; }
 
+/* ---- 凌雲「琥珀の盾」: 盾が減った／編み直された瞬間 ---- */
+/* 盾は1ゲーム通しの持続資源なので、増減そのものが事件になる。 */
+.passive-ind.meter-break { animation: shieldBreak .6s cubic-bezier(.3,.1,.2,1) both; }
+.passive-ind.meter-mend  { animation: shieldMend .6s ease-out both; }
+@keyframes shieldBreak {
+  0%   { transform: none; filter: none; }
+  18%  { transform: translateX(-3px) rotate(-1.2deg); filter: drop-shadow(0 0 8px #f0a23ccc); }
+  38%  { transform: translateX(3px) rotate(1.2deg); }
+  60%  { transform: translateX(-2px); filter: drop-shadow(0 0 4px #f0a23c66); }
+  100% { transform: none; filter: none; }
+}
+@keyframes shieldMend {
+  0%   { transform: scale(1); filter: none; }
+  35%  { transform: scale(1.12); filter: drop-shadow(0 0 12px #ffd489); }
+  100% { transform: scale(1); filter: none; }
+}
+
+/* ---- ビビ「身代わり人形」: 守りの窓を人形の数で見せる ---- */
+.aura-doll {
+  background: linear-gradient(180deg, #0d1a24ee, #071018ee);
+  border: 1px solid #2f6d8e; color: #dceefb;
+}
+.aura-doll .aura-title { color: #5aa9e6; }
+.aura-doll.last { border-color: #e0a03c; box-shadow: 0 4px 14px #0009, 0 0 18px #e0a03c44; }
+.aura-doll.last .aura-note b { color: #ffd48a; }
+.doll-marks { display: flex; gap: 6px; margin: 6px 0 2px; height: 18px; align-items: flex-end; }
+/* 人形＝丸い頭＋台形の体（絵文字はテーマから色が浮くので描画で作る） */
+.doll { position: relative; width: 11px; height: 17px; }
+.doll::before {
+  content: ""; position: absolute; left: 50%; top: 0; transform: translateX(-50%);
+  width: 7px; height: 7px; border-radius: 50%;
+  background: #cfe9ff; box-shadow: 0 0 6px #5aa9e6aa;
+}
+.doll::after {
+  content: ""; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  width: 0; height: 0; border-bottom: 10px solid #9fd8f5;
+  border-left: 5px solid transparent; border-right: 5px solid transparent;
+  filter: drop-shadow(0 0 4px #5aa9e688);
+}
+.doll.spent::before { background: #2c3a44; box-shadow: none; }
+.doll.spent::after { border-bottom-color: #2c3a44; filter: none; }
+.doll.just { animation: dollBreak .55s ease-out both; }
+@keyframes dollBreak {
+  0%   { transform: scale(1) rotate(0); opacity: 1; }
+  35%  { transform: scale(1.25) rotate(-12deg); opacity: .9; }
+  70%  { transform: scale(.9) rotate(10deg); opacity: .5; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
 /* ---- 春嬋「韋駄天の中張」: 走った距離が見える ---- */
 .aura-sprint {
   background: linear-gradient(180deg, #0c1f1eee, #071413ee);
@@ -2844,6 +2893,21 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 .tsumo-fx.fx-scan .tsumo-fx-ring { border-color: #9fd8f5; box-shadow: 0 0 14px #4ea1d3, inset 0 0 8px #4ea1d3; }
 .tsumo-fx.fx-scan .tsumo-fx-glow { background: radial-gradient(closest-side, rgba(78,161,211,.55), rgba(78,161,211,0)); }
 .tsumo-fx.fx-scan .tsumo-fx-spark { color: #dff3ff; text-shadow: 0 0 10px #4ea1d3; }
+
+/* リコール・ディール（エージェント・RE）: 取り戻す光と手放す光がすれ違う */
+.recall-dot {
+  position: absolute; z-index: 26; pointer-events: none;
+  width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%;
+  transition: left .46s cubic-bezier(.35,.05,.25,1), top .46s cubic-bezier(.35,.05,.25,1), opacity .3s ease;
+}
+.recall-dot.in {
+  background: radial-gradient(circle, #eaf2f8, #7f8c99 55%, #7f8c9900 70%);
+  box-shadow: 0 0 12px #b8c6d2, 0 0 26px #7f8c9966;
+}
+.recall-dot.out {
+  background: radial-gradient(circle, #cfe0ee, #4a6d8e 55%, #4a6d8e00 70%);
+  box-shadow: 0 0 10px #4a6d8e, 0 0 22px #4a6d8e55;
+}
 
 
 /* ============================================================================
@@ -3771,6 +3835,76 @@ button.secondary { color: var(--ink); }
 .dmg-pop.hit { color: #ff6b6b; -webkit-text-stroke: 1px #5a1414; }
 .dmg-pop.heal { color: #6ff09a; -webkit-text-stroke: 1px #14502a; }
 .dmg-pop.show { animation: dmgPop 1.1s ease forwards; }
+
+/* ---- 守り切った席（琥珀の盾・身代わり人形）------------------------------------
+   守備キャラの成果は「点棒が動かないこと」なので、既存の被ダメ演出（点棒が動く＝事件）
+   からこぼれ落ちる。ここでは本来の失点を一度だけ実体化させ、守りの膜に呑ませて消す。
+   （docs/character-ingame-fx-plan.md §8-1「回避された未来を、一度だけ見せる」） */
+.dmg-row.is-guard { position: relative; }
+.dmg-pop.guard-raw { color: #ff6b6b; -webkit-text-stroke: 1px #5a1414; }
+.dmg-row.guarding .dmg-pop.guard-raw { animation: guardRawBreak .55s cubic-bezier(.4,0,.7,.2) forwards; }
+@keyframes guardRawBreak {
+  0%   { opacity: 1; transform: translateY(-14px) scale(1); filter: blur(0); }
+  55%  { opacity: .9; transform: translateY(-12px) scale(.86); filter: blur(1px); }
+  100% { opacity: 0; transform: translateY(-8px) scale(.55); filter: blur(4px); }
+}
+.dmg-pop.guard-kept { color: #dfe9e4; -webkit-text-stroke: 1px #26332c; }
+/* 守りの膜。琥珀＝硬く固まって砕ける／人形＝身代わりに割れる */
+.dmg-guard-veil {
+  position: absolute; inset: -2px; border-radius: 10px;
+  opacity: 0; pointer-events: none;
+}
+.dmg-guard-veil.amber {
+  background: linear-gradient(100deg, #f0a23c00, #f0a23c55 45%, #ffd48955 55%, #f0a23c00);
+  box-shadow: inset 0 0 22px #f0a23c66;
+}
+.dmg-guard-veil.doll {
+  background: linear-gradient(100deg, #5aa9e600, #5aa9e655 45%, #cfe9ff55 55%, #5aa9e600);
+  box-shadow: inset 0 0 22px #5aa9e666;
+}
+.dmg-row.guarding .dmg-guard-veil { animation: guardVeil .85s ease-out both; }
+@keyframes guardVeil {
+  0%   { opacity: 0; transform: scale(1.06); }
+  25%  { opacity: 1; transform: scale(1); }
+  70%  { opacity: .85; }
+  100% { opacity: 0; transform: scale(.99); }
+}
+/* 何で守ったかのラベル（琥珀の盾／身代わり人形） */
+.dmg-guard-tag {
+  display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 800; letter-spacing: .04em; vertical-align: middle;
+  opacity: 0; transform: translateY(3px);
+}
+.dmg-guard-tag.amber { background: #3a2a12; color: #ffcc7a; border: 1px solid #a8791f; }
+.dmg-guard-tag.doll  { background: #12283a; color: #9fd8f5; border: 1px solid #2f6d8e; }
+.dmg-row.guarding .dmg-guard-tag { animation: guardTagIn .4s ease-out .1s both; }
+@keyframes guardTagIn { to { opacity: 1; transform: none; } }
+/* 勝った側への説明（守られた分は勝者の取り分からも引かれる） */
+.dmg-blocked-note {
+  margin: 6px 4px 0; padding: 7px 12px; border-radius: 8px;
+  background: #17222099; border: 1px solid #3c5a4d;
+  color: #cfe0d6; font-size: 12px; letter-spacing: .02em;
+  display: flex; align-items: baseline; gap: 8px;
+  animation: guardTagIn .45s ease-out .5s both;
+}
+.dmg-blocked-note span { margin-left: auto; font-weight: 900; color: #ffb765; font-size: 14px; }
+/* 真守「見えていました」：警告が当たっていた局だけ、結果の下に静かに1行 */
+.dmg-insight {
+  margin: 6px 4px 0; padding: 7px 12px; border-radius: 8px;
+  background: #16241c99; border: 1px solid #3f6b52;
+  color: #d6e9db; font-size: 12px; letter-spacing: .02em;
+  display: flex; align-items: baseline; gap: 8px;
+  animation: guardTagIn .45s ease-out .6s both;
+}
+.dmg-insight::before {
+  content: ""; width: 9px; height: 9px; border-radius: 50%; flex: none;
+  border: 2px solid #7bb274; box-shadow: 0 0 6px #7bb27488;
+}
+.dmg-insight b { color: #a8e0b4; font-weight: 800; }
+.dmg-insight.missed { border-color: #6b4a3f; background: #241a1699; }
+.dmg-insight.missed::before { border-color: #d08a6a; box-shadow: 0 0 6px #d08a6a88; }
+.dmg-insight.missed b { color: #ffb08a; }
+
 @keyframes dmgPop {
   0%   { opacity: 0; transform: translateY(6px) scale(.6); }
   22%  { opacity: 1; transform: translateY(-10px) scale(1.18); }

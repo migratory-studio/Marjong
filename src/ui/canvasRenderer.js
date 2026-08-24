@@ -54,7 +54,7 @@ export class CanvasRenderer {
     // 右サイドの相棒ボードに集約済みで、卓上にはHPバーを描かない。
   }
 
-  setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false, best = null, deadKinds = null } = {}) {
+  setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false, best = null, deadKinds = null, recalled = null } = {}) {
     this.riichiMode = riichiMode;
     this.riichiKinds = riichiKinds;
     this.danger = danger; // Map kind -> level
@@ -63,6 +63,9 @@ export class CanvasRenderer {
     // ゼロ・リサーチ（ルクス）の「該当なし」告知中だけ立つ Set<kind>。全員の河の該当牌を
     // シアンで囲み、「その牌はもう場に出切っている」ことを目に見える証明として示す。
     this.deadKinds = deadKinds;
+    // リコール・ディール（エージェント・RE）で河から手に戻した牌の id（Set<tileId>）。
+    // 一度手放した牌＝取引材料であることを、局のあいだ手牌に印として残す。
+    this.recalled = recalled;
   }
 
   render() {
@@ -467,6 +470,7 @@ export class CanvasRenderer {
       this._tile(x, ty, t.kind, { red: t.red, danger: dangerLevel, dim, scale: s });
       if (doraKinds.has(t.kind) || t.red) this._doraStar(x, ty, tw, dim);
       if (this.best && !dim) { const r = this.best.get(t.kind); if (r) this._bestMark(x, ty, tw, th, r); }
+      if (this.recalled && this.recalled.has(t.id)) this._recallMark(x, ty, tw, th);
       if (selected) this._selectOutline(x, ty, tw, th); // 「次のタップで切る」武装中の牌を縁取り
       this.handHitboxes.push({ tileId: t.id, kind: t.kind, x, y: ty, w: tw, h: th, enabled: canPick });
       x += tw + gap;
@@ -499,6 +503,23 @@ export class CanvasRenderer {
     ctx.lineWidth = 3;
     roundRect(ctx, x - 1.5, y - 1.5, w + 3, h + 3, 6);
     ctx.stroke();
+    ctx.restore();
+  }
+
+  // リコール・ディール（エージェント・RE）で取り戻した牌の印。牌の右下角に小さな
+  // 諜報タグを重ねる（danger=右上系 / bestMark=左上 / doraStar=上中央 と位置で住み分け）。
+  _recallMark(x, y, w, h) {
+    const ctx = this.ctx;
+    const bw = 13, bh = 9;
+    const bx = x + w - bw - 3, by = y + h - bh - 3;
+    ctx.save();
+    ctx.fillStyle = "#2b3946";
+    roundRect(ctx, bx, by, bw, bh, 2.5); ctx.fill();
+    ctx.strokeStyle = "#7f8c99"; ctx.lineWidth = 1;
+    roundRect(ctx, bx, by, bw, bh, 2.5); ctx.stroke();
+    ctx.fillStyle = "#cfd8e0";
+    ctx.fillRect(bx + 3, by + 3, bw - 6, 1.2);
+    ctx.fillRect(bx + 3, by + 5.4, bw - 8, 1.2);
     ctx.restore();
   }
 
