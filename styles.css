@@ -2706,6 +2706,165 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
   transition: opacity .6s ease;
 }
 .table-wrap.aura-night.aura-night-lit::after { opacity: .45; }
+/* ==========================================================================
+   場の持続レイヤー（卓の上辺）— 他家由来で卓全体に効いている能力の枠。
+   自席のオーラ（.ability-aura＝卓の左下）とは住む場所で分ける（§11-4 案a）ので、
+   自分の能力と場の能力が同時に立っても、どちらも消えない。
+   ========================================================================== */
+.field-aura {
+  position: absolute; top: 6px; left: 50%; transform: translateX(-50%); z-index: 24;
+  pointer-events: none; max-width: 560px; font-size: 12px; line-height: 1.3;
+  /* 住人が複数のときは横に並べる（泥＋沈黙が同時に立つ局がある）。縦積みだと卓の上辺から
+     せり出して対面の手牌に近づくので、行方向はここで固定する。 */
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.field-aura.hidden { display: none; }
+.field-aura .aura-panel { display: flex; align-items: baseline; gap: 8px; padding: 5px 12px; }
+
+/* ---- 沼田 蓮「泥中の蓮」(他家): 卓が濁る ---- */
+.aura-mud {
+  background: linear-gradient(180deg, #1b1710ee, #0d0b08ee);
+  border: 1px solid #4a4030; color: #d9cfba;
+}
+.aura-mud .aura-title { color: #b9a06a; }
+.aura-mud .aura-note { margin-top: 0; }
+/* ---- JaneDoe「沈黙の処方箋」: 奪った/奪われた時間を「…」の数で見せる（§14-2-2） ----
+   完全無言の彼女にとって、点の数そのものが言葉になる。自分が縛る側＝自席レイヤー、
+   縛られている側＝場レイヤー（他家由来）で、住む場所を分ける。 */
+.aura-silence, .aura-silenced {
+  background: linear-gradient(180deg, #14161aee, #08090bee);
+  border: 1px solid #454b55; color: #cdd3dc;
+}
+.aura-silence .aura-title, .aura-silenced .aura-title { color: #8b98a8; }
+.sil-dots { display: inline-flex; gap: 6px; align-items: center; margin: 6px 0 2px; min-height: 12px; }
+.field-aura .sil-dots { margin: 0 2px; }
+.sil-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #cdd3dc; box-shadow: 0 0 8px #8b98a866;
+  animation: silDot 2.2s ease-in-out infinite;
+}
+.sil-dot:nth-child(2) { animation-delay: .25s; }
+.sil-dot:nth-child(3) { animation-delay: .5s; }
+@keyframes silDot {
+  0%, 100% { opacity: .55; transform: scale(.9); }
+  50%      { opacity: 1; transform: scale(1.1); }
+}
+.aura-silence.done .aura-note { letter-spacing: .3em; opacity: .7; }
+/* 縛られている側は「打てない」ことが操作情報なので、少しだけ強く見せる */
+.aura-silenced { border-color: #6b5560; }
+.aura-silenced .aura-title { color: #c9a7b4; }
+.aura-silenced .sil-dot { background: #e3c9d2; box-shadow: 0 0 8px #c9a7b477; }
+/* ---- カリュブディス「淵の蒐集」: 山が減るほど渦が深くなる（§14-2-3） ----
+   彼女だけ和了れない代わりに、流局が和了になる。だから「山が減る」が他の誰とも違う
+   意味を持つ＝残り牌を数字ではなく渦の深さに翻訳して、彼女の視界を貸す。 */
+.aura-abyss {
+  background: linear-gradient(180deg, #0b1418ee, #05090bee);
+  border: 1px solid #2f5b6b; color: #cfe4ec;
+}
+.aura-abyss .aura-title { color: #4a8fb5; }
+.abyss-ring {
+  --depth: 0%;
+  position: relative; height: 42px; min-width: 132px; margin: 6px 0 3px;
+  border-radius: 6px; overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, #0a1a22 0 18%, #071016 42%, #04080b 70%),
+    #04080b;
+}
+.abyss-ring::before {
+  content: ""; position: absolute; inset: -40%;
+  background: conic-gradient(from 0deg, #4a8fb500, #4a8fb566 25%, #7fd2e600 50%, #4a8fb566 75%, #4a8fb500);
+  opacity: calc(.25 + var(--depth) / 160);
+  animation: abyssSpin 6s linear infinite;
+}
+.aura-abyss.near .abyss-ring::before { animation-duration: 2.4s; }
+@keyframes abyssSpin { to { transform: rotate(360deg); } }
+.abyss-core {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: calc(6px + var(--depth) * .16); height: calc(6px + var(--depth) * .16);
+  border-radius: 50%; background: radial-gradient(circle at 50% 50%, #04080b 55%, #0e2a35);
+  box-shadow: 0 0 14px #04080b, inset 0 0 10px #000;
+  transition: width .6s ease, height .6s ease;
+}
+.aura-abyss.near { border-color: #4a8fb5; box-shadow: 0 4px 14px #0009, 0 0 18px #4a8fb544; }
+/* 掴んだ和了牌が呑まれる（アガれない体質を、いちばん惜しい形で見せる） */
+.tsumo-fx.fx-abyss .tsumo-fx-ring { border-color: #4a8fb5; box-shadow: 0 0 14px #0a1a22, inset 0 0 10px #04080b; }
+.tsumo-fx.fx-abyss .tsumo-fx-glow { background: radial-gradient(closest-side, rgba(10,26,34,.75), rgba(74,143,181,0)); }
+.tsumo-fx.fx-abyss .tsumo-fx-spark { color: #7fd2e6; text-shadow: 0 0 10px #04080b; }
+/* 流局＝彼女の和了。蒐集した局だけ、流局カードに渦の縁を与える */
+.win-card.abyss { border-color: #2f5b6b; box-shadow: 0 10px 40px #000c, 0 0 26px #4a8fb533; }
+.win-sub.abyss-collect { color: #9fd8f5; margin-top: 6px; }
+.win-sub.abyss-collect b { color: #dff3ff; font-size: 1.15em; }
+
+
+/* 卓の"縁"に泥が溜まる。姚玖の夜（::after）と擬似要素を分けて同時に立てられるようにする。
+   面ではなく縁だけを濁らせるのは、手牌の視認性を落とさないため（実機で下辺グラデを実測して是正）。 */
+.table-wrap.field-mud::before {
+  content: ""; position: absolute; inset: 0; z-index: 22; pointer-events: none;
+  box-shadow: inset 0 0 0 2px #3a2f1877, inset 0 -64px 52px -56px #2a2214cc, inset 0 64px 52px -56px #1d180eaa;
+}
+
+/* ---- 沼田 蓮「泥中の蓮」(自席): 沈殿の水位。溜まるのは静かに、引くときだけ花が咲く ---- */
+.aura-lotus {
+  background: linear-gradient(180deg, #171410ee, #0b0a07ee);
+  border: 1px solid #4a4030; color: #ded3bb; position: relative;
+}
+.aura-lotus .aura-title { color: #c9b07a; }
+.aura-lotus.has-mud .aura-title { color: #d9c48f; }
+.mud-gauge {
+  position: relative; height: 34px; min-width: 132px; margin: 5px 0 2px; border-radius: 4px;
+  background: #14120d; border: 1px solid #38321f; overflow: hidden;
+}
+.mud-water {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 0;
+  background: linear-gradient(180deg, #6b5a32, #3a2f18);
+  box-shadow: inset 0 1px 0 #8c7742;
+  transition: height .6s cubic-bezier(.3,.9,.4,1);
+}
+.mud-bloom {
+  position: absolute; left: 50%; bottom: 4px; transform: translateX(-50%) scale(.2);
+  width: 14px; height: 14px; border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle at 40% 38%, #fff4f7, #f3b9cd 62%, #d98aae);
+  box-shadow: 0 0 10px #f3b9cd88;
+}
+.aura-lotus.bloom .mud-bloom { animation: lotusBloom .9s ease-out both; }
+@keyframes lotusBloom {
+  0%   { opacity: 0; transform: translateX(-50%) scale(.2); }
+  35%  { opacity: 1; transform: translateX(-50%) scale(1.25); }
+  100% { opacity: .85; transform: translateX(-50%) scale(1); }
+}
+
+/* ---- 焔「大物手の焔」: 手の燃料を炎の高さで見せる（満位＝満貫圏の火柱） ---- */
+.aura-flame {
+  background: linear-gradient(180deg, #1a0f0aee, #0b0705ee);
+  border: 1px solid #5a2a17; color: #f0d7c6; position: relative;
+}
+.aura-flame .aura-title { color: #e0552b; }
+.aura-flame.blaze { border-color: #e0552b; box-shadow: 0 4px 14px #0009, 0 0 20px #e0552b55; }
+.flame-pit {
+  position: relative; height: 44px; min-width: 132px; margin: 5px 0 2px;
+  border-radius: 4px; background: #140c08; border: 1px solid #3a2016; overflow: hidden;
+}
+.flame-body {
+  position: absolute; left: 50%; bottom: 0; width: 46%; height: 20%;
+  transform: translateX(-50%);
+  border-radius: 46% 46% 30% 30% / 62% 62% 24% 24%;
+  background: linear-gradient(180deg, #ffd98a, #f0812c 46%, #e0552b 78%, #8c2a12);
+  box-shadow: 0 0 14px #e0552b66;
+  transition: height .5s cubic-bezier(.3,.9,.4,1);
+  animation: flameSway 1.6s ease-in-out infinite;
+}
+.aura-flame.blaze .flame-body { box-shadow: 0 0 22px #f0812caa, 0 0 42px #e0552b55; }
+.aura-flame.flare .flame-body { animation: flameFlare .7s ease-out, flameSway 1.6s ease-in-out infinite; }
+@keyframes flameSway {
+  0%, 100% { transform: translateX(-50%) scaleX(1) skewX(0deg); }
+  50%      { transform: translateX(-50%) scaleX(.92) skewX(-3deg); }
+}
+@keyframes flameFlare {
+  0%   { filter: brightness(1); }
+  35%  { filter: brightness(1.9) saturate(1.3); }
+  100% { filter: brightness(1); }
+}
+
 
 /* ---- 凌雲「琥珀の盾」: 盾が減った／編み直された瞬間 ---- */
 /* 盾は1ゲーム通しの持続資源なので、増減そのものが事件になる。 */
@@ -2893,6 +3052,197 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 .tsumo-fx.fx-scan .tsumo-fx-ring { border-color: #9fd8f5; box-shadow: 0 0 14px #4ea1d3, inset 0 0 8px #4ea1d3; }
 .tsumo-fx.fx-scan .tsumo-fx-glow { background: radial-gradient(closest-side, rgba(78,161,211,.55), rgba(78,161,211,0)); }
 .tsumo-fx.fx-scan .tsumo-fx-spark { color: #dff3ff; text-shadow: 0 0 10px #4ea1d3; }
+
+/* ==========================================================================
+   賭羽ルイナ「大博打」— 賭場（賭け金の選択）とポット（卓に積んだ賭け金）
+   賭け金は前払い＝選んだ瞬間に点棒(HP)が減る。だから選ばせる前に「払ったあと」を見せ、
+   賭けたあとは結末まで卓に置いておく（docs §11-2-2）。
+   ========================================================================== */
+.kakeha-bet {
+  position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%);
+  z-index: 28; min-width: 340px; max-width: 430px;
+  background: linear-gradient(180deg, #16101ff2, #0a070ef7);
+  border: 1px solid #6d4a9e; border-radius: 10px;
+  box-shadow: 0 10px 40px #000c, 0 0 26px #8b5cf622;
+  color: #e6ddf4; padding: 12px 14px 11px;
+  animation: kbIn .22s ease-out both;
+}
+.kakeha-bet.hidden { display: none; }
+@keyframes kbIn { from { opacity: 0; transform: translate(-50%, -46%); } to { opacity: 1; } }
+.kb-head {
+  display: flex; align-items: baseline; gap: 8px;
+  font-size: 11px; letter-spacing: .16em; color: #a78bfa;
+  border-bottom: 1px solid #3d2a5c; padding-bottom: 6px; margin-bottom: 9px;
+}
+.kb-head .kb-tag { font-weight: 800; }
+.kb-hold { margin-left: auto; letter-spacing: .04em; color: #9c8cb5; font-size: 12px; }
+.kb-hold b { color: #efe6ff; font-size: 14px; }
+.kb-hold.paying b { color: #ff8a9d; text-shadow: 0 0 10px #e85d7566; }
+.kb-cards { display: flex; gap: 10px; }
+.kb-card {
+  flex: 1 1 0; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  background: #1a1226; border: 1px solid #4c3673; border-radius: 8px;
+  padding: 9px 8px 8px; color: #e6ddf4; cursor: pointer;
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+.kb-card:hover:not(:disabled), .kb-card:focus-visible:not(:disabled) {
+  transform: translateY(-3px); border-color: #a78bfa; box-shadow: 0 6px 18px #0009, 0 0 18px #8b5cf655;
+}
+.kb-card:disabled, .kb-card.out { opacity: .4; cursor: not-allowed; }
+.kb-sticks { display: flex; gap: 4px; height: 12px; }
+.kb-stick {
+  width: 34px; height: 8px; border-radius: 2px; align-self: center;
+  background: linear-gradient(180deg, #f4f0e6, #cfc6b4);
+  border: 1px solid #8d8471; box-shadow: 0 1px 3px #0007;
+  position: relative;
+}
+.kb-stick::after {
+  content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 4px; height: 4px; border-radius: 50%; background: #c0392b;
+}
+.kb-amount { font-size: 19px; font-weight: 900; letter-spacing: .02em; }
+.kb-amount i { font-size: .5em; font-style: normal; margin-left: 2px; color: #b7a9cc; }
+.kb-mult { font-size: 12px; font-weight: 800; color: #c4b5fd; }
+.kb-after { font-size: 11px; color: #9c8cb5; }
+.kb-card:hover:not(:disabled) .kb-after { color: #ff8a9d; }
+.kb-foot { display: flex; align-items: center; gap: 10px; margin-top: 9px; }
+.kb-note { font-size: 11px; color: #8b7da3; }
+.kb-cancel {
+  margin-left: auto; background: #241a33; border: 1px solid #4c3673; border-radius: 6px;
+  color: #c9bcdd; font-size: 12px; padding: 5px 12px; cursor: pointer;
+}
+.kb-cancel:hover { border-color: #a78bfa; color: #efe6ff; }
+
+/* ---- ポット: 卓に積んだ賭け金。アガれなければ灰になる ---- */
+.aura-pot {
+  background: linear-gradient(180deg, #150f1fee, #08060cee);
+  border: 1px solid #4c3673; color: #e6ddf4;
+}
+.aura-pot .aura-title { color: #a78bfa; }
+.pot-stack { display: flex; flex-direction: column; gap: 4px; margin: 6px 0 3px; min-width: 132px; }
+.pot-stick {
+  height: 9px; border-radius: 2px; position: relative;
+  background: linear-gradient(180deg, #f4f0e6, #cfc6b4);
+  border: 1px solid #8d8471; box-shadow: 0 1px 4px #000a, 0 0 10px #8b5cf633;
+}
+.pot-stick::after {
+  content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 4px; height: 4px; border-radius: 50%; background: #c0392b;
+}
+.pot-stack.just .pot-stick { animation: potDrop .6s cubic-bezier(.2,1.2,.4,1) both; }
+@keyframes potDrop {
+  0%   { opacity: 0; transform: translateY(-14px) scaleX(.8); }
+  60%  { opacity: 1; transform: translateY(2px) scaleX(1.04); }
+  100% { opacity: 1; transform: none; }
+}
+/* 外した局＝賭け金は戻らない。点棒が灰になって、結末が絵になる。 */
+.aura-pot.ash { border-color: #3a3340; }
+.aura-pot.ash .aura-title { color: #7d7489; }
+.aura-pot.ash .pot-stick {
+  background: linear-gradient(180deg, #6e6a66, #47443f);
+  border-color: #565049; box-shadow: none; filter: grayscale(1);
+  transition: background .8s ease, filter .8s ease;
+}
+.aura-pot.ash .pot-stick::after { background: #5a5450; }
+
+/* ---- 「運命を手繰る」(超越帯) のツモ: 詩玥の金と見分けがつく紫 ---- */
+.tsumo-fx.fx-fate .tsumo-fx-ring { border-color: #c4b5fd; box-shadow: 0 0 14px #8b5cf6, inset 0 0 8px #8b5cf6; }
+.tsumo-fx.fx-fate .tsumo-fx-glow { background: radial-gradient(closest-side, rgba(139,92,246,.55), rgba(139,92,246,0)); }
+.tsumo-fx.fx-fate .tsumo-fx-spark { color: #efe6ff; text-shadow: 0 0 10px #8b5cf6; }
+/* ==========================================================================
+   ドラニエル「天啓ドラ寄せ」— 積んだ確定ドラの札束と、四開槓の崖（docs §11-2-4）
+   暴いたドラは全員に乗る＝諸刃。めくった瞬間に卓が光り、崖が近づくほど札が軋む。
+   ========================================================================== */
+.aura-dora {
+  background: linear-gradient(180deg, #1a1408ee, #0b0904ee);
+  border: 1px solid #6b5417; color: #f0e4c2;
+}
+.aura-dora .aura-title { color: #d9a521; }
+.dora-stack { display: flex; gap: 4px; margin: 6px 0 3px; min-width: 132px; min-height: 22px; align-items: flex-end; }
+.dora-card {
+  width: 15px; height: 21px; border-radius: 2px;
+  background: linear-gradient(180deg, #ffe9a8, #d9a521 62%, #a97c10);
+  border: 1px solid #ffd77a; box-shadow: 0 2px 6px #000a, 0 0 10px #d9a52166;
+}
+.dora-stack.just .dora-card { animation: doraCardIn .6s cubic-bezier(.2,1.2,.4,1) both; }
+@keyframes doraCardIn {
+  0%   { opacity: 0; transform: translateY(-10px) rotate(-8deg); }
+  60%  { opacity: 1; transform: translateY(2px) rotate(2deg); }
+  100% { opacity: 1; transform: none; }
+}
+.dora-cliff { color: #e8b45c; margin-left: 4px; }
+/* 崖が近い＝あと1枚で場が流れる。札束が赤熱して軋む。 */
+.aura-dora.cliff { border-color: #c0392b; box-shadow: 0 4px 14px #0009, 0 0 18px #c0392b55; }
+.aura-dora.cliff .dora-cliff { color: #ff8a6b; font-weight: 800; }
+.aura-dora.cliff .dora-card { border-color: #ffae8a; box-shadow: 0 2px 6px #000a, 0 0 12px #c0392b88; }
+/* 背水の天啓（超越帯）＝紙の点棒が火力に反転している最中。札が金に燃える。 */
+.aura-dora.laststand .aura-title { color: #ffd77a; text-shadow: 0 0 12px #d9a52188; }
+.aura-dora.laststand .dora-card { animation: doraBurn 1.6s ease-in-out infinite; }
+@keyframes doraBurn {
+  0%, 100% { box-shadow: 0 2px 6px #000a, 0 0 10px #d9a52166; }
+  50%      { box-shadow: 0 2px 6px #000a, 0 0 20px #ffd77aaa; }
+}
+/* めくった瞬間、卓中央（ドラ表示の段）を走る金の閃光 */
+.dora-flash {
+  position: absolute; width: 8px; height: 8px; margin: -4px 0 0 -4px;
+  border-radius: 50%; pointer-events: none; z-index: 26;
+  background: #fff6d8; box-shadow: 0 0 18px #ffd77a, 0 0 42px #d9a521;
+  animation: doraFlash .65s ease-out both;
+}
+@keyframes doraFlash {
+  0%   { opacity: 0; transform: scale(.4); }
+  22%  { opacity: 1; transform: scale(3.4); }
+  100% { opacity: 0; transform: scale(9); }
+}
+/* 手にある新ドラが灯る（暴いた恩恵が自分の手にも乗った瞬間） */
+.tsumo-fx.fx-dora .tsumo-fx-ring { border-color: #ffd77a; box-shadow: 0 0 14px #d9a521, inset 0 0 8px #d9a521; }
+.tsumo-fx.fx-dora .tsumo-fx-glow { background: radial-gradient(closest-side, rgba(217,165,33,.55), rgba(217,165,33,0)); }
+.tsumo-fx.fx-dora .tsumo-fx-spark { color: #fff6d8; text-shadow: 0 0 10px #d9a521; }
+/* ---- 焔「大物手の焔」: 1巡目にしか張れない＝窓が開いているのは今だけ（§11-2-1 #4） ---- */
+.btn-ability.ability-window { animation: flameWindow 1.15s ease-in-out infinite; }
+@keyframes flameWindow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(224,85,43,0); }
+  50%      { box-shadow: 0 0 0 3px rgba(224,85,43,.38), 0 0 16px rgba(224,85,43,.55); }
+}
+
+/* ==========================================================================
+   沼田 蓮「泥中の蓮」が咲いた和了（§11-2-3 #4）— 本作でいちばん地味な手に、
+   いちばん綺麗な絵を当てる＝派手さの反転。泥の水面が満ちて、中央に蓮がひらく。
+   文字より後ろ（z-index 1）で咲かせて、点数表示の邪魔をしない。
+   ========================================================================== */
+.lotus-bloom .win-rich::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 0; z-index: 1;
+  background: linear-gradient(0deg, rgba(58,47,24,.72), rgba(42,34,20,.32) 62%, transparent);
+  animation: lotusWater 1.1s ease-out .15s forwards;
+}
+@keyframes lotusWater { from { height: 0; } to { height: 38%; } }
+.lotus-bloom .win-rich::after {
+  content: ""; position: absolute; left: 50%; bottom: 12%; z-index: 1;
+  width: 128px; height: 128px; margin-left: -64px;
+  transform: scale(.2); opacity: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 58%, #fff6f9 0 12%, rgba(255,246,249,0) 42%),
+    conic-gradient(from 0deg,
+      #f3b9cd 0 8%, rgba(243,185,205,.12) 8% 12.5%,
+      #efaec5 12.5% 20.5%, rgba(243,185,205,.12) 20.5% 25%,
+      #f3b9cd 25% 33%, rgba(243,185,205,.12) 33% 37.5%,
+      #efaec5 37.5% 45.5%, rgba(243,185,205,.12) 45.5% 50%,
+      #f3b9cd 50% 58%, rgba(243,185,205,.12) 58% 62.5%,
+      #efaec5 62.5% 70.5%, rgba(243,185,205,.12) 70.5% 75%,
+      #f3b9cd 75% 83%, rgba(243,185,205,.12) 83% 87.5%,
+      #efaec5 87.5% 95.5%, rgba(243,185,205,.12) 95.5% 100%);
+  filter: drop-shadow(0 0 18px rgba(243,185,205,.55));
+  animation: lotusOpen 1.4s cubic-bezier(.2,.9,.3,1) .5s forwards;
+}
+@keyframes lotusOpen {
+  0%   { opacity: 0; transform: scale(.2) rotate(-18deg); }
+  55%  { opacity: .95; transform: scale(1.12) rotate(4deg); }
+  100% { opacity: .82; transform: scale(1) rotate(0deg); }
+}
+
+
+
 
 /* リコール・ディール（エージェント・RE）: 取り戻す光と手放す光がすれ違う */
 .recall-dot {
@@ -3879,6 +4229,44 @@ button.secondary { color: var(--ink); }
 .dmg-guard-tag.doll  { background: #12283a; color: #9fd8f5; border: 1px solid #2f6d8e; }
 .dmg-row.guarding .dmg-guard-tag { animation: guardTagIn .4s ease-out .1s both; }
 @keyframes guardTagIn { to { opacity: 1; transform: none; } }
+/* ---- 呪われた席（暗黒星）— 守りの鏡像 -----------------------------------------
+   守りが「回避された未来を見せてから消す」なら、呪いは「本来の痛みを見せてから深くする」。
+   膨らんだぶんは誰の取り分にもならず消える＝この席だけ違うルールで座っている
+   （docs/character-ingame-fx-plan.md §14-1）。 */
+.dmg-row.is-cursed { position: relative; }
+.dmg-pop.curse-raw { color: #b9a7c9; -webkit-text-stroke: 1px #2b2135; }
+.dmg-row.cursing .dmg-pop.curse-raw { animation: curseRawSink .6s cubic-bezier(.4,0,.7,.2) forwards; }
+@keyframes curseRawSink {
+  0%   { opacity: 1; transform: translateY(-14px) scale(1); filter: blur(0); }
+  55%  { opacity: .8; transform: translateY(-4px) scale(.9); filter: blur(1px); }
+  100% { opacity: 0; transform: translateY(6px) scale(.7); filter: blur(4px); }
+}
+/* 星の膜。飲み込む方向＝内へ吸い込まれる */
+.dmg-curse-veil {
+  position: absolute; inset: -2px; border-radius: 10px;
+  opacity: 0; pointer-events: none;
+}
+.dmg-curse-veil.star {
+  background: radial-gradient(circle at 50% 50%, #a78bfa00 30%, #6d4a9e66 70%, #1a0f2b99);
+  box-shadow: inset 0 0 26px #6d4a9e88;
+}
+.dmg-row.cursing .dmg-curse-veil { animation: curseVeil .95s ease-out both; }
+@keyframes curseVeil {
+  0%   { opacity: 0; transform: scale(1.12); }
+  30%  { opacity: 1; transform: scale(1); }
+  70%  { opacity: .9; }
+  100% { opacity: 0; transform: scale(.96); }
+}
+.dmg-curse-tag {
+  display: inline-block; margin-left: 8px; padding: 1px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 800; letter-spacing: .04em; vertical-align: middle;
+  opacity: 0; transform: translateY(3px);
+}
+.dmg-curse-tag.star { background: #221636; color: #c4b5fd; border: 1px solid #6d4a9e; }
+.dmg-row.cursing .dmg-curse-tag { animation: guardTagIn .4s ease-out .1s both; }
+/* 呪いの注記は守りの注記と同じ枠・色だけ星に寄せる */
+.dmg-blocked-note.is-curse { background: #1a142699; border-color: #4c3673; color: #d6cbe6; }
+
 /* 勝った側への説明（守られた分は勝者の取り分からも引かれる） */
 .dmg-blocked-note {
   margin: 6px 4px 0; padding: 7px 12px; border-radius: 8px;
@@ -4054,6 +4442,13 @@ button.secondary { color: var(--ink); }
 .win-score-fx.show { animation: scoreFxPop .52s cubic-bezier(.2,1.3,.4,1) forwards; }
 .win-score-fx.up { color: #ffd24a; text-shadow: 0 2px 8px #000a, 0 0 18px rgba(255,200,70,.75); }
 .win-score-fx.down { color: #8fd0ff; text-shadow: 0 2px 8px #000a, 0 0 18px rgba(120,190,255,.6); }
+/* 能力名の一行（scoreFxLabel）は 増加!/減少! より長いので、字数で一段落とす。
+   固定1280×720ステージ規約に従い vw は使わない（第1弾QAの是正と同じ）。 */
+.win-score-fx.is-long { font-size: 26px; letter-spacing: .02em; }
+.win-score-fx .win-score-note {
+  display: block; margin-top: 3px; font-size: .52em; font-weight: 700;
+  letter-spacing: .02em; color: #efe7d4; opacity: .9; text-shadow: 0 2px 6px #000a;
+}
 @keyframes scoreFxPop {
   0% { opacity: 0; transform: translateY(8px) scale(.65); }
   55% { opacity: 1; transform: translateY(0) scale(1.18); }

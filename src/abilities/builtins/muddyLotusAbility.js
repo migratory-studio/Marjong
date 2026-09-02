@@ -76,6 +76,15 @@ export class MuddyLotusAbility extends Ability {
     this._bloomPending = false;
   }
 
+  // 卓上の持続レイヤー（泥の水位）へ渡す状態。沈殿はゲーム単位で積む蓄積そのものなので、
+  // 吸い上げを持たない基準帯でも「どれだけ沈めたか」は見せる（docs §11-2-3 #3）。
+  uiState(_api) {
+    return {
+      visible: true,
+      mud: { sunk: this._sunk, absorbRate: this.absorbRate, bloom: this._bloomPending },
+    };
+  }
+
   // 誰のアガリにも泥を敷く。自分の蓮（cheapHanMax 以下）だけは咲かせる。
   [Hooks.MODIFY_SCORE_GLOBAL](ctx, api, result) {
     if (!this.isActive || !result || !result.valid) return undefined;

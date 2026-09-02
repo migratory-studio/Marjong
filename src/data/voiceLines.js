@@ -20,6 +20,9 @@
 //   { firstMeet }            まだ一度も一緒に打っていない（totalMatches===0） → cond.firstMeet で初対面の出迎え
 //   { reviewMiss }           栞「答え合わせ」: その対局に“模範解答から外れた一打”があったか → cond.reviewMiss
 //   { dealtIn }              真守「見えていました」: 警告した牌を自分が切って放銃したか → cond.dealtIn
+//   ── ギャンブラーの賭けの落とし前（"betLost"・docs/character-ingame-fx-plan.md §11-3-3）──
+//   張った局が実らなかったときだけ、次の局の頭で一度返す。結末の出し分けは既存の
+//   cond.lastHandResult（"dealIn"|"tsumoLoss"|"draw"）をそのまま使う＝新しい条件キーは要らない。
 //   { bossMemoryTier }       楼光の館・ボスが覚えている段階（"first"|"rematch"|"revenge"）→ cond.bossMemoryTier
 //                            （bossMemory.js の bossMemoryTier(profile.roguelite.bossTally[charId]) で算出）
 //   ── 楼光の館・相棒が潜行履歴に反応（提案B スライス2・固有性。供給は main.js rlVoiceCtx） ──

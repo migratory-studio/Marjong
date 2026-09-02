@@ -168,7 +168,7 @@ export class AbilityManager {
       if (out === undefined || out === before) continue;
       const from = before && typeof before.total === "number" ? before.total : baseTotal;
       const to = out && typeof out.total === "number" ? out.total : from;
-      if (to !== from) steps.push({ abilityId: ab.id ?? null, from, to, dir: to > from ? "up" : "down" });
+      if (to !== from) steps.push({ abilityId: ab.id ?? null, seat: winner.index, from, to, dir: to > from ? "up" : "down" });
       value = out;
     }
     // 場能力（MODIFY_SCORE_GLOBAL）＝全員の能力を席順で通す。modifyScore と同じ順序。
@@ -183,7 +183,8 @@ export class AbilityManager {
         if (out === undefined || out === before) continue;
         const from = before && typeof before.total === "number" ? before.total : baseTotal;
         const to = out && typeof out.total === "number" ? out.total : from;
-        if (to !== from) steps.push({ abilityId: ab.id ?? null, from, to, dir: to > from ? "up" : "down" });
+        // seat＝能力の持ち主（場能力は他家のこともある）。和了画面で「誰の泥か」を出すのに使う。
+        if (to !== from) steps.push({ abilityId: ab.id ?? null, seat: player.index, from, to, dir: to > from ? "up" : "down" });
         value = out;
       }
     }

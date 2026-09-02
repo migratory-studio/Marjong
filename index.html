@@ -310,10 +310,17 @@
              そのキャラの"視界"を出す（姚玖=夜の庭 / 春嬋=韋駄天 / ルクス=走査…）。
              中身はキャラ別・器は共通。局が終わる/能力が切れたら畳む。 -->
         <div id="ability-aura" class="ability-aura hidden" aria-hidden="true"></div>
+        <!-- 場の持続レイヤー（卓の上辺）。他家由来で卓全体に効いている場能力＝沼田蓮の泥…を出す。
+             自分の能力は #ability-aura（卓の左下）、場の能力はここ＝役割でレイヤーを分ける
+             （docs/character-ingame-fx-plan.md §11-4）。 -->
+        <div id="field-aura" class="field-aura hidden" aria-hidden="true"></div>
         <!-- ルクス・ゼロ「ゼロ・リサーチ」の計器。走査結果から確保する有効牌を選ぶモーダル
              （#lux-scan）と、「該当なし＝場に出切っている」を告げる一過性の警告（#lux-alert）。 -->
         <div id="lux-scan" class="lux-scan hidden"></div>
         <div id="lux-alert" class="lux-alert hidden" aria-hidden="true"></div>
+        <!-- 賭羽ルイナ「大博打」の賭場。賭け金は前払い＝いま点棒が減るので、
+             選ばせる前に「払ったあとの手元」を見せる（docs §11-2-2 #1）。 -->
+        <div id="kakeha-bet" class="kakeha-bet hidden"></div>
         <!-- 篠宮 栞「答え合わせ」。対局のあとに一度だけ、彼女が“あなたが選んだ一打”を
              振り返る（模範解答＝道具にキャラを宿すための、彼女だけの後日談）。 -->
         <div id="shiori-review" class="shiori-review hidden"></div>

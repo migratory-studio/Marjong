@@ -111,17 +111,34 @@ const apiOf = (me) => ({ me, log: () => {} });
   ok("流局の精算には乗らない", ab10[Hooks.MODIFY_POINT_DELTA]({ reason: "draw" }, api, 1500) === undefined);
 }
 
+// ---- uiState: 泥の水位（沈殿）を卓上の持続レイヤーへ渡す ----
+{
+  const ab = new MuddyLotusAbility({ absorbRate: 0.5 });
+  const me = { name: "ren" };
+  const api = apiOf(me);
+  ok("uiState は沈殿を返す（初期0）", ab.uiState(api).mud.sunk === 0);
+  const big = { valid: true, totalHan: 5, rank: "満貫", ron: 8000, total: 8000 };
+  ab[Hooks.MODIFY_SCORE_GLOBAL]({ winner: { isDealer: false }, result: big }, api, big);
+  ok("沈めた分が水位として出る（8000→6000＝2000）", ab.uiState(api).mud.sunk === 2000);
+  const cheap = { valid: true, totalHan: 3, ron: 3900, total: 3900 };
+  ab[Hooks.MODIFY_SCORE_GLOBAL]({ winner: me, result: cheap }, api, cheap);
+  ab[Hooks.MODIFY_POINT_DELTA]({ reason: "ron" }, api, 5900);
+  ok("吸い上げると水位が引く（蓮が咲く）", ab.uiState(api).mud.sunk === 0);
+}
+
 // ---- AbilityManager: 全員の MODIFY_SCORE_GLOBAL が席順で通り、減少ステップが積まれる ----
 {
   const mkPlayer = (name, abilities = []) => ({ character: { name }, abilities, isDealer: false });
   const ren = mkPlayer("沼田 蓮", [createAbility("muddy-lotus")]);
   const winner = mkPlayer("焔", []);
   const game = { players: [winner, ren, mkPlayer("A"), mkPlayer("B")], log: () => {} };
+  game.players.forEach((pl, i) => { pl.index = i; }); // seat（誰の泥か）を steps に載せるため
   const mgr = new AbilityManager(game);
   const res = { valid: true, totalHan: 5, rank: "満貫", ron: 8000, total: 8000 };
   const traced = mgr.modifyScoreTraced(winner, res);
   ok("勝者以外の席の泥が通る（8000 → 6000）", traced.result.ron === 6000 && traced.result.total === 6000);
   ok("減少ステップが和了演出用に積まれる", traced.steps.length === 1 && traced.steps[0].dir === "down" && traced.steps[0].from === 8000 && traced.steps[0].to === 6000);
+  ok("ステップに泥の持ち主の席が載る（和了画面で「誰の泥か」を出す）", traced.steps[0].seat === 1);
   ok("modifyScore（非トレース版）も同じ結果", mgr.modifyScore(winner, res).ron === 6000);
 }
 

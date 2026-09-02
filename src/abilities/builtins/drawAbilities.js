@@ -482,6 +482,23 @@ export class DoraPullAbility extends Ability {
     }
     return ok;
   }
+  // 卓上の演出へ渡す状態（docs §11-2-4）。stacked＝この局の確定ドラ枚数／revealed＝場の
+  // ドラ表示牌の枚数／blocked＝これ以上めくると四開槓で流れる（＝ボタンが塞がる理由）／
+  // lastStand＝背水の天啓の上乗せ（紙HPが火力に反転している最中かどうか）。
+  uiState(api) {
+    const revealed = api?.state?.wall?.doraRevealed ?? 1;
+    return {
+      visible: true,
+      dora: {
+        stacked: this._activationsThisHand,
+        handsLeft: Math.max(0, this.maxHands - this._handsUsed),
+        revealed,
+        blocked: !!api?.state?.wouldSuukaikanAbortFrom?.(api.me.index),
+        lastStand: this.lastStandBonus(api?.me),
+      },
+    };
+  }
+
   // 超越帯（lastStand・Lv8+）:「背水の天啓」の追加確定ドラ枚数。張った局の和了時、
   // 自分の持ち点が開始点の ratio 以下なら bonus を加える（最も深い段＝最大 bonus を採用）。
   lastStandBonus(winner) {

@@ -19,6 +19,21 @@ const FORCED_TURNS = 3;
 export class JaneDoeAbility extends Ability {
   constructor() {
     super(abilityDef("jane-doe"));
+    this._targetIndex = null; // 今この局で縛っている相手の席（卓上の「沈黙の窓」表示に使う）
+  }
+
+  resetForHand() { super.resetForHand(); this._targetIndex = null; }
+  resetForGame() { super.resetForGame(); this._targetIndex = null; }
+
+  // 卓上の演出へ渡す状態（docs §14-2-2）。残り巡は engine が対象の forcedTsumogiri を
+  // 打牌のたび減らすので、そこを直接読む＝表示と実際の縛りがズレない。
+  uiState(api) {
+    const t = this._targetIndex == null ? null : api?.state?.players?.[this._targetIndex];
+    const left = Math.max(0, t?.forcedTsumogiri || 0);
+    return {
+      visible: true,
+      silence: t && left > 0 ? { seat: this._targetIndex, name: t.character?.name || "", left } : null,
+    };
   }
 
   // リーチしていない相手が1人でもいれば発動可能。
@@ -34,6 +49,7 @@ export class JaneDoeAbility extends Ability {
     const target = game.players[ti];
     if (!target || target === player || target.riichi) return false;
     target.forcedTsumogiri = FORCED_TURNS;
+    this._targetIndex = ti;
     game.log(`【${player.character.name}】${target.character.name} を${FORCED_TURNS}巡のあいだ強制ツモ切りにした`);
     return true;
   }

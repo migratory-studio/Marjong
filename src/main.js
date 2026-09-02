@@ -4312,6 +4312,7 @@ function beginGame(seated, dealerIndex, opts = {}) {
     // 能力の持続レイヤーは1局ぶんの蓄積（灯の数・歩数）なので局頭で畳んで数え直す。
     resetAbilityAuraState();
     clearAbilityAura();
+    clearFieldAura(); // 場レイヤー（他家の泥）も自席と同じ作法で畳む＝連戦で前局の残りを見せない
     resetLuxWatch();
     resetShioriReview(); // 前の対局の「答え合わせ」が連戦に持ち越されないよう畳む
     mamoriWarned = new Map(); // 真守の警告履歴は1局ぶん
@@ -4741,9 +4742,12 @@ function fireAbility(idx, abilityId, params = {}) {
     online.send({ type: "intent.ability", abilityId, params });
     return;
   }
+  // 天啓ドラ寄せ: めくる前のドラ種を控えておき、増えた1種を演出で見せる（docs §11-2-4 #1）。
+  const doraBefore = abilityId === "dora-pull" ? new Set(game.wall?.doraKinds?.() || []) : null;
   game.activateAbility(idx, abilityId, params);
   showHumanActions();
   render();
+  if (doraBefore) maybePlayDoraRevealFx(doraBefore);
   maybePlayLuckyTsumoFx(); // 「幸運のツモ」発動の瞬間、いまのツモ牌に特別演出
 }
 
@@ -4862,6 +4866,9 @@ function showHumanActions() {
       });
       if (!a.canActivate) btn.disabled = true;
       btn.title = abDesc(a); // 何の能力かをホバーで説明（初見の「これ何？」を解消）
+      // 焔「大物手の焔」は1巡目にしか張れない＝窓が開いているのは今だけ（docs §11-2-1 #4）。
+      // 押せるあいだだけ脈打たせる。窓が閉じれば通常の disabled に戻る＝火が消えた合図。
+      if (a.id === "homura" && a.canActivate) btn.classList.add("ability-window");
       // ゼロ・リサーチが表示中だが発動不可＝生有効牌0（グレーアウト）の合図。
       if (a.id === "zero-search" && a.visible && !a.canActivate) luxGrayHint = true;
       abilityBar.appendChild(btn);
@@ -4967,25 +4974,56 @@ function showJaneDoeTargets(idx) {
   }));
 }
 
-// 大博打（賭羽ルイナ）の賭け金選択バー。持ち点が賭け金を下回る額は選べない。
+// 大博打（賭羽ルイナ）の賭場。素のボタン列ではなく「点棒の束を卓へ押し出す」儀式にする
+// （docs §11-2-2 #1）。賭け金は前払い＝選んだ瞬間に点棒（＝HP）が減るので、選ばせる前に
+// 「払ったあとの手元」を見せる。持ち点が賭け金を下回る額は選べない。
+const KAKEHA_BETS = [{ amount: 5000, mult: "1.5", sticks: 1 }, { amount: 10000, mult: "2", sticks: 2 }];
 function showKakehaBets(idx) {
   clearActions();
-  const bar = el("action-bar");
   const me = game.players[idx];
-  const label = document.createElement("span");
-  label.style.cssText = "align-self:center;color:#f6b352;font-weight:700;margin-right:8px;";
-  label.textContent = "賭け金を選択:";
-  bar.appendChild(label);
-  for (const [amount, mult] of [[5000, "1.5"], [10000, "2"]]) {
-    const btn = mkBtn(`${amount}点（和了${mult}倍）`, "btn-ability", () => fireAbility(idx, "kakeha-bet", { betAmount: amount }));
-    if (me.points < amount) btn.disabled = true;
-    bar.appendChild(btn);
-  }
-  bar.appendChild(mkBtn("キャンセル", "btn-skip", () => {
+  const host = el("kakeha-bet");
+  if (!host) return;
+  const card = (b) => {
+    const afford = me.points >= b.amount;
+    return `<button type="button" class="kb-card${afford ? "" : " out"}" data-bet="${b.amount}"${afford ? "" : " disabled"}>
+      <span class="kb-sticks">${'<span class="kb-stick"></span>'.repeat(b.sticks)}</span>
+      <span class="kb-amount">${b.amount.toLocaleString()}<i>点</i></span>
+      <span class="kb-mult">アガれば ×${b.mult}</span>
+      <span class="kb-after">${afford ? `払えば 手元 ${(me.points - b.amount).toLocaleString()}` : "点棒が足りない"}</span>
+    </button>`;
+  };
+  host.innerHTML = `
+    <div class="kb-head"><span class="kb-tag">大博打</span><span class="kb-hold">手元 <b>${me.points.toLocaleString()}</b></span></div>
+    <div class="kb-cards">${KAKEHA_BETS.map(card).join("")}</div>
+    <div class="kb-foot">
+      <span class="kb-note">賭け金は前払い。アガれなければ戻らない</span>
+      <button type="button" class="kb-cancel">やめる</button>
+    </div>`;
+  host.classList.remove("hidden");
+  const hold = host.querySelector(".kb-hold");
+  const holdNum = host.querySelector(".kb-hold b");
+  host.querySelectorAll(".kb-card").forEach((b) => {
+    const amount = Number(b.dataset.bet);
+    if (me.points < amount) return;
+    // ホバー/フォーカスのあいだだけ手元の数字を「払ったあと」に差し替える＝痛みを先に見せる。
+    const preview = () => { if (holdNum) { holdNum.textContent = (me.points - amount).toLocaleString(); hold?.classList.add("paying"); } };
+    const restore = () => { if (holdNum) { holdNum.textContent = me.points.toLocaleString(); hold?.classList.remove("paying"); } };
+    b.addEventListener("mouseenter", preview);
+    b.addEventListener("focus", preview);
+    b.addEventListener("mouseleave", restore);
+    b.addEventListener("blur", restore);
+    b.addEventListener("click", () => fireAbility(idx, "kakeha-bet", { betAmount: amount }));
+  });
+  host.querySelector(".kb-cancel")?.addEventListener("click", () => {
     kakehaMode = false;
     showHumanActions();
     render();
-  }));
+  });
+}
+// 賭場を畳む（clearActions から毎回＝発動・キャンセル・手番終了のいずれでも閉じる）。
+function hideKakehaBet() {
+  const host = el("kakeha-bet");
+  if (host && !host.classList.contains("hidden")) { host.classList.add("hidden"); host.innerHTML = ""; }
 }
 
 function showCallActions(humanCaller) {
@@ -5220,7 +5258,8 @@ function render() {
   renderer.render();
   updateHpBoard(); // 右側の相棒ボードのHP/手番ハイライトを最新状態に同期
   updateModelAnswerHud(); // 栞 Lv7+/Lv10 の卓上HUD（捲り条件・押し引き）を同期
-  updateAbilityAura();    // 能力の持続レイヤー（姚玖の庭・春嬋の韋駄天…）を同期
+  updateAbilityAura();    // 自席の持続レイヤー（姚玖の庭・春嬋の韋駄天…）を同期
+  updateFieldAura();      // 場の持続レイヤー（他家由来で卓全体に効く能力＝泥中の蓮…）
   updateLuxWatch();       // ルクス「該当なし＝場に出切っている」の告知を監視
 }
 
@@ -5257,13 +5296,20 @@ function showHandResult() {
       const notenNames = r.tenpai.map((t, i) => (t ? null : game.players[i].character.name)).filter(Boolean);
       notenNote = `<div class="win-sub rl-noten-note">ノーテン罰符：${notenNames.join("、") || "なし"} が最大HPの<b>${pct}%</b>ダメージ${charybdis ? "（淵の蒐集 ×3）" : ""}</div>`;
     }
+    // カリュブディスにとって流局は和了そのもの（テンパイ料3倍／流し満貫は役満）。通常の
+    // 流局表示は「誰もアガらなかった」という顔をしているので、彼女が蒐集した局だけ
+    // 名前を与える（docs §14-2-3 #3）。
+    overlay.classList.remove("lotus-bloom"); // 前局の「蓮が咲いた」余韻を流局へ持ち越さない
+    const abyssNote = abyssCollectNoteHtml(r);
     overlay.innerHTML = `
-      <div class="win-card">
+      <div class="win-card${abyssNote ? " abyss" : ""}">
         <h2 class="win-title">流局</h2>
         <div class="win-sub">テンパイ: ${tenpaiNames.join("、") || "なし"}</div>
         ${notenNote}
+        ${abyssNote}
         <div class="win-buttons"></div>
       </div>`;
+    maybeAbyssCollectTalk(r);
     appendNextButton(overlay.querySelector(".win-buttons"), r); // r を渡す（ノーテン罰符の適用に必要）
     return;
   }
@@ -5357,6 +5403,28 @@ function renderDora(winner) {
 
 // Full-bleed cinematic win screen (雀龍門/雀魂風): 上に手牌、左に立ち絵、右に役/
 // ランク/点数、ドラ表示と煌めき。役は1つずつ捲り、最後にランクと点数がドンと出る。
+// 和了点を動かした能力の一行（docs/character-ingame-fx-plan.md §11-3-1）。
+// 文言は abilityMaster の scoreFxLabel（マスタ駆動）。「◯◯——説明」の書式は
+// 前半＝大ラベル／後半＝小さい注記に分ける。ラベルの無い能力は従来の 増加!/減少! に落ちる。
+// {name}＝能力の持ち主（泥中の蓮のような場能力は他家のこともあるので seat で引く）。
+function scoreFxParts(step) {
+  const fallback = step.dir === "up" ? "増加！" : "減少！";
+  const raw = step.abilityId ? abilityDef(step.abilityId).scoreFxLabel?.[step.dir] : null;
+  if (!raw) return { head: fallback, note: "" };
+  const owner = game?.players?.[step.seat]?.character?.name || "";
+  if (raw.includes("{name}") && !owner) return { head: fallback, note: "" };
+  const [head, note = ""] = raw.replace("{name}", owner).split("——");
+  return { head, note };
+}
+
+// scoreFx の一行を描く。show=true は「スキップで最終ステップへ飛ばす」ときの焼き付け。
+function paintScoreFx(fxEl, step, show) {
+  const { head, note } = scoreFxParts(step);
+  fxEl.innerHTML = note ? `${head}<span class="win-score-note">${note}</span>` : head;
+  const long = [...head].length > 7 ? " is-long" : "";
+  fxEl.className = `win-score-fx ${step.dir === "up" ? "up" : "down"}${long}${show ? " show" : ""}`;
+}
+
 function showWinResult(overlay, r) {
   const res = r.result;
   const winner = game.players[r.winner];
@@ -5380,6 +5448,9 @@ function showWinResult(overlay, r) {
   // 本体点（res.total）と、供託・本場込みの実収支（deltas）。違えば括弧で併記。
   const winnerGain = (r.deltas && r.deltas[r.winner]) || res.total;
   const subText = winnerGain && winnerGain !== res.total ? `(${winnerGain})` : "";
+
+  // 泥中の蓮が咲いた局＝安手がいちばん綺麗に見える瞬間（§11-2-3 #4）。花は誰が咲かせても出す。
+  maybeLotusBloomFx(overlay, r, res);
 
   // 能力で和了点が増減したとき: 先に素点を出し、増加!/減少! を挟んで改変後へ動かす。
   const scoreFx = r.scoreFx && r.scoreFx.steps && r.scoreFx.steps.length ? r.scoreFx : null;
@@ -5457,11 +5528,7 @@ function showWinResult(overlay, r) {
       // 飛んでもここで最後のステップを焼き付ける。
       const last = steps[steps.length - 1];
       if (scoreEl && last) scoreEl.innerHTML = `${last.to}<span class="win-pt">点</span>`;
-      if (fxEl && last) {
-        const up = last.dir === "up";
-        fxEl.textContent = up ? "増加！" : "減少！";
-        fxEl.className = `win-score-fx ${up ? "up" : "down"} show`;
-      }
+      if (fxEl && last) paintScoreFx(fxEl, last, true);
       done();
     };
     const stepOne = () => {
@@ -5473,8 +5540,7 @@ function showWinResult(overlay, r) {
         scoreEl.classList.remove("pop"); void scoreEl.offsetWidth; scoreEl.classList.add("pop");
       }
       if (fxEl) {
-        fxEl.textContent = up ? "増加！" : "減少！";
-        fxEl.className = `win-score-fx ${up ? "up" : "down"}`;
+        paintScoreFx(fxEl, s, false);
         void fxEl.offsetWidth; fxEl.classList.add("show");
       }
       audio.playPip?.(up ? 2600 : 360, up ? 0.45 : 0.5);
@@ -5765,6 +5831,67 @@ function showSpeakerText(character, text, { side = "left", duration = 2800 } = {
   }, duration);
 }
 
+// 焔「大物手の焔」を張った局に、満貫へ届きそうにない形で聴牌したときだけ一言（§11-2-1 #2）。
+// 満貫未満で和了ると点数が固定される賭けなので、これは「安手で和了るな」という圧＝押し引きが
+// 変わる。判定は火柱ゲージと同じ燃料の数え方（homuraHeat）を使う＝卓上の絵と言葉が食い違わない。
+const FLAME_WEAK_MAX = 2; // 燃料これ以下＝満貫は遠い
+function maybeFlameWeakTalk() {
+  if (!game || !humanAbilityActive("homura")) return;
+  const me = game.players[humanIndex];
+  if (!me || homuraHeat(me) > FLAME_WEAK_MAX) return;
+  const text = vline(me.character.id, "flameWeak", {});
+  if (text) setTimeout(() => showSelfTalk(text), 1100); // 聴牌の一言と重ねない
+}
+
+// 沼田 蓮「泥中の蓮」が咲いた瞬間＝3ハン以下の安手が泥をすり抜けて実った局（§11-2-3 #4#5）。
+// 本作でいちばん地味な手に、いちばん綺麗な絵を当てる＝派手さの反転。花は誰が咲かせても出し、
+// 言葉は自席のときだけ返す（局中セリフの作法どおり）。
+function maybeLotusBloomFx(overlay, r, res) {
+  if (!overlay) return;
+  overlay.classList.remove("lotus-bloom"); // 前の和了の余韻を持ち越さない（連戦で咲きっぱなしにしない）
+  if (!game || !res || res.isYakuman) return;
+  if ((res.totalHan ?? 0) > 3) return; // 泥の対象外＝蓮が咲く条件（cheapHanMax）と同じ
+  const winner = game.players[r.winner];
+  const hasLotus = (winner?.character?.abilities || []).some((a) => a.abilityId === "muddy-lotus");
+  if (!hasLotus) return;
+  overlay.classList.add("lotus-bloom");
+  if (r.winner !== humanIndex) return;
+  const text = vline(winner.character.id, "lotusBloom", {});
+  if (text) setTimeout(() => showSpeakerText(winner.character, text, { duration: 3200 }), 900);
+}
+
+// ── 賭けの落とし前（docs/character-ingame-fx-plan.md §11-3-3）──────────────
+// ギャンブラーは構造上、半分は外れる。外れた局が無演出だと「点棒を損しただけ」で終わって
+// しまうので、張った局が実らなかったときだけ、次の局の頭でそのキャラの言葉を一度返す。
+// アガった局には何も出さない＝配当は和了画面の一行（abilityMaster.scoreFxLabel）が受け持つ。
+// 文言は characterVoiceMaster の "betLost"（cond.lastHandResult で結末ごとに出し分け）。
+let betLostPending = null; // { charId, result }｜null
+function noteBetOutcome(result) {
+  betLostPending = null;
+  if (!game || result === "agari") return;
+  const me = game.players[humanIndex];
+  if (!me) return;
+  // 何を張っていたかはキャラごとに違う（点棒／火／めくったドラ）。どれか1つでも乗っていれば賭けた局。
+  const staked = (humanAbilityStatus("kakeha-bet")?.pot?.bet || 0) > 0
+    || (humanAbilityStatus("dora-pull")?.dora?.stacked || 0) > 0
+    || humanAbilityActive("homura");
+  if (staked) betLostPending = { charId: me.character.id, result };
+}
+// 局頭で消化する。出したら true（＝通常の局頭セリフは出さない）。
+function fireBetLostTalk() {
+  const pending = betLostPending;
+  betLostPending = null;
+  if (!pending || !game) return false;
+  const me = game.players[humanIndex];
+  if (!me || me.character.id !== pending.charId) return false;
+  // 第三者どうしの決着（自分は無関係に局が終わった）は deriveHandResult が null を返す。
+  // 賭けは流れているので "draw"（＝実らないまま局が流れた）として扱う＝栞の答え合わせと同じ救済。
+  const text = vline(me.character.id, "betLost", { lastHandResult: pending.result || "draw" });
+  if (!text) return false;
+  showSpeakerText(me.character, text, { duration: 3200 });
+  return true;
+}
+
 // ── 卓上の掛け合い ────────────────────────────────────────────────────────
 // 同卓の2人が互いに向けた口上（"tableBanter"）と返し（"tableBanterReply"）をマスタに
 // 持っているとき、東1局に一度だけ一往復を交わす。文言は characterVoiceMaster 側にあり、
@@ -5798,6 +5925,52 @@ function guardDefOfSeat(i) {
     if (def.guardLabel) return def;
   }
   return null;
+}
+// カリュブディスが流局で蒐集した局の一行（誰が蒐集したかは公開情報＝点棒の動き）。
+function abyssCollectSeat(r) {
+  const list = game?.players || [];
+  for (let i = 0; i < list.length; i++) {
+    const has = (list[i].character?.abilities || []).some((a) => a.abilityId === "abyss-collection");
+    if (has && ((r?.deltas && r.deltas[i]) || 0) > 0) return i;
+  }
+  return -1;
+}
+function abyssCollectNoteHtml(r) {
+  // 楼光の館だけは流局の精算が別経路（applyRogueliteNotenPenalty＝最大HPの%ベース）で、
+  // ここで見える deltas（標準エンジンの3000点プール）は捨てられる値。桁も違うので数字を
+  // 出すと嘘になる。楼光は既存の rl-noten-note が「淵の蒐集 ×3」まで説明しているので、
+  // そちらへ一本化する（セリフだけは数字を含まないので出す）。
+  if (pairBattleData?.isRoguelite) return "";
+  const i = abyssCollectSeat(r);
+  if (i < 0) return "";
+  const gain = r.deltas[i];
+  return `<div class="win-sub abyss-collect">淵の蒐集 — ${esc(game.players[i].character.name)} が <b>+${gain}</b> を蒐集した</div>`;
+}
+// 蒐集した局の一言（自席のときだけ＝局中セリフの作法）。彼女にとってこれは勝ち名乗り。
+function maybeAbyssCollectTalk(r) {
+  const i = abyssCollectSeat(r);
+  if (i < 0 || i !== humanIndex) return;
+  const c = game.players[i].character;
+  const text = vline(c.id, "abyssCollect", {});
+  if (text) setTimeout(() => showSpeakerText(c, text, { duration: 3200 }), 700);
+}
+
+// 呪い（暗黒星）側のマスタ引き。守りの鏡像なので同じ形で持つ。
+function curseDefOfSeat(i) {
+  for (const a of game?.players?.[i]?.character?.abilities || []) {
+    const def = abilityDef(a.abilityId);
+    if (def.curseLabel) return def;
+  }
+  return null;
+}
+// 「呪いに呑まれた」説明（呪われた席ごとに1行）。膨らんだ痛みは誰の取り分にもならず消えるので、
+// これが無いと「なぜこの席だけ倍も減っているのか」が分からない（§14-2-1）。
+function curseNotesHtml(r) {
+  return (r?.curses || []).map((c) => {
+    const def = curseDefOfSeat(c.seat);
+    if (!def?.curseNote || !(c.extra > 0)) return "";
+    return `<div class="dmg-blocked-note is-curse">${esc(def.curseNote)}<span>−${c.extra}</span></div>`;
+  }).join("");
 }
 // 「守りに阻まれた」説明（守った席ごとに1行）。守られたぶんは勝者の取り分からも引かれるので、
 // これが無いと「満貫をロンしたのに点が入らない」＝バグに見える（§8-3-2）。個人戦・団体戦・
@@ -5918,6 +6091,10 @@ function showDamageFx(r, onDone) {
   // 出ないので、ここを見て「守り切った席」も演出に出す（docs/character-ingame-fx-plan.md §8-3-1）。
   const guards = r.guards || [];
   const guardOf = (i) => guards.find((g) => g.seat === i) || null;
+  // 呪いで失点が膨らんだ席（暗黒星）。守りの鏡像＝「本来いくらだったか」を先に見せてから、
+  // 呑まれて深くなる（§14-2-1）。倍化ぶんは誰の取り分にもならず消える。
+  const curses = r.curses || [];
+  const curseOf = (i) => curses.find((c) => c.seat === i) || null;
 
   // Winner first, then anyone whose points moved (losers / tsumo payers) — 加えて、
   // 点棒は動かなかったが守り切った席も。守備キャラの見せ場がここにしか無い。
@@ -5940,11 +6117,15 @@ function showDamageFx(r, onDone) {
     // 呑まれて砕け、実際の増減（0 か軽減後）だけが残る。
     const gDef = guard ? guardDefOfSeat(i) : null;
     const gKind = gDef?.guardStyle || "amber";
+    // 呪われた席は守りの鏡像：本来の失点を先に出し、星に呑まれて深い数字へ膨らむ。
+    const curse = !isWin ? curseOf(i) : null;
+    const cDef = curse ? curseDefOfSeat(i) : null;
+    const cKind = cDef?.curseStyle || "star";
     return `
-      <div class="dmg-row ${isWin ? "is-win" : "is-loser"}${busted ? " is-down" : ""}${guard ? " is-guard" : ""}" data-i="${i}" data-before="${before}" data-after="${after}">
+      <div class="dmg-row ${isWin ? "is-win" : "is-loser"}${busted ? " is-down" : ""}${guard ? " is-guard" : ""}${curse ? " is-cursed" : ""}" data-i="${i}" data-before="${before}" data-after="${after}">
         ${face}
         <div class="dmg-info">
-          <div class="dmg-name" style="color:${c.color}">${c.name}${guard ? `<span class="dmg-guard-tag ${gKind}">${esc(gDef?.guardLabel || "守り")}</span>` : ""}</div>
+          <div class="dmg-name" style="color:${c.color}">${c.name}${guard ? `<span class="dmg-guard-tag ${gKind}">${esc(gDef?.guardLabel || "守り")}</span>` : ""}${curse ? `<span class="dmg-curse-tag ${cKind}">${esc(cDef?.curseLabel || "呪い")}</span>` : ""}</div>
           <div class="hpbar">
             <div class="hpfill-base" style="width:${b.basePct}%${b.baseBg ? `;background:${b.baseBg}` : ""}"></div>
             <div class="hpfill-ghost" style="width:${b.fillPct}%"></div>
@@ -5953,6 +6134,7 @@ function showDamageFx(r, onDone) {
         </div>
         <div class="dmg-hp"><span class="dmg-hp-num">${before}</span></div>
         ${guard ? `<div class="dmg-pop guard-raw">${guard.raw}</div><div class="dmg-guard-veil ${gKind}"></div>` : ""}
+        ${curse ? `<div class="dmg-pop curse-raw">${curse.raw}</div><div class="dmg-curse-veil ${cKind}"></div>` : ""}
         <div class="dmg-pop ${isWin ? "heal" : "hit"}${guard ? " guard-kept" : ""}">${delta > 0 ? "+" : ""}${delta}</div>
         ${busted ? `<div class="dmg-down-stamp">撃沈</div>` : ""}
       </div>`;
@@ -5960,7 +6142,7 @@ function showDamageFx(r, onDone) {
 
   // 勝った側への一行：守られたぶんは勝者の取り分からも引かれる（_settle）。説明が無いと
   // 「満貫をロンしたのに点が入らない」＝バグに見える（§8-3-2）。
-  const blockedNote = guardBlockedNotesHtml(r);
+  const blockedNote = guardBlockedNotesHtml(r) + curseNotesHtml(r);
   // 真守「見えていました」：警告した牌が実際に当たり牌だったときだけ、局の終わりに一言。
   const insight = mamoriInsight(r);
   const insightNote = insight
@@ -5987,7 +6169,9 @@ function showDamageFx(r, onDone) {
     spEvent = "agari";
     spCtx = { isYakuman: !!r.result.isYakuman, score: r.result.total };
   } else if (hd < 0) {
-    spEvent = "damage";
+    // 呪いで失点が膨らんだ局は、被弾そのものより「倍になったこと」が事件なので専用の一言に
+    // 差し替える（§14-2-1）。持たないキャラは vline が null を返すので damage に落ちる。
+    spEvent = curseOf(humanIndex) && vline(human.character.id, "curseHit", {}) ? "curseHit" : "damage";
     spCtx = { dmgAmount: Math.abs(hd), hpFrac: human.points / full(humanIndex) };
   }
   if (spEvent) {
@@ -6029,6 +6213,16 @@ function showDamageFx(r, onDone) {
         }, 360);
         setTimeout(() => row.querySelector(".dmg-pop.guard-kept")?.classList.add("show"), 780);
       }
+      // 呪われた席：「本来の失点 → 星に呑まれる → 膨らんだ実失点」＝守りの鏡像（§14-2-1）。
+      // 守りと違って揺れは殺さない（受け止めたのではなく、人の倍だけ深く受けたから）。
+      const cu = curseOf(i);
+      if (cu) {
+        row.querySelector(".dmg-pop.curse-raw")?.classList.add("show");
+        setTimeout(() => {
+          row.classList.add("cursing");
+          audio.playSe(sePath("和太鼓でドドン.mp3"), 0.75);
+        }, 360);
+      }
       const w = a.fillPct + "%";
       const fillEl = row.querySelector(".hpfill");
       fillEl.style.width = w;                                // bar snaps toward new HP
@@ -6042,7 +6236,13 @@ function showDamageFx(r, onDone) {
       const busted = i !== r.winner && after < 0;
       // 守り切った席は揺らさない（受け止めた）。数字も guard-kept 側で出すのでここでは触らない。
       if (i !== r.winner && !busted && !g) row.classList.add("shake");
-      if (!g) row.querySelector(".dmg-pop").classList.add("show");
+      // 呪い行は `.dmg-pop` が2つ（本来の失点＝curse-raw と実失点）あるので明示して取る。
+      // 実失点は「本来の数字を見せてから」遅らせて出す＝膨らんだことが読める。
+      if (!g) {
+        const popEl = row.querySelector(cu ? ".dmg-pop.hit" : ".dmg-pop");
+        if (cu) setTimeout(() => popEl?.classList.add("show"), 720);
+        else popEl?.classList.add("show");
+      }
       tweenNum(row.querySelector(".dmg-hp-num"), before, after, 850);
       // トビ（撃沈）: ゲージが空いた頃を狙ってダウン演出を炸裂させる。
       if (busted) {
@@ -6698,7 +6898,35 @@ function playTileFx(tileId, variant = "") {
 // 「幸運のツモ」（詩玥）発動中の特別ツモ演出（金リング）。
 function playLuckyTsumoFx(tileId) { playTileFx(tileId); }
 
+// 天啓ドラ寄せ（ドラニエル）— めくった瞬間を事件にする（docs §11-2-4 #1）。
+// この能力の諸刃は「暴いたドラが全員に乗る」ことなのに、いまは卓中央の表示牌が1枚
+// 増えるだけで誰も気づけない。めくれた瞬間に卓が光り、**自分の手が新ドラを持っていれば
+// その牌が灯る**ところまでを1つの演出にする（＝場を荒らして自分も潤う、が同時に見える）。
+function maybePlayDoraRevealFx(beforeKinds) {
+  if (!game) return;
+  const added = (game.wall?.doraKinds?.() || []).filter((k) => !beforeKinds.has(k));
+  if (!added.length) return; // めくれていない（四開槓で流局したときなど）
+  playDoraFlash();
+  const set = new Set(added);
+  const me = game.players[humanIndex];
+  for (const t of me?.hand || []) if (set.has(t.kind)) playTileFx(t.id, "fx-dora");
+}
+// 卓中央（ドラ表示牌の高さ）に走る金の閃光。0.6s 以内＝連戦のテンポを殺さない。
+function playDoraFlash() {
+  const wrap = tableWrapEl();
+  const pos = tablePointAt(480, 396); // canvas 座標: 中央パネルの「ドラ表示」段
+  if (!wrap || !pos) return;
+  const fx = document.createElement("div");
+  fx.className = "dora-flash";
+  fx.style.left = `${pos.x}px`;
+  fx.style.top = `${pos.y}px`;
+  wrap.appendChild(fx);
+  setTimeout(() => fx.remove(), 700);
+}
+
 let lastLuckyFxTileId = null;
+let lastFateFxTileId = null; // ルイナ「運命を手繰る」で光らせた直近のツモ牌
+let lastAbyssFxTileId = null; // カリュブディス「呑まれた和了牌」で沈めた直近のツモ牌
 // 自分(人間)のツモ演出をまとめて面倒を見る。発動時＋発動中の各ツモで呼ぶ。
 //   ・詩玥「幸運のツモ」… 発動中は毎ツモ、金のリング（同じツモ牌では二重発火しない）
 //   ・ルクス「ゼロ・リサーチ」… 捕捉した牌を引いた瞬間、山の光点が手牌へ流れ込む
@@ -6708,6 +6936,13 @@ function maybePlayLuckyTsumoFx() {
   const p = game.players[humanIndex];
   if (!p || p.drawnTileId == null) return;
   maybePlayLuxCaptureFx();
+  // ルイナの超越帯「運命を手繰る」（drawBias）＝常時パッシブでツモが寄る。詩玥の金と
+  // 見分けがつくよう紫で出す（同じメカでも、宿っているのは彼女自身の"いい目"だから）。
+  if (humanAbilityStatus("kakeha-bet")?.pot?.fate && p.drawnTileId !== lastFateFxTileId) {
+    lastFateFxTileId = p.drawnTileId;
+    playTileFx(p.drawnTileId, "fx-fate");
+  }
+  maybeAbyssDenyFx(); // カリュブディス: 掴んだ和了牌が呑まれる
   if (!humanAbilityActive("lucky-draw")) return;
   if (p.drawnTileId === lastLuckyFxTileId) return;
   lastLuckyFxTileId = p.drawnTileId;
@@ -6731,9 +6966,20 @@ const auraFx = {
   steps: 0,        // 春嬋: 進んだ歩数（シャンテンが縮んだ回数）
   rush: false,     // 春嬋: 韋駄天バッジ（3歩でテンポがさらに詰まる）
   dolls: -1,       // ビビ: 残っている人形の数（守りの窓。-1=未同期）
+  sunk: -1,        // 沼田蓮: 直近に描いた沈殿＝泥の水位（-1=未同期）
+  heat: -1,        // 焔: 直近に描いた火の勢い（打点の芽。-1=未同期）
+  pot: -1,         // ルイナ: 卓に積んである賭け金（-1=未同期）
+  dora: "",        // ドラニエル: 直近に描いた札束＋崖の状態（""=未同期）
+  silence: "",     // JaneDoe: 縛っている相手と残り巡（""=未同期）
+  abyss: -1,       // カリュブディス: 渦の深さ（山の消化率。-1=未同期）
 };
+// 場の持続レイヤー（卓の上辺）。自席のオーラとは別スロットで、住む場所を分けることで
+// 「自分の能力」と「他家が卓に敷いている場」が同時に立っても潰し合わない（§11-4 案a）。
+const fieldFx = { kind: null };
 function resetAbilityAuraState() {
   auraFx.kind = null; auraFx.seen.clear(); auraFx.lanterns = 0; auraFx.dolls = -1; auraFx.moon = false; auraFx.steps = 0; auraFx.rush = false;
+  auraFx.sunk = -1; auraFx.heat = -1; auraFx.pot = -1; auraFx.dora = ""; auraFx.silence = ""; auraFx.abyss = -1;
+  lastAbyssFxTileId = null;
 }
 // 人間プレイヤーがその能力を発動中か。
 // オンラインはレプリカで能力を回さないので、権威が evt.awaitDiscard で送ってくる
@@ -6773,6 +7019,81 @@ function ensureAuraPanel(kind, html) {
     host.classList.remove("hidden");
   }
   return host.firstElementChild;
+}
+
+// --- 場の持続レイヤー（卓の上辺）--------------------------------------------
+// 自席のオーラ（#ability-aura＝卓の左下）と役割で住み分ける器（§11-4 案a）。ここに出すのは
+// 「他家由来で卓全体に効いている」もの＝発動の瞬間を持たない場能力。自分の能力とは
+// 排他にしない＝両方立つ局（例: 自分が姚玖・他家が沼田蓮）でも、どちらも消えない。
+function clearFieldAura() {
+  const host = el("field-aura");
+  if (host && host.dataset.kind) {
+    host.classList.add("hidden");
+    host.innerHTML = "";
+    delete host.dataset.kind;
+  }
+  tableWrapEl()?.classList.remove("field-mud");
+  fieldFx.kind = null;
+}
+function ensureFieldPanel(kind, html) {
+  const host = el("field-aura");
+  if (!host) return null;
+  if (host.dataset.kind !== kind) {
+    host.dataset.kind = kind;
+    host.innerHTML = html;
+    host.classList.remove("hidden");
+  }
+  return host.firstElementChild;
+}
+// この卓で「泥中の蓮」を敷いている他家（居なければ null）。レプリカは能力インスタンスを
+// 持たないので、humanHasAbility と同じくキャラ定義（character.abilities）で判定する。
+function mudFieldOwner() {
+  const list = game ? game.players || [] : [];
+  for (let i = 0; i < list.length; i++) {
+    if (i === humanIndex) continue;
+    if ((list[i].character?.abilities || []).some((a) => a.abilityId === "muddy-lotus")) return list[i];
+  }
+  return null;
+}
+// 沼田 蓮「泥中の蓮」（他家）— 卓が濁る。常時発動＝発動カットインが無い能力なので、
+// 「なぜか点が減る」を防ぐ最初の一手は"居るだけで卓が沈んでいる"を静かに置くこと。
+// 沈殿の量は他家ぶんが権威から送られてこない（§7 ルール3）ので出さない＝濁りと一行だけ。
+function mudFieldPanel(owner) {
+  return {
+    key: "mud",
+    html: `<div class="aura-panel aura-mud">
+      <span class="aura-title">泥中の蓮</span>
+      <span class="aura-note">${esc(owner.character?.name || "")}——この卓のアガリは、沈む</span>
+    </div>`,
+  };
+}
+// JaneDoe「沈黙の処方箋」に縛られている側（自分）— なぜ打牌が選べないのかを卓に出す
+// （docs §14-2-2）。いまは engine が黙ってツモ切りするだけで、理由がどこにも出ていない。
+// 「…」の数＝残り巡＝彼女の無言そのもの。
+function silencedPanel() {
+  const left = Math.max(0, game?.players?.[humanIndex]?.forcedTsumogiri || 0);
+  if (left <= 0) return null;
+  return {
+    key: `silenced${left}`,
+    html: `<div class="aura-panel aura-silenced">
+      <span class="aura-title">沈黙の処方箋</span>
+      <span class="sil-dots">${'<span class="sil-dot"></span>'.repeat(left)}</span>
+      <span class="aura-note">あと${left}巡、打牌は選べない</span>
+    </div>`,
+  };
+}
+// 場の能力に合わせて卓の上辺を同期する（render から毎回）。他家由来のものだけがここに住む。
+// 同時に2枚まで（§11-4 の調停表）。増やすときはその表を先に更新すること。
+function updateFieldAura() {
+  const owner = game ? mudFieldOwner() : null;
+  const parts = [];
+  if (owner) parts.push(mudFieldPanel(owner));
+  const sil = game ? silencedPanel() : null;
+  if (sil) parts.push(sil);
+  if (!parts.length) { clearFieldAura(); return; }
+  ensureFieldPanel(parts.map((p) => p.key).join("+"), parts.map((p) => p.html).join(""));
+  fieldFx.kind = parts.map((p) => p.key).join("+");
+  tableWrapEl()?.classList.toggle("field-mud", !!owner);
 }
 
 // 手牌＋副露にある么九牌を「出会った種類」として庭に積む（灯は切っても消えない）。
@@ -6887,6 +7208,212 @@ function syncDollAura() {
   panel.classList.toggle("last", left > 0 && left <= 2); // 残りわずかは色で警告
 }
 
+// 沼田 蓮「泥中の蓮」（自席）— 泥の水位＝沈殿。泥が沈めた点は消えたのではなく卓の底に
+// 溜まっていて、安手が咲くとき（超越帯）に吸い上げられる。「格好悪く泥臭く勝つ」美学と、
+// 沈殿というメカが一致する唯一の場所なので、溜まっていく様子そのものを報酬にする。
+// 水位が満ちる沈殿量の目安。楼光の館は独自HPスケール（stats.startingPoints を run の
+// HP上限で差し替えて卓に着く）なので、固定値だとゲージがほぼ空のままになる。開始持ち点
+// からの相対で決めて、どのモードでも「溜まっていく」体感が揃うようにする。
+const mudFullOf = (p) => Math.max(1000, Math.round((p?.character?.stats?.startingPoints || 16000) * 0.75));
+function syncLotusAura() {
+  const panel = ensureAuraPanel("lotus", `
+    <div class="aura-panel aura-lotus">
+      <div class="aura-title">泥中の蓮</div>
+      <div class="mud-gauge"><span class="mud-water"></span><span class="mud-bloom"></span></div>
+      <div class="aura-note">沈殿 <b>0</b></div>
+    </div>`);
+  if (!panel) return;
+  auraFx.kind = "lotus";
+  const sunk = Math.max(0, humanAbilityStatus("muddy-lotus")?.mud?.sunk ?? 0);
+  if (sunk === auraFx.sunk) return;
+  const water = panel.querySelector(".mud-water");
+  if (water) water.style.height = `${Math.min(100, Math.round((sunk / mudFullOf(game.players[humanIndex])) * 100))}%`;
+  const note = panel.querySelector(".aura-note b");
+  if (note) note.textContent = sunk.toLocaleString();
+  // 水位が引く＝沈殿を吸い上げた＝蓮が咲いた瞬間。上がるときは静かに、引くときだけ咲かせる。
+  if (auraFx.sunk > 0 && sunk < auraFx.sunk) {
+    panel.classList.add("bloom");
+    setTimeout(() => panel.classList.remove("bloom"), 900);
+  }
+  panel.classList.toggle("has-mud", sunk > 0);
+  auraFx.sunk = sunk;
+}
+
+// 焔「大物手の焔」— 発動局のあいだ、手の"燃料"を炎の高さで見せる。満貫以上なら1.5倍・
+// 未満なら点数固定という賭けなので、「この手はいま燃えているか」がそのまま押し引きの
+// 判断材料になる。厳密な打点計算はしない（役の有無まで断定すると嘘になるし、点数を
+// そのまま出すのは §11-1 の禁じ手）。ドラ・赤・北抜き・リーチ・テンパイという燃料を
+// 数えて高さに翻訳する＝「この手は燃えるか」という彼の視界を貸す。
+const HOMURA_FUEL_MAX = 5; // 満貫（5翻）を火柱の満位に見立てる
+const HOMURA_WORDS = ["くすぶり", "細い火", "灯る", "育つ", "燃える", "火柱"];
+function homuraHeat(p) {
+  if (!p || !game) return 0;
+  let fuel = 0;
+  const doraKinds = new Set(game.wall?.doraKinds?.() ?? []);
+  const tiles = [...(p.hand || []), ...(p.melds || []).flatMap((m) => m.tiles || [])];
+  for (const t of tiles) if (t && (t.red || doraKinds.has(t.kind))) fuel++;
+  fuel += (p.kita || []).length; // 北抜きは1枚＝ドラ1
+  if (p.riichi) fuel++;
+  if (shanten(p.counts(), p.numMeldSets()) <= 0) fuel++; // テンパイ＝あと一歩
+  return Math.min(HOMURA_FUEL_MAX, fuel);
+}
+function syncFlameAura(p) {
+  const panel = ensureAuraPanel("homura", `
+    <div class="aura-panel aura-flame">
+      <div class="aura-title">大物手の焔</div>
+      <div class="flame-pit"><span class="flame-body"></span></div>
+      <div class="aura-note">火の勢い <b>—</b></div>
+    </div>`);
+  if (!panel) return;
+  auraFx.kind = "homura";
+  const heat = homuraHeat(p);
+  if (heat === auraFx.heat) return;
+  const body = panel.querySelector(".flame-body");
+  if (body) body.style.height = `${20 + heat * 16}%`;
+  const note = panel.querySelector(".aura-note b");
+  if (note) note.textContent = HOMURA_WORDS[heat] || HOMURA_WORDS[0];
+  // 満位に届いた瞬間だけ一度あおる（届いてからは静かに燃え続ける＝連戦のテンポを殺さない）。
+  if (heat >= HOMURA_FUEL_MAX && auraFx.heat < HOMURA_FUEL_MAX) {
+    panel.classList.add("flare");
+    setTimeout(() => panel.classList.remove("flare"), 700);
+  }
+  panel.classList.toggle("blaze", heat >= HOMURA_FUEL_MAX);
+  auraFx.heat = heat;
+}
+
+// 賭羽ルイナ「大博打」— 前払いした賭け金を、局が終わるまで卓に置いておく（docs §11-2-2 #2）。
+// 賭けは「払った瞬間から結末まで見えている」べきもの。アガれば配当（和了画面の一行が受ける）、
+// 流れれば灰になる＝外した局にも必ず結末の絵がつく＝損しただけの局にしない。
+function syncPotAura() {
+  const panel = ensureAuraPanel("kakeha", `
+    <div class="aura-panel aura-pot">
+      <div class="aura-title">大博打</div>
+      <div class="pot-stack"></div>
+      <div class="aura-note">賭け金 <b>0</b></div>
+    </div>`);
+  if (!panel) return;
+  auraFx.kind = "kakeha";
+  // 局が終わって自分が和了れなかった＝賭け金は戻らない。灰にして結末を見せる。
+  const r = game.lastResult;
+  panel.classList.toggle("ash", game.phase === Phase.HAND_OVER && !!r && r.winner !== humanIndex);
+  const bet = humanAbilityStatus("kakeha-bet")?.pot?.bet || 0;
+  if (bet === auraFx.pot) return;
+  const stack = panel.querySelector(".pot-stack");
+  if (stack) {
+    stack.innerHTML = '<span class="pot-stick"></span>'.repeat(Math.max(0, Math.round(bet / 5000)));
+    stack.classList.add("just");
+    setTimeout(() => stack.classList.remove("just"), 700);
+  }
+  const note = panel.querySelector(".aura-note b");
+  if (note) note.textContent = bet.toLocaleString();
+  auraFx.pot = bet;
+}
+
+// ドラニエル「天啓ドラ寄せ」— 積み上げた確定ドラの札束と、四開槓の崖（docs §11-2-4 #2#3#4）。
+// 崖は能力の諸刃そのものなのに、いまは「ボタンが黙って押せなくなる」だけで伝わらない。
+// 札束は発動していない局も出す＝崖の監視そのものが彼女の卓上の役割だから。
+function syncDoraAura() {
+  const panel = ensureAuraPanel("dora", `
+    <div class="aura-panel aura-dora">
+      <div class="aura-title">天啓ドラ寄せ</div>
+      <div class="dora-stack"></div>
+      <div class="aura-note">確定ドラ <b>0</b><span class="dora-cliff"></span></div>
+    </div>`);
+  if (!panel) return;
+  auraFx.kind = "dora";
+  const d = humanAbilityStatus("dora-pull")?.dora || null;
+  const stacked = d?.stacked || 0;
+  const stand = d?.lastStand || 0;
+  const left = Math.max(0, 5 - (d?.revealed ?? 1)); // あと何枚めくれば四開槓の域か
+  const key = `${stacked}/${stand}/${left}/${d?.blocked ? 1 : 0}`;
+  panel.classList.toggle("cliff", !!d?.blocked || left <= 1);
+  panel.classList.toggle("laststand", stand > 0);
+  if (key === auraFx.dora) return;
+  const stack = panel.querySelector(".dora-stack");
+  if (stack) {
+    stack.innerHTML = '<span class="dora-card"></span>'.repeat(stacked + stand);
+    if (stacked + stand > 0) {
+      stack.classList.add("just");
+      setTimeout(() => stack.classList.remove("just"), 700);
+    }
+  }
+  const note = panel.querySelector(".aura-note b");
+  if (note) note.textContent = String(stacked + stand);
+  const cliff = panel.querySelector(".dora-cliff");
+  if (cliff) {
+    cliff.textContent = d?.blocked ? "／これ以上めくれば場が流れる"
+      : left <= 2 ? `／あと${left}枚で場が流れる`
+      : stand > 0 ? "／背水の天啓" : "";
+  }
+  auraFx.dora = key;
+}
+
+// JaneDoe「沈黙の処方箋」を自分が使っている側（docs §14-2-2）。奪った時間が減っていく様子を
+// 「…」の数で見せる＝完全無言の彼女にとって、点の数そのものが言葉になる。
+function syncSilenceAura() {
+  const sil = humanAbilityStatus("jane-doe")?.silence || null;
+  const left = sil?.left || 0;
+  const panel = ensureAuraPanel("janedoe", `
+    <div class="aura-panel aura-silence">
+      <div class="aura-title">沈黙の処方箋</div>
+      <div class="sil-dots"></div>
+      <div class="aura-note">…</div>
+    </div>`);
+  if (!panel) return;
+  auraFx.kind = "janedoe";
+  const key = `${sil?.seat ?? -1}/${left}`;
+  if (key === auraFx.silence) return;
+  const dots = panel.querySelector(".sil-dots");
+  if (dots) dots.innerHTML = '<span class="sil-dot"></span>'.repeat(left);
+  const note = panel.querySelector(".aura-note");
+  if (note) note.textContent = left > 0 ? `${sil.name}　あと${left}巡` : "…………";
+  panel.classList.toggle("done", left <= 0);
+  auraFx.silence = key;
+}
+
+// カリュブディス「淵の蒐集」— 渦が満ちるほど、彼女の和了が近づく（docs §14-2-3）。
+// 彼女だけは和了れない代わりに流局で蒐集する＝「山が減る」が他の誰とも違う意味を持つ。
+// 卓の残り牌をそのまま数字で出すのではなく、渦の深さに翻訳する＝彼女の視界を貸す。
+function syncAbyssAura() {
+  const panel = ensureAuraPanel("abyss", `
+    <div class="aura-panel aura-abyss">
+      <div class="aura-title">淵の蒐集</div>
+      <div class="abyss-ring"><span class="abyss-core"></span></div>
+      <div class="aura-note">和了は、呑まれる</div>
+    </div>`);
+  if (!panel) return;
+  auraFx.kind = "abyss";
+  const ab = humanAbilityStatus("abyss-collection")?.abyss || null;
+  const live = ab?.live ?? 0;
+  const total = ab?.total || 1;
+  const depth = Math.max(0, Math.min(100, Math.round((1 - live / total) * 100))); // 山が減るほど深い
+  if (depth === auraFx.abyss) return;
+  const ring = panel.querySelector(".abyss-ring");
+  if (ring) ring.style.setProperty("--depth", `${depth}%`);
+  const note = panel.querySelector(".aura-note");
+  if (note) note.textContent = live <= 8 ? `淵は、もうすぐ満ちる（残り${live}）` : "和了は、呑まれる";
+  panel.classList.toggle("near", live <= 8);
+  auraFx.abyss = depth;
+}
+
+// アガれたはずの牌が呑まれた瞬間（§14-2-3）。彼女だけは和了を禁じられているので、
+// 待ち牌を掴んでも何も起きない——その「何も起きなさ」を一度だけ絵にする。
+function maybeAbyssDenyFx() {
+  if (!game || !humanHasAbility("abyss-collection")) return;
+  const p = game.players[humanIndex];
+  if (!p || p.drawnTileId == null || p.drawnTileId === lastAbyssFxTileId) return;
+  const drawn = (p.hand || []).find((t) => t.id === p.drawnTileId);
+  if (!drawn) return;
+  const counts = p.counts();
+  counts[drawn.kind]--; // 引く前の13枚に戻して待ちを見る
+  const w = waits(counts, p.numMeldSets());
+  if (!w.includes(drawn.kind)) return;
+  lastAbyssFxTileId = p.drawnTileId;
+  playTileFx(drawn.id, "fx-abyss");
+  const line = vline(p.character.id, "abyssDeny", {});
+  if (line) setTimeout(() => showSelfTalk(line), 500);
+}
+
 // 発動中の能力に合わせて持続レイヤーを同期する（render から毎回呼ぶ）。
 // 新しいキャラの持続演出を足すときは、ここに1行と sync 関数を1本。
 function updateAbilityAura() {
@@ -6897,6 +7424,17 @@ function updateAbilityAura() {
   if (humanAbilityActive("rootou") || auraFx.kind === "yaochu") { syncGardenAura(p); return; }
   if (humanAbilityActive("chunchan") || auraFx.kind === "chunchan") { syncSprintAura(); return; }
   if (humanAbilityActive("bibi") || auraFx.kind === "bibi") { syncDollAura(); return; }
+  if (humanAbilityActive("homura") || auraFx.kind === "homura") { syncFlameAura(p); return; }
+  // ルイナは「賭けた局だけ」ポットが立つ（賭けていない局は何も出さない）。
+  if (auraFx.kind === "kakeha" || (humanHasAbility("kakeha-bet") && (humanAbilityStatus("kakeha-bet")?.pot?.bet || 0) > 0)) { syncPotAura(); return; }
+  // ドラニエルは常時（未発動の局も四開槓の崖を見張るのが彼女の卓上の役割）。
+  if (humanHasAbility("dora-pull")) { syncDoraAura(); return; }
+  // JaneDoe は縛っている局だけ（縛られている側の表示は場レイヤー＝他家由来なので別枠）。
+  if (auraFx.kind === "janedoe" || humanAbilityStatus("jane-doe")?.silence) { syncSilenceAura(); return; }
+  // カリュブディスは常時（山が減ること自体が彼女の進捗＝渦の深さ）。
+  if (humanHasAbility("abyss-collection")) { syncAbyssAura(); return; }
+  // 泥中の蓮は常時発動＝「発動した局だけ」ではないので、持っていれば局中ずっと出す。
+  if (humanHasAbility("muddy-lotus")) { syncLotusAura(); return; }
   clearAbilityAura();
 }
 
@@ -7901,6 +8439,7 @@ function updateSelfAbilities() {
 }
 function clearActions() {
   hideLuxScan(); // ルクスの走査計器は手番UIの再描画のたびに畳む（出すのは showLuxCandidates）
+  hideKakehaBet(); // ルイナの賭場も同じ（出すのは showKakehaBets）
   el("action-bar").innerHTML = "";
   const ab = el("ability-bar");
   if (ab) ab.innerHTML = ""; // ability controls live in the side panel now
@@ -8855,17 +9394,20 @@ function setupMatchTalk(g) {
   tableBanterDone = false;   // 卓上の掛け合いは1対局に1回（東1局で消化）
   meterPrev.clear();         // 盾など常時メーターの増減演出は対局ごとに取り直す
   shioriMiss = null;         // 栞の「答え合わせ」は対局ごとに取り直す
+  betLostPending = null;     // 賭けの落とし前も対局をまたいで持ち越さない
   resetShioriReview();       // 予約済みの表示・開きっぱなしのモーダルも対局開始で解除
 
   // 「前の局」の結果を人間視点で記録（次局以降の相槌が ctx.lastHandResult で参照）。
-  g.bus.on(Events.HAND_WON, (r) => { lastHandResult = deriveHandResult(r); noteShioriResult(lastHandResult); });
-  g.bus.on(Events.HAND_DRAWN, () => { lastHandResult = "draw"; noteShioriResult("draw"); });
+  g.bus.on(Events.HAND_WON, (r) => { lastHandResult = deriveHandResult(r); noteShioriResult(lastHandResult); noteBetOutcome(lastHandResult); });
+  g.bus.on(Events.HAND_DRAWN, () => { lastHandResult = "draw"; noteShioriResult("draw"); noteBetOutcome("draw"); });
 
   // 局のはじまり：配牌直後に一言（シャッフルSEと被らないよう少し遅らせる）。
   g.bus.on(Events.HAND_STARTED, () => {
     resetMatchTalk();
     matchTalk.prevShanten = humanShanten(); // 配牌時のシャンテンを基準に
-    setTimeout(() => fireSelfTalk("handStart", { force: true }), 1200);
+    // 前局で張った賭けが実らなかったなら、局頭の一言をその落とし前に差し替える
+    // （§11-3-3。和了画面と重ねず、次の局で一度だけ引きずる＝外した局にも結末をつける）。
+    setTimeout(() => { if (!fireBetLostTalk()) fireSelfTalk("handStart", { force: true }); }, 1200);
     // ペア戦: 相方が局頭に声をかける（自分のひと言と被らないよう少しずらす）。
     setTimeout(() => firePartnerTalk("allyHandStart"), 2200);
     maybeTableBanter(); // 掛け合いが成立するペア（姚玖×春嬋など）が同卓なら一度だけ
@@ -8890,6 +9432,7 @@ function setupMatchTalk(g) {
       matchTalk.wasTenpai = true;
       fireSelfTalk("tenpai", { force: true });
       if (humanAbilityActive("chunchan")) playSprintFlash(); // 春嬋: 走り切った一閃「——間に合った」
+      maybeFlameWeakTalk(); // 焔: 火が細いまま聴牌したら「このままでは燃えない」
       setTimeout(() => firePartnerTalk("allyTenpai"), 900);
     }
     else if (matchTalk.wasTenpai && sh > 0) { matchTalk.wasTenpai = false; fireSelfTalk("tenpaiDrop", { force: true }); }

@@ -24,6 +24,19 @@ const DRAW_MULT = 3;
 export class CharybdisAbility extends Ability {
   constructor() {
     super(abilityDef("abyss-collection"));
+    this._startLive = 0; // 局頭（配牌後）の山の残り＝渦の深さの分母
+  }
+
+  // 卓上の演出へ渡す状態（docs §14-2-3）。彼女にとっては流局が和了なので、山が減るほど
+  // 「勝利が近づく」＝渦が強まる。tenpai は受け取る資格（テンパイ料）が今あるかどうか。
+  // 分母は「配牌が終わった時点の残り牌」＝局が始まった瞬間を渦の深さ0にする。
+  // 山の総数（王牌込み）を分母にすると、開始直後から4割沈んで見えてしまう。
+  [Hooks.ON_HAND_START](_ctx, api) {
+    this._startLive = api?.state?.wall?.liveRemaining ?? 0;
+  }
+  uiState(api) {
+    const live = api?.state?.wall?.liveRemaining ?? 0;
+    return { visible: true, abyss: { live, total: this._startLive || live || 1 } };
   }
 
   // 和了を禁止（常時）。ロン・ツモのどちらでも false を返す。

@@ -296,6 +296,17 @@ export class Game {
         status: ui ? ui.status ?? null : null,
         // 演出用の任意フィールド（ゼロ・リサーチの計器UIが読む走査レポート／誤差の一打か）。
         scan: ui ? ui.scan ?? null : null,
+        // 泥中の蓮の沈殿（泥が沈めた点数の累計）。meter とは別に持つ＝常設バッジの
+        // 増減アニメ（meter-break/mend）を沈殿の上下で誤発火させないため。
+        mud: ui ? ui.mud ?? null : null,
+        // 大博打のポット（前払いした賭け金と倍率／超越帯のツモ偏重が働いているか）。
+        pot: ui ? ui.pot ?? null : null,
+        // 天啓ドラ寄せ（確定ドラの枚数・場のドラ表示枚数・四開槓の崖・背水の上乗せ）。
+        dora: ui ? ui.dora ?? null : null,
+        // 沈黙の処方箋（いま縛っている相手と残り巡）。
+        silence: ui ? ui.silence ?? null : null,
+        // 淵の蒐集（山の残り＝流局＝彼女の和了までの距離）。
+        abyss: ui ? ui.abyss ?? null : null,
         isFallback: ui ? !!ui.isFallback : false,
       };
     });
@@ -883,11 +894,18 @@ export class Game {
     // これが無いと守り切った席は deltas=0 になり、被ダメ演出から丸ごと消えてしまう
     // （docs/character-ingame-fx-plan.md §8-0）。点棒の動きは全員に見える公開情報なので
     // そのまま lastResult に載せてオンラインへも配信する。
+    // 呪い（暗黒星）は守りの鏡像＝本来より深く失う。増えた痛みは誰の取り分にもならず消える
+    // ので、演出で「本来いくらだったか」を見せないと、ただ数字が大きいだけの被弾になる
+    // （docs/character-ingame-fx-plan.md §14-2-1）。guards と同じく公開情報として載せる。
     this._lastGuards = [];
+    this._lastCurses = [];
     for (let i = 0; i < N; i++) {
       const raw = rawDeltas[i] || 0;
-      if (raw < 0 && adjusted[i] > raw) {
+      if (raw >= 0) continue;
+      if (adjusted[i] > raw) {
         this._lastGuards.push({ seat: i, raw, adjusted: adjusted[i], blocked: adjusted[i] - raw });
+      } else if (adjusted[i] < raw) {
+        this._lastCurses.push({ seat: i, raw, adjusted: adjusted[i], extra: raw - adjusted[i] });
       }
     }
     const wi = meta && meta.winnerIndex;
@@ -906,8 +924,13 @@ export class Game {
     // 支払者で吸収して厳密にゼロサム）。失点を増やす方向（ネビュラ等）は余剰にならない
     // ので対象外（従来どおりHPロストとして消える）。
     if (meta?.reason === "draw") {
+      // ★「増えた方向」だけを数える（ron/tsumo 側の blocked と同じ考え方）。単純な
+      //   Σadjusted で余剰を測ると、同じ局にネビュラの呪い（失点が深くなる＝負の増分）が
+      //   あったとき、消えるはずの呪いぶんが余剰と相殺され、他の支払い側の負担が軽くなって
+      //   しまう（カリュブディス＋ネビュラ同卓の流局で発覚）。呪いは max(0, …) で 0 に落ち、
+      //   従来どおり誰の取り分にもならず消える。
       let surplus = 0;
-      for (let i = 0; i < N; i++) surplus += adjusted[i];
+      for (let i = 0; i < N; i++) surplus += Math.max(0, adjusted[i] - (rawDeltas[i] || 0));
       const payTotal = rawDeltas.reduce((s, r) => s + (r < 0 ? -r : 0), 0);
       if (surplus > 0 && payTotal > 0) {
         const payers = [];
@@ -988,6 +1011,7 @@ export class Game {
       // 守りで失点が軽減された席（[{ seat, raw, adjusted, blocked }]）。守り切った席を
       // 被ダメ演出に出し、勝者側に「奪えなかった」を伝えるための材料。
       guards: this._lastGuards || [],
+      curses: this._lastCurses || [],
       // 能力で和了点が増減したとき、和了画面で「素点 → 増加!/減少! → 改変後」を出す材料。
       // 変化が無ければ null（演出も出さない）。オンラインのレプリカ側は未設定＝演出なし。
       scoreFx: scoreFx && scoreFx.steps && scoreFx.steps.length
@@ -1031,6 +1055,7 @@ export class Game {
       // 現状の守り（琥珀の盾・身代わり人形）はロン/ツモ限定なので流局では空になるが、
       // 将来 draw 系に反応する守りが増えたときに黙って抜け落ちないよう、ここでも載せる。
       guards: this._lastGuards || [],
+      curses: this._lastCurses || [],
     };
     this.bus.emit(Events.HAND_DRAWN, this.lastResult);
     this.log("流局");
@@ -1095,6 +1120,7 @@ export class Game {
       nagashi: true,
       deltas: this.players.map((p, i) => p.points - before[i]),
       guards: this._lastGuards || [],
+      curses: this._lastCurses || [],
     };
     this.bus.emit(Events.HAND_WON, this.lastResult);
     this.log("流し満貫");

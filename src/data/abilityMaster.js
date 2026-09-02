@@ -112,6 +112,12 @@ export const ABILITY_MASTER = {
     chargeScope: "hand",
     maxCharges: Infinity,
     cooldown: 0,
+    scoreFxLabel: { down: "暗黒星——掴む喜びは、半分" },
+    // 呪い（失点が倍化する側）の表示。守り（guardLabel）の鏡像で、被ダメ演出が
+    // 「本来の失点 → 呑まれて膨らむ → 実失点」を見せるのに使う（§14-2-1）。
+    curseLabel: "暗黒星",
+    curseStyle: "star",
+    curseNote: "暗黒星に呑まれた——痛みは、人の倍",
   },
   "dora-pull": {
     name: "天啓ドラ寄せ",
@@ -122,6 +128,7 @@ export const ABILITY_MASTER = {
     maxCharges: 2,
     cooldown: 0,
     enemyNote: "新ドラがめくられた——打点は全員に乗る",
+    scoreFxLabel: { up: "天啓——暴いたドラが、手に乗る" },
   },
   "homura": {
     name: "大物手の焔",
@@ -132,6 +139,7 @@ export const ABILITY_MASTER = {
     maxCharges: 2,
     cooldown: 0,
     enemyNote: "この局の{name}は、満貫以上なら1.5倍",
+    scoreFxLabel: { up: "焔が舐めた——大物手が燃え上がる", down: "火が萎んだ——安手に焔は宿らない" },
   },
   "jane-doe": {
     name: "沈黙の処方箋",
@@ -152,6 +160,7 @@ export const ABILITY_MASTER = {
     maxCharges: 2,
     cooldown: 0,
     enemyNote: "{name}が点棒を賭けた——この局のアガりが膨らむ",
+    scoreFxLabel: { up: "配当——賭けた点棒が、返ってくる" },
   },
   "muddy-lotus": {
     name: "泥中の蓮",
@@ -161,6 +170,8 @@ export const ABILITY_MASTER = {
     chargeScope: "hand",
     maxCharges: Infinity,
     cooldown: 0,
+    // 場能力（MODIFY_SCORE_GLOBAL）なので、沈めたのが他家のときは {name} で誰の泥かを示す。
+    scoreFxLabel: { down: "{name}の泥に沈んだ", up: "泥中に咲いた——安手だけが、泥をすり抜ける" },
   },
   "abyss-collection": {
     name: "淵の蒐集",
@@ -183,6 +194,8 @@ export const ABILITY_MASTER = {
     guardStyle: "doll",
     guardNote: "身代わりに阻まれた——点棒は誰のものにもならない",
     enemyNote: "6打牌のあいだ、{name}から点棒は奪えない",
+    // 超越帯（Lv6+）＝相棒・焔の火が宿り、満貫以上の和了が伸びる。
+    scoreFxLabel: { up: "焔の火が宿る——人形が、攻めに転じる" },
   },
   "amber-shield": {
     name: "琥珀の盾",
@@ -202,9 +215,11 @@ export const ABILITY_MASTER = {
 export function abilityDef(id) {
   const def = ABILITY_MASTER[id];
   if (!def) {
+    // 表示系フィールドも既定値で揃える（呼び出し側が未知IDで undefined を踏まないように）。
     return {
       id, name: id, desc: "", blurb: id,
       activation: "passive", chargeScope: "hand", maxCharges: Infinity, cooldown: 0,
+      enemyNote: "", guardLabel: "", guardNote: "", guardStyle: "amber", scoreFxLabel: null,
     };
   }
   return {
@@ -228,5 +243,17 @@ export function abilityDef(id) {
     //   guardStyle … 守りの見た目（"amber"=琥珀が固まる / "doll"=人形が砕ける）。
     //                新しい守りキャラを足すときはここで見た目を選ぶ（UI側の id 決め打ちを避ける）。
     guardStyle: def.guardStyle ?? "amber",
+    // 失点が増える側（呪い）の表示。guard* の鏡像で、被ダメ演出の「呪われた席」で使う。
+    //   curseLabel … その呪いの名前（暗黒星）
+    //   curseNote  … 局の結果に添える一文（本来いくらだったのかを示す）
+    //   curseStyle … 見た目（"star"=星が砕ける）
+    curseLabel: def.curseLabel ?? "",
+    curseNote: def.curseNote ?? "",
+    curseStyle: def.curseStyle ?? "star",
+    // 和了点を増減させる能力の表示（和了画面の「素点 → 改変後」演出で出す一行）。
+    //   { up: 増えたときの一行, down: 減ったときの一行 }。{name}=能力の持ち主。
+    // 無い能力は汎用の「増加！／減少！」にフォールバックする。倍率の数字は出さない
+    // （§11-1 の禁じ手＝賭けの体感にならない）。
+    scoreFxLabel: def.scoreFxLabel ?? null,
   };
 }

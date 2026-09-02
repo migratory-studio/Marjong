@@ -38,14 +38,21 @@ export class KakehaBetAbility extends Ability {
   constructor(params = {}) {
     super({ ...abilityDef("kakeha-bet"), ...params });
     this._mult = 1; // この局に賭けた倍率（未発動なら1）
+    this._bet = 0;  // この局に前払いした賭け金（卓上のポット表示に使う）
     // 超越帯のツモ偏重（運命を手繰る）。drawBias=false の基準帯では働かない。
     this.drawBias = params.drawBias ?? false;
     this.lookaheadDepth = params.lookaheadDepth ?? 8;
     this.doraPreference = params.doraPreference ?? false;
   }
 
-  resetForHand() { super.resetForHand(); this._mult = 1; }
-  resetForGame() { super.resetForGame(); this._mult = 1; }
+  resetForHand() { super.resetForHand(); this._mult = 1; this._bet = 0; }
+  resetForGame() { super.resetForGame(); this._mult = 1; this._bet = 0; }
+
+  // 卓上の演出へ渡す状態。bet＝いま卓に積んである賭け金（ポット）／fate＝超越帯の
+  // 「運命を手繰る」が働いているか（ツモ演出を出すかの判定に使う）。
+  uiState(_api) {
+    return { visible: true, pot: { bet: this._bet, mult: this._mult, fate: !!this.drawBias } };
+  }
 
   // 1巡目（まだ打牌していない＝河が空）かつ、最低額の5000点を払えるHPがあるときだけ。
   // 具体的な賭け金額（5000/10000）が払えるかは apply で最終確認する。
@@ -62,6 +69,7 @@ export class KakehaBetAbility extends Ability {
     if (player.points < bet) return false;
     player.points -= bet;
     this._mult = mult;
+    this._bet = bet;
     game.log(`【${player.character.name}】${bet}点を賭けた（この局アガれば和了点${mult}倍）`);
     return true;
   }
