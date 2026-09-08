@@ -89,6 +89,9 @@ import { paramsFromLv, PARAM_KEYS } from "./autobattle/autoBattle.js";
 import { pickMentorBigMatchLine, pickMentorBattleQuip } from "./data/mentorVoiceMaster.js";
 import { isDebugMode } from "./app/debug.js";
 import { applyMatchToCompanion, addCompanionBondExp, detectPlayStyle, topPlayStyle } from "./progression/companionBond.js";
+import { versionLabel, buildEnvReport } from "./config/appInfo.js";
+import { showSupportModal, showResetConfirm } from "./screens/supportModal.js";
+import { initErrorGuard } from "./app/errorGuard.js";
 
 const CPU_DELAY = 650; // ms between CPU actions (visualisation)
 // 春嬋「韋駄天の中張」発動中は場の見せ待ちそのものを詰める（韋駄天バッジ点灯でさらに速く）。
@@ -3434,6 +3437,8 @@ async function openMentorSub(target, payload) {
 function navigate(target) {
   if (target === "mentor") { openMentorMode(); return; }
   if (target === "online") { enterOnline(); return; } // 通信対戦はログイン+名前ゲートを通す
+  // 楼光は画面を出すだけでは中身が描かれない（記憶の一覧・中断ランの再開は openRoguelite が組む）。
+  if (target === "roguelite") { openRoguelite(); return; }
   const id = NAV_TARGETS[target];
   if (!id) return;
   if (target === "settings") resyncHomeSettings(); // reflect in-game edits
@@ -3482,7 +3487,121 @@ async function enterOnline() {
   }
   goScreen("online-screen");
 }
+// ------------------------------------------------------------- テスト版の窓口
+// 「どのビルドで踏んだか」「どこへ返すか」「壊れたらどう戻すか」の3点をまとめる。
+// 製品版で外すときは、この節と index.html の #settings-test / #build-tag を消せばよい。
+
+// 対局からの離脱。対局中は CPU のタイマーや演出の予約が多数走っていて、それを個別に
+// 畳むのは取りこぼしが怖い（裏で対局が進み、別画面にイベントが飛ぶ）。なので離脱は
+// 「着地先を控えてから再読み込み」で状態を丸ごと作り直す。楼光のランは進路ごとに
+// localStorage へ保存済み、師弟の進行は profile 側なので、これで失われるものはない。
+const BOOT_NAV_KEY = "mahjong-rpg.bootNav";
+function leaveMatchTo(navKey) {
+  try { sessionStorage.setItem(BOOT_NAV_KEY, navKey); } catch { /* 使えなければトップに着地するだけ */ }
+  location.reload();
+}
+// いま抜けたら、どこへ戻るのが自然か（対局を始めた文脈で決める）。
+// ※楼光の対局も honestCtx を張る（isRoguelite 付き）ので、楼光の判定を先に置く。
+function abortDestination() {
+  if (honestCtx?.isRoguelite || rogueliteState) return "roguelite"; // 楼光の館 → 記憶の選択へ（ランは進路から再開）
+  if (honestCtx) return "mentor";                                   // 師弟の本気対局・大会 → 師弟へ
+  return "battle-home";                                             // フリー対戦・ペア・団体 → 相棒のいる対戦ホーム
+}
+// 対局中の設定パネルから呼ぶ。何が失われるかを言ってから抜ける。
+function abortCurrentMatch() {
+  const dest = abortDestination();
+  const message = dest === "roguelite"
+    ? "この対局を中断して、楼光の館の入口へ戻ります。\nランは直前の進路から再開できます（この階の対局はやり直しです）。"
+    : dest === "mentor"
+      ? "この対局を中断して、師弟モードへ戻ります。\nこの対局の結果は記録されません。"
+      : "この対局を中断して、対戦ホームへ戻ります。\nこの対局の結果は記録されません。";
+  showConfirm({
+    title: "この対局をやめますか？",
+    message,
+    confirmLabel: "やめて戻る",
+    cancelLabel: "対局を続ける",
+    danger: true,
+    onConfirm: () => leaveMatchTo(dest),
+  });
+}
+
+// 不具合報告に添える「いまの状態」。個人を特定するもの（メール・表示名）は載せない。
+async function saveSummaryText() {
+  try {
+    const p = await profileRepo.loadProfile();
+    const avatars = (p?.avatars || []).length;
+    const done = (p?.completedAvatars || []).length;
+    return `弟子${avatars} / 修行完了${done} / 宝珠${p?.orbs | 0}`;
+  } catch { return "読み込めませんでした"; }
+}
+
+// テスト版の窓口モーダル。設定からも、エラートーストの「報告する」からも開く。
+async function openSupport() {
+  const user = await getUser().catch(() => null);
+  const env = buildEnvReport({
+    loggedIn: !!user,
+    saveSummary: await saveSummaryText(),
+    screenId: document.querySelector(".screen:not(.hidden)")?.id || "-",
+  });
+  showSupportModal({ env, onReset: openResetConfirm });
+}
+
+// セーブデータの初期化。プロフィール（＝ログイン中はクラウドも）に加えて、
+// 楼光の中断ラン・オンボーディングの既読フラグなど mahjong-rpg.* を一掃する。
+// 音量設定（mahjong-rpg.audio）も対象＝「まっさらな初回起動」を再現できる。
+async function openResetConfirm() {
+  const user = await getUser().catch(() => null);
+  showResetConfirm({
+    loggedIn: !!user,
+    onConfirm: async () => {
+      try { await profileRepo.clearProfile(); } catch (e) { console.warn("プロフィール削除失敗", e); }
+      try {
+        const keys = [];
+        for (let i = 0; i < localStorage.length; i += 1) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith("mahjong-rpg.")) keys.push(k);
+        }
+        for (const k of keys) localStorage.removeItem(k);
+      } catch { /* localStorage が使えない環境ではプロフィール削除だけで十分 */ }
+      location.reload();
+    },
+  });
+}
+
+// バージョン表示・報告導線・初期化ボタン・縦持ち案内の結線（起動時に一度）。
+function wireTestBuildUi() {
+  initErrorGuard({ onReport: () => { openSupport(); } });
+
+  const tag = el("build-tag");
+  if (tag) tag.textContent = versionLabel();
+  const ver = el("settings-version");
+  if (ver) ver.textContent = versionLabel();
+
+  el("settings-support-btn")?.addEventListener("click", () => { audio.playClick?.(); openSupport(); });
+  el("settings-reset-btn")?.addEventListener("click", () => { audio.playClick?.(); openResetConfirm(); });
+  el("abort-match-btn")?.addEventListener("click", () => { audio.playClick?.(); abortCurrentMatch(); });
+  // 通信対戦中は出さない（抜けると相手が待たされる＝離脱は切断として扱うべき別の話）。
+  el("settings-btn")?.addEventListener("click", () => {
+    el("abort-match-btn")?.classList.toggle("hidden", !!online);
+  });
+
+  // 縦持ち案内: 一度閉じたらそのセッションでは出さない（回転表示のままでも遊べる）。
+  const hint = el("rotate-hint");
+  let hintDismissed = false;
+  const syncHint = () => {
+    if (!hint) return;
+    const portrait = window.innerHeight > window.innerWidth;
+    hint.classList.toggle("hidden", !portrait || hintDismissed);
+  };
+  el("rotate-hint-close")?.addEventListener("click", () => { hintDismissed = true; syncHint(); });
+  window.addEventListener("resize", syncHint);
+  window.addEventListener("orientationchange", () => setTimeout(syncHint, 120));
+  syncHint();
+}
+
 function bootHome() {
+  // テスト版の窓口（バージョン表示・報告導線・初期化・縦持ち案内・例外トースト）。
+  wireTestBuildUi();
   // トップの左右に起動ごとのランダム立ち絵を“出迎え”として置く（寂しさ解消・共在感）。
   mountHomeCast(el("home-screen"));
   for (const btn of document.querySelectorAll("[data-nav]")) {
@@ -3520,6 +3639,10 @@ function bootHome() {
       if (tip) tip.textContent = "ようこそ";
       // ほんの一拍 100% を見せてからホームへ（一瞬で消えてチラつくのを防ぐ）。
       setTimeout(() => {
+        // 対局を中断して戻ってきた直後だけ、抜けた文脈の画面へ着地する（leaveMatchTo）。
+        let back = null;
+        try { back = sessionStorage.getItem(BOOT_NAV_KEY); sessionStorage.removeItem(BOOT_NAV_KEY); } catch { back = null; }
+        if (back) { navigate(back); return; }
         goScreen("home-screen");
         // 認証おすすめは「相棒（詩玥）と出会った後」に出す＝第一印象を機能説明でなくキャラ接触に
         // （初回の対戦ホーム表示後に遅延フェードイン。renderBattleHome 側で発火）。UXテスト指摘。

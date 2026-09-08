@@ -6840,3 +6840,116 @@ button.primary.danger:hover { color: #ffbcbc; }
 .shop-modal-cancel:hover { background: #32402f; }
 
 .shop-foot { margin-top: 10px; flex: 0 0 auto; }
+
+/* ============================================================ テスト版の窓口
+   バージョン表示 / 不具合報告 / セーブ初期化 / 対局の中断 / 縦持ち案内 / 例外トースト。
+   製品版で外すときは、この節と index.html の #settings-test・#build-tag・#rotate-hint を消す。 */
+
+/* ビルド表示: 画面右下に小さく。対局中（#game-screen が出ている間）は隠す。 */
+.build-tag {
+  position: absolute; right: 10px; bottom: 8px; z-index: 60;
+  font-size: 11px; letter-spacing: .04em; color: #ffffff5c;
+  text-shadow: 0 1px 2px #0009; pointer-events: none; user-select: text;
+}
+#game-screen:not(.hidden) ~ .build-tag { display: none; }
+
+/* 設定画面: 音量カードとテスト版カードを横並びにして 1280x720 に収める
+   （固定ステージの不変条件＝画面内スクロールを出さない）。 */
+#settings-screen.menu-screen { max-width: none; }
+.settings-cols { display: flex; gap: 20px; align-items: flex-start; justify-content: center; }
+.settings-cols > .settings-card { width: 380px; flex: 0 0 auto; }
+
+/* 設定画面のテスト版カード。 */
+.settings-test { display: flex; flex-direction: column; gap: 10px; }
+.settings-ver { display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--muted); }
+.settings-ver-val { color: #e7c98a; font-weight: 700; letter-spacing: .04em; }
+.settings-act {
+  display: flex; flex-direction: column; gap: 2px; text-align: left; width: 100%;
+  padding: 10px 14px; border-radius: 10px; cursor: pointer;
+  background: #ffffff0e; border: 1px solid #ffffff1f; color: var(--ink);
+}
+.settings-act:hover { background: #ffffff18; border-color: #ffffff33; }
+.settings-act-t { font-size: 14.5px; font-weight: 700; }
+.settings-act-s { font-size: 12px; color: var(--muted); }
+.settings-act-danger { border-color: #e85d7566; }
+.settings-act-danger:hover { background: #e85d7522; border-color: #e85d75aa; }
+.settings-act-danger .settings-act-t { color: #ffb3c0; }
+
+/* 対局中の設定パネル内「この対局をやめる」。 */
+.settings-abort {
+  margin-top: 6px; width: 100%; padding: 8px 10px; border-radius: 8px; cursor: pointer;
+  font-size: 13px; font-weight: 700; color: #ffc3cd;
+  background: #e85d7522; border: 1px solid #e85d7566;
+}
+.settings-abort:hover { background: #e85d7538; border-color: #e85d75aa; }
+.settings-abort.hidden { display: none; }
+
+/* テスト版モーダル（.auth-modal の作りに乗せた差分だけ）。
+   前回のUXテストで「モーダルが長くてスクロールが出る」指摘を受けているので、
+   1画面に収まる高さまで各行を詰める。 */
+.sup-modal { width: min(560px, 92%); max-height: 93%; padding: 18px 26px 16px; }
+.sup-modal .auth-modal-lead { margin-bottom: 8px; font-size: 13px; }
+.sup-modal .auth-modal-warn { margin-bottom: 12px; padding: 10px 14px; }
+.sup-modal .auth-modal-warn-h { margin-bottom: 6px; font-size: 13px; }
+.sup-modal .auth-modal-warn-list { font-size: 12.5px; line-height: 1.6; }
+.sup-ver { margin: -2px 0 8px; font-size: 12.5px; color: #e7c98a; letter-spacing: .04em; }
+.sup-note { margin: 6px 0 0; font-size: 11.5px; line-height: 1.55; color: var(--muted); }
+.sup-env { margin-top: 8px; font-size: 12px; color: var(--muted); }
+.sup-env summary { cursor: pointer; }
+.sup-env-pre {
+  margin: 8px 0 0; padding: 10px; border-radius: 8px; max-height: 168px; overflow: auto;
+  background: #0b120e; border: 1px solid #ffffff14; color: #cfe0d4;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace; font-size: 11.5px; line-height: 1.6;
+  white-space: pre-wrap; word-break: break-all;
+}
+.sup-reset-link {
+  display: block; margin-top: 10px; padding: 0; cursor: pointer;
+  background: none; border: none; color: #ff9fb0; font-size: 12.5px; text-decoration: underline;
+}
+.sup-close {
+  margin-top: 10px; width: 100%; padding: 8px; border-radius: 10px; cursor: pointer;
+  background: #ffffff14; border: 1px solid #ffffff24; color: var(--ink); font-size: 14px;
+}
+.sup-close:hover { background: #ffffff22; }
+.sup-danger { background: var(--danger) !important; color: #2a0d13 !important; }
+
+/* 縦持ち案内。#app の外（回転しない層）に出す。 */
+.rotate-hint {
+  position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center;
+  background: #050807e8; padding: 24px;
+}
+.rotate-hint.hidden { display: none; }
+.rotate-hint-card {
+  width: min(320px, 90%); text-align: center; color: var(--ink);
+  background: #1b261f; border: 2px solid #f6b35266; border-radius: 16px; padding: 22px 20px;
+  box-shadow: 0 20px 60px #000a;
+}
+.rotate-hint-icon { font-size: 40px; margin-bottom: 8px; }
+.rotate-hint-title { font-size: 17px; font-weight: 800; color: #f6d59a; margin-bottom: 8px; }
+.rotate-hint-body { margin: 0 0 16px; font-size: 13px; line-height: 1.7; color: #cdbfa6; }
+.rotate-hint-close {
+  width: 100%; padding: 9px; border-radius: 10px; cursor: pointer; font-size: 13.5px;
+  background: #ffffff14; border: 1px solid #ffffff24; color: var(--ink);
+}
+
+/* 例外トースト。進行は止めず、右下に控えめに出して自動で引っ込む。 */
+.err-toast {
+  position: absolute; right: 14px; bottom: 14px; z-index: 220; width: 300px;
+  padding: 12px 14px; border-radius: 12px;
+  background: #24161aef; border: 1px solid #e85d7566;
+  box-shadow: 0 14px 40px #000a; color: var(--ink);
+  opacity: 0; transform: translateY(10px); transition: opacity .28s ease, transform .28s ease;
+}
+.err-toast.show { opacity: 1; transform: translateY(0); }
+.err-toast-h { font-size: 13px; font-weight: 800; color: #ffb3c0; margin-bottom: 4px; }
+.err-toast-m {
+  font-size: 11.5px; line-height: 1.6; color: #d8cdc8; margin-bottom: 8px;
+  max-height: 54px; overflow: hidden; word-break: break-all;
+}
+.err-toast-btns { display: flex; gap: 8px; align-items: center; }
+.err-toast-btns button {
+  padding: 5px 10px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700;
+  background: #ffffff14; border: 1px solid #ffffff24; color: var(--ink);
+}
+.err-toast-report { background: #f6b35233 !important; border-color: #f6b35288 !important; color: #ffd89a !important; }
+.err-toast-close { margin-left: auto; }

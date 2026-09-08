@@ -7,6 +7,33 @@
   <!-- インライン favicon（牌風・緑地に中）。実ファイル無しで favicon.ico の 404 を防ぐ。 -->
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='2' width='24' height='28' rx='4' fill='%23f3ead9'/%3E%3Crect x='4' y='2' width='24' height='28' rx='4' fill='none' stroke='%231c140e' stroke-width='1.5'/%3E%3Ctext x='16' y='23' font-size='18' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%23b5341f'%3E%E4%B8%AD%3C/text%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
+  <!-- 例外の受け皿（テスト版）。モジュールより前に読ませて、main.js の読み込み失敗まで拾う。
+       ここは記録だけ。見せ方（トースト）は src/app/errorGuard.js が引き継ぐ。 -->
+  <script>
+    (function () {
+      var log = (window.__mjErrLog = window.__mjErrLog || []);
+      function push(kind, message, where) {
+        // 同じエラーの連発でログが埋まらないよう、直前と同じものは積まない。
+        var last = log[log.length - 1];
+        if (last && last.kind === kind && last.message === message) return;
+        log.push({ at: new Date().toISOString().slice(11, 19), kind: kind, message: String(message || "?"), where: where || "" });
+        if (log.length > 20) log.shift();
+        if (typeof window.__mjOnError === "function") { try { window.__mjOnError(log[log.length - 1]); } catch (e) { /* 受け側の失敗は無視 */ } }
+      }
+      window.addEventListener("error", function (ev) {
+        if (ev && ev.target && ev.target !== window && ev.target.tagName) {
+          // 画像/音声の読み込み失敗は本体側でフォールバック済み＝通知しない（記録だけ）。
+          push("asset", (ev.target.src || ev.target.href || ev.target.tagName) + " を読み込めません", ev.target.tagName);
+          return;
+        }
+        push("error", (ev && ev.message) || "不明なエラー", ev && ev.filename ? ev.filename.split("/").pop() + ":" + ev.lineno : "");
+      }, true);
+      window.addEventListener("unhandledrejection", function (ev) {
+        var r = ev && ev.reason;
+        push("promise", (r && (r.message || r)) || "不明な失敗", (r && r.stack ? String(r.stack).split("\n")[1] || "" : "").trim());
+      });
+    })();
+  </script>
 </head>
 <body>
   <!-- Letterbox viewport: centers the fixed-size stage and fills the remaining
@@ -119,6 +146,8 @@
     <!-- Settings -->
     <section id="settings-screen" class="screen menu-screen hidden">
       <header class="menu-head"><h1>設定</h1></header>
+      <!-- 左=音量 / 右=テスト版の窓口。1画面（1280x720）に収めるため横並びにする。 -->
+      <div class="settings-cols">
       <div class="settings-card">
         <label class="settings-row">
           <input type="checkbox" id="home-audio-enabled" checked />
@@ -133,6 +162,24 @@
           <input type="range" id="home-se-volume" min="0" max="100" value="80" />
         </div>
       </div>
+
+      <!-- テスト版の身元と受け皿。不具合報告の入口はここに集約する。 -->
+      <div class="settings-card settings-test">
+        <div class="settings-row settings-ver">
+          <span>バージョン</span>
+          <span id="settings-version" class="settings-ver-val">—</span>
+        </div>
+        <button type="button" id="settings-support-btn" class="settings-act">
+          <span class="settings-act-t">テスト版について / 不具合を報告</span>
+          <span class="settings-act-s">既知の未実装・報告のしかた・環境情報のコピー</span>
+        </button>
+        <button type="button" id="settings-reset-btn" class="settings-act settings-act-danger">
+          <span class="settings-act-t">セーブデータを初期化</span>
+          <span class="settings-act-s">この端末の進行をすべて消して最初から</span>
+        </button>
+      </div>
+      </div><!-- /.settings-cols -->
+
       <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
     </section>
 
@@ -348,6 +395,9 @@
             <label for="se-volume">SE 音量 <span id="se-volume-val" class="vol-val">80%</span></label>
             <input type="range" id="se-volume" min="0" max="100" value="80" />
           </div>
+          <!-- 対局からの脱出口。試遊は途中でやめるもの＝リロードしか無い状態を塞ぐ。
+               通信対戦中は相手が待たされるので JS 側で隠す。 -->
+          <button type="button" id="abort-match-btn" class="settings-abort">この対局をやめる</button>
         </div>
       </div>
       <aside class="side">
@@ -371,6 +421,20 @@
         </div>
       </aside>
     </section>
+
+    <!-- テスト版のビルド表示。不具合報告に添えてもらう識別子（対局中は goScreen 側で隠す）。 -->
+    <div id="build-tag" class="build-tag" title="不具合報告のときはこの番号を書いてください"></div>
+  </div>
+
+  <!-- 縦持ち案内。#app は縦画面で90°回転して表示されるので、案内は回転の外側に置く。
+       閉じればそのまま遊べる（回転表示は従来どおり残す）。 -->
+  <div id="rotate-hint" class="rotate-hint hidden" role="dialog" aria-live="polite">
+    <div class="rotate-hint-card">
+      <div class="rotate-hint-icon">📱↻</div>
+      <div class="rotate-hint-title">端末を横向きにしてください</div>
+      <p class="rotate-hint-body">このゲームは横画面（PC推奨）でつくられています。縦のままだと画面が回転して表示されます。</p>
+      <button type="button" id="rotate-hint-close" class="rotate-hint-close">このまま続ける</button>
+    </div>
   </div>
   </div><!-- /#stage-viewport -->
 

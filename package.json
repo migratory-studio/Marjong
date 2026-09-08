@@ -1,6 +1,6 @@
 {
   "name": "mahjong-rpg-prototype",
-  "version": "0.1.0",
+  "version": "0.9.0",
   "description": "Browser mahjong game with character abilities (points as HP). Prototype.",
   "type": "module",
   "private": true,
