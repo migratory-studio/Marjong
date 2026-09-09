@@ -16,7 +16,8 @@ export const CREDITS_MASTER = {
         // 立ち絵は規約で表記文字列が指定されている（不特定多数の閲覧・商用時は必須）。
         // 指定どおり「R_ID作（URL）」の形をそのまま出す。CREDITS.md も参照。
         { role: "キャラクター立ち絵", name: "R_ID作（https://r-id.booth.pm/）" },
-        { role: "UI素材", name: "こぱんだ屋" },
+        { role: "UI・エモート素材", name: "こぱんだ屋（空想曲線）" },
+        { role: "モブ素材", name: "素材屋冬青" },
         { role: "背景素材", name: "みんちりえ" },
         { role: "背景素材", name: "くらげ（BOOTH）" },
         { role: "背景素材", name: "ゲームまてりあるず" },

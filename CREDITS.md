@@ -51,7 +51,7 @@
 | `bgm-mystery.mp3` | PeriTune「Foreboding」 |
 | `bgm-battle.mp3` | PeriTune「Wuxia3」 |
 | `bgm-victory.mp3` | PeriTune「Folk_Chinese」 |
-| `bgm-daily` / `bgm-night` / `bgm-playful` / `bgm-resolve` / `bgm-sorrow` / `bgm-tension` | PeriTune（**元の曲名は未記録**。判明したら追記） |
+| `bgm-daily` / `bgm-night` / `bgm-playful` / `bgm-resolve` / `bgm-sorrow` / `bgm-tension` | PeriTune（**元の曲名は不明のまま確定**。PeriTune はクレジット表記が任意のため、「PeriTune」名義の表記で要件は満たせる） |
 
 ### 甘茶の音楽工房（Music Atelier Amacha）
 - サイト: https://amachamusic.chagasi.com/ ／ 利用規約: https://amachamusic.chagasi.com/terms.html
@@ -87,8 +87,10 @@
 
 ## 🖼 UI（和風 UI セット）
 
-### こぱんだ屋 — gameUIset_19（**有料素材**）
-- 採用: 和風 UI 一式（`graphic/ui/sc/` 配下：ボタン/パネル/ゲージ/メッセージ枠 等）。
+### こぱんだ屋 / 空想曲線（BOOTH: https://ko10panda.booth.pm/ ）
+- 採用1: 和風 UI 一式 `gameUIset_19`（**有料素材**）… `graphic/ui/sc/` 配下：ボタン/パネル/ゲージ/メッセージ枠 等
+- 採用2: **表情・エモート素材** … `graphic/emo/` 配下（スプライトシート／ループ画像／mov）
+  ※こちらは有料/無料の別が未確認だが、**クレジットを掲載しているのでどちらでも要件を満たす**
 - 利用規約: https://kopacurve.blog.fc2.com/blog-entry-394.html
   （原本パック同梱の `素材利用規約.txt` が指すURL。原本パックは再配布防止のためリポジトリ追跡外・使用分のみ同梱）
 - **クレジット表記: 不要**（規約に「無料素材：クレジット表記【必須】／**有料素材：クレジット表記【不要】**」。本作は有料素材）
@@ -129,9 +131,9 @@
 |---|---|---|
 | 牌画像（萬子/筒子/索子/字牌・赤5・裏牌） | `graphic/tiles/`（`*.svg`） | **FluffyStuff / Riichi Mahjong Tiles** — **CC0**（パブリックドメイン／商用可・帰属表示不要）。https://github.com/FluffyStuff/riichi-mahjong-tiles |
 | キャラ立ち絵・アイコン | `graphic/chars/` | **r-id 氏（BOOTH: https://r-id.booth.pm/ ）**。商用利用可・改変可（イメージを著しく損なう加工は不可）。**不特定多数が閲覧する用途・商用利用ではクレジット表記が必要**（下記）。禁止＝自作発言 / 再配布 / AI学習利用。※規約は商品ごとに異なる場合あり |
-| モブ（シルエット） | `graphic/chars/mobs/` | ❓要確認 |
+| モブ（シルエット） | `graphic/chars/mobs/` | **素材屋冬青 氏**「★随時追加★ 素材【人物シルエット】」（BOOTH: https://awamurasoyogo.booth.pm/items/3435946 ）。商用可・改変可（原型を留めなくても可）・**クレジット表記は任意**・素材としての二次配布/販売は不可 |
 | 背景 | `graphic/bg/` | **みんちりえ**（`sc/` のほとんど＋`bg-dojo`/`bg-street`）＋ げーむまてりあるず（雀荘4種・上記）＋ くらげ／BOOTH（`bg-dungeon`） |
-| 表情・エモート | `graphic/emo/` | ❓要確認 |
+| 表情・エモート | `graphic/emo/` | **こぱんだ屋（空想曲線）** — UI一式と同じ配布元。規約は下記「こぱんだ屋」節に従う。※無料素材はクレジット必須・有料素材は不要だが、**本ファイルとゲーム内ロールの両方に掲載しているのでどちらでも要件を満たす** |
 
 ### 立ち絵のクレジット表記（必須）
 
@@ -140,6 +142,12 @@ r-id 氏の規約で指定されている文字列をそのまま使うこと。
 ```
 R_ID作（https://r-id.booth.pm/）
 ```
+
+### 素材屋冬青（モブ・人物シルエット）
+- 商品: 「★随時追加★ 素材【人物シルエット】」 https://awamurasoyogo.booth.pm/items/3435946
+- 商用利用: 「商用利用⇨OK」 ／ 改変: 「編集・色変更など⇨OK(原型留めないくらい加工しても大丈夫です）」
+- クレジット表記: **任意**（「報告やクレジットは任意です。なくても全然大丈夫です」）— 本作では掲載する
+- 禁止: 「この素材を素材としてそのまま二次配布/販売すること⇨NG」
 
 ### みんちりえ（背景）
 - サイト: https://min-chi.material.jp/ （利用規約は各素材ページに記載）
