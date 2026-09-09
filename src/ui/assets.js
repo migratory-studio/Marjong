@@ -145,7 +145,8 @@ const clamp01v = (v) => Math.max(0, Math.min(1, Number(v) || 0));
 // BGM: one random track per hand (loops). SE: random dahai on every discard.
 // File names contain Japanese characters & full-width digits, so URL-encode.
 const enc = (p) => p.split("/").map(encodeURIComponent).join("/");
-const BGM_TRACKS = ["mahjong-ingame1.mp3", "mahjong-ingame2.mp3"].map((n) => enc(`sound/bgm/${n}`));
+// 対局中BGM: 局ごとにランダムで1曲をループ（甘茶の音楽工房／桜雲・打ち上げ花火。CREDITS.md 参照）。
+const BGM_TRACKS = ["amacha_ouun.mp3", "amacha_uchiagehanabi.mp3"].map((n) => enc(`sound/bgm/${n}`));
 const BGM_HOME = enc("sound/bgm/Peritune_Hanadoki.mp3");              // title / home screen
 const BGM_SELECT = enc("sound/bgm/PerituneMaterial_Amenoshita3.mp3"); // character select
 const BGM_MENTOR = enc("sound/bgm/PerituneMaterial_Otogi4.mp3");      // 師弟ホーム（ほのぼの和風 / Peritune Otogi4）

@@ -22,5 +22,8 @@
 ## リリース前チェックリスト
 - [ ] `graphic/title.png` をデザイナー版へ差し替え
 - [ ] ロード画面・ホームの `.placeholder-note` 注記を削除
+- [x] ~~対局中BGM 2曲（Suno生成）を差し替え~~ → **2026-09-10 完了**（甘茶の音楽工房「桜雲」「打ち上げ花火」）
 - [ ] 楼光の館の仮グラフィックをデザイナー版へ差し替え
 - [ ] 本ファイルを「差し替え完了」に更新 or 削除
+
+> 権利まわりの確認事項全体は [rights-clearance-checklist.md](rights-clearance-checklist.md) を参照。

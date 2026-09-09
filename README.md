@@ -107,8 +107,8 @@ node test/sanma.mjs   # 3人戦: 牌構成108枚・チーなし・北抜き + 40
 
 ### サウンド（`sound/`）
 
-- BGM: `sound/bgm/mahjong-ingame1,2.mp3` … **局ごとにランダムに1曲**をループ再生
-  （`HAND_STARTED`、クロスフェード付き）
+- BGM: `sound/bgm/amacha_ouun.mp3` / `amacha_uchiagehanabi.mp3` … **局ごとにランダムに1曲**をループ再生
+  （`HAND_STARTED`、クロスフェード付き）。甘茶の音楽工房「桜雲」「打ち上げ花火」
 - 打牌SE: `sound/se/dahai/牌を置く・その１〜４.mp3` … **誰か（自分含む）の打牌ごとにランダムに1つ**（`TILE_DISCARDED`）
 - 配牌SE: `sound/se/麻雀牌をまぜる.mp3`（`HAND_STARTED`）
 - 鳴きSE: `sound/se/naki.mp3` … ポン/チー/カン共通（`MELD_CALLED`、卓に大きく演出テキスト＋ウェイト）

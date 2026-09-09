@@ -13,11 +13,17 @@ export const CREDITS_MASTER = {
         { role: "企画・原案・ディレクション", name: "乃木回遊" },
         { role: "シナリオ・世界観", name: "乃木回遊" },
         { role: "ゲームデザイン・開発", name: "乃木回遊" },
+        // 立ち絵は規約で表記文字列が指定されている（不特定多数の閲覧・商用時は必須）。
+        // 指定どおり「R_ID作（URL）」の形をそのまま出す。CREDITS.md も参照。
+        { role: "キャラクター立ち絵", name: "R_ID作（https://r-id.booth.pm/）" },
         { role: "UI素材", name: "こぱんだ屋" },
         { role: "背景素材", name: "みんちりえ" },
         { role: "背景素材", name: "くらげ（BOOTH）" },
         { role: "背景素材", name: "ゲームまてりあるず" },
         { role: "音楽素材", name: "PeriTune" },
+        { role: "音楽素材", name: "甘茶の音楽工房" },
+        { role: "効果音素材", name: "効果音ラボ" },
+        { role: "牌画像", name: "FluffyStuff / Riichi Mahjong Tiles（CC0）" },
         { role: "開発協力", name: "Claude（Anthropic）" },
       ],
     },
