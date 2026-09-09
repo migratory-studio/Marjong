@@ -26,7 +26,10 @@
 - 不具合の受け皿は **設定 → テスト版について / 不具合を報告**。送信先は Google フォーム
   「ツモノグリフ テストプレイ フィードバック」（`FEEDBACK_URL`）。空にすると導線は「環境情報をコピー」だけに縮退する
 - 例外は `index.html` のインラインフック → `src/app/errorGuard.js` で拾い、右下トーストから報告へ繋ぐ
-- 「既知の未実装」の文言は `appInfo.js` の `KNOWN_LIMITS` と [docs/testplay-guide.md](docs/testplay-guide.md) の2箇所。**更新時は両方**
+- 募集ページは [playtest.html](playtest.html)（GitHub Pages に同居する独立1ページ。画像は `press/`）。
+  **版数・変更履歴・既知の問題を直書きしている**ので、`APP_VERSION` を上げたらここも直す
+- 「既知の未実装」の文言は `appInfo.js` の `KNOWN_LIMITS` / [docs/testplay-guide.md](docs/testplay-guide.md) /
+  [playtest.html](playtest.html) の3箇所。**更新時は3つとも**
 
 ## 起動方法
 
