@@ -10,7 +10,7 @@
 
 ## 1. 遊びかた
 
-**URL**: https://migratory-studio.github.io/Marjong/
+**URL**: https://marjong.migratory-studio.com/
 
 | | |
 |---|---|

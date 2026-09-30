@@ -7,7 +7,7 @@
 
 > **テストプレイに参加する方へ** → [docs/testplay-guide.md](docs/testplay-guide.md)
 > （遊びかた・動作環境・既知の未実装・不具合の報告方法）
-> 公開先: https://migratory-studio.github.io/Marjong/ ／ 推奨ブラウザ: **Google Chrome（PC）**
+> 公開先: https://marjong.migratory-studio.com/ ／ 推奨ブラウザ: **Google Chrome（PC）**
 
 ## 収録モード
 

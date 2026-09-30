@@ -167,7 +167,7 @@
 ### 切り替え時の注意
 
 - private 化の直後に **Pages の設定（Settings → Pages）が生きているか確認**する。プランが Free のままだと Pages が止まる
-- 独自ドメインを使っていない限り、URL（`migratory-studio.github.io/Marjong`）は変わらない
+- 公開URLは独自ドメイン（`marjong.migratory-studio.com`）なので、private 化しても変わらない
 
 ## 6. 残りの進め方
 
