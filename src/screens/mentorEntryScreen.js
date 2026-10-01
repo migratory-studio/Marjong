@@ -23,10 +23,13 @@ function injectStyle() {
   const s = document.createElement("style");
   s.id = STYLE_ID;
   s.textContent = `
+/* .menu-screen は幅560pxの中央列なので、右上の口座行が列の端＝画面の中ほどに浮いてしまう。
+   この画面だけ全幅にして、口座行を画面の右上隅へ置く（中身は flex 中央寄せのまま）。 */
+#mentor-entry-screen.menu-screen { max-width:none; }
 .mentor-entry-account { position:absolute; top:16px; right:22px; display:flex; flex-direction:column;
   align-items:flex-end; gap:6px; text-align:right; z-index:2; }
 .mentor-entry-account .mentor-entry-label { font-size:13px; color:var(--accent); max-width:300px; word-break:break-all; }
-.mentor-entry-account .mentor-entry-hint { font-size:11px; color:var(--muted); max-width:240px; }
+.mentor-entry-account .mentor-entry-hint { font-size:11px; color:var(--muted); max-width:340px; }
 .mentor-entry-account button { padding:4px 14px; font-size:13px; }
 `;
   document.head.appendChild(s);

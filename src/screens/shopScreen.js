@@ -21,8 +21,8 @@ import { shopStyleAttr } from "../data/imagePos.js";
 // 解禁タイプ別の見せ方（モーダルのアイコン／完了文）。新typeを足すときはここにも1行。
 const UNLOCK_ICON = { bg: "🖼", bgm: "🎵", char: "🤝" };
 const UNLOCK_DONE = {
-  bg: "対戦ホームの背景で選べるようになった。",
-  bgm: "対戦ホームのBGMで選べるようになった。",
+  bg: "ホームの背景で選べるようになった。",
+  bgm: "ホームのBGMで選べるようになった。",
   char: "仲間に加わった。フリー対戦などで連れていける。",
 };
 
@@ -35,8 +35,8 @@ function esc(s) {
 // 新ジャンルを増やすときはここに1行足すだけ（中身が0件のタブは自動で隠す）。
 const SHOP_CATEGORIES = [
   { id: "buffs", kind: "buffs",                 label: "恒久強化",     sub: "次の楼光の館ランから効く補正" },
-  { id: "bg",    kind: "unlock", type: "bg",    label: "背景",         sub: "対戦ホームの背景を増やす（本日の品揃え・毎日24時更新）" },
-  { id: "bgm",   kind: "unlock", type: "bgm",   label: "BGM",          sub: "対戦ホームのBGMを増やす（本日の品揃え・毎日24時更新）" },
+  { id: "bg",    kind: "unlock", type: "bg",    label: "背景",         sub: "ホームの背景を増やす（本日の品揃え・毎日24時更新）" },
+  { id: "bgm",   kind: "unlock", type: "bgm",   label: "BGM",          sub: "ホームのBGMを増やす（本日の品揃え・毎日24時更新）" },
   { id: "char",  kind: "unlock", type: "char",  label: "キャラクター", sub: "仲間を解禁する" },
 ];
 
@@ -100,7 +100,7 @@ export async function showShop(container, opts = {}) {
         <div class="shop-grid" id="shop-grid"></div>
       </div>
       <footer class="shop-foot">
-        <button type="button" class="ghost-back" id="shop-back">← 対戦ホームへ</button>
+        <button type="button" class="ghost-back" id="shop-back">← ホームへ</button>
       </footer>
       <div class="shop-modal" id="shop-modal" hidden></div>
     </div>`;

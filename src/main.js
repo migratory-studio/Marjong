@@ -1265,7 +1265,9 @@ function buildSelectScreen() {
   gotoStep(1);
 
   // シナリオ（紙芝居）サンプル再生。マスタを読み込んで再生 → 終了で選択画面へ戻る。
+  // 開発用のサンプル導線。プレイヤーの対戦準備画面には出さない（?debug 時のみ）。
   const scBtn = el("scenario-demo-btn");
+  scBtn?.classList.toggle("hidden", !isDebugMode());
   if (scBtn) scBtn.onclick = () => {
     showScreen("scenario-screen");
     playScenario("twin-chun-yao-01", {
@@ -1280,20 +1282,21 @@ let resetSelectWizard = () => {};
 let refreshDeshiRoster = () => {};
 
 // ----------------------------------------------------------------- navigation
-// Wire every [data-nav] control to a screen. Home is the boot screen; the
-// existing 選択 -> 対局 flow lives behind フリー対戦 > 通常フリー対戦.
+// Wire every [data-nav] control to a screen. タイトル(home-screen)は起動直後の一枚だけで、
+// 以降の「ホーム」は相棒の待つハブ(battle-home-screen)。全モードの導線はハブに集約する
+// （旧: タイトル→対戦ホーム→フリー対戦メニュー→選択 の4段を、ハブ→選択 の2段へ）。
 let resyncHomeSettings = () => {};
 const NAV_TARGETS = {
-  home: "home-screen",
+  title: "home-screen",
+  home: "battle-home-screen",
   "battle-home": "battle-home-screen",
-  "free-battle": "free-battle-screen",
   roguelite: "roguelite-screen",
   online: "online-screen",
   settings: "settings-screen",
   select: "select-screen",
 };
 // Menu BGM per screen. Tracks that aren't listed leave the current BGM playing,
-// so the title theme carries through the free-battle / settings submenus and only
+// so the title theme carries through the settings submenu and only
 // swaps to the select theme on the character screen. In-game uses random per-hand BGM.
 const SCREEN_BGM = {
   "home-screen": () => audio.playHomeBgm(),
@@ -1339,10 +1342,13 @@ async function renderBattleHome() {
     repository: profileRepo,
     audio,
     loggedIn: !!user,
-    onFree: () => { audio.playClick?.(); goScreen("free-battle-screen"); },
+    onCpu: () => { audio.playClick?.(); goScreen("select-screen"); },
+    onOnline: () => { audio.playClick?.(); enterOnline(); },
+    onMentor: () => { audio.playClick?.(); openMentorMode(); },
     onRoguelite: () => { audio.playClick?.(); openRoguelite(); },
     onShop: () => { audio.playClick?.(); goScreen("shop-screen"); },
-    onBack: () => { audio.playClick?.(); goScreen("home-screen"); },
+    onSettings: () => { audio.playClick?.(); navigate("settings"); },
+    onTitle: () => { audio.playClick?.(); goScreen("home-screen"); },
   });
   // 初回の対戦ホーム到達で、詩玥の出迎えが出てから少し遅れて認証おすすめを出す（セッション1回だけ予約）。
   // maybeShowAuthPrompt 自体が「未ログイン＆未提示」を自己ガードするので、既に選択済みなら何も出ない。
@@ -3723,7 +3729,7 @@ async function openMentorSub(target, payload) {
       },
     });
   } else if (target === "settings") {
-    // 師弟ホームの歯車 → 設定。戻ると現状はホームへ（設定画面の戻りは home 固定）。
+    // 師弟ホームの歯車 → 設定。設定の「もどる」は開いた画面（＝師弟ホーム）へ帰る。
     navigate("settings");
   } else if (target === "autobattle-proto") {
     // §4.6 オートバトルのプロト起動（大会未実装のためデバッグ導線から）。
@@ -3803,9 +3809,15 @@ function navigate(target) {
   if (target === "roguelite") { openRoguelite(); return; }
   const id = NAV_TARGETS[target];
   if (!id) return;
-  if (target === "settings") resyncHomeSettings(); // reflect in-game edits
+  if (target === "settings") {
+    resyncHomeSettings(); // reflect in-game edits
+    // 設定は「寄り道」。開いた画面を覚えて、もどるでそこへ帰す（タイトル/ホーム/師弟ホーム）。
+    const from = document.querySelector(".screen:not(.hidden)")?.id;
+    if (from && from !== "settings-screen" && from !== "loading-screen") settingsReturnTo = from;
+  }
   goScreen(id);
 }
+let settingsReturnTo = "home-screen";
 
 // 通信対戦の入場ゲート: ①ログイン必須 → ②ユーザーネーム必須 → online-screen。
 // ランクは「誰の記録か」が要るので、未ログイン/名前なしでは入場させない。
@@ -3876,7 +3888,7 @@ function abortCurrentMatch() {
     ? "この対局を中断して、楼光の館の入口へ戻ります。\nランは直前の進路から再開できます（この階の対局はやり直しです）。"
     : dest === "mentor"
       ? "この対局を中断して、師弟モードへ戻ります。\nこの対局の結果は記録されません。"
-      : "この対局を中断して、対戦ホームへ戻ります。\nこの対局の結果は記録されません。";
+      : "この対局を中断して、ホームへ戻ります。\nこの対局の結果は記録されません。";
   showConfirm({
     title: "この対局をやめますか？",
     message,
@@ -3969,6 +3981,7 @@ function bootHome() {
   for (const btn of document.querySelectorAll("[data-nav]")) {
     btn.addEventListener("click", () => { audio.playClick?.(); navigate(btn.dataset.nav); });
   }
+  el("settings-back")?.addEventListener("click", () => { audio.playClick?.(); goScreen(settingsReturnTo); });
   // DEBUG: ?debug=tsumoreba 起動時だけホームに 🐛 を出し、演出プレビュー等のメニューを開く。
   if (isDebugMode()) {
     const dbgBtn = el("debug-menu-btn");
@@ -4377,7 +4390,7 @@ function showReconnectOverlay(text) {
       `<div class="reconnect-btns"><button class="primary" id="reconnect-retry">もう一度</button>` +
       `<button class="ghost-back" id="reconnect-home">← ホームへ</button></div></div>`;
     el("reconnect-retry").onclick = () => { showReconnectOverlay("再接続中…"); reconnecting = true; tryReconnect(0); };
-    el("reconnect-home").onclick = () => { reconnecting = false; onlineWsEp?.close?.(); online = null; showReconnectOverlay(null); goScreen("home-screen"); };
+    el("reconnect-home").onclick = () => { reconnecting = false; onlineWsEp?.close?.(); online = null; showReconnectOverlay(null); goScreen("battle-home-screen"); };
   } else {
     ov.innerHTML = `<div class="reconnect-card"><span class="online-spinner"></span><span class="reconnect-msg">${text}</span></div>`;
   }
@@ -8613,12 +8626,12 @@ function showGameOver() {
       goScreen(target);
     };
     btns.appendChild(mkBtn("ロビーに戻る", "btn-tsumo", () => leave("online-screen")));
-    btns.appendChild(mkBtn("トップへ", "btn-skip", () => leave("home-screen")));
+    btns.appendChild(mkBtn("ホームへ", "btn-skip", () => leave("battle-home-screen")));
   } else {
     // フリー対戦の対局後は「相棒のいる対戦ホーム」へ戻せる＝loopを閉じる（UXテスト最重要指摘）。
     // 戻ると renderBattleHome が絆帯/出迎えセリフを引き直す＝「一緒に打った結果」が相棒に滲んで見える。
     const btns = overlay.querySelector(".go-buttons");
-    btns.appendChild(mkBtn("🏠 対戦ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
+    btns.appendChild(mkBtn("🏠 ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
     btns.appendChild(mkBtn("もう一度", "btn-skip", replayFreeMatch));
   }
 }
@@ -8877,7 +8890,7 @@ function showTeamBattleGameOver() {
     btnsT.parentElement.insertBefore(note, btnsT);
     btnsT.appendChild(mkBtn("順位表へ", "btn-tsumo", () => { overlay.classList.add("hidden"); ctx.onResult?.(result, "continue"); }));
   } else {
-    btnsT.appendChild(mkBtn("🏠 対戦ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
+    btnsT.appendChild(mkBtn("🏠 ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
     btnsT.appendChild(mkBtn("もう一度", "btn-skip", replayFreeMatch));
   }
 }
@@ -9039,7 +9052,7 @@ function showPairBattleGameOver() {
     btnsP.parentElement.insertBefore(note, btnsP);
     btnsP.appendChild(mkBtn("順位表へ", "btn-tsumo", () => { overlay.classList.add("hidden"); ctx.onResult?.(result, "continue"); }));
   } else {
-    btnsP.appendChild(mkBtn("🏠 対戦ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
+    btnsP.appendChild(mkBtn("🏠 ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
     btnsP.appendChild(mkBtn("もう一度", "btn-skip", replayFreeMatch));
   }
 }

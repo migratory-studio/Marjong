@@ -12,6 +12,9 @@
 }
 
 * { box-sizing: border-box; }
+/* hidden 属性を常に勝たせる。個別の display:flex 等に負けて「空の枠」だけ残る事故
+   （通信対戦のプロフィール帯・ショップの引き直し帯）を、要素ごとの上書きでなく1行で塞ぐ。 */
+[hidden] { display: none !important; }
 html, body { margin: 0; height: 100%; overflow: hidden; }
 body {
   background: #000; /* letterbox bars around the stage */
@@ -155,7 +158,7 @@ body {
 @keyframes sc-veil-in { from{background:rgba(0,0,0,1)} to{background:rgba(0,0,0,0)} }
 @keyframes sc-veil-out { from{background:rgba(0,0,0,0)} to{background:rgba(0,0,0,1)} }
 
-/* ---- menu screens (home / free-battle / online / settings) ---- */
+/* ---- menu screens (title / online / settings / 師弟入口) ---- */
 .menu-screen {
   max-width: 560px; margin: 0 auto; min-height: 100%;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px;
@@ -248,8 +251,13 @@ body {
    .menu-screen/.menu-list/.menu-btn は他メニュー画面と共有なので #home-screen に限定して上書き。 */
 #home-screen.menu-screen { gap: 14px; }
 #home-screen .menu-head { margin-top: -6px; }
-#home-screen .menu-list { gap: 8px; }
-#home-screen .menu-btn { padding: 9px 22px; }
+/* タイトル：「はじめる」一択＋控えめな設定。選択肢を並べず、ロゴと出迎えの立ち絵に目を譲る。 */
+.title-actions { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; margin-top: 6px; }
+#home-screen .title-start { width: 340px; align-items: center; text-align: center; padding: 16px 22px; }
+#home-screen .title-start .menu-btn-title { font-size: 26px; letter-spacing: .3em; text-indent: .3em; }
+#home-screen .title-start { animation: title-start-breathe 2.6s ease-in-out infinite; }
+@keyframes title-start-breathe { 0%,100% { filter: brightness(1); } 50% { filter: brightness(1.18); } }
+.title-sub { font-size: 13px; padding: 6px 22px; }
 
 /* ---- 仮ロゴ注記（ロード画面／ホーム下部に小さく） ---- */
 .placeholder-note {
@@ -397,12 +405,19 @@ body {
 .bh-amb-tile.is-locked, .bh-amb-row.is-locked { opacity: .4; cursor: default; filter: grayscale(.7); }
 .bh-amb-tile.is-locked:hover, .bh-amb-row.is-locked:hover { transform: none; border-image-source: url("graphic/ui/sc/btn.png"); }
 .bh-routes { display: flex; flex-direction: column; gap: 10px; }
-/* フリー対戦・宝珠ショップは横2カラム（楼光の館＝主役の下に小さく並べ、固定ステージ720pxに収める）。 */
-.bh-route-duo { display: flex; gap: 10px; }
+/* 楼光の館の下に、CPU/オンライン/師弟/ショップを2×2（全モードを1手で。固定ステージ720pxに収める）。 */
+.bh-route-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .menu-btn--duo { flex: 1 1 0; min-width: 0; align-items: center; text-align: center; gap: 2px; padding: 10px 10px; }
 .menu-btn--duo .menu-btn-title { font-size: 17px; }
 .menu-btn--duo .menu-btn-sub { font-size: 11px; white-space: nowrap; }
-.bh-back { align-self: center; }
+/* 立ち絵ステージ右上の小道具（設定・タイトル）。相棒をかえる(左上)と対にして、導線の列を汚さない。 */
+.bh-util { position: absolute; top: 10px; right: 10px; z-index: 2; display: flex; gap: 6px; }
+.bh-util-btn {
+  color: var(--muted); background: none; border: 10px solid transparent;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 10px 14px / 0 stretch;
+  padding: 4px 14px; font-size: 13px; cursor: pointer; transition: .12s;
+}
+.bh-util-btn:hover { color: var(--accent); border-image-source: url("graphic/ui/sc/btn_hover.png"); }
 
 /* お気に入りキャラ選択モーダル（金縁パネルで統一） */
 .bh-picker { position: absolute; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; }

@@ -1,14 +1,17 @@
-// 対戦ホーム (battle-home) — 対局モードのハブ。
+// ホーム (battle-home) — タイトルの次に来る、全モードのハブ。
 //
-// トップ ―（対戦ホーム）― フリー対戦 / オンライン対戦（ルーム/オートマッチ）
-// という導線の中継地点。ここの主役は「お気に入りキャラ」の立ち絵＋出迎えセリフ。
-// 麻雀の外でも相棒が“居る”ことで、愛着＝固有性（あなたを覚えている）×双方向（タップで返る）を作る。
+// タイトル ― ホーム ― CPU対戦 / オンライン / 楼光の館 / 師弟モード / 宝珠ショップ / 設定
+// どのモードへもここから1手で行き、どのモードからもここへ帰ってくる。
+// 主役は「お気に入りキャラ」の立ち絵＋出迎えセリフ。出入りのたびに相棒の前を通る＝
+// 愛着の蓄積（毎回顔を合わせる）×固有性（あなたを覚えている）×双方向（タップで返る）。
 //
 //   import { showBattleHome } from "./screens/battleHomeScreen.js";
-//   showBattleHome(container, { repository, onFree, onOnline, onBack });
-//     onFree()   … フリー対戦へ
-//     onOnline() … オンライン対戦へ（ログイン/名前ゲートは呼び出し側で）
-//     onBack()   … トップへ戻る
+//   showBattleHome(container, { repository, onCpu, onOnline, onMentor, onRoguelite, onShop, onSettings, onTitle });
+//     onCpu()      … CPU対戦（フリー対戦の準備画面）へ
+//     onOnline()   … オンライン対戦へ（ログイン/名前ゲートは呼び出し側で）
+//     onMentor()   … 師弟モードへ
+//     onSettings() … 設定へ（もどるでホームに帰る）
+//     onTitle()    … タイトルへ
 //
 // 設計メモ:
 //  - 1280×720 固定・内部スクロール禁止（CLAUDE.md / fixed-stage-no-scroll）。左=立ち絵、右=導線。
@@ -153,7 +156,7 @@ function portraitNode(c) {
 }
 
 export async function showBattleHome(container, opts = {}) {
-  const { repository, audio, loggedIn = false, onFree, onRoguelite, onShop, onBack } = opts;
+  const { repository, audio, loggedIn = false, onCpu, onOnline, onMentor, onRoguelite, onShop, onSettings, onTitle } = opts;
   if (!container) return;
 
   let profile = null;
@@ -182,10 +185,14 @@ export async function showBattleHome(container, opts = {}) {
         <div class="bh-charname" id="bh-charname"></div>
         <div class="bh-portrait-wrap" id="bh-portrait-wrap" title="タップで話しかけられるよ"></div>
         <button type="button" class="bh-change" id="bh-change">相棒をかえる</button>
+        <div class="bh-util">
+          <button type="button" class="bh-util-btn" id="bh-settings" title="音量・テスト版の窓口">⚙ 設定</button>
+          <button type="button" class="bh-util-btn" id="bh-title">タイトル</button>
+        </div>
       </div>
       <div class="bh-side">
         <div class="bh-card">
-          <h1 class="bh-title">対戦ホーム</h1>
+          <h1 class="bh-title">ホーム</h1>
           <div class="bh-info">
             <div class="bh-info-row"><span class="bh-info-k">プレイヤー</span><span class="bh-info-v" id="bh-name"></span></div>
             <div class="bh-info-row"><span class="bh-info-k">相棒</span><span class="bh-info-v" id="bh-partner"></span></div>
@@ -205,10 +212,19 @@ export async function showBattleHome(container, opts = {}) {
             <span class="menu-btn-sub fallback">弟子を連れて階層を登る・撤退と継続の冒険</span>
             <span class="menu-btn-tip">雀士たちと階層を登る冒険譚</span>
           </button>
-          <div class="bh-route-duo">
-            <button type="button" class="menu-btn menu-btn--duo" id="bh-free">
-              <span class="menu-btn-title">フリー対戦</span>
-              <span class="menu-btn-sub">CPU / オンライン</span>
+          <!-- 対局の入口（相棒と打つ）と、育てる/整える入口を2×2で。どれも1手で着く。 -->
+          <div class="bh-route-grid">
+            <button type="button" class="menu-btn menu-btn--duo" id="bh-cpu">
+              <span class="menu-btn-title">CPUと対戦</span>
+              <span class="menu-btn-sub">通常・ペア・団体</span>
+            </button>
+            <button type="button" class="menu-btn menu-btn--duo" id="bh-online">
+              <span class="menu-btn-title">オンライン</span>
+              <span class="menu-btn-sub">合言葉 / マッチング</span>
+            </button>
+            <button type="button" class="menu-btn menu-btn--duo" id="bh-mentor">
+              <span class="menu-btn-title">師弟モード</span>
+              <span class="menu-btn-sub">弟子を育てる物語</span>
             </button>
             <button type="button" class="menu-btn menu-btn--duo" id="bh-shop" title="宝珠で恒久強化・背景やBGMを解禁">
               <span class="menu-btn-title">宝珠ショップ</span>
@@ -216,7 +232,7 @@ export async function showBattleHome(container, opts = {}) {
             </button>
           </div>
         </nav>
-        <button type="button" class="ghost-back bh-back" id="bh-back">← ホームへ</button>
+      </div>
       </div>
     </div>`;
 
@@ -312,10 +328,13 @@ export async function showBattleHome(container, opts = {}) {
   });
 
   // 導線。
-  container.querySelector("#bh-free")?.addEventListener("click", () => onFree?.());
+  container.querySelector("#bh-cpu")?.addEventListener("click", () => onCpu?.());
+  container.querySelector("#bh-online")?.addEventListener("click", () => onOnline?.());
+  container.querySelector("#bh-mentor")?.addEventListener("click", () => onMentor?.());
   container.querySelector("#bh-roguelite")?.addEventListener("click", () => onRoguelite?.());
   container.querySelector("#bh-shop")?.addEventListener("click", () => onShop?.());
-  container.querySelector("#bh-back")?.addEventListener("click", () => onBack?.());
+  container.querySelector("#bh-settings")?.addEventListener("click", () => onSettings?.());
+  container.querySelector("#bh-title")?.addEventListener("click", () => onTitle?.());
 
   // 背景・BGM の「変更」→ 一覧モーダル（選択中ハイライト／将来は解禁状態も表示）。
   container.querySelector("#bh-amb-edit")?.addEventListener("click", () => {

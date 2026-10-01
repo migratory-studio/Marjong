@@ -147,7 +147,7 @@ export function showRogueliteChapterSelect(container, opts = {}) {
         <section class="rl-chap-detail" id="rl-chap-detail"></section>
       </div>
       <footer class="rl-chap-foot">
-        <button type="button" class="ghost-back" id="rl-chap-back">← 対戦ホームへ</button>
+        <button type="button" class="ghost-back" id="rl-chap-back">← ホームへ</button>
         <span class="rl-chap-foot-hint">踏破した記憶が、次の記憶への扉を開く。</span>
       </footer>
     </div>`;
@@ -197,7 +197,7 @@ export function showRogueliteChapterSelect(container, opts = {}) {
 }
 
 export function showRoguelite(container, opts = {}) {
-  const { deshiRoster = [], characters = [], unlockedIds = null, charImages, bestFloor = 0, carry = [], companionBonds = {}, onBack, onStart, backLabel = "← 対戦ホームへ" } = opts;
+  const { deshiRoster = [], characters = [], unlockedIds = null, charImages, bestFloor = 0, carry = [], companionBonds = {}, onBack, onStart, backLabel = "← ホームへ" } = opts;
   const bondLevelOf = (c) => companionBonds?.[c?.id]?.level ?? 1;
   if (!container) return;
   // 未解禁キャラ（characterMaster で locked:true ＆ 宝珠ショップ未購入）。鍵・非アクティブで出す。

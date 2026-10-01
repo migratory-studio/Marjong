@@ -62,21 +62,15 @@
         <h1 class="home-logo-h1">
           <img src="graphic/title.png" alt="ツモノグリフ 〜牌と絆のアンサンブル〜" class="title-logo-img" />
         </h1>
-        <p class="lead">点棒がHP、相棒と挑む“共闘”の麻雀。まずは対戦ホームへ。</p>
+        <p class="lead">点棒がHP、相棒と挑む“共闘”の麻雀。</p>
       </header>
-      <nav class="menu-list">
-        <button type="button" class="menu-btn" data-nav="battle-home">
-          <span class="menu-btn-title">対戦ホーム</span>
-          <span class="menu-btn-sub">フリー対戦 / オンライン対戦</span>
+      <!-- タイトルは「はじめる」の一択。モード選択はすべて相棒の待つホームに集約する。 -->
+      <nav class="title-actions">
+        <button type="button" class="menu-btn title-start" data-nav="home">
+          <span class="menu-btn-title">はじめる</span>
+          <span class="menu-btn-sub">相棒が待つホームへ</span>
         </button>
-        <button type="button" class="menu-btn" data-nav="mentor">
-          <span class="menu-btn-title">師弟モード</span>
-          <span class="menu-btn-sub">マイキャラを作って育てる</span>
-        </button>
-        <button type="button" class="menu-btn" data-nav="settings">
-          <span class="menu-btn-title">設定</span>
-          <span class="menu-btn-sub">音量</span>
-        </button>
+        <button type="button" class="ghost-back title-sub" data-nav="settings">設定</button>
       </nav>
       <!-- DEBUG: ?debug=tsumoreba 起動時のみ表示（bootHome で出し分け） -->
       <button type="button" id="debug-menu-btn" class="debug-fab hidden">🐛 DEBUG</button>
@@ -84,27 +78,11 @@
       <p class="placeholder-note">※ 現在のロゴはAI生成を使用した仮組みです。本リリース時にデザイナー作成のものへ差し替えます。</p>
     </section>
 
-    <!-- Battle home (JS-rendered: お気に入りキャラ立ち絵＋出迎え＋フリー/オンライン導線) -->
+    <!-- ホーム（JS描画: 相棒の立ち絵＋出迎え＋全モードへの導線。タイトルの次に来るハブ） -->
     <section id="battle-home-screen" class="screen hidden"></section>
 
     <!-- 宝珠ショップ（恒久強化・解禁） -->
     <section id="shop-screen" class="screen hidden"></section>
-
-    <!-- Free battle menu -->
-    <section id="free-battle-screen" class="screen menu-screen hidden">
-      <header class="menu-head"><h1>フリー対戦</h1></header>
-      <nav class="menu-list">
-        <button type="button" class="menu-btn" data-nav="select">
-          <span class="menu-btn-title">CPUと対戦</span>
-          <span class="menu-btn-sub">好きなキャラ・弟子で気軽に1局</span>
-        </button>
-        <button type="button" class="menu-btn" data-nav="online">
-          <span class="menu-btn-title">オンライン対戦</span>
-          <span class="menu-btn-sub">ルームマッチ / おまかせマッチング</span>
-        </button>
-      </nav>
-      <button type="button" class="ghost-back" data-nav="battle-home">← 対戦ホームへ</button>
-    </section>
 
     <!-- Roguelite (F7): party-select / run HUD / draft (JS-rendered) -->
     <section id="roguelite-screen" class="screen hidden"></section>
@@ -134,7 +112,7 @@
           <span class="menu-btn-sub">今シーズンの段位ランキング</span>
         </button>
       </nav>
-      <button type="button" class="ghost-back" data-nav="free-battle">← フリー対戦へ</button>
+      <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
     </section>
 
     <!-- Online lobby (JS-rendered: room/matchmaking + char pick) -->
@@ -180,13 +158,13 @@
       </div>
       </div><!-- /.settings-cols -->
 
-      <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
+      <button type="button" class="ghost-back" id="settings-back">← もどる</button>
     </section>
 
     <!-- Character select (4-step wizard: ①形式 → ②卓 → ③キャラ → ④ルール＆開始) -->
     <section id="select-screen" class="screen hidden">
       <header class="select-head">
-        <button type="button" class="ghost-back select-back" data-nav="free-battle">← 戻る</button>
+        <button type="button" class="ghost-back select-back" data-nav="home">← ホームへ</button>
         <h1>フリー対戦</h1>
         <ol class="wiz-steps" id="wiz-steps">
           <li class="wiz-step active" data-step="1"><span class="wiz-step-no">①</span>形式</li>
