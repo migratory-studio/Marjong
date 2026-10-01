@@ -21,6 +21,12 @@
 //   "iishantenHell"    イーシャンテン地獄（一向聴のまま長く足踏み＝あと一歩が遠い）
 //   "handSmooth"       さくさく進んでいる（連続で手が進んだ）
 //   "lastTiles"        流局間際（山が残りわずか）
+//   "oppRiichi"        他家がリーチした（局の空気が変わる瞬間）。cond.selfTenpai: 自分も聴牌しているか
+//   "selfRiichi"       自分がリーチした（宣言牌の瞬間。聴牌の一言の代わりに出る）
+//   "oppBigWin"        他家どうしの大物手（満貫以上）を見ていた＝自分は無傷（ダメージ演出で出る）
+//   ※ handStart は毎局ではなく節目（一局目・オーラス・ピンチ・前局が自分に絡んだ）＋ときどき出る。
+//     cond.firstHand / cond.allLast / cond.hpPinch / cond.lastHandResult で言い分ける（LP の pri で優先）。
+//   ※ 上の局中イベントは cond.companionBondMin で段階解放できる（絆が上がると言い方が変わる）。
 //   "swapIn"           団体戦・交代で出場（控え→出場の登場ボイス）
 //   "rlBossIntro"      楼光の館・ボスとして立ちはだかる対局前口上 cond.bossMemoryTier: "first"(初遭遇)|"rematch"(再戦)|"revenge"(雪辱)
 //   ── ペア戦・相方への局中相槌（隣で一緒に打つ相棒として、味方＝人間プレイヤーの節目に反応） ──
@@ -52,6 +58,9 @@ import { VOICE_LINE_MASTER } from "./voiceLineMaster.js";
 
 // セリフ1件を作る小ヘルパー。
 const L = (event, cond, text) => ({ event, cond, text });
+// 優先度つき（voiceLines.js の pickVoiceLine は、一致した中で pri が最大のものだけから選ぶ）。
+// 状況限定の台詞（一局目・オーラス・ピンチ…）を汎用の台詞に埋もれさせないために使う。
+const LP = (event, cond, text, pri) => ({ event, cond, text, pri });
 
 // 未実装キャラ用テンプレ群（name から全イベント・全条件ぶんを自動生成）。
 // grep 用キーワード "［テンプレ］" を必ず先頭に付ける。
@@ -247,6 +256,50 @@ const SHIYUE = [
   // 流局間際
   L("lastTiles", {}, "もう山が薄いヨ……ここで一発、欲しいネ。"),
   L("lastTiles", {}, "ラスト数枚……引くなら、今ダヨ。"),
+
+  // ── 局中の節目（2026-09-30 追加・要監修）。インゲーム改善：相棒が「その局の状況」を見て喋る。
+  //    pri＝状況限定の台詞を汎用に埋もれさせない（ピンチ3＞一局目/オーラス2＞前局の結果1＞汎用0）。
+  // 局のはじまり：一局目
+  LP("handStart", { firstHand: true }, "配牌、どうダロ？ ……最初の一枚から、ツモれば勝ちネ。", 2),
+  LP("handStart", { firstHand: true }, "一局目、様子見はナシだヨ。我（ウォ）のツモ、見ててネ？", 2),
+  // 局のはじまり：オーラス
+  LP("handStart", { allLast: true }, "オーラスだヨ。……ここで決めるネ。ツモれば勝ち。", 2),
+  LP("handStart", { allLast: true }, "最後の一局、か。ふふ、こういう時の我、強いんダヨ？", 2),
+  // 局のはじまり：ピンチ（点棒嫌いの素が滲む。数えない＝見ないことで立っている）
+  LP("handStart", { hpPinch: true }, "……点棒、もう数えたくないネ。でも、まだ終わってないヨ。", 3),
+  LP("handStart", { hpPinch: true }, "減った点棒は見ないヨ。見るのは、次のツモだけダヨ。", 3),
+  LP("handStart", { hpPinch: true, companionBondMin: 3 }, "……こわくない、って言ったら嘘。でもキミが見てるなら、引けるヨ。", 3),
+  // 局のはじまり：前の局の結果を覚えている
+  LP("handStart", { lastHandResult: "agari" }, "さっきの、見たダロ？ この流れ、離さないヨ♪", 1),
+  LP("handStart", { lastHandResult: "agari" }, "ふふん、いい風吹いてるネ。このまま押すダヨ。", 1),
+  LP("handStart", { lastHandResult: "dealIn" }, "さっきのは……うん、覚えとくヨ。次は通さないネ。", 1),
+  LP("handStart", { lastHandResult: "dealIn" }, "いたた……切り替えネ。取り返すなら、ツモで、ダロ？", 1),
+  LP("handStart", { lastHandResult: "tsumoLoss" }, "ツモられちゃったネ。……次は、我が引く番ダヨ。", 1),
+  LP("handStart", { lastHandResult: "draw" }, "流れちゃったネ。山の続きは、この局で取り返すヨ。", 1),
+  // 局のはじまり：絆で言い方が変わる（汎用枠に混ざる）
+  L("handStart", { companionBondMin: 3 }, "さ、いこ。キミと打つ局、なんだか楽しみになってきたネ。"),
+  L("handStart", { companionBondMin: 5 }, "次の局ダヨ、相棒。背中は任せたネ——我はツモに集中するから。"),
+  // 他家のリーチ
+  L("oppRiichi", {}, "うわ、リーチ来たヨ……！ ここからは慎重にネ。"),
+  L("oppRiichi", {}, "リーチかぁ。……ふふ、受けて立つダヨ？"),
+  LP("oppRiichi", { selfTenpai: true }, "向こうもリーチ？ いいヨ、こっちも張ってる——めくり合いネ！", 1),
+  LP("oppRiichi", { selfTenpai: true }, "リーチ来たけど、我たちも聴牌ダヨ。引き勝つネ。", 1),
+  LP("oppRiichi", { selfTenpai: false }, "リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。", 1),
+  LP("oppRiichi", { selfTenpai: false }, "うっ、先に張られたネ。……無理は禁物ダヨ。点棒が減るの、見たくないもん。", 1),
+  LP("oppRiichi", { selfTenpai: false, companionBondMin: 3 }, "……だいじょぶ。キミの目なら、通る牌わかるヨ。我が保証するネ。", 1),
+  // 自分のリーチ
+  L("selfRiichi", {}, "リーチ！ さあ、来いヨ——ツモれば勝ち！"),
+  L("selfRiichi", {}, "張ったヨ、リーチ！ ……ふふ、あとは引くだけダロ？"),
+  L("selfRiichi", { companionBondMin: 5 }, "リーチ。……ねえ相棒、この一枚、一緒に引こ？"),
+  // 他家どうしの大物手を見ていた（自分は無傷）
+  L("oppBigWin", {}, "うわぁ……今の、痛そう……。我たちじゃなくて、よかったネ。"),
+  L("oppBigWin", {}, "……大きいの、出たネ。流れ、変わるかもヨ。気を引き締めよ？"),
+  // 聴牌：絆で言い方が変わる（汎用枠に混ざる）
+  L("tenpai", { companionBondMin: 3 }, "聴牌ネ。……キミと打ってると、待つ時間も悪くないヨ。"),
+  L("tenpai", { companionBondMin: 5 }, "聴牌ダヨ。ふふ、キミが隣にいると、アガリ牌の方から来る気がするネ。"),
+  // 対局開始（VS画面の吹き出し）：絆で言い方が変わる
+  L("matchStart", { companionBondMin: 3 }, "今日もキミとだネ。……ふふ、ちょっと安心したヨ。"),
+  L("matchStart", { companionBondMin: 5 }, "行こ、相棒。我とキミなら——ツモれば勝ち、ダロ？"),
 
   // 団体戦・交代で登場（共闘＝相棒のぶんも背負う一言。素がほんの少し滲む）
   L("swapIn", {}, "我（ウォ）の出番ネ! ここからツモって、ぜんぶ持ってくダヨ♪"),

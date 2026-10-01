@@ -129,7 +129,7 @@ const BATTLE_EVENTS = ["matchStart","bigWin","bigLoss","pinch","tobi","bustWin",
 const PARLOR_TIERS  = ["bigWin","win","rough"];
 
 const LOBBY_EVENTS = ["home","homeChat","homeTap"];
-const MATCH_EVENTS = ["matchStart","agari","damage","matchEnd","handStart","tenpai","tenpaiDrop","tsumogiriStreak","handStuck","iishantenHell","handSmooth","lastTiles","swapIn","allyHandStart","allyTenpai","allyStuck","allyLast"];
+const MATCH_EVENTS = ["matchStart","agari","damage","matchEnd","handStart","tenpai","tenpaiDrop","tsumogiriStreak","handStuck","iishantenHell","handSmooth","lastTiles","oppRiichi","selfRiichi","oppBigWin","swapIn","allyHandStart","allyTenpai","allyStuck","allyLast"];
 // 楼光の館（ローグライト）の潜行ナラティブ系。
 const ROGUELITE_EVENTS = ["rlChapterIntro","rlBanter","rlBanterReply","rlBuff","rlPursue","rlRetreat","rlBossIntro","rlChapterClear","rlWipe","rlResolve"];
 
@@ -137,6 +137,7 @@ const EVENT_LABEL = {
   matchStart:"対局開始", agari:"和了", damage:"被ダメージ", matchEnd:"対局終了",
   handStart:"局のはじまり", tenpai:"聴牌", tenpaiDrop:"聴牌くずし", tsumogiriStreak:"ツモ切り続き",
   handStuck:"手詰まり", iishantenHell:"イーシャンテン地獄", handSmooth:"好調", lastTiles:"流局間際",
+  oppRiichi:"他家のリーチ", selfRiichi:"自分のリーチ", oppBigWin:"他家どうしの大物手",
   swapIn:"交代登場", allyHandStart:"相方相槌・局頭", allyTenpai:"相方相槌・味方聴牌",
   allyStuck:"相方相槌・味方手詰まり", allyLast:"相方相槌・流局間際",
   rlChapterIntro:"楼光・章の導入", rlBanter:"楼光・潜行中の雑談", rlBanterReply:"楼光・雑談への返し",
@@ -179,7 +180,8 @@ function buildModel(charId) {
   const forgeRows = merged.slice(handCount);
 
   return {
-    character: handRows.map((e) => ({ kind:"character", event:e.event, condStr:condStr(e.cond), text:e.text })),
+    // pri（優先度。LP(...) で書いた行）は編集対象外だが、貼り戻しで消えないよう保持する。
+    character: handRows.map((e) => ({ kind:"character", event:e.event, condStr:condStr(e.cond), text:e.text, pri:e.pri || 0 })),
     forge: forgeRows.map((e) => ({ kind:"character", readOnly:true, event:e.event, condStr:condStr(e.cond), text:e.text })),
     mentor: {
       greet:  (MENTOR_GREETINGS[charId]   || []).map((e) => ({ kind:"mentor", section:"greet",  condStr:condStr(e.cond), text:e.text })),
@@ -535,7 +537,11 @@ function generateCode() {
     } else {
       out.push(`// HANDWRITTEN.${id}（const ${id.toUpperCase()} = [ ... ] の中身）。※ scenario-forge 量産分は含めない。`);
     }
-    for (const r of model.character) out.push(`  L(${q(r.event)}, ${condLiteral(r.condStr)}, ${q(r.text)}),`);
+    for (const r of model.character) {
+      out.push(r.pri
+        ? `  LP(${q(r.event)}, ${condLiteral(r.condStr)}, ${q(r.text)}, ${Number(r.pri)}),`
+        : `  L(${q(r.event)}, ${condLiteral(r.condStr)}, ${q(r.text)}),`);
+    }
   }
 
   const M = model.mentor;

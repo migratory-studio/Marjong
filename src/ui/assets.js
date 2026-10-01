@@ -207,6 +207,8 @@ export class AudioManager {
     this.seVolume = seVolume;
     this.currentBgm = null;
     this.currentBgmSrc = null;
+    // BGM の一時的な沈め（ピンチ時など）。音量スライダーとは別の倍率＝設定値は変えない。
+    this._duck = 1;
     this._sePool = this._buildPool(SE_DAHAI, seVolume, 4);
     this._seShuffle = this._buildPool([SE_SHUFFLE], seVolume, 1);
     this._seKingaku = this._buildPool([SE_KINGAKU], seVolume, 1);
@@ -242,7 +244,16 @@ export class AudioManager {
   // Live volume controls (0..1). Used by the settings UI.
   setBgmVolume(v) {
     this.bgmVolume = clamp01v(v);
-    if (this.currentBgm) this.currentBgm.volume = this.bgmVolume;
+    if (this.currentBgm) this.currentBgm.volume = this._bgmTarget();
+  }
+  // 実際に鳴らす BGM 音量（スライダー × 一時的な沈め）。
+  _bgmTarget() { return this.bgmVolume * this._duck; }
+  // BGM を一時的に沈める（1=通常）。ピンチの「追い詰められた」空気づくり用。曲は変えない。
+  setBgmDuck(factor = 1) {
+    const f = Math.max(0, Math.min(1, Number(factor) || 0));
+    if (f === this._duck) return;
+    this._duck = f;
+    if (this.currentBgm && !this.currentBgm.paused) this._fade(this.currentBgm, this._bgmTarget(), 700);
   }
   setSeVolume(v) {
     this.seVolume = clamp01v(v);
@@ -336,7 +347,7 @@ export class AudioManager {
     next.volume = 0;
     this.currentBgm = next;
     this.currentBgmSrc = src;
-    next.play().then(() => this._fade(next, this.bgmVolume, 600)).catch(() => {
+    next.play().then(() => this._fade(next, this._bgmTarget(), 600)).catch(() => {
       if (this.currentBgm === next) this.currentBgmSrc = null; // allow retry after a gesture
     });
     if (old) this._fade(old, 0, 500, () => old.pause());
@@ -385,6 +396,32 @@ export class AudioManager {
       g.gain.exponentialRampToValueAtTime(0.0008, now + 0.05);
       o.connect(g).connect(ctx.destination);
       o.start(now); o.stop(now + 0.07);
+    } catch { /* ignore */ }
+  }
+
+  // 心音「ドクン、ドクン」（ピンチに入った瞬間の一度だけ）。サンプル不要の WebAudio 合成。
+  // 低いサイン波を短く2拍＝耳障りにならない音量。SE 音量に追従。
+  playHeartbeat() {
+    if (!this.enabled) return;
+    try {
+      if (!this._actx) this._actx = new (window.AudioContext || window.webkitAudioContext)();
+      const ctx = this._actx;
+      if (ctx.state === "suspended") ctx.resume();
+      const now = ctx.currentTime;
+      const beat = (t0, f, peak) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = "sine";
+        o.frequency.setValueAtTime(f, t0);
+        o.frequency.exponentialRampToValueAtTime(f * 0.55, t0 + 0.16);
+        g.gain.setValueAtTime(0, t0);
+        g.gain.linearRampToValueAtTime(peak, t0 + 0.012);
+        g.gain.exponentialRampToValueAtTime(0.0008, t0 + 0.22);
+        o.connect(g).connect(ctx.destination);
+        o.start(t0); o.stop(t0 + 0.26);
+      };
+      const v = this.seVolume * 0.9;
+      beat(now, 78, v);
+      beat(now + 0.24, 64, v * 0.75);
     } catch { /* ignore */ }
   }
 

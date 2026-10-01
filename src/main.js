@@ -88,7 +88,9 @@ import { simulateLeagueSection, simAbsentLeaguePt } from "./autobattle/leagueAut
 import { paramsFromLv, PARAM_KEYS } from "./autobattle/autoBattle.js";
 import { pickMentorBigMatchLine, pickMentorBattleQuip } from "./data/mentorVoiceMaster.js";
 import { isDebugMode } from "./app/debug.js";
-import { applyMatchToCompanion, addCompanionBondExp, detectPlayStyle, topPlayStyle } from "./progression/companionBond.js";
+import { applyMatchToCompanion, addCompanionBondExp, detectPlayStyle, topPlayStyle, bondPtView, bondProgressFrac, bondTotalExp } from "./progression/companionBond.js";
+import { bondBandLabel } from "./progression/progressionService.js";
+import { emoteDef } from "./data/emoteMaster.js";
 import { versionLabel, buildEnvReport } from "./config/appInfo.js";
 import { showSupportModal, showResetConfirm } from "./screens/supportModal.js";
 import { initErrorGuard } from "./app/errorGuard.js";
@@ -145,14 +147,18 @@ function matchVoiceCtxFor(charId) {
 
 // フリー対戦（個人）の終局で相棒（＝操作キャラ）との絆・履歴を更新（本気/大会は結果反映側で加算）。
 // アカウント連携時のみ計上する方針（未連携は「一緒に」カウントも絆も記録しない＝対戦ホームでは「—」表示）。
+// 戻り値 { before, after }（絆の前後。対局終了画面で「上げた実感」を返すのに使う）。未連携/失敗は null。
 async function applyFreeMatchToCompanion({ companionId, placement, numPlayers, styleTags }) {
-  if (!companionId) return;
+  if (!companionId) return null;
   const user = await getUser().catch(() => null);
-  if (!user) return; // 未連携は記録しない
+  if (!user) return null; // 未連携は記録しない
   try {
     const p = await profileRepo.loadProfile();
-    await profileRepo.saveProfile(applyMatchToCompanion(p, { companionId, placement, numPlayers, styleTags }));
-  } catch (e) { console.error("companion bond 更新失敗(free):", e); }
+    const before = p?.companionBonds?.[companionId] || { level: 1, exp: 0 };
+    const next = applyMatchToCompanion(p, { companionId, placement, numPlayers, styleTags });
+    await profileRepo.saveProfile(next);
+    return { before, after: next.companionBonds?.[companionId] || before };
+  } catch (e) { console.error("companion bond 更新失敗(free):", e); return null; }
 }
 
 // 「前の局」の結果を人間視点で導出（vline の lastHandResult 用）。
@@ -175,6 +181,193 @@ function vline(charId, event, ctx = {}) {
 // 将来のシナリオ・バトルノードはここを呼んでから対局を起動すればよい。
 function setPendingVoiceSet(v) { pendingVoiceSet = v || null; }
 if (typeof window !== "undefined") window.__setVoiceSet = setPendingVoiceSet;
+// VS 画面で相棒（＝自分の操作キャラ）が言う対局前のひと言。対局開始より前に引くので、
+// セリフセットは「次の対局」のもの（pendingVoiceSet）で解決する。無ければ null＝何も出さない。
+function introLineFor(c) {
+  if (!c) return null;
+  return pickVoiceLine(c.id, "matchStart", { voiceSet: pendingVoiceSet, ...matchVoiceCtxFor(c.id) });
+}
+
+// ── 相棒ボード（個人戦）の「先出し」防止 ─────────────────────────────────────
+// エンジンは和了/流局の瞬間に点棒を精算するので、そのまま描くと和了カットインの最中に右のHPが
+// 減って順位まで入れ替わり、後から来るダメージ演出が「もう知っている結果の再生」になる。
+// 局が終わってからダメージ演出（流局は「次の局へ」）までは、局が始まる前の点数でボードを止め、
+// 演出と同時に動かす。団体戦・ペア戦（楼光含む）のボードはダメージ演出の中でHPを反映する
+// 設計（teamBattleData/pairBattleData を読む）なので対象外。
+let hpHold = null; // 表示を止めている間の点数（席順）。null＝ライブ表示
+function holdHpBoard(r) {
+  hpHold = null;
+  if (!game || teamBattleData || pairBattleData) return;
+  const d = r?.deltas || [];
+  if (!d.some((v) => v)) return;
+  hpHold = game.players.map((p, i) => p.points - (d[i] || 0));
+}
+function releaseHpHold() {
+  if (!hpHold) return;
+  hpHold = null;
+  updateHpBoard();
+  updatePinchFx();
+}
+const shownPoints = (i) => (hpHold ? hpHold[i] : game.players[i].points);
+
+// ── 終わった局の局名 ─────────────────────────────────────────────────────
+// エンジンは HAND_WON/HAND_DRAWN の直後（_endHand）で局番号・本場を次の局へ進めるので、そのまま
+// 読むと和了画面や卓中央が「次の局」を出してしまう（東1局の和了が「東二局 ロン和了」）。
+// 局が終わった瞬間に控え、次の局の開始で捨てる。通信対戦のレプリカも同じイベント順で届く。
+let lastHandInfo = null; // { label, kanji, honba, kyotaku }
+const KANJI_NUM = ["", "一", "二", "三", "四", "五", "六", "七", "八"];
+function captureHandEnd() {
+  if (!game) return;
+  const wind = { 27: "東", 28: "南", 29: "西", 30: "北" }[game.roundWind] || "東";
+  lastHandInfo = {
+    label: game.roundLabel(),
+    kanji: `${wind}${KANJI_NUM[game.kyoku] || game.kyoku}局`,
+    honba: game.honba,
+    kyotaku: game.kyotaku,
+  };
+  if (renderer) renderer.roundInfo = { label: lastHandInfo.label, honba: lastHandInfo.honba, kyotaku: lastHandInfo.kyotaku };
+}
+function clearHandEndInfo() {
+  lastHandInfo = null;
+  if (renderer) renderer.roundInfo = null;
+}
+
+// ── 被弾の手応え（オートバトルの卓シェイクと同じ語彙）。level: "sm"(2px) / "lg"(6px減衰) ──
+function shakeScreen(level) {
+  const scr = el("game-screen");
+  if (!scr) return;
+  scr.classList.remove("hit-shake-sm", "hit-shake-lg");
+  void scr.offsetWidth; // 連続で揺らしてもアニメを頭から
+  scr.classList.add(level === "lg" ? "hit-shake-lg" : "hit-shake-sm");
+  setTimeout(() => scr.classList.remove("hit-shake-sm", "hit-shake-lg"), 560);
+}
+// 団体戦・ペア戦（楼光含む）用。HPのスケールがモードで違う（楼光は最大HP~1000）ので、
+// 被弾が最大HPの何割かで強弱を決める。d＝自席の被弾（負）、after＝被弾後HP、full＝最大HP。
+function shakeForHumanHit(d, before, after, full) {
+  if (!(d < 0)) return;
+  const f = full > 0 ? -d / full : 0;
+  shakeScreen(f >= 0.35 || (after != null && after <= 0) ? "lg" : "sm");
+}
+
+// ── 相棒（右の立ち絵）の小さな芝居 ─────────────────────────────────────────
+// 立ち絵は1枚絵で表情差分が無いので、動き＋頭上のエモートで気持ちを見せる（共在感）。
+// エモート素材は紙芝居と共用（src/data/emoteMaster.js）。単発は1秒前後＝連戦のテンポを殺さない。
+const PORTRAIT_REACTIONS = {
+  joy:     { act: "act-hop",    emote: "joy" },       // 和了
+  tenpai:  { act: "act-hop",    emote: "music" },     // 聴牌
+  riichi:  { act: "act-hop",    emote: "sparkle" },   // 自分のリーチ
+  alert:   { act: "act-flinch", emote: "surprise" },  // 他家リーチ
+  witness: { act: "act-flinch", emote: "surprise" },  // 他家どうしの大物手
+  hit:     { act: "act-shake",  emote: "sweat" },     // 被弾（小〜中）
+  bigHit:  { act: "act-shake",  emote: "shock" },     // 被弾（大）
+  pinch:   { act: "act-shake",  emote: "fluster" },   // 残りわずか
+  stuck:   { act: null,         emote: "muddle" },    // 手が進まない
+};
+const PORTRAIT_ACTS = ["act-hop", "act-flinch", "act-shake"];
+function selfStageVisible() {
+  const stage = el("self-stage");
+  return !!stage && !stage.classList.contains("hidden") && !teamBattleData && !pairBattleData;
+}
+function reactPortrait(kind) {
+  const def = PORTRAIT_REACTIONS[kind];
+  if (!def || !selfStageVisible()) return;
+  const art = el("self-bustup");
+  if (def.act && art) {
+    art.classList.remove(...PORTRAIT_ACTS);
+    void art.offsetWidth;
+    art.classList.add(def.act);
+    setTimeout(() => art.classList.remove(def.act), 760);
+  }
+  if (def.emote) playStageEmote(def.emote);
+}
+let stageEmoteTimer = null;
+const STAGE_EMOTE_SIZE = 84;
+function playStageEmote(emoteId) {
+  const stage = el("self-stage");
+  const d = emoteDef(emoteId);
+  if (!stage || !d) return;
+  let fx = stage.querySelector(".stage-emote");
+  if (!fx) { fx = document.createElement("div"); fx.className = "stage-emote"; stage.appendChild(fx); }
+  clearInterval(stageEmoteTimer);
+  const size = STAGE_EMOTE_SIZE;
+  fx.style.width = `${size}px`;
+  fx.style.height = `${size}px`;
+  fx.style.backgroundImage = `url("${d.sheet}")`;
+  fx.style.backgroundSize = `${d.cols * size}px ${d.rows * size}px`;
+  const place = (f) => { fx.style.backgroundPosition = `-${(f % d.cols) * size}px -${Math.floor(f / d.cols) * size}px`; };
+  fx.classList.remove("out");
+  fx.classList.add("show");
+  place(0);
+  // ループ素材（♪・汗など）も長くは回さない＝2周で畳む。一拍の反応は最終コマで止めて消す。
+  const total = d.loop ? d.frameCount * 2 : d.frameCount;
+  let frame = 0;
+  stageEmoteTimer = setInterval(() => {
+    frame++;
+    if (frame >= total) {
+      clearInterval(stageEmoteTimer);
+      stageEmoteTimer = null;
+      if (!d.loop) place(d.frameCount - 1);
+      setTimeout(() => fx.classList.add("out"), 300);
+      return;
+    }
+    place(d.loop ? frame % d.frameCount : frame);
+  }, 1000 / (d.fps || 30));
+}
+function clearStageEmote() {
+  clearInterval(stageEmoteTimer);
+  stageEmoteTimer = null;
+  el("self-stage")?.querySelector(".stage-emote")?.classList.add("out");
+}
+// 対局で使うエモートのシートを先読み（初回の再生でコマ落ちしないように）。
+const preloadedEmotes = [];
+function preloadStageEmotes() {
+  if (preloadedEmotes.length) return;
+  for (const id of new Set(Object.values(PORTRAIT_REACTIONS).map((r) => r.emote).filter(Boolean))) {
+    const d = emoteDef(id);
+    if (!d) continue;
+    const img = new Image();
+    img.src = d.sheet;
+    preloadedEmotes.push(img);
+  }
+}
+// 和了画面・ダメージ演出で同じキャラの立ち絵が大きく出ている間は、右の立ち絵を一歩下げる。
+function setStageEcho(on) {
+  el("self-stage")?.classList.toggle("is-echo", !!on);
+}
+
+// ── ピンチ（自分のHPが残り25%以下）──────────────────────────────────────────
+// 点棒＝HPの「追い詰められた」体感を、数字ではなく卓の空気で知らせる：卓の縁が赤く脈打ち、
+// BGM が少し沈み、入った瞬間に心音が一度鳴る。団体戦＝出場中メンバー、ペア戦/楼光＝自席のHP。
+const PINCH_FRAC = 0.25;
+let pinchOn = false;
+function humanHpFrac() {
+  if (!game) return 1;
+  if (teamBattleData) {
+    const t = teamBattleData.teams[humanIndex];
+    const full = t?.chars?.[t.activeIdx]?.stats?.startingPoints || MAX_HP;
+    return (t?.hps?.[t.activeIdx] ?? full) / full;
+  }
+  if (pairBattleData) {
+    const full = pairBattleData.chars?.[humanIndex]?.stats?.startingPoints || MAX_HP;
+    return (pairBattleData.hp?.[humanIndex] ?? full) / full;
+  }
+  const full = game.players[humanIndex]?.character?.stats?.startingPoints || MAX_HP;
+  return shownPoints(humanIndex) / full;
+}
+function updatePinchFx() {
+  const f = humanHpFrac();
+  const on = !!game && !game.isGameOver() && f > 0 && f <= PINCH_FRAC;
+  if (on === pinchOn) return;
+  pinchOn = on;
+  el("pinch-fx")?.classList.toggle("on", on);
+  audio.setBgmDuck?.(on ? 0.6 : 1);
+  if (on) { audio.playHeartbeat?.(); reactPortrait("pinch"); }
+}
+function resetPinchFx() {
+  pinchOn = false;
+  el("pinch-fx")?.classList.remove("on");
+  audio.setBgmDuck?.(1);
+}
 
 const el = (id) => document.getElementById(id);
 // HTML 差し込み用の最小エスケープ（モブ名・マイキャラ名など）。
@@ -942,6 +1135,9 @@ const SCREEN_BGM = {
   "mentor-home-screen": () => audio.playMentorBgm(),
 };
 function goScreen(id) {
+  // 対局の外へ出るときは、ピンチ演出（卓の赤み・BGM の沈め）を必ず解く。結果画面を通らずに
+  // 抜ける経路（通信対戦の切断→ホームへ など）で、ホームの BGM が沈んだままにならないように。
+  if (id !== "game-screen") resetPinchFx();
   showScreen(id);
   SCREEN_BGM[id]?.();
   if (id === "select-screen") { resetSelectWizard(); loadCompletedRoster(); } // ①卓へ＋弟子ロスター更新
@@ -3698,6 +3894,7 @@ async function startGame() {
     mode: { rounds: selectedRounds, players: selectedPlayers },
     dealerIndex,
     audio,
+    introLine: introLineFor(human),
     onComplete: () => beginGame(seated, dealerIndex),
   });
 }
@@ -3827,6 +4024,7 @@ function startOnlineMatch(charId) {
     mode: { rounds: selectedRounds, players: selectedPlayers },
     dealerIndex,
     audio,
+    introLine: introLineFor(human),
     onComplete: () => beginGame(seated, dealerIndex, { online: true }),
   });
 }
@@ -4385,6 +4583,14 @@ function startPairBattleGame(partnerId) {
 function beginGame(seated, dealerIndex, opts = {}) {
   online = null; // 既定はオフライン。オンライン時のみ startOnlineRoom が設定する。
   resetOnlineTurnUi(); // 前局/前対局の手番・待機 UI（長考バッジ/代打ちモーダル/待機トースト）を一掃。
+  // 前の対局の演出状態を持ち越さない（大会の連戦・「もう一度」はリロードを挟まない）。
+  hpHold = null;
+  lastHandInfo = null;
+  resetPinchFx();
+  setStageEcho(false);
+  clearStageEmote();
+  resetAbilityBar();
+  preloadStageEmotes();
   // 団体戦は個人が飛んでも交代で続行する。終了（団体トビ）は「いずれかのチームが
   // 全滅（3人全員のHPが尽きてチーム合計が0以下）」したとき、または規定局完了。
   const teamBustCheck = teamBattleData
@@ -4440,7 +4646,14 @@ function beginGame(seated, dealerIndex, opts = {}) {
     resetShioriReview(); // 前の対局の「答え合わせ」が連戦に持ち越されないよう畳む
     mamoriWarned = new Map(); // 真守の警告履歴は1局ぶん
     recalledTileIds.clear();  // 回収マークも1局ぶん
+    clearHandEndInfo();       // 「終わった局」の局名表示を解除＝方位盤は新しい局を出す
+    hpHold = null;            // 前局の表示止めは必ず解く（演出を飛ばした経路の取りこぼし防止）
+    setStageEcho(false);
   });
+  // 局の終わり：局名を控え（精算直後にエンジンが局番号を進めるため）、個人戦の相棒ボードは
+  // ダメージ演出まで精算前の点数で止める。どちらも _endHand より前に同期で走る。
+  game.bus.on(Events.HAND_WON, (r) => { captureHandEnd(); holdHpBoard(r); });
+  game.bus.on(Events.HAND_DRAWN, (r) => { captureHandEnd(); holdHpBoard(r); });
   // Riichi declaration: chime/voice + a seat テロップ (ポン/カンと同系). The flag
   // extends the *next* CPU turn by RIICHI_WAIT so the banner reads (宣言後ウェイト).
   game.bus.on(Events.RIICHI_DECLARED, ({ player }) => {
@@ -4813,7 +5026,9 @@ function discardHintText() {
 // action-bar のヒント span（あれば）を現在の選択状態に合わせて差し替える。
 function updateDiscardHint() {
   const h = document.getElementById("discard-hint");
-  if (h) h.textContent = discardHintText();
+  if (!h) return;
+  h.textContent = discardHintText();
+  if (renderer && !renderer.showHandCoach) h.hidden = false;
 }
 
 // Hovering one of YOUR OWN hand tiles previews the wait: if discarding that
@@ -4923,6 +5138,8 @@ function showHumanActions() {
 
   // Ability activation buttons / indicators (発動種別ごと)。These go in the side
   // panel (#ability-bar), not the action bar, so they never cover the hand tiles.
+  // 手番の外は clearActions が「押せない状態」で残しているので、ここで作り直す。
+  resetAbilityBar();
   const abilityBar = el("ability-bar");
   // ペア戦：相方への指示ウィンドウ（自分の能力ボタンの上に常時表示）。
   renderPairCommandPanel(abilityBar);
@@ -5007,10 +5224,16 @@ function showHumanActions() {
     }));
   }
 
+  // 撃てる手動能力があれば、相棒の立ち絵もボタン代わりにする（オンラインはボタン自体が無い）。
+  setAbilityReady([...abilityBar.querySelectorAll("button.btn-ability")].find((b) => !b.disabled) || null);
+
   const hint = document.createElement("span");
   hint.id = "discard-hint";
-  hint.style.cssText = "align-self:center;color:#cfe0d6;font-size:13px;margin-left:8px;";
+  hint.className = "discard-hint";
   hint.textContent = discardHintText();
+  // 初回のコーチマーク（手牌の上の「牌をタップ → もう一度で打牌」）が出ている間は同じ内容を
+  // 二重に出さない。最初に牌へ触れた時点でコーチは消え、ヒントが引き継ぐ（updateDiscardHint）。
+  hint.hidden = !!renderer.showHandCoach;
   bar.appendChild(hint);
 
   // ゼロ・リサーチがグレーアウト中なら「山に残っていない＝読みの材料」ヒントを添える。
@@ -5380,6 +5603,7 @@ function render() {
   });
   renderer.render();
   updateHpBoard(); // 右側の相棒ボードのHP/手番ハイライトを最新状態に同期
+  updatePinchFx(); // 自分のHPが残りわずかなら卓の縁を赤く（表示中のHP＝先出し防止後の値で判定）
   updateModelAnswerHud(); // 栞 Lv7+/Lv10 の卓上HUD（捲り条件・押し引き）を同期
   updateAbilityAura();    // 自席の持続レイヤー（姚玖の庭・春嬋の韋駄天…）を同期
   updateFieldAura();      // 場の持続レイヤー（他家由来で卓全体に効く能力＝泥中の蓮…）
@@ -5424,10 +5648,12 @@ function showHandResult() {
     // 名前を与える（docs §14-2-3 #3）。
     overlay.classList.remove("lotus-bloom"); // 前局の「蓮が咲いた」余韻を流局へ持ち越さない
     const abyssNote = abyssCollectNoteHtml(r);
+    const abortLabel = r.abort === "suukaikan" ? "四開槓" : "";
     overlay.innerHTML = `
-      <div class="win-card${abyssNote ? " abyss" : ""}">
-        <h2 class="win-title">流局</h2>
-        <div class="win-sub">テンパイ: ${tenpaiNames.join("、") || "なし"}</div>
+      <div class="win-card draw-card${abyssNote ? " abyss" : ""}">
+        <div class="win-how">${lastHandInfo?.kanji || ""}</div>
+        <h2 class="win-title">流局${abortLabel ? `<small class="draw-abort">（${abortLabel}）</small>` : ""}</h2>
+        ${r.exhaustive ? drawHandsHtml(r) : `<div class="win-sub">テンパイ: ${tenpaiNames.join("、") || "なし"}</div>`}
         ${notenNote}
         ${abyssNote}
         <div class="win-buttons"></div>
@@ -5444,6 +5670,8 @@ function showHandResult() {
   //   yakuman … 専用の特別演出（長尺・新演出）＋ファンファーレ
   const tier = winTierOf(r.result);
   const callType = r.tsumo ? "tsumo" : "ron";
+  // 自分の和了はカットイン／和了画面に同じキャラの大きな立ち絵が出るので、右の立ち絵は一歩下げる。
+  setStageEcho(r.winner === humanIndex && selfStageVisible());
   if (tier === "yakuman") {
     audio.playFanfare();
     const res = r.result;
@@ -5461,6 +5689,37 @@ function showHandResult() {
     overlay.classList.remove("hidden");
     showWinResult(overlay, r);
   }, WIN_CALL_WAIT[tier] || WIN_CALL_WAIT.normal);
+}
+
+// 流局（荒牌平局）の内訳：各席のテンパイ/ノーテン、テンパイ者の手牌、テンパイ料の授受。
+// 手牌は中身が分かる席だけ（通信対戦では他席は伏せ札なので「テンパイ」の表記のみ）。
+// テンパイ料＝点棒＝HPの増減なので、個人戦（通常・二人・対人）では金額も出す。団体戦/ペア戦は
+// HPではなくチーム/ペア点数に乗る（楼光はノーテン罰符が別）ので金額は出さない。
+function drawHandsHtml(r) {
+  const showDelta = !teamBattleData && !pairBattleData;
+  const rows = game.players.map((p, i) => {
+    const tenpai = !!r.tenpai?.[i];
+    const d = (r.deltas || [])[i] || 0;
+    const known = p.hand.length > 0 && p.hand.every((t) => t && t.kind >= 0 && !t.hidden);
+    let tiles = "";
+    if (tenpai && known) {
+      tiles = p.hand.slice().sort((a, b) => a.kind - b.kind)
+        .map((t) => `<img class="draw-tile" src="${tilePath(t.kind, t.red)}" alt="">`).join("");
+      for (const m of p.melds || []) {
+        tiles += `<span class="draw-meld">${m.tiles.map((t) => `<img class="draw-tile" src="${tilePath(t.kind, t.red)}" alt="">`).join("")}</span>`;
+      }
+    }
+    const deltaHtml = showDelta
+      ? `<span class="draw-delta ${d > 0 ? "up" : d < 0 ? "dn" : ""}">${d ? `${d > 0 ? "+" : ""}${d.toLocaleString()}` : "±0"}</span>`
+      : "";
+    return `<div class="draw-row${tenpai ? " is-tenpai" : ""}${i === humanIndex ? " is-you" : ""}">
+      <span class="draw-name" style="color:${p.character.color}">${esc(p.character.name)}</span>
+      <span class="draw-state">${tenpai ? "テンパイ" : "ノーテン"}</span>
+      <span class="draw-tiles">${tiles}</span>
+      ${deltaHtml}
+    </div>`;
+  }).join("");
+  return `<div class="draw-rows">${rows}</div>`;
 }
 
 // Build the winning hand row for the result screen: concealed tiles (sorted),
@@ -5496,9 +5755,11 @@ function renderWinHand(r) {
     </div>`;
 }
 
-// 局名を漢数字つきで（東1局 -> 東一局）。
+// 局名を漢数字つきで（東1局 -> 東一局）。局の終わりに控えた「終わった局」を優先する
+// （エンジンは精算の直後に局番号を進めるので、game.kyoku は既に次の局を指している）。
 function roundLabelKanji() {
-  const k = ["", "一", "二", "三", "四", "五", "六", "七", "八"][game.kyoku] || game.kyoku;
+  if (lastHandInfo) return lastHandInfo.kanji;
+  const k = KANJI_NUM[game.kyoku] || game.kyoku;
   const wind = { 27: "東", 28: "南", 29: "西", 30: "北" }[game.roundWind] || "東";
   return `${wind}${k}局`;
 }
@@ -5647,6 +5908,7 @@ function showWinResult(overlay, r) {
       if (doneCalled) return;
       doneCalled = true;
       clearTimeout(winRevealTimer); winRevealTimer = null;
+      fxSkip.remove(); // 増減の演出が終わったら「スキップ」は役目を終える（次の局へと並べて残さない）
       // 最終値とラベルは出したまま残す（増加!/減少! の余韻＝報酬感）。スキップで途中から
       // 飛んでもここで最後のステップを焼き付ける。
       const last = steps[steps.length - 1];
@@ -5760,7 +6022,9 @@ function promptRoguelitePursueInGame(onPursue, onStop) {
     : onStop;
   showRoguelitePursue(el("game-screen"), {
     floor: run.floor,
-    nextLabel: game?.roundLabel?.() || "次局",
+    // 次に打つ局（エンジンは精算の直後に局番号を進めている＝ここは「次の局」を指す）。
+    // 親の連荘で同じ局番号が続くときは本場で見分けがつくよう添える。
+    nextLabel: game?.roundLabel ? `${game.roundLabel()}${game.honba > 0 ? ` ${game.honba}本場` : ""}` : "次局",
     run, charImages,
     standings,
     bossRule,
@@ -5772,13 +6036,17 @@ function promptRoguelitePursueInGame(onPursue, onStop) {
 
 function appendNextButton(box, r) {
   const deltas = game.lastResult && game.lastResult.deltas; // capture before next hand
-  const proceed = () => {
+  // floats=true は流局（和了のダメージ演出を通らない）だけ。卓の上に ±N を浮かせ、読ませてから
+  // 次の局を配る（配牌の上に前局の増減が出ると、どの局の数字か紛らわしい）。和了の増減は
+  // 和了画面→ダメージ演出で見せ切っているので、ここでは重ねない（同じ結果を何度も出さない）。
+  const proceed = ({ floats = false } = {}) => {
     if (game.isGameOver()) {
       if (online) online.send({ type: "intent.ack" }); // 権威の run() を終了させる
       showGameOver();
       return;
     }
-    showPointFx(deltas); // animate +N / -N over the table
+    const hasFloats = floats && Array.isArray(deltas) && deltas.some((d) => d);
+    if (hasFloats) showPointFx(deltas); // animate +N / -N over the table
     if (online) {
       online.send({ type: "intent.ack" }); // 権威が次局を開始 → bus で描画
       // ① 局間待ち：自分は次局へ進める状態だが、他家の ack 待ちで開始が遅れることがある。
@@ -5794,22 +6062,25 @@ function appendNextButton(box, r) {
       promptRoguelitePursueInGame(() => startNextHand(), () => { game.gameOver = true; showGameOver(); });
       return;
     }
-    startNextHand();
+    if (hasFloats) setTimeout(() => { if (game && !game.isGameOver()) startNextHand(); }, 1100);
+    else startNextHand();
   };
   const btn = mkBtn(game.isGameOver() ? "結果へ" : "次の局へ", "btn-tsumo", () => {
     el("win-overlay").classList.add("hidden");
+    setStageEcho(false);
     // On a 和了, play the RPG-style HP/damage sequence first (points = HP), then
     // advance. Draws (no winner index) skip straight through.
     if (r && r.winner != null && deltas && deltas.some((d) => d)) {
-      if (teamBattleData) showTeamBattleDamageFx(r, proceed);
-      else if (pairBattleData) showPairBattleDamageFx(r, proceed);
-      else showDamageFx(r, proceed);
+      if (teamBattleData) showTeamBattleDamageFx(r, () => proceed());
+      else if (pairBattleData) showPairBattleDamageFx(r, () => proceed());
+      else showDamageFx(r, () => proceed());
     } else {
       // 流局（ノーテン罰符など）は和了ダメージ演出を通らない。ペア戦は罰符の点移動を
       // ペア点数へ反映してから進む（HPは被弾のみなので変えない）。
       if (pairBattleData && deltas && deltas.some((d) => d)) applyPairDrawSettlement(deltas);
       applyRogueliteNotenPenalty(r); // 楼光：荒牌平局のノーテン罰符＝HPダメージ（カリュブディス3倍）
-      proceed();
+      releaseHpHold(); // 個人戦：止めていた右のボードをここで精算後（テンパイ料）へ動かす
+      proceed({ floats: true });
     }
   });
   box.appendChild(btn);
@@ -6195,6 +6466,18 @@ function showRoguelitePenaltyFx({ targets = [], onDone } = {}) {
   timer = setTimeout(finish, 6500);
 }
 
+// 満貫未満の和了のダメージ（カード無し）。右のボードが残像つきで動き、卓の各席の上に ±N が
+// 浮き、相棒がひと言。一拍おいて次へ（onDone）＝和了画面の「次の局へ」から約1.7秒で次の局。
+function playQuickDamage(r, { hd, spText, reaction }, onDone) {
+  audio.playSe(sePath("ボウリングのピンを倒す1.mp3"), hd < 0 ? 0.8 : 0.45);
+  releaseHpHold();
+  showPointFx(r.deltas || []);
+  if (spText) showSelfTalk(spText, talkDwellMs(spText) + 800);
+  if (reaction) reactPortrait(reaction);
+  if (hd < 0) shakeScreen("sm");
+  setTimeout(onDone, 1700);
+}
+
 function showDamageFx(r, onDone) {
   const host = el("damage-overlay");
   const deltas = r.deltas || [];
@@ -6223,6 +6506,44 @@ function showDamageFx(r, onDone) {
   // 点棒は動かなかったが守り切った席も。守備キャラの見せ場がここにしか無い。
   const order = [r.winner];
   game.players.forEach((p, i) => { if (i !== r.winner && (deltas[i] || guardOf(i))) order.push(i); });
+
+  // 真守「見えていました」：警告した牌が実際に当たり牌だったときだけ、局の終わりに一言。
+  const insight = mamoriInsight(r);
+
+  // 自キャラ(人間)のひと言。和了したか／被弾したかで台詞を出し分ける。局に絡んでいない
+  // （増減なし）ときは、他家どうしの大物手にだけ「見ていた」反応を返す。
+  // 右に相棒の立ち絵が出ている個人戦では、その吹き出しに言わせる（カードの左に同じキャラの
+  // 大きな立ち絵をもう1枚出すと二重になる）。立ち絵が無い画面構成だけ従来のスピーカーで出す。
+  const human = game.players[humanIndex];
+  const hd = deltas[humanIndex] || 0;
+  let spEvent = null, spCtx = null, reaction = null;
+  if (r.winner === humanIndex) {
+    spEvent = "agari";
+    spCtx = { isYakuman: !!r.result.isYakuman, score: r.result.total };
+    reaction = "joy";
+  } else if (hd < 0) {
+    // 呪いで失点が膨らんだ局は、被弾そのものより「倍になったこと」が事件なので専用の一言に
+    // 差し替える（§14-2-1）。持たないキャラは vline が null を返すので damage に落ちる。
+    spEvent = curseOf(humanIndex) && vline(human.character.id, "curseHit", {}) ? "curseHit" : "damage";
+    spCtx = { dmgAmount: Math.abs(hd), hpFrac: human.points / full(humanIndex) };
+    reaction = Math.abs(hd) >= 8000 || human.points < 0 ? "bigHit" : "hit";
+  } else if (!hd && r.result && winTierOf(r.result) !== "normal") {
+    spEvent = "oppBigWin";
+    spCtx = { isYakuman: !!r.result.isYakuman, score: r.result.total };
+    reaction = "witness";
+  }
+  const spText = spEvent ? vline(human.character.id, spEvent, spCtx) : null;
+  const onSide = !!spText && selfStageVisible();
+
+  // 満貫未満の和了で、守り・呪い・真守の読み・トビが絡まない局はカードを出さない。右のボードと
+  // 卓の上で見せる（和了画面で見せた結果をカードでもう一度重ねない。1局ごとのクリックも1回減る）。
+  // 区切りは和了演出の格（winTierOf：テロップ／カットイン／役満）と同じ＝大きな手だけカードが出る。
+  const someoneBusted = order.some((i) => i !== r.winner && game.players[i].points < 0);
+  if (!guards.length && !curses.length && !insight && !someoneBusted && r.result
+      && winTierOf(r.result) === "normal" && selfStageVisible()) {
+    playQuickDamage(r, { hd, spText, reaction }, onDone);
+    return;
+  }
 
   const rowHtml = (i) => {
     const c = game.players[i].character;
@@ -6266,8 +6587,6 @@ function showDamageFx(r, onDone) {
   // 勝った側への一行：守られたぶんは勝者の取り分からも引かれる（_settle）。説明が無いと
   // 「満貫をロンしたのに点が入らない」＝バグに見える（§8-3-2）。
   const blockedNote = guardBlockedNotesHtml(r) + curseNotesHtml(r);
-  // 真守「見えていました」：警告した牌が実際に当たり牌だったときだけ、局の終わりに一言。
-  const insight = mamoriInsight(r);
   const insightNote = insight
     ? `<div class="dmg-insight${insight.dealtIn ? " missed" : ""}">${insight.text}</div>`
     : "";
@@ -6278,28 +6597,16 @@ function showDamageFx(r, onDone) {
       ${order.map(rowHtml).join("")}
       ${blockedNote}
       ${insightNote}
-      <div class="dmg-hint">クリックで次へ（10秒で自動）</div>
+      <div class="dmg-hint">クリックで次へ</div>
     </div>`;
   host.classList.remove("hidden");
   requestAnimationFrame(() => host.classList.add("show"));
 
-  // 自キャラ(人間)の立ち絵＋メッセージ。和了したか／被弾したかで台詞を出し分ける。
-  // 局に絡んでいない（増減なし）ときは何も言わない。
-  const human = game.players[humanIndex];
-  const hd = deltas[humanIndex] || 0;
-  let spEvent = null, spCtx = null;
-  if (r.winner === humanIndex) {
-    spEvent = "agari";
-    spCtx = { isYakuman: !!r.result.isYakuman, score: r.result.total };
-  } else if (hd < 0) {
-    // 呪いで失点が膨らんだ局は、被弾そのものより「倍になったこと」が事件なので専用の一言に
-    // 差し替える（§14-2-1）。持たないキャラは vline が null を返すので damage に落ちる。
-    spEvent = curseOf(humanIndex) && vline(human.character.id, "curseHit", {}) ? "curseHit" : "damage";
-    spCtx = { dmgAmount: Math.abs(hd), hpFrac: human.points / full(humanIndex) };
-  }
-  if (spEvent) {
-    const sp = mountSpeaker(host, human.character, spEvent, spCtx, "left");
-    if (sp) host.classList.add("has-speaker");
+  if (spText && !onSide) {
+    const sp = buildSpeakerEl(human.character, spText, "left");
+    host.appendChild(sp);
+    requestAnimationFrame(() => sp.classList.add("show"));
+    host.classList.add("has-speaker");
   }
 
   let finished = false;
@@ -6317,6 +6624,15 @@ function showDamageFx(r, onDone) {
   // Beat, then drain everyone's gauge at once.
   setTimeout(() => {
     audio.playSe(sePath("ボウリングのピンを倒す1.mp3"), 0.9);
+    // 右の相棒：ひと言＋小さな芝居。ボード（止めていた点数）もここで一緒に動かす＝カードと
+    // ボードが同じ瞬間に減る。ピンチに入ったらその芝居が後から上書きする（より重い情報）。
+    if (onSide) showSelfTalk(spText, talkDwellMs(spText) + 800);
+    if (reaction) reactPortrait(reaction);
+    releaseHpHold();
+    // 被弾の手応え：自分が食らったら画面ごと揺らす（大物・トビは強く）。自分が無傷でも誰かが
+    // 飛んだら小さく。和了だけの局は揺らさない。
+    if (hd < 0) shakeScreen(hd <= -8000 || human.points < 0 ? "lg" : "sm");
+    else if (someoneBusted) shakeScreen("sm");
     host.querySelectorAll(".dmg-row").forEach((row) => {
       const i = +row.dataset.i;
       const before = +row.dataset.before, after = +row.dataset.after;
@@ -6380,11 +6696,15 @@ function showDamageFx(r, onDone) {
     });
   }, 300);
 
-  // セリフを読み切れるよう、クリック or 10秒で次へ進む。
-  // 直前の「次の局へ」クリックが流れ込んで即スキップするのを防ぐため、
-  // クリック受付は少し待ってから有効化する。
+  // クリック or 自動で次へ進む。直前の「次の局へ」クリックが流れ込んで即スキップするのを
+  // 防ぐため、クリック受付は少し待ってから有効化する。
+  // 自動で閉じるまでの長さ：セリフを右の吹き出しに出した場合は吹き出しが閉じた後も残るので
+  // カードは短く、カードのスピーカーで出した場合は読み切れる長さ（最長10秒）。守り/呪いの
+  // 段階演出がある局は少し長く。
   setTimeout(() => { host.onclick = finish; }, 600);
-  damageFxTimer = setTimeout(finish, 10000);
+  const stagedFx = guards.length || curses.length ? 1500 : 0;
+  const readMs = spText && !onSide ? Math.min(10000, talkDwellMs(spText) + 1200) : 0;
+  damageFxTimer = setTimeout(finish, Math.max(4200 + stagedFx, readMs));
 }
 
 // 団体戦用ダメージ演出。通常版と異なり交代UIを表示し、クリック即閉じではなく
@@ -6563,6 +6883,8 @@ function showTeamBattleDamageFx(r, onDone) {
       }
     });
     updateHpBoard(); // 右側の相棒ボードのHPバーも即同期（ダメージカードと同時に動く）
+    updatePinchFx();
+    shakeForHumanHit(deltas[humanIndex] || 0, beforeOf[humanIndex], teamBattleData.teams[humanIndex].hps[teamBattleData.teams[humanIndex].activeIdx], teamBattleData.teams[humanIndex].chars[teamBattleData.teams[humanIndex].activeIdx]?.stats?.startingPoints);
   }, 300);
 
   host.querySelectorAll(".tb-swap-opt").forEach((opt) => {
@@ -6855,6 +7177,8 @@ function showPairBattleDamageFx(r, onDone) {
       }
     });
     updateHpBoard(); // 右側の相棒ボードのHPバーも即同期（ダメージカードと同時に動く）
+    updatePinchFx();
+    shakeForHumanHit(deltas[humanIndex] || 0, beforeOf[humanIndex], pairBattleData.hp[humanIndex], pairBattleData.chars[humanIndex]?.stats?.startingPoints);
   }, 300);
 
   // 自キャラのセリフ演出（和了/被弾）。
@@ -7037,7 +7361,8 @@ function maybePlayDoraRevealFx(beforeKinds) {
 // 卓中央（ドラ表示牌の高さ）に走る金の閃光。0.6s 以内＝連戦のテンポを殺さない。
 function playDoraFlash() {
   const wrap = tableWrapEl();
-  const pos = tablePointAt(480, 396); // canvas 座標: 中央パネルの「ドラ表示」段
+  const a = renderer?.anchors?.dora || { x: 480, y: 394 }; // canvas 座標: 方位盤のドラ表示牌の段
+  const pos = tablePointAt(a.x, a.y);
   if (!wrap || !pos) return;
   const fx = document.createElement("div");
   fx.className = "dora-flash";
@@ -7583,7 +7908,8 @@ function tablePointAt(cx, cy) {
 function playLuxReserveFx() {
   clearLuxPoint();
   const wrap = tableWrapEl();
-  const pos = tablePointAt(480, 318); // 中央パネル上部＝「残り牌」の高さ
+  const a = renderer?.anchors?.wall || { x: 480, y: 343 }; // 方位盤の「残り」の段＝山の象徴
+  const pos = tablePointAt(a.x, a.y);
   if (!wrap || !pos) return;
   const dot = document.createElement("div");
   dot.className = "lux-point";
@@ -7913,9 +8239,56 @@ function sparkleSpans(n = 16) {
 // 対局終了: 全画面の最終結果画面。左に優勝者の立ち絵＋王冠、右に順位リスト
 // （最終持ち点を HP ゲージで表示）。最下位→1位の順に下から捲り、点数はカウント
 // アップ、1位が出る瞬間に優勝者がフラリッシュ。
+// 対局の外へ出る前に、対局中だけの演出状態（HP表示止め・ピンチ・立ち絵の一歩下げ）を畳む。
+// ピンチのBGM減衰をホーム画面へ持ち越さないためにも、結果画面の入口で必ず呼ぶ。
+function settleMatchFx() {
+  releaseHpHold();
+  resetPinchFx();
+  setStageEcho(false);
+  clearStageEmote();
+  setAbilityReady(null);
+}
+
+// 対局終了の相棒の台詞の下に、この対局で増えた絆を返す（帯名＋Lv＋pt、ゲージが伸びる）。
+// 絆は数値で見せる方針（CLAUDE.md ピラー1）。レベルアップの祝いは対戦ホームの演出が受け持つ
+// （celebratedLevel は据え置き＝ここでは「Lv UP!」の予告だけ）。
+function appendBondGain(speakerEl, { before, after }) {
+  if (!speakerEl || !after) return;
+  const gain = Math.max(0, bondTotalExp(after) - bondTotalExp(before || {}));
+  const v = bondPtView(after);
+  const levelUp = (after.level ?? 1) > (before?.level ?? 1);
+  const fromPct = levelUp ? 0 : Math.round(bondProgressFrac(before || {}) * 100);
+  const toPct = Math.round(bondProgressFrac(after) * 100);
+  const box = document.createElement("div");
+  box.className = "bond-gain";
+  box.innerHTML = `
+    <div class="bond-gain-head">
+      <span class="bond-gain-k">絆</span>
+      <span class="bond-gain-band">${esc(bondBandLabel(after.level ?? 1))}</span>
+      <span class="bond-gain-lv">Lv${v.lv}</span>
+      ${levelUp ? `<span class="bond-gain-up">Lv UP!</span>` : ""}
+      <span class="bond-gain-pt">+${gain}pt</span>
+    </div>
+    <div class="bond-gain-bar"><div class="bond-gain-fill" style="width:${fromPct}%"></div></div>
+    <div class="bond-gain-num">${v.cur} / ${v.need}</div>`;
+  speakerEl.appendChild(box);
+  requestAnimationFrame(() => {
+    box.classList.add("show");
+    setTimeout(() => { const f = box.querySelector(".bond-gain-fill"); if (f) f.style.width = `${toPct}%`; }, 250);
+  });
+}
+
+// 「もう一度」：同じ設定（キャラ・人数・形式・局数）でフリー対戦をもう一局。以前はページの
+// 再読み込みで、ロード画面からやり直しになっていた。大会の連戦と同じく beginGame は再入可能。
+function replayFreeMatch() {
+  el("win-overlay")?.classList.add("hidden");
+  startGame();
+}
+
 function showGameOver() {
   if (teamBattleData) { showTeamBattleGameOver(); return; }
   if (pairBattleData) { showPairBattleGameOver(); return; }
+  settleMatchFx();
   clearActions();
   const overlay = el("win-overlay");
   overlay.classList.remove("hidden");
@@ -7979,6 +8352,12 @@ function showGameOver() {
   const hRank = ranks.findIndex((p) => p === human);
   const endLine = vline(human.character.id, "matchEnd", { rankIndex: hRank, numPlayers: N });
   const sideEl = document.querySelector("#game-screen .side");
+  // フリー対戦（個人）：相棒（＝操作キャラ）との絆・履歴を更新（本気/大会は結果反映側で加算）。
+  // 操作キャラが修行完了弟子のときは絆を計上しない（弟子は相棒キャラではない＝案A・F6）。
+  // 結果（前後の絆）は相棒の台詞の下に「+Npt」とゲージの伸びで返す＝上げた実感をその場で。
+  const bondP = (!honestCtx && !human.character.isCompletedAvatar)
+    ? applyFreeMatchToCompanion({ companionId: human.character.id, placement: hRank, numPlayers: N, styleTags: detectPlayStyle(human, game.lastResult) })
+    : null;
   if (endLine && sideEl) {
     setTimeout(() => {
       sideEl.classList.add("side-result"); // CSS が ログ/見出し/能力欄を隠す
@@ -7987,6 +8366,7 @@ function showGameOver() {
       const sp = buildSpeakerEl(human.character, endLine, "side");
       sideEl.appendChild(sp);
       requestAnimationFrame(() => sp.classList.add("show"));
+      bondP?.then((res) => { if (res && sp.isConnected) appendBondGain(sp, res); });
     }, reveal(0) * 1000 + 650);
   }
 
@@ -8003,13 +8383,7 @@ function showGameOver() {
   const graphSnapshot = scoreHistory.slice();
   overlay.querySelector(".go-buttons").appendChild(mkBtn("📈 得点推移", "btn-tsumo go-graph-btn", () => showScoreGraph(graphSnapshot, graphPlayers)));
 
-  // フリー対戦（個人）：相棒（＝操作キャラ）との絆・履歴を更新（本気/大会は結果反映側で加算）。
-  // 操作キャラが修行完了弟子のときは絆を計上しない（弟子は相棒キャラではない＝案A・F6）。
-  if (!honestCtx && !human.character.isCompletedAvatar) {
-    applyFreeMatchToCompanion({ companionId: human.character.id, placement: hRank, numPlayers: N, styleTags: detectPlayStyle(human, game.lastResult) });
-  }
-
-  // 本気対局（Phase 4A）は「もう一度(reload)」ではなく結果を育成へ返して戻る。
+  // 本気対局（Phase 4A）は「もう一度」ではなく結果を育成へ返して戻る。
   if (honestCtx) {
     const standings = ranks.map((p, i) => ({ id: p.character.id, name: p.character.name, points: p.points, rank: i, isHuman: p === human }));
     const result = { placement: hRank, numPlayers: N, finalPoints: human.points, won: hRank === 0, standings, graph: { history: graphSnapshot, players: graphPlayers }, styleTags: detectPlayStyle(human, game.lastResult) };
@@ -8063,7 +8437,7 @@ function showGameOver() {
     // 戻ると renderBattleHome が絆帯/出迎えセリフを引き直す＝「一緒に打った結果」が相棒に滲んで見える。
     const btns = overlay.querySelector(".go-buttons");
     btns.appendChild(mkBtn("🏠 対戦ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
-    btns.appendChild(mkBtn("もう一度", "btn-skip", () => location.reload()));
+    btns.appendChild(mkBtn("もう一度", "btn-skip", replayFreeMatch));
   }
 }
 
@@ -8205,6 +8579,7 @@ if (typeof window !== "undefined") {
 // 団体戦の対局終了: 順位は「チーム得点（3人の合計HP）」で集計。優勝チームのエースを
 // 立ち絵で大きく見せ、3人トリオ（撃沈メンバーは灰色）と合計点をチームごとに並べる。
 function showTeamBattleGameOver() {
+  settleMatchFx();
   clearActions();
   const overlay = el("win-overlay");
   overlay.classList.remove("hidden");
@@ -8321,13 +8696,14 @@ function showTeamBattleGameOver() {
     btnsT.appendChild(mkBtn("順位表へ", "btn-tsumo", () => { overlay.classList.add("hidden"); ctx.onResult?.(result, "continue"); }));
   } else {
     btnsT.appendChild(mkBtn("🏠 対戦ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
-    btnsT.appendChild(mkBtn("もう一度", "btn-skip", () => location.reload()));
+    btnsT.appendChild(mkBtn("もう一度", "btn-skip", replayFreeMatch));
   }
 }
 
 // ペア戦の結果画面。団体戦版と同じ「ペア点数の降順ランキング＋優勝ペア」。
 // 各ペアの顔は2人（ダウンは灰）。代表＝ペア内のHP高い方。
 function showPairBattleGameOver() {
+  settleMatchFx();
   clearActions();
   const overlay = el("win-overlay");
   overlay.classList.remove("hidden");
@@ -8482,7 +8858,7 @@ function showPairBattleGameOver() {
     btnsP.appendChild(mkBtn("順位表へ", "btn-tsumo", () => { overlay.classList.add("hidden"); ctx.onResult?.(result, "continue"); }));
   } else {
     btnsP.appendChild(mkBtn("🏠 対戦ホームへ", "btn-tsumo", () => { overlay.classList.add("hidden"); goScreen("battle-home-screen"); }));
-    btnsP.appendChild(mkBtn("もう一度", "btn-skip", () => location.reload()));
+    btnsP.appendChild(mkBtn("もう一度", "btn-skip", replayFreeMatch));
   }
 }
 
@@ -8564,8 +8940,32 @@ function clearActions() {
   hideLuxScan(); // ルクスの走査計器は手番UIの再描画のたびに畳む（出すのは showLuxCandidates）
   hideKakehaBet(); // ルイナの賭場も同じ（出すのは showKakehaBets）
   el("action-bar").innerHTML = "";
+  idleAbilityBar();
+  setAbilityReady(null);
+}
+// 右サイドの能力欄は手番の外でも消さず「押せない状態」で残す。消すと欄が畳まれ、そのぶん
+// 立ち絵の枠とセリフの吹き出しが手番ごとに上下してしまう。中身の作り直しは showHumanActions。
+function idleAbilityBar() {
   const ab = el("ability-bar");
-  if (ab) ab.innerHTML = ""; // ability controls live in the side panel now
+  if (!ab) return;
+  ab.classList.add("is-idle");
+  for (const b of ab.querySelectorAll("button")) b.disabled = true;
+}
+function resetAbilityBar() {
+  const ab = el("ability-bar");
+  if (!ab) return;
+  ab.innerHTML = "";
+  ab.classList.remove("is-idle");
+}
+// 手動能力が撃てるあいだは相棒の立ち絵を光らせ、立ち絵を押しても発動できるようにする
+// （「相棒の力を借りる」を、ボタンではなく相棒そのものに触れる操作として手に残す）。
+function setAbilityReady(btn) {
+  const stage = el("self-stage");
+  if (!stage) return;
+  const on = !!btn && selfStageVisible();
+  stage.classList.toggle("ability-ready", on);
+  stage.onclick = on ? () => { if (!btn.disabled && btn.isConnected) btn.click(); } : null;
+  stage.title = on ? `${btn.textContent}（立ち絵をタップしても発動）` : "";
 }
 
 // ペア戦・相方への指示ウィンドウ。自分の能力ボタンの上に常時表示する。
@@ -8678,7 +9078,9 @@ function initNoNakiToggle() {
   const sync = () => {
     btn.classList.toggle("on", noNaki);
     btn.setAttribute("aria-pressed", String(noNaki));
-    btn.textContent = `鳴きなし: ${noNaki ? "ON" : "OFF"}`;
+    // UIキットのトグル（有効/無効）で状態を見せる。文字は機能名だけ。
+    btn.innerHTML = `<span class="tg-label">鳴きなし</span><span class="tg-state" aria-hidden="true"></span>`;
+    btn.title = noNaki ? "鳴きなし：有効（ポン/チー/カンの確認を出さない）" : "鳴きなし：無効";
   };
   if (!noNakiWired) {
     btn.addEventListener("click", () => { noNaki = !noNaki; sync(); });
@@ -8697,7 +9099,8 @@ function initAutoToggle() {
   const sync = () => {
     btn.classList.toggle("on", autoPlay);
     btn.setAttribute("aria-pressed", String(autoPlay));
-    btn.textContent = `オート: ${autoPlay ? "ON" : "OFF"}`;
+    btn.innerHTML = `<span class="tg-label">オート</span><span class="tg-state" aria-hidden="true"></span>`;
+    btn.title = `オート：${autoPlay ? "有効" : "無効"}（打牌だけ自動で進めます。局の切り替え・和了/結果は手動です）`;
   };
   if (!autoWired) {
     btn.addEventListener("click", () => {
@@ -8729,6 +9132,8 @@ function relSeatLabel(i) {
 function buildHpBoard() {
   const board = el("hp-board");
   if (!board || !game) return;
+  // 右サイドの差し色＝操作キャラの色（立ち絵の「能力が撃てる」発光・能力ボタンの色）。
+  document.querySelector("#game-screen .side")?.style.setProperty("--char-c", game.players[humanIndex]?.character?.color || "#f6b352");
   board.innerHTML = "";
   board.className = "hp-board";
   if (teamBattleData) { buildTeamBattleHpBoard(board); return; }
@@ -8776,7 +9181,7 @@ function makeHpRow(i) {
       <span class="hp-delta" hidden></span>
       <span class="hp-val"></span>
     </div>
-    <div class="hp-gauge"><div class="hp-base"></div><div class="hp-fill"></div></div>`;
+    <div class="hp-gauge"><div class="hp-base"></div><div class="hp-ghost"></div><div class="hp-fill"></div></div>`;
   row.appendChild(main);
 
   // 短文紹介ポップ（キャラ選択のホバーと同じ bio＋profile）。
@@ -8787,7 +9192,7 @@ function makeHpRow(i) {
     row.appendChild(fl);
   }
 
-  hpCells[i] = { cell: row, rank, base: main.querySelector(".hp-base"), fill: main.querySelector(".hp-fill"), val: main.querySelector(".hp-val"), delta: main.querySelector(".hp-delta") };
+  hpCells[i] = { cell: row, rank, base: main.querySelector(".hp-base"), ghost: main.querySelector(".hp-ghost"), fill: main.querySelector(".hp-fill"), val: main.querySelector(".hp-val"), delta: main.querySelector(".hp-delta"), lastPts: null, lastLap: null, lastFillW: "0%" };
   return row;
 }
 
@@ -9345,7 +9750,9 @@ function buildSelfBustup() {
 }
 
 // 相棒ボードのHP値・ゲージ・手番ハイライト・順位を現在のゲーム状態に同期。
-// 持ち点の多い順に並べ替え（flex order）、各行へ順位メダル（1位=上）を振る。
+// 行は卓を回る順（自分→下家→対面→上家）で固定し、順位はメダルの数字だけで示す
+// （点数順に並べ替えると、リーチ棒1本で行が入れ替わって「どれが誰か」を見失うため）。
+// 点数は shownPoints＝局が終わってからダメージ演出までは精算前の値（先出し防止）。
 function updateHpBoard() {
   if (teamBattleData) { updateTeamBattleHpBoard(); return; }
   if (pairBattleData) { updatePairBattleHpBoard(); return; }
@@ -9354,16 +9761,38 @@ function updateHpBoard() {
   // 持ち点降順の順位（同点は players 配列の並びで安定。0=1位）。
   const rankByIndex = {};
   [...game.players.keys()]
-    .sort((a, b) => game.players[b].points - game.players[a].points)
+    .sort((a, b) => shownPoints(b) - shownPoints(a))
     .forEach((pi, rank) => { rankByIndex[pi] = rank; });
 
   game.players.forEach((p, i) => {
     const ref = hpCells[i];
     if (!ref) return;
+    const pts = shownPoints(i);
     const full = p.character.stats.startingPoints || MAX_HP;
-    const { lap, fillPct, basePct } = lapState(p.points, full);
+    const { lap, fillPct, basePct } = lapState(pts, full);
     // 現在の周回ぶん（最前面）。1週目は通常色クラス、2週目以降は固定色を直に当てる。
-    ref.fill.style.width = Math.max(0, fillPct) + "%";
+    const fillW = Math.max(0, fillPct) + "%";
+    ref.fill.style.width = fillW;
+    // 減ったときだけ、白い残像が遅れて追いつく（格ゲーの体力バー）。点数が動かない再描画では触らない
+    // ＝走っている残像のトランジションを潰さない。周回をまたいだら残像は出さない（幅の意味が変わる）。
+    if (ref.ghost && pts !== ref.lastPts) {
+      if (ref.lastPts != null && pts < ref.lastPts && ref.lastLap === lap) {
+        ref.ghost.style.transition = "none";
+        ref.ghost.style.width = ref.lastFillW;
+        void ref.ghost.offsetWidth;
+        ref.ghost.style.transition = "width .7s ease .45s";
+        ref.ghost.style.width = fillW;
+        ref.cell.classList.remove("hp-hit");
+        void ref.cell.offsetWidth;
+        ref.cell.classList.add("hp-hit");
+      } else {
+        ref.ghost.style.transition = "none";
+        ref.ghost.style.width = fillW;
+      }
+      ref.lastPts = pts;
+      ref.lastLap = lap;
+      ref.lastFillW = fillW;
+    }
     if (lap >= 2) {
       ref.fill.className = "hp-fill lap";
       ref.fill.style.background = lapColor(lap);
@@ -9376,11 +9805,11 @@ function updateHpBoard() {
       ref.base.style.width = basePct + "%";
       ref.base.style.background = lap >= 2 ? lapBaseColor(lap - 1) : "";
     }
-    ref.val.textContent = p.points;
+    ref.val.textContent = pts;
     // 大会中は「増減（現在−開始持ち点）」を色付きで表示（緑=プラス / 赤=マイナス）。
     if (ref.delta) {
       if (honestCtx?.tournamentInfo) {
-        const d = p.points - (p.character.stats.startingPoints || 0);
+        const d = pts - (p.character.stats.startingPoints || 0);
         const sign = d > 0 ? "+" : d < 0 ? "" : "±";
         ref.delta.textContent = `増減 ${sign}${d.toLocaleString()}`;
         ref.delta.className = "hp-delta " + (d > 0 ? "up" : d < 0 ? "dn" : "");
@@ -9390,12 +9819,10 @@ function updateHpBoard() {
       }
     }
     ref.cell.classList.toggle("lap2", lap >= 2); // 周回中フック（演出用）
-    ref.cell.classList.toggle("busted", p.points < 0);
+    ref.cell.classList.toggle("busted", pts < 0);
     ref.cell.classList.toggle("is-turn", game.turn === i && game.phase !== Phase.HAND_OVER);
-    // 順位＝並び順＋メダル（結果画面の m1..m4 と同じ金/銀/銅/灰）。
-    // 二人麻雀は固定レイアウト（相手→自分の縦並び）なので並べ替えはしない。
+    // 順位＝メダル（結果画面の m1..m4 と同じ金/銀/銅/灰）。並び順は席順のまま動かさない。
     const rank = rankByIndex[i];
-    if (!game.futari) ref.cell.style.order = rank;
     ref.rank.textContent = rank + 1;
     ref.rank.className = "hp-rank m" + (rank + 1);
   });
@@ -9407,6 +9834,7 @@ function updateHpBoard() {
 // グローバルなクールダウンで連発を防ぐ。トリガを足したいときは setupMatchTalk に1ブロック
 // 追加し、文言は characterVoiceMaster に並べるだけで増やせる。
 let selfTalkTimer = null;
+let selfTalkAt = -1e9; // 直近にセリフ枠へ出した時刻（局をまたいで保持。局頭の一言の重複よけ）
 let matchTalk = null; // 1局ぶんの検出ステート（resetMatchTalk で作る）
 
 // セリフ枠にテキストを出して一定時間で引っ込める。空文字/未定義なら何もしない。
@@ -9422,18 +9850,38 @@ function showSelfTalk(text, ms) {
   box.classList.add("show");
   clearTimeout(selfTalkTimer);
   selfTalkTimer = setTimeout(() => box.classList.remove("show"), ms ?? talkDwellMs(text));
-  if (matchTalk) matchTalk.lastAt = performance.now();
+  selfTalkAt = performance.now();
+  if (matchTalk) matchTalk.lastAt = selfTalkAt;
   return true;
 }
 
 // event のセリフを引いて出す（候補なし/対局終了演出中/クールダウン中はスキップ）。
-// force=true は節目（聴牌の出入り・局のはじまり）用にクールダウンを無視する。
-function fireSelfTalk(event, { force = false } = {}) {
-  if (!game || !matchTalk || game.phase === Phase.HAND_OVER) return;
+// force=true は節目（聴牌の出入り・局のはじまり・他家リーチ）用にクールダウンを無視する。
+// ctx はその場の状況（firstHand/allLast/hpPinch/selfTenpai…）。出せたら true。
+function fireSelfTalk(event, { force = false, ctx = {} } = {}) {
+  if (!game || !matchTalk || game.phase === Phase.HAND_OVER) return false;
   const COOLDOWN = 5200;
-  if (!force && performance.now() - matchTalk.lastAt < COOLDOWN) return;
+  if (!force && performance.now() - matchTalk.lastAt < COOLDOWN) return false;
   const id = game.players[humanIndex].character.id;
-  showSelfTalk(vline(id, event, {}));
+  return showSelfTalk(vline(id, event, ctx));
+}
+// 局が終わったら吹き出しを畳む（直前の「聴牌っ。あと一枚…」が他家の和了の最中に残らないように）。
+function hideSelfTalk() {
+  clearTimeout(selfTalkTimer);
+  el("self-talk")?.classList.remove("show");
+}
+// 自分から見て「相手」の席か（ペア戦・楼光は味方の席を除く）。
+function isOpponentSeat(i) {
+  if (i === humanIndex) return false;
+  if (pairBattleData) return pairBattleData.pairOf?.[i] !== pairBattleData.pairOf?.[humanIndex];
+  return true;
+}
+// オーラス（この局で対局が終わりうる最後の局）。東風/半荘の最終局、楼光は局数上限の最後の局。
+function isAllLastHand(g) {
+  if (!g) return false;
+  if (g.maxHands != null) return g.handNumber >= g.maxHands;
+  const lastWind = 27 + (g.maxRounds || 1) - 1;
+  return g.roundWind === lastWind && g.kyoku === g.numPlayers;
 }
 
 // ── ペア戦・相方の局中相槌 ──
@@ -9508,6 +9956,8 @@ function resetMatchTalk() {
     saidStuck: false,    // 手詰まりセリフを今局すでに出したか
     saidIishanten: false,// イーシャンテン地獄セリフを今局すでに出したか
     saidLast: false,     // 流局間際セリフを今局すでに出したか
+    saidOppRiichi: false,// 他家リーチへの反応を今局すでに出したか（最初の1回は必ず出す）
+    riichiNow: false,    // 自分がリーチを宣言した直後（次の打牌＝宣言牌で「リーチ」の一言）
   };
 }
 
@@ -9521,19 +9971,44 @@ function setupMatchTalk(g) {
   resetShioriReview();       // 予約済みの表示・開きっぱなしのモーダルも対局開始で解除
 
   // 「前の局」の結果を人間視点で記録（次局以降の相槌が ctx.lastHandResult で参照）。
-  g.bus.on(Events.HAND_WON, (r) => { lastHandResult = deriveHandResult(r); noteShioriResult(lastHandResult); noteBetOutcome(lastHandResult); });
-  g.bus.on(Events.HAND_DRAWN, () => { lastHandResult = "draw"; noteShioriResult("draw"); noteBetOutcome("draw"); });
+  // 局が終わったら吹き出しは畳む（反応はダメージ演出の側で改めて出す）。
+  g.bus.on(Events.HAND_WON, (r) => { hideSelfTalk(); clearStageEmote(); lastHandResult = deriveHandResult(r); noteShioriResult(lastHandResult); noteBetOutcome(lastHandResult); });
+  g.bus.on(Events.HAND_DRAWN, () => { hideSelfTalk(); clearStageEmote(); lastHandResult = "draw"; noteShioriResult("draw"); noteBetOutcome("draw"); });
 
   // 局のはじまり：配牌直後に一言（シャッフルSEと被らないよう少し遅らせる）。
+  // 毎局は喋らない（同じ台詞の繰り返しは相棒を“ボット”に見せる）。一局目・オーラス・ピンチ・
+  // 前の局が自分に絡んだとき（和了/放銃/被ツモ）は必ず、それ以外はときどき。状況は ctx で渡し、
+  // マスタの cond（firstHand/allLast/hpPinch/lastHandResult）で言い分ける。
   g.bus.on(Events.HAND_STARTED, () => {
     resetMatchTalk();
     matchTalk.prevShanten = humanShanten(); // 配牌時のシャンテンを基準に
+    const ctx = { firstHand: g.handNumber <= 1, allLast: isAllLastHand(g), hpPinch: humanHpFrac() <= PINCH_FRAC };
+    const special = ctx.firstHand || ctx.allLast || ctx.hpPinch;
+    const notable = special || ["agari", "dealIn", "tsumoLoss"].includes(lastHandResult);
     // 前局で張った賭けが実らなかったなら、局頭の一言をその落とし前に差し替える
     // （§11-3-3。和了画面と重ねず、次の局で一度だけ引きずる＝外した局にも結末をつける）。
-    setTimeout(() => { if (!fireBetLostTalk()) fireSelfTalk("handStart", { force: true }); }, 1200);
+    // 直前（被弾・和了の直後）に喋ったばかりなら、同じ出来事を二度言わない。一局目・オーラス・
+    // ピンチは新しい情報なので、その場合でも言う。
+    setTimeout(() => {
+      if (fireBetLostTalk()) return;
+      const justSpoke = performance.now() - selfTalkAt < 4000;
+      if (special || (!justSpoke && (notable || Math.random() < 0.35))) fireSelfTalk("handStart", { force: true, ctx });
+    }, 1200);
     // ペア戦: 相方が局頭に声をかける（自分のひと言と被らないよう少しずらす）。
     setTimeout(() => firePartnerTalk("allyHandStart"), 2200);
     maybeTableBanter(); // 掛け合いが成立するペア（姚玖×春嬋など）が同卓なら一度だけ
+  });
+
+  // リーチ：他家のリーチは局でいちばん空気が変わる瞬間＝相棒が反応する（共闘の実感）。
+  // 1局の最初の他家リーチは必ず、2人目以降はクールダウン内なら黙る（連発させない）。
+  // 自分のリーチは直後の TILE_DISCARDED（宣言牌）で聴牌の一言と入れ替えて出す。
+  g.bus.on(Events.RIICHI_DECLARED, ({ player }) => {
+    if (!matchTalk || !player) return;
+    if (player.index === humanIndex) { matchTalk.riichiNow = true; return; }
+    if (!isOpponentSeat(player.index)) return;
+    const first = !matchTalk.saidOppRiichi;
+    matchTalk.saidOppRiichi = true;
+    if (fireSelfTalk("oppRiichi", { force: first, ctx: { selfTenpai: !!matchTalk.wasTenpai } }) || first) reactPortrait("alert");
   });
 
   // 自分の打牌ごとに、ツモ切り連続・聴牌の出入り・進行の速さ/詰まりを見る。
@@ -9551,9 +10026,22 @@ function setupMatchTalk(g) {
 
     // 打牌後（13枚）のシャンテンで聴牌の出入りと進行を判定。
     const sh = humanShanten();
-    if (!matchTalk.wasTenpai && sh === 0) {
+    // 自分のリーチ宣言牌：聴牌の一言より「リーチ」の一言を優先（同じ瞬間に2つ喋らない）。
+    const riichiTile = !!(matchTalk.riichiNow && tile?.riichiTile);
+    matchTalk.riichiNow = false;
+    if (riichiTile) {
+      const firstTenpai = !matchTalk.wasTenpai;
       matchTalk.wasTenpai = true;
-      fireSelfTalk("tenpai", { force: true });
+      fireSelfTalk("selfRiichi", { force: true });
+      reactPortrait("riichi");
+      if (firstTenpai) {
+        if (humanAbilityActive("chunchan")) playSprintFlash();
+        maybeFlameWeakTalk();
+        setTimeout(() => firePartnerTalk("allyTenpai"), 900);
+      }
+    } else if (!matchTalk.wasTenpai && sh === 0) {
+      matchTalk.wasTenpai = true;
+      if (fireSelfTalk("tenpai", { force: true })) reactPortrait("tenpai");
       if (humanAbilityActive("chunchan")) playSprintFlash(); // 春嬋: 走り切った一閃「——間に合った」
       maybeFlameWeakTalk(); // 焔: 火が細いまま聴牌したら「このままでは燃えない」
       setTimeout(() => firePartnerTalk("allyTenpai"), 900);
@@ -9571,7 +10059,7 @@ function setupMatchTalk(g) {
       // しばらく進まず、まだ遠い → 手詰まり（1局1回、sh>=2）。
       if (!matchTalk.saidStuck && matchTalk.discards - matchTalk.lastImprove >= 4 && sh >= 2) {
         matchTalk.saidStuck = true;
-        fireSelfTalk("handStuck");
+        if (fireSelfTalk("handStuck")) reactPortrait("stuck");
         setTimeout(() => firePartnerTalk("allyStuck"), 900);
       }
     }

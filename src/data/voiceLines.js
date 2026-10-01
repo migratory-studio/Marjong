@@ -35,6 +35,16 @@
 //   ── 双方向（プレイヤーが返す2択。提案B §3.2-5・供給は main.js） ──
 //   { resolveChoice }        別れ際の2択で選んだ手（"climb"|"rest"）→ cond.resolveChoice（キャラの返し）
 //   { rlResolveClimb }       「また登る」を選んだ通算回数 → cond.rlResolveClimbMin（挑み続ける性分を覚えている）
+//   ── 局中の状況（供給は main.js setupMatchTalk） ──
+//   { firstHand }            その対局の一局目か → cond.firstHand（handStart）
+//   { allLast }              オーラス（この局で対局が終わりうる最後の局）か → cond.allLast（handStart）
+//   { hpPinch }              自分のHPが残り25%以下か → cond.hpPinch（handStart。点棒嫌いの素が滲む場所）
+//   { selfTenpai }           他家リーチの瞬間、自分も聴牌しているか → cond.selfTenpai（oppRiichi）
+//
+// ── 優先度（任意）: エントリの pri ──────────────────────────────────────
+//   一致した候補のうち pri の最も大きいものだけから選ぶ（未指定は 0）。状況限定の台詞
+//   （一局目・オーラス・ピンチ…）が汎用の台詞に埋もれないようにするため。既存の台詞は pri を
+//   持たないので、これまでどおり全候補から等確率で選ばれる。
 //
 import { CHARACTER_VOICE_MASTER } from "./characterVoiceMaster.js";
 
@@ -118,6 +128,11 @@ function condMatches(cond, ctx) {
   // 浅い帯=rlReachedMax(励まし)／深い帯=rlReachedMin(誇り)／中間=無指定。ctx.rlReached 未供給なら下限0扱い・上限は不一致。
   if (cond.rlReachedMin != null && !(Number(ctx.rlReached) >= cond.rlReachedMin)) return false;
   if (cond.rlReachedMax != null && !(Number(ctx.rlReached) <= cond.rlReachedMax)) return false;
+  // ── 局中の状況（供給は main.js setupMatchTalk）。true/false を ctx と厳密一致で評価（未供給は false 扱い）。
+  if (cond.firstHand != null && Boolean(ctx.firstHand) !== cond.firstHand) return false;
+  if (cond.allLast != null && Boolean(ctx.allLast) !== cond.allLast) return false;
+  if (cond.hpPinch != null && Boolean(ctx.hpPinch) !== cond.hpPinch) return false;
+  if (cond.selfTenpai != null && Boolean(ctx.selfTenpai) !== cond.selfTenpai) return false;
   return true;
 }
 
@@ -128,8 +143,11 @@ const _recentLine = new Map();
 // 候補が2つ以上あるときは、直前に返した文を避けて選ぶ（同じセリフの連発を防ぐ）。
 export function pickVoiceLine(charId, event, ctx = {}) {
   const entries = CHARACTER_VOICE_MASTER[charId] || [];
-  const matches = entries.filter((e) => e.event === event && condMatches(e.cond, ctx));
+  let matches = entries.filter((e) => e.event === event && condMatches(e.cond, ctx));
   if (!matches.length) return null;
+  // 優先度: 一致した中で pri が最大のものだけを候補にする（状況限定の台詞を汎用に埋もれさせない）。
+  const topPri = Math.max(...matches.map((m) => m.pri || 0));
+  if (topPri > 0) matches = matches.filter((m) => (m.pri || 0) === topPri);
   const key = `${charId}:${event}`;
   const prev = _recentLine.get(key);
   let pool = matches;

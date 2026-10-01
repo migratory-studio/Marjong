@@ -75,7 +75,9 @@ function hpGauge(points, maxHp, accent) {
  * @param {object} [opts.audio]     AudioManager（任意。SE 用）
  * @param {Function} opts.onComplete 演出完了で呼ばれる
  */
-export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, teams = null, pairs = null, tournament = null, labels = null, skipSeating = false, onComplete }) {
+// introLine（任意）: 相棒（＝自分の操作キャラ）の対局前のひと言。VS カードの自分の札に吹き出しで
+// 添える（「これから一緒に打つ」相手からの声＝共在感の入口）。渡さなければ従来どおり何も出さない。
+export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealerIndex = 0, audio, teams = null, pairs = null, tournament = null, labels = null, skipSeating = false, introLine = null, onComplete }) {
   const N = seated.length;
   const rounds = mode.rounds === 2 ? 2 : 1;
   const players = N;
@@ -189,6 +191,13 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
       }
       if (c.isRival) card.classList.add("is-rival");
       card.querySelector(".mi-card-art").appendChild(makeArt(c, "portrait", "mi-card-portrait"));
+      if (isHuman && introLine) {
+        const talk = document.createElement("div");
+        talk.className = "mi-card-talk";
+        talk.textContent = introLine; // マスタの文言だが、念のため textContent で差し込む
+        card.classList.add("has-talk"); // 吹き出しを札の外（上）へ出すため、札のクリップを外す
+        card.appendChild(talk);
+      }
       cardsBox.appendChild(card);
     }
   }
@@ -365,7 +374,9 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
     animTargets.forEach((card, k) => after(140 * k, () => card.classList.add("in")));
     after(180, () => root.querySelector(".mi-vs").classList.add("in"));
   });
-  const autoToSeating = 700 + 200 * animTargets.length + 1400;
+  // 相棒のひと言があるときは、読み切れるぶんだけ VS カードを長めに見せる（クリックで先送り可）。
+  const talkMs = introLine && !isGrouped ? Math.min(2200, 600 + introLine.length * 45) : 0;
+  const autoToSeating = 700 + 200 * animTargets.length + 1400 + talkMs;
   after(autoToSeating, () => {
     if (finished || phase !== "versus") return;
     if (skipSeating) { finish(); return; } // 通信対戦: 着席/親決めを省いてそのまま対局へ

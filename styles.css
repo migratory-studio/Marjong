@@ -2892,22 +2892,24 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 .aura-doll.last { border-color: #e0a03c; box-shadow: 0 4px 14px #0009, 0 0 18px #e0a03c44; }
 .aura-doll.last .aura-note b { color: #ffd48a; }
 .doll-marks { display: flex; gap: 6px; margin: 6px 0 2px; height: 18px; align-items: flex-end; }
-/* 人形＝丸い頭＋台形の体（絵文字はテーマから色が浮くので描画で作る） */
-.doll { position: relative; width: 11px; height: 17px; }
-.doll::before {
+/* 人形＝丸い頭＋台形の体（絵文字はテーマから色が浮くので描画で作る）。
+   .doll-marks の中だけに効かせる（素の .doll は、ダメージカードの守りの札/膜の
+   「.dmg-guard-tag.doll」「.dmg-guard-veil.doll」にも当たり、札が幅11pxに潰れていた）。 */
+.doll-marks .doll { position: relative; width: 11px; height: 17px; }
+.doll-marks .doll::before {
   content: ""; position: absolute; left: 50%; top: 0; transform: translateX(-50%);
   width: 7px; height: 7px; border-radius: 50%;
   background: #cfe9ff; box-shadow: 0 0 6px #5aa9e6aa;
 }
-.doll::after {
+.doll-marks .doll::after {
   content: ""; position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
   width: 0; height: 0; border-bottom: 10px solid #9fd8f5;
   border-left: 5px solid transparent; border-right: 5px solid transparent;
   filter: drop-shadow(0 0 4px #5aa9e688);
 }
-.doll.spent::before { background: #2c3a44; box-shadow: none; }
-.doll.spent::after { border-bottom-color: #2c3a44; filter: none; }
-.doll.just { animation: dollBreak .55s ease-out both; }
+.doll-marks .doll.spent::before { background: #2c3a44; box-shadow: none; }
+.doll-marks .doll.spent::after { border-bottom-color: #2c3a44; filter: none; }
+.doll-marks .doll.just { animation: dollBreak .55s ease-out both; }
 @keyframes dollBreak {
   0%   { transform: scale(1) rotate(0); opacity: 1; }
   35%  { transform: scale(1.25) rotate(-12deg); opacity: .9; }
@@ -3332,8 +3334,9 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 .win-overlay {
   position: absolute; inset: 0; z-index: 30;
   display: flex; align-items: center; justify-content: center;
-  /* reserve the right-side space for the bust-up; the card centers in the rest */
-  box-sizing: border-box; padding-right: 36%;
+  /* 旧デザイン（右に立ち絵を置くカード）の padding-right:36% は、流局カードを左へ寄せる
+     だけになっていたので外した。和了画面(.win-rich)・対局終了(.go-screen)は全面レイアウト。 */
+  box-sizing: border-box;
   background: rgba(8, 14, 11, 0.55); backdrop-filter: blur(2px);
 }
 .win-card {
@@ -4157,9 +4160,12 @@ button.secondary { color: var(--ink); }
   filter: brightness(1.7) saturate(.4); opacity: .8;
   transition: width .6s ease .1s;
 }
-.hpfill.high { background-image: url("graphic/ui/sc/gauge_fill_high.png"); }
-.hpfill.mid  { background-image: url("graphic/ui/sc/gauge_fill_mid.png"); }
-.hpfill.low  { background-image: url("graphic/ui/sc/gauge_fill_low.png"); }
+/* HPの色は右サイドの相棒ボード（.hp-fill）と同じ緑→黄→赤にそろえる。以前は画像素材
+   （gauge_fill_high.png＝暗いオリーブ）で、満タンが「減っている色」に見えていた。
+   背景サイズは --bar-w 基準のまま＝減るほどグラデの右側が隠れる。 */
+.hpfill.high { background-image: linear-gradient(90deg, #3ddc97, #66e6a8); }
+.hpfill.mid  { background-image: linear-gradient(90deg, #f6b352, #ffd27d); }
+.hpfill.low  { background-image: linear-gradient(90deg, #e85d75, #ff8a9d); }
 /* 完了済み周回ぶん（背面の満タンベース）。色は JS が直に当てる。 */
 .hpfill-base {
   position: absolute; top: 0; bottom: 0; left: 0; height: 100%; width: 0;
@@ -4617,10 +4623,15 @@ button.secondary { color: var(--ink); }
 .go-champ-trio .go-team-face { width: clamp(34px, 4vw, 46px); height: clamp(34px, 4vw, 46px); }
 .go-champ-trio .go-team-face:not(:first-child) { margin-left: 0; }
 
+/* 順位リストの下（右側の列）にそろえる。中央寄せだと左の優勝者の名札に重なり、
+   left:50% の絶対配置で幅が半分に絞られて「対戦ホー／ムへ」のように途中で改行していた。 */
 .go-buttons {
-  position: absolute; bottom: clamp(10px, 3%, 26px); left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: clamp(10px, 3%, 26px);
+  right: clamp(12px, 3%, 44px); left: auto; transform: none;
+  width: min(58%, 560px); justify-content: center; flex-wrap: nowrap;
   z-index: 5; margin: 0;
 }
+.go-buttons button { white-space: nowrap; flex: 0 0 auto; }
 
 /* ---- トビ（撃沈）ダウン演出 — ダメージシーンで持ち点がマイナスに落ちた敗者 ---- */
 /* アイコンが灰色に倒れ込み、行が沈む。 */
@@ -6953,3 +6964,209 @@ button.primary.danger:hover { color: #ffbcbc; }
 }
 .err-toast-report { background: #f6b35233 !important; border-color: #f6b35288 !important; color: #ffd89a !important; }
 .err-toast-close { margin-left: auto; }
+
+/* ============================================================================
+   インゲーム改善（2026-09-30）— 点棒＝HPの体感／相棒の共在感／卓の読みやすさ
+   判断軸は CLAUDE.md（愛着4原理 × 点棒=HP）。単発の動きは 0.6s 前後＝連戦のテンポを殺さない。
+   ============================================================================ */
+
+/* ---- 右サイド相棒ボード：減ったHPの白い残像が遅れて追いつく＋被弾した行が一瞬赤く光る ---- */
+.hp-gauge > .hp-ghost {
+  position: absolute; left: 0; top: 0; width: 0; height: 100%;
+  border-radius: inherit; z-index: 1;
+  background: linear-gradient(90deg, #fff1f3, #ffc4cf); opacity: .85;
+}
+.hp-gauge > .hp-fill { z-index: 2; }
+.hp-row.hp-hit { animation: hpRowHit .6s ease-out; }
+@keyframes hpRowHit {
+  0%   { box-shadow: 0 0 0 2px #ff5c7a, 0 0 16px #ff5c7a99; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+/* ---- 被弾の画面シェイク（自分が食らった瞬間。大物・トビは強く）---- */
+#game-screen.hit-shake-sm { animation: hitShakeSm .32s linear; }
+#game-screen.hit-shake-lg { animation: hitShakeLg .54s cubic-bezier(.36,.07,.19,.97); }
+@keyframes hitShakeSm {
+  0%, 100% { transform: none; }
+  20% { transform: translate(-2px, 1px); } 40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-2px, 0); }   80% { transform: translate(1px, 1px); }
+}
+@keyframes hitShakeLg {
+  0%, 100% { transform: none; }
+  10% { transform: translate(-7px, 2px); } 25% { transform: translate(6px, -2px); }
+  40% { transform: translate(-4px, 1px); } 55% { transform: translate(4px, -1px); }
+  70% { transform: translate(-2px, 0); }   85% { transform: translate(1px, 0); }
+}
+
+/* ---- 卓上の ±N（満貫未満の和了・流局）：河の牌の上でも読めるよう暗い札に載せる ---- */
+.point-delta {
+  padding: 0 14px; border-radius: 999px; line-height: 1.35; white-space: nowrap;
+  background: rgba(8, 14, 11, .8); box-shadow: 0 4px 14px #000a;
+  font-variant-numeric: tabular-nums;
+}
+.point-delta.plus  { border: 2px solid #62e08a99; }
+.point-delta.minus { border: 2px solid #ff6b8199; }
+
+/* ---- ピンチ（自分のHPが残り25%以下）：卓の縁が赤く脈打つ ---- */
+.pinch-fx {
+  position: absolute; inset: 0; z-index: 22; pointer-events: none;
+  border-radius: 18px; opacity: 0; transition: opacity .6s ease;
+  box-shadow: inset 0 0 90px 22px rgba(214, 38, 64, .62), inset 0 0 0 3px rgba(255, 90, 110, .45);
+}
+.pinch-fx.on { opacity: 1; animation: pinchPulse 1.7s ease-in-out infinite; }
+@keyframes pinchPulse { 0%, 100% { opacity: .6; } 50% { opacity: 1; } }
+
+/* ---- 相棒の立ち絵：小さな芝居（跳ねる／ひるむ／揺れる）＋頭上のエモート ---- */
+.self-bustup { transition: opacity .3s ease, filter .3s ease; }
+.self-bustup.act-hop    { animation: actHop .62s cubic-bezier(.3, 1.6, .5, 1); }
+.self-bustup.act-flinch { animation: actFlinch .46s ease-out; }
+.self-bustup.act-shake  { animation: actShake .52s cubic-bezier(.36,.07,.19,.97); }
+@keyframes actHop    { 0%, 100% { transform: none; } 35% { transform: translateY(-11px); } 65% { transform: translateY(2px); } }
+@keyframes actFlinch { 0%, 100% { transform: none; } 30% { transform: translateX(7px) scale(.985); } }
+@keyframes actShake  {
+  0%, 100% { transform: none; }
+  15% { transform: translateX(-7px); } 35% { transform: translateX(6px); }
+  55% { transform: translateX(-4px); } 75% { transform: translateX(2px); }
+}
+.self-bustup.act-shake::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at 50% 38%, rgba(255, 60, 84, .38), transparent 70%);
+  animation: actHitFlash .52s ease-out forwards;
+}
+@keyframes actHitFlash { from { opacity: 1; } to { opacity: 0; } }
+.stage-emote {
+  position: absolute; top: 40px; right: 8px; z-index: 3; pointer-events: none;
+  background-repeat: no-repeat; opacity: 0; transform: scale(.6);
+  transition: opacity .18s ease, transform .24s cubic-bezier(.2, 1.4, .4, 1);
+  filter: drop-shadow(0 2px 5px #000a);
+}
+.stage-emote.show { opacity: 1; transform: none; }
+.stage-emote.out  { opacity: 0; transform: scale(.9); }
+/* 和了画面・カットインに同じキャラの大きな立ち絵が出ている間は一歩下げる（二重に見せない）。 */
+.self-stage.is-echo .self-bustup { opacity: .3; filter: grayscale(.45); }
+/* 手動能力が撃てる合図：立ち絵がキャラ色で脈打ち、押しても発動できる。 */
+.self-stage.ability-ready { cursor: pointer; animation: stageReady 1.9s ease-in-out infinite; }
+@keyframes stageReady {
+  0%, 100% { box-shadow: 0 0 0 2px color-mix(in srgb, var(--char-c, #f6b352) 70%, transparent), 0 0 8px color-mix(in srgb, var(--char-c, #f6b352) 35%, transparent); }
+  50%      { box-shadow: 0 0 0 2px var(--char-c, #f6b352), 0 0 22px color-mix(in srgb, var(--char-c, #f6b352) 60%, transparent); }
+}
+.self-stage.ability-ready:not(:has(.self-talk.show))::after {
+  content: "⚡ タップで発動"; position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%);
+  z-index: 3; pointer-events: none; white-space: nowrap;
+  padding: 4px 12px; border-radius: 999px; font-size: 12px; font-weight: 800; letter-spacing: .04em;
+  color: #fff8ec; background: color-mix(in srgb, var(--char-c, #f6b352) 55%, #0b1410);
+  box-shadow: 0 4px 12px #0009; text-shadow: 0 1px 2px #0008;
+}
+
+/* ---- 局中の操作ボタン：結果画面と同じ UI キットの金縁にそろえ、役割は中の色で見分ける ---- */
+.action-bar button {
+  border: 10px solid transparent; border-radius: 0;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 / 10px 14px / 0 stretch;
+  background-clip: padding-box;
+  padding: 4px 14px; min-width: 84px;
+  font-size: 17px; font-weight: 800; letter-spacing: .04em;
+  color: #fff4dc; text-shadow: 0 1px 2px #0009;
+  box-shadow: 0 6px 16px #0007;
+  transition: transform .12s ease, filter .12s ease;
+}
+.action-bar button:hover:not(:disabled) { border-image-source: url("graphic/ui/sc/btn_hover.png"); transform: translateY(-2px); filter: brightness(1.08); }
+.action-bar .btn-tsumo, .action-bar .btn-ron { background: linear-gradient(180deg, #f9d27a, #d98a2b); color: #2a1404; text-shadow: none; }
+.action-bar .btn-riichi { background: linear-gradient(180deg, #f4e08a, #c79c32); color: #2a1d06; text-shadow: none; }
+.action-bar .btn-pon, .action-bar .btn-chi, .action-bar .btn-kan { background: linear-gradient(180deg, #5f96e0, #2f5c9c); }
+.action-bar .btn-skip { background: linear-gradient(180deg, #3a4841, #243029); color: #d7e2dc; font-weight: 700; }
+.action-bar .btn-ability { background: linear-gradient(180deg, #a585ea, #6b4caa); }
+.discard-hint { align-self: center; color: #cfe0d6; font-size: 13px; margin-left: 8px; text-shadow: 0 1px 2px #000a; }
+/* 右サイドの能力ボタンも同じ金縁。中の色は操作キャラの色（--char-c）。 */
+.ability-bar button.btn-ability {
+  border: 10px solid transparent; border-radius: 0;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 / 10px 14px / 0 stretch;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--char-c, #9c7ce4) 85%, #fff 15%),
+    color-mix(in srgb, var(--char-c, #9c7ce4) 70%, #000 30%));
+  background-clip: padding-box;
+  padding: 4px 10px; color: #fff8ee; text-shadow: 0 1px 2px #000a;
+}
+/* 手番の外は「押せない状態」で残す（消すと立ち絵の枠が上下するため）。 */
+.ability-bar.is-idle { opacity: .7; }
+.ability-bar.is-idle button { pointer-events: none; }
+
+/* ---- 「鳴きなし」「オート」：UI キットの枠＋有効/無効トグル ---- */
+.nonaki-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 2px 6px 2px 8px; font-size: 13px; font-weight: 800;
+  border: 8px solid transparent; border-radius: 0;
+  border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 8px 11px / 0 stretch;
+  background: none; color: #e9dcc0; backdrop-filter: none;
+}
+.nonaki-btn:hover { background: none; border-image-source: url("graphic/ui/sc/btn_hover.png"); }
+.nonaki-btn.on { background: none; color: #ffe6ad; border-color: transparent; }
+.nonaki-btn .tg-state { flex: 0 0 auto; width: 48px; height: 18px; background: url("graphic/ui/sc/toggle_off.png") center / contain no-repeat; }
+.nonaki-btn.on .tg-state { background-image: url("graphic/ui/sc/toggle_on.png"); }
+.auto-btn { top: 60px; }
+
+/* ---- 流局カード：局名＋各席のテンパイ/ノーテン・テンパイ者の手牌・テンパイ料 ---- */
+.draw-card { min-width: 460px; }
+.draw-card .win-title { margin-bottom: 10px; }
+.draw-abort { font-size: 16px; color: var(--muted); margin-left: 4px; }
+.draw-rows { display: flex; flex-direction: column; gap: 6px; margin: 4px 0 6px; text-align: left; }
+.draw-row {
+  display: grid; grid-template-columns: 7.5em 5em 1fr 5em; align-items: center; gap: 8px;
+  padding: 5px 10px; border-radius: 8px; background: #0e1813cc; border: 1px solid #ffffff10;
+  font-size: 14px;
+}
+.draw-row.is-you { border-color: #f6b35266; }
+.draw-name { font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.draw-state { font-size: 12px; font-weight: 800; color: var(--muted); }
+.draw-row.is-tenpai .draw-state { color: #8fe0b0; }
+.draw-tiles { display: flex; align-items: flex-end; gap: 1px; flex-wrap: nowrap; min-height: 26px; }
+.draw-meld { display: inline-flex; gap: 1px; margin-left: 6px; }
+.draw-tile { height: 26px; width: auto; border-radius: 2px; background: #fff; box-shadow: 0 1px 3px #0007; }
+.draw-delta { text-align: right; font-weight: 900; font-variant-numeric: tabular-nums; color: var(--muted); }
+.draw-delta.up { color: #62e08a; }
+.draw-delta.dn { color: #ff6b81; }
+
+/* ---- VS 画面：相棒（自分の札）の対局前のひと言 ---- */
+.mi-card.has-talk { overflow: visible; }
+.mi-card.has-talk .mi-card-art { border-radius: 12px 12px 0 0; }
+.mi-card-talk {
+  position: absolute; left: 50%; bottom: calc(100% + 14px);
+  width: max-content; max-width: 250px; padding: 9px 13px; border-radius: 12px;
+  background: #fff8ec; color: #2a1d12; font-size: 13.5px; font-weight: 700; line-height: 1.5;
+  box-shadow: 0 8px 22px #000a; z-index: 4;
+  opacity: 0; transform: translateX(-50%) translateY(6px);
+  animation: miTalkIn .4s .8s ease-out forwards;
+}
+.mi-card-talk::after {
+  content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%);
+  border: 8px solid transparent; border-top-color: #fff8ec;
+}
+@keyframes miTalkIn { to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+
+/* ---- 対局終了：相棒の台詞の下に、この対局で増えた絆 ---- */
+.bond-gain {
+  width: 100%; box-sizing: border-box; margin-top: 6px; padding: 8px 12px 9px;
+  border-radius: 10px; background: #0b1410e8; border: 1px solid #f6b35255;
+  box-shadow: 0 6px 16px #0008; opacity: 0; transform: translateY(6px);
+  transition: opacity .35s ease, transform .35s ease;
+}
+.bond-gain.show { opacity: 1; transform: none; }
+.bond-gain-head { display: flex; align-items: baseline; gap: 8px; font-size: 13px; }
+.bond-gain-k { font-weight: 900; color: #ffd98a; letter-spacing: .08em; }
+.bond-gain-band { font-weight: 800; color: #f4e3b4; }
+.bond-gain-lv { font-size: 12px; font-weight: 800; color: #cfe0d6; }
+.bond-gain-up {
+  font-size: 11px; font-weight: 900; color: #2a1404; background: linear-gradient(180deg, #ffe39a, #f0b04a);
+  padding: 1px 7px; border-radius: 999px; animation: bondUpPop .6s .6s cubic-bezier(.2, 1.6, .4, 1) both;
+}
+@keyframes bondUpPop { from { transform: scale(.4); opacity: 0; } to { transform: none; opacity: 1; } }
+.bond-gain-pt { margin-left: auto; font-weight: 900; color: #ffcf6e; font-variant-numeric: tabular-nums; }
+.bond-gain-bar { height: 7px; margin-top: 6px; border-radius: 999px; overflow: hidden; background: #ffffff14; border: 1px solid #0006; }
+.bond-gain-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #f6b352, #ffe08a); transition: width 1s cubic-bezier(.2, .8, .2, 1); }
+.bond-gain-num { margin-top: 3px; text-align: right; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* ---- 動きを減らす設定の人には、揺れ・脈打ちを止める ---- */
+@media (prefers-reduced-motion: reduce) {
+  #game-screen.hit-shake-sm, #game-screen.hit-shake-lg,
+  .self-bustup.act-hop, .self-bustup.act-flinch, .self-bustup.act-shake,
+  .self-stage.ability-ready, .pinch-fx.on { animation: none; }
+}

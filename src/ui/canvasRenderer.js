@@ -10,6 +10,19 @@ const SMALL = 0.62;
 // 自分の手牌だけ拡大して見やすくする倍率（牌サイズ・間隔・当たり判定すべてに適用）。
 // スマホでもタップしやすいよう大きめに。門前14牌でも横幅は卓内(≈900/960px)に収まる上限。
 const HAND_SCALE = 1.5;
+// 河の牌。捨て牌の読みが麻雀の半分なので、手牌の約半分まで大きくする（旧 SMALL=0.62 は
+// 手牌の0.4倍で読みにくかった）。中央の方位盤を正方形に絞ったぶんの外周に収まる大きさ。
+const RIVER_SCALE = 0.72;
+// 自分の副露は手牌と同じ行の右端に、手牌に近い大きさで並べる（右下の操作ボタンと重ねない）。
+const SELF_MELD_SCALE = 1.0;
+// 卓中央の方位盤（正方形）の半辺・リーチ棒の位置・河の開始位置（いずれも中心からの距離）。
+// 旧来の横長パネル(300×140)は上家・下家の河とリーチ棒に重なっていた。
+const CENTER_HALF = 72;
+const STICK_Y = 80;
+const RIVER_Y = 88;
+// 対面の手牌の上端。河を大きくしたぶん、河3段目と重ならない高さへ上げる。
+const TOP_HAND_Y = 110;
+const WIND_CHAR = { 27: "東", 28: "南", 29: "西", 30: "北" };
 
 // 自分の手番(打牌待ち)で「押せる牌」を一段持ち上げて受け皿の光を敷く量。
 // 「今ここを押す」という手がかりを、打てない局面との見た目差で作る（当たり判定も同量ずらす）。
@@ -47,6 +60,11 @@ export class CanvasRenderer {
     this.showHandCoach = false; // 初回オンボーディング: 手牌を指すコーチマークを出すか。
     this._humanHandBox = null; // 直近に描いた自分の手牌の外接矩形（コーチマークの矢印位置に使う）。
     this.thinkingSeat = null; // 通信対戦: 長考中の席（「⏳ 長考中」バッジ対象）。null=なし。
+    // 局が終わってから次の局が始まるまでは、エンジンの局番号が先に進んでいる（_endHand）。
+    // その間は main.js が「終わった局」の表示を渡し、方位盤がそれを出す。null=現在の局。
+    this.roundInfo = null; // { label, honba, kyotaku }
+    // 方位盤の中の目印（演出の座標に使う。canvas 座標）。_drawCenterInfo が毎回更新する。
+    this.anchors = { wall: { x: canvas.width / 2, y: canvas.height / 2 - 14 }, dora: { x: canvas.width / 2, y: canvas.height / 2 + 26 } };
     this.W = canvas.width;
     this.H = canvas.height;
 
@@ -170,30 +188,82 @@ export class CanvasRenderer {
     return n === 3 ? [0, 1, 3] : [0, 1, 2, 3];
   }
 
+  // 卓中央の方位盤。正方形に絞り（河とリーチ棒をその外側に置ける）、各辺にその席の自風を
+  // その席から読める向きで書く。いま打牌する席の辺を光らせて「誰の番か」を示す。
   _drawCenterInfo() {
     const ctx = this.ctx;
-    const cx = this.W / 2, cy = this.H / 2;
-    // center box
-    ctx.fillStyle = "#163a2b";
-    roundRect(ctx, cx - 150, cy - 70, 300, 140, 12);
+    const cx = this.W / 2, cy = this.H / 2, h = CENTER_HALF;
+    const info = this.roundInfo || { label: this.game.roundLabel(), honba: this.game.honba, kyotaku: this.game.kyotaku };
+
+    ctx.save();
+    const bg = ctx.createLinearGradient(cx, cy - h, cx, cy + h);
+    bg.addColorStop(0, "#1b4634");
+    bg.addColorStop(1, "#11301f");
+    ctx.fillStyle = bg;
+    roundRect(ctx, cx - h, cy - h, h * 2, h * 2, 14);
     ctx.fill();
+    ctx.strokeStyle = "rgba(240, 206, 140, 0.30)";
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
 
-    ctx.fillStyle = "#cfe0d6";
-    ctx.font = "14px sans-serif";
+    // 各席の自風＋手番の灯り。席の向きに回した局所フレームで描く（河と同じ慣習）。
+    const N = this.game.numPlayers;
+    const slots = this._seatSlots(N);
+    const turnIdx = this.game.phase === Phase.AWAIT_DISCARD ? this.game.turn : null;
+    for (let offset = 0; offset < N; offset++) {
+      const pIndex = (this.humanIndex + offset) % N;
+      const p = this.game.players[pIndex];
+      const seat = slots[offset];
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-seat * Math.PI / 2);
+      if (turnIdx === pIndex) {
+        ctx.save();
+        ctx.shadowColor = p.character.color || "#f6d24a";
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = p.character.color || "#f6d24a";
+        roundRect(ctx, -44, h - 7, 88, 4, 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      ctx.font = "bold 12px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = p.isDealer ? "#f2b45a" : "#a9c4b6";
+      ctx.fillText(WIND_CHAR[p.seatWind] || "", 0, h - 14);
+      ctx.restore();
+    }
+
+    ctx.save();
     ctx.textAlign = "center";
-    ctx.fillText(`残り牌: ${this.game.wall.liveRemaining}`, cx, cy - 40);
-    const honbaText = this.game.honba > 0 ? `  ${this.game.honba}本場` : "";
-    ctx.fillText(`${this.game.roundLabel()}${honbaText}`, cx, cy - 18);
-    if (this.game.kyotaku > 0) ctx.fillText(`供託 ${this.game.kyotaku}`, cx, cy + 2);
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#f3e6c4";
+    ctx.font = "bold 17px sans-serif";
+    ctx.fillText(info.label, cx, cy - 27);
+    ctx.fillStyle = "#cfe0d6";
+    ctx.font = "12px sans-serif";
+    ctx.fillText(`残り ${this.game.wall.liveRemaining}`, cx, cy - 11);
+    const subs = [];
+    if (info.honba > 0) subs.push(`${info.honba}本場`);
+    if (info.kyotaku > 0) subs.push(`供託 ${info.kyotaku}`);
+    if (subs.length) {
+      ctx.fillStyle = "#e8c98a";
+      ctx.font = "11px sans-serif";
+      ctx.fillText(subs.join(" · "), cx, cy + 3);
+    }
+    ctx.restore();
 
-    // dora indicators
+    // ドラ表示牌。槓ドラで4枚以上になったら縮めて方位盤に収める。
     const dora = this.game.wall.doraIndicators();
-    const startX = cx - (dora.length * (TILE_W * SMALL + 3)) / 2;
-    ctx.fillStyle = "#9bb3a6";
-    ctx.fillText("ドラ表示", cx, cy + 22);
+    const ds = dora.length >= 4 ? 0.5 : SMALL;
+    const dw = TILE_W * ds, gap = 3;
+    const startX = cx - (dora.length * (dw + gap) - gap) / 2;
+    const dy = cy + 9;
     dora.forEach((t, i) => {
-      this._tile(startX + i * (TILE_W * SMALL + 3), cy + 30, t.kind, { scale: SMALL });
+      this._tile(startX + i * (dw + gap), dy, t.kind, { scale: ds });
     });
+    this.anchors = { wall: { x: cx, y: cy - 15 }, dora: { x: cx, y: dy + (TILE_H * ds) / 2 } };
   }
 
   _seatTransform(seat) {
@@ -216,8 +286,7 @@ export class CanvasRenderer {
     this._namePlate(p, seat);
 
     if (seat === 0) {
-      this._drawHumanHand(p);
-      this._drawMelds(p, seat);
+      this._drawHumanHand(p); // 自分の副露も手牌の行に並べて描く
     } else {
       this._drawOpponentHand(p, seat);
       this._drawMelds(p, seat);
@@ -255,8 +324,11 @@ export class CanvasRenderer {
       roundRect(ctx, x - 90, y - 18, 180, 36, 8); ctx.stroke();
     }
 
+    // 自席のバッジは卓に描かない（プレートの真上は自分の河の3段目と重なる）。自分の能力の
+    // 状態は右サイドの立ち絵の常設バッジ・能力欄が受け持つ。プレートの発光だけは残す。
+    if (seat === 0) { /* no badge */ }
     // 発動中バッジ：プレート上に「⚡発動中 能力名」をピル型で出す。
-    if (activeAbility) this._abilityBadge(x, y - 18 - 8, activeAbility.name, ABILITY_GLOW);
+    else if (activeAbility) this._abilityBadge(x, y - 18 - 8, activeAbility.name, ABILITY_GLOW);
     // 通信対戦: この席が長考中（手番開始から一定時間動きなし）なら「⏳ 長考中」をプレート上に出す。
     // 能力発動中バッジとは排他（同じ位置）。動き出し（打牌）でホスト側がクリアする。
     else if (this.thinkingSeat === p.index) this._thinkingBadge(x, y - 18 - 8);
@@ -438,7 +510,14 @@ export class CanvasRenderer {
     const tiles = drawn ? [...hand, "gap", drawn] : hand;
     const count = hand.length + (drawn ? 1 : 0);
     const totalW = count * (tw + gap) + (drawn ? drawnGap : 0);
-    const startX = this.W / 2 - totalW / 2;
+    // 副露は手牌と同じ行の右に置く（手牌＋すき間＋副露を1つの塊として中央に寄せる）。
+    // 鳴くほど手牌が3枚ずつ減るので、門前14牌の幅(≈900px)を超えることはない。
+    const ms = SELF_MELD_SCALE;
+    const mtw = TILE_W * ms, mth = TILE_H * ms, mGap = 2, meldGap = 10, groupGap = 22;
+    const meldLayouts = p.melds.map((m) => this._meldLayout(m, p.index));
+    const meldsW = meldLayouts.length ? this._meldsWidth(meldLayouts, mtw, mth, mGap, meldGap) : 0;
+    const groupW = totalW + (meldsW ? groupGap + meldsW : 0);
+    const startX = Math.max(8, this.W / 2 - groupW / 2);
     let x = startX;
     // 拡大した牌が画面下にはみ出さないよう、下端から積み上げて上端 y を決める。
     // 打てる牌はここから PICK_LIFT 持ち上げるので、その分の余白も下端に残してある。
@@ -474,6 +553,26 @@ export class CanvasRenderer {
       if (selected) this._selectOutline(x, ty, tw, th); // 「次のタップで切る」武装中の牌を縁取り
       this.handHitboxes.push({ tileId: t.id, kind: t.kind, x, y: ty, w: tw, h: th, enabled: canPick });
       x += tw + gap;
+    }
+    if (meldsW) {
+      // 手牌の下端にそろえて右に並べる（横向きの鳴き牌も下端そろえ）。
+      const my = this.H - 8 - mth;
+      let mx = startX + totalW + groupGap;
+      for (const layout of meldLayouts) {
+        for (const cell of layout) {
+          if (cell.faceDown) {
+            this._back(mx, my, mtw, mth);
+            mx += mtw + mGap;
+          } else if (cell.rotated) {
+            this._drawTileAt(mx, my + (mth - mtw), cell.kind, { scale: ms, red: cell.red, sideways: true });
+            mx += mth + mGap;
+          } else {
+            this._tile(mx, my, cell.kind, { scale: ms, red: cell.red });
+            mx += mtw + mGap;
+          }
+        }
+        mx += meldGap;
+      }
     }
     // コーチマークの矢印位置に使う外接矩形（押せる局面のときだけ更新）。
     // 上端はホバー時の最大リフト(PICK_HOVER_LIFT)基準にして、牌が浮いてもピル/矢印が被らないようにする。
@@ -581,7 +680,7 @@ export class CanvasRenderer {
     if (seat === 2) {
       const totalW = n * (back + 3);
       let x = this.W / 2 - totalW / 2;
-      const y = 128;
+      const y = TOP_HAND_Y;
       for (let i = 0; i < n; i++) { this._back(x, y, back, back * 1.35); x += back + 3; }
     } else {
       const th = back * 1.05;
@@ -609,7 +708,8 @@ export class CanvasRenderer {
     }
 
     if (m.type === MeldType.CHI) {
-      const called = m.calledTile;
+      // 通信対戦のレプリカは calledTile を id だけで持つので、牌種は面子の中から引き直す。
+      const called = (m.calledTile && m.tiles.find((t) => t.id === m.calledTile.id)) || m.calledTile;
       const others = m.tiles
         .filter((t) => t.id !== (called && called.id))
         .sort((a, b) => a.kind - b.kind);
@@ -688,7 +788,7 @@ export class CanvasRenderer {
 
   _drawRiver(pIndex, seat) {
     const p = this.game.players[pIndex];
-    const scale = SMALL;
+    const scale = RIVER_SCALE;
     const tw = TILE_W * scale, th = TILE_H * scale;
     const perRow = 6;
     const cx = this.W / 2, cy = this.H / 2;
@@ -702,7 +802,9 @@ export class CanvasRenderer {
     const angle = -seat * Math.PI / 2;
     const blockW = perRow * (tw + 2);
     const ox = -blockW / 2;
-    const oy = 92; // gap below centre box where the river starts (local frame)
+    const oy = RIVER_Y; // 方位盤の外側から河を始める（局所フレーム）
+    // 直近に捨てられた牌（鳴かれて河から消えたら該当なし＝印も出ない）。
+    const lastId = this.game.lastDiscard ? this.game.lastDiscard.id : null;
 
     ctx.save();
     ctx.translate(cx, cy);
@@ -713,8 +815,8 @@ export class CanvasRenderer {
     // to screen coords by a simple offset. We record them while drawing.
     const selfHitboxes = seat === 0;
 
-    // リーチ宣言中はその家の手前(河と中央箱の間)に点棒を横向きで1本置く（素材レス描画）。
-    if (p.riichi) this._riichiStick(0, 80); // 中央箱(局所y=70)と河(同92)の隙間
+    // リーチ宣言中はその家の手前(河と方位盤の間)に点棒を横向きで1本置く（素材レス描画）。
+    if (p.riichi) this._riichiStick(0, STICK_Y); // 方位盤(局所y=72)と河(同88)の隙間
 
     let rowIndex = -1;
     let rowX = ox;
@@ -727,6 +829,14 @@ export class CanvasRenderer {
       this._drawTileAt(rowX, ly, t.kind, {
         scale, red: t.red, riichi: t.riichiTile, sideways, ronImmune: t.ronImmune,
       });
+      // 直近の捨て牌に金の縁取り。CPU の打牌は速いので「いま何が切られたか」を目で拾えるように。
+      if (lastId != null && t.id === lastId) {
+        ctx.save();
+        ctx.strokeStyle = "#ffd76a"; ctx.lineWidth = 2.5;
+        ctx.shadowColor = "#ffcf4d"; ctx.shadowBlur = 10;
+        roundRect(ctx, rowX - 1.5, ly - 1.5, slotW + 3, (sideways ? tw : th) + 3, 5 * scale); ctx.stroke();
+        ctx.restore();
+      }
       // ルクスの走査結果「出切っている有効牌」を河で光らせる（告知中のみ）。
       if (this.deadKinds && this.deadKinds.has(t.kind)) {
         ctx.save();
@@ -851,26 +961,31 @@ export class CanvasRenderer {
     ctx.fillText(st.label, x + w - 3, y + 11 * s);
   }
 
+  // 牌の裏。素材の裏面(Back.svg)は鮮やかな赤で、卓上でいちばん重要度の低い情報（対面の伏せ牌）が
+  // いちばん目立っていたため、タイトルロゴの藍＋金に合わせた落ち着いた裏面を描く。下端に象牙色の
+  // 表側の層を細く覗かせて、牌の厚みを出す。
   _back(x, y, w, h) {
     const ctx = this.ctx;
-    const img = this.tileImages ? this.tileImages.getBack() : null;
-    if (img) {
-      ctx.save();
-      roundRect(ctx, x, y, w, h, 4); ctx.clip();
-      const front = this.tileImages.getFront ? this.tileImages.getFront() : null;
-      if (front) ctx.drawImage(front, x, y, w, h); // 白い下地（裏面の透過対策）
-      ctx.drawImage(img, x, y, w, h);
-      ctx.restore();
-      ctx.strokeStyle = "#c9c2ad"; ctx.lineWidth = 1;
-      roundRect(ctx, x, y, w, h, 4); ctx.stroke();
-      return;
-    }
-    // 画像未ロード時のフォールバック（緑の牌裏）。
-    ctx.fillStyle = "#2e6f4f";
-    roundRect(ctx, x, y, w, h, 4); ctx.fill();
-    ctx.strokeStyle = "#1c4632"; ctx.lineWidth = 1; ctx.stroke();
-    ctx.fillStyle = "#3c8a63";
-    roundRect(ctx, x + w * 0.2, y + h * 0.2, w * 0.6, h * 0.6, 3); ctx.fill();
+    const r = Math.min(4, w * 0.18);
+    ctx.save();
+    // 表側（象牙）の層
+    ctx.fillStyle = "#e9e1cc";
+    roundRect(ctx, x, y, w, h, r); ctx.fill();
+    // 裏面（藍のグラデ）
+    const lip = Math.max(2, h * 0.08);
+    const g = ctx.createLinearGradient(x, y, x + w, y + h);
+    g.addColorStop(0, "#34507a");
+    g.addColorStop(1, "#1d2d49");
+    ctx.fillStyle = g;
+    roundRect(ctx, x, y, w, h - lip, r); ctx.fill();
+    // 金の内枠
+    ctx.strokeStyle = "rgba(232, 196, 120, 0.55)";
+    ctx.lineWidth = 1;
+    roundRect(ctx, x + w * 0.16, y + h * 0.12, w * 0.68, h * 0.64 - lip, Math.max(1.5, r - 1.5)); ctx.stroke();
+    // 輪郭
+    ctx.strokeStyle = "#1a2438";
+    roundRect(ctx, x, y, w, h, r); ctx.stroke();
+    ctx.restore();
   }
 
   // 立てた牌を横から見た「側面」（左右の相手手牌用）。象牙の側面＋卓中央側に覗く

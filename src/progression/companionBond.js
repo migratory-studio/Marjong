@@ -36,6 +36,11 @@ export function bondProgressFrac({ level = 1, exp = 0 } = {}) {
   return need > 0 ? Math.max(0, Math.min(1, exp / need)) : 0;
 }
 
+// 絆の通算exp（Lv1からの累積）。対局の前後で引き算して「今回増えたpt」を出すのに使う。
+export function bondTotalExp({ level = 1, exp = 0 } = {}) {
+  return accumulateExp(Math.max(1, level), Math.max(0, exp));
+}
+
 // 絆の数値表示セット（Lv実数＋現Lv内pt／次Lvまでの必要pt）。
 // ゲージ単体では「帯が2Lvごと・ゲージは1Lvで一周」のズレが伝わらなかったため、
 // 数値を見せる方針へ転換（[[bond-display-hybrid-policy]] 改）。cur/need は bondProgressFrac と同源。
