@@ -6,7 +6,7 @@ import { CHARACTER_MASTER, ROLE_MASTER } from "./data/characterMaster.js";
 import { applyPortraitCrop, installIconPosStyles } from "./data/imagePos.js";
 import { abilityDef } from "./data/abilityMaster.js";
 import { decideDiscard, decideCall, decideAbilityActivations } from "./ai/simpleAI.js";
-import { CanvasRenderer } from "./ui/canvasRenderer.js";
+import { CanvasRenderer, SEATED_LAYOUT } from "./ui/canvasRenderer.js";
 import { TileImages, CharacterImages, AudioManager, tilePath } from "./ui/assets.js";
 import { initSettingsUI, applyAudioSettings, wireSettingsControls } from "./ui/settings.js";
 import { showScreen } from "./app/router.js";
@@ -280,16 +280,20 @@ function reactPortrait(kind) {
   }
   if (def.emote) playStageEmote(def.emote);
 }
-let stageEmoteTimer = null;
 const STAGE_EMOTE_SIZE = 84;
 function playStageEmote(emoteId) {
   const stage = el("self-stage");
-  const d = emoteDef(emoteId);
-  if (!stage || !d) return;
+  if (!stage) return;
   let fx = stage.querySelector(".stage-emote");
   if (!fx) { fx = document.createElement("div"); fx.className = "stage-emote"; stage.appendChild(fx); }
-  clearInterval(stageEmoteTimer);
-  const size = STAGE_EMOTE_SIZE;
+  playEmoteSheet(fx, emoteId, STAGE_EMOTE_SIZE);
+}
+// エモートのスプライトシートを fx 要素の上でコマ送りする（相棒の立ち絵・卓の相手で共用）。
+// タイマーは要素に持たせる＝席ごとに独立して鳴らせる。
+function playEmoteSheet(fx, emoteId, size) {
+  const d = emoteDef(emoteId);
+  if (!fx || !d) return;
+  clearInterval(fx._emoteTimer);
   fx.style.width = `${size}px`;
   fx.style.height = `${size}px`;
   fx.style.backgroundImage = `url("${d.sheet}")`;
@@ -301,11 +305,11 @@ function playStageEmote(emoteId) {
   // ループ素材（♪・汗など）も長くは回さない＝2周で畳む。一拍の反応は最終コマで止めて消す。
   const total = d.loop ? d.frameCount * 2 : d.frameCount;
   let frame = 0;
-  stageEmoteTimer = setInterval(() => {
+  fx._emoteTimer = setInterval(() => {
     frame++;
     if (frame >= total) {
-      clearInterval(stageEmoteTimer);
-      stageEmoteTimer = null;
+      clearInterval(fx._emoteTimer);
+      fx._emoteTimer = null;
       if (!d.loop) place(d.frameCount - 1);
       setTimeout(() => fx.classList.add("out"), 300);
       return;
@@ -313,16 +317,21 @@ function playStageEmote(emoteId) {
     place(d.loop ? frame % d.frameCount : frame);
   }, 1000 / (d.fps || 30));
 }
+function stopEmoteSheet(fx) {
+  if (!fx) return;
+  clearInterval(fx._emoteTimer);
+  fx._emoteTimer = null;
+  fx.classList.add("out");
+}
 function clearStageEmote() {
-  clearInterval(stageEmoteTimer);
-  stageEmoteTimer = null;
-  el("self-stage")?.querySelector(".stage-emote")?.classList.add("out");
+  stopEmoteSheet(el("self-stage")?.querySelector(".stage-emote"));
 }
 // 対局で使うエモートのシートを先読み（初回の再生でコマ落ちしないように）。
 const preloadedEmotes = [];
 function preloadStageEmotes() {
   if (preloadedEmotes.length) return;
-  for (const id of new Set(Object.values(PORTRAIT_REACTIONS).map((r) => r.emote).filter(Boolean))) {
+  const ids = [...Object.values(PORTRAIT_REACTIONS), ...Object.values(SEAT_REACTIONS)].map((r) => r.emote);
+  for (const id of new Set(ids.filter(Boolean))) {
     const d = emoteDef(id);
     if (!d) continue;
     const img = new Image();
@@ -333,6 +342,163 @@ function preloadStageEmotes() {
 // 和了画面・ダメージ演出で同じキャラの立ち絵が大きく出ている間は、右の立ち絵を一歩下げる。
 function setStageEcho(on) {
   el("self-stage")?.classList.toggle("is-echo", !!on);
+}
+
+// ── 卓を囲む（2.5D卓・着席した対戦相手）────────────────────────────────────────
+// 卓の面（#table-plane＝木枠・ラシャ・#table-field）を奥へ傾け、空いた卓の奥に対戦相手の
+// 立ち絵を座らせる。平らな #table は自分の手牌・相手の名札・当たり判定を受け持つ（座標は従来どおり）。
+// 孤独な麻雀を“人と打つ麻雀”に：相手は名札ではなく顔で卓にいて、リーチや和了に芝居で応える。
+// 位置はすべて #table の枠（content box）から計算する＝ステージの縮小・回転の影響を受けない。
+// 部屋は無料の背景（道場＝和室の灯りの下で打つ）を暗く落として奥に敷く。宝珠ショップで売っている
+// 背景（雀荘シリーズなど）は売り物なので卓の部屋には流用しない。
+const ROOM_BG_DEFAULT = "graphic/bg/bg-dojo.png";
+const SEAT_BUST_ASPECT = 362 / 318; // 相棒ボードの立ち絵枠と同じ縦横比＝キャラごとの切り抜き調整をそのまま使う
+const SEAT_EMOTE_SIZE = 64;
+let seatBustEls = {};        // playerIndex -> .seat-bust
+let seatThinkDone = new Set(); // この局で「…」と考え込んだ席（1局に1人1回）
+
+// 卓のまわりの部屋。楼光の館はその層の背景（館の中で打つ。ランの進路画面がすでに敷いている背景と
+// 同じもの）、それ以外は道場。
+function tableRoomBg() {
+  if (pairBattleData?.isRoguelite) {
+    const img = bgDef(biomeOf(rogueliteState?.run)?.bg || ROGUELITE_BG_ID)?.image;
+    if (img) return img;
+  }
+  return ROOM_BG_DEFAULT;
+}
+
+// 対局開始時に一度：着席配置へ切り替え、部屋・卓の傾き・相手の立ち絵を用意する。
+function setupSeatedTable() {
+  const scr = el("game-screen");
+  if (!scr || !renderer) return;
+  scr.classList.toggle("seated", !!renderer.seated);
+  if (!renderer.seated) return;
+  scr.style.setProperty("--room-bg", `url("${tableRoomBg()}")`);
+  buildSeatBusts();
+  syncTableLayers();
+}
+
+// 傾く卓の面と相手の立ち絵を、平らな #table の枠に合わせて置く。傾きは renderer.tilt と同じ値を
+// CSS に当てる（当たり判定・演出の位置合わせは renderer.fieldToFlat / flatToField が同じ写像を使う）。
+function syncTableLayers() {
+  const cv = el("table"), plane = el("table-plane");
+  if (!cv || !plane || !renderer?.seated) return;
+  const left = cv.offsetLeft + cv.clientLeft, top = cv.offsetTop + cv.clientTop;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if (!w || !h) return;
+  const k = w / cv.width; // CSS px / canvas 座標
+  const t = renderer.tilt;
+  Object.assign(plane.style, {
+    left: `${left}px`, top: `${top}px`, width: `${w}px`, height: `${h}px`,
+    transformOrigin: `${w / 2}px ${t.originY * k}px`,
+    transform: `perspective(${t.perspective * k}px) rotateX(${t.deg}deg)`,
+  });
+  for (const b of Object.values(seatBustEls)) {
+    const box = SEATED_LAYOUT.busts[b.dataset.seat];
+    if (!box) continue;
+    Object.assign(b.style, {
+      left: `${left + box.x * k}px`, top: `${top + box.y * k}px`,
+      width: `${box.w * k}px`, height: `${box.w * k * SEAT_BUST_ASPECT}px`,
+    });
+  }
+}
+
+function buildSeatBusts() {
+  const host = el("seat-busts");
+  if (!host || !game) return;
+  host.innerHTML = "";
+  seatBustEls = {};
+  for (let pi = 0; pi < game.numPlayers; pi++) {
+    if (pi === humanIndex) continue;
+    const seat = visualSeat(pi);
+    if (!SEATED_LAYOUT.busts[seat]) continue;
+    const b = document.createElement("div");
+    b.className = `seat-bust seat-${seat}`;
+    b.dataset.seat = String(seat);
+    host.appendChild(b);
+    seatBustEls[pi] = b;
+    fillSeatBust(b, game.players[pi].character);
+  }
+}
+// 立ち絵は相棒ボードと同じ部品（fillPortrait＝キャラごとの切り抜き調整込み）を縮小して使う。
+function fillSeatBust(b, c) {
+  b.dataset.cid = c.id;
+  b.style.setProperty("--char-c", c.color || "#f6b352");
+  b.classList.toggle("is-mob", !!c.isMob);
+  const art = document.createElement("div");
+  art.className = "seat-art";
+  fillPortrait(art, c);
+  b.replaceChildren(art);
+}
+
+// 毎描画：手番の人を灯す。団体戦の交代などで席の人が替わったら立ち絵を差し替える。
+function syncSeatBusts() {
+  if (!renderer?.seated || !game) return;
+  const turn = game.phase === Phase.AWAIT_DISCARD ? game.turn : null;
+  for (const [pi, b] of Object.entries(seatBustEls)) {
+    const c = game.players[pi]?.character;
+    if (c && b.dataset.cid !== c.id) fillSeatBust(b, c);
+    b.classList.toggle("is-turn", turn === Number(pi));
+  }
+}
+
+// 卓の相手の芝居。act は相棒の立ち絵と同じ語彙（跳ねる／ひるむ／揺れる）、emote は頭上の感情アイコン。
+const SEAT_REACTIONS = {
+  riichi:  { act: "act-hop",    emote: "tension" }, // その人のリーチ（ピリッ）
+  win:     { act: "act-hop",    emote: "joy" },     // その人の和了
+  dealIn:  { act: "act-shake",  emote: "shock" },   // その人の放銃
+  call:    { act: "act-hop",    emote: null },      // その人の鳴き（テロップが主役）
+  noticed: { act: "act-flinch", emote: null },      // あなたのリーチ・ツモに身構える
+  think:   { act: null,         emote: "silence" }, // リーチを受けて押すか引くか考え込む／通信対戦の長考
+};
+function reactSeat(pi, kind) {
+  const def = SEAT_REACTIONS[kind];
+  const b = seatBustEls[pi];
+  if (!def || !b) return;
+  if (def.act) {
+    b.classList.remove(...PORTRAIT_ACTS);
+    void b.offsetWidth;
+    b.classList.add(def.act);
+    setTimeout(() => b.classList.remove(def.act), 760);
+  }
+  if (def.emote) {
+    let fx = b.querySelector(".seat-emote");
+    if (!fx) { fx = document.createElement("div"); fx.className = "stage-emote seat-emote"; b.appendChild(fx); }
+    playEmoteSheet(fx, def.emote, SEAT_EMOTE_SIZE);
+  }
+}
+// 卓の全員がいっせいに反応するとき（あなたのリーチ等）は、少しずつずらして“ざわっ”とさせる。
+function reactAllSeats(kind) {
+  Object.keys(seatBustEls).forEach((pi, i) => setTimeout(() => reactSeat(Number(pi), kind), 90 * i));
+}
+
+function setupSeatReactions(g) {
+  seatThinkDone = new Set();
+  g.bus.on(Events.HAND_STARTED, () => {
+    seatThinkDone = new Set();
+    for (const b of Object.values(seatBustEls)) stopEmoteSheet(b.querySelector(".seat-emote"));
+  });
+  g.bus.on(Events.RIICHI_DECLARED, ({ player }) => {
+    if (!player) return;
+    if (player.index === humanIndex) reactAllSeats("noticed");
+    else reactSeat(player.index, "riichi");
+  });
+  g.bus.on(Events.MELD_CALLED, ({ player }) => {
+    if (player && player.index !== humanIndex) reactSeat(player.index, "call");
+  });
+  g.bus.on(Events.HAND_WON, (r) => {
+    if (!r || r.draw) return;
+    if (r.winner != null && r.winner !== humanIndex) reactSeat(r.winner, "win");
+    if (r.loser != null && r.loser !== humanIndex) reactSeat(r.loser, "dealIn");
+    if (r.winner === humanIndex && r.loser == null) reactAllSeats("noticed"); // あなたのツモ
+  });
+  // 誰かのリーチを受けた手番で、押すか引くか一度だけ考え込む（1局に1人1回・半々）。
+  g.bus.on(Events.TILE_DRAWN, ({ player }) => {
+    if (!player || player.index === humanIndex || player.riichi || seatThinkDone.has(player.index)) return;
+    if (!g.players.some((p) => p.index !== player.index && p.riichi)) return;
+    seatThinkDone.add(player.index);
+    if (Math.random() < 0.5) reactSeat(player.index, "think");
+  });
 }
 
 // ── ピンチ（自分のHPが残り25%以下）──────────────────────────────────────────
@@ -4382,6 +4548,7 @@ function setThinkingSeat(seat) {
   if (!renderer) return;
   if (renderer.thinkingSeat === seat) return;
   renderer.thinkingSeat = seat;
+  if (seat != null) reactSeat(seat, "think"); // 卓の奥の立ち絵も「…」と考え込む
   if (game && !game.gameOver) render();
 }
 
@@ -4620,7 +4787,7 @@ function beginGame(seated, dealerIndex, opts = {}) {
   // ペア戦の味方相互の被弾を避ける戦術トグル（右サイドメニュー）。自陣（人間と同ペア）の
   // 席へ「和了しない／自分からあがらない」を適用する。
   applyPairWinPolicy();
-  renderer = new CanvasRenderer(el("table"), game, humanIndex, tileImages, charImages);
+  renderer = new CanvasRenderer(el("table"), game, humanIndex, tileImages, charImages, el("table-field"));
   // 通信対戦の卓上ネームプレートはユーザー名で出す（席→名前。CPU/未設定は null＝キャラ名にフォールバック）。
   renderer.seatLabels = (opts.online && onlineSeatInfo)
     ? onlineSeatInfo.map((p) => (p && !p.cpu ? (p.name || "名無し") : null))
@@ -4697,6 +4864,7 @@ function beginGame(seated, dealerIndex, opts = {}) {
   });
   // 局中マイクロ反応（自分の状況に応じた一言をバストアップのセリフ枠へ）。
   setupMatchTalk(game);
+  setupSeatReactions(game); // 卓を囲む相手の芝居（リーチ・和了・放銃・あなたのリーチへの反応）
 
   showScreen("game-screen");
   // 前局の結果画面が右サイドを「立ち絵＋セリフ」枠に転用したまま（side-result）だと、
@@ -4707,6 +4875,7 @@ function beginGame(seated, dealerIndex, opts = {}) {
     sidePanel.querySelector(".speaker")?.remove();
   }
   buildHpBoard(); // 右側に卓配置どおりのキャラHP（相棒ボード）を構築
+  setupSeatedTable(); // 卓を傾け、空いた奥に相手を座らせる（部屋の背景もここで決める）
   updateTournamentHud(); // 大会中なら左上に「大会名／節／累積順位」バッジを出す（#2）
   el("table").addEventListener("click", onCanvasClick);
   el("table").addEventListener("mousemove", onCanvasHover);
@@ -4966,9 +5135,11 @@ function onCanvasClick(ev) {
   const y = f.fy * c.height;
 
   // リコール選択中: 自分の河の牌クリックで交換を実行（その後そのまま通常打牌へ）。
+  // 河は傾いた卓の面にあるので、クリック位置を卓の面の座標へ戻してから当てる。
   if (recallMode) {
+    const fp = renderer.flatToField(x, y);
     for (const hb of renderer.riverHitboxes) {
-      if (x >= hb.x && x <= hb.x + hb.w && y >= hb.y && y <= hb.y + hb.h) {
+      if (fp.x >= hb.x && fp.x <= hb.x + hb.w && fp.y >= hb.y && fp.y <= hb.y + hb.h) {
         // 取引の因果（河→手牌 ／ ツモ牌→河）を見せてから発動する。座標は交換前に取る。
         playRecallSwapFx(hb.tileId, actor.drawnTileId);
         recalledTileIds.add(hb.tileId);
@@ -5602,6 +5773,7 @@ function render() {
     recalled: recalledTileIds, // エージェント・RE: 河から手に戻した牌に諜報マーク
   });
   renderer.render();
+  syncSeatBusts(); // 卓の奥の相手：手番の灯り・交代の差し替え
   updateHpBoard(); // 右側の相棒ボードのHP/手番ハイライトを最新状態に同期
   updatePinchFx(); // 自分のHPが残りわずかなら卓の縁を赤く（表示中のHP＝先出し防止後の値で判定）
   updateModelAnswerHud(); // 栞 Lv7+/Lv10 の卓上HUD（捲り条件・押し引き）を同期
@@ -6103,11 +6275,12 @@ function showWinCallFx(playerIndex, type) {
 }
 
 // Map a player index to its on-screen seat slot (matches the renderer's layout:
-// 4p offsets -> [0,1,2,3]; 3p offsets -> [0,1,3], i.e. self/right/left).
+// 4p offsets -> [0,1,2,3]; 3p offsets -> [0,1,3], i.e. self/right/left;
+// 2p (二人麻雀) offsets -> [0,2], i.e. the opponent faces you across the table).
 function visualSeat(playerIndex) {
   const N = game.numPlayers;
   const offset = (playerIndex - humanIndex + N) % N;
-  const slots = N === 3 ? [0, 1, 3] : [0, 1, 2, 3];
+  const slots = N === 2 ? [0, 2] : N === 3 ? [0, 1, 3] : [0, 1, 2, 3];
   return slots[offset];
 }
 
@@ -6125,7 +6298,13 @@ function spawnCall(host, pos, text, className, ttl = 1400) {
   setTimeout(() => e.remove(), ttl);
 }
 function showSeatCall(playerIndex, text, className) {
-  spawnCall(el("naki-fx"), SEAT_FX_POS[visualSeat(playerIndex)], text, className);
+  spawnCall(el("naki-fx"), seatFxPos(visualSeat(playerIndex)), text, className);
+}
+// 席テロップ・±N の位置。卓を囲む配置では相手の顔の少し下（立ち絵の胸元）に出す＝誰が言ったか一目でわかる。
+function seatFxPos(seat) {
+  const a = renderer?.seated && seat !== 0 ? SEATED_LAYOUT.fx[seat] : null;
+  const p = a ? tablePointAt(a.x, a.y) : null;
+  return p ? { left: `${p.x}px`, top: `${p.y}px` } : SEAT_FX_POS[seat];
 }
 
 // Floating +N / -N point deltas near each seat.
@@ -6135,7 +6314,7 @@ function showPointFx(deltas) {
   deltas.forEach((d, pIndex) => {
     if (!d) return;
     const seat = visualSeat(pIndex);
-    const pos = SEAT_FX_POS[seat];
+    const pos = seatFxPos(seat);
     const e = document.createElement("div");
     e.className = `point-delta ${d > 0 ? "plus" : "minus"}`;
     e.textContent = (d > 0 ? "+" : "") + d;
@@ -7362,7 +7541,7 @@ function maybePlayDoraRevealFx(beforeKinds) {
 function playDoraFlash() {
   const wrap = tableWrapEl();
   const a = renderer?.anchors?.dora || { x: 480, y: 394 }; // canvas 座標: 方位盤のドラ表示牌の段
-  const pos = tablePointAt(a.x, a.y);
+  const pos = tablePointAt(a.x, a.y, { field: true });
   if (!wrap || !pos) return;
   const fx = document.createElement("div");
   fx.className = "dora-flash";
@@ -7898,18 +8077,21 @@ function clearLuxPoint() {
   if (luxPointEl) { luxPointEl.remove(); luxPointEl = null; }
 }
 // canvas 内座標 → table-wrap 内の絶対座標（オーバーレイ配置用）。
-function tablePointAt(cx, cy) {
+// field=true は傾いた卓の面（河・山・方位盤＝#table-field）の点。画面上の位置へ写してから置く。
+// 寸法は offset 系（ステージの縮小・回転を含まない素の CSS px）で取る＝オーバーレイの left/top と同じ系。
+function tablePointAt(cx, cy, { field = false } = {}) {
   const cv = el("table"), wrap = tableWrapEl();
   if (!cv || !wrap) return null;
-  const r = cv.getBoundingClientRect(), wr = wrap.getBoundingClientRect();
-  return { x: (r.left - wr.left) + cx * (r.width / cv.width), y: (r.top - wr.top) + cy * (r.height / cv.height) };
+  if (field && renderer) ({ x: cx, y: cy } = renderer.fieldToFlat(cx, cy));
+  const k = cv.clientWidth / cv.width;
+  return { x: cv.offsetLeft + cv.clientLeft + cx * k, y: cv.offsetTop + cv.clientTop + cy * k };
 }
 // 捕捉: 山（卓中央の残り牌表示のあたり）に光点を刺す。回収まで脈打って残る。
 function playLuxReserveFx() {
   clearLuxPoint();
   const wrap = tableWrapEl();
   const a = renderer?.anchors?.wall || { x: 480, y: 343 }; // 方位盤の「残り」の段＝山の象徴
-  const pos = tablePointAt(a.x, a.y);
+  const pos = tablePointAt(a.x, a.y, { field: true });
   if (!wrap || !pos) return;
   const dot = document.createElement("div");
   dot.className = "lux-point";
@@ -7948,8 +8130,8 @@ function playRecallSwapFx(riverTileId, drawnTileId) {
   if (!wrap || !renderer) return;
   const rh = (renderer.riverHitboxes || []).find((h) => h.tileId === riverTileId);
   const hh = (renderer.handHitboxes || []).find((h) => h.tileId === drawnTileId);
-  const at = (hb) => (hb ? tablePointAt(hb.x + hb.w / 2, hb.y + hb.h / 2) : null);
-  const river = at(rh), hand = at(hh);
+  const at = (hb, field) => (hb ? tablePointAt(hb.x + hb.w / 2, hb.y + hb.h / 2, { field }) : null);
+  const river = at(rh, true), hand = at(hh, false);
   if (!river || !hand) return;
   const fly = (from, to, cls) => {
     const dot = document.createElement("div");

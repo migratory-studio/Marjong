@@ -345,6 +345,15 @@
     <!-- Game table -->
     <section id="game-screen" class="screen hidden">
       <div class="table-wrap">
+        <!-- 卓を囲む（2.5D卓）。奥から順に: 対戦相手の立ち絵 → 奥へ傾けた卓の面（木枠・ラシャ・
+             河や山を描く #table-field）→ 平らな #table（自分の手牌・相手の名札・当たり判定）。
+             位置と傾きは main.js の syncTableLayers が #table の枠に合わせて当てる。 -->
+        <div id="seat-busts" class="seat-busts" aria-hidden="true"></div>
+        <div id="table-plane" class="table-plane" aria-hidden="true">
+          <div class="tp-frame"></div>
+          <div class="tp-felt"></div>
+          <canvas id="table-field" width="960" height="720"></canvas>
+        </div>
         <canvas id="table" width="960" height="720"></canvas>
         <div id="action-bar" class="action-bar"></div>
         <div id="banner" class="banner hidden"></div>

@@ -7170,3 +7170,117 @@ button.primary.danger:hover { color: #ffbcbc; }
   .self-bustup.act-hop, .self-bustup.act-flinch, .self-bustup.act-shake,
   .self-stage.ability-ready, .pinch-fx.on { animation: none; }
 }
+
+/* ==========================================================================
+   卓を囲む（2.5D卓・着席した対戦相手）— main.js setupSeatedTable / syncTableLayers
+   奥から: 部屋（#game-screen の擬似要素）→ 相手の立ち絵（#seat-busts）→ 奥へ傾けた卓の面
+   （#table-plane＝木枠・ラシャ・#table-field）→ 平らな #table（手牌・名札）→ 既存のオーバーレイ。
+   立ち絵と卓の面は負の z-index で #table（通常フロー）の下に敷く＝既存の重なり順は変えない。
+   ========================================================================== */
+#game-screen.seated { isolation: isolate; overflow: hidden; }
+/* 部屋：道場（楼光の館はその層）を暗く・ぼかして奥に敷き、卓の上の灯りの光だまりと四隅の落ちを重ねる */
+#game-screen.seated::before {
+  content: ""; position: absolute; inset: -24px; z-index: -4; pointer-events: none;
+  background: var(--room-bg, none) center / cover no-repeat, #0b0806;
+  filter: brightness(.3) saturate(.75) blur(3px);
+}
+#game-screen.seated::after {
+  content: ""; position: absolute; inset: 0; z-index: -3; pointer-events: none;
+  background:
+    radial-gradient(ellipse 46% 60% at 37% 38%, rgba(255, 214, 150, .26), rgba(255, 214, 150, 0) 70%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, .6) 100%);
+}
+/* 平らな #table は透明に（卓の面は下の #table-plane が描く）。枠の太さは残して位置を変えない */
+#game-screen.seated #table { background: transparent; border-color: transparent; }
+
+/* 卓の面（傾く層）。left/top/大きさ/transform は JS が #table の枠に合わせて当てる */
+.table-plane { display: none; position: absolute; z-index: -1; pointer-events: none; }
+#game-screen.seated .table-plane { display: block; }
+.tp-frame {
+  position: absolute; inset: -16px; border-radius: 26px;
+  background:
+    repeating-linear-gradient(92deg, rgba(255, 255, 255, .035) 0 2px, rgba(0, 0, 0, .05) 2px 5px),
+    linear-gradient(180deg, #7a4d2b 0%, #5a361c 45%, #3b2312 100%);
+  box-shadow: 0 34px 60px rgba(0, 0, 0, .65), 0 0 0 1px rgba(0, 0, 0, .6),
+    inset 0 2px 0 rgba(255, 220, 170, .35), inset 0 -3px 0 rgba(0, 0, 0, .4);
+}
+/* ラシャ：細かな毛羽（ノイズ）＋真上のランプの光だまり＋縁の落ち */
+.tp-felt {
+  position: absolute; inset: 0; border-radius: 12px; overflow: hidden;
+  background:
+    radial-gradient(ellipse 58% 54% at 50% 47%, rgba(255, 232, 180, .30), rgba(255, 232, 180, 0) 72%),
+    radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0) 52%, rgba(0, 0, 0, .55) 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .32 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    var(--felt);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .45), inset 0 10px 26px rgba(0, 0, 0, .55);
+}
+/* 自動卓の中央の区画（方位盤を囲む四角い段差） */
+.tp-felt::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 36.7%; height: 48.9%;
+  transform: translate(-50%, -50%); border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, .06); box-shadow: 0 0 0 26px rgba(0, 0, 0, .05);
+}
+#table-field { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+/* 卓の奥に座る相手。位置と大きさは JS（SEATED_LAYOUT）。手前は卓の縁に隠れ、四辺はぼかして切り口を見せない */
+.seat-busts { position: absolute; inset: 0; z-index: -2; pointer-events: none; }
+.seat-bust {
+  position: absolute;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, .55));
+  transition: filter .25s ease;
+}
+.seat-art {
+  position: absolute; inset: 0; overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 70%, transparent 96%),
+                      linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%);
+  -webkit-mask-composite: source-in;
+          mask-image: linear-gradient(to bottom, transparent 0, #000 7%, #000 70%, transparent 96%),
+                      linear-gradient(to right, transparent 0, #000 9%, #000 91%, transparent 100%);
+          mask-composite: intersect;
+  filter: brightness(.9) saturate(.95);
+  transition: filter .25s ease;
+}
+.seat-art .self-portrait { -webkit-mask-image: none; mask-image: none; }
+.seat-art .self-portrait-fb { font-size: 56px; }
+/* 手番の人は、ランプが当たったように明るく、キャラ色の縁光をまとう */
+.seat-bust.is-turn { filter: drop-shadow(0 0 7px color-mix(in srgb, var(--char-c, #f6b352) 85%, transparent)) drop-shadow(0 10px 14px rgba(0, 0, 0, .55)); }
+.seat-bust.is-turn .seat-art { filter: brightness(1.02) saturate(1); }
+/* モブは黒いシルエット。暗い部屋に溶けないよう、背後から淡い縁光を当てて輪郭を立てる */
+.seat-bust.is-mob { filter: drop-shadow(0 0 1px rgba(214, 222, 236, .6)) drop-shadow(0 0 12px rgba(170, 186, 214, .38)) drop-shadow(0 10px 14px rgba(0, 0, 0, .55)); }
+.seat-bust.is-mob.is-turn { filter: drop-shadow(0 0 1.5px rgba(230, 236, 246, .85)) drop-shadow(0 0 9px color-mix(in srgb, var(--char-c, #f6b352) 85%, transparent)); }
+.seat-bust.act-hop    { animation: actHop .62s cubic-bezier(.3, 1.6, .5, 1); }
+.seat-bust.act-flinch { animation: actFlinch .46s ease-out; }
+.seat-bust.act-shake  { animation: actShake .52s cubic-bezier(.36,.07,.19,.97); }
+.seat-emote { top: 0; right: -18px; }
+
+/* 相棒：枠から出て、卓の右脇から身を乗り出す（左にはみ出した分は手牌の行より上だけ見せる） */
+#game-screen.seated .self-stage { overflow: visible; background: none; border-color: transparent; }
+#game-screen.seated .self-bustup {
+  left: -64px; right: 64px;
+  pointer-events: none; rotate: -3deg; transform-origin: 70% 85%;
+  /* 左へはみ出した分（切り抜きの拡大で枠の外へ伸びた分も含む）は、手牌の行より上だけ見せる */
+  clip-path: polygon(-240px -80px, calc(100% + 80px) -80px, calc(100% + 80px) 100%, 64px 100%, 64px 326px, -240px 326px);
+}
+#game-screen.seated .self-bustup .self-portrait { filter: drop-shadow(-10px 12px 18px rgba(0, 0, 0, .6)); }
+/* 能力が撃てる合図は、枠ではなく立ち絵そのものがキャラ色に脈打つ */
+#game-screen.seated .self-stage.ability-ready { animation: none; box-shadow: none; }
+#game-screen.seated .self-stage.ability-ready .self-bustup .self-portrait { animation: figureReady 1.9s ease-in-out infinite; }
+@keyframes figureReady {
+  0%, 100% { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--char-c, #f6b352) 70%, transparent)) drop-shadow(-10px 12px 18px rgba(0, 0, 0, .6)); }
+  50%      { filter: drop-shadow(0 0 12px var(--char-c, #f6b352)) drop-shadow(-10px 12px 18px rgba(0, 0, 0, .6)); }
+}
+/* はみ出した立ち絵より、HPボード・能力欄・局中の操作ボタンを前に */
+#game-screen.seated .hp-board, #game-screen.seated .side-abilities { position: relative; z-index: 2; }
+#game-screen.seated .action-bar { z-index: 21; }
+/* 二人麻雀：相手は卓の向こうに座っているので、右の相手立ち絵は畳む */
+#game-screen.seated .hp-board.futari .opp-bustup { display: none; }
+/* そのぶん縦に伸びる自分の立ち絵枠は、四人打ちと同じ高さで下に据える（切り抜きの縮尺をそろえる） */
+#game-screen.seated .hp-board.futari ~ .self-stage .self-bustup { top: auto; height: 364px; }
+/* 卓の上辺・左上の HUD は、相手の顔に被らないよう奥の空きへ */
+#game-screen.seated .model-advice { left: 150px; top: 8px; max-width: 200px; }
+#game-screen.seated .field-aura { left: auto; right: 60px; top: 8px; transform: none; max-width: 300px; justify-content: flex-end; }
+
+@media (prefers-reduced-motion: reduce) {
+  .seat-bust.act-hop, .seat-bust.act-flinch, .seat-bust.act-shake,
+  #game-screen.seated .self-stage.ability-ready .self-bustup .self-portrait { animation: none; }
+}

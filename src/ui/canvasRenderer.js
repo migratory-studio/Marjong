@@ -29,6 +29,27 @@ const WIND_CHAR = { 27: "東", 28: "南", 29: "西", 30: "北" };
 const PICK_LIFT = 8;        // 打てる牌の通常リフト
 const PICK_HOVER_LIFT = 16; // ホバー中の牌はさらに持ち上げて選択候補を明示
 
+// ── 卓を囲む（2.5D卓）──────────────────────────────────────────────────────
+// 卓の面（河・山・相手の手牌・方位盤）だけを奥へ傾け、自分の手牌は平らなまま手前に置く。
+// 傾きは CSS（main.js が #table-plane に当てる）で、ここはその写像（canvas 座標どうし）を持つ。
+// 値はすべて canvas 座標（960×720）: 傾き角・視点距離・回転軸の高さ（手牌の下端あたり）。
+export const TILT = { deg: 24, perspective: 1227, originY: 707 };
+
+// 傾けて空いた卓の奥に、対戦相手を座らせる（立ち絵＝相棒ボードと同じ切り抜きの縮小）。
+// すべて平らな手牌キャンバス（#table）の座標。席: 1=下家(右奥) / 2=対面(奥) / 3=上家(左奥)。
+//   busts  … 立ち絵の枠（左上と幅。高さは相棒ボードの立ち絵と同じ縦横比で決まる）
+//   plates … 名札（ネームプレート）の中心。卓の奥の縁＝その人の手前に置く
+//   fx     … ポン/リーチの席テロップ・±N を出す位置（顔の少し下）
+export const SEATED_LAYOUT = {
+  busts: {
+    1: { x: 746, y: 60, w: 200 },
+    2: { x: 373, y: -22, w: 214 },
+    3: { x: -12, y: 72, w: 214 },
+  },
+  plates: { 1: [815, 262], 2: [480, 200], 3: [130, 262] },
+  fx: { 1: { x: 830, y: 176 }, 2: { x: 480, y: 150 }, 3: { x: 130, y: 196 } },
+};
+
 const SUIT_COLOR = {
   [SUITS.MAN]: "#b5341f",
   [SUITS.PIN]: "#1f5fb5",
@@ -45,9 +66,16 @@ const DANGER_STYLES = {
 };
 
 export class CanvasRenderer {
-  constructor(canvas, game, humanIndex, tileImages = null, charImages = null) {
+  // fieldCanvas（任意）を渡すと「卓を囲む」配置になる: 卓の面はそちらへ描き（CSS で奥へ傾く）、
+  // canvas には自分の手牌と相手の名札だけを平らに描く。当たり判定は canvas の座標のまま。
+  constructor(canvas, game, humanIndex, tileImages = null, charImages = null, fieldCanvas = null) {
     this.canvas = canvas;
-    this.ctx = canvas.getContext("2d");
+    this.handCtx = canvas.getContext("2d");
+    this.fieldCtx = fieldCanvas ? fieldCanvas.getContext("2d") : this.handCtx;
+    this.seated = !!fieldCanvas;
+    this.tilt = this.seated ? TILT : null;
+    this.ctx = this.handCtx;
+    this._fieldPass = false; // 卓の面を描いている間だけ true（牌に厚みと落ち影を付ける）
     this.game = game;
     this.humanIndex = humanIndex;
     this.tileImages = tileImages; // optional TileImages; falls back to procedural
@@ -87,25 +115,65 @@ export class CanvasRenderer {
   }
 
   render() {
-    const ctx = this.ctx;
-    ctx.clearRect(0, 0, this.W, this.H);
+    this.handCtx.clearRect(0, 0, this.W, this.H);
+    if (this.fieldCtx !== this.handCtx) this.fieldCtx.clearRect(0, 0, this.W, this.H);
     this.handHitboxes = [];
     this.riverHitboxes = [];
 
-    this._drawCenterInfo();
     // Map each player (by turn-order offset from the human) to a visual seat slot:
     //   4p: offset 0,1,2,3 -> seat 0(bottom),1(right),2(top),3(left)
     //   3p: offset 0,1,2   -> seat 0(bottom),1(right),3(left)  (no top seat)
     const N = this.game.numPlayers;
     const slots = this._seatSlots(N);
-    for (let offset = 0; offset < N; offset++) {
-      const pIndex = (this.humanIndex + offset) % N;
-      const seat = slots[offset];
-      this._drawPlayer(pIndex, seat);
+    const seats = [];
+    for (let offset = 0; offset < N; offset++) seats.push([(this.humanIndex + offset) % N, slots[offset]]);
+
+    // 卓の面（傾く層）: 方位盤・相手の手牌と鳴き・全員の河・自分の名札。
+    this.ctx = this.fieldCtx;
+    this._fieldPass = this.seated;
+    this._drawCenterInfo();
+    for (const [pIndex, seat] of seats) {
+      if (seat === 0 || !this.seated) this._namePlate(this.game.players[pIndex], seat);
+      if (seat !== 0) {
+        this._drawOpponentHand(this.game.players[pIndex], seat);
+        this._drawMelds(this.game.players[pIndex], seat);
+      }
       this._drawRiver(pIndex, seat);
+    }
+
+    // 手前の層（平ら）: 自分の手牌、着席配置なら相手の名札（卓の奥の縁＝その人の手前）。
+    this.ctx = this.handCtx;
+    this._fieldPass = false;
+    this._drawHumanHand(this.game.players[this.humanIndex]); // 自分の副露も手牌の行に並べて描く
+    if (this.seated) {
+      for (const [pIndex, seat] of seats) if (seat !== 0) this._namePlate(this.game.players[pIndex], seat);
     }
     this._drawHandCoach();
     this._drawWaitTooltip();
+  }
+
+  // 傾いた卓の面の点（field canvas 座標）→ 画面上の位置（平らな #table の canvas 座標）。
+  // CSS の transform: perspective(P) rotateX(deg)（原点＝卓の中央・手牌の下端あたり）と同じ写像。
+  fieldToFlat(x, y) {
+    const t = this.tilt;
+    if (!t || !t.deg) return { x, y };
+    const a = (t.deg * Math.PI) / 180, c = Math.cos(a), s = Math.sin(a);
+    const ox = this.W / 2, oy = t.originY, P = t.perspective;
+    const X = x - ox, Y = y - oy;
+    const w = 1 - (Y * s) / P;
+    return { x: ox + X / w, y: oy + (Y * c) / w };
+  }
+
+  // 逆写像：画面上の位置（#table の canvas 座標）→ 傾いた卓の面の点。河のクリック判定に使う。
+  flatToField(x, y) {
+    const t = this.tilt;
+    if (!t || !t.deg) return { x, y };
+    const a = (t.deg * Math.PI) / 180, c = Math.cos(a), s = Math.sin(a);
+    const ox = this.W / 2, oy = t.originY, P = t.perspective;
+    const Xs = x - ox, Ys = y - oy;
+    const Y = Ys / (c + (Ys * s) / P);
+    const w = 1 - (Y * s) / P;
+    return { x: ox + Xs * w, y: oy + Y };
   }
 
   // 初回オンボーディング: 自分の打牌待ちのとき、手牌を指す一回限りのコーチマーク。
@@ -266,33 +334,6 @@ export class CanvasRenderer {
     this.anchors = { wall: { x: cx, y: cy - 15 }, dora: { x: cx, y: dy + (TILE_H * ds) / 2 } };
   }
 
-  _seatTransform(seat) {
-    // returns {ox, oy, dir} dir: 'h' bottom/top, 'v' left/right; and orientation
-    const m = 56;
-    switch (seat) {
-      case 0: return { type: "bottom" };
-      case 1: return { type: "right" };
-      case 2: return { type: "top" };
-      case 3: return { type: "left" };
-    }
-  }
-
-  _drawPlayer(pIndex, seat) {
-    const ctx = this.ctx;
-    const p = this.game.players[pIndex];
-    const t = this._seatTransform(seat);
-
-    // name plate + HP bar
-    this._namePlate(p, seat);
-
-    if (seat === 0) {
-      this._drawHumanHand(p); // 自分の副露も手牌の行に並べて描く
-    } else {
-      this._drawOpponentHand(p, seat);
-      this._drawMelds(p, seat);
-    }
-  }
-
   _namePlate(p, seat) {
     const ctx = this.ctx;
     let x, y;
@@ -302,7 +343,9 @@ export class CanvasRenderer {
       2: [this.W / 2, 78],
       3: [210, this.H / 2 - 120],
     };
-    [x, y] = positions[seat];
+    // 着席配置では相手の名札を立ち絵の手前（卓の奥の縁）へ。立ち絵が顔を出すので丸アイコンは描かない。
+    const seatedPlate = this.seated && seat !== 0;
+    [x, y] = seatedPlate ? SEATED_LAYOUT.plates[seat] : positions[seat];
     ctx.textAlign = "center";
     const isTurn = this.game.turn === p.index && this.game.phase === Phase.AWAIT_DISCARD;
     // 手動発動能力が発動中のプレイヤーは、プレートを能力カラーで光らせて一目で分かるようにする。
@@ -347,7 +390,7 @@ export class CanvasRenderer {
     }
 
     // Character icon just left of the plate (real art if present, else a colored disc).
-    this._seatIcon(p, x - 90 - 22, y, 18, isTurn);
+    if (!seatedPlate) this._seatIcon(p, x - 90 - 22, y, 18, isTurn);
 
     const windName = { 27: "東", 28: "南", 29: "西", 30: "北" }[p.seatWind];
     // 卓上ネームプレートは「プレイヤーの名前」。通信対戦では seatLabels[席]=ユーザー名を出す
@@ -357,18 +400,25 @@ export class CanvasRenderer {
     ctx.font = "bold 15px sans-serif";
     ctx.fillText(`${windName} ${plateName}${p.isDealer ? "(親)" : ""}`, x, y + 5);
 
+    // リーチ／北抜きの状態行。ふだんはプレートの下。着席配置の左右の席は、プレートの真下が
+    // その人の手牌の列の頭なので、卓の内側（プレートの横）に縦へ積む。
+    const side = seatedPlate && (seat === 1 || seat === 3);
+    const sx = side ? (seat === 3 ? x + 98 : x - 98) : x;
+    const sy = (row) => (side ? y - 2 + row * 15 : y + 32 + row * 14);
+    if (side) ctx.textAlign = seat === 3 ? "left" : "right";
     if (p.riichi) {
       ctx.fillStyle = "#f0d264";
       ctx.font = "bold 12px sans-serif";
-      ctx.fillText("● リーチ", x, y + 32);
+      ctx.fillText("● リーチ", sx, sy(0));
     }
 
     // 北抜き (sanma nuki-dora) count, shown opposite the riichi indicator row.
     if (p.kita && p.kita.length > 0) {
       ctx.fillStyle = "#7fd1ff";
       ctx.font = "bold 12px sans-serif";
-      ctx.fillText(`北 ×${p.kita.length}`, x, p.riichi ? y + 46 : y + 32);
+      ctx.fillText(`北 ×${p.kita.length}`, sx, sy(p.riichi ? 1 : 0));
     }
+    ctx.textAlign = "center";
   }
 
   // 能力発動中バッジ。ネームプレートの上に「⚡ 能力名」をピル型＋発光で出す。
@@ -546,6 +596,8 @@ export class CanvasRenderer {
       const lift = canPick ? ((hovered || selected) ? PICK_HOVER_LIFT : PICK_LIFT) : 0;
       const ty = y - lift;
       if (canPick) { anyPickable = true; this._pickGlow(x, ty, tw, th, hovered || selected); }
+      // 影は持ち上げる前の位置に残す（浮かせた牌と影のすき間＝「手に取った」感）。
+      if (this.seated && !dim) this._handShadow(x, y, tw, th, 5 * s);
       this._tile(x, ty, t.kind, { red: t.red, danger: dangerLevel, dim, scale: s });
       if (doraKinds.has(t.kind) || t.red) this._doraStar(x, ty, tw, dim);
       if (this.best && !dim) { const r = this.best.get(t.kind); if (r) this._bestMark(x, ty, tw, th, r); }
@@ -561,12 +613,15 @@ export class CanvasRenderer {
       for (const layout of meldLayouts) {
         for (const cell of layout) {
           if (cell.faceDown) {
+            if (this.seated) this._handShadow(mx, my, mtw, mth, 5 * ms);
             this._back(mx, my, mtw, mth);
             mx += mtw + mGap;
           } else if (cell.rotated) {
+            if (this.seated) this._handShadow(mx, my + (mth - mtw), mth, mtw, 5 * ms);
             this._drawTileAt(mx, my + (mth - mtw), cell.kind, { scale: ms, red: cell.red, sideways: true });
             mx += mth + mGap;
           } else {
+            if (this.seated) this._handShadow(mx, my, mtw, mth, 5 * ms);
             this._tile(mx, my, cell.kind, { scale: ms, red: cell.red });
             mx += mtw + mGap;
           }
@@ -883,6 +938,7 @@ export class CanvasRenderer {
     const w = TILE_W * s, h = TILE_H * s;
     ctx.save();
     if (opts.dim) ctx.globalAlpha = 0.4;
+    if (this._fieldPass) this._tileDepth(x, y, w, h, 5 * s, 3.4 * s, true);
 
     const img = this.tileImages ? this.tileImages.get(kind, opts.red) : null;
     if (img) {
@@ -948,6 +1004,35 @@ export class CanvasRenderer {
     ctx.restore();
   }
 
+  // 傾いた卓の上の牌の厚み。卓の手前側（画面の下）に牌の側面＝象牙の表層と藍の背を覗かせ、
+  // その先に落ち影を置く。河は席の向きに回して描くので、「画面の下」を今の局所座標へ戻して使う。
+  // faceUp=false（伏せ牌・立てた牌）は自前で背や天面を描くので、側面は付けず影だけ。
+  _tileDepth(x, y, w, h, r, t, faceUp) {
+    const ctx = this.ctx;
+    const m = ctx.getTransform();
+    const det = m.a * m.d - m.b * m.c || 1;
+    const dx = (-m.c * t) / det, dy = (m.a * t) / det;
+    ctx.save();
+    ctx.fillStyle = "rgba(0, 0, 0, 0.32)";
+    roundRect(ctx, x + dx * 1.9, y + dy * 1.9, w, h, r); ctx.fill();
+    if (faceUp) {
+      ctx.fillStyle = "#2b4166"; // 牌の背（藍）
+      roundRect(ctx, x + dx, y + dy, w, h, r); ctx.fill();
+      ctx.fillStyle = "#d6ccb2"; // 表側の層（象牙の側面）
+      roundRect(ctx, x + dx * 0.55, y + dy * 0.55, w, h, r); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  // 手牌の落ち影（手前の層）。卓の縁に立てて置いた牌が、ランプの光で卓に影を落とす。
+  _handShadow(x, y, w, h, r) {
+    const ctx = this.ctx;
+    ctx.save();
+    ctx.fillStyle = "rgba(0, 0, 0, 0.34)";
+    roundRect(ctx, x + 3, y + 7, w, h, r); ctx.fill();
+    ctx.restore();
+  }
+
   // danger は危険度レベル 3=超危険(赤)/2=危険(橙)/1=警戒(黄)。
   _dangerOverlay(x, y, w, h, s, danger) {
     const st = DANGER_STYLES[danger];
@@ -968,6 +1053,7 @@ export class CanvasRenderer {
     const ctx = this.ctx;
     const r = Math.min(4, w * 0.18);
     ctx.save();
+    if (this._fieldPass) this._tileDepth(x, y, w, h, r, 3, false);
     // 表側（象牙）の層
     ctx.fillStyle = "#e9e1cc";
     roundRect(ctx, x, y, w, h, r); ctx.fill();
@@ -992,6 +1078,7 @@ export class CanvasRenderer {
   // 白い天面で、牌の厚み＝立体感を出す。背面(Back)を並べるより自然に見える。
   _tileSide(x, y, w, h, seat) {
     const ctx = this.ctx;
+    if (this._fieldPass) this._tileDepth(x, y, w, h, 3, 3, false);
     // 側面本体（象牙、わずかに陰）
     ctx.fillStyle = "#ddd6c2";
     roundRect(ctx, x, y, w, h, 3); ctx.fill();
