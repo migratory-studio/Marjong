@@ -2,6 +2,8 @@
 //
 // タイトル ― ホーム ― CPU対戦 / オンライン / 楼光の館 / 師弟モード / 宝珠ショップ / 設定
 // どのモードへもここから1手で行き、どのモードからもここへ帰ってくる。
+// 遊びの入口（CPU対戦＝ロゴ「対局開始」／師弟モード／楼光の館）は同じ枠・同じ大きさで同列に並べ、
+// オンラインと宝珠ショップは一段小さく下に置く。ロゴは graphic/ui/modes/。
 // 主役は「お気に入りキャラ」の立ち絵＋出迎えセリフ。出入りのたびに相棒の前を通る＝
 // 愛着の蓄積（毎回顔を合わせる）×固有性（あなたを覚えている）×双方向（タップで返る）。
 //
@@ -186,6 +188,7 @@ export async function showBattleHome(container, opts = {}) {
         <div class="bh-portrait-wrap" id="bh-portrait-wrap" title="タップで話しかけられるよ"></div>
         <button type="button" class="bh-change" id="bh-change">相棒をかえる</button>
         <div class="bh-util">
+          <button type="button" class="bh-util-btn" id="bh-amb-edit">背景・BGM</button>
           <button type="button" class="bh-util-btn" id="bh-settings" title="音量・テスト版の窓口">⚙ 設定</button>
           <button type="button" class="bh-util-btn" id="bh-title">タイトル</button>
         </div>
@@ -200,31 +203,32 @@ export async function showBattleHome(container, opts = {}) {
             <div class="bh-info-row"><span class="bh-info-k">一緒に</span><span class="bh-info-v" id="bh-together"></span></div>
             <div class="bh-info-row" id="bh-streak-row" hidden><span class="bh-info-k">連勝中</span><span class="bh-info-v bh-streak" id="bh-streak"></span></div>
           </div>
-          <div class="bh-amb">
-            <div class="bh-amb-cur">背景 <span id="bh-bg-name"></span><span class="bh-amb-dot">・</span>BGM <span id="bh-bgm-name"></span></div>
-            <button type="button" class="bh-amb-btn" id="bh-amb-edit">変更</button>
-          </div>
         </div>
-        <nav class="bh-routes">
-          <button type="button" class="menu-btn menu-btn--logo" id="bh-roguelite" title="雀士たちと階層を登る冒険譚">
-            <img class="menu-btn-logo" src="graphic/ui/roguelite/rokou-logo.png" alt="楼光の館" onerror="this.closest('.menu-btn').classList.add('no-logo')">
-            <span class="menu-btn-title fallback">楼光の館</span>
-            <span class="menu-btn-sub fallback">弟子を連れて階層を登る・撤退と継続の冒険</span>
-            <span class="menu-btn-tip">雀士たちと階層を登る冒険譚</span>
-          </button>
-          <!-- 対局の入口（相棒と打つ）と、育てる/整える入口を2×2で。どれも1手で着く。 -->
-          <div class="bh-route-grid">
-            <button type="button" class="menu-btn menu-btn--duo" id="bh-cpu">
-              <span class="menu-btn-title">CPUと対戦</span>
-              <span class="menu-btn-sub">通常・ペア・団体</span>
+        <nav class="bh-routes" aria-label="あそぶ">
+          <!-- 遊びの入口3つは同じ枠・同じ大きさで並べる（どれが主でも従でもない＝同列）。
+               見出しはロゴが兼ね、文字の見出しは読み上げ用。ロゴが読めないときは .no-logo で文字に戻る。 -->
+          <div class="bh-modes">
+            <button type="button" class="menu-btn bh-mode bh-mode--taikyoku" id="bh-cpu">
+              <img class="bh-mode-logo" src="graphic/ui/modes/taikyoku.webp" alt="" onerror="this.closest('.bh-mode').classList.add('no-logo')">
+              <span class="bh-mode-title">CPUと対戦</span>
+              <span class="bh-mode-sub">CPUと対戦（通常・ペア・団体）</span>
             </button>
+            <button type="button" class="menu-btn bh-mode bh-mode--shitei" id="bh-mentor">
+              <img class="bh-mode-logo" src="graphic/ui/modes/shitei.webp" alt="" onerror="this.closest('.bh-mode').classList.add('no-logo')">
+              <span class="bh-mode-title">師弟モード</span>
+              <span class="bh-mode-sub">弟子を育てる物語</span>
+            </button>
+            <button type="button" class="menu-btn bh-mode bh-mode--rokou" id="bh-roguelite">
+              <img class="bh-mode-logo" src="graphic/ui/modes/rokou.webp" alt="" onerror="this.closest('.bh-mode').classList.add('no-logo')">
+              <span class="bh-mode-title">楼光の館</span>
+              <span class="bh-mode-sub">雀士たちと階層を登るローグライト</span>
+            </button>
+          </div>
+          <!-- 対人とショップは一段小さく横並び。どれも1手で着く。 -->
+          <div class="bh-route-grid">
             <button type="button" class="menu-btn menu-btn--duo" id="bh-online">
               <span class="menu-btn-title">オンライン</span>
               <span class="menu-btn-sub">合言葉 / マッチング</span>
-            </button>
-            <button type="button" class="menu-btn menu-btn--duo" id="bh-mentor">
-              <span class="menu-btn-title">師弟モード</span>
-              <span class="menu-btn-sub">弟子を育てる物語</span>
             </button>
             <button type="button" class="menu-btn menu-btn--duo" id="bh-shop" title="宝珠で恒久強化・背景やBGMを解禁">
               <span class="menu-btn-title">宝珠ショップ</span>
@@ -232,7 +236,6 @@ export async function showBattleHome(container, opts = {}) {
             </button>
           </div>
         </nav>
-      </div>
       </div>
     </div>`;
 
@@ -246,8 +249,10 @@ export async function showBattleHome(container, opts = {}) {
   const setTalk = (t) => { if (talkEl) talkEl.textContent = t || "……。"; };
   const nameplateEl = container.querySelector("#bh-charname");
 
-  const bgNameEl = container.querySelector("#bh-bg-name");
-  const bgmNameEl = container.querySelector("#bh-bgm-name");
+  // 背景・BGM の切替は立ち絵ステージ右上（設定の隣）。いまの組み合わせはボタンのツールチップで見せる。
+  const ambBtn = container.querySelector("#bh-amb-edit");
+  let bgLabel = "", bgmLabel = "";
+  const syncAmbTitle = () => { if (ambBtn) ambBtn.title = `背景：${bgLabel}／BGM：${bgmLabel}`; };
 
   // キャラ非依存の情報は一度だけ。
   container.querySelector("#bh-name").textContent = displayName;
@@ -266,11 +271,13 @@ export async function showBattleHome(container, opts = {}) {
     } else {
       container.style.backgroundImage = "";
     }
-    if (bgNameEl) bgNameEl.textContent = c.label;
+    bgLabel = c.label;
+    syncAmbTitle();
   }
   function applyBgm(key, { play = false } = {}) {
     const c = HOME_BGM_CHOICES.find((x) => x.key === key) || HOME_BGM_CHOICES[0];
-    if (bgmNameEl) bgmNameEl.textContent = c.label;
+    bgmLabel = c.label;
+    syncAmbTitle();
     if (play) audio?.playHomeBgmByKey?.(c.key);
   }
   applyBg(bgKey);
@@ -337,7 +344,7 @@ export async function showBattleHome(container, opts = {}) {
   container.querySelector("#bh-title")?.addEventListener("click", () => onTitle?.());
 
   // 背景・BGM の「変更」→ 一覧モーダル（選択中ハイライト／将来は解禁状態も表示）。
-  container.querySelector("#bh-amb-edit")?.addEventListener("click", () => {
+  ambBtn?.addEventListener("click", () => {
     openAmbiance(container, {
       profile, bgKey, bgmKey,
       onPickBg: (key) => { bgKey = key; applyBg(key); persist({ homeBg: key }); },

@@ -330,18 +330,18 @@ body {
 .bh-charname:empty { display: none; }
 
 /* 右カラム: 情報カード / 導線 / 戻る を縦に積む（スリム＝立ち絵を邪魔しない） */
-.bh-side { flex: 0 0 332px; max-width: 332px; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
+.bh-side { flex: 0 0 352px; max-width: 352px; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
 .bh-card {
-  border: 14px solid transparent;
-  border-image: url("graphic/ui/sc/panel.png") 18 / 14px / 0 stretch; border-radius: 0;
-  background: rgba(20,32,26,.90); padding: 2px 14px 12px;
+  border: 12px solid transparent;
+  border-image: url("graphic/ui/sc/panel.png") 18 / 12px / 0 stretch; border-radius: 0;
+  background: rgba(20,32,26,.90); padding: 0 14px 10px;
 }
 .bh-title {
   border: solid transparent; border-width: 10px 14px;
   border-image: url("graphic/ui/sc/plate.png") 14 18 fill / 10px 14px / 0 stretch;
-  margin: -2px 0 10px; padding: 2px 8px; font-size: 22px; text-align: center; letter-spacing: .04em;
+  margin: -2px 0 6px; padding: 0 8px; font-size: 20px; text-align: center; letter-spacing: .04em;
 }
-.bh-info { display: flex; flex-direction: column; gap: 8px; }
+.bh-info { display: flex; flex-direction: column; gap: 6px; }
 .bh-info-row { display: flex; align-items: baseline; gap: 12px; font-size: 15px; }
 .bh-info-row[hidden] { display: none; } /* hidden属性を .bh-info-row の display:flex に勝たせる */
 .bh-info-k { flex: 0 0 76px; color: var(--muted); font-size: 13px; }
@@ -356,17 +356,7 @@ body {
 .bh-bond-gauge[hidden] { display: none; }
 .bh-bond-fill { height: 100%; width: 0%; background: var(--accent); border-radius: 2px; transition: width .35s ease; }
 .bh-info-v.bh-streak { color: var(--danger); }
-/* 背景・BGM（カード下部に現在値＋「変更」ボタン。変更で一覧モーダル） */
-.bh-amb { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.12); }
-.bh-amb-cur { flex: 1 1 0; min-width: 0; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.bh-amb-cur span { color: var(--ink); }
-.bh-amb-dot { color: var(--muted) !important; margin: 0 4px; }
-.bh-amb-btn {
-  flex: 0 0 auto; font-size: 12px; color: var(--muted); background: none; text-align: center;
-  border: 9px solid transparent; border-image: url("graphic/ui/sc/btn.png") 11 15 fill / 8px 12px / 0 stretch;
-  border-radius: 0; padding: 3px 12px; cursor: pointer; transition: .12s; white-space: nowrap;
-}
-.bh-amb-btn:hover { color: var(--accent); border-image-source: url("graphic/ui/sc/btn_hover.png"); }
+/* 背景・BGM の切替は立ち絵ステージ右上の .bh-util（設定の隣）。一覧モーダルは下の .bh-amb-* */
 
 /* 背景・BGM 設定モーダル（picker の金縁パネルを流用）。背景プレビューを見せたいのでスクリムは薄め。 */
 .bh-amb-modal .bh-picker-scrim { background: rgba(0,0,0,.38); }
@@ -405,11 +395,33 @@ body {
 .bh-amb-tile.is-locked, .bh-amb-row.is-locked { opacity: .4; cursor: default; filter: grayscale(.7); }
 .bh-amb-tile.is-locked:hover, .bh-amb-row.is-locked:hover { transform: none; border-image-source: url("graphic/ui/sc/btn.png"); }
 .bh-routes { display: flex; flex-direction: column; gap: 10px; }
-/* 楼光の館の下に、CPU/オンライン/師弟/ショップを2×2（全モードを1手で。固定ステージ720pxに収める）。 */
-.bh-route-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.menu-btn--duo { flex: 1 1 0; min-width: 0; align-items: center; text-align: center; gap: 2px; padding: 10px 10px; }
-.menu-btn--duo .menu-btn-title { font-size: 17px; }
-.menu-btn--duo .menu-btn-sub { font-size: 11px; white-space: nowrap; }
+/* 遊びの入口3つ（CPU対戦＝ロゴ「対局開始」／師弟モード／楼光の館）は同じ枠・同じ大きさで縦に並べる。
+   どれが主でも従でもない＝同列。枠は共通の金縁ボタン、違いはロゴと背後の灯りの色だけ。 */
+.bh-modes { display: flex; flex-direction: column; gap: 7px; }
+.bh-mode { position: relative; isolation: isolate; overflow: hidden; align-items: center; justify-content: center; text-align: center; gap: 0; padding: 4px 10px 5px; }
+.bh-mode::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(58% 95% at 50% 42%, var(--mode-glow), transparent 75%);
+  opacity: .75; transition: opacity .18s ease;
+}
+.bh-mode:hover:not(:disabled)::before { opacity: 1; }
+.bh-mode--taikyoku { --mode-glow: rgba(52, 168, 100, .5); }   /* 卓の緑 */
+.bh-mode--shitei   { --mode-glow: rgba(72, 108, 210, .5); }   /* 巻物の藍 */
+.bh-mode--rokou    { --mode-glow: rgba(86, 196, 232, .42); }  /* 館の青白い灯 */
+.bh-mode-logo {
+  display: block; height: 58px; width: auto; max-width: 100%; object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,.55)); transition: transform .14s ease;
+}
+.bh-mode:hover:not(:disabled) .bh-mode-logo { transform: scale(1.04); }
+.bh-mode-sub { font-size: 11.5px; line-height: 1.35; color: var(--muted); letter-spacing: .03em; white-space: nowrap; }
+/* 見出しはロゴが兼ねる（文字は読み上げ用）。ロゴが読めないときだけ文字で出す。 */
+.bh-mode-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.bh-mode.no-logo .bh-mode-logo { display: none; }
+.bh-mode.no-logo .bh-mode-title { position: static; width: auto; height: 58px; line-height: 58px; overflow: visible; clip: auto; font-size: 22px; font-weight: 800; }  /* ロゴと同じ高さ＝3枚の大きさはそろったまま */
+.bh-route-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.menu-btn--duo { flex: 1 1 0; min-width: 0; align-items: center; text-align: center; gap: 0; padding: 4px 8px; }
+.menu-btn--duo .menu-btn-title { font-size: 16px; line-height: 1.3; }
+.menu-btn--duo .menu-btn-sub { font-size: 10.5px; line-height: 1.3; white-space: nowrap; }
 /* 立ち絵ステージ右上の小道具（設定・タイトル）。相棒をかえる(左上)と対にして、導線の列を汚さない。 */
 .bh-util { position: absolute; top: 10px; right: 10px; z-index: 2; display: flex; gap: 6px; }
 .bh-util-btn {
@@ -6332,20 +6344,6 @@ button.primary.danger:hover { color: #ffbcbc; }
 .tb-dmg-stamp.endure { background: #6fe08a; color: #07270f; }
 .rl-go-bond { color: #6fe08a; font-size: 13px; text-align: center; margin: 4px 0; }
 
-/* 対戦ホーム：楼光の館ボタンをロゴ画像に（画像が無ければテキストにフォールバック） */
-.menu-btn--logo { position: relative; align-items: center; justify-content: center; padding: 10px 16px; min-height: 96px; background: radial-gradient(120% 120% at 50% 30%, #21342a 0%, #16221c 100%); overflow: visible; }
-.menu-btn-logo { width: 100%; max-width: 340px; max-height: 120px; object-fit: contain; display: block; filter: drop-shadow(0 4px 10px rgba(0,0,0,.5)); transition: transform .14s ease; }
-.menu-btn--logo:hover:not(:disabled) .menu-btn-logo { transform: scale(1.04); }
-.menu-btn--logo .fallback { display: none; }                 /* 画像表示時はテキスト隠す */
-.menu-btn--logo.no-logo { align-items: flex-start; }
-.menu-btn--logo.no-logo .menu-btn-logo { display: none; }    /* 画像読込失敗時 */
-.menu-btn--logo.no-logo .fallback { display: block; }
-.menu-btn--logo.no-logo .menu-btn-title { font-size: 19px; font-weight: 700; }
-.menu-btn--logo.no-logo .menu-btn-sub { font-size: 13px; color: var(--muted); }
-/* ホバー説明（吹き出し） */
-.menu-btn-tip { position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px); white-space: nowrap; padding: 6px 12px; background: #14110d; color: var(--ink); border: 1px solid var(--accent, #e8c45d); border-radius: 9px; font-size: 13px; box-shadow: 0 6px 16px rgba(0,0,0,.5); opacity: 0; pointer-events: none; transition: opacity .15s ease, transform .15s ease; z-index: 30; }
-.menu-btn-tip::after { content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); border: 6px solid transparent; border-top-color: var(--accent, #e8c45d); }
-.menu-btn--logo:hover .menu-btn-tip { opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* 楼光の館：編成の着卓ライン（戦う2人と控えの境界を明示） */
 .rl-swap-divider { display: flex; align-items: center; justify-content: center; margin: 2px 0; }

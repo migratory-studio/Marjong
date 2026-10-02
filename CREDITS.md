@@ -134,6 +134,7 @@
 | モブ（シルエット） | `graphic/chars/mobs/` | **素材屋冬青 氏**「★随時追加★ 素材【人物シルエット】」（BOOTH: https://awamurasoyogo.booth.pm/items/3435946 ）。商用可・改変可（原型を留めなくても可）・**クレジット表記は任意**・素材としての二次配布/販売は不可 |
 | 背景 | `graphic/bg/` | **みんちりえ**（`sc/` のほとんど＋`bg-dojo`/`bg-street`）＋ げーむまてりあるず（雀荘4種・上記）＋ くらげ／BOOTH（`bg-dungeon`） |
 | 表情・エモート | `graphic/emo/` | **こぱんだ屋（空想曲線）** — UI一式と同じ配布元。規約は下記「こぱんだ屋」節に従う。※無料素材はクレジット必須・有料素材は不要だが、**本ファイルとゲーム内ロールの両方に掲載しているのでどちらでも要件を満たす** |
+| モードのロゴ（対局開始／師弟モード／楼光の館） | `graphic/ui/modes/`（ホームの入口）・`press/art/logo-*.webp`（募集ページ） | **仮素材（AI生成など）**。本リリース前にデザイナー版へ差し替え必須（[release-blocking-asset-tbd.md](docs/release-blocking-asset-tbd.md)）。2026-10-02 に旧・楼光の館ロゴ `graphic/ui/roguelite/rokou-logo.png` から差し替え |
 
 ### 立ち絵のクレジット表記（必須）
 

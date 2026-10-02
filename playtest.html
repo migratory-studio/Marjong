@@ -255,7 +255,7 @@ img[data-zoom]{ cursor:zoom-in; }
 .mode{ position:relative; display:flex; flex-direction:column; padding:0 0 16px; }
 .mode-shot{ position:relative; aspect-ratio:16/9; overflow:hidden; background:#000; border-bottom:1px solid rgba(212,173,98,.4); }
 .mode-shot img{ width:100%; height:100%; object-fit:cover; }
-.mode-shot .rokou{ position:absolute; right:4%; bottom:6%; width:42%; height:auto; filter:drop-shadow(0 6px 12px #000c); }
+.mode-shot .logo{ position:absolute; right:4%; bottom:6%; width:48%; height:auto; filter:drop-shadow(0 6px 12px #000c); pointer-events:none; }  /* ホームと同じモードのロゴ。写真の拡大クリックは通す */
 .mode h3{ margin:14px 18px 4px; font-family:var(--serif); font-weight:700; font-size:21px; color:#f8ebcf; }
 .mode p{ margin:0 18px; font-size:14.5px; line-height:1.95; color:var(--ink-2); }
 .mode .time{ margin:auto 18px 0; padding-top:12px; font-size:12.5px; color:var(--gold-2); }
@@ -559,7 +559,7 @@ img[data-zoom]{ cursor:zoom-in; }
 </div>
 <div class="k-msg is-still" data-bond-msg><span class="name">詩玥</span><p class="text">さーて、今日も派手にツモってくヨ。ついてきて、ネ？</p><img class="new" src="graphic/ui/sc/new_icon.png" width="32" height="34" alt="この段階から聞ける言葉" hidden /></div>
 <ul class="moments">
-<li><figure style="margin:0"><div class="screen"><img src="press/shot-home.webp" width="1280" height="720" loading="lazy" data-zoom alt="ホームの画面。相棒の詩玥が大きく立ち、「はじめましてダヨ。我のツモ、すぐ手放せなくなるからネ——覚悟しといて?」と話しかけている" /></div><figcaption>ホームで出迎える</figcaption></figure></li>
+<li><figure style="margin:0"><div class="screen"><img src="press/shot-home.webp" width="1280" height="720" loading="lazy" data-zoom alt="ホームの画面。相棒の詩玥が大きく立ち、「はじめましてダヨ。我のツモ、すぐ手放せなくなるからネ——覚悟しといて?」と話しかけている。右には対局開始・師弟モード・楼光の館の入口が同じ大きさで並び、その下にオンラインと宝珠ショップ" /></div><figcaption>ホームで出迎える</figcaption></figure></li>
 <li><figure style="margin:0"><div class="screen"><img src="press/shot-end.webp" width="1280" height="720" loading="lazy" data-zoom alt="対局終了の画面。1位の詩玥が「やった、一番乗りダヨ! ……この景色、いつか見せたかったンだ。」とひと言添えている" /></div><figcaption>対局のあとのひと言</figcaption></figure></li>
 <li><figure style="margin:0"><div class="screen"><img src="press/shot-scenario.webp" width="1280" height="720" loading="lazy" data-zoom alt="紙芝居パートの画面。和室を背景に二人の立ち絵が向かい合い、下部にセリフが表示されている" /></div><figcaption>物語が進む紙芝居</figcaption></figure></li>
 </ul>
@@ -573,19 +573,19 @@ img[data-zoom]{ cursor:zoom-in; }
 <p class="lead">どの遊びも、相棒が待つホームから始まります。</p>
 <ul class="mode-grid">
 <li class="k-panel mode">
-<div class="mode-shot"><img src="press/shot-vs.webp" width="1280" height="720" loading="lazy" data-zoom alt="対局前のVS画面。4人の札が並び、相棒の詩玥が「さーて、今日も派手にツモってくヨ。ついてきて、ネ？」とひと言添えている" /></div>
+<div class="mode-shot"><img src="press/shot-vs.webp" width="1280" height="720" loading="lazy" data-zoom alt="対局前のVS画面。4人の札が並び、相棒の詩玥が「さーて、今日も派手にツモってくヨ。ついてきて、ネ？」とひと言添えている" /><img class="logo" src="press/art/logo-taikyoku.webp" width="560" height="134" loading="lazy" alt="" /></div>
 <h3>CPUと対戦</h3>
 <p>好きなキャラで1局から。4人・3人・2人打ちのほか、2対2のペア戦、3人チームの団体戦も選べます。ホームから2手で卓につけます。</p>
 <p class="time">東風戦1回でおよそ10分</p>
 </li>
 <li class="k-panel mode">
-<div class="mode-shot"><img src="press/shot-shitei.webp" width="1280" height="720" loading="lazy" data-zoom alt="師弟モードの画面。師匠の立ち絵とセリフ、修行コマンド、能力値、点棒＝HPのバーが並んでいる" /></div>
+<div class="mode-shot"><img src="press/shot-shitei.webp" width="1280" height="720" loading="lazy" data-zoom alt="師弟モードの画面。師匠の立ち絵とセリフ、修行コマンド、能力値、点棒＝HPのバーが並んでいる" /><img class="logo" src="press/art/logo-shitei.webp" width="560" height="134" loading="lazy" alt="" /></div>
 <h3>師弟モード</h3>
 <p>自分の雀士を作って師匠に弟子入りし、修行と大会を重ねながら物語を進める育成モードです。</p>
 <p class="time">弟子を作って1ヶ月分でおよそ10分</p>
 </li>
 <li class="k-panel mode">
-<div class="mode-shot"><img src="press/shot-roguelite.webp" width="1280" height="720" loading="lazy" data-zoom alt="楼光の館の画面。第2階で進路を選び、パーティのHPやバフが並んでいる" /><img class="rokou" src="press/art/rokou-logo.webp" width="560" height="274" loading="lazy" alt="" /></div>
+<div class="mode-shot"><img src="press/shot-roguelite.webp" width="1280" height="720" loading="lazy" data-zoom alt="楼光の館の画面。第2階で進路を選び、パーティのHPやバフが並んでいる" /><img class="logo" src="press/art/logo-rokou.webp" width="560" height="139" loading="lazy" alt="" /></div>
 <h3>楼光の館</h3>
 <p>3人パーティで塔を潜るローグライト。強化を引きながら、どこまで登れるかに挑みます。</p>
 <p class="time">数階もぐっておよそ15分</p>
@@ -666,7 +666,7 @@ img[data-zoom]{ cursor:zoom-in; }
 <h2 class="k-plate">参加のしかた</h2>
 <ol class="steps">
 <li><span class="tile"><img src="graphic/tiles/Man1.svg" alt="一" /></span><h3>「テスト版をプレイ」を押す</h3><p>ブラウザでそのまま始まります。インストールもアカウント登録も要りません（推奨は PC の Google Chrome です）。</p></li>
-<li><span class="tile"><img src="graphic/tiles/Man2.svg" alt="二" /></span><h3>好きなだけ遊ぶ</h3><p>クリアする必要はありません。迷ったら、ホームの「CPUと対戦」→「おまかせで即対局」から1局どうぞ。「分からない」「ここでやめたくなった」と感じたら、その時点でもう十分です。</p></li>
+<li><span class="tile"><img src="graphic/tiles/Man2.svg" alt="二" /></span><h3>好きなだけ遊ぶ</h3><p>クリアする必要はありません。迷ったら、ホームの「対局開始」→「おまかせで即対局」から1局どうぞ。「分からない」「ここでやめたくなった」と感じたら、その時点でもう十分です。</p></li>
 <li><span class="tile"><img src="graphic/tiles/Man3.svg" alt="三" /></span><h3>フィードバックフォームに答える</h3><p>回答時間の目安は約3〜5分。Googleへのログインは不要です。ゲーム内の「設定 → テスト版について / 不具合を報告」からも同じフォームを開けます。</p></li>
 </ol>
 <p class="sys-cta"><a class="k-btn is-big" href="index.html" target="_blank" rel="noopener">テスト版をプレイ<small>インストール不要</small></a></p>
@@ -709,7 +709,7 @@ img[data-zoom]{ cursor:zoom-in; }
 <ul>
 <li>一部のキャラクター・師匠は「準備中」の表示です（順に実装しています）。</li>
 <li>楼光の館は第2章まで。その先は「未だ綴られぬ記憶」と表示されます。</li>
-<li>タイトルロゴと楼光の館の一部グラフィックは仮素材です（正式版で差し替えます）。</li>
+<li>タイトルロゴ、ホームの各モードのロゴ、楼光の館の一部グラフィックは仮素材です（正式版で差し替えます）。</li>
 <li>紙芝居の一部の効果音が無音です。立ち絵の表情差分は未対応です。</li>
 <li>対局中のひと言（相手のリーチ・自分のリーチ・大物手への反応）は、いまは詩玥だけです。ほかのキャラクターは身ぶりとエモートで反応します。</li>
 <li>オンライン対戦は限定運用です（合言葉ルームでの対戦を推奨しています）。</li>
@@ -719,8 +719,9 @@ img[data-zoom]{ cursor:zoom-in; }
 </div>
 <div class="k-panel notice-box">
 <h2 class="k-plate">バージョン情報</h2>
-<p class="ver">Test Build v0.9.0-test.2<small>更新日 2026/10/02</small></p>
+<p class="ver">Test Build v0.9.0-test.3<small>更新日 2026/10/02</small></p>
 <ul>
+<li>ホームの遊びの入口（対局開始・師弟モード・楼光の館）を、同じ大きさのロゴで並べました。楼光の館のロゴも新しくなっています。</li>
 <li>対局の卓を「卓を囲む」形に。対戦相手が卓の奥に座り、リーチや和了・放銃に芝居で応えます。</li>
 <li>削られたときの手応えを強化（画面の揺れ・HPバーの残像・残り4分の1で卓の縁が赤く脈打ち、心音が鳴る）。</li>
 <li>相棒が局中も隣で反応（相手のリーチ・自分のリーチ・大物手）。VS画面での対局前のひと言と、対局後の絆の伸び（ログイン時）を追加。</li>

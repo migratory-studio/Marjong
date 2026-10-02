@@ -173,5 +173,5 @@
 
 1. **公開前**: GitHub Pro 加入 → リポジトリ private 化 → Pages が生きているか確認
 2. **随時**: ★K（r-id の購入商品の特定）— 表記要件は既に満たしているので急ぎではない
-3. **本リリース前**: タイトルロゴ・楼光の仮グラフィックを差し替え（[release-blocking-asset-tbd.md](release-blocking-asset-tbd.md)）
+3. **本リリース前**: タイトルロゴ・モードのロゴ・楼光の仮グラフィックを差し替え（[release-blocking-asset-tbd.md](release-blocking-asset-tbd.md)）
 4. **有料化を考えるとき**: PeriTune のデータ同梱（非営利限定）について、問い合わせ／暗号化／差し替えのいずれかを判断

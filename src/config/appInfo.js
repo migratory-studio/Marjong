@@ -6,7 +6,7 @@
 //
 //   import { APP_VERSION, versionLabel } from "./config/appInfo.js";
 
-export const APP_VERSION = "0.9.0-test.2";
+export const APP_VERSION = "0.9.0-test.3";
 export const BUILD_DATE = "2026-10-02";
 
 // 不具合・感想の受け皿（Googleフォーム / Discord 招待 / GitHub Issues など）。
@@ -23,7 +23,7 @@ export const FEEDBACK_LABEL = "報告フォームを開く";
 export const KNOWN_LIMITS = [
   "一部のキャラ・師匠は「準備中」表示です（順に実装中）。",
   "楼光の館は第2章まで。その先は「未だ綴られぬ記憶」と出ます。",
-  "タイトルロゴと楼光の館の一部グラフィックは仮素材（差し替え予定）。",
+  "ロゴ類と楼光の館の一部グラフィックは仮素材（差し替え予定）。",
   "オンライン対戦は限定運用です（合言葉ルームでの対戦を推奨）。",
 ];
 
