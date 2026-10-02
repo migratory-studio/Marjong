@@ -12,7 +12,9 @@
 <meta property="og:title" content="ツモノグリフ｜テストプレイヤー募集" />
 <meta property="og:description" content="点棒がHPになる麻雀。開発中のテスト版を公開中です。インストール不要・麻雀の知識は不要・15分から。" />
 <meta property="og:url" content="https://marjong.migratory-studio.com/playtest.html" />
-<meta property="og:image" content="https://marjong.migratory-studio.com/press/og.jpg" />
+<meta property="og:image" content="https://marjong.migratory-studio.com/press/og.jpg?v=20261002" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@nogi_kaiyu" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='2' width='24' height='28' rx='4' fill='%23f3ead9'/%3E%3Crect x='4' y='2' width='24' height='28' rx='4' fill='none' stroke='%231c140e' stroke-width='1.5'/%3E%3Ctext x='16' y='23' font-size='18' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%23b5341f'%3E%E4%B8%AD%3C/text%3E%3C/svg%3E" />
@@ -43,6 +45,9 @@ a:hover{ color:#ffd08a; }
 @keyframes flash{ from{ opacity:.55; } to{ opacity:0; } }
 @keyframes breathe{ 0%,100%{ opacity:.5; transform:scale(1); } 50%{ opacity:.9; transform:scale(1.3); } }
 @keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(-3deg); } 50%{ transform:translateY(-9px) rotate(2deg); } }
+/* ゲームの HP ボード（styles.css .hp-row.hp-hit）と同じ、被弾した行の赤い明滅。 */
+@keyframes rowhit{ 0%{ box-shadow:0 0 0 2px #ff5c7a, 0 0 16px rgba(255,92,122,.6), 0 22px 46px rgba(0,0,0,.55); } 100%{ box-shadow:0 0 0 0 transparent, 0 0 0 transparent, 0 22px 46px rgba(0,0,0,.55); } }
+@keyframes linein{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
 a{ transition:color .18s ease, border-color .18s ease, background-color .18s ease, box-shadow .2s ease, transform .2s ease; }
 button{ transition:color .18s ease, border-color .18s ease, background-color .18s ease; }
 :focus-visible{ outline:2px solid #f0b458; outline-offset:3px; }
@@ -60,6 +65,7 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 .b9::before{content:'＋';position:absolute;left:0;top:.7em;font-size:11px;color:#47d387;}
 .h10:hover{background:#ffca78;color:#241704;box-shadow:9px 9px 0 rgba(240,180,88,.22);transform:translate(-2px,-2px);}
 .h11:hover{border-color:#f0b458;color:#f0b458;}
+.h12:hover{border-color:rgba(240,180,88,.7);color:#f6f0e2;}
 
 @media (max-width:900px){
   /* リンク列は横スクロール枠だが、この幅では枠自体が数十pxまで潰れて読めない。
@@ -114,21 +120,22 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 </div>
 <div style="animation:rise .9s cubic-bezier(.2,.8,.2,1) .3s both">
 <figure data-shake="1" style="position:relative;margin:0;border:1px solid rgba(246,240,226,.2);overflow:hidden;background:#000;box-shadow:0 24px 56px rgba(0,0,0,.6)">
-<img src="press/shot-match.webp" width="1280" height="720" alt="対局中の画面。麻雀卓の右側に4人の持ち点がHPバーとして並び、相棒キャラクターの立ち絵とセリフが表示されている" style="width:100%;height:auto" />
+<img src="press/shot-match.webp" width="1280" height="720" alt="対局中の画面。卓の奥に対戦相手の3人が座り、左のドラニエルがリーチを宣言している。右では相棒の詩玥が卓の縁から身を乗り出し、「リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。」と声をかけている" style="width:100%;height:auto" />
 <span data-flash="1" style="position:absolute;inset:0;background:radial-gradient(circle at 50% 55%, rgba(224,87,111,.7), rgba(224,87,111,0) 70%);opacity:0;pointer-events:none"></span>
+<span data-hit="1" style="position:absolute;left:0;width:74%;top:66%;text-align:center;opacity:0;pointer-events:none"><b style="display:inline-block;padding:0 14px;border-radius:999px;background:rgba(8,14,11,.82);border:2px solid rgba(255,107,129,.65);box-shadow:0 4px 14px rgba(0,0,0,.65);font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:clamp(18px,2.3vw,26px);line-height:1.35;color:#ff6b81;font-variant-numeric:tabular-nums">−8,000</b></span>
 </figure>
 <div data-gauge="1" style="position:relative;margin:-42px 0 0 auto;width:min(100%,414px);background:#0f2018;border:1px solid rgba(246,240,226,.22);padding:17px 19px 16px;box-shadow:0 22px 46px rgba(0,0,0,.55)">
 <div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
-<span style="font-size:11.5px;letter-spacing:.2em;color:#93a89b">あなたの持ち点</span>
-<span data-num="1" style="font-family:'Shippori Mincho B1',serif;font-size:23px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em">25,000</span>
+<span style="font-size:11.5px;letter-spacing:.2em;color:#93a89b">あなたの持ち点（詩玥）</span>
+<span data-num="1" style="font-family:'Shippori Mincho B1',serif;font-size:23px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em">14,000</span>
 </div>
 <div style="position:relative;height:11px;margin-top:11px;background:#04100b;box-shadow:inset 0 1px 3px rgba(0,0,0,.85)">
-<div data-fill="1" style="height:100%;width:100%;background-image:repeating-linear-gradient(90deg, rgba(0,0,0,.24) 0 1px, rgba(0,0,0,0) 1px 9px), linear-gradient(180deg,#6ee7a6,#47d387);transition:width .8s cubic-bezier(.22,.9,.28,1)"></div>
+<div data-ghost="1" style="position:absolute;left:0;top:0;bottom:0;width:100%;background:linear-gradient(90deg,#fff1f3,#ffc4cf);opacity:.85"></div>
+<div data-fill="1" style="position:relative;height:100%;width:100%;background-image:repeating-linear-gradient(90deg, rgba(0,0,0,.24) 0 1px, rgba(0,0,0,0) 1px 9px), linear-gradient(90deg,#3ddc97,#66e6a8);transition:width .5s ease"></div>
 </div>
-<span data-hit="1" style="position:absolute;right:19px;top:38px;font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:21px;color:#e0576f;opacity:0;pointer-events:none;text-shadow:0 2px 14px rgba(224,87,111,.65)">−8,000</span>
-<div data-talk="1" style="display:flex;gap:12px;align-items:flex-start;margin:15px 0 0;padding-top:14px;border-top:1px solid rgba(246,240,226,.14);opacity:0;transform:translateY(8px);transition:opacity .55s ease, transform .55s ease">
+<div style="display:flex;gap:12px;align-items:flex-start;margin:15px 0 0;padding-top:14px;border-top:1px solid rgba(246,240,226,.14)">
 <img src="press/chars/shiyue.webp" width="176" height="176" alt="" style="width:40px;height:40px;flex:0 0 40px;object-fit:cover;border:1px solid rgba(224,87,111,.55)" />
-<p style="margin:0;font-size:13.5px;line-height:1.8;color:#d9e2da"><b style="display:block;font-family:'Shippori Mincho B1',serif;font-size:12.5px;letter-spacing:.1em;color:#e0576f;font-weight:700">詩玥（シ・ユエ）</b>「うわ！？そんなに持っていくノ！？　も～、だから守りは苦手なんだってばぁ！」</p>
+<p style="margin:0;font-size:13.5px;line-height:1.8;color:#d9e2da"><b style="display:block;font-family:'Shippori Mincho B1',serif;font-size:12.5px;letter-spacing:.1em;color:#e0576f;font-weight:700">詩玥（シ・ユエ）</b><span data-talk="1" style="display:block;transition:opacity .3s ease, transform .3s ease">「リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。」</span></p>
 </div>
 </div>
 <p style="font-size:12.5px;color:#93a89b;margin:13px 2px 0;line-height:1.7">画面はすべて開発中のものです。</p>
@@ -173,15 +180,15 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 <div>
 <p style="margin:0 0 14px;font-size:clamp(15.5px,1.8vw,17px);color:#dbe5dd;line-height:2.05">4人で打つリーチ麻雀です。ただし持ち点は「HP」として扱われ、振り込めば削られ、和了れば相手から奪い返します。</p>
 <p style="margin:0 0 14px;font-size:clamp(15.5px,1.8vw,17px);color:#dbe5dd;line-height:2.05">卓につくのは、それぞれ固有の能力を持った16人のキャラクター。あなたは相棒をひとり選び、その相棒と一緒に卓を勝ち抜きます。</p>
-<p style="margin:0;font-size:clamp(15.5px,1.8vw,17px);color:#dbe5dd;line-height:2.05">打つほどに絆は積もり、同じ場面でも相棒から返ってくる言葉が変わっていきます。</p>
+<p style="margin:0;font-size:clamp(15.5px,1.8vw,17px);color:#dbe5dd;line-height:2.05">どの遊びも、相棒が待つホームから始まります。打つほどに絆は積もり、同じ場面でも相棒から返ってくる言葉が変わっていきます。</p>
 </div>
 </div>
 <ul style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(276px,100%),1fr));gap:clamp(22px,3vw,40px);margin:clamp(40px,5vw,64px) 0 0;padding:0;list-style:none">
 <li data-rv="up">
-<figure style="margin:0 0 18px;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000"><img src="press/shot-select.webp" width="1280" height="720" alt="対戦形式を選ぶ画面。通常対戦・ペア戦・団体戦が並んでいる" loading="lazy" style="width:100%;height:auto" /></figure>
+<figure style="margin:0 0 18px;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000"><img src="press/shot-vs.webp" width="1280" height="720" alt="対局前のVS画面。4人の札が並び、相棒の詩玥が「さーて、今日も派手にツモってくヨ。ついてきて、ネ？」とひと言添えている" loading="lazy" style="width:100%;height:auto" /></figure>
 <p style="margin:0 0 6px;font-family:'Yuji Syuku',serif;font-size:14px;letter-spacing:.24em;color:#f0b458">其の一</p>
-<h3 style="margin:0 0 8px;font-family:'Shippori Mincho B1',serif;font-size:20px;letter-spacing:.1em;font-weight:700">フリー対戦</h3>
-<p style="margin:0;font-size:13.5px;line-height:1.95;color:#bfd0c4">好きなキャラで1局から。4人麻雀・三人麻雀のほか、2対2のペア戦、3人チームの団体戦も選べます。</p>
+<h3 style="margin:0 0 8px;font-family:'Shippori Mincho B1',serif;font-size:20px;letter-spacing:.1em;font-weight:700">CPUと対戦</h3>
+<p style="margin:0;font-size:13.5px;line-height:1.95;color:#bfd0c4">好きなキャラで1局から。4人・3人・2人打ちのほか、2対2のペア戦、3人チームの団体戦も選べます。ホームから2手で卓につけます。</p>
 <p style="margin:14px 0 0;padding-top:12px;border-top:1px solid rgba(246,240,226,.16);font-size:12px;letter-spacing:.1em;color:#93a89b">1局（東風戦）でおよそ10分</p>
 </li>
 <li data-rv="up" data-rv-delay="110">
@@ -199,6 +206,7 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 <p style="margin:14px 0 0;padding-top:12px;border-top:1px solid rgba(246,240,226,.16);font-size:12px;letter-spacing:.1em;color:#93a89b">数階もぐっておよそ15分</p>
 </li>
 </ul>
+<p data-rv="up" style="margin:clamp(30px,4vw,44px) 0 0;padding-top:18px;border-top:1px solid rgba(246,240,226,.12);font-size:13.5px;line-height:1.95;color:#a8bcae">このほか、合言葉で友だちと打てるオンライン対戦（限定運用）にも、ホームから入れます。</p>
 </div>
 </section>
 
@@ -210,13 +218,22 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 </div>
 
 <div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(26px,4vw,58px);align-items:center">
-<div style="display:flex;justify-content:center;padding:34px 24px;background:#143528;border:1px solid rgba(246,240,226,.16)">
-<img src="press/board.webp" width="338" height="240" alt="対局中に表示される相棒ボード。4人の名前と持ち点が、HPバーとして並んでいる" loading="lazy" style="width:338px;max-width:100%;box-shadow:0 16px 40px rgba(0,0,0,.55)" />
+<div>
+<div style="position:relative;padding-bottom:clamp(34px,5vw,54px)">
+<figure style="margin:0;border:1px solid rgba(224,87,111,.35);overflow:hidden;background:#000;box-shadow:0 22px 54px rgba(0,0,0,.55)">
+<img src="press/shot-pinch.webp" width="1280" height="720" alt="持ち点が残り3,000まで減った対局画面。卓の縁が赤く染まり、相手のリーチに相棒の詩玥が「リーチ来たけど、我たちも聴牌ダヨ。引き勝つネ。」と応えている" loading="lazy" style="width:100%;height:auto" />
+</figure>
+<figure style="position:absolute;left:-10px;bottom:0;width:44%;margin:0;border:1px solid rgba(224,87,111,.55);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.7)">
+<img src="press/shot-sunk.webp" width="597" height="324" alt="持ち点が0を割ったときのダメージカード。詩玥のバーが空になり、「撃沈」の判が押されている" loading="lazy" style="width:100%;height:auto" />
+</figure>
+</div>
+<p style="font-size:12.5px;color:#93a89b;margin:12px 2px 0;line-height:1.7">残りが4分の1を切った卓（奥）と、0を割ったときのダメージカード（手前）。</p>
 </div>
 <div>
 <h3 style="font-family:'Yuji Syuku',serif;font-weight:400;margin:0 0 16px;font-size:clamp(23px,3vw,31px);line-height:1.5;letter-spacing:.06em;color:#f6f0e2">点棒が減ることが、痛い</h3>
 <p style="margin:0;font-size:15.5px;color:#d1ddd3;line-height:2.05">持ち点をHPバーとして表示します。振り込めば自分のバーが削れ、和了れば相手のバーを削る。順位を数える麻雀が、殴り合いの見えかたに変わります。</p>
-<p style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin:26px 0 0;padding-top:22px;border-top:1px solid rgba(224,87,111,.35);font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:clamp(42px,5.8vw,64px);line-height:1;color:#e0576f"><span data-count="1" style="font-variant-numeric:tabular-nums">−8,000</span><span style="font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:500;line-height:1.7;letter-spacing:.14em;color:#93a89b">満貫を1回<br />振り込むと</span></p>
+<p style="margin:14px 0 0;font-size:15.5px;color:#d1ddd3;line-height:2.05">削られた瞬間、画面が揺れ、バーには白い残像が残ります。残りが4分の1を切ると、卓の縁が赤く脈打ち、心音が鳴りはじめます。</p>
+<p style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin:26px 0 0;padding-top:22px;border-top:1px solid rgba(224,87,111,.35);font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:clamp(42px,5.8vw,64px);line-height:1;color:#e0576f"><span data-count="1" style="font-variant-numeric:tabular-nums">−8,000</span><span style="font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:500;line-height:1.7;letter-spacing:.14em;color:#93a89b">満貫を1回振り込むと。<br />詩玥なら、残りは6,000。</span></p>
 </div>
 </div>
 
@@ -235,27 +252,71 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 </ul>
 </div>
 <figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 22px 54px rgba(0,0,0,.55)">
-<img src="press/shot-agari.webp" width="1280" height="720" alt="和了画面。立直・門前清自摸和・ドラの役が並び、満貫8000点と表示されている" loading="lazy" style="width:100%;height:auto" />
+<img src="press/shot-agari.webp" width="1280" height="720" alt="和了画面。立直・門前清自摸和・平和・一盃口・ドラの役が並び、跳満12000点と表示されている。左には和了った詩玥の全身の立ち絵" loading="lazy" style="width:100%;height:auto" />
 </figure>
 </div>
 
 <div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(26px,4vw,58px);align-items:center;margin-top:clamp(50px,6vw,92px)">
-<div style="display:grid;gap:16px">
+<div>
 <figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 22px 54px rgba(0,0,0,.55)">
-<img src="press/shot-home.webp" width="1280" height="720" alt="対戦ホームの画面。相棒キャラクターが大きく立ち、プレイヤーに話しかけている" loading="lazy" style="width:100%;height:auto" />
+<img src="press/shot-seated.webp" width="905" height="470" alt="卓の奥を写した画面。対面の真守 由紀がリーチを宣言し、胸元に「リーチ」の文字が出ている。左の焔は手番を示す赤い縁取りで光り、右には賭羽ルイナが座っている" loading="lazy" style="width:100%;height:auto" />
 </figure>
-<figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 22px 54px rgba(0,0,0,.55)">
-<img src="press/shot-scenario.webp" width="1280" height="720" alt="紙芝居パートの画面。道場を背景に二人の立ち絵が向かい合い、下部にセリフが表示されている" loading="lazy" style="width:100%;height:auto" />
-</figure>
-<p style="font-size:12.5px;color:#93a89b;margin:0 2px;line-height:1.7">出迎えてくれる対戦ホームと、物語が進む紙芝居パート。</p>
+<p style="font-size:12.5px;color:#93a89b;margin:12px 2px 0;line-height:1.7">対面の真守 由紀がリーチ。いま手番の焔は、自分の色でふちどられている。</p>
 </div>
 <div>
+<h3 style="font-family:'Yuji Syuku',serif;font-weight:400;margin:0 0 16px;font-size:clamp(23px,3vw,31px);line-height:1.5;letter-spacing:.06em;color:#f6f0e2">卓の向こうに、相手が座っている</h3>
+<p style="margin:0;font-size:15.5px;color:#d1ddd3;line-height:2.05">卓の奥には、対戦相手が座っています。リーチの声は本人の胸元から上がり、手番の人はその人の色でふちどられる。和了れば喜び、振り込めば崩れる。</p>
+<p style="margin:14px 0 0;font-size:15.5px;color:#d1ddd3;line-height:2.05">あなたのリーチやツモには身構え、リーチを受けた番では「…」と考え込むことも。画面の中の三人を、同じ卓を囲む相手として打てるようにしました。</p>
+</div>
+</div>
+
+<div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(26px,4vw,58px);align-items:start;margin-top:clamp(50px,6vw,92px)">
+<div>
 <h3 style="font-family:'Yuji Syuku',serif;font-weight:400;margin:0 0 16px;font-size:clamp(23px,3vw,31px);line-height:1.5;letter-spacing:.06em;color:#f6f0e2">卓の隣に、相棒がいる</h3>
-<p style="margin:0;font-size:15.5px;color:#d1ddd3;line-height:2.05">対局中は相棒が隣に立ち、聴牌や被弾に反応して声をかけてきます。打った記録は絆として積もり、同じ場面でも返ってくる言葉が変わっていきます。</p>
-<figure style="margin:24px 0 0;padding:0 0 0 22px;border-left:2px solid #e0576f">
-<figcaption style="font-size:11.5px;letter-spacing:.16em;color:#e0576f;font-weight:500;margin-bottom:8px">対戦ホームにて</figcaption>
-<p style="margin:0;font-family:'Shippori Mincho B1',serif;font-size:18px;color:#f1dee1;line-height:1.95">「ひまだヨ〜。ねえ、一局いこ？ “ツモれば勝ち”の真髄、教えてあげるヨ！」</p>
+<p style="margin:0;font-size:15.5px;color:#d1ddd3;line-height:2.05">相棒は卓の右の縁から身を乗り出して、一緒に打ちます。相手のリーチには身構え、あなたのリーチには声を張り、削られれば一緒に痛がる。対局の前にも、終わったあとにも、ひと言があります。</p>
+<p style="margin:14px 0 0;font-size:15.5px;color:#d1ddd3;line-height:2.05">打った記録は絆として積もり、同じ場面でも、返ってくる言葉が変わっていきます。</p>
+<div data-bond="1" style="margin:24px 0 0;border:1px solid rgba(246,240,226,.18);background:rgba(6,18,13,.42);padding:clamp(16px,2.4vw,22px)">
+<div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px;margin-bottom:12px">
+<span style="font-size:11px;letter-spacing:.22em;color:#e0576f">詩玥との絆</span>
+<span style="font-size:11px;letter-spacing:.1em;color:#8fae9b">段階を選ぶと、言葉が変わります</span>
+</div>
+<div role="group" aria-label="絆の段階" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+<button class="h12" type="button" data-bond-lv="1" aria-pressed="true" style="padding:9px 4px 8px;border:1px solid #f0b458;background:rgba(240,180,88,.12);color:#f6f0e2;font:inherit;font-size:clamp(10.5px,2.9vw,12.5px);letter-spacing:.02em;line-height:1.45;white-space:nowrap;cursor:pointer;text-align:center">出会ったばかり<span style="display:block;font-size:10.5px;letter-spacing:.14em;color:#f0b458">Lv1</span></button>
+<button class="h12" type="button" data-bond-lv="3" aria-pressed="false" style="padding:9px 4px 8px;border:1px solid rgba(246,240,226,.22);background:transparent;color:#bcd4c4;font:inherit;font-size:clamp(10.5px,2.9vw,12.5px);letter-spacing:.02em;line-height:1.45;white-space:nowrap;cursor:pointer;text-align:center">打ち解け始め<span style="display:block;font-size:10.5px;letter-spacing:.14em;color:#f0b458">Lv3</span></button>
+<button class="h12" type="button" data-bond-lv="5" aria-pressed="false" style="padding:9px 4px 8px;border:1px solid rgba(246,240,226,.22);background:transparent;color:#bcd4c4;font:inherit;font-size:clamp(10.5px,2.9vw,12.5px);letter-spacing:.02em;line-height:1.45;white-space:nowrap;cursor:pointer;text-align:center">気を許す仲<span style="display:block;font-size:10.5px;letter-spacing:.14em;color:#f0b458">Lv5</span></button>
+</div>
+<div style="height:4px;margin:10px 0 0;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden"><div data-bond-fill="1" style="height:100%;width:16.7%;background:linear-gradient(90deg,#f6b352,#ffe08a);border-radius:inherit;transition:width .6s cubic-bezier(.2,.8,.2,1)"></div></div>
+<dl aria-live="polite" style="margin:12px 0 0">
+<div style="display:grid;grid-template-columns:6em minmax(0,1fr);gap:4px 12px;padding:11px 0;border-top:1px solid rgba(246,240,226,.1)">
+<dt style="font-size:11.5px;letter-spacing:.1em;color:#a9c4b4;padding-top:.4em">対局の前</dt>
+<dd data-bond-line="start" style="margin:0;padding-left:12px;border-left:2px solid transparent;font-family:'Shippori Mincho B1',serif;font-size:15px;line-height:1.85;color:#f1dee1">「さーて、今日も派手にツモってくヨ。ついてきて、ネ？」</dd>
+</div>
+<div style="display:grid;grid-template-columns:6em minmax(0,1fr);gap:4px 12px;padding:11px 0;border-top:1px solid rgba(246,240,226,.1)">
+<dt style="font-size:11.5px;letter-spacing:.1em;color:#a9c4b4;padding-top:.4em">相手のリーチ</dt>
+<dd data-bond-line="opp" style="margin:0;padding-left:12px;border-left:2px solid transparent;font-family:'Shippori Mincho B1',serif;font-size:15px;line-height:1.85;color:#f1dee1">「リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。」</dd>
+</div>
+<div style="display:grid;grid-template-columns:6em minmax(0,1fr);gap:4px 12px;padding:11px 0;border-top:1px solid rgba(246,240,226,.1)">
+<dt style="font-size:11.5px;letter-spacing:.1em;color:#a9c4b4;padding-top:.4em">あなたのリーチ</dt>
+<dd data-bond-line="self" style="margin:0;padding-left:12px;border-left:2px solid transparent;font-family:'Shippori Mincho B1',serif;font-size:15px;line-height:1.85;color:#f1dee1">「リーチ！ さあ、来いヨ——ツモれば勝ち！」</dd>
+</div>
+</dl>
+<p style="margin:6px 0 0;padding-top:10px;border-top:1px solid rgba(246,240,226,.1);font-size:11.5px;line-height:1.8;color:#8fae9b">金の線は、その段階で加わる言葉。対局では、ほかの言葉と入れ替わりで出てきます。</p>
+</div>
+<p style="margin:14px 0 0;font-size:12.5px;line-height:1.85;color:#93a89b">※ 絆が積もるのは、Googleログインで遊んだときです（ログインしなくても遊べます）。</p>
+</div>
+<div style="display:grid;gap:16px">
+<figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 22px 54px rgba(0,0,0,.55)">
+<img src="press/shot-home.webp" width="1280" height="720" alt="ホームの画面。相棒の詩玥が大きく立ち、「はじめましてダヨ。我のツモ、すぐ手放せなくなるからネ——覚悟しといて?」と話しかけている。右にCPUと対戦・オンライン・楼光の館・師弟モード・宝珠ショップの入口が並ぶ" loading="lazy" style="width:100%;height:auto" />
 </figure>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
+<figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.5)">
+<img src="press/shot-end.webp" width="1280" height="720" alt="対局終了の画面。1位の詩玥が「やった、一番乗りダヨ! ……この景色、いつか見せたかったンだ。」とひと言添えている" loading="lazy" style="width:100%;height:auto" />
+</figure>
+<figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.5)">
+<img src="press/shot-scenario.webp" width="1280" height="720" alt="紙芝居パートの画面。和室を背景に二人の立ち絵が向かい合い、下部にセリフが表示されている" loading="lazy" style="width:100%;height:auto" />
+</figure>
+</div>
+<p style="font-size:12.5px;color:#93a89b;margin:0 2px;line-height:1.7">出迎えてくれるホーム（上）、対局後のひと言（左下）、物語が進む紙芝居（右下）。</p>
 </div>
 </div>
 </div>
@@ -433,6 +494,16 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 </div>
 </div>
 <p data-rv="up" style="margin:24px 0 0;font-size:14px;line-height:2;color:#c6dccd;max-width:66ch">この中からひとりを相棒に選んで卓につきます。能力はキャラごとに別物で、点棒の減りかた・増えかたが変わります。ほかに、遊びながら解禁できるキャラクターが3人います。</p>
+<div data-rv="up" style="margin-top:clamp(30px,4vw,46px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(18px,2.6vw,30px)">
+<figure style="margin:0">
+<div style="border:1px solid rgba(246,240,226,.2);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.45)"><img src="press/shot-cutin.webp" width="1280" height="720" alt="能力を使った瞬間のカットイン。詩玥の全身の立ち絵と「ツモれば勝ち」の文字が卓の上に大きく出ている" loading="lazy" style="width:100%;height:auto" /></div>
+<figcaption style="margin-top:11px;font-size:13px;line-height:1.85;color:#c6dccd"><b style="font-family:'Shippori Mincho B1',serif;font-weight:700;color:#f6f0e2">能力を使った瞬間</b>　詩玥の「ツモれば勝ち」。この局のツモが、有利な牌へ寄っていく。</figcaption>
+</figure>
+<figure style="margin:0">
+<div style="border:1px solid rgba(246,240,226,.2);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.45)"><img src="press/shot-tenkei.webp" width="1280" height="720" alt="ドラニエルの和了画面。ドラ7飜の倍満24000点の横に「天啓　暴いたドラが、手に乗る」と表示されている" loading="lazy" style="width:100%;height:auto" /></div>
+<figcaption style="margin-top:11px;font-size:13px;line-height:1.85;color:#c6dccd"><b style="font-family:'Shippori Mincho B1',serif;font-weight:700;color:#f6f0e2">能力が実った和了</b>　ドラニエルの「天啓」。暴いたドラが、そのまま手に乗る。</figcaption>
+</figure>
+</div>
 </div>
 </section>
 
@@ -451,7 +522,7 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 <li style="padding-top:20px;border-top:2px solid #241c14">
 <p style="margin:0 0 12px;font-family:'Yuji Syuku',serif;font-size:30px;line-height:1;color:#a2543f">弐</p>
 <h3 style="margin:0 0 9px;font-family:'Shippori Mincho B1',serif;font-size:18px;font-weight:700;letter-spacing:.06em;color:#241c14">好きなだけ遊ぶ</h3>
-<p style="margin:0;font-size:14.5px;line-height:1.95;color:#4a3b2c">クリアする必要はありません。「分からない」「難しい」「ここでやめたくなった」と感じたら、その時点でもう十分です。むしろ、そこがいちばん知りたい情報です。</p>
+<p style="margin:0;font-size:14.5px;line-height:1.95;color:#4a3b2c">クリアする必要はありません。迷ったら、ホームの「CPUと対戦」→「おまかせで即対局」から1局どうぞ。「分からない」「難しい」「ここでやめたくなった」と感じたら、その時点でもう十分です。むしろ、そこがいちばん知りたい情報です。</p>
 </li>
 <li style="padding-top:20px;border-top:2px solid #241c14">
 <p style="margin:0 0 12px;font-family:'Yuji Syuku',serif;font-size:30px;line-height:1;color:#a2543f">参</p>
@@ -489,8 +560,12 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 <span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#1d3f2f">四</span>
 <p style="margin:0;font-size:15.5px;line-height:1.9;color:#d9e3db">どの部分を面白いと感じましたか。</p>
 </li>
+<li style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(246,240,226,.14)">
+<span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#1d3f2f">五</span>
+<p style="margin:0;font-size:15.5px;line-height:1.9;color:#d9e3db">点棒を削られたとき、「痛い」と感じましたか。卓の相手や相棒は、そこにいるように感じられましたか。</p>
+</li>
 <li style="display:flex;gap:20px;align-items:flex-start;padding:20px 0">
-<span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#8f2f22">五</span>
+<span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#8f2f22">六</span>
 <p style="margin:0;font-size:15.5px;line-height:1.9;color:#d9e3db">また遊びたいと思えましたか。思えなかったとしたら、どこで気持ちが切れましたか。</p>
 </li>
 </ul>
@@ -512,6 +587,7 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 <li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">楼光の館は第2章まで。その先は「未だ綴られぬ記憶」と表示されます。</li>
 <li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">タイトルロゴと楼光の館の一部グラフィックは仮素材です（正式版で差し替えます）。</li>
 <li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">紙芝居の一部の効果音が無音です。立ち絵の表情差分は未対応です。</li>
+<li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">対局中のひと言（相手のリーチ・自分のリーチ・大物手への反応）は、いまは詩玥だけです。ほかのキャラクターは身ぶりとエモートで反応します。</li>
 <li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">オンライン対戦は限定運用です（合言葉ルームでの対戦を推奨しています）。</li>
 <li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">推奨環境は PC・横画面の Google Chrome です。スマートフォンでも動きますが、横向きが必要です。</li>
 <li class="b8" style="position:relative;padding:11px 0 0 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7">テスト期間中は、更新によってセーブデータのリセットが必要になる場合があります。</li>
@@ -552,14 +628,16 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 <div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:clamp(22px,4vw,48px);align-items:start">
 <div>
 <h2 style="font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:clamp(19px,2.6vw,24px);line-height:1.5;letter-spacing:.16em;margin:0 0 18px">バージョン情報</h2>
-<p style="margin:0;font-family:'Shippori Mincho B1',serif;font-size:clamp(20px,2.6vw,25px);font-weight:800;color:#f0b458;line-height:1.45;letter-spacing:.02em">Test Build<br />v0.9.0-test.1</p>
-<p style="margin:10px 0 0;font-size:13px;letter-spacing:.08em;color:#93a89b">更新日 2026/09/08</p>
+<p style="margin:0;font-family:'Shippori Mincho B1',serif;font-size:clamp(20px,2.6vw,25px);font-weight:800;color:#f0b458;line-height:1.45;letter-spacing:.02em">Test Build<br />v0.9.0-test.2</p>
+<p style="margin:10px 0 0;font-size:13px;letter-spacing:.08em;color:#93a89b">更新日 2026/10/02</p>
 </div>
 <div>
 <ul style="margin:0;padding:0;list-style:none;border-top:1px solid rgba(246,240,226,.14)">
-<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">テスト公開の準備一式を追加（版数の表示・不具合報告の窓口・対局の中断と再開・セーブデータの初期化）。</li>
-<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">キャラクターごとの対局中演出を実装（能力を使ったとき、そのキャラの見えかたが卓に出ます）。</li>
-<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">リーチ後の暗槓と北抜きを解禁（待ちが変わらない場合のみ）。</li>
+<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">対局の卓を「卓を囲む」形に。対戦相手が卓の奥に座り、リーチや和了・放銃に芝居で応えます。</li>
+<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">削られたときの手応えを強化（画面の揺れ・HPバーの残像・残り4分の1で卓の縁が赤く脈打ち、心音が鳴る）。</li>
+<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">相棒が局中も隣で反応（相手のリーチ・自分のリーチ・大物手）。VS画面での対局前のひと言と、対局後の絆の伸び（ログイン時）を追加。</li>
+<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">流局カードに各席のテンパイ／ノーテンと手牌を表示。満貫未満の和了はダメージカードを省き、テンポよく次の局へ。</li>
+<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">すべてのモードを、相棒が待つホームに集約（CPU対戦はホームから2手）。</li>
 </ul>
 <p style="margin:18px 0 0;font-size:13px;color:#93a89b;line-height:1.9">不具合を報告するときは、この版数を書き添えていただけると助かります。ゲーム画面の右下にも小さく表示されています。</p>
 </div>
@@ -661,33 +739,53 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
     setTimeout(() => { if (sweep) sweep(); }, 60);
   }
   
-  const fill = q("[data-fill]"), num = q("[data-num]"), hit = q("[data-hit]");
-  const talk = q("[data-talk]"), shakeEl = q("[data-shake]"), flash = q("[data-flash]");
-  const START = 25000, AFTER = 17000;
+  // ── ヒーローの被弾：ゲームの HP ボードと同じ動き ─────────────────────
+  // バーは即座に削れて色が段階で変わり（50%以下で黄・25%以下で赤）、白い残像が
+  // 0.45秒遅れて追いつく。行は一瞬赤く光り、画面が揺れる（main.js updateHpBoard /
+  // styles.css .hp-ghost・.hp-row.hp-hit と同じ値）。持ち点は詩玥の初期値 14,000。
+  // 相棒のひと言は、スクショと同じ「リーチへの身構え」→ 被弾 →「被弾への反応」の順に替わる。
+  const fill = q("[data-fill]"), ghost = q("[data-ghost]"), num = q("[data-num]"), hit = q("[data-hit]");
+  const talk = q("[data-talk]"), shakeEl = q("[data-shake]"), flash = q("[data-flash]"), gauge = q("[data-gauge]");
+  const START = 14000, AFTER = 6000, HIT_AT = 2000;
+  const OUCH = "「うわ！？そんなに持っていくノ！？　も～、だから守りは苦手なんだってばぁ！」";
+  const TICKS = "repeating-linear-gradient(90deg, rgba(0,0,0,.24) 0 1px, rgba(0,0,0,0) 1px 9px)";
+  const tierBg = (pct) => TICKS + ", " + (pct <= 25 ? "linear-gradient(90deg,#e85d75,#ff8a9d)"
+    : pct <= 50 ? "linear-gradient(90deg,#f6b352,#ffd27d)" : "linear-gradient(90deg,#3ddc97,#66e6a8)");
   const fmt = (n) => "" + Math.round(n).toLocaleString("en-US");
   if (fill) {
+    const pct = AFTER / START * 100;
     if (subtle) {
-      fill.style.width = (AFTER / START * 100) + "%";
+      fill.style.width = pct + "%";
+      fill.style.backgroundImage = tierBg(pct);
+      if (ghost) ghost.style.width = pct + "%";
       if (num) num.textContent = fmt(AFTER);
-      if (talk) { talk.style.opacity = "1"; talk.style.transform = "none"; }
+      if (talk) talk.textContent = OUCH;
     } else {
       setTimeout(() => {
-        fill.style.width = (AFTER / START * 100) + "%";
+        fill.style.width = pct + "%";
+        fill.style.backgroundImage = tierBg(pct);
+        if (ghost) { ghost.style.transition = "width .7s ease .45s"; ghost.style.width = pct + "%"; }
+        if (gauge) gauge.style.animation = "rowhit .6s ease-out";
         if (hit) hit.style.animation = "hitpop 1.3s ease-out forwards";
         if (shakeEl) shakeEl.style.animation = "shake .55s cubic-bezier(.36,.07,.19,.97)";
         if (flash) flash.style.animation = "flash .7s ease-out forwards";
         const t0 = performance.now(), dur = 760;
         const tick = (now) => {
-          const p = Math.min(1, (now - t0) / dur);
+          const p = Math.max(0, Math.min(1, (now - t0) / dur));
           if (num) num.textContent = fmt(START + (AFTER - START) * (1 - Math.pow(1 - p, 3)));
           if (p < 1) requestAnimationFrame(tick);
         };
         requestAnimationFrame(tick);
+        if (talk) {
+          talk.style.opacity = "0";
+          talk.style.transform = "translateY(4px)";
+          setTimeout(() => { talk.textContent = OUCH; talk.style.opacity = "1"; talk.style.transform = "none"; }, 520);
+        }
         setTimeout(() => {
-          if (talk) { talk.style.opacity = "1"; talk.style.transform = "none"; }
           if (shakeEl) shakeEl.style.animation = "";
+          if (gauge) gauge.style.animation = "";
         }, 800);
-      }, 1000);
+      }, HIT_AT);
     }
   }
   
@@ -699,7 +797,7 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
         cio.unobserve(en.target);
         const t0 = performance.now(), dur = 1100;
         const tick = (now) => {
-          const p = Math.min(1, (now - t0) / dur);
+          const p = Math.max(0, Math.min(1, (now - t0) / dur));
           counter.textContent = "−" + fmt(8000 * (1 - Math.pow(1 - p, 3)));
           if (p < 1) requestAnimationFrame(tick);
         };
@@ -709,6 +807,54 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
     cio.observe(counter);
   }
   
+  // ── 詩玥との絆：段階を選ぶと、同じ場面の言葉が変わる ─────────────────
+  // 文言は src/data/characterVoiceMaster.js（詩玥）の写し。3=打ち解け始め・5=気を許す仲は
+  // companionBondMin 付きの行で、その段階から抽選に“混ざりはじめる”言葉（実際の対局では
+  // ほかの言葉と入れ替わりで出る）。段階名は progressionService の帯名と同じ。
+  const bond = q("[data-bond]");
+  if (bond) {
+    const LINES = {
+      start: { 1: "さーて、今日も派手にツモってくヨ。ついてきて、ネ？", 3: "今日もキミとだネ。……ふふ、ちょっと安心したヨ。", 5: "行こ、相棒。我とキミなら——ツモれば勝ち、ダロ？" },
+      opp: { 1: "リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。", 3: "……だいじょぶ。キミの目なら、通る牌わかるヨ。我が保証するネ。" },
+      self: { 1: "リーチ！ さあ、来いヨ——ツモれば勝ち！", 5: "リーチ。……ねえ相棒、この一枚、一緒に引こ？" },
+    };
+    // その段階で聞ける、いちばん新しい言葉（その段階に専用の行が無ければ、手前の段階のもの）。
+    const lineAt = (scene, lv) => {
+      let t = "";
+      [1, 3, 5].forEach((k) => { if (k <= lv && LINES[scene][k]) t = LINES[scene][k]; });
+      return t;
+    };
+    const lvBtns = Array.prototype.slice.call(bond.querySelectorAll("[data-bond-lv]"));
+    const bfill = bond.querySelector("[data-bond-fill]");
+    let curLv = 1;
+    const pickLv = (lv) => {
+      if (lv === curLv) return;
+      curLv = lv;
+      lvBtns.forEach((b, i) => {
+        const on = +b.dataset.bondLv === lv;
+        b.setAttribute("aria-pressed", on ? "true" : "false");
+        b.style.borderColor = on ? "#f0b458" : "rgba(246,240,226,.22)";
+        b.style.background = on ? "rgba(240,180,88,.12)" : "transparent";
+        b.style.color = on ? "#f6f0e2" : "#bcd4c4";
+        if (on && bfill) bfill.style.width = ((i * 2 + 1) / (lvBtns.length * 2) * 100) + "%";
+      });
+      bond.querySelectorAll("[data-bond-line]").forEach((dd) => {
+        const scene = dd.dataset.bondLine;
+        const t = "「" + lineAt(scene, lv) + "」";
+        const fresh = lv > 1 && !!LINES[scene][lv];   // この段階で加わる言葉
+        dd.style.borderLeftColor = fresh ? "#f0b458" : "transparent";
+        dd.style.color = fresh ? "#fff4dc" : "#f1dee1";
+        if (dd.textContent === t) return;
+        dd.textContent = t;
+        if (subtle) return;
+        dd.style.animation = "none";
+        void dd.offsetWidth;                         // 同じアニメを頭から
+        dd.style.animation = "linein .45s cubic-bezier(.2,.8,.2,1)";
+      });
+    };
+    lvBtns.forEach((b) => b.addEventListener("click", () => pickLv(+b.dataset.bondLv)));
+  }
+
   const rail = q("[data-rail='cast']");
   if (rail) {
     const step = () => Math.max(200, rail.clientWidth * 0.75);
@@ -826,7 +972,7 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
       if (subtle) { paintShape(st, 1); return; }
       const t0 = performance.now(), dur = 780;
       const step = (now) => {
-        const p = Math.min(1, (now - t0) / dur);
+        const p = Math.max(0, Math.min(1, (now - t0) / dur));
         paintShape(st, p < 1 ? back(p) : 1);
         if (p < 1) raf = requestAnimationFrame(step);
       };

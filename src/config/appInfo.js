@@ -6,8 +6,8 @@
 //
 //   import { APP_VERSION, versionLabel } from "./config/appInfo.js";
 
-export const APP_VERSION = "0.9.0-test.1";
-export const BUILD_DATE = "2026-09-08";
+export const APP_VERSION = "0.9.0-test.2";
+export const BUILD_DATE = "2026-10-02";
 
 // 不具合・感想の受け皿（Googleフォーム / Discord 招待 / GitHub Issues など）。
 // 送信先は Google フォーム「ツモノグリフ テストプレイ フィードバック」。空文字にすると
