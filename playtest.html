@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ツモノグリフ｜テストプレイヤー募集</title>
 <meta name="description" content="点棒がHPになる麻雀ゲーム『ツモノグリフ 〜牌と絆のアンサンブル〜』の開発中テスト版を公開しています。インストール不要・麻雀の知識は不要。15分遊んだ感想でも歓迎です。" />
-<meta name="theme-color" content="#0c1411" />
+<meta name="theme-color" content="#120e0b" />
 <link rel="canonical" href="https://marjong.migratory-studio.com/playtest.html" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="ツモノグリフ" />
@@ -20,650 +20,737 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='4' y='2' width='24' height='28' rx='4' fill='%23f3ead9'/%3E%3Crect x='4' y='2' width='24' height='28' rx='4' fill='none' stroke='%231c140e' stroke-width='1.5'/%3E%3Ctext x='16' y='23' font-size='18' font-family='sans-serif' font-weight='bold' text-anchor='middle' fill='%23b5341f'%3E%E4%B8%AD%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@400;600;700;800&family=Yuji+Syuku&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@600;700;900&display=swap" rel="stylesheet" />
+<link rel="preload" as="image" href="press/scene/dojo.webp" />
 <style>
 /* =========================================================================
-   ツモノグリフ テストプレイヤー募集ページ
-   ─ 単体で完結する1ページ。ゲーム本体の styles.css は読み込まない。
-   ─ レイアウトは要素の style 属性に直接書いてある（意図的）。
-     ここには「インラインで書けないもの」だけを置く:
-     リセット / @keyframes / :hover と ::before の生成クラス。
+   ツモノグリフ テストプレイヤー募集ページ ─「紙芝居」
+   ページ全体を、ゲームの一場面として組む。相棒の詩玥がメッセージ窓で案内し、
+   入口は選択肢、説明は紙のシステム窓。部品はゲームと同じ UI キット
+   （graphic/ui/sc/ … こぱんだ屋 gameUIset_19）と同じ border-image の切り方。
+   セリフはすべて src/data/characterVoiceMaster.js（詩玥）の写し。新規の台詞は無い。
+   ─ 単体で完結する1ページ。ゲーム本体の styles.css / JS は読み込まない。
    ========================================================================= */
+:root{
+  --bg:#120e0b; --bg-2:#1a140f; --felt:#0e1712;
+  --ink:#f0e7d0; --ink-2:#d6c6a2; --ink-3:#a39275;
+  --gold:#d4ad62; --gold-2:#ffd98a; --name:#f4e3b4;
+  --paper-ink:#3a2a19; --paper-ink-2:#5c472f; --paper-rule:#d3bd93;
+  --shiyue:#e0576f;
+  --serif:"Noto Serif JP","Yu Mincho","YuMincho","Hiragino Mincho ProN",serif;
+  --sans:"Noto Sans JP","Yu Gothic","YuGothic","Hiragino Kaku Gothic ProN",sans-serif;
+  --msg-w:min(1280px, 100vw - 32px);
+  --msg-h:calc(var(--msg-w) * .15);
+}
 *,*::before,*::after{ box-sizing:border-box; }
-html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
-body{ margin:0; overflow-x:clip; background:#0d1512; color:#eef3ec; font-family:"Zen Kaku Gothic New",system-ui,sans-serif; line-height:1.95; letter-spacing:.02em; word-break:auto-phrase; }
-img{ max-width:100%; display:block; }
-a{ color:#f0b458; text-decoration:none; }
-a:hover{ color:#ffd08a; }
-::selection{ background:rgba(240,180,88,.32); }
-[data-rail]::-webkit-scrollbar{ height:6px; }
-[data-rail]::-webkit-scrollbar-track{ background:rgba(0,0,0,.3); }
-[data-rail]::-webkit-scrollbar-thumb{ background:rgba(246,240,226,.4); }
-@keyframes rise{ from{ opacity:0; transform:translateY(26px); } to{ opacity:1; transform:none; } }
-@keyframes hitpop{ 0%{ opacity:0; transform:translateY(6px) scale(.86); } 16%{ opacity:1; transform:translateY(-8px) scale(1.14); } 68%{ opacity:1; transform:translateY(-22px) scale(1); } 100%{ opacity:0; transform:translateY(-38px) scale(.98); } }
-@keyframes shake{ 0%,100%{ transform:translate(0,0); } 15%{ transform:translate(-7px,2px); } 30%{ transform:translate(6px,-2px); } 45%{ transform:translate(-4px,1px); } 60%{ transform:translate(3px,0); } 80%{ transform:translate(-2px,0); } }
-@keyframes flash{ from{ opacity:.55; } to{ opacity:0; } }
-@keyframes breathe{ 0%,100%{ opacity:.5; transform:scale(1); } 50%{ opacity:.9; transform:scale(1.3); } }
-@keyframes floaty{ 0%,100%{ transform:translateY(0) rotate(-3deg); } 50%{ transform:translateY(-9px) rotate(2deg); } }
-/* ゲームの HP ボード（styles.css .hp-row.hp-hit）と同じ、被弾した行の赤い明滅。 */
-@keyframes rowhit{ 0%{ box-shadow:0 0 0 2px #ff5c7a, 0 0 16px rgba(255,92,122,.6), 0 22px 46px rgba(0,0,0,.55); } 100%{ box-shadow:0 0 0 0 transparent, 0 0 0 transparent, 0 22px 46px rgba(0,0,0,.55); } }
-@keyframes linein{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
-a{ transition:color .18s ease, border-color .18s ease, background-color .18s ease, box-shadow .2s ease, transform .2s ease; }
-button{ transition:color .18s ease, border-color .18s ease, background-color .18s ease; }
-:focus-visible{ outline:2px solid #f0b458; outline-offset:3px; }
-[data-rail="nav"]::-webkit-scrollbar{ display:none; }
+html{ -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:62px; }
+body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15.5px; line-height:1.9;
+  letter-spacing:.02em; overflow-x:clip; word-break:auto-phrase; -webkit-font-smoothing:antialiased; }
+img{ max-width:100%; height:auto; display:block; }
+a{ color:var(--gold-2); }
+button{ font:inherit; color:inherit; }
+:focus-visible{ outline:2px solid var(--gold-2); outline-offset:3px; }
+.sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+.wrap{ position:relative; max-width:1180px; margin-inline:auto; padding-inline:clamp(16px,4vw,40px); }
 
-/* ---- style-hover / style-before から生成 ---- */
-.h1:hover{color:#f6f0e2;border-bottom-color:#f0b458;}
-.h2:hover{background:#ffca78;color:#241704;}
-.h3:hover{background:#ffca78;color:#241704;box-shadow:9px 9px 0 rgba(240,180,88,.2);transform:translate(-2px,-2px);}
-.b4::before{content:'';position:absolute;left:0;top:.95em;width:5px;height:5px;background:#47d387;}
-.h5:hover{background:rgba(0,0,0,.3);border-color:#f0b458;color:#f0b458;}
-.h6:hover{transform:translateY(-7px);}
-.h7:hover{background:#3a2c20;color:#f4ead6;box-shadow:9px 9px 0 rgba(36,28,20,.2);transform:translate(-2px,-2px);}
-.b8::before{content:'';position:absolute;left:2px;top:1.55em;width:5px;height:5px;background:#7d9689;}
-.b9::before{content:'＋';position:absolute;left:0;top:.7em;font-size:11px;color:#47d387;}
-.h10:hover{background:#ffca78;color:#241704;box-shadow:9px 9px 0 rgba(240,180,88,.22);transform:translate(-2px,-2px);}
-.h11:hover{border-color:#f0b458;color:#f0b458;}
-.h12:hover{border-color:rgba(240,180,88,.7);color:#f6f0e2;}
+/* ── UI キット（ゲームと同じ切り方） ─────────────────────────────── */
+/* 金縁ボタン */
+.k-btn{ display:inline-flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+  border:12px solid transparent; border-image:url("graphic/ui/sc/btn.png") 11 15 fill / 12px 17px / 0 stretch;
+  padding:3px 20px; color:#fff4dc; font-family:var(--serif); font-weight:700; font-size:17px; line-height:1.45;
+  text-decoration:none; text-align:center; text-shadow:0 1px 2px #000a; cursor:pointer; background:none;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,.45)); transition:transform .15s ease; }
+.k-btn:hover{ border-image-source:url("graphic/ui/sc/btn_hover.png"); color:#fff; transform:translateY(-2px); }
+.k-btn small{ font-family:var(--sans); font-weight:500; font-size:12px; color:#e6d4a6; letter-spacing:0; }
+.k-btn.is-big{ padding:8px 30px 6px; font-size:21px; letter-spacing:.12em; }
+.k-btn.is-big small{ letter-spacing:.02em; }
+/* ADV の選択肢バー（両端の飾りは潰さず、中だけ伸ばす） */
+.k-choice{ display:flex; align-items:center; justify-content:center; gap:4px 14px; flex-wrap:wrap; min-height:54px;
+  border-style:solid; border-width:0 34px; border-color:transparent;
+  border-image:url("graphic/ui/sc/btn_select.png") 0 40 fill / 0 34px / 0 stretch;
+  padding:7px 6px; color:#f6ead0; text-decoration:none; text-align:center;
+  font-family:var(--serif); font-weight:700; font-size:18px; line-height:1.4; text-shadow:0 1px 3px #000; }
+.k-choice small{ font-family:var(--sans); font-weight:500; font-size:12.5px; color:#e2d2a6; text-shadow:0 1px 2px #000; }
+.k-choice:hover,.k-choice.is-primary{ border-image-source:url("graphic/ui/sc/btn_select_hover.png"); color:#fffbea; }
+.k-choice.is-primary:hover{ filter:brightness(1.08); }
+/* 金縁の窓（中はこちらで塗る＝角の外に色を出さない） */
+.k-panel{ border:7px solid transparent; border-image:url("graphic/ui/sc/panel.png") 7 / 7px / 0 stretch;
+  background:rgba(17,21,18,.94); background-clip:padding-box; padding:clamp(14px,2vw,22px); }
+/* 紙のシステム窓 */
+.k-paper{ border:24px solid transparent; border-image:url("graphic/ui/sc/panel_light.png") 30 fill / 24px / 0 stretch;
+  color:var(--paper-ink); filter:drop-shadow(0 18px 30px rgba(0,0,0,.45)); }
+/* 赤金の見出しプレート */
+.k-plate{ display:inline-block; margin:0; border:solid transparent; border-width:10px 22px 10px 18px;
+  border-image:url("graphic/ui/sc/plate.png") 14 18 fill / 10px 22px 10px 18px / 0 stretch;
+  padding:0 26px 0 14px; font-family:var(--serif); font-weight:700; font-size:21px; line-height:1.45;
+  letter-spacing:.06em; color:#fff2d6; text-shadow:0 1px 2px #000c; }
+/* メッセージ窓（1280×228 の全幅バー：上 0–48 名前タブ／48–190 本文帯） */
+.k-msg{ position:relative; container-type:inline-size; width:100%; max-width:1280px; aspect-ratio:1280/192; margin-inline:auto;
+  background:url("graphic/ui/sc/msgwin.png") top center/100% 118.75% no-repeat; cursor:pointer; user-select:none; }
+.k-msg .name{ position:absolute; left:1.9%; top:.5%; width:39%; height:21.9%; display:flex; align-items:center; justify-content:center;
+  font-family:var(--serif); font-weight:700; font-size:clamp(14px,1.64cqw,21px); color:var(--name); letter-spacing:.1em; text-shadow:0 1px 2px #000; }
+.k-msg .text{ position:absolute; left:6.1%; right:6.1%; top:33%; margin:0; font-size:clamp(14px,1.64cqw,21px); line-height:1.7;
+  color:#f6efe1; text-shadow:0 1px 3px #000; }
+.k-msg .pb{ position:absolute; right:3.1%; bottom:7%; width:max(16px,1.9cqw); height:max(16px,1.9cqw);
+  background:url("graphic/ui/sc/pagebreak.png") center/contain no-repeat; animation:blink 1.4s infinite; }
+.k-msg .new{ position:absolute; left:41.5%; top:1%; width:max(22px,2.4cqw); height:auto; }
+.k-msg.is-still{ cursor:default; }
+@keyframes blink{ 50%{ opacity:.3; } }
+/* HP ゲージ（下地は UI キット、色は本卓のボードと同じ緑→黄→赤） */
+.k-gauge{ position:relative; height:20px; background:url("graphic/ui/sc/gauge_base.png") center/100% 100% no-repeat; }
+.k-gauge i{ position:absolute; left:1.7%; top:20%; height:60%; width:96.6%; }
+.k-gauge .ghost{ background:linear-gradient(90deg,#fff1f3,#ffc4cf); opacity:.85; }
+.k-gauge .fill{ background:linear-gradient(90deg,#3ddc97,#66e6a8); transition:width .5s ease; }
+.k-gauge .fill.mid{ background:linear-gradient(90deg,#f6b352,#ffd27d); }
+.k-gauge .fill.low{ background:linear-gradient(90deg,#e85d75,#ff8a9d); }
+/* 牌（CC0 の牌画像。表は Front.svg に牌の面を重ねる） */
+.tile{ display:inline-grid; place-items:center; flex:0 0 auto; width:38px; aspect-ratio:3/4;
+  background:url("graphic/tiles/Front.svg") center/100% 100% no-repeat; filter:drop-shadow(0 3px 0 rgba(40,28,16,.35)); }
+.tile img{ width:82%; }
+.tile.is-back{ background-image:url("graphic/tiles/Back.svg"); }
+/* 額縁の画面写真（クリックで拡大） */
+.screen{ position:relative; margin:0; border:7px solid transparent; border-image:url("graphic/ui/sc/panel.png") 7 / 7px / 0 stretch;
+  background:#000; background-clip:padding-box; box-shadow:0 22px 44px rgba(0,0,0,.5); }
+.screen img{ width:100%; height:auto; }
+img[data-zoom]{ cursor:zoom-in; }
+/* 頭上のエモート（ゲームと同じスプライトシート） */
+.emote{ position:absolute; z-index:3; width:96px; height:96px; pointer-events:none; background-repeat:no-repeat; opacity:0; transform:scale(.6);
+  transition:opacity .18s ease, transform .24s cubic-bezier(.2,1.4,.4,1); filter:drop-shadow(0 2px 5px #000a); }
+.emote.show{ opacity:1; transform:none; }
 
-@media (max-width:900px){
-  /* リンク列は横スクロール枠だが、この幅では枠自体が数十pxまで潰れて読めない。
-     畳んで、作品名と「プレイする」だけ残す。 */
-  [data-rail="nav"]{ display:none !important; }  /* 要素側の style 属性に勝たせる */
-  nav > div > a:last-child{ margin-left:auto; }
+/* ── 上部バー ──────────────────────────────────────────── */
+.topbar{ position:fixed; z-index:50; inset:0 0 auto 0; transition:background-color .25s ease, box-shadow .25s ease; }
+.topbar.is-solid{ background:rgba(16,12,9,.9); box-shadow:0 1px 0 rgba(212,173,98,.35), 0 10px 24px rgba(0,0,0,.35);
+  -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px); }
+.topbar-in{ max-width:1280px; margin:0 auto; padding:6px 16px; display:flex; align-items:center; gap:20px; min-height:56px; }
+.topbar-mark{ font-family:var(--serif); font-weight:900; font-size:17px; letter-spacing:.06em; color:#f6ead0; text-decoration:none; text-shadow:0 1px 6px #000; }
+.topbar-links{ display:flex; gap:2px 18px; margin:0 0 0 auto; padding:0; list-style:none; font-size:13.5px; }
+.topbar-links a{ color:var(--ink-2); text-decoration:none; text-shadow:0 1px 4px #000; }
+.topbar-links a:hover{ color:var(--gold-2); }
+.topbar .k-btn{ font-size:14px; padding:0 14px; }
+
+/* ── 場面の共通 ────────────────────────────────────────── */
+.scene{ position:relative; isolation:isolate; overflow:hidden; }
+.scene-bg{ position:absolute; z-index:-2; inset:-24px; background:center/cover no-repeat; }
+.scene-shade{ position:absolute; z-index:-1; inset:0; pointer-events:none; }
+.lead{ margin:14px 0 0; max-width:60ch; color:var(--ink-2); }
+
+/* ── 1. 出会い（道場） ─────────────────────────────────── */
+.hero{ height:100svh; min-height:720px; max-height:1000px; }
+.hero .scene-bg{ background-image:url("press/scene/dojo.webp"); background-position:center 30%; filter:brightness(.5) saturate(.85) sepia(.2) blur(1.5px); }
+.hero .scene-shade{ background:radial-gradient(85% 75% at 62% 38%, transparent 30%, rgba(10,7,5,.7) 100%), linear-gradient(90deg, rgba(10,7,5,.55), transparent 45%); }
+.hero .stage{ position:relative; height:100%; max-width:1280px; margin:0 auto; }
+.hero-title{ position:absolute; z-index:4; left:clamp(16px,3.4%,44px); top:78px; width:min(430px,38%); }
+.hero-title h1{ margin:0; }
+.hero-logo{ width:100%; height:auto; filter:drop-shadow(0 0 24px rgba(246,240,224,.45)) drop-shadow(0 0 56px rgba(246,240,224,.2)) drop-shadow(0 10px 22px rgba(0,0,0,.55)); }
+.hero-catch{ margin:4px 0 0; font-family:var(--serif); font-weight:700; font-size:clamp(17px,1.65vw,22px); line-height:1.6; color:#f6ecd4; text-shadow:0 2px 10px #000; }
+.hero-catch em{ font-style:normal; color:var(--gold-2); }
+.hero-badge{ margin:16px 0 0; }
+.hero-badge .k-plate{ font-size:15px; letter-spacing:.04em; }
+.hero-meta{ display:flex; flex-wrap:wrap; gap:4px 14px; margin:12px 0 0; padding:0; list-style:none; font-size:13px; color:#e2d3ad; text-shadow:0 1px 4px #000; }
+.hero-meta b{ color:var(--gold-2); font-weight:700; }
+.hero-sprite{ position:absolute; z-index:2; left:55%; top:20px; width:min(450px,35%); margin:0; filter:drop-shadow(0 18px 34px rgba(0,0,0,.6)); }
+.hero-sprite .emote{ left:78%; top:4%; width:110px; height:110px; }
+.hero-choices{ position:absolute; z-index:5; left:50%; bottom:calc(var(--msg-h) + 38px); transform:translateX(-50%); width:min(660px,56%); display:grid; gap:10px; }
+.hero-choices.is-ready .is-primary{ animation:choice 1.8s ease-in-out 2; }
+@keyframes choice{ 50%{ filter:brightness(1.25) drop-shadow(0 0 12px rgba(255,217,138,.55)); } }
+.msg-dock{ position:absolute; z-index:6; left:16px; right:16px; bottom:16px; }
+.k-auto{ position:absolute; right:0; bottom:calc(100% + 6px); width:102px; height:40px; padding:0; border:0; cursor:pointer;
+  background:url("graphic/ui/sc/sys_auto.png") center/100% 100% no-repeat; }
+.k-auto[aria-pressed="true"]{ background-image:url("graphic/ui/sc/sys_auto_on.png"); }
+
+/* ── 2. 募集要項（紙のシステム窓） ─────────────────────── */
+.system{ padding:clamp(70px,9vw,120px) 0; }
+.system .scene-bg{ background-image:url("press/scene/dojo.webp"); filter:brightness(.32) saturate(.7) sepia(.25) blur(10px); }
+.sys{ max-width:980px; margin:0 auto; padding:clamp(10px,2vw,22px) clamp(8px,2.2vw,26px) clamp(14px,2vw,22px); }
+.sys > .k-plate{ margin:0 0 4px -6px; }
+.sys-lead{ margin:14px 0 4px; font-size:16px; line-height:2; color:var(--paper-ink); }
+.terms{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr)); gap:0 34px; margin:10px 0 0; }
+.terms > div{ padding:16px 0; border-bottom:1px solid var(--paper-rule); }
+.terms dt{ font-family:var(--serif); font-weight:700; font-size:16px; color:#7c4a1e; margin:0 0 4px; }
+.terms dd{ margin:0; font-size:14.5px; line-height:1.95; color:var(--paper-ink); }
+.terms .is-warn dt{ color:#a2382c; }
+.sys-cta{ display:flex; flex-wrap:wrap; align-items:center; gap:14px 26px; margin:26px 0 4px; }
+.sys-link{ color:#7c4a1e; font-weight:700; font-size:14px; }
+
+/* ── 3. 点棒＝HP / 4. 卓を囲む（卓の緑） ─────────────────── */
+.felt{ padding:clamp(70px,9vw,118px) 0 clamp(36px,5vw,56px); }
+.felt .scene-shade{ background:radial-gradient(1200px 700px at 30% 0%, #183326, transparent 70%), var(--felt); z-index:-2; }
+.felt + .felt{ padding-top:clamp(24px,4vw,48px); }
+.hp-grid{ display:grid; grid-template-columns:minmax(0,1.45fr) minmax(0,1fr); gap:clamp(22px,3vw,40px); align-items:start; margin-top:22px; }
+.hp-screen-wrap{ position:relative; padding-bottom:clamp(40px,5vw,60px); }
+.hp-screen{ aspect-ratio:4/3; }
+.hp-screen img{ width:100%; height:100%; object-fit:cover; object-position:0% 50%; }
+.hp-screen .flash{ position:absolute; inset:0; background:radial-gradient(circle at 50% 55%, rgba(224,87,111,.75), rgba(224,87,111,0) 70%); opacity:0; pointer-events:none; }
+.hp-screen .pinch{ position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .6s ease;
+  box-shadow:inset 0 0 90px 22px rgba(214,38,64,.62), inset 0 0 0 3px rgba(255,90,110,.45); }
+.hp-screen.is-pinch .pinch{ opacity:1; animation:pinch 1.7s ease-in-out infinite; }
+@keyframes pinch{ 0%,100%{ opacity:.6; } 50%{ opacity:1; } }
+.hp-screen .delta{ position:absolute; left:0; right:0; top:58%; text-align:center; opacity:0; pointer-events:none; }
+.hp-screen .delta b{ display:inline-block; padding:0 16px; border-radius:999px; background:rgba(8,14,11,.84); border:2px solid rgba(255,107,129,.7);
+  box-shadow:0 4px 14px rgba(0,0,0,.65); font-family:var(--serif); font-weight:900; font-size:clamp(20px,2.6vw,30px); line-height:1.35; color:#ff6b81; }
+.hp-screen.is-shake{ animation:shake .54s cubic-bezier(.36,.07,.19,.97); }
+.hp-screen.is-hit .flash{ animation:flash .7s ease-out forwards; }
+.hp-screen.is-hit .delta{ animation:pop 1.4s ease-out forwards; }
+@keyframes shake{ 0%,100%{ transform:none; } 10%{ transform:translate(-7px,2px); } 25%{ transform:translate(6px,-2px); } 40%{ transform:translate(-4px,1px); } 55%{ transform:translate(4px,-1px); } 70%{ transform:translate(-2px,0); } 85%{ transform:translate(1px,0); } }
+@keyframes flash{ from{ opacity:.6; } to{ opacity:0; } }
+@keyframes pop{ 0%{ opacity:0; transform:translateY(8px) scale(.86); } 14%{ opacity:1; transform:translateY(-8px) scale(1.12); } 70%{ opacity:1; transform:translateY(-22px) scale(1); } 100%{ opacity:0; transform:translateY(-38px); } }
+.hp-sunk{ position:absolute; left:-10px; bottom:0; width:46%; margin:0; border:1px solid rgba(224,87,111,.55); box-shadow:0 16px 34px rgba(0,0,0,.7); }
+.note{ padding:clamp(6px,1.4vw,14px) clamp(4px,1.2vw,12px); font-size:15px; line-height:2; }
+.note p{ margin:0 0 12px; }
+.note .cap{ font-size:12.5px; line-height:1.8; color:var(--paper-ink-2); margin:0; }
+.hud{ margin:18px 0 0; padding:14px 16px 12px; background:rgba(58,42,25,.08); border:1px solid var(--paper-rule); }
+.hud-row{ position:relative; display:flex; align-items:center; gap:10px; }
+.hud-face{ position:relative; flex:0 0 auto; width:44px; height:44px; }
+.hud-face img{ width:44px; height:44px; border-radius:50%; object-fit:cover; border:2px solid var(--shiyue); }
+.hud-face .emote{ left:24px; top:-44px; width:60px; height:60px; }
+.hud-tag{ font-size:11px; font-weight:700; color:#fff; background:var(--shiyue); padding:0 7px; border-radius:3px; }
+.hud-name{ font-family:var(--serif); font-weight:700; color:#8f2f3e; }
+.hud-num{ margin-left:auto; font-family:var(--serif); font-weight:900; font-size:26px; line-height:1; color:var(--paper-ink); font-variant-numeric:tabular-nums; }
+.hud .k-gauge{ margin-top:8px; }
+.hud.is-hit{ animation:rowhit .6s ease-out; }
+@keyframes rowhit{ 0%{ box-shadow:0 0 0 2px #ff5c7a, 0 0 16px rgba(255,92,122,.6); } 100%{ box-shadow:0 0 0 0 transparent, 0 0 0 transparent; } }
+.hud-foot{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-top:8px; }
+.replay{ flex:0 0 auto; border:1px solid #9b7a45; background:#f8edd2; color:#5c3d18; font-size:12.5px; font-weight:700; padding:2px 12px; cursor:pointer; }
+.replay:hover{ background:#fff6e0; }
+.scene-msg{ margin-top:clamp(26px,3.5vw,40px); }
+.table-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.45fr); gap:clamp(22px,3vw,40px); align-items:center; margin-top:22px; }
+
+/* ── 5. 相棒と絆（ホームの和柄） ────────────────────────── */
+.partner{ padding:clamp(70px,9vw,118px) 0 clamp(50px,6vw,80px); }
+.partner .scene-bg{ background-image:url("press/scene/wagara.webp"); }
+.partner .scene-shade{ background:linear-gradient(90deg, rgba(14,10,8,.86) 0, rgba(14,10,8,.58) 55%, rgba(14,10,8,.35) 100%); }
+.partner-grid{ display:grid; grid-template-columns:minmax(0,1.2fr) minmax(0,1fr); gap:clamp(20px,3vw,44px); align-items:end; margin-top:22px; }
+.bond{ padding-bottom:clamp(12px,1.6vw,18px); }
+.bond > p{ margin:0 0 10px; color:var(--ink-2); }
+.bond-how{ font-size:13.5px; color:var(--gold-2) !important; }
+.bond-label{ margin:18px 0 8px !important; font-size:12px; color:var(--ink-3) !important; letter-spacing:.08em; }
+.bond-levels{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.bond-levels button{ border:10px solid transparent; border-image:url("graphic/ui/sc/btn.png") 11 15 fill / 10px 14px / 0 stretch;
+  background:none; padding:0 2px; cursor:pointer; font-family:var(--serif); font-weight:700; font-size:clamp(12px,1.3vw,14.5px); line-height:1.4; color:#e9dbb8; white-space:nowrap; opacity:.72; }
+.bond-levels button span{ display:block; font-family:var(--sans); font-size:11px; font-weight:700; color:var(--gold-2); }
+.bond-levels button[aria-pressed="true"]{ border-image-source:url("graphic/ui/sc/btn_hover.png"); color:#fff; opacity:1; }
+.bond-gauge{ height:7px; margin:10px 0 0; border-radius:999px; overflow:hidden; background:#ffffff14; border:1px solid #0006; }
+.bond-gauge i{ display:block; height:100%; width:16.7%; border-radius:inherit; background:linear-gradient(90deg,#f6b352,#ffe08a); transition:width .6s cubic-bezier(.2,.8,.2,1); }
+.bond-scenes{ display:flex; flex-wrap:wrap; gap:8px; }
+.bond-scenes button{ height:36px; padding:0 16px; border:0; cursor:pointer; background:url("graphic/ui/sc/tab.png") center/100% 100% no-repeat;
+  font-size:13.5px; font-weight:700; color:#e3d3ae; opacity:.6; }
+.bond-scenes button[aria-pressed="true"]{ opacity:1; color:#fff; box-shadow:0 2px 0 var(--gold-2); }
+.bond-note{ margin:16px 0 0 !important; font-size:12.5px; color:var(--ink-3) !important; }
+.partner-sprite{ position:relative; justify-self:center; width:min(380px,100%); height:clamp(420px,46vw,560px); padding:0; border:0; background:none; cursor:pointer; overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg,#000 82%,transparent); mask-image:linear-gradient(180deg,#000 82%,transparent); }
+.partner-sprite img{ position:absolute; left:0; right:0; top:0; width:100%; height:auto; filter:drop-shadow(0 16px 30px rgba(0,0,0,.6)); }
+.partner-sprite .emote{ left:66%; top:1%; width:96px; height:96px; }
+.partner-sprite .hint{ position:absolute; z-index:3; left:50%; bottom:20%; transform:translateX(-50%); white-space:nowrap;
+  padding:3px 14px; border-radius:999px; font-size:12.5px; font-weight:700; color:#fff8ec; background:rgba(224,87,111,.85); box-shadow:0 4px 12px #0009; }
+.partner-sprite.is-hop img{ animation:hop .62s cubic-bezier(.3,1.6,.5,1); }
+@keyframes hop{ 0%,100%{ transform:none; } 35%{ transform:translateY(-12px); } 65%{ transform:translateY(2px); } }
+.partner .k-msg{ margin-top:-6px; }
+.moments{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(12px,2vw,24px); margin:clamp(30px,4vw,46px) 0 0; padding:0; list-style:none; }
+.moments figcaption{ margin-top:8px; font-size:13px; color:var(--ink-2); }
+
+/* ── 6. 遊びかた ───────────────────────────────────────── */
+.modes{ padding:clamp(70px,9vw,118px) 0; background:var(--bg-2); }
+.mode-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(16px,2.4vw,28px); margin:26px 0 0; padding:0; list-style:none; }
+.mode{ position:relative; display:flex; flex-direction:column; padding:0 0 16px; }
+.mode-shot{ position:relative; aspect-ratio:16/9; overflow:hidden; background:#000; border-bottom:1px solid rgba(212,173,98,.4); }
+.mode-shot img{ width:100%; height:100%; object-fit:cover; }
+.mode-shot .rokou{ position:absolute; right:4%; bottom:6%; width:42%; height:auto; filter:drop-shadow(0 6px 12px #000c); }
+.mode h3{ margin:14px 18px 4px; font-family:var(--serif); font-weight:700; font-size:21px; color:#f8ebcf; }
+.mode p{ margin:0 18px; font-size:14.5px; line-height:1.95; color:var(--ink-2); }
+.mode .time{ margin:auto 18px 0; padding-top:12px; font-size:12.5px; color:var(--gold-2); }
+.mode.is-online{ justify-content:center; padding:18px 0; }
+.mode.is-online .tiles{ display:flex; gap:4px; margin:4px 18px 6px; }
+.rules{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.2fr); gap:clamp(22px,3vw,40px); align-items:center; margin-top:clamp(40px,5vw,64px); }
+.rules h3{ margin:0 0 8px; font-family:var(--serif); font-weight:900; font-size:21px; color:#4a2f14; }
+.rule-tags{ display:flex; flex-wrap:wrap; gap:6px 8px; margin:14px 0 0; padding:0; list-style:none; }
+.rule-tags li{ font-size:13px; font-weight:700; color:#5c3d18; padding:1px 10px; border:1px solid #c8a86e; background:#fbf2dc; }
+
+/* ── 7. 卓につく十六人 ─────────────────────────────────── */
+.cast{ padding:clamp(70px,9vw,118px) 0 clamp(60px,7vw,96px); }
+.cast .scene-shade{ background:radial-gradient(1000px 520px at 70% 0%, #2a1d14, transparent 70%), var(--bg); z-index:-2; }
+.cast-head{ display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:14px; }
+.cast-nav{ display:flex; gap:8px; }
+.cast-nav .k-btn{ width:58px; padding:0; font-size:18px; }
+.cast-rail{ display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth; scrollbar-width:thin;
+  padding:26px max(16px,calc((100vw - 1180px) / 2 + 40px)) 22px; margin-top:4px;
+  scroll-padding-inline:max(16px,calc((100vw - 1180px) / 2 + 40px)); }
+.cast-rail::-webkit-scrollbar{ height:6px; }
+.cast-rail::-webkit-scrollbar-thumb{ background:rgba(212,173,98,.5); }
+.cast-card{ position:relative; flex:0 0 auto; width:clamp(132px,15vw,168px); aspect-ratio:3/4; scroll-snap-align:start; padding:0; cursor:pointer; background:#0d0a08;
+  border:6px solid transparent; border-image:url("graphic/ui/sc/panel.png") 7 / 6px / 0 stretch; background-clip:padding-box;
+  transition:transform .2s ease, filter .2s ease; }
+.cast-card img{ width:100%; height:100%; object-fit:cover; }
+.cast-card .nm{ position:absolute; left:0; right:0; bottom:0; padding:22px 8px 6px; background:linear-gradient(180deg,transparent,rgba(8,6,4,.92));
+  font-family:var(--serif); font-weight:700; font-size:15px; text-align:left; color:#f6ead0; }
+.cast-card:hover{ transform:translateY(-5px); }
+.cast-card[aria-pressed="true"]{ transform:translateY(-8px); filter:drop-shadow(0 0 10px rgba(255,217,138,.55)); }
+.cast-card[aria-pressed="true"] .nm{ color:var(--gold-2); }
+.cast-locked{ flex:0 0 auto; width:clamp(132px,15vw,168px); aspect-ratio:3/4; scroll-snap-align:start; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;
+  border:1px dashed rgba(212,173,98,.45); text-align:center; font-size:12.5px; line-height:1.8; color:var(--ink-2); }
+.cast-locked .tile{ width:54px; }
+.cast-panel{ margin-top:6px; }
+.cast-detail{ display:grid; grid-template-columns:auto minmax(0,1fr) minmax(220px,280px); gap:clamp(14px,2.4vw,30px); align-items:start; }
+.cast-art{ width:clamp(96px,11vw,140px); height:auto; -webkit-mask-image:linear-gradient(180deg,#000 74%,transparent); mask-image:linear-gradient(180deg,#000 74%,transparent); }
+.cast-title{ margin:0; display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; }
+.cast-title b{ font-family:var(--serif); font-weight:900; font-size:clamp(23px,2.6vw,29px); color:#fbefd3; }
+.cast-title span{ font-size:12.5px; color:var(--ink-3); }
+.cast-meta{ margin:10px 0 0; display:flex; flex-wrap:wrap; align-items:center; gap:6px 14px; font-size:12.5px; color:var(--ink-3); }
+.cast-role{ font-size:12px; font-weight:700; padding:1px 10px; border:1px solid currentColor; border-radius:3px; }
+.cast-meta b{ font-family:var(--serif); font-size:18px; color:#fbefd3; }
+.cast-bio{ margin:12px 0 0; font-size:14px; line-height:1.95; color:var(--ink-2); }
+.cast-radar{ width:100%; height:auto; }
+.cast-ability{ margin-top:16px; padding:2px 6px 0; }
+.cast-ability .lbl{ display:inline-block; font-size:12px; font-weight:700; color:#7c4a1e; border-bottom:1px solid #c8a86e; margin-bottom:6px; }
+.cast-ability .ab{ margin:0; font-family:var(--serif); font-weight:900; font-size:clamp(20px,2.3vw,25px); line-height:1.45; color:#2e1f10; }
+.cast-ability .abd{ margin:6px 0 0; font-size:14px; line-height:1.9; color:var(--paper-ink-2); }
+.fx-pair{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(16px,2.4vw,28px); margin-top:clamp(30px,4vw,46px); }
+.fx-pair figure{ margin:0; }
+.fx-pair figcaption{ margin-top:10px; font-size:13.5px; line-height:1.85; color:var(--ink-2); }
+.fx-pair figcaption b{ font-family:var(--serif); color:#fbefd3; margin-right:.6em; }
+
+/* ── 8. 参加のしかた ───────────────────────────────────── */
+.howto{ padding:clamp(70px,9vw,118px) 0; }
+.howto .scene-bg{ background-image:url("press/scene/dojo.webp"); filter:brightness(.36) saturate(.7) sepia(.25) blur(8px); }
+.steps{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:clamp(16px,2.6vw,34px); margin:20px 0 0; padding:0; list-style:none; }
+.steps li{ padding-top:14px; border-top:2px solid #5a3e1f; }
+.steps .tile{ width:40px; }
+.steps h3{ margin:10px 0 6px; font-family:var(--serif); font-weight:700; font-size:17.5px; line-height:1.55; color:#2e1f10; }
+.steps p{ margin:0; font-size:14.5px; line-height:1.95; color:var(--paper-ink); }
+
+/* ── 9. 知りたいこと／感想 ─────────────────────────────── */
+.feedback{ padding:clamp(70px,9vw,118px) 0; background:var(--bg-2); }
+.fb-grid{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.1fr); gap:clamp(22px,3vw,40px); align-items:start; }
+.asks-box{ }
+.asks-box > p{ margin:14px 0 8px; font-size:14px; color:var(--ink-2); }
+.asks{ margin:0; padding:0; list-style:none; }
+.asks li{ display:flex; gap:14px; align-items:flex-start; padding:13px 0; border-bottom:1px solid rgba(212,173,98,.22); font-size:15px; line-height:1.85; }
+.asks li:last-child{ border-bottom:0; }
+.asks .tile{ width:30px; margin-top:2px; }
+.asks li.is-key{ color:#ffe3b0; }
+.welcome{ display:grid; grid-template-columns:repeat(auto-fit,minmax(min(180px,100%),1fr)); gap:0 22px; margin:14px 0 22px; padding:0; list-style:none; }
+.welcome li{ padding:9px 0; border-bottom:1px solid var(--paper-rule); font-family:var(--serif); font-weight:600; font-size:14.5px; }
+.bug{ margin:24px 0 0; padding:14px 16px; background:rgba(162,56,44,.07); border-left:3px solid #a2382c; font-size:13.5px; line-height:1.9; color:var(--paper-ink-2); }
+.bug h3{ margin:0 0 4px; font-family:var(--serif); font-size:15px; color:#2e1f10; }
+.bug b{ color:#2e1f10; }
+
+/* ── 10. お知らせ ─────────────────────────────────────── */
+.notice{ padding:clamp(56px,7vw,90px) 0; }
+.notice .scene-shade{ background:var(--bg); z-index:-2; }
+.notice-grid{ display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:clamp(20px,3vw,40px); }
+.notice-box{ }
+.notice-box > p{ margin:12px 0 4px; font-size:13.5px; color:var(--ink-3); }
+.notice ul{ margin:0; padding:0; list-style:none; }
+.notice li{ position:relative; padding:9px 0 9px 18px; border-bottom:1px solid rgba(212,173,98,.18); font-size:14px; line-height:1.85; color:var(--ink-2); }
+.notice li::before{ content:""; position:absolute; left:2px; top:1.25em; width:6px; height:6px; background:var(--gold); transform:rotate(45deg); }
+.notice li:last-child{ border-bottom:0; }
+.ver{ font-family:var(--serif); font-weight:900; font-size:clamp(20px,2.4vw,24px); color:var(--gold-2); line-height:1.4; margin:14px 0 10px; }
+.ver small{ display:block; font-family:var(--sans); font-weight:500; font-size:12.5px; color:var(--ink-3); }
+.ver-note{ margin:12px 0 0; font-size:12.5px; color:var(--ink-3); }
+
+/* ── 11. 結び（道場） ──────────────────────────────────── */
+.finale{ height:min(100svh,860px); min-height:640px; }
+.finale .scene-bg{ background-image:url("press/scene/dojo.webp"); background-position:center 40%; filter:brightness(.42) saturate(.8) sepia(.28) blur(2px); }
+.finale .scene-shade{ background:radial-gradient(70% 70% at 50% 30%, transparent 35%, rgba(10,7,5,.75) 100%); }
+.finale .stage{ position:relative; height:100%; max-width:1280px; margin:0 auto; }
+.finale-sprite{ position:absolute; z-index:2; left:50%; top:30px; width:min(400px,32%); transform:translateX(-50%); margin:0; filter:drop-shadow(0 18px 34px rgba(0,0,0,.6)); }
+
+/* ── フッター ─────────────────────────────────────────── */
+.footer{ padding:40px 0 56px; background:#0b0907; border-top:1px solid rgba(212,173,98,.25); font-size:13px; color:var(--ink-3); }
+.foot-top{ display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:14px 30px; }
+.foot-dev{ margin:0; font-family:var(--serif); font-weight:700; font-size:20px; color:var(--ink); }
+.foot-dev span{ font-family:var(--sans); font-weight:500; font-size:12px; color:var(--ink-3); margin-right:12px; }
+.foot-links{ display:flex; flex-wrap:wrap; gap:6px 20px; margin:0; padding:0; list-style:none; font-size:13.5px; }
+.foot-credit{ margin:22px 0 0; line-height:1.9; }
+.foot-note{ margin:8px 0 0; line-height:1.9; font-size:12px; color:#857660; }
+
+/* 拡大表示 */
+.zoom{ max-width:min(1280px,94vw); padding:0; border:0; background:transparent; }
+.zoom::backdrop{ background:rgba(8,6,4,.86); }
+.zoom img{ width:100%; height:auto; border:2px solid rgba(212,173,98,.5); }
+.zoom button{ position:absolute; right:8px; top:8px; width:40px; height:40px; border:1px solid rgba(255,255,255,.4); background:rgba(0,0,0,.6); color:#fff; font-size:20px; cursor:pointer; }
+
+/* ── 幅に合わせた組み替え ──────────────────────────────── */
+@media (max-width:1000px){
+  .topbar-links{ display:none; }
+  .topbar .k-btn{ margin-left:auto; }
+  .hp-grid,.table-grid,.rules,.fb-grid,.notice-grid{ grid-template-columns:minmax(0,1fr); }
+  .cast-detail{ grid-template-columns:auto minmax(0,1fr); }
+  .cast-radar{ grid-column:1 / -1; max-width:300px; justify-self:center; }
+}
+@media (max-width:760px){
+  :root{ --msg-w:calc(100vw - 32px); }
+  body{ font-size:15px; }
+  /* メッセージ窓：全幅バー画像は細すぎて読めないので、同じ色味の箱＋プレートの名前札に */
+  .k-msg{ aspect-ratio:auto; min-height:132px; background:linear-gradient(180deg,rgba(30,23,17,.95),rgba(14,11,8,.97));
+    border-top:2px solid #b48a46; box-shadow:0 0 0 1px rgba(0,0,0,.6), 0 -10px 24px rgba(0,0,0,.35); }
+  .k-msg .name{ left:10px; top:-17px; width:auto; height:auto; padding:0 18px 0 10px; border:solid transparent; border-width:6px 14px 6px 10px;
+    border-image:url("graphic/ui/sc/plate.png") 14 18 fill / 6px 14px 6px 10px / 0 stretch; font-size:14.5px; }
+  .k-msg .text{ position:static; padding:24px 16px 26px; font-size:15px; }
+  .k-msg .pb{ right:12px; bottom:10px; }
+  .k-msg .new{ left:auto; right:10px; top:-14px; width:26px; }
+  .hero{ height:auto; min-height:0; max-height:none; padding:72px 0 26px; }
+  .hero .scene-shade{ background:linear-gradient(180deg, rgba(10,7,5,.55), rgba(10,7,5,.2) 40%, rgba(10,7,5,.8)); }
+  .hero .stage,.finale .stage{ display:flex; flex-direction:column; align-items:center; height:auto; }
+  .hero-title{ position:static; width:auto; padding:0 16px; text-align:center; }
+  .hero-logo{ width:min(74vw,310px); margin:0 auto; }
+  .hero-meta{ justify-content:center; }
+  /* 立ち絵 → 選択肢（立ち絵の裾に重ねる）→ メッセージ窓。PCと同じ「場面の上に選択肢」の並び */
+  .hero-sprite,.finale-sprite{ position:relative; left:auto; top:auto; transform:none; width:min(64vw,280px); height:300px; overflow:hidden; margin:10px auto 0;
+    -webkit-mask-image:linear-gradient(180deg,#000 60%,transparent 94%); mask-image:linear-gradient(180deg,#000 60%,transparent 94%); }
+  .hero-sprite .emote{ left:60%; top:2%; width:80px; height:80px; }
+  .hero-choices{ position:relative; z-index:5; left:auto; bottom:auto; transform:none; width:calc(100% - 32px); margin:-96px 0 0; }
+  .msg-dock{ position:relative; left:auto; right:auto; bottom:auto; width:calc(100% - 32px); margin-top:38px; }
+  .k-auto{ width:88px; height:34px; }
+  .k-choice{ flex-direction:column; gap:0; font-size:16.5px; min-height:58px; }
+  .finale{ height:auto; min-height:0; padding:60px 0 30px; }
+  .partner-grid{ grid-template-columns:minmax(0,1fr); }
+  .partner-sprite{ order:-1; width:min(260px,70vw); height:340px; }
+  .moments,.mode-grid,.fx-pair,.steps{ grid-template-columns:minmax(0,1fr); }
+  .cast-detail{ grid-template-columns:minmax(0,1fr); }
+  .cast-art{ display:none; }
+  .k-plate{ font-size:19px; }
+  .sys{ padding-inline:4px; }
 }
 @media (prefers-reduced-motion:reduce){
   html{ scroll-behavior:auto; }
-  *,*::before,*::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
 }
 </style>
 </head>
 <body>
-<div id="top" style="position:relative">
 
-<nav data-nav="1" style="position:sticky;top:0;z-index:60;background:rgba(9,17,14,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(246,240,226,.14)">
-<div style="max-width:1160px;margin-inline:auto;padding:0 22px;display:flex;align-items:center;gap:22px;min-height:60px">
-<a href="#top" style="font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:16px;letter-spacing:.24em;color:#f6f0e2;flex:0 0 auto">ツモノグリフ</a>
-<div data-rail="nav" style="display:flex;gap:18px;overflow-x:auto;flex:1 1 auto;scrollbar-width:none;padding:6px 0">
-<a class="h1" href="#recruit" style="flex:0 0 auto;font-size:13px;letter-spacing:.1em;color:#a8bcae;padding:4px 0;border-bottom:1px solid transparent">募集要項</a>
-<a class="h1" href="#about" style="flex:0 0 auto;font-size:13px;letter-spacing:.1em;color:#a8bcae;padding:4px 0;border-bottom:1px solid transparent">ゲーム紹介</a>
-<a class="h1" href="#feature" style="flex:0 0 auto;font-size:13px;letter-spacing:.1em;color:#a8bcae;padding:4px 0;border-bottom:1px solid transparent">特徴</a>
-<a class="h1" href="#cast" style="flex:0 0 auto;font-size:13px;letter-spacing:.1em;color:#a8bcae;padding:4px 0;border-bottom:1px solid transparent">十六人</a>
-<a class="h1" href="#howto" style="flex:0 0 auto;font-size:13px;letter-spacing:.1em;color:#a8bcae;padding:4px 0;border-bottom:1px solid transparent">参加方法</a>
-<a class="h1" href="#known" style="flex:0 0 auto;font-size:13px;letter-spacing:.1em;color:#a8bcae;padding:4px 0;border-bottom:1px solid transparent">既知の問題</a>
-<a class="h1" href="#feedback" style="flex:0 0 auto;font-size:13px;letter-spacing:.1em;color:#a8bcae;padding:4px 0;border-bottom:1px solid transparent">フィードバック</a>
+<nav class="topbar" data-topbar aria-label="ページ内の目次">
+<div class="topbar-in">
+<a class="topbar-mark" href="#top">ツモノグリフ</a>
+<ul class="topbar-links">
+<li><a href="#recruit">募集要項</a></li>
+<li><a href="#hp">ゲーム紹介</a></li>
+<li><a href="#partner">相棒と絆</a></li>
+<li><a href="#cast">十六人</a></li>
+<li><a href="#howto">参加のしかた</a></li>
+<li><a href="#notice">お知らせ</a></li>
+<li><a href="#feedback">感想を送る</a></li>
+</ul>
+<a class="k-btn" href="index.html" target="_blank" rel="noopener">プレイする</a>
 </div>
-<a class="h2" href="index.html" target="_blank" rel="noopener" style="flex:0 0 auto;background:#f0b458;color:#241704;font-weight:800;font-size:13.5px;letter-spacing:.12em;padding:11px 20px;border-radius:2px">プレイする</a>
-</div>
-<div style="height:2px;background:rgba(255,255,255,.05)"><div data-progress="1" style="height:100%;width:0%;background:#f0b458"></div></div>
 </nav>
 
-<header style="position:relative;padding:clamp(40px,6vw,78px) 0 clamp(48px,7vw,92px);background:radial-gradient(1100px 600px at 62% -18%, rgba(34,88,66,.5), transparent 70%), #0d1512">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(330px,100%),1fr));gap:clamp(30px,4.4vw,60px);align-items:center">
-<div>
-<p style="display:inline-flex;align-items:center;gap:.7em;margin:0 0 18px;font-size:12.5px;font-weight:500;letter-spacing:.22em;color:#f0b458;animation:rise .7s cubic-bezier(.2,.8,.2,1) both">
-<span style="width:7px;height:7px;background:#f0b458;animation:breathe 2.8s ease-in-out infinite"></span>開発中テスト版 公開中</p>
-<h1 style="margin:0 0 22px;animation:rise .8s cubic-bezier(.2,.8,.2,1) .08s both"><img src="press/logo.webp" width="880" height="505" alt="ツモノグリフ 〜牌と絆のアンサンブル〜" style="width:min(100%,384px);height:auto" /></h1>
-<p style="font-family:'Yuji Syuku',serif;font-weight:400;margin:0 0 18px;font-size:clamp(31px,4.8vw,50px);line-height:1.4;letter-spacing:.06em;color:#f6f0e2;animation:rise .8s cubic-bezier(.2,.8,.2,1) .16s both"><span style="display:inline-block">点棒が、</span><span style="display:inline-block;white-space:nowrap"><span style="color:#f0b458">HP</span>になる。</span></p>
-<p style="margin:0 0 30px;font-size:clamp(15px,1.7vw,16.5px);color:#cfdbd2;max-width:44ch;animation:rise .8s cubic-bezier(.2,.8,.2,1) .24s both">麻雀に「キャラクターの能力」と「物語」を乗せたブラウザゲームです。ひとりで打つ麻雀を、相棒との共闘に変えます。</p>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px;animation:rise .8s cubic-bezier(.2,.8,.2,1) .32s both">
-<a class="h3" href="index.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.7em;background:#f0b458;color:#241704;font-weight:800;font-size:17.5px;letter-spacing:.14em;padding:18px 38px;border-radius:2px;box-shadow:6px 6px 0 rgba(240,180,88,.16)">テスト版をプレイ</a>
-<span style="font-size:13px;color:#93a89b;line-height:1.8">途中までのプレイでも<br />フィードバック歓迎です。</span>
+<!-- 1. 出会い ──────────────────────────────────────── -->
+<header class="scene hero" id="top">
+<div class="scene-bg"></div><div class="scene-shade"></div>
+<div class="stage">
+<div class="hero-title">
+<h1><img class="hero-logo" src="press/logo.webp" width="880" height="505" alt="ツモノグリフ 〜牌と絆のアンサンブル〜" /></h1>
+<p class="hero-catch">点棒が<em>HP</em>、相棒と挑む“共闘”の麻雀。</p>
+<p class="hero-badge"><span class="k-plate">テストプレイヤー募集中</span></p>
+<ul class="hero-meta"><li><b>開発中</b>のテスト版</li><li>プレイ時間 <b>15〜30分</b></li><li>麻雀経験 <b>不問</b></li><li>PCブラウザ・インストール不要</li></ul>
 </div>
-<ul style="display:flex;flex-wrap:wrap;gap:0;margin:32px 0 0;padding:0;list-style:none;border-top:1px solid rgba(246,240,226,.16)">
-<li style="font-size:12.5px;letter-spacing:.06em;color:#b9c9bd;padding:10px 18px 10px 0;border-right:1px solid rgba(246,240,226,.14);margin-right:18px"><b style="color:#f6f0e2;font-weight:700">開発中</b>テスト版</li>
-<li style="font-size:12.5px;letter-spacing:.06em;color:#b9c9bd;padding:10px 18px 10px 0;border-right:1px solid rgba(246,240,226,.14);margin-right:18px">プレイ時間 <b style="color:#f6f0e2;font-weight:700">15〜30分</b></li>
-<li style="font-size:12.5px;letter-spacing:.06em;color:#b9c9bd;padding:10px 18px 10px 0;border-right:1px solid rgba(246,240,226,.14);margin-right:18px">麻雀経験 <b style="color:#f6f0e2;font-weight:700">不問</b></li>
-<li style="font-size:12.5px;letter-spacing:.06em;color:#b9c9bd;padding:10px 0">PCブラウザ・<b style="color:#f6f0e2;font-weight:700">インストール不要</b></li>
-</ul>
+<figure class="hero-sprite" aria-hidden="true"><img src="press/art/shiyue.webp" width="600" height="1800" alt="" /><i class="emote" data-emote-slot></i></figure>
+<div class="hero-choices" data-hero-choices>
+<a class="k-choice is-primary" href="index.html" target="_blank" rel="noopener">一局いこ！<small>テスト版をプレイ（ブラウザですぐ）</small></a>
+<a class="k-choice" href="#recruit">もうちょっと聞かせて<small>募集要項へ</small></a>
 </div>
-<div style="animation:rise .9s cubic-bezier(.2,.8,.2,1) .3s both">
-<figure data-shake="1" style="position:relative;margin:0;border:1px solid rgba(246,240,226,.2);overflow:hidden;background:#000;box-shadow:0 24px 56px rgba(0,0,0,.6)">
-<img src="press/shot-match.webp" width="1280" height="720" alt="対局中の画面。卓の奥に対戦相手の3人が座り、左のドラニエルがリーチを宣言している。右では相棒の詩玥が卓の縁から身を乗り出し、「リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。」と声をかけている" style="width:100%;height:auto" />
-<span data-flash="1" style="position:absolute;inset:0;background:radial-gradient(circle at 50% 55%, rgba(224,87,111,.7), rgba(224,87,111,0) 70%);opacity:0;pointer-events:none"></span>
-<span data-hit="1" style="position:absolute;left:0;width:74%;top:66%;text-align:center;opacity:0;pointer-events:none"><b style="display:inline-block;padding:0 14px;border-radius:999px;background:rgba(8,14,11,.82);border:2px solid rgba(255,107,129,.65);box-shadow:0 4px 14px rgba(0,0,0,.65);font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:clamp(18px,2.3vw,26px);line-height:1.35;color:#ff6b81;font-variant-numeric:tabular-nums">−8,000</b></span>
-</figure>
-<div data-gauge="1" style="position:relative;margin:-42px 0 0 auto;width:min(100%,414px);background:#0f2018;border:1px solid rgba(246,240,226,.22);padding:17px 19px 16px;box-shadow:0 22px 46px rgba(0,0,0,.55)">
-<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
-<span style="font-size:11.5px;letter-spacing:.2em;color:#93a89b">あなたの持ち点（詩玥）</span>
-<span data-num="1" style="font-family:'Shippori Mincho B1',serif;font-size:23px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.02em">14,000</span>
+<div class="msg-dock">
+<button class="k-auto" type="button" aria-pressed="true" data-auto><span class="sr">セリフの自動送り</span></button>
+<div class="k-msg" data-adv="hero" tabindex="0" aria-label="詩玥のセリフ。クリックで次へ">
+<span class="name">詩玥</span>
+<p class="text">はじめましてダヨ。我のツモ、すぐ手放せなくなるからネ——覚悟しといて?</p>
+<i class="pb" aria-hidden="true"></i>
 </div>
-<div style="position:relative;height:11px;margin-top:11px;background:#04100b;box-shadow:inset 0 1px 3px rgba(0,0,0,.85)">
-<div data-ghost="1" style="position:absolute;left:0;top:0;bottom:0;width:100%;background:linear-gradient(90deg,#fff1f3,#ffc4cf);opacity:.85"></div>
-<div data-fill="1" style="position:relative;height:100%;width:100%;background-image:repeating-linear-gradient(90deg, rgba(0,0,0,.24) 0 1px, rgba(0,0,0,0) 1px 9px), linear-gradient(90deg,#3ddc97,#66e6a8);transition:width .5s ease"></div>
-</div>
-<div style="display:flex;gap:12px;align-items:flex-start;margin:15px 0 0;padding-top:14px;border-top:1px solid rgba(246,240,226,.14)">
-<img src="press/chars/shiyue.webp" width="176" height="176" alt="" style="width:40px;height:40px;flex:0 0 40px;object-fit:cover;border:1px solid rgba(224,87,111,.55)" />
-<p style="margin:0;font-size:13.5px;line-height:1.8;color:#d9e2da"><b style="display:block;font-family:'Shippori Mincho B1',serif;font-size:12.5px;letter-spacing:.1em;color:#e0576f;font-weight:700">詩玥（シ・ユエ）</b><span data-talk="1" style="display:block;transition:opacity .3s ease, transform .3s ease">「リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。」</span></p>
-</div>
-</div>
-<p style="font-size:12.5px;color:#93a89b;margin:13px 2px 0;line-height:1.7">画面はすべて開発中のものです。</p>
 </div>
 </div>
 </header>
 
-<section id="recruit" style="scroll-margin-top:72px;background:#f4ead6;color:#241c14;padding:clamp(54px,7vw,94px) 0">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" style="display:flex;align-items:flex-start;gap:18px;margin-bottom:clamp(30px,4vw,46px)">
-<span style="flex:0 0 auto;width:1px;height:clamp(46px,6vw,70px);background:#b79b6a;margin-top:6px"></span>
-<h2 style="font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:clamp(24px,3.6vw,35px);line-height:1.5;letter-spacing:.14em;margin:0;color:#241c14">現在テストプレイヤーを<wbr />募集しています</h2>
-</div>
-<dl data-rv="up" data-rv-delay="80" style="margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr));gap:0 clamp(24px,3vw,44px);border-top:1px solid #cbb894">
-<div style="padding:22px 0;border-bottom:1px solid #ddcbaa">
-<dt style="font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;letter-spacing:.2em;color:#8a5f2c;margin-bottom:8px">参加条件</dt>
-<dd style="margin:0;font-size:14.5px;line-height:1.95;color:#3c3024">ありません。どなたでも遊べます。麻雀のルールを知らなくても大丈夫です（役も点数も自動で計算されます）。</dd>
-</div>
-<div style="padding:22px 0;border-bottom:1px solid #ddcbaa">
-<dt style="font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;letter-spacing:.2em;color:#8a5f2c;margin-bottom:8px">遊ぶ量</dt>
-<dd style="margin:0;font-size:14.5px;line-height:1.95;color:#3c3024">最後まで遊ぶ必要はありません。15分だけ触った感想でも、十分に役立ちます。</dd>
-</div>
-<div style="padding:22px 0;border-bottom:1px solid #ddcbaa">
-<dt style="font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;letter-spacing:.2em;color:#8a5f2c;margin-bottom:8px">いただくもの</dt>
-<dd style="margin:0;font-size:14.5px;line-height:1.95;color:#3c3024">一行の感想で構いません。「途中でやめたくなった」なら、その理由がいちばん知りたいことです。</dd>
-</div>
-<div style="padding:22px 0;border-bottom:1px solid #ddcbaa">
-<dt style="font-family:'Shippori Mincho B1',serif;font-size:15px;font-weight:700;letter-spacing:.2em;color:#a2543f;margin-bottom:8px">ご注意</dt>
-<dd style="margin:0;font-size:14.5px;line-height:1.95;color:#4a3b2c">完成前の開発版です。未実装の場所や、粗い部分がまだ残っています。</dd>
-</div>
+<main>
+<!-- 2. 募集要項 ──────────────────────────────────────── -->
+<section class="scene system" id="recruit">
+<div class="scene-bg"></div>
+<div class="wrap">
+<div class="k-paper sys">
+<h2 class="k-plate">テストプレイヤー募集</h2>
+<p class="sys-lead">麻雀に「キャラクターの能力」と「物語」を乗せたブラウザゲーム『ツモノグリフ』の、開発中テスト版を遊んでくれる人を探しています。</p>
+<dl class="terms">
+<div><dt>参加条件</dt><dd>ありません。どなたでも遊べます。麻雀のルールを知らなくても大丈夫です（役も点数も自動で計算されます）。</dd></div>
+<div><dt>遊ぶ量</dt><dd>最後まで遊ぶ必要はありません。15分だけ触った感想でも、十分に役立ちます。</dd></div>
+<div><dt>いただくもの</dt><dd>一行の感想で構いません。「途中でやめたくなった」なら、その理由がいちばん知りたいことです。</dd></div>
+<div class="is-warn"><dt>ご注意</dt><dd>完成前の開発版です。未実装の場所や、粗い部分がまだ残っています。</dd></div>
 </dl>
+<p class="sys-cta"><a class="k-btn is-big" href="index.html" target="_blank" rel="noopener">テスト版をプレイ<small>ブラウザで、そのまま始まります</small></a><a class="sys-link" href="#howto">参加のしかたを見る</a></p>
+</div>
 </div>
 </section>
 
-<section id="about" style="scroll-margin-top:72px;padding:clamp(58px,8vw,106px) 0;background:#0d1512">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));gap:clamp(24px,4vw,54px);align-items:start">
-<div style="display:flex;align-items:flex-start;gap:18px">
-<span style="flex:0 0 auto;width:1px;height:clamp(46px,6vw,72px);background:#4a7a62;margin-top:6px"></span>
-<h2 style="font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:clamp(24px,3.6vw,35px);line-height:1.5;letter-spacing:.16em;margin:0">ツモノグリフとは</h2>
+<!-- 3. 点棒＝HP ───────────────────────────────────────── -->
+<section class="scene felt" id="hp" data-hp>
+<div class="scene-shade"></div>
+<div class="wrap">
+<h2 class="k-plate">点棒＝HP</h2>
+<div class="hp-grid">
+<div class="hp-screen-wrap">
+<figure class="screen hp-screen" data-hp-screen>
+<img src="press/shot-match.webp" width="1280" height="720" loading="lazy" data-zoom alt="対局中の卓。奥に対戦相手の3人が座り、左のドラニエルがリーチを宣言している" />
+<span class="flash"></span><span class="pinch"></span><span class="delta"><b>−12,000</b></span>
+</figure>
+<figure class="hp-sunk"><img src="press/shot-sunk.webp" width="597" height="324" loading="lazy" alt="持ち点が0を割ったときのダメージカード。バーが空になり「撃沈」の判が押されている" /></figure>
 </div>
-<div>
-<p style="margin:0 0 14px;font-size:clamp(15.5px,1.8vw,17px);color:#dbe5dd;line-height:2.05">4人で打つリーチ麻雀です。ただし持ち点は「HP」として扱われ、振り込めば削られ、和了れば相手から奪い返します。</p>
-<p style="margin:0 0 14px;font-size:clamp(15.5px,1.8vw,17px);color:#dbe5dd;line-height:2.05">卓につくのは、それぞれ固有の能力を持った16人のキャラクター。あなたは相棒をひとり選び、その相棒と一緒に卓を勝ち抜きます。</p>
-<p style="margin:0;font-size:clamp(15.5px,1.8vw,17px);color:#dbe5dd;line-height:2.05">どの遊びも、相棒が待つホームから始まります。打つほどに絆は積もり、同じ場面でも相棒から返ってくる言葉が変わっていきます。</p>
+<div class="k-paper note">
+<p>持ち点は、そのままHPです。振り込めば自分のバーが削れ、和了れば相手のバーを削ります。</p>
+<p>削られた瞬間は画面が揺れ、バーには白い残像が残ります。残りが4分の1を切ると卓の縁が赤く脈打ち、心音が鳴りはじめます。0を割れば撃沈です。</p>
+<div class="hud" data-hp-hud>
+<div class="hud-row">
+<span class="hud-face"><img src="press/chars/shiyue.webp" width="176" height="176" alt="" /><i class="emote" data-emote-slot></i></span>
+<span class="hud-tag">自分</span><span class="hud-name">詩玥</span>
+<b class="hud-num" data-hp-num>14,000</b>
+</div>
+<div class="k-gauge"><i class="ghost" data-hp-ghost></i><i class="fill" data-hp-fill></i></div>
+<div class="hud-foot"><p class="cap">跳満（12,000点）をひとつ振り込むと、詩玥の14,000は2,000に。</p><button class="replay" type="button" data-hp-replay>もう一度</button></div>
 </div>
 </div>
-<ul style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(276px,100%),1fr));gap:clamp(22px,3vw,40px);margin:clamp(40px,5vw,64px) 0 0;padding:0;list-style:none">
-<li data-rv="up">
-<figure style="margin:0 0 18px;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000"><img src="press/shot-vs.webp" width="1280" height="720" alt="対局前のVS画面。4人の札が並び、相棒の詩玥が「さーて、今日も派手にツモってくヨ。ついてきて、ネ？」とひと言添えている" loading="lazy" style="width:100%;height:auto" /></figure>
-<p style="margin:0 0 6px;font-family:'Yuji Syuku',serif;font-size:14px;letter-spacing:.24em;color:#f0b458">其の一</p>
-<h3 style="margin:0 0 8px;font-family:'Shippori Mincho B1',serif;font-size:20px;letter-spacing:.1em;font-weight:700">CPUと対戦</h3>
-<p style="margin:0;font-size:13.5px;line-height:1.95;color:#bfd0c4">好きなキャラで1局から。4人・3人・2人打ちのほか、2対2のペア戦、3人チームの団体戦も選べます。ホームから2手で卓につけます。</p>
-<p style="margin:14px 0 0;padding-top:12px;border-top:1px solid rgba(246,240,226,.16);font-size:12px;letter-spacing:.1em;color:#93a89b">1局（東風戦）でおよそ10分</p>
-</li>
-<li data-rv="up" data-rv-delay="110">
-<figure style="margin:0 0 18px;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000"><img src="press/shot-shitei.webp" width="1280" height="720" alt="師弟モードの画面。師匠の立ち絵とセリフ、修行コマンド、能力値、点棒＝HPのバーが並んでいる" loading="lazy" style="width:100%;height:auto" /></figure>
-<p style="margin:0 0 6px;font-family:'Yuji Syuku',serif;font-size:14px;letter-spacing:.24em;color:#f0b458">其の二</p>
-<h3 style="margin:0 0 8px;font-family:'Shippori Mincho B1',serif;font-size:20px;letter-spacing:.1em;font-weight:700">師弟モード</h3>
-<p style="margin:0;font-size:13.5px;line-height:1.95;color:#bfd0c4">自分の雀士を作って師匠に弟子入りし、修行と大会を重ねながら物語を進める育成モードです。</p>
-<p style="margin:14px 0 0;padding-top:12px;border-top:1px solid rgba(246,240,226,.16);font-size:12px;letter-spacing:.1em;color:#93a89b">弟子を作って1ヶ月分でおよそ10分</p>
-</li>
-<li data-rv="up" data-rv-delay="220">
-<figure style="margin:0 0 18px;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000"><img src="press/shot-roguelite.webp" width="1280" height="720" alt="楼光の館の画面。第2階で進路を選び、パーティのHPやバフが並んでいる" loading="lazy" style="width:100%;height:auto" /></figure>
-<p style="margin:0 0 6px;font-family:'Yuji Syuku',serif;font-size:14px;letter-spacing:.24em;color:#f0b458">其の三</p>
-<h3 style="margin:0 0 8px;font-family:'Shippori Mincho B1',serif;font-size:20px;letter-spacing:.1em;font-weight:700">楼光の館</h3>
-<p style="margin:0;font-size:13.5px;line-height:1.95;color:#bfd0c4">3人パーティで塔を潜るローグライト。強化を引きながら、どこまで登れるかに挑みます。</p>
-<p style="margin:14px 0 0;padding-top:12px;border-top:1px solid rgba(246,240,226,.16);font-size:12px;letter-spacing:.1em;color:#93a89b">数階もぐっておよそ15分</p>
-</li>
-</ul>
-<p data-rv="up" style="margin:clamp(30px,4vw,44px) 0 0;padding-top:18px;border-top:1px solid rgba(246,240,226,.12);font-size:13.5px;line-height:1.95;color:#a8bcae">このほか、合言葉で友だちと打てるオンライン対戦（限定運用）にも、ホームから入れます。</p>
+</div>
+<div class="scene-msg"><div class="k-msg" data-adv="hp" tabindex="0" aria-label="詩玥のセリフ。クリックで次へ"><span class="name">詩玥</span><p class="text">うっ、先に張られたネ。……無理は禁物ダヨ。点棒が減るの、見たくないもん。</p><i class="pb" aria-hidden="true"></i></div></div>
 </div>
 </section>
 
-<section id="feature" style="scroll-margin-top:72px;padding:clamp(58px,8vw,106px) 0;background:#101d18;border-block:1px solid rgba(246,240,226,.1)">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" style="display:flex;align-items:flex-start;gap:18px;margin-bottom:clamp(38px,5vw,62px)">
-<span style="flex:0 0 auto;width:1px;height:clamp(46px,6vw,72px);background:#4a7a62;margin-top:6px"></span>
-<h2 style="font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:clamp(24px,3.6vw,35px);line-height:1.5;letter-spacing:.16em;margin:0">ゲームの特徴</h2>
+<!-- 4. 卓を囲む ───────────────────────────────────────── -->
+<section class="scene felt" id="table">
+<div class="scene-shade"></div>
+<div class="wrap">
+<h2 class="k-plate">卓を囲む</h2>
+<div class="table-grid">
+<div class="k-paper note">
+<p>卓の奥には、対戦相手が座っています。リーチの声は本人の胸元から上がり、いま手番の人は、その人の色でふちどられます。</p>
+<p>和了れば喜び、振り込めば崩れる。あなたのリーチやツモには身構え、リーチを受けた番では「…」と考え込むことも。画面の中の三人を、同じ卓を囲む相手として打てるようにしました。</p>
+<p class="cap">写真：対面の真守 由紀がリーチ。いま手番の焔は、赤くふちどられている。</p>
 </div>
+<figure class="screen"><img src="press/shot-seated.webp" width="1280" height="720" loading="lazy" data-zoom alt="対局中の卓。対面の真守 由紀がリーチを宣言し、胸元に「リーチ」の文字が出ている。左の焔は手番を示す赤い縁取りで光り、右には賭羽ルイナが座っている。右下では相棒の詩玥が身を乗り出している" /></figure>
+</div>
+<div class="scene-msg"><div class="k-msg is-still" data-type-on-view><span class="name">詩玥</span><p class="text">リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。</p></div></div>
+</div>
+</section>
 
-<div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(26px,4vw,58px);align-items:center">
-<div>
-<div style="position:relative;padding-bottom:clamp(34px,5vw,54px)">
-<figure style="margin:0;border:1px solid rgba(224,87,111,.35);overflow:hidden;background:#000;box-shadow:0 22px 54px rgba(0,0,0,.55)">
-<img src="press/shot-pinch.webp" width="1280" height="720" alt="持ち点が残り3,000まで減った対局画面。卓の縁が赤く染まり、相手のリーチに相棒の詩玥が「リーチ来たけど、我たちも聴牌ダヨ。引き勝つネ。」と応えている" loading="lazy" style="width:100%;height:auto" />
-</figure>
-<figure style="position:absolute;left:-10px;bottom:0;width:44%;margin:0;border:1px solid rgba(224,87,111,.55);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.7)">
-<img src="press/shot-sunk.webp" width="597" height="324" alt="持ち点が0を割ったときのダメージカード。詩玥のバーが空になり、「撃沈」の判が押されている" loading="lazy" style="width:100%;height:auto" />
-</figure>
+<!-- 5. 相棒と絆 ───────────────────────────────────────── -->
+<section class="scene partner" id="partner">
+<div class="scene-bg"></div><div class="scene-shade"></div>
+<div class="wrap">
+<h2 class="k-plate">相棒と絆</h2>
+<div class="partner-grid">
+<div class="k-panel bond" data-bond>
+<p>相棒は、卓の右の縁から身を乗り出して一緒に打ちます。相手のリーチには身構え、あなたのリーチには声を張り、削られれば一緒に痛がる。対局の前にも、終わったあとにも、ひと言があります。</p>
+<p>打った記録は絆として積もり、同じ場面でも、返ってくる言葉が変わっていきます。</p>
+<p class="bond-how">段階と場面を選ぶと、詩玥が答えます。立ち絵に触れても。</p>
+<p class="bond-label">絆の段階</p>
+<div class="bond-levels" role="group" aria-label="絆の段階">
+<button type="button" data-bond-lv="1" aria-pressed="true">出会ったばかり<span>Lv1</span></button>
+<button type="button" data-bond-lv="3" aria-pressed="false">打ち解け始め<span>Lv3</span></button>
+<button type="button" data-bond-lv="5" aria-pressed="false">気を許す仲<span>Lv5</span></button>
 </div>
-<p style="font-size:12.5px;color:#93a89b;margin:12px 2px 0;line-height:1.7">残りが4分の1を切った卓（奥）と、0を割ったときのダメージカード（手前）。</p>
+<div class="bond-gauge" aria-hidden="true"><i data-bond-fill></i></div>
+<p class="bond-label">場面</p>
+<div class="bond-scenes" role="group" aria-label="場面">
+<button type="button" data-bond-scene="start" aria-pressed="true">対局の前</button>
+<button type="button" data-bond-scene="opp" aria-pressed="false">相手のリーチ</button>
+<button type="button" data-bond-scene="self" aria-pressed="false">あなたのリーチ</button>
+<button type="button" data-bond-scene="tap" aria-pressed="false">触れたとき</button>
 </div>
-<div>
-<h3 style="font-family:'Yuji Syuku',serif;font-weight:400;margin:0 0 16px;font-size:clamp(23px,3vw,31px);line-height:1.5;letter-spacing:.06em;color:#f6f0e2">点棒が減ることが、痛い</h3>
-<p style="margin:0;font-size:15.5px;color:#d1ddd3;line-height:2.05">持ち点をHPバーとして表示します。振り込めば自分のバーが削れ、和了れば相手のバーを削る。順位を数える麻雀が、殴り合いの見えかたに変わります。</p>
-<p style="margin:14px 0 0;font-size:15.5px;color:#d1ddd3;line-height:2.05">削られた瞬間、画面が揺れ、バーには白い残像が残ります。残りが4分の1を切ると、卓の縁が赤く脈打ち、心音が鳴りはじめます。</p>
-<p style="display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin:26px 0 0;padding-top:22px;border-top:1px solid rgba(224,87,111,.35);font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:clamp(42px,5.8vw,64px);line-height:1;color:#e0576f"><span data-count="1" style="font-variant-numeric:tabular-nums">−8,000</span><span style="font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:500;line-height:1.7;letter-spacing:.14em;color:#93a89b">満貫を1回振り込むと。<br />詩玥なら、残りは6,000。</span></p>
+<p class="bond-note">※ 絆が積もるのは、Googleログインで遊んだときです（ログインしなくても遊べます）。</p>
 </div>
+<button class="partner-sprite" type="button" data-bond-sprite aria-label="詩玥に触れる"><img src="press/art/shiyue.webp" width="600" height="1800" loading="lazy" alt="" /><i class="emote" data-emote-slot></i><span class="hint">触れてみる</span></button>
 </div>
-
-<div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(26px,4vw,58px);align-items:center;margin-top:clamp(50px,6vw,92px)">
-<div>
-<h3 style="font-family:'Yuji Syuku',serif;font-weight:400;margin:0 0 16px;font-size:clamp(23px,3vw,31px);line-height:1.5;letter-spacing:.06em;color:#f6f0e2">土台は、ちゃんとしたリーチ麻雀</h3>
-<p style="margin:0;font-size:15.5px;color:#d1ddd3;line-height:2.05">役も点数も自動で計算されるので、ルールを知らなくても打てます。知っている人には、いつもの麻雀がそのまま土台にあります。</p>
-<ul style="display:flex;flex-wrap:wrap;gap:10px 22px;margin:22px 0 0;padding:0;list-style:none">
-<li class="b4" style="font-family:'Shippori Mincho B1',serif;font-size:14.5px;letter-spacing:.08em;color:#cfdcd2;padding-left:14px;position:relative">立直・一発・裏ドラ</li>
-<li class="b4" style="font-family:'Shippori Mincho B1',serif;font-size:14.5px;letter-spacing:.08em;color:#cfdcd2;padding-left:14px;position:relative">七対子</li>
-<li class="b4" style="font-family:'Shippori Mincho B1',serif;font-size:14.5px;letter-spacing:.08em;color:#cfdcd2;padding-left:14px;position:relative">国士無双</li>
-<li class="b4" style="font-family:'Shippori Mincho B1',serif;font-size:14.5px;letter-spacing:.08em;color:#cfdcd2;padding-left:14px;position:relative">符計算</li>
-<li class="b4" style="font-family:'Shippori Mincho B1',serif;font-size:14.5px;letter-spacing:.08em;color:#cfdcd2;padding-left:14px;position:relative">赤ドラ</li>
-<li class="b4" style="font-family:'Shippori Mincho B1',serif;font-size:14.5px;letter-spacing:.08em;color:#cfdcd2;padding-left:14px;position:relative">役満</li>
-<li class="b4" style="font-family:'Shippori Mincho B1',serif;font-size:14.5px;letter-spacing:.08em;color:#cfdcd2;padding-left:14px;position:relative">三人麻雀（北抜き）</li>
+<div class="k-msg is-still" data-bond-msg><span class="name">詩玥</span><p class="text">さーて、今日も派手にツモってくヨ。ついてきて、ネ？</p><img class="new" src="graphic/ui/sc/new_icon.png" width="32" height="34" alt="この段階から聞ける言葉" hidden /></div>
+<ul class="moments">
+<li><figure style="margin:0"><div class="screen"><img src="press/shot-home.webp" width="1280" height="720" loading="lazy" data-zoom alt="ホームの画面。相棒の詩玥が大きく立ち、「はじめましてダヨ。我のツモ、すぐ手放せなくなるからネ——覚悟しといて?」と話しかけている" /></div><figcaption>ホームで出迎える</figcaption></figure></li>
+<li><figure style="margin:0"><div class="screen"><img src="press/shot-end.webp" width="1280" height="720" loading="lazy" data-zoom alt="対局終了の画面。1位の詩玥が「やった、一番乗りダヨ! ……この景色、いつか見せたかったンだ。」とひと言添えている" /></div><figcaption>対局のあとのひと言</figcaption></figure></li>
+<li><figure style="margin:0"><div class="screen"><img src="press/shot-scenario.webp" width="1280" height="720" loading="lazy" data-zoom alt="紙芝居パートの画面。和室を背景に二人の立ち絵が向かい合い、下部にセリフが表示されている" /></div><figcaption>物語が進む紙芝居</figcaption></figure></li>
 </ul>
 </div>
-<figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 22px 54px rgba(0,0,0,.55)">
-<img src="press/shot-agari.webp" width="1280" height="720" alt="和了画面。立直・門前清自摸和・平和・一盃口・ドラの役が並び、跳満12000点と表示されている。左には和了った詩玥の全身の立ち絵" loading="lazy" style="width:100%;height:auto" />
-</figure>
-</div>
+</section>
 
-<div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(26px,4vw,58px);align-items:center;margin-top:clamp(50px,6vw,92px)">
-<div>
-<figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 22px 54px rgba(0,0,0,.55)">
-<img src="press/shot-seated.webp" width="905" height="470" alt="卓の奥を写した画面。対面の真守 由紀がリーチを宣言し、胸元に「リーチ」の文字が出ている。左の焔は手番を示す赤い縁取りで光り、右には賭羽ルイナが座っている" loading="lazy" style="width:100%;height:auto" />
-</figure>
-<p style="font-size:12.5px;color:#93a89b;margin:12px 2px 0;line-height:1.7">対面の真守 由紀がリーチ。いま手番の焔は、自分の色でふちどられている。</p>
+<!-- 6. 遊びかた ───────────────────────────────────────── -->
+<section class="scene modes" id="modes">
+<div class="wrap">
+<h2 class="k-plate">遊びかた</h2>
+<p class="lead">どの遊びも、相棒が待つホームから始まります。</p>
+<ul class="mode-grid">
+<li class="k-panel mode">
+<div class="mode-shot"><img src="press/shot-vs.webp" width="1280" height="720" loading="lazy" data-zoom alt="対局前のVS画面。4人の札が並び、相棒の詩玥が「さーて、今日も派手にツモってくヨ。ついてきて、ネ？」とひと言添えている" /></div>
+<h3>CPUと対戦</h3>
+<p>好きなキャラで1局から。4人・3人・2人打ちのほか、2対2のペア戦、3人チームの団体戦も選べます。ホームから2手で卓につけます。</p>
+<p class="time">東風戦1回でおよそ10分</p>
+</li>
+<li class="k-panel mode">
+<div class="mode-shot"><img src="press/shot-shitei.webp" width="1280" height="720" loading="lazy" data-zoom alt="師弟モードの画面。師匠の立ち絵とセリフ、修行コマンド、能力値、点棒＝HPのバーが並んでいる" /></div>
+<h3>師弟モード</h3>
+<p>自分の雀士を作って師匠に弟子入りし、修行と大会を重ねながら物語を進める育成モードです。</p>
+<p class="time">弟子を作って1ヶ月分でおよそ10分</p>
+</li>
+<li class="k-panel mode">
+<div class="mode-shot"><img src="press/shot-roguelite.webp" width="1280" height="720" loading="lazy" data-zoom alt="楼光の館の画面。第2階で進路を選び、パーティのHPやバフが並んでいる" /><img class="rokou" src="press/art/rokou-logo.webp" width="560" height="274" loading="lazy" alt="" /></div>
+<h3>楼光の館</h3>
+<p>3人パーティで塔を潜るローグライト。強化を引きながら、どこまで登れるかに挑みます。</p>
+<p class="time">数階もぐっておよそ15分</p>
+</li>
+<li class="k-panel mode is-online">
+<div class="tiles" aria-hidden="true"><span class="tile"><img src="graphic/tiles/Ton.svg" alt="" /></span><span class="tile"><img src="graphic/tiles/Nan.svg" alt="" /></span><span class="tile"><img src="graphic/tiles/Shaa.svg" alt="" /></span><span class="tile"><img src="graphic/tiles/Pei.svg" alt="" /></span></div>
+<h3>オンライン</h3>
+<p>合言葉で友だちと同じ卓を囲めます。いまは限定運用で、合言葉ルームでの対戦をおすすめしています。</p>
+<p class="time">ホームの「オンライン」から</p>
+</li>
+</ul>
+<div class="rules">
+<div class="k-paper note">
+<h3>麻雀を知らなくても</h3>
+<p>役も点数も自動で計算されるので、ルールを知らなくても打てます。知っている人には、いつものリーチ麻雀がそのまま土台にあります。</p>
+<ul class="rule-tags"><li>立直・一発・裏ドラ</li><li>七対子</li><li>国士無双</li><li>符計算</li><li>赤ドラ</li><li>役満</li><li>三人麻雀（北抜き）</li></ul>
 </div>
-<div>
-<h3 style="font-family:'Yuji Syuku',serif;font-weight:400;margin:0 0 16px;font-size:clamp(23px,3vw,31px);line-height:1.5;letter-spacing:.06em;color:#f6f0e2">卓の向こうに、相手が座っている</h3>
-<p style="margin:0;font-size:15.5px;color:#d1ddd3;line-height:2.05">卓の奥には、対戦相手が座っています。リーチの声は本人の胸元から上がり、手番の人はその人の色でふちどられる。和了れば喜び、振り込めば崩れる。</p>
-<p style="margin:14px 0 0;font-size:15.5px;color:#d1ddd3;line-height:2.05">あなたのリーチやツモには身構え、リーチを受けた番では「…」と考え込むことも。画面の中の三人を、同じ卓を囲む相手として打てるようにしました。</p>
-</div>
-</div>
-
-<div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(26px,4vw,58px);align-items:start;margin-top:clamp(50px,6vw,92px)">
-<div>
-<h3 style="font-family:'Yuji Syuku',serif;font-weight:400;margin:0 0 16px;font-size:clamp(23px,3vw,31px);line-height:1.5;letter-spacing:.06em;color:#f6f0e2">卓の隣に、相棒がいる</h3>
-<p style="margin:0;font-size:15.5px;color:#d1ddd3;line-height:2.05">相棒は卓の右の縁から身を乗り出して、一緒に打ちます。相手のリーチには身構え、あなたのリーチには声を張り、削られれば一緒に痛がる。対局の前にも、終わったあとにも、ひと言があります。</p>
-<p style="margin:14px 0 0;font-size:15.5px;color:#d1ddd3;line-height:2.05">打った記録は絆として積もり、同じ場面でも、返ってくる言葉が変わっていきます。</p>
-<div data-bond="1" style="margin:24px 0 0;border:1px solid rgba(246,240,226,.18);background:rgba(6,18,13,.42);padding:clamp(16px,2.4vw,22px)">
-<div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px;margin-bottom:12px">
-<span style="font-size:11px;letter-spacing:.22em;color:#e0576f">詩玥との絆</span>
-<span style="font-size:11px;letter-spacing:.1em;color:#8fae9b">段階を選ぶと、言葉が変わります</span>
-</div>
-<div role="group" aria-label="絆の段階" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
-<button class="h12" type="button" data-bond-lv="1" aria-pressed="true" style="padding:9px 4px 8px;border:1px solid #f0b458;background:rgba(240,180,88,.12);color:#f6f0e2;font:inherit;font-size:clamp(10.5px,2.9vw,12.5px);letter-spacing:.02em;line-height:1.45;white-space:nowrap;cursor:pointer;text-align:center">出会ったばかり<span style="display:block;font-size:10.5px;letter-spacing:.14em;color:#f0b458">Lv1</span></button>
-<button class="h12" type="button" data-bond-lv="3" aria-pressed="false" style="padding:9px 4px 8px;border:1px solid rgba(246,240,226,.22);background:transparent;color:#bcd4c4;font:inherit;font-size:clamp(10.5px,2.9vw,12.5px);letter-spacing:.02em;line-height:1.45;white-space:nowrap;cursor:pointer;text-align:center">打ち解け始め<span style="display:block;font-size:10.5px;letter-spacing:.14em;color:#f0b458">Lv3</span></button>
-<button class="h12" type="button" data-bond-lv="5" aria-pressed="false" style="padding:9px 4px 8px;border:1px solid rgba(246,240,226,.22);background:transparent;color:#bcd4c4;font:inherit;font-size:clamp(10.5px,2.9vw,12.5px);letter-spacing:.02em;line-height:1.45;white-space:nowrap;cursor:pointer;text-align:center">気を許す仲<span style="display:block;font-size:10.5px;letter-spacing:.14em;color:#f0b458">Lv5</span></button>
-</div>
-<div style="height:4px;margin:10px 0 0;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden"><div data-bond-fill="1" style="height:100%;width:16.7%;background:linear-gradient(90deg,#f6b352,#ffe08a);border-radius:inherit;transition:width .6s cubic-bezier(.2,.8,.2,1)"></div></div>
-<dl aria-live="polite" style="margin:12px 0 0">
-<div style="display:grid;grid-template-columns:6em minmax(0,1fr);gap:4px 12px;padding:11px 0;border-top:1px solid rgba(246,240,226,.1)">
-<dt style="font-size:11.5px;letter-spacing:.1em;color:#a9c4b4;padding-top:.4em">対局の前</dt>
-<dd data-bond-line="start" style="margin:0;padding-left:12px;border-left:2px solid transparent;font-family:'Shippori Mincho B1',serif;font-size:15px;line-height:1.85;color:#f1dee1">「さーて、今日も派手にツモってくヨ。ついてきて、ネ？」</dd>
-</div>
-<div style="display:grid;grid-template-columns:6em minmax(0,1fr);gap:4px 12px;padding:11px 0;border-top:1px solid rgba(246,240,226,.1)">
-<dt style="font-size:11.5px;letter-spacing:.1em;color:#a9c4b4;padding-top:.4em">相手のリーチ</dt>
-<dd data-bond-line="opp" style="margin:0;padding-left:12px;border-left:2px solid transparent;font-family:'Shippori Mincho B1',serif;font-size:15px;line-height:1.85;color:#f1dee1">「リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。」</dd>
-</div>
-<div style="display:grid;grid-template-columns:6em minmax(0,1fr);gap:4px 12px;padding:11px 0;border-top:1px solid rgba(246,240,226,.1)">
-<dt style="font-size:11.5px;letter-spacing:.1em;color:#a9c4b4;padding-top:.4em">あなたのリーチ</dt>
-<dd data-bond-line="self" style="margin:0;padding-left:12px;border-left:2px solid transparent;font-family:'Shippori Mincho B1',serif;font-size:15px;line-height:1.85;color:#f1dee1">「リーチ！ さあ、来いヨ——ツモれば勝ち！」</dd>
-</div>
-</dl>
-<p style="margin:6px 0 0;padding-top:10px;border-top:1px solid rgba(246,240,226,.1);font-size:11.5px;line-height:1.8;color:#8fae9b">金の線は、その段階で加わる言葉。対局では、ほかの言葉と入れ替わりで出てきます。</p>
-</div>
-<p style="margin:14px 0 0;font-size:12.5px;line-height:1.85;color:#93a89b">※ 絆が積もるのは、Googleログインで遊んだときです（ログインしなくても遊べます）。</p>
-</div>
-<div style="display:grid;gap:16px">
-<figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 22px 54px rgba(0,0,0,.55)">
-<img src="press/shot-home.webp" width="1280" height="720" alt="ホームの画面。相棒の詩玥が大きく立ち、「はじめましてダヨ。我のツモ、すぐ手放せなくなるからネ——覚悟しといて?」と話しかけている。右にCPUと対戦・オンライン・楼光の館・師弟モード・宝珠ショップの入口が並ぶ" loading="lazy" style="width:100%;height:auto" />
-</figure>
-<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px">
-<figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.5)">
-<img src="press/shot-end.webp" width="1280" height="720" alt="対局終了の画面。1位の詩玥が「やった、一番乗りダヨ! ……この景色、いつか見せたかったンだ。」とひと言添えている" loading="lazy" style="width:100%;height:auto" />
-</figure>
-<figure style="margin:0;border:1px solid rgba(246,240,226,.18);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.5)">
-<img src="press/shot-scenario.webp" width="1280" height="720" alt="紙芝居パートの画面。和室を背景に二人の立ち絵が向かい合い、下部にセリフが表示されている" loading="lazy" style="width:100%;height:auto" />
-</figure>
-</div>
-<p style="font-size:12.5px;color:#93a89b;margin:0 2px;line-height:1.7">出迎えてくれるホーム（上）、対局後のひと言（左下）、物語が進む紙芝居（右下）。</p>
-</div>
+<figure class="screen"><img src="press/shot-agari.webp" width="1280" height="720" loading="lazy" data-zoom alt="和了画面。立直・門前清自摸和・平和・一盃口・ドラの役が並び、跳満12000点と表示されている。左には和了った詩玥の全身の立ち絵" /></figure>
 </div>
 </div>
 </section>
 
-<section id="cast" style="scroll-margin-top:72px;padding:clamp(54px,7vw,92px) 0 clamp(48px,6vw,80px);background:#143528;border-block:1px solid rgba(246,240,226,.12);overflow:hidden">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:18px">
-<div style="display:flex;align-items:flex-start;gap:18px">
-<span style="flex:0 0 auto;width:1px;height:clamp(46px,6vw,72px);background:rgba(246,240,226,.45);margin-top:6px"></span>
-<h2 style="font-family:'Yuji Syuku',serif;font-weight:400;font-size:clamp(27px,4vw,40px);letter-spacing:.14em;margin:0;color:#f6f0e2">卓につく十六人</h2>
+<!-- 7. 卓につく十六人 ─────────────────────────────────── -->
+<section class="scene cast" id="cast">
+<div class="scene-shade"></div>
+<div class="wrap">
+<div class="cast-head">
+<h2 class="k-plate">卓につく十六人</h2>
+<div class="cast-nav"><button class="k-btn" type="button" data-prev aria-label="前へ">←</button><button class="k-btn" type="button" data-next aria-label="次へ">→</button></div>
 </div>
-<div style="display:flex;align-items:center;gap:12px">
-<span style="font-size:11.5px;letter-spacing:.16em;color:#bcd4c4">横にスクロール</span>
-<button class="h5" data-prev="1" aria-label="前へ" style="width:40px;height:40px;border:1px solid rgba(246,240,226,.4);background:transparent;color:#f6f0e2;font-size:15px;cursor:pointer;font-family:inherit">←</button>
-<button class="h5" data-next="1" aria-label="次へ" style="width:40px;height:40px;border:1px solid rgba(246,240,226,.4);background:transparent;color:#f6f0e2;font-size:15px;cursor:pointer;font-family:inherit">→</button>
+<p class="lead">この中からひとりを相棒に選んで卓につきます。能力はキャラごとに別物で、点棒の減りかた・増えかたが変わります。カードを選ぶと、能力が読めます。</p>
 </div>
+<div class="cast-rail" data-rail="cast">
+<button class="cast-card" type="button" data-char="shiyue" aria-pressed="false" aria-label="詩玥の能力を見る"><img src="press/cast/shiyue.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">詩玥</span></button>
+<button class="cast-card" type="button" data-char="kuidoshi" aria-pressed="false" aria-label="凌雲の能力を見る"><img src="press/cast/kuidoshi.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">凌雲</span></button>
+<button class="cast-card" type="button" data-char="mamori" aria-pressed="false" aria-label="真守 由紀の能力を見る"><img src="press/cast/mamori.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">真守 由紀</span></button>
+<button class="cast-card" type="button" data-char="yobinin" aria-pressed="false" aria-label="ルクス・ゼロの能力を見る"><img src="press/cast/yobinin.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">ルクス・ゼロ</span></button>
+<button class="cast-card" type="button" data-char="kakeha_ruina" aria-pressed="false" aria-label="賭羽ルイナの能力を見る"><img src="press/cast/kakeha_ruina.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">賭羽ルイナ</span></button>
+<button class="cast-card" type="button" data-char="doranie" aria-pressed="false" aria-label="ドラニエルの能力を見る"><img src="press/cast/doranie.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">ドラニエル</span></button>
+<button class="cast-card" type="button" data-char="bibi" aria-pressed="false" aria-label="ビビの能力を見る"><img src="press/cast/bibi.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">ビビ</span></button>
+<button class="cast-card" type="button" data-char="homura" aria-pressed="false" aria-label="焔の能力を見る"><img src="press/cast/homura.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">焔</span></button>
+<button class="cast-card" type="button" data-char="yao_chu" aria-pressed="false" aria-label="姚玖の能力を見る"><img src="press/cast/yao_chu.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">姚玖</span></button>
+<button class="cast-card" type="button" data-char="chun_chan" aria-pressed="false" aria-label="春嬋の能力を見る"><img src="press/cast/chun_chan.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">春嬋</span></button>
+<button class="cast-card" type="button" data-char="janedoe" aria-pressed="false" aria-label="JaneDoeの能力を見る"><img src="press/cast/janedoe.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">JaneDoe</span></button>
+<button class="cast-card" type="button" data-char="nebula" aria-pressed="false" aria-label="ネビュラの能力を見る"><img src="press/cast/nebula.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">ネビュラ</span></button>
+<button class="cast-card" type="button" data-char="charybdis" aria-pressed="false" aria-label="カリュブディスの能力を見る"><img src="press/cast/charybdis.webp" width="420" height="560" loading="lazy" alt="" /><span class="nm">カリュブディス</span></button>
+<div class="cast-locked"><span class="tile is-back" aria-hidden="true"></span><p style="margin:0">遊びながら解禁される<br />3人がいます</p></div>
 </div>
-</div>
-<div data-rv="up" data-rv-delay="80" style="margin-top:clamp(26px,3vw,38px)">
-<div data-rail="cast" style="display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:4px max(22px,calc((100vw - 1160px) / 2 + 22px)) 20px;scrollbar-width:thin">
-<button class="h6" type="button" data-char="shiyue" aria-pressed="false" aria-label="詩玥の能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/shiyue.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">一</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">詩玥</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="kuidoshi" aria-pressed="false" aria-label="凌雲の能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/kuidoshi.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">二</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">凌雲</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="mamori" aria-pressed="false" aria-label="真守 由紀の能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/mamori.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">三</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">真守 由紀</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="yobinin" aria-pressed="false" aria-label="ルクス・ゼロの能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/yobinin.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">四</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">ルクス・ゼロ</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="kakeha_ruina" aria-pressed="false" aria-label="賭羽ルイナの能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/kakeha_ruina.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">五</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">賭羽ルイナ</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="doranie" aria-pressed="false" aria-label="ドラニエルの能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/doranie.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">六</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">ドラニエル</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="bibi" aria-pressed="false" aria-label="ビビの能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/bibi.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">七</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">ビビ</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="homura" aria-pressed="false" aria-label="焔の能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/homura.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">八</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">焔</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="yao_chu" aria-pressed="false" aria-label="姚玖の能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/yao_chu.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">九</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">姚玖</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="chun_chan" aria-pressed="false" aria-label="春嬋の能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/chun_chan.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">十</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">春嬋</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="janedoe" aria-pressed="false" aria-label="JaneDoeの能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/janedoe.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">十一</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">JaneDoe</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="nebula" aria-pressed="false" aria-label="ネビュラの能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/nebula.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">十二</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">ネビュラ</p>
-</div>
-</button>
-
-<button class="h6" type="button" data-char="charybdis" aria-pressed="false" aria-label="カリュブディスの能力を見る" style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;display:flex;gap:0;transition:transform .3s cubic-bezier(.2,.8,.2,1);background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer">
-<div style="position:relative;flex:1 1 auto;aspect-ratio:3/4;background:linear-gradient(180deg,#16382b,#0d1a14);border:1px solid rgba(246,240,226,.2);overflow:hidden">
-<img src="press/cast/charybdis.webp" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:50% 50%" />
-<span style="position:absolute;inset:auto 0 0 0;height:44%;background:linear-gradient(180deg,transparent,rgba(6,18,13,.9))"></span>
-<span style="position:absolute;left:8px;top:8px;font-family:'Yuji Syuku',serif;font-size:12px;letter-spacing:.1em;color:rgba(246,240,226,.7)">十三</span>
-<p style="position:absolute;left:11px;right:11px;bottom:10px;margin:0;font-family:'Shippori Mincho B1',serif;font-size:16px;font-weight:700;letter-spacing:.08em;color:#f6f0e2;text-shadow:0 2px 8px rgba(0,0,0,.8)">カリュブディス</p>
-</div>
-</button>
-<div style="flex:0 0 auto;width:clamp(146px,19vw,188px);scroll-snap-align:start;aspect-ratio:3/4;border:1px dashed rgba(246,240,226,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:18px">
-<div style="width:60px;height:80px;background:linear-gradient(160deg,#f6f0e2,#cfc2a5);box-shadow:0 8px 18px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:30px;color:#8f2f22;animation:floaty 5s ease-in-out infinite">？</div>
-<p style="margin:0;font-size:12px;line-height:1.85;color:#cfe0d5">遊びながら解禁される<br />3人がいます</p>
-</div>
-</div>
-</div>
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" data-rv-delay="120" data-cast-panel style="margin-top:clamp(24px,3vw,34px);border:1px solid rgba(246,240,226,.18);background:rgba(6,18,13,.42);padding:clamp(20px,3vw,30px)">
-<div style="display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 18px;margin-bottom:18px">
-<span style="font-size:11px;letter-spacing:.22em;color:#8fae9b">選んだ相棒</span>
-<span style="font-size:11px;letter-spacing:.12em;color:#8fae9b">カードを選ぶと切り替わります</span>
-</div>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(20px,3vw,42px);align-items:start">
+<div class="wrap">
+<div class="k-panel cast-panel" data-cast-panel>
+<div class="cast-detail">
+<img class="cast-art" data-cast-art src="press/cast/shiyue.webp" width="420" height="560" alt="" />
 <div>
-<div style="display:flex;gap:clamp(14px,2vw,24px);align-items:flex-start">
-<div style="flex:0 0 auto;width:clamp(104px,12vw,152px)">
-<img data-cast-art src="press/cast/shiyue.webp" alt="" width="420" height="560" style="width:100%;height:auto;display:block;-webkit-mask-image:linear-gradient(180deg,#000 72%,rgba(0,0,0,0));mask-image:linear-gradient(180deg,#000 72%,rgba(0,0,0,0))" />
+<p class="cast-title"><b data-cast-name></b><span data-cast-reading></span></p>
+<p class="cast-meta"><span class="cast-role" data-cast-role></span><span>初期の持ち点 <b data-cast-hp></b></span></p>
+<p class="cast-bio" data-cast-bio></p>
 </div>
-<div style="flex:1 1 0;min-width:0">
-<p style="margin:0;display:flex;flex-wrap:wrap;align-items:baseline;gap:5px 12px">
-<span data-cast-name style="font-family:'Shippori Mincho B1',serif;font-size:clamp(22px,2.8vw,28px);font-weight:700;letter-spacing:.08em;color:#f6f0e2"></span>
-<span data-cast-reading style="font-size:12px;letter-spacing:.14em;color:#a9c4b4"></span>
-</p>
-<p style="margin:14px 0 0"><span data-cast-role style="display:inline-block;font-size:11.5px;letter-spacing:.14em;padding:4px 12px;border:1px solid currentColor"></span></p>
-<p style="margin:12px 0 0;font-size:11.5px;letter-spacing:.1em;color:#a9c4b4">初期の持ち点 <b data-cast-hp style="font-family:'Shippori Mincho B1',serif;font-size:17px;font-weight:700;color:#f6f0e2;letter-spacing:.04em"></b></p>
+<svg class="cast-radar" data-cast-radar viewBox="-20 -2 280 208" role="img"></svg>
 </div>
-</div>
-<p data-cast-bio style="margin:16px 0 0;font-size:13.5px;line-height:2;color:#c6dccd"></p>
-</div>
-<div style="display:flex;justify-content:center">
-<svg data-cast-radar viewBox="-20 -2 280 208" role="img" style="width:min(100%,268px);height:auto"></svg>
+<div class="k-paper cast-ability">
+<span class="lbl">能力</span>
+<p class="ab" data-cast-ab></p>
+<p class="abd" data-cast-abd></p>
 </div>
 </div>
-<div style="margin:clamp(20px,2.6vw,30px) 0 0;border-left:2px solid rgba(240,180,88,.45);background:rgba(240,180,88,.05);padding:16px 18px">
-<span style="display:block;font-size:11px;letter-spacing:.24em;color:#f0b458;margin-bottom:10px">能 力</span>
-<p data-cast-ab style="margin:0;font-family:'Yuji Syuku',serif;font-size:clamp(21px,2.7vw,27px);line-height:1.4;color:#f6f0e2"></p>
-<p data-cast-abd style="margin:12px 0 0;font-size:13.5px;line-height:2;color:#c6dccd"></p>
-</div>
-</div>
-<p data-rv="up" style="margin:24px 0 0;font-size:14px;line-height:2;color:#c6dccd;max-width:66ch">この中からひとりを相棒に選んで卓につきます。能力はキャラごとに別物で、点棒の減りかた・増えかたが変わります。ほかに、遊びながら解禁できるキャラクターが3人います。</p>
-<div data-rv="up" style="margin-top:clamp(30px,4vw,46px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(18px,2.6vw,30px)">
-<figure style="margin:0">
-<div style="border:1px solid rgba(246,240,226,.2);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.45)"><img src="press/shot-cutin.webp" width="1280" height="720" alt="能力を使った瞬間のカットイン。詩玥の全身の立ち絵と「ツモれば勝ち」の文字が卓の上に大きく出ている" loading="lazy" style="width:100%;height:auto" /></div>
-<figcaption style="margin-top:11px;font-size:13px;line-height:1.85;color:#c6dccd"><b style="font-family:'Shippori Mincho B1',serif;font-weight:700;color:#f6f0e2">能力を使った瞬間</b>　詩玥の「ツモれば勝ち」。この局のツモが、有利な牌へ寄っていく。</figcaption>
-</figure>
-<figure style="margin:0">
-<div style="border:1px solid rgba(246,240,226,.2);overflow:hidden;background:#000;box-shadow:0 18px 40px rgba(0,0,0,.45)"><img src="press/shot-tenkei.webp" width="1280" height="720" alt="ドラニエルの和了画面。ドラ7飜の倍満24000点の横に「天啓　暴いたドラが、手に乗る」と表示されている" loading="lazy" style="width:100%;height:auto" /></div>
-<figcaption style="margin-top:11px;font-size:13px;line-height:1.85;color:#c6dccd"><b style="font-family:'Shippori Mincho B1',serif;font-weight:700;color:#f6f0e2">能力が実った和了</b>　ドラニエルの「天啓」。暴いたドラが、そのまま手に乗る。</figcaption>
-</figure>
+<div class="fx-pair">
+<figure><div class="screen"><img src="press/shot-cutin.webp" width="1280" height="720" loading="lazy" data-zoom alt="能力を使った瞬間のカットイン。詩玥の全身の立ち絵と「ツモれば勝ち」の文字が卓の上に大きく出ている" /></div><figcaption><b>能力を使った瞬間</b>詩玥の「ツモれば勝ち」。この局のツモが、有利な牌へ寄っていく。</figcaption></figure>
+<figure><div class="screen"><img src="press/shot-tenkei.webp" width="1280" height="720" loading="lazy" data-zoom alt="ドラニエルの和了画面。ドラ7飜の倍満24000点の横に「天啓　暴いたドラが、手に乗る」と表示されている" /></div><figcaption><b>能力が実った和了</b>ドラニエルの「天啓」。暴いたドラが、そのまま手に乗る。</figcaption></figure>
 </div>
 </div>
 </section>
 
-<section id="howto" style="scroll-margin-top:72px;background:#f4ead6;color:#241c14;padding:clamp(58px,8vw,102px) 0">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" style="display:flex;align-items:flex-start;gap:18px;margin-bottom:clamp(32px,4vw,50px)">
-<span style="flex:0 0 auto;width:1px;height:clamp(46px,6vw,70px);background:#b79b6a;margin-top:6px"></span>
-<h2 style="font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:clamp(24px,3.6vw,35px);line-height:1.5;letter-spacing:.16em;margin:0;color:#241c14">テストへの参加方法</h2>
-</div>
-<ol data-rv="up" data-rv-delay="80" style="margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(258px,100%),1fr));gap:clamp(22px,3vw,42px)">
-<li style="padding-top:20px;border-top:2px solid #241c14">
-<p style="margin:0 0 12px;font-family:'Yuji Syuku',serif;font-size:30px;line-height:1;color:#a2543f">壱</p>
-<h3 style="margin:0 0 9px;font-family:'Shippori Mincho B1',serif;font-size:18px;font-weight:700;letter-spacing:.06em;color:#241c14">「テスト版をプレイ」を押す</h3>
-<p style="margin:0;font-size:14.5px;line-height:1.95;color:#4a3b2c">ブラウザでそのまま始まります。インストールもアカウント登録も要りません（推奨は PC の Google Chrome です）。</p>
-</li>
-<li style="padding-top:20px;border-top:2px solid #241c14">
-<p style="margin:0 0 12px;font-family:'Yuji Syuku',serif;font-size:30px;line-height:1;color:#a2543f">弐</p>
-<h3 style="margin:0 0 9px;font-family:'Shippori Mincho B1',serif;font-size:18px;font-weight:700;letter-spacing:.06em;color:#241c14">好きなだけ遊ぶ</h3>
-<p style="margin:0;font-size:14.5px;line-height:1.95;color:#4a3b2c">クリアする必要はありません。迷ったら、ホームの「CPUと対戦」→「おまかせで即対局」から1局どうぞ。「分からない」「難しい」「ここでやめたくなった」と感じたら、その時点でもう十分です。むしろ、そこがいちばん知りたい情報です。</p>
-</li>
-<li style="padding-top:20px;border-top:2px solid #241c14">
-<p style="margin:0 0 12px;font-family:'Yuji Syuku',serif;font-size:30px;line-height:1;color:#a2543f">参</p>
-<h3 style="margin:0 0 9px;font-family:'Shippori Mincho B1',serif;font-size:18px;font-weight:700;letter-spacing:.06em;color:#241c14">フィードバックフォームに答える</h3>
-<p style="margin:0;font-size:14.5px;line-height:1.95;color:#4a3b2c">回答時間の目安は約3〜5分。Googleへのログインは不要です。ゲーム内の「設定 → テスト版について / 不具合を報告」からも同じフォームを開けます。</p>
-</li>
+<!-- 8. 参加のしかた ───────────────────────────────────── -->
+<section class="scene howto" id="howto">
+<div class="scene-bg"></div>
+<div class="wrap">
+<div class="k-paper sys">
+<h2 class="k-plate">参加のしかた</h2>
+<ol class="steps">
+<li><span class="tile"><img src="graphic/tiles/Man1.svg" alt="一" /></span><h3>「テスト版をプレイ」を押す</h3><p>ブラウザでそのまま始まります。インストールもアカウント登録も要りません（推奨は PC の Google Chrome です）。</p></li>
+<li><span class="tile"><img src="graphic/tiles/Man2.svg" alt="二" /></span><h3>好きなだけ遊ぶ</h3><p>クリアする必要はありません。迷ったら、ホームの「CPUと対戦」→「おまかせで即対局」から1局どうぞ。「分からない」「ここでやめたくなった」と感じたら、その時点でもう十分です。</p></li>
+<li><span class="tile"><img src="graphic/tiles/Man3.svg" alt="三" /></span><h3>フィードバックフォームに答える</h3><p>回答時間の目安は約3〜5分。Googleへのログインは不要です。ゲーム内の「設定 → テスト版について / 不具合を報告」からも同じフォームを開けます。</p></li>
 </ol>
-<p data-rv="up" style="margin:38px 0 0"><a class="h7" href="index.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.7em;background:#f0b458;color:#241704;font-weight:800;font-size:16.5px;letter-spacing:.14em;padding:17px 36px;border-radius:2px;border:1px solid #241c14;box-shadow:6px 6px 0 rgba(36,28,20,.18)">テスト版をプレイ</a></p>
+<p class="sys-cta"><a class="k-btn is-big" href="index.html" target="_blank" rel="noopener">テスト版をプレイ<small>インストール不要</small></a></p>
+</div>
 </div>
 </section>
 
-<section style="padding:clamp(58px,8vw,102px) 0;background:#0d1512">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" style="display:flex;align-items:flex-start;gap:18px;margin-bottom:22px">
-<span style="flex:0 0 auto;width:1px;height:clamp(46px,6vw,72px);background:#4a7a62;margin-top:6px"></span>
-<div>
-<h2 style="font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:clamp(24px,3.6vw,35px);line-height:1.5;letter-spacing:.16em;margin:0 0 12px">今回とくに知りたいこと</h2>
-<p style="margin:0;font-size:15px;color:#c3d2c7;max-width:62ch">下のどれかに触れてもらえると助かります。もちろん、これ以外の感想も歓迎です。</p>
+<!-- 9. 知りたいこと／感想 ─────────────────────────────── -->
+<section class="scene feedback" id="feedback">
+<div class="wrap fb-grid">
+<div class="k-panel asks-box">
+<h2 class="k-plate">今回とくに知りたいこと</h2>
+<p>下のどれかに触れてもらえると助かります。これ以外の感想も歓迎です。</p>
+<ol class="asks">
+<li><span class="tile"><img src="graphic/tiles/Pin1.svg" alt="1" /></span>はじめて遊んだとき、何をすればいいか分かりましたか。</li>
+<li><span class="tile"><img src="graphic/tiles/Pin2.svg" alt="2" /></span>プレイ中に、迷った場所や詰まった場所はありましたか。</li>
+<li><span class="tile"><img src="graphic/tiles/Pin3.svg" alt="3" /></span>麻雀の経験は、どのくらい理解の助けになりましたか。</li>
+<li><span class="tile"><img src="graphic/tiles/Pin4.svg" alt="4" /></span>どの部分を面白いと感じましたか。</li>
+<li><span class="tile"><img src="graphic/tiles/Pin5.svg" alt="5" /></span>点棒を削られたとき、「痛い」と感じましたか。卓の相手や相棒は、そこにいるように感じられましたか。</li>
+<li class="is-key"><span class="tile"><img src="graphic/tiles/Pin6.svg" alt="6" /></span>また遊びたいと思えましたか。思えなかったとしたら、どこで気持ちが切れましたか。</li>
+</ol>
+</div>
+<div class="k-paper sys">
+<h2 class="k-plate">遊んでいただいた方へ</h2>
+<p class="sys-lead">どんな内容でも歓迎します。短い一行でも構いません。次のどれも、同じくらい価値があります。</p>
+<ul class="welcome"><li>面白かったところ</li><li>分からなかったところ</li><li>途中で遊ぶのをやめた理由</li><li>操作しにくかったところ</li><li>好きになったキャラクター</li></ul>
+<a class="k-btn is-big" href="https://docs.google.com/forms/d/e/1FAIpQLSeP18R5mRn-TbYFhL4NVbQIboMGjtH4Ccr09bjirFkHqlJq2g/viewform" target="_blank" rel="noopener">感想を送る<small>Googleフォーム・ログイン不要・3〜5分</small></a>
+<div class="bug"><h3>不具合を報告するとき</h3>ゲーム内の「設定 → テスト版について / 不具合を報告」で <b>環境情報をコピー</b> を押してから貼り付けていただけると、原因を追いやすくなります（入るのはバージョン・ブラウザ・画面サイズだけで、メールアドレスや表示名は入りません）。画面の写真があれば、それだけでも助かります。</div>
 </div>
 </div>
-<ul data-rv="up" data-rv-delay="80" style="margin:clamp(24px,3vw,36px) 0 0;padding:0;list-style:none;border-top:1px solid rgba(246,240,226,.14)">
-<li style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(246,240,226,.14)">
-<span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#1d3f2f">一</span>
-<p style="margin:0;font-size:15.5px;line-height:1.9;color:#d9e3db">はじめて遊んだとき、何をすればいいか分かりましたか。</p>
-</li>
-<li style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(246,240,226,.14)">
-<span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#1d3f2f">二</span>
-<p style="margin:0;font-size:15.5px;line-height:1.9;color:#d9e3db">プレイ中に、迷った場所や詰まった場所はありましたか。</p>
-</li>
-<li style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(246,240,226,.14)">
-<span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#1d3f2f">三</span>
-<p style="margin:0;font-size:15.5px;line-height:1.9;color:#d9e3db">麻雀の経験は、どのくらい理解の助けになりましたか。</p>
-</li>
-<li style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(246,240,226,.14)">
-<span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#1d3f2f">四</span>
-<p style="margin:0;font-size:15.5px;line-height:1.9;color:#d9e3db">どの部分を面白いと感じましたか。</p>
-</li>
-<li style="display:flex;gap:20px;align-items:flex-start;padding:20px 0;border-bottom:1px solid rgba(246,240,226,.14)">
-<span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#1d3f2f">五</span>
-<p style="margin:0;font-size:15.5px;line-height:1.9;color:#d9e3db">点棒を削られたとき、「痛い」と感じましたか。卓の相手や相棒は、そこにいるように感じられましたか。</p>
-</li>
-<li style="display:flex;gap:20px;align-items:flex-start;padding:20px 0">
-<span style="flex:0 0 auto;width:34px;height:46px;background:linear-gradient(165deg,#f6f0e2,#ded1b5);box-shadow:0 4px 10px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-family:'Yuji Syuku',serif;font-size:20px;color:#8f2f22">六</span>
-<p style="margin:0;font-size:15.5px;line-height:1.9;color:#d9e3db">また遊びたいと思えましたか。思えなかったとしたら、どこで気持ちが切れましたか。</p>
-</li>
+</section>
+
+<!-- 10. お知らせ ──────────────────────────────────────── -->
+<section class="scene notice" id="notice">
+<div class="scene-shade"></div>
+<div class="wrap notice-grid">
+<div class="k-panel notice-box">
+<h2 class="k-plate">既知の問題・注意事項</h2>
+<p>以下は把握済みです。報告いただかなくて大丈夫です。</p>
+<ul>
+<li>一部のキャラクター・師匠は「準備中」の表示です（順に実装しています）。</li>
+<li>楼光の館は第2章まで。その先は「未だ綴られぬ記憶」と表示されます。</li>
+<li>タイトルロゴと楼光の館の一部グラフィックは仮素材です（正式版で差し替えます）。</li>
+<li>紙芝居の一部の効果音が無音です。立ち絵の表情差分は未対応です。</li>
+<li>対局中のひと言（相手のリーチ・自分のリーチ・大物手への反応）は、いまは詩玥だけです。ほかのキャラクターは身ぶりとエモートで反応します。</li>
+<li>オンライン対戦は限定運用です（合言葉ルームでの対戦を推奨しています）。</li>
+<li>推奨環境は PC・横画面の Google Chrome です。スマートフォンでも動きますが、横向きが必要です。</li>
+<li>テスト期間中は、更新によってセーブデータのリセットが必要になる場合があります。</li>
 </ul>
 </div>
-</section>
-
-<section id="known" style="scroll-margin-top:72px;padding:clamp(50px,6vw,82px) 0;background:#101d18;border-block:1px solid rgba(246,240,226,.1)">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(270px,100%),1fr));gap:clamp(24px,4vw,50px);align-items:start">
-<div style="display:flex;align-items:flex-start;gap:18px">
-<span style="flex:0 0 auto;width:1px;height:56px;background:#4a7a62;margin-top:6px"></span>
-<div>
-<h2 style="font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:clamp(21px,3vw,29px);line-height:1.5;letter-spacing:.14em;margin:0 0 12px">既知の問題・注意事項</h2>
-<p style="margin:0;font-size:14px;color:#a8bcae;max-width:32ch">以下は把握済みです。報告いただかなくて大丈夫です。</p>
-</div>
-</div>
-<ul style="margin:0;padding:0;list-style:none;border-top:1px solid rgba(246,240,226,.14)">
-<li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">一部のキャラクター・師匠は「準備中」の表示です（順に実装しています）。</li>
-<li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">楼光の館は第2章まで。その先は「未だ綴られぬ記憶」と表示されます。</li>
-<li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">タイトルロゴと楼光の館の一部グラフィックは仮素材です（正式版で差し替えます）。</li>
-<li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">紙芝居の一部の効果音が無音です。立ち絵の表情差分は未対応です。</li>
-<li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">対局中のひと言（相手のリーチ・自分のリーチ・大物手への反応）は、いまは詩玥だけです。ほかのキャラクターは身ぶりとエモートで反応します。</li>
-<li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">オンライン対戦は限定運用です（合言葉ルームでの対戦を推奨しています）。</li>
-<li class="b8" style="position:relative;padding:11px 0 11px 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">推奨環境は PC・横画面の Google Chrome です。スマートフォンでも動きますが、横向きが必要です。</li>
-<li class="b8" style="position:relative;padding:11px 0 0 22px;font-size:14.5px;line-height:1.9;color:#c4d3c7">テスト期間中は、更新によってセーブデータのリセットが必要になる場合があります。</li>
+<div class="k-panel notice-box">
+<h2 class="k-plate">バージョン情報</h2>
+<p class="ver">Test Build v0.9.0-test.2<small>更新日 2026/10/02</small></p>
+<ul>
+<li>対局の卓を「卓を囲む」形に。対戦相手が卓の奥に座り、リーチや和了・放銃に芝居で応えます。</li>
+<li>削られたときの手応えを強化（画面の揺れ・HPバーの残像・残り4分の1で卓の縁が赤く脈打ち、心音が鳴る）。</li>
+<li>相棒が局中も隣で反応（相手のリーチ・自分のリーチ・大物手）。VS画面での対局前のひと言と、対局後の絆の伸び（ログイン時）を追加。</li>
+<li>流局カードに各席のテンパイ／ノーテンと手牌を表示。満貫未満の和了はダメージカードを省き、テンポよく次の局へ。</li>
+<li>すべてのモードを、相棒が待つホームに集約（CPU対戦はホームから2手）。</li>
 </ul>
+<p class="ver-note">不具合を報告するときは、この版数を書き添えていただけると助かります。ゲーム画面の右下にも小さく表示されています。</p>
 </div>
 </div>
 </section>
 
-<section id="feedback" style="scroll-margin-top:72px;background:#f4ead6;color:#241c14;padding:clamp(58px,8vw,102px) 0">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" style="max-width:860px">
-<div style="display:flex;align-items:flex-start;gap:18px;margin-bottom:26px">
-<span style="flex:0 0 auto;width:1px;height:clamp(46px,6vw,70px);background:#b79b6a;margin-top:6px"></span>
-<h2 style="font-family:'Shippori Mincho B1',serif;font-weight:800;font-size:clamp(24px,3.6vw,35px);line-height:1.5;letter-spacing:.16em;margin:0;color:#241c14">遊んでいただいた方へ</h2>
+<!-- 11. 結び ─────────────────────────────────────────── -->
+<section class="scene finale" aria-label="テスト版へのご案内">
+<div class="scene-bg"></div><div class="scene-shade"></div>
+<div class="stage">
+<figure class="finale-sprite" aria-hidden="true"><img src="press/art/shiyue.webp" width="600" height="1800" loading="lazy" alt="" /></figure>
+<div class="hero-choices">
+<a class="k-choice is-primary" href="index.html" target="_blank" rel="noopener">一局いこ！<small>テスト版をプレイ（インストール不要）</small></a>
+<a class="k-choice" href="https://docs.google.com/forms/d/e/1FAIpQLSeP18R5mRn-TbYFhL4NVbQIboMGjtH4Ccr09bjirFkHqlJq2g/viewform" target="_blank" rel="noopener">感想を送る<small>Googleフォームが開きます</small></a>
 </div>
-<p style="margin:0 0 24px;font-size:15.5px;color:#4a3b2c;line-height:2">どんな内容でも歓迎します。短い一行でも構いません。次のどれも、同じくらい価値があります。</p>
-<ul style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:0 24px;margin:0 0 34px;padding:0;list-style:none;border-top:1px solid #cbb894">
-<li style="font-family:'Shippori Mincho B1',serif;font-size:15px;letter-spacing:.08em;color:#3a2d21;padding:13px 0;border-bottom:1px solid #ddcbaa">面白かったところ</li>
-<li style="font-family:'Shippori Mincho B1',serif;font-size:15px;letter-spacing:.08em;color:#3a2d21;padding:13px 0;border-bottom:1px solid #ddcbaa">分からなかったところ</li>
-<li style="font-family:'Shippori Mincho B1',serif;font-size:15px;letter-spacing:.08em;color:#3a2d21;padding:13px 0;border-bottom:1px solid #ddcbaa">途中で遊ぶのをやめた理由</li>
-<li style="font-family:'Shippori Mincho B1',serif;font-size:15px;letter-spacing:.08em;color:#3a2d21;padding:13px 0;border-bottom:1px solid #ddcbaa">操作しにくかったところ</li>
-<li style="font-family:'Shippori Mincho B1',serif;font-size:15px;letter-spacing:.08em;color:#3a2d21;padding:13px 0;border-bottom:1px solid #ddcbaa">好きになったキャラクター</li>
-</ul>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:18px">
-<a class="h7" href="https://docs.google.com/forms/d/e/1FAIpQLSeP18R5mRn-TbYFhL4NVbQIboMGjtH4Ccr09bjirFkHqlJq2g/viewform" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.7em;background:#241c14;color:#f4ead6;font-weight:700;font-size:16.5px;letter-spacing:.14em;padding:17px 36px;border-radius:2px;box-shadow:6px 6px 0 rgba(36,28,20,.16)">フィードバックを送る</a>
-<span style="font-size:13px;color:#6b5847;line-height:1.8">Googleフォームが開きます。<br />ログイン不要・所要3〜5分。</span>
-</div>
-<div style="margin:36px 0 0;padding:20px 22px;background:#eee0c5;border-left:2px solid #a2543f">
-<h3 style="margin:0 0 8px;font-family:'Shippori Mincho B1',serif;font-size:15px;letter-spacing:.1em;font-weight:700;color:#241c14">不具合を報告するとき</h3>
-<p style="margin:0;font-size:13.5px;line-height:1.95;color:#5b4a39">ゲーム内の「設定 → テスト版について / 不具合を報告」で <b style="color:#241c14">環境情報をコピー</b> を押してから貼り付けていただけると、こちらで原因を追いやすくなります（入るのはバージョン・ブラウザ・画面サイズだけで、メールアドレスや表示名は入りません）。画面の写真があれば、それだけでも助かります。</p>
-</div>
-</div>
+<div class="msg-dock"><div class="k-msg is-still" data-type-on-view><span class="name">詩玥</span><p class="text">さーて、今日も派手にツモってくヨ。ついてきて、ネ？</p></div></div>
 </div>
 </section>
+</main>
 
-<section style="padding:clamp(50px,6vw,80px) 0;background:#0d1512">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div data-rv="up" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:clamp(22px,4vw,48px);align-items:start">
-<div>
-<h2 style="font-family:'Shippori Mincho B1',serif;font-weight:700;font-size:clamp(19px,2.6vw,24px);line-height:1.5;letter-spacing:.16em;margin:0 0 18px">バージョン情報</h2>
-<p style="margin:0;font-family:'Shippori Mincho B1',serif;font-size:clamp(20px,2.6vw,25px);font-weight:800;color:#f0b458;line-height:1.45;letter-spacing:.02em">Test Build<br />v0.9.0-test.2</p>
-<p style="margin:10px 0 0;font-size:13px;letter-spacing:.08em;color:#93a89b">更新日 2026/10/02</p>
-</div>
-<div>
-<ul style="margin:0;padding:0;list-style:none;border-top:1px solid rgba(246,240,226,.14)">
-<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">対局の卓を「卓を囲む」形に。対戦相手が卓の奥に座り、リーチや和了・放銃に芝居で応えます。</li>
-<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">削られたときの手応えを強化（画面の揺れ・HPバーの残像・残り4分の1で卓の縁が赤く脈打ち、心音が鳴る）。</li>
-<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">相棒が局中も隣で反応（相手のリーチ・自分のリーチ・大物手）。VS画面での対局前のひと言と、対局後の絆の伸び（ログイン時）を追加。</li>
-<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">流局カードに各席のテンパイ／ノーテンと手牌を表示。満貫未満の和了はダメージカードを省き、テンポよく次の局へ。</li>
-<li class="b9" style="position:relative;padding:12px 0 12px 24px;font-size:14.5px;line-height:1.9;color:#c4d3c7;border-bottom:1px solid rgba(246,240,226,.1)">すべてのモードを、相棒が待つホームに集約（CPU対戦はホームから2手）。</li>
-</ul>
-<p style="margin:18px 0 0;font-size:13px;color:#93a89b;line-height:1.9">不具合を報告するときは、この版数を書き添えていただけると助かります。ゲーム画面の右下にも小さく表示されています。</p>
-</div>
-</div>
-</div>
-</section>
-
-<section style="padding:clamp(62px,8vw,112px) 0;background:#143528;text-align:center;border-top:1px solid rgba(246,240,226,.12)">
-<div data-rv="up" style="max-width:900px;margin-inline:auto;padding-inline:22px">
-<h2 style="font-family:'Yuji Syuku',serif;font-weight:400;font-size:clamp(28px,4.4vw,44px);line-height:1.45;letter-spacing:.12em;margin:0 0 20px;color:#f6f0e2">ツモノグリフを遊んでみる</h2>
-<p style="margin:0 auto 36px;font-size:clamp(15px,1.8vw,16.5px);color:#d3e4d8;max-width:44ch">インストール不要。ブラウザを開いたら、そのまま始まります。</p>
-<div style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center">
-<a class="h10" href="index.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.7em;background:#f0b458;color:#241704;font-weight:800;font-size:17.5px;letter-spacing:.14em;padding:18px 40px;border-radius:2px;box-shadow:6px 6px 0 rgba(240,180,88,.18)">テスト版をプレイ</a>
-<a class="h11" href="https://docs.google.com/forms/d/e/1FAIpQLSeP18R5mRn-TbYFhL4NVbQIboMGjtH4Ccr09bjirFkHqlJq2g/viewform" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.7em;background:transparent;color:#f6f0e2;font-weight:500;font-size:17px;letter-spacing:.14em;padding:18px 36px;border-radius:2px;border:1px solid rgba(246,240,226,.45)">フィードバックを送る</a>
-</div>
-</div>
-</section>
-
-<footer style="border-top:1px solid rgba(246,240,226,.12);padding:48px 0 62px;background:#0a1310">
-<div style="max-width:1160px;margin-inline:auto;padding-inline:22px">
-<div style="display:flex;flex-wrap:wrap;gap:24px 46px;align-items:baseline;justify-content:space-between">
-<div>
-<h2 style="font-family:'Shippori Mincho B1',serif;font-size:13px;letter-spacing:.24em;font-weight:400;margin:0 0 8px;color:#93a89b">開発</h2>
-<p style="font-family:'Shippori Mincho B1',serif;font-size:22px;font-weight:700;letter-spacing:.12em;margin:0">乃木回遊</p>
-</div>
-<ul style="display:flex;flex-wrap:wrap;gap:10px 24px;margin:0;padding:0;list-style:none;font-size:14px">
+<footer class="footer">
+<div class="wrap">
+<div class="foot-top">
+<p class="foot-dev"><span>開発</span>乃木回遊</p>
+<ul class="foot-links">
 <li><a href="https://x.com/nogi_kaiyu" target="_blank" rel="noopener">X</a></li>
 <li><a href="https://github.com/migratory-studio/Marjong" target="_blank" rel="noopener">GitHub</a></li>
 <li><a href="https://github.com/migratory-studio/Marjong/blob/main/docs/testplay-guide.md" target="_blank" rel="noopener">テストプレイのご案内</a></li>
@@ -671,385 +758,354 @@ button{ transition:color .18s ease, border-color .18s ease, background-color .18
 <li><a href="https://docs.google.com/forms/d/e/1FAIpQLSeP18R5mRn-TbYFhL4NVbQIboMGjtH4Ccr09bjirFkHqlJq2g/viewform" target="_blank" rel="noopener">お問い合わせ</a></li>
 </ul>
 </div>
-<p style="margin:32px 0 0;font-size:12px;color:#6f8378;line-height:1.9">『ツモノグリフ 〜牌と絆のアンサンブル〜』は開発中の個人制作ゲームです。掲載している画面写真はすべて開発中のもので、正式版では変わる可能性があります。<br />音楽・効果音・背景・牌などの素材は、それぞれの提供元の規約に従って使用しています。</p>
+<p class="foot-credit">立ち絵：<a href="https://r-id.booth.pm/" target="_blank" rel="noopener">R_ID作（https://r-id.booth.pm/）</a>　背景：みんちりえ　UI・エモート：こぱんだ屋（空想曲線）　牌：FluffyStuff「Riichi Mahjong Tiles」（CC0）　モブ：素材屋冬青</p>
+<p class="foot-note">『ツモノグリフ 〜牌と絆のアンサンブル〜』は開発中の個人制作ゲームです。掲載している画面写真はすべて開発中のもので、正式版では変わる可能性があります。音楽・効果音・背景・牌などの素材は、それぞれの提供元の規約に従って使用しています。</p>
 </div>
 </footer>
 
-<div data-sticky="1" style="position:fixed;right:24px;bottom:24px;z-index:70;opacity:0;transform:translateY(16px);pointer-events:none;transition:opacity .3s ease, transform .3s ease">
-<a class="h2" href="index.html" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.6em;background:#f0b458;color:#241704;font-weight:800;font-size:15px;letter-spacing:.14em;padding:15px 28px;border-radius:2px;box-shadow:0 14px 32px rgba(0,0,0,.5)">テスト版をプレイ</a>
-</div>
+<dialog class="zoom" data-zoom-dialog aria-label="画面写真の拡大"><img alt="" /><button type="button" data-zoom-close aria-label="閉じる">×</button></dialog>
 
-</div>
 <script>
 (function () {
   "use strict";
-  var sweep = null;
-  const q = (s) => document.querySelector(s);
-  const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const subtle = false || reduce;
-  
-  if (false) { const n = q("[data-nav]"); if (n) n.style.display = "none"; }
-  
-  const bar = q("[data-progress]");
-  const sticky = q("[data-sticky]");
-  const onScroll = () => {
-    const h = document.documentElement;
-    const max = h.scrollHeight - h.clientHeight;
-    if (bar) bar.style.width = (max > 0 ? (h.scrollTop / max) * 100 : 0) + "%";
-    if (sticky) {
-      const on = h.scrollTop > (window.innerHeight * 0.9);
-      sticky.style.opacity = on ? "1" : "0";
-      sticky.style.transform = on ? "none" : "translateY(16px)";
-      sticky.style.pointerEvents = on ? "auto" : "none";
-    }
-  };
+  const q = (s, r) => (r || document).querySelector(s);
+  const qa = (s, r) => Array.prototype.slice.call((r || document).querySelectorAll(s));
+  const reduce = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  const fmt = (n) => Math.round(n).toLocaleString("en-US");
+
+  // 上部バー：ヒーローを離れたら地を敷く。
+  const bar = q("[data-topbar]");
+  const onScroll = () => { if (bar) bar.classList.toggle("is-solid", window.scrollY > 40); };
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
-  
-  
-  const targets = document.querySelectorAll("[data-rv]");
-  const show = (el) => {
-    el.style.transition = "opacity .75s cubic-bezier(.2,.8,.2,1), transform .75s cubic-bezier(.2,.8,.2,1)";
-    el.style.transitionDelay = (el.getAttribute("data-rv-delay") || 0) + "ms";
-    el.style.opacity = "1";
-    el.style.transform = "none";
+
+  // ── エモート：ゲームと同じスプライトシート（1コマ400px・横5×縦8・30fps）──
+  // 対応は本卓の PORTRAIT_REACTIONS と同じ（他家リーチ＝！／大物の被弾＝‼／ピンチ＝あせあせ…）。
+  const SHEET = "graphic/emo/sheet/";
+  const EMO = {
+    music: { f: "emo_016_ss.png", loop: true }, surprise: { f: "emo_002_ss.png" }, shock: { f: "emo_003_ss.png" },
+    fluster: { f: "emo_013_L_ss.png" }, sparkle: { f: "emo_024_ss.png", loop: true }, love: { f: "emo_008_ss.png", loop: true },
   };
-  if (subtle || !("IntersectionObserver" in window)) {
-    targets.forEach((el) => { el.style.opacity = "1"; el.style.transform = "none"; });
-  } else {
-    targets.forEach((el) => { el.style.opacity = "0"; el.style.transform = "translateY(26px)"; });
-    const io = new IntersectionObserver((ents) => {
-      ents.forEach((en) => {
-        if (en.isIntersecting || en.boundingClientRect.top < window.innerHeight) {
-          show(en.target); io.unobserve(en.target);
-        }
-      });
-    }, { rootMargin: "0px 0px -10% 0px", threshold: 0.06 });
-    targets.forEach((el) => io.observe(el));
-    sweep = () => {
-      let left = 0;
-      targets.forEach((el) => {
-        if (el.style.opacity === "1") return;
-        if (el.getBoundingClientRect().top < window.innerHeight * 0.95) { show(el); io.unobserve(el); }
-        else left++;
-      });
-      if (!left) { window.removeEventListener("scroll", sweep); sweep = null; }
+  const COLS = 5, ROWS = 8, FRAMES = 40;
+  function playEmote(slot, id) {
+    const d = EMO[id];
+    if (!slot || !d || reduce) return;
+    clearInterval(slot._t);
+    const size = slot.clientWidth || 96;
+    slot.style.backgroundImage = 'url("' + SHEET + d.f + '")';
+    slot.style.backgroundSize = COLS * size + "px " + ROWS * size + "px";
+    const place = (k) => { slot.style.backgroundPosition = -(k % COLS) * size + "px " + -Math.floor(k / COLS) * size + "px"; };
+    place(0);
+    slot.classList.add("show");
+    const total = d.loop ? FRAMES * 2 : FRAMES;
+    let k = 0;
+    slot._t = setInterval(() => {
+      k++;
+      if (k >= total) {
+        clearInterval(slot._t);
+        if (!d.loop) place(FRAMES - 1);
+        setTimeout(() => slot.classList.remove("show"), 500);
+        return;
+      }
+      place(d.loop ? k % FRAMES : k);
+    }, 1000 / 30);
+  }
+
+  // ── メッセージ窓：文字送り・クリックで次へ・自動送り ─────────────────────
+  // lines は { t: セリフ, emote?: エモート, fx?: そのセリフと同時に起こすこと }。
+  function adv(root, lines, opt) {
+    opt = opt || {};
+    const text = q(".text", root), pb = q(".pb", root);
+    const live = document.createElement("span");
+    live.className = "sr"; live.setAttribute("aria-live", "polite");
+    root.appendChild(live);
+    text.setAttribute("aria-hidden", "true");
+    let i = -1, typing = false, tick = 0, wait = 0, auto = opt.auto !== false;
+    const say = () => lines[i].t;
+    const settle = () => {
+      typing = false; clearInterval(tick); text.textContent = say();
+      const last = i >= lines.length - 1;
+      if (pb) pb.hidden = last;
+      if (last) { if (opt.onEnd) opt.onEnd(); return; }
+      if (auto) wait = setTimeout(next, opt.hold || 1500 + 42 * say().length);
     };
-    window.addEventListener("scroll", sweep, { passive: true });
-    setTimeout(() => { if (sweep) sweep(); }, 60);
+    const show = (k) => {
+      i = k; clearTimeout(wait); clearInterval(tick);
+      const L = lines[i];
+      if (L.fx) L.fx();
+      if (L.emote) playEmote(opt.emote, L.emote);
+      live.textContent = L.t;
+      if (reduce) { settle(); return; }
+      let n = 0; typing = true; text.textContent = "";
+      tick = setInterval(() => { n += 1; text.textContent = L.t.slice(0, n); if (n >= L.t.length) settle(); }, 36);
+    };
+    function next() { if (typing) { settle(); return; } if (i < lines.length - 1) show(i + 1); }
+    root.addEventListener("click", next);
+    root.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); next(); } });
+    return {
+      start() { show(0); },
+      setAuto(v) { auto = v; clearTimeout(wait); if (auto && !typing && i >= 0 && i < lines.length - 1) wait = setTimeout(next, 900); },
+      stop() { clearTimeout(wait); clearInterval(tick); typing = false; },
+    };
   }
-  
-  // ── ヒーローの被弾：ゲームの HP ボードと同じ動き ─────────────────────
-  // バーは即座に削れて色が段階で変わり（50%以下で黄・25%以下で赤）、白い残像が
-  // 0.45秒遅れて追いつく。行は一瞬赤く光り、画面が揺れる（main.js updateHpBoard /
-  // styles.css .hp-ghost・.hp-row.hp-hit と同じ値）。持ち点は詩玥の初期値 14,000。
-  // 相棒のひと言は、スクショと同じ「リーチへの身構え」→ 被弾 →「被弾への反応」の順に替わる。
-  const fill = q("[data-fill]"), ghost = q("[data-ghost]"), num = q("[data-num]"), hit = q("[data-hit]");
-  const talk = q("[data-talk]"), shakeEl = q("[data-shake]"), flash = q("[data-flash]"), gauge = q("[data-gauge]");
-  const START = 14000, AFTER = 6000, HIT_AT = 2000;
-  const OUCH = "「うわ！？そんなに持っていくノ！？　も～、だから守りは苦手なんだってばぁ！」";
-  const TICKS = "repeating-linear-gradient(90deg, rgba(0,0,0,.24) 0 1px, rgba(0,0,0,0) 1px 9px)";
-  const tierBg = (pct) => TICKS + ", " + (pct <= 25 ? "linear-gradient(90deg,#e85d75,#ff8a9d)"
-    : pct <= 50 ? "linear-gradient(90deg,#f6b352,#ffd27d)" : "linear-gradient(90deg,#3ddc97,#66e6a8)");
-  const fmt = (n) => "" + Math.round(n).toLocaleString("en-US");
-  if (fill) {
-    const pct = AFTER / START * 100;
-    if (subtle) {
-      fill.style.width = pct + "%";
-      fill.style.backgroundImage = tierBg(pct);
-      if (ghost) ghost.style.width = pct + "%";
-      if (num) num.textContent = fmt(AFTER);
-      if (talk) talk.textContent = OUCH;
-    } else {
-      setTimeout(() => {
-        fill.style.width = pct + "%";
-        fill.style.backgroundImage = tierBg(pct);
-        if (ghost) { ghost.style.transition = "width .7s ease .45s"; ghost.style.width = pct + "%"; }
-        if (gauge) gauge.style.animation = "rowhit .6s ease-out";
-        if (hit) hit.style.animation = "hitpop 1.3s ease-out forwards";
-        if (shakeEl) shakeEl.style.animation = "shake .55s cubic-bezier(.36,.07,.19,.97)";
-        if (flash) flash.style.animation = "flash .7s ease-out forwards";
-        const t0 = performance.now(), dur = 760;
-        const tick = (now) => {
-          const p = Math.max(0, Math.min(1, (now - t0) / dur));
-          if (num) num.textContent = fmt(START + (AFTER - START) * (1 - Math.pow(1 - p, 3)));
-          if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-        if (talk) {
-          talk.style.opacity = "0";
-          talk.style.transform = "translateY(4px)";
-          setTimeout(() => { talk.textContent = OUCH; talk.style.opacity = "1"; talk.style.transform = "none"; }, 520);
-        }
-        setTimeout(() => {
-          if (shakeEl) shakeEl.style.animation = "";
-          if (gauge) gauge.style.animation = "";
-        }, 800);
-      }, HIT_AT);
-    }
-  }
-  
-  const counter = q("[data-count]");
-  if (counter && !subtle && "IntersectionObserver" in window) {
-    const cio = new IntersectionObserver((ents) => {
-      ents.forEach((en) => {
-        if (!en.isIntersecting) return;
-        cio.unobserve(en.target);
-        const t0 = performance.now(), dur = 1100;
-        const tick = (now) => {
-          const p = Math.max(0, Math.min(1, (now - t0) / dur));
-          counter.textContent = "−" + fmt(8000 * (1 - Math.pow(1 - p, 3)));
-          if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      });
+
+  // 1行だけの窓（卓を囲む・結び）は、見えたときに文字送りする。
+  function typeOnce(el) {
+    const text = q(".text", el), s = text.textContent;
+    if (reduce || !("IntersectionObserver" in window)) return;
+    text.textContent = "";
+    const io = new IntersectionObserver((ents) => {
+      if (!ents[0].isIntersecting) return;
+      io.disconnect();
+      let n = 0;
+      const t = setInterval(() => { n += 1; text.textContent = s.slice(0, n); if (n >= s.length) clearInterval(t); }, 36);
     }, { threshold: 0.6 });
-    cio.observe(counter);
+    io.observe(el);
   }
-  
-  // ── 詩玥との絆：段階を選ぶと、同じ場面の言葉が変わる ─────────────────
-  // 文言は src/data/characterVoiceMaster.js（詩玥）の写し。3=打ち解け始め・5=気を許す仲は
-  // companionBondMin 付きの行で、その段階から抽選に“混ざりはじめる”言葉（実際の対局では
-  // ほかの言葉と入れ替わりで出る）。段階名は progressionService の帯名と同じ。
+  qa("[data-type-on-view]").forEach(typeOnce);
+
+  // ── 1. 出会い：初対面のひと言 → 誘い → 選択肢へ ──────────────────────────
+  const heroMsg = q('[data-adv="hero"]');
+  if (heroMsg) {
+    const choices = q("[data-hero-choices]");
+    const a = adv(heroMsg, [
+      { t: "はじめましてダヨ。我のツモ、すぐ手放せなくなるからネ——覚悟しといて?", emote: "music" },
+      { t: "ひまだヨ～。ねえ、一局いこ？ “ツモれば勝ち”の真髄、教えてあげるヨ！" },
+      { t: "ねえ、どの卓いく? 我はどこでもツモるからサ、おまかせダヨ♪" },
+    ], { emote: q(".hero-sprite [data-emote-slot]"), auto: !reduce, onEnd: () => { if (choices) choices.classList.add("is-ready"); } });
+    const autoBtn = q("[data-auto]");
+    if (autoBtn) {
+      autoBtn.setAttribute("aria-pressed", reduce ? "false" : "true");
+      autoBtn.addEventListener("click", () => {
+        const on = autoBtn.getAttribute("aria-pressed") !== "true";
+        autoBtn.setAttribute("aria-pressed", on ? "true" : "false");
+        a.setAuto(on);
+      });
+    }
+    setTimeout(() => a.start(), reduce ? 0 : 700);
+  }
+
+  // ── 3. 点棒＝HP：相手のリーチ → 跳満を受ける → ピンチ ───────────────────
+  // 動きは本卓と同じ：バーは即座に削れて段階色（50%以下で黄・25%以下で赤）、白い残像が
+  // 0.45秒遅れて追いつく。行は赤く光り、画面が揺れ、残り4分の1で卓の縁が赤く脈打つ。
+  const hp = q("[data-hp]");
+  if (hp) {
+    const START = 14000, AFTER = 2000;
+    const screen = q("[data-hp-screen]"), hud = q("[data-hp-hud]");
+    const fill = q("[data-hp-fill]"), ghost = q("[data-hp-ghost]"), num = q("[data-hp-num]");
+    const face = q(".hud-face [data-emote-slot]", hp);
+    const W = 96.6;  // ゲージ下地の内側の幅（%）
+    const setBar = (v, animate) => {
+      const pct = v / START * 100;
+      fill.className = pct <= 25 ? "fill low" : pct <= 50 ? "fill mid" : "fill";
+      fill.style.width = (W * v / START) + "%";
+      if (animate) { ghost.style.transition = "width .7s ease .45s"; ghost.style.width = fill.style.width; return; }
+      ghost.style.transition = "none"; ghost.style.width = fill.style.width; void ghost.offsetWidth;
+    };
+    const tween = (from, to, ms) => {
+      if (reduce) { num.textContent = fmt(to); return; }
+      const t0 = performance.now();
+      const step = (now) => {
+        const p = Math.max(0, Math.min(1, (now - t0) / ms));
+        num.textContent = fmt(from + (to - from) * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const reset = () => {
+      screen.classList.remove("is-pinch", "is-hit", "is-shake");
+      hud.classList.remove("is-hit");
+      setBar(START, false);
+      num.textContent = fmt(START);
+    };
+    const hit = () => {
+      setBar(AFTER, !reduce);
+      tween(START, AFTER, 760);
+      if (reduce) return;
+      screen.classList.remove("is-hit", "is-shake"); hud.classList.remove("is-hit");
+      void screen.offsetWidth;
+      screen.classList.add("is-hit", "is-shake"); hud.classList.add("is-hit");
+      setTimeout(() => screen.classList.remove("is-shake"), 600);
+    };
+    const pinch = () => screen.classList.add("is-pinch");
+    const msg = q('[data-adv="hp"]', hp);
+    const a = adv(msg, [
+      { t: "うっ、先に張られたネ。……無理は禁物ダヨ。点棒が減るの、見たくないもん。", emote: "surprise" },
+      { t: "うわ！？そんなに持っていくノ！？　も～、だから守りは苦手なんだってばぁ！", emote: "shock", fx: hit },
+      { t: "減った点棒は見ないヨ。見るのは、次のツモだけダヨ。", emote: "fluster", fx: pinch },
+    ], { emote: face, auto: true, hold: 2400 });
+    const run = () => { a.stop(); reset(); a.start(); };
+    reset();
+    if (reduce || !("IntersectionObserver" in window)) {
+      setBar(AFTER, false); num.textContent = fmt(AFTER); pinch();
+      q(".text", msg).textContent = "減った点棒は見ないヨ。見るのは、次のツモだけダヨ。";
+    } else {
+      const io = new IntersectionObserver((ents) => {
+        if (!ents[0].isIntersecting) return;
+        io.disconnect();
+        run();
+      }, { threshold: 0.45 });
+      io.observe(screen);
+    }
+    const replay = q("[data-hp-replay]");
+    if (replay) replay.addEventListener("click", run);
+  }
+
+  // ── 5. 相棒と絆：段階 × 場面で、詩玥の言葉が変わる（触れても答える）──────
+  // 文言は characterVoiceMaster の詩玥の写し。3=打ち解け始め・5=気を許す仲は companionBondMin
+  // 付きの行で、その段階から抽選に“混ざりはじめる”言葉（対局では他の言葉と入れ替わりで出る）。
   const bond = q("[data-bond]");
   if (bond) {
     const LINES = {
       start: { 1: "さーて、今日も派手にツモってくヨ。ついてきて、ネ？", 3: "今日もキミとだネ。……ふふ、ちょっと安心したヨ。", 5: "行こ、相棒。我とキミなら——ツモれば勝ち、ダロ？" },
       opp: { 1: "リーチ……！ 危ない牌、よく見てネ。我も一緒に見るヨ。", 3: "……だいじょぶ。キミの目なら、通る牌わかるヨ。我が保証するネ。" },
       self: { 1: "リーチ！ さあ、来いヨ——ツモれば勝ち！", 5: "リーチ。……ねえ相棒、この一枚、一緒に引こ？" },
+      tap: { 1: "わっ、なに? ……もう、くすぐったいヨ、ふふっ。", 3: "……ふふ、その手つき、慣れてきたネ。我も、慣れちゃったかも。", 5: "……ん。キミにだけは、こうされるの、わりと嫌いじゃないんダ。ナイショだヨ?" },
     };
-    // その段階で聞ける、いちばん新しい言葉（その段階に専用の行が無ければ、手前の段階のもの）。
-    const lineAt = (scene, lv) => {
-      let t = "";
-      [1, 3, 5].forEach((k) => { if (k <= lv && LINES[scene][k]) t = LINES[scene][k]; });
-      return t;
+    // 場面ごとの頭上エモート（本卓の反応と同じ。触れたときは絆で ！→♪→ハート）。
+    const EMOTE = { opp: "surprise", self: "sparkle", tap: { 1: "surprise", 3: "music", 5: "love" } };
+    const msg = q("[data-bond-msg]"), text = q(".text", msg), badge = q(".new", msg);
+    const sprite = q("[data-bond-sprite]"), slot = q("[data-emote-slot]", sprite), fillEl = q("[data-bond-fill]");
+    const lvBtns = qa("[data-bond-lv]", bond), scBtns = qa("[data-bond-scene]", bond);
+    const live = document.createElement("span");
+    live.className = "sr"; live.setAttribute("aria-live", "polite"); msg.appendChild(live);
+    text.setAttribute("aria-hidden", "true");
+    let lv = 1, scene = "start", tick = 0;
+    // その段階で聞ける、いちばん新しい言葉（専用の行が無ければ手前の段階のもの）。
+    const stageOf = (s, l) => { let k = 1; [1, 3, 5].forEach((x) => { if (x <= l && LINES[s][x]) k = x; }); return k; };
+    const type = (s) => {
+      clearInterval(tick);
+      live.textContent = s;
+      if (reduce) { text.textContent = s; return; }
+      let n = 0; text.textContent = "";
+      tick = setInterval(() => { n += 1; text.textContent = s.slice(0, n); if (n >= s.length) clearInterval(tick); }, 32);
     };
-    const lvBtns = Array.prototype.slice.call(bond.querySelectorAll("[data-bond-lv]"));
-    const bfill = bond.querySelector("[data-bond-fill]");
-    let curLv = 1;
-    const pickLv = (lv) => {
-      if (lv === curLv) return;
-      curLv = lv;
+    const render = (withEmote) => {
       lvBtns.forEach((b, i) => {
         const on = +b.dataset.bondLv === lv;
         b.setAttribute("aria-pressed", on ? "true" : "false");
-        b.style.borderColor = on ? "#f0b458" : "rgba(246,240,226,.22)";
-        b.style.background = on ? "rgba(240,180,88,.12)" : "transparent";
-        b.style.color = on ? "#f6f0e2" : "#bcd4c4";
-        if (on && bfill) bfill.style.width = ((i * 2 + 1) / (lvBtns.length * 2) * 100) + "%";
+        if (on && fillEl) fillEl.style.width = ((i * 2 + 1) / (lvBtns.length * 2) * 100) + "%";
       });
-      bond.querySelectorAll("[data-bond-line]").forEach((dd) => {
-        const scene = dd.dataset.bondLine;
-        const t = "「" + lineAt(scene, lv) + "」";
-        const fresh = lv > 1 && !!LINES[scene][lv];   // この段階で加わる言葉
-        dd.style.borderLeftColor = fresh ? "#f0b458" : "transparent";
-        dd.style.color = fresh ? "#fff4dc" : "#f1dee1";
-        if (dd.textContent === t) return;
-        dd.textContent = t;
-        if (subtle) return;
-        dd.style.animation = "none";
-        void dd.offsetWidth;                         // 同じアニメを頭から
-        dd.style.animation = "linein .45s cubic-bezier(.2,.8,.2,1)";
-      });
+      scBtns.forEach((b) => b.setAttribute("aria-pressed", b.dataset.bondScene === scene ? "true" : "false"));
+      const st = stageOf(scene, lv);
+      if (badge) badge.hidden = !(lv > 1 && st === lv);   // この段階で加わる言葉
+      type(LINES[scene][st]);
+      const e = EMOTE[scene];
+      if (withEmote && e) playEmote(slot, typeof e === "object" ? e[st] : e);
     };
-    lvBtns.forEach((b) => b.addEventListener("click", () => pickLv(+b.dataset.bondLv)));
+    lvBtns.forEach((b) => b.addEventListener("click", () => { lv = +b.dataset.bondLv; render(scene !== "start"); }));
+    scBtns.forEach((b) => b.addEventListener("click", () => { scene = b.dataset.bondScene; render(true); }));
+    if (sprite) sprite.addEventListener("click", () => {
+      scene = "tap";
+      if (!reduce) { sprite.classList.remove("is-hop"); void sprite.offsetWidth; sprite.classList.add("is-hop"); }
+      render(true);
+    });
   }
 
-  const rail = q("[data-rail='cast']");
-  if (rail) {
-    const step = () => Math.max(200, rail.clientWidth * 0.75);
-    const prev = q("[data-prev]"), next = q("[data-next]");
-    if (prev) prev.addEventListener("click", () => rail.scrollBy({ left: -step(), behavior: "smooth" }));
-    if (next) next.addEventListener("click", () => rail.scrollBy({ left: step(), behavior: "smooth" }));
-    let dragging = false, sx = 0, sl = 0;
-    rail.addEventListener("pointerdown", (e) => {
-      if (e.pointerType === "touch") return;
-      dragging = true; sx = e.clientX; sl = rail.scrollLeft; rail.style.cursor = "grabbing";
-      rail.style.scrollSnapType = "none"; rail.style.scrollBehavior = "auto";
-    });
-    window.addEventListener("pointermove", (e) => { if (dragging) rail.scrollLeft = sl - (e.clientX - sx); });
-    window.addEventListener("pointerup", () => {
-      if (!dragging) return;
-      dragging = false; rail.style.cursor = "grab"; rail.style.scrollBehavior = "smooth";
-    });
-    rail.style.cursor = "grab";
-    if (true && !subtle && "IntersectionObserver" in window) {
-      const nio = new IntersectionObserver((ents) => {
-        ents.forEach((en) => {
-          if (!en.isIntersecting) return;
-          nio.unobserve(en.target);
-          setTimeout(() => rail.scrollBy({ left: 90, behavior: "smooth" }), 320);
-          setTimeout(() => rail.scrollBy({ left: -90, behavior: "smooth" }), 1050);
-        });
-      }, { threshold: 0.3 });
-      nio.observe(rail);
-    }
-  }
-
-  // ── 卓につく十六人：カードを選ぶと立ち絵・能力・能力値が出る ─────
-  // データは characterMaster / abilityMaster から書き出した写し（このページは
-  // 依存ゼロで完結させるため、src/data を import せず値を埋め込んでいる）。
-  // st は [攻め, 癖, 体力, 守り, 難しさ] の5軸・各1〜5。体力だけは持ち点を
-  // 平方根で写したもの（12000〜16000に10人が偏るので、線形だと図形が潰れる）。
+  // ── 7. 卓につく十六人：カードを選ぶと立ち絵・能力・能力値が出る ─────────
+  // データは characterMaster / abilityMaster から書き出した写し（このページは依存ゼロで完結させる
+  // ため、src/data を import せず値を埋め込んでいる）。st は [攻め, 癖, 体力, 守り, 難しさ] の5軸・
+  // 各1〜5。体力だけは持ち点を平方根で写したもの（12000〜16000に10人が偏るので、線形だと潰れる）。
   // 能力や数値を変えるときは、両マスタとここの2箇所を直す。
   const CAST = {"shiyue":{"n":"詩玥","r":"シ・ユエ","role":"アタッカー","rc":"#e85d75","hp":"14,000","bio":"ツモ運に愛された攻撃型。持ち点は低めだが手が早い。","ab":"ツモれば勝ち","abd":"1ゲーム2局 ツモが有利牌に偏る","st":[4,3,2.57,2,2]},"kuidoshi":{"n":"凌雲","r":"リン・ユン","role":"ブロッカー","rc":"#4ea1d3","hp":"13,000","bio":"詩玥と同郷の守り手。致命の一撃だけを受け止める琥珀の盾を宿す守備特化型。","ab":"琥珀の盾","abd":"満貫以上の放銃/被ツモを0／満貫未満で剥がれる持続シールド","st":[1,3,2.11,5,3]},"mamori":{"n":"真守 由紀","r":"まもり ゆうき","role":"ブロッカー","rc":"#4ea1d3","hp":"14,000","bio":"危険牌を見抜く守備型。持ち点は低いが放銃しにくい。","ab":"放銃、いたしません","abd":"常時発動 あたり牌を3段階で警告","st":[1,2,2.57,5,2]},"yobinin":{"n":"ルクス・ゼロ","r":"","role":"アタッカー","rc":"#e85d75","hp":"13,000","bio":"山を見通し聴牌を確定させる精密機械型。イーシャンテンの停滞を力ずくで断ち切る。","ab":"ゼロ・リサーチ","abd":"1局1回・2局 1シャンテンから有効牌を確定ツモで聴牌","st":[4,5,2.11,2,4]},"kakeha_ruina":{"n":"賭羽ルイナ","r":"カケハ・ルイナ","role":"ギャンブラー","rc":"#f6b352","hp":"18,000","bio":"1巡目に点棒を賭ける博打型。5000点で和了1.5倍／10000点で2倍。外せば賭け金は丸損。","ab":"大博打","abd":"1巡目限定・2局 5000点で1.5倍／10000点で2倍に賭ける","st":[5,5,3.72,2,5]},"doranie":{"n":"ドラニエル","r":"","role":"ギャンブラー","rc":"#f6b352","hp":"12,500","bio":"場のドラを暴いて打点を吊り上げる一発逆転型。最強格だが持ち点は紙。親の跳満一撃で即トび。","ab":"天啓ドラ寄せ","abd":"1局2回 新ドラを暴き確定ドラ化／場も荒れる諸刃","st":[5,4,1.78,1,5]},"bibi":{"n":"ビビ","r":"ビビ","role":"ブロッカー","rc":"#4ea1d3","hp":"12,000","bio":"誰にも「奪わせない」無効化型。発動後6打牌のあいだ、ロン・ツモを帳消しにする（自分は失点せず、勝者も得点0）。","ab":"身代わり人形","abd":"1局1回・2局 6打牌の間ロン/ツモを帳消し（失点0・勝者も得点0）","st":[2,2,1,5,1]},"homura":{"n":"焔","r":"ホムラ","role":"ギャンブラー","rc":"#f6b352","hp":"13,000","bio":"1巡目に全てを賭ける博打型。満貫以上で1.5倍、未満は点数固定の諸刃。","ab":"大物手の焔","abd":"1巡目限定・2局 満貫以上1.5倍／未満は固定","st":[5,4,2.11,2,4]},"yao_chu":{"n":"姚玖","r":"ヤオ・チュウ","role":"アタッカー","rc":"#e85d75","hp":"16,000","bio":"端と字牌を呼び込む癖者。1ゲーム2局だけツモが么九牌に偏る。","ab":"老頭の庭","abd":"1ゲーム2局 么九牌が高確率","st":[2,5,3.22,2,5]},"chun_chan":{"n":"春嬋","r":"チュン・チャン","role":"アタッカー","rc":"#e85d75","hp":"12,000","bio":"中張牌を引き寄せる速攻型。1ゲーム2局だけツモが2〜8に偏る。","ab":"韋駄天の中張","abd":"1ゲーム2局 中張牌が高確率","st":[5,3,1,2,2]},"janedoe":{"n":"JaneDoe","r":"ジェーンドゥ","role":"アビス","rc":"#a78bfa","hp":"16,000","bio":"相手の手を縛る妨害型。狙った相手を3巡のあいだ強制ツモ切りにする。","ab":"沈黙の処方箋","abd":"1局1回・2局 相手を3巡ツモ切りに固定","st":[2,5,3.22,3,4]},"nebula":{"n":"ネビュラ","r":"","role":"アビス","rc":"#a78bfa","hp":"25,000","bio":"失点は倍・アガり点は半分という呪いを抱えた超高HPの異端児。","ab":"暗黒星","abd":"常時発動 失点は倍・アガりは半分（超高HP）","st":[1,5,5,4,5]},"charybdis":{"n":"カリュブディス","r":"","role":"アビス","rc":"#a78bfa","hp":"23,000","bio":"和了を捨て流局に賭ける異形の打ち手。和了不可だが、流局の受取が3倍・流し満貫が役満になる。超高HP。","ab":"淵の蒐集","abd":"常時 和了不可／流局の受取3倍・流し満貫が役満","st":[1,5,4.68,3,5]}};
+  const rail = q("[data-rail='cast']");
+  if (rail) {
+    const stepW = () => Math.max(200, rail.clientWidth * 0.75);
+    const prev = q("[data-prev]"), next = q("[data-next]");
+    if (prev) prev.addEventListener("click", () => rail.scrollBy({ left: -stepW(), behavior: "smooth" }));
+    if (next) next.addEventListener("click", () => rail.scrollBy({ left: stepW(), behavior: "smooth" }));
+  }
   const panel = q("[data-cast-panel]");
-  const cards = Array.prototype.slice.call(document.querySelectorAll("[data-char]"));
+  const cards = qa("[data-char]");
   if (panel && cards.length) {
-    const set = (sel, v) => { const el = panel.querySelector(sel); if (el) el.textContent = v; };
-    const art = panel.querySelector("[data-cast-art]");
-    const svg = panel.querySelector("[data-cast-radar]");
-    const NS = "http://www.w3.org/2000/svg";
-    const AXES = ["攻め", "癖", "体力", "守り", "難しさ"];
+    const set = (sel, v) => { const e = q(sel, panel); if (e) e.textContent = v; };
+    const art = q("[data-cast-art]", panel), svg = q("[data-cast-radar]", panel);
+    const NS = "http://www.w3.org/2000/svg", AXES = ["攻め", "癖", "体力", "守り", "難しさ"];
     const CX = 120, CY = 106, R = 74, LR = 97;
     const rad = (i) => (-90 + i * 72) * Math.PI / 180;
-    const at = (v, i) => {
-      const a = rad(i), r = R * (Math.max(0, v) / 5);
-      return [CX + r * Math.cos(a), CY + r * Math.sin(a)];
-    };
-    const mk = (tag, attrs) => {
-      const e = document.createElementNS(NS, tag);
-      for (const k in attrs) e.setAttribute(k, attrs[k]);
-      return e;
-    };
+    const at = (v, i) => { const r = R * (Math.max(0, v) / 5); return [CX + r * Math.cos(rad(i)), CY + r * Math.sin(rad(i))]; };
+    const mk = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); return e; };
     let shape = null, dots = [];
-
-    // 目盛りと軸は一度だけ描く。
     if (svg) {
-      for (let lv = 1; lv <= 5; lv++) {
-        svg.appendChild(mk("polygon", {
-          points: AXES.map((_, i) => at(lv, i).map((v) => v.toFixed(1)).join(",")).join(" "),
-          fill: "none",
-          stroke: lv === 5 ? "rgba(246,240,226,.3)" : "rgba(246,240,226,.12)",
-          "stroke-width": lv === 5 ? 1 : 0.8
-        }));
+      for (let lvl = 1; lvl <= 5; lvl++) {
+        svg.appendChild(mk("polygon", { points: AXES.map((_, i) => at(lvl, i).map((v) => v.toFixed(1)).join(",")).join(" "),
+          fill: "none", stroke: lvl === 5 ? "rgba(212,173,98,.55)" : "rgba(212,173,98,.18)", "stroke-width": lvl === 5 ? 1.2 : 0.8 }));
       }
-      AXES.forEach((_, i) => {
-        const xy = at(5, i);
-        svg.appendChild(mk("line", {
-          x1: CX, y1: CY, x2: xy[0].toFixed(1), y2: xy[1].toFixed(1),
-          stroke: "rgba(246,240,226,.16)", "stroke-width": 0.8
-        }));
-      });
-      shape = mk("polygon", {
-        points: AXES.map(() => CX + "," + CY).join(" "),
-        fill: "rgba(240,180,88,.24)", stroke: "#f0b458",
-        "stroke-width": 1.6, "stroke-linejoin": "round"
-      });
+      AXES.forEach((_, i) => { const xy = at(5, i); svg.appendChild(mk("line", { x1: CX, y1: CY, x2: xy[0].toFixed(1), y2: xy[1].toFixed(1), stroke: "rgba(212,173,98,.22)", "stroke-width": 0.8 })); });
+      shape = mk("polygon", { points: AXES.map(() => CX + "," + CY).join(" "), fill: "rgba(255,217,138,.22)", stroke: "#ffd98a", "stroke-width": 1.6, "stroke-linejoin": "round" });
       svg.appendChild(shape);
-      dots = AXES.map(() => {
-        const c = mk("circle", { cx: CX, cy: CY, r: 2.6, fill: "#f0b458" });
-        svg.appendChild(c);
-        return c;
-      });
+      dots = AXES.map(() => { const c = mk("circle", { cx: CX, cy: CY, r: 2.6, fill: "#ffd98a" }); svg.appendChild(c); return c; });
       AXES.forEach((label, i) => {
-        const a = rad(i), x = CX + LR * Math.cos(a), y = CY + LR * Math.sin(a), cos = Math.cos(a);
-        const t = mk("text", {
-          x: x.toFixed(1), y: (y + 4).toFixed(1),
-          "text-anchor": cos > 0.3 ? "start" : cos < -0.3 ? "end" : "middle",
-          fill: "#bcd4c4", "font-size": "11.5", "letter-spacing": "1.6",
-          "font-family": "'Zen Kaku Gothic New',sans-serif"
-        });
+        const x = CX + LR * Math.cos(rad(i)), y = CY + LR * Math.sin(rad(i)), cos = Math.cos(rad(i));
+        const t = mk("text", { x: x.toFixed(1), y: (y + 4).toFixed(1), "text-anchor": cos > 0.3 ? "start" : cos < -0.3 ? "end" : "middle",
+          fill: "#d6c6a2", "font-size": "11.5", "font-family": "'Noto Sans JP',sans-serif" });
         t.textContent = label;
         svg.appendChild(t);
       });
     }
-
     let raf = 0;
-    const paintShape = (st, t) => {
+    const paint = (st, k) => {
       if (!shape) return;
-      shape.setAttribute("points", st.map((v, i) => at(v * t, i).map((c) => c.toFixed(1)).join(",")).join(" "));
-      st.forEach((v, i) => {
-        const xy = at(v * t, i);
-        dots[i].setAttribute("cx", xy[0].toFixed(1));
-        dots[i].setAttribute("cy", xy[1].toFixed(1));
-      });
+      shape.setAttribute("points", st.map((v, i) => at(v * k, i).map((c) => c.toFixed(1)).join(",")).join(" "));
+      st.forEach((v, i) => { const xy = at(v * k, i); dots[i].setAttribute("cx", xy[0].toFixed(1)); dots[i].setAttribute("cy", xy[1].toFixed(1)); });
     };
-    // ぐっと伸びて、行き過ぎた分がきゅっと戻る（easeOutBack）。
-    const back = (p) => { const c1 = 1.2, c3 = c1 + 1, u = p - 1; return 1 + c3 * u * u * u + c1 * u * u; };
-    const growRadar = (st) => {
+    const back = (p) => { const c1 = 1.2, c3 = c1 + 1, u = p - 1; return 1 + c3 * u * u * u + c1 * u * u; };  // ぐっと伸びて、きゅっと戻る
+    const grow = (st) => {
       cancelAnimationFrame(raf);
-      if (subtle) { paintShape(st, 1); return; }
-      const t0 = performance.now(), dur = 780;
-      const step = (now) => {
-        const p = Math.max(0, Math.min(1, (now - t0) / dur));
-        paintShape(st, p < 1 ? back(p) : 1);
-        if (p < 1) raf = requestAnimationFrame(step);
-      };
+      if (reduce) { paint(st, 1); return; }
+      const t0 = performance.now();
+      const step = (now) => { const p = Math.max(0, Math.min(1, (now - t0) / 780)); paint(st, p < 1 ? back(p) : 1); if (p < 1) raf = requestAnimationFrame(step); };
       raf = requestAnimationFrame(step);
     };
-
-    // 初回は「詰所が画面に入った瞬間」に演出を走らせる（ページを開いた時点で
-    // 終わってしまうと、スクロールしてきた人が動きを見られないため）。
-    let shown = subtle || !("IntersectionObserver" in window);
-    let pending = null;
-
-    let currentId = null;
+    // 初回は、詰所が画面に入った瞬間に演出を走らせる（開いた時点で終わると見られないため）。
+    let shown = reduce || !("IntersectionObserver" in window), pending = null, current = null;
     const select = (id) => {
       const c = CAST[id];
-      if (!c || id === currentId) return;
-      currentId = id;
-      set("[data-cast-name]", c.n);
-      set("[data-cast-reading]", c.r);
-      set("[data-cast-hp]", c.hp);
-      set("[data-cast-bio]", c.bio);
-      set("[data-cast-ab]", c.ab);
-      set("[data-cast-abd]", c.abd);
-      const role = panel.querySelector("[data-cast-role]");
+      if (!c || id === current) return;
+      current = id;
+      set("[data-cast-name]", c.n); set("[data-cast-reading]", c.r); set("[data-cast-hp]", c.hp);
+      set("[data-cast-bio]", c.bio); set("[data-cast-ab]", c.ab); set("[data-cast-abd]", c.abd);
+      const role = q("[data-cast-role]", panel);
       if (role) { role.textContent = c.role; role.style.color = c.rc; }
-      if (svg) {
-        svg.setAttribute("aria-label", c.n + "の能力値。"
-          + AXES.map((a, i) => a + " " + Math.round(c.st[i])).join("、") + "（5段階）");
-      }
-      cards.forEach((b) => {
-        const on = b.dataset.char === id;
-        b.setAttribute("aria-pressed", on ? "true" : "false");
-        b.style.outline = on ? "2px solid #f0b458" : "";
-        b.style.outlineOffset = on ? "2px" : "";
-      });
+      if (svg) svg.setAttribute("aria-label", c.n + "の能力値。" + AXES.map((x, i) => x + " " + Math.round(c.st[i])).join("、") + "（5段階）");
+      cards.forEach((b) => b.setAttribute("aria-pressed", b.dataset.char === id ? "true" : "false"));
       const play = () => {
-        if (!art || subtle) {
-          if (art) { art.style.opacity = "1"; art.style.transform = "none"; }
-          growRadar(c.st);
-          return;
+        if (art && !reduce) {
+          art.style.transition = "none"; art.style.opacity = "0"; art.style.transform = "translateX(-18px)";
+          void art.offsetWidth;
+          art.style.transition = "opacity .32s ease, transform .32s ease"; art.style.opacity = "1"; art.style.transform = "none";
         }
-        art.style.transition = "none";
-        art.style.opacity = "0";
-        art.style.transform = "translateX(-22px)";
-        void art.offsetWidth;                      // 直前の値を確定させてから戻す
-        art.style.transition = "opacity .34s cubic-bezier(.2,.9,.25,1), transform .34s cubic-bezier(.2,.9,.25,1)";
-        art.style.opacity = "1";
-        art.style.transform = "none";
-        setTimeout(() => growRadar(c.st), 150);    // 立ち絵が出てから図形が伸びる
+        setTimeout(() => grow(c.st), reduce ? 0 : 140);
       };
       const run = () => { if (shown) play(); else pending = play; };
       if (!art) { run(); return; }
       art.src = "press/cast/" + id + ".webp";
       if (art.decode) art.decode().then(run).catch(run); else run();
     };
-
-    // レールを掛んで流したときは、指を離した先のカードを選ばない。
-    let down = false, downX = 0, dragged = false;
-    const railEl = q("[data-rail='cast']");
-    if (railEl) {
-      railEl.addEventListener("pointerdown", (e) => { down = true; downX = e.clientX; dragged = false; });
-      window.addEventListener("pointermove", (e) => { if (down && Math.abs(e.clientX - downX) > 6) dragged = true; });
-      window.addEventListener("pointerup", () => { down = false; setTimeout(() => { dragged = false; }, 0); });
-    }
-    cards.forEach((b) => b.addEventListener("click", () => { if (!dragged) select(b.dataset.char); }));
-    if (art && !shown) { art.style.opacity = "0"; }
+    cards.forEach((b) => b.addEventListener("click", () => select(b.dataset.char)));
     select(cards[0].dataset.char);
     if (!shown) {
       const pio = new IntersectionObserver((ents) => {
         if (!ents[0].isIntersecting) return;
-        pio.disconnect();
-        shown = true;
+        pio.disconnect(); shown = true;
         if (pending) { pending(); pending = null; }
-      }, { threshold: 0.2 });
+      }, { threshold: 0.25 });
       pio.observe(panel);
     }
   }
 
+  // ── 画面写真の拡大 ───────────────────────────────────────────────
+  const dlg = q("[data-zoom-dialog]");
+  if (dlg && typeof dlg.showModal === "function") {
+    const big = q("img", dlg);
+    qa("img[data-zoom]").forEach((img) => img.addEventListener("click", () => {
+      big.src = img.currentSrc || img.src; big.alt = img.alt;
+      dlg.showModal();
+    }));
+    dlg.addEventListener("click", () => dlg.close());
+  } else {
+    qa("img[data-zoom]").forEach((img) => img.removeAttribute("data-zoom"));
+  }
 })();
 </script>
 </body>
