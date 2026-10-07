@@ -8,6 +8,7 @@
 //  (5) ホストの開始：残り open を CPU 補填して welcome→対局が完走。
 //  (6) ホスト離脱：hostSeat が次の人間へ繰り上がる。
 //  (7) 満席：5人目は evt.lobbyFull で弾かれる。
+//  (8) 開始ゲート：introGate 付きで入室した席が intent.ready を返すまで最初の局を始めない。
 import { createSocketServer, connectSocket } from "../src/net/socketTransport.js";
 import { RoomHost } from "../src/net/onlineServer.js";
 import { ClientSession } from "../src/net/clientSession.js";
@@ -26,10 +27,10 @@ async function makeHost(opts = {}) {
   return { host, server };
 }
 // lobby=true でルーム待合室へ入る。
-async function joinLobby(server, charId, name) {
+async function joinLobby(server, charId, name, extra = {}) {
   const ep = await connectSocket("127.0.0.1", server.port);
   const c = new ClientSession(ep, { makeSeated });
-  ep.send({ type: "intent.join", charId, name, lobby: true });
+  ep.send({ type: "intent.join", charId, name, lobby: true, ...extra });
   return { ep, c };
 }
 const lastLobby = (c) => [...c.received].reverse().find((m) => m.type === "evt.lobby");
@@ -139,7 +140,23 @@ async function teardown(server, eps) { for (const ep of eps) ep.close(); await w
     await teardown(server, [...eps, e.ep]);
   }
 
-  if (failures === 0) console.log("\n✅ netlobby (単独=ホスト / 随時反映 / CPU化解除 / 権限 / 開始完走 / 繰り上がり / 満席) checks passed");
+  // --- (8) 開始ゲート：演出を閉じる(intent.ready)まで最初の局を始めない ---
+  {
+    const { host, server } = await makeHost({ startGateMs: 10000 });
+    const a = await joinLobby(server, "shiyue", "A", { introGate: true }); // ホスト
+    await until(() => lastLobby(a.c), 2000, "lobby 到着");
+    a.ep.send({ type: "intent.lobbyStart" });
+    await until(() => welcomeOf(a.c), 2000, "welcome");
+    await wait(300);
+    const started = () => a.c.received.some((m) => m.type === "handStarted");
+    assert(!started(), "ready 前は最初の局が始まらない");
+    a.ep.send({ type: "intent.ready" });
+    await until(started, 2000, "ready で最初の局が始まる");
+    assert(host.room.started, "卓が開始した");
+    await teardown(server, [a.ep]);
+  }
+
+  if (failures === 0) console.log("\n✅ netlobby (単独=ホスト / 随時反映 / CPU化解除 / 権限 / 開始完走 / 繰り上がり / 満席 / 開始ゲート) checks passed");
   else { console.error(`\n❌ ${failures} failure(s)`); process.exit(1); }
   process.exit(0);
 })();

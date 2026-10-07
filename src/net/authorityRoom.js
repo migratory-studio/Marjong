@@ -13,6 +13,7 @@ import { attachRecorder, snapshotEvent } from "./eventLog.js";
 import { redactFor } from "./redact.js";
 
 const INTENT_TIMEOUT = 15000; // ms。1手の持ち時間。超過した遠隔席は CPU 代打ち(autoSeats)へ。
+const START_GATE_TIMEOUT = 12000; // ms。開始ゲートの上限（演出を閉じない席がいても、これを過ぎたら始める）。
 const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 const meldTotal = (game) => game.players.reduce((s, p) => s + p.melds.length, 0);
 
@@ -37,6 +38,15 @@ export class AuthorityRoom {
     this.autoSeats = new Set(); // CPU 代打ち中の遠隔席（長考超過 or 本人がオート委任）。本人が "オート解除" で外す。
     this.acks = new Set();      // 現局の結果を反映済みの遠隔席
     this._ackResolve = null;
+    // 開始ゲート：対局開始演出（VS 画面）を見せるクライアントは join で申告し、演出を閉じたら
+    // intent.ready を返す。最初の局は申告席が揃って ready になってから始める（上限 startGateMs）。
+    // 演出の裏で局が進み、最初の手番の持ち時間が削られる／相手の打牌を見逃すのを防ぐ。
+    // 申告しない席（古いクライアント・テスト）と切断した席は待たない。
+    this.gateSeats = new Set(opts.startGate || []);
+    this.gateMs = opts.startGateMs ?? START_GATE_TIMEOUT;
+    this.readySeats = new Set();
+    this._gateResolve = null;
+    this.started = false;       // 最初の局を始めたか（開始前の再接続には盤面を送らない）
     this.done = false;
     for (const [seatStr, ep] of Object.entries(connections)) {
       const seat = Number(seatStr);
@@ -57,18 +67,21 @@ export class AuthorityRoom {
     const p = this.pending.get(seat);
     if (p) { this.pending.delete(seat); clearTimeout(p.timer); p.resolve(null); }
     if (this._ackResolve && this._allAcked()) { const r = this._ackResolve; this._ackResolve = null; r(); }
+    this._checkGate(); // 開始ゲート待ちの最中に抜けた席は待たない
   }
 
   // 再接続：CPU代打ち中の席を本人へ戻す。新端点を席に紐づけ、現在の盤面スナップショット(席別
   // redaction)を送ってクライアントが途中局面から再構築できるようにする。次の手番から本人が打つ。
   rejoin(seat, endpoint) {
+    this.readySeats.add(seat); // 繋ぎ直した席は演出を見終えている扱い（開始ゲートで待たない）
     this.connections[seat] = endpoint;
     this.autoSeats.delete(seat); // 本人が戻った＝代打ち解除。次の手番から本人が打つ。
     endpoint.onMessage((msg) => this._onIntent(seat, msg));
     endpoint.onClose?.(() => { if (this.connections[seat] === endpoint) this.dropSeat(seat); });
     const token = (this.seatTokens && this.seatTokens[seat]) || this.token;
     endpoint.send({ type: "welcome", seat, roster: this.roster, players: this.players, token, rules: { players: this.game.numPlayers }, rejoined: true });
-    endpoint.send(redactFor(snapshotEvent(this.game), seat));
+    // 開始前（ゲート待ち）は盤面がまだ無い。最初の局は handStarted で届く。
+    if (this.started) endpoint.send(redactFor(snapshotEvent(this.game), seat));
   }
 
   // wire Event は宛先席ごとに redaction して送る（他席の手牌/ツモは送らない＝漏洩防止）。
@@ -86,6 +99,11 @@ export class AuthorityRoom {
   }
 
   _onIntent(seat, msg) {
+    if (msg.type === "intent.ready") {
+      this.readySeats.add(seat);
+      this._checkGate();
+      return;
+    }
     if (msg.type === "intent.ack") {
       this.acks.add(seat);
       if (this._ackResolve && this._allAcked()) { const r = this._ackResolve; this._ackResolve = null; r(); }
@@ -123,6 +141,20 @@ export class AuthorityRoom {
   _waitAcks() {
     if (this._allAcked()) return Promise.resolve();
     return new Promise((resolve) => { this._ackResolve = resolve; });
+  }
+
+  // 開始ゲート：申告席のうち、まだ繋がっている席が全員 ready になったら開く。
+  _gateOpen() {
+    for (const s of this.gateSeats) if (this.isRemote(s) && !this.readySeats.has(s)) return false;
+    return true;
+  }
+  _checkGate() { if (this._gateResolve && this._gateOpen()) this._gateResolve(); }
+  _waitGate() {
+    if (this._gateOpen()) return Promise.resolve();
+    return new Promise((resolve) => {
+      const timer = setTimeout(() => this._gateResolve?.(), this.gateMs);
+      this._gateResolve = () => { clearTimeout(timer); this._gateResolve = null; resolve(); };
+    });
   }
 
   // 代打ち中の遠隔席は CPU と同じく扱う（ローカル AI で裁き、Intent を待たない）。
@@ -200,6 +232,8 @@ export class AuthorityRoom {
   // --- ヘッドレス・ポンプ（描画なし。局を跨いで1ゲーム回す） ---
   async run() {
     const g = this.game;
+    await this._waitGate(); // 対局開始演出を見終えるまで最初の局を始めない
+    this.started = true;
     g.startHand();
     this.acks.clear();
     while (true) {

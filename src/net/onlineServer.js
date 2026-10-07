@@ -3,6 +3,9 @@
 // 接続(intent.join)はまず**マッチング待機列**に入る。最大 matchWaitMs だけ他の人間プレイヤーを
 // 待ち、4人揃うか時間切れになった時点で卓を確定（空席は CPU 補填）して対局を開始する。確定時に
 // 各席へ "welcome"(席割・顔ぶれ roster・再接続トークン token) を送り、クライアントがレプリカを組む。
+// 待ち時間はブラックボックス：待機中に届くのは人数(evt.matchWaiting)だけで、締切までの残りは配らない。
+// join に introGate を付けた席は、対局開始演出を閉じて intent.ready を返すまで最初の局を待つ
+// （AuthorityRoom の開始ゲート）。
 // 切断時はその席を CPU 代打ちへ（room.dropSeat）。**リコネクト(ライト版)**：対局がメモリに生きて
 // いる間、同じ卓(=同じ DO / 同じ RoomHost)へ `intent.rejoin{token}` で繋ぎ直すと、席を遠隔へ戻し
 // （CPU解除）現在の盤面スナップショットを送って本人がプレイを再開できる。
@@ -87,7 +90,8 @@ export class RoomHost {
       if (!msg) return;
       if (msg.type === "intent.join") {
         // charId=使用キャラ / name=ユーザー名 / dan=段位 / oshi=推しキャラID（表示用。欠落しうる）。
-        const info = { charId: msg.charId, name: msg.name, dan: msg.dan, oshi: msg.oshi };
+        // introGate=対局開始演出を見せるので、閉じたら intent.ready を返す（開始ゲートで待ってほしい）。
+        const info = { charId: msg.charId, name: msg.name, dan: msg.dan, oshi: msg.oshi, introGate: !!msg.introGate };
         // lobby=true（ルーム対戦）はホスト主導の待合室へ。未指定（マッチング対戦）は従来の自動待機列へ。
         if (msg.lobby) this._lobbyJoin(connection, info, opts);
         else this._enqueue(connection, info, opts);
@@ -126,6 +130,7 @@ export class RoomHost {
     this.slots[idx] = {
       type: "human", conn: connection,
       charId: info.charId, name: info.name ?? null, dan: info.dan ?? null, oshi: info.oshi ?? null,
+      introGate: !!info.introGate,
     };
     // 待合室中の離脱のみ面倒を見る（開始後は AuthorityRoom.dropSeat が担当・slots=null で no-op）。
     connection.onClose?.(() => this._lobbyLeave(connection));
@@ -186,7 +191,8 @@ export class RoomHost {
     });
     const connections = {};
     slots.forEach((s, seat) => { if (s.type === "human") connections[seat] = s.conn; });
-    const room = new AuthorityRoom(game, connections, this.opts || {});
+    const startGate = slots.flatMap((s, seat) => (s.type === "human" && s.introGate ? [seat] : []));
+    const room = new AuthorityRoom(game, connections, { ...(this.opts || {}), startGate });
     room.roster = roster;
     room.players = playersInfo;
     room.seatTokens = {};
@@ -204,11 +210,11 @@ export class RoomHost {
   }
 
   // 待機バッチへ着席。満席＝即開始 / 待機時間ゼロ＝即開始 / それ以外は締切タイマーで人間を待つ。
-  // info = { charId, name, dan }（name/dan は表示用・任意）。文字列だけ渡されても charId として受ける。
+  // info = { charId, name, dan, oshi, introGate }（charId 以外は任意）。文字列だけ渡されても charId として受ける。
   _enqueue(connection, info, opts) {
     this.opts = opts;
     const meta = (typeof info === "string") ? { charId: info } : (info || {});
-    const entry = { connection, charId: meta.charId, name: meta.name ?? null, dan: meta.dan ?? null, oshi: meta.oshi ?? null };
+    const entry = { connection, charId: meta.charId, name: meta.name ?? null, dan: meta.dan ?? null, oshi: meta.oshi ?? null, introGate: !!meta.introGate };
     this.waiting.push(entry);
     // 待機中の離脱のみ面倒を見る（現バッチに居る間だけ）。開始後の席は AuthorityRoom 側(dropSeat)が担当。
     connection.onClose?.(() => {
@@ -223,12 +229,12 @@ export class RoomHost {
     if (this.waiting.length >= CAPACITY) { this._start(); return; } // 人間だけで満席
     if (waitMs <= 0) { this._start(); return; }                     // 待機なし（テスト/ループバック）
     if (this.timer == null) this.timer = setTimeout(() => this._start(), waitMs);
-    this._broadcastWaiting(waitMs);
+    this._broadcastWaiting();
   }
 
-  _broadcastWaiting(waitMs) {
+  // 待機中の人数だけを配る（締切までの残り時間は配らない＝CPU 補填のタイミングはブラックボックス）。
+  _broadcastWaiting() {
     const msg = { type: "evt.matchWaiting", joined: this.waiting.length, capacity: CAPACITY };
-    if (waitMs != null) msg.waitMs = waitMs;
     for (const w of this.waiting) w.connection.send(msg);
   }
 
@@ -247,7 +253,8 @@ export class RoomHost {
       const h = seats[seat];
       return h ? { charId, name: h.name, dan: h.dan, oshi: h.oshi } : { charId, cpu: true };
     });
-    const room = new AuthorityRoom(game, connections, this.opts || {});
+    const startGate = seats.flatMap((s, seat) => (s.introGate ? [seat] : []));
+    const room = new AuthorityRoom(game, connections, { ...(this.opts || {}), startGate });
     room.roster = roster;
     room.players = playersInfo; // リコネクト時の welcome にも載せられるよう保持
     room.seatTokens = {};

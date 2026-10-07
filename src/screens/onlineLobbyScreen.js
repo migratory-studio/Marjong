@@ -104,9 +104,10 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
   head.querySelector(".online-back").onclick = () => { audio?.playClick?.(); root._cleanup(); onBack(); };
 
   const note = elt("p", "online-note");
+  // 空席を埋めるまでの待ち時間はブラックボックス（秒数は書かない）。
   note.textContent = isRoom
-    ? "※ 同じあいことばの相手と同卓します。最大30秒待っても揃わなければ空席に CPU が入ります。"
-    : "※ 開始すると相手を探します。最大30秒待っても揃わなければ空席に CPU が入ります。";
+    ? "※ 同じあいことばの相手と同卓します。"
+    : "※ 開始すると、相棒と一緒に対戦相手を探します。人が揃わなかった席には、居合わせた雀士が飛び入りで座ります。";
   root.appendChild(note);
 
   const body = elt("div", "online-body");
@@ -179,7 +180,7 @@ export function showOnlineLobby(root, { mode, characters, audio, onStart, onBack
   footer.appendChild(startBtn);
   root.appendChild(footer);
 
-  // 雀士を選べば開始可能。実際の相手探し（最大30秒待ち→空席CPU補填）は開始後にサーバ側で行う。
+  // 雀士を選べば開始可能。実際の相手探し（人を待ち→空席は飛び入り＝CPU補填）は開始後にサーバ側で行う。
   const updateStart = () => { startBtn.disabled = !pickedId; };
   startBtn.onclick = () => {
     if (startBtn.disabled) return;

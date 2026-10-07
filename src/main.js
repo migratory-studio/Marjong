@@ -123,9 +123,10 @@ let matchVoiceState = null; // { companionBonds, history } のスナップショ
 let lastHandResult = null;  // 「前の局」の結果 "agari"|"dealIn"|"tsumoLoss"|"draw"（対局をまたいで保持）
 
 // 対局開始前に呼ぶ。現在の profile から相棒絆・履歴のスナップショットを作る（同期 vline 用）。
-async function primeMatchVoiceState() {
+// 呼び出し側が読み込み済みの profile を渡せば、それを使う（読み直しの往復を省く）。
+async function primeMatchVoiceState(profile = null) {
   try {
-    const p = await profileRepo.loadProfile();
+    const p = profile || await profileRepo.loadProfile();
     matchVoiceState = { companionBonds: p?.companionBonds || {}, history: p?.playerHistory || {} };
   } catch { matchVoiceState = null; }
   lastHandResult = null;
@@ -649,7 +650,8 @@ let reconnecting = false; // 再接続シーケンス中フラグ
 let reconnectTimer = null;
 let matchmaking = null; // マッチング探索中の状態 { base, room, mode, charId, name, dan, attempt }（welcome で解除）
 let roomLobby = null; // ルーム対戦の待合室中の状態 { ep, code, api, myCharId }（welcome で解除）
-let matchCountdownTimer = null; // 探索オーバーレイの「あとX秒」カウントダウン
+let matchSearchTalkTimer = null; // 探索オーバーレイで相棒が言い直すまでのタイマー（残り時間は出さない）
+let matchSearchJoined = 1;       // 探索オーバーレイが最後に見た待機人数（増えたら相棒が反応する）
 let onlineSeatInfo = null; // 通信対戦の席ごと表示情報 [{charId,name,dan}|{charId,cpu}]（welcome で受領）
 // 通信対戦の手番/待機 UI 状態。
 let onlineTurnSeat = null;      // 直近の evt.turn の席（手番中の席）。
@@ -4110,7 +4112,8 @@ async function openOnlineLobby(mode, opts = {}) {
       // どちらもサーバ側で人間が揃うか時間切れまで待ってから開始する（空席は CPU 補填）。
       // マッチング部屋名は **バージョン付き**: サーバ挙動を変えたら番号を上げ、古いコードを保持した
       // 既存 Durable Object（退避まで旧コードのまま動く）を確実に避けてフレッシュな DO に入る。
-      const room = mode === "room" ? `room-${code}` : "match2";
+      // match3 = 待ち時間を配らない（ブラックボックス）＋開始ゲート（intent.ready）。
+      const room = mode === "room" ? `room-${code}` : "match3";
       startMatchmaking(charId, base, room, mode);
     },
   });
@@ -4128,13 +4131,14 @@ async function enterRoomLobby(opts = {}) {
   selectedPlayers = 4; selectedRounds = 1; // テスト中は4人東風固定
 
   // 自分の表示情報（ユーザー名/段位/推し）を join に同梱（startMatchmaking と同じ取得）。
-  let name = null, dan = 1, oshi = null;
+  let name = null, dan = 1, oshi = null, prof = null;
   try {
-    const p = await profileRepo.loadProfile();
+    const p = prof = await profileRepo.loadProfile();
     name = normalizeUsername(p?.profile?.displayName || "") || null;
     dan = describeRank(p?.onlineRank || defaultRankState()).dan;
     oshi = topCompanionId(p?.companionBonds);
   } catch { /* 未ログイン等は名無しで参加 */ }
+  await primeMatchVoiceState(prof); // 相棒の絆・履歴（VS 画面のひと言／局中セリフの段階解放に使う）
 
   let myCharId = (CHARACTERS[0] && CHARACTERS[0].id) || null; // 既定キャラ（待合室で変更可）
   const ov = (typeof window !== "undefined") ? window.__ONLINE_WS_URL : undefined;
@@ -4166,7 +4170,8 @@ async function enterRoomLobby(opts = {}) {
   if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ: 強制切断テスト用
   ep.onMessage(onlineClientMessage); // evt.lobby→待合室更新 / welcome→対局へ
   ep.onClose?.(() => handleWsClose(ep)); // 切断時は既存の再接続/終了ハンドラへ委譲（待合室中は online=null で no-op）
-  ep.send({ type: "intent.join", charId: myCharId, name, dan, oshi, lobby: true });
+  // introGate: VS 画面を閉じたら intent.ready を返す（権威はそれまで最初の局を始めない）。
+  ep.send({ type: "intent.join", charId: myCharId, name, dan, oshi, lobby: true, introGate: true });
 }
 
 // 待合室の操作を権威へ送る（待合室中のみ。roomLobby が無ければ no-op）。
@@ -4247,11 +4252,19 @@ function startOnlineClientWS() {
 }
 
 // 通信対戦の対局開始画面。各席の「ユーザー名＋段位（推し＝持ちキャラの立ち絵）」を VS カードで見せる。
-// 親決め演出（Phase B）はオンラインでは権威が決めるためスキップし、完了で対局画面を表に出す。
+// 人が揃わなかった席（CPU）は“飛び入り”の雀士としてキャラ本人が名乗り、着席のひと言を添える。
+// 相棒（自分の操作キャラ）は吹き出しで、飛び入りが座った卓ならそれに触れ、人だけで揃えば通常の対局前のひと言。
+// 親決め演出（Phase B）はオンラインでは権威が決めるためスキップし、完了で対局画面を表に出して
+// 権威へ ready を返す（開始ゲート＝最初の局はここから始まる）。
 function showOnlineMatchIntro(seated) {
+  let walkIns = 0;
   const labels = seated.map((s, i) => {
     const info = onlineSeatInfo?.[i];
-    if (!info || info.cpu) return { name: s.character.name, sub: "CPU", cpu: true };
+    if (i !== humanIndex && (!info || info.cpu)) {
+      walkIns++;
+      return { name: s.character.name, sub: "飛び入り", cpu: true, line: pickVoiceLine(s.character.id, "walkIn") };
+    }
+    if (!info) return null; // 席情報の無い旧サーバ（保険）＝通常の札で出す
     // 推し＝相手が送ってきた最高絆キャラ。無ければこの対局の持ちキャラで代用。
     const oshiChar = (info.oshi && CHARACTERS.find((c) => c.id === info.oshi)) || s.character;
     return {
@@ -4262,6 +4275,8 @@ function showOnlineMatchIntro(seated) {
       you: i === humanIndex,
     };
   });
+  const me = seated[humanIndex]?.character;
+  const introLine = me ? (walkIns ? vline(me.id, "walkInsSeated") : introLineFor(me)) : null;
   showScreen("match-intro-screen");
   showMatchIntro(el("match-intro-screen"), {
     seated,
@@ -4270,9 +4285,20 @@ function showOnlineMatchIntro(seated) {
     dealerIndex: humanIndex, // skipSeating なので親決めには使われない
     audio,
     labels,
+    introLine,
     skipSeating: true,
-    onComplete: () => { showScreen("game-screen"); render(); },
+    // ready を先に返す（最初の局はこれで始まる）。局が届く前なら render は何もしない。
+    onComplete: () => { sendOnlineReady(); showScreen("game-screen"); render(); },
   });
+}
+
+// VS 画面を閉じた＝権威の開始ゲートへ ready を返す。相手の VS 画面待ちで最初の局がすぐ来ないときだけ
+// 「通信待機中…」を出す（局間の待ちと同じ見せ方。handStarted で hideOnlineWaitToast が引っ込める）。
+function sendOnlineReady() {
+  if (!online?.ws) return;
+  online.send({ type: "intent.ready" });
+  clearTimeout(ackWaitTimer);
+  ackWaitTimer = setTimeout(() => { if (online && game && !game.handNumber) showOnlineWaitToast(); }, ACK_WAIT_DELAY);
 }
 
 // マッチング開始（テスト中）。サーバへ接続して待機列に入り、人間が揃うか時間切れで対局が始まる。
@@ -4284,13 +4310,14 @@ async function startMatchmaking(charId, base, room, mode) {
   selectedTeamBattle = false; selectedPairBattle = false;
   selectedPlayers = 4; selectedRounds = 1;
   // 自分の表示情報（ユーザー名・段位・推し）を join に同梱して、相手の対局開始画面/卓上にも出せるように。
-  let name = null, dan = 1, oshi = null;
+  let name = null, dan = 1, oshi = null, prof = null;
   try {
-    const p = await profileRepo.loadProfile();
+    const p = prof = await profileRepo.loadProfile();
     name = normalizeUsername(p?.profile?.displayName || "") || null;
     dan = describeRank(p?.onlineRank || defaultRankState()).dan;
     oshi = topCompanionId(p?.companionBonds);
   } catch { /* 未ログイン等は名前なしで参加（CPU同様 名無し扱い） */ }
+  await primeMatchVoiceState(prof); // 相棒の絆・履歴（探索中のひと言／VS 画面／局中セリフの段階解放に使う）
   matchmaking = { base, room, mode, charId, name, dan, oshi, attempt: 0 };
   connectMatchmaking();
 }
@@ -4317,7 +4344,8 @@ async function connectMatchmaking() {
   if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ: 強制切断テスト用
   ep.onMessage(onlineClientMessage); // matchWaiting→探索表示 / welcome→beginGame(client化) / 以降 wire Event
   ep.onClose?.(() => handleWsClose(ep));
-  ep.send({ type: "intent.join", charId: mm.charId, name: mm.name, dan: mm.dan, oshi: mm.oshi });
+  // introGate: VS 画面を閉じたら intent.ready を返す（権威はそれまで最初の局を始めない）。
+  ep.send({ type: "intent.join", charId: mm.charId, name: mm.name, dan: mm.dan, oshi: mm.oshi, introGate: true });
 }
 
 // 相棒絆が最も育っているキャラID（=よく使う相棒/推し）。level優先→exp。無ければ null。
@@ -4397,37 +4425,56 @@ function showReconnectOverlay(text) {
 }
 
 // --- マッチング探索オーバーレイ（接続後〜welcome までの「相手を探しています」表示） ---
+// 相手探しは「相棒と一緒に待つ時間」：操作キャラの立ち絵が隣に立ち、間をおいてひと言（queueWait）、
+// 誰か来たら反応する（queueJoin）。人が揃わなかった席は VS 画面で“飛び入り”が埋めるが、それまでの
+// 残り時間は出さない（ブラックボックス。サーバも配らない）。
+const MATCH_SEARCH_TALK_EVERY = 13000; // ms。相棒が言い直す間隔
 function showMatchSearchOverlay() {
   let ov = el("match-search-overlay");
   if (!ov) { ov = document.createElement("div"); ov.id = "match-search-overlay"; ov.className = "reconnect-overlay"; (el("app") || document.body).appendChild(ov); }
+  const buddy = CHARACTERS.find((c) => c.id === matchmaking?.charId) || null;
   ov.innerHTML =
-    `<div class="reconnect-card match-search-card">` +
+    `<div class="reconnect-card match-search-card${buddy ? " has-buddy" : ""}">` +
+    (buddy ? `<div class="ms-buddy"></div>` : "") +
+    `<div class="ms-main">` +
+    (buddy ? `<div class="ms-talk" id="match-search-talk"></div>` : "") +
     `<div class="match-search-title">対戦相手を探しています<span class="online-dots"></span></div>` +
     `<div class="match-search-count"><span id="match-search-joined">1</span> / 4 人</div>` +
-    `<div class="match-search-sub" id="match-search-sub">空席は時間内に揃わなければ CPU が入ります</div>` +
     `<div class="reconnect-btns"><button class="ghost-back" id="match-search-cancel">← やめる</button></div>` +
-    `</div>`;
+    `</div></div>`;
+  if (buddy) {
+    const art = ov.querySelector(".ms-buddy");
+    art.style.setProperty("--char", buddy.color || "#f6b352");
+    fillPortrait(art, buddy);
+  }
   el("match-search-cancel").onclick = () => { audio?.playClick?.(); cancelMatchmaking(); };
+  matchSearchJoined = 1;
+  sayMatchSearch("queueWait");
+}
+// 相棒の吹き出しを差し替え、間をおいて次の queueWait を予約する（誰か来たら queueJoin で割り込む）。
+function sayMatchSearch(event) {
+  clearTimeout(matchSearchTalkTimer); matchSearchTalkTimer = null;
+  const box = el("match-search-talk");
+  const id = matchmaking?.charId;
+  if (!box || !id) return;
+  const text = vline(id, event);
+  if (text) {
+    box.textContent = text;
+    box.classList.remove("pop");
+    void box.offsetWidth; // 言い直すたびにふわっと出し直す
+    box.classList.add("pop");
+  }
+  matchSearchTalkTimer = setTimeout(() => sayMatchSearch("queueWait"), MATCH_SEARCH_TALK_EVERY);
 }
 function updateMatchSearchOverlay(info) {
+  if (info.joined == null) return;
   const j = el("match-search-joined");
-  if (j && info.joined != null) j.textContent = info.joined;
-  if (info.waitMs != null) startMatchCountdown(info.waitMs);
-}
-function startMatchCountdown(ms) {
-  clearInterval(matchCountdownTimer);
-  let remain = Math.ceil(ms / 1000);
-  const sub = el("match-search-sub");
-  const tick = () => {
-    if (sub) sub.textContent = remain > 0 ? `あと約 ${remain} 秒で開始（空席は CPU が入ります）` : "まもなく開始…";
-    if (remain <= 0) { clearInterval(matchCountdownTimer); matchCountdownTimer = null; return; }
-    remain -= 1;
-  };
-  tick();
-  matchCountdownTimer = setInterval(tick, 1000);
+  if (j) j.textContent = info.joined;
+  if (info.joined > matchSearchJoined) sayMatchSearch("queueJoin"); // 誰か来た（減ったときは数字だけ）
+  matchSearchJoined = info.joined;
 }
 function hideMatchSearchOverlay() {
-  clearInterval(matchCountdownTimer); matchCountdownTimer = null;
+  clearTimeout(matchSearchTalkTimer); matchSearchTalkTimer = null;
   el("match-search-overlay")?.remove();
 }
 // 探索を中止してオンライン入口へ戻る。
@@ -5776,6 +5823,9 @@ function updateModelAnswerHud() {
 }
 
 function render() {
+  // 通信対戦の開始ゲート中（VS 画面を閉じてから最初の局が届くまで）は牌山がまだ無い。届けば
+  // handStarted→STATE_CHANGED で描かれるので、それまでは描かない（卓へのホバー等で落ちないように）。
+  if (!game?.wall) return;
   renderer.setHighlights({
     riichiMode,
     riichiKinds: riichiKindsNow(),

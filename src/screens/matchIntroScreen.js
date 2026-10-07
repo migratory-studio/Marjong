@@ -157,7 +157,7 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
       const role = roleDef(c.role);
       const i = seated.indexOf(s);
       const isHuman = i === humanIndex;
-      const label = labels?.[i] || null; // 通信対戦: { name(ユーザー名), sub(段位 or "CPU"), cpu, you }
+      const label = labels?.[i] || null; // 通信対戦: { name(ユーザー名), sub(段位 or "飛び入り"), cpu, you, line(飛び入りのひと言) }
       const card = document.createElement("div");
       card.className = `mi-card${isHuman ? " is-human" : ""}${label ? " mi-card-online" : ""}`;
       card.style.setProperty("--role", role.color);
@@ -173,11 +173,18 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
             <div class="mi-card-username"></div>
             <div class="mi-card-dan${isCpu ? " is-cpu" : ""}"></div>
             ${isCpu ? "" : `<div class="mi-card-oshi">推し <b style="color:${oshiColor}"></b></div>`}
+            ${isCpu && label.line ? `<div class="mi-card-line mi-walkin-line"></div>` : ""}
             ${label.you ? `<div class="mi-card-you">YOU</div>` : ""}
           </div>`;
         card.querySelector(".mi-card-username").textContent = label.name || "名無し"; // 入力値は textContent で安全に
         card.querySelector(".mi-card-dan").textContent = label.sub || "";
         if (!isCpu) card.querySelector(".mi-card-oshi b").textContent = oshiName;
+        if (isCpu) {
+          // 飛び入り＝キャラ本人が座っている。名前をキャラ色にし（人のユーザー名と見分けられる）、着席のひと言を添える。
+          card.classList.add("is-walkin");
+          card.querySelector(".mi-card-username").style.color = c.color;
+          if (label.line) card.querySelector(".mi-walkin-line").textContent = `「${label.line}」`;
+        }
       } else {
         card.innerHTML = `
           <div class="mi-card-art"></div>
@@ -376,7 +383,9 @@ export function showMatchIntro(host, { seated, humanIndex = 0, mode = {}, dealer
   });
   // 相棒のひと言があるときは、読み切れるぶんだけ VS カードを長めに見せる（クリックで先送り可）。
   const talkMs = introLine && !isGrouped ? Math.min(2200, 600 + introLine.length * 45) : 0;
-  const autoToSeating = 700 + 200 * animTargets.length + 1400 + talkMs;
+  // 通信対戦：飛び入りの着席のひと言ぶんも少し長く（権威は開始ゲートで待つので、持ち時間は削らない）。
+  const walkInMs = Math.min(1600, (labels || []).reduce((n, l) => n + (l?.line?.length || 0), 0) * 25);
+  const autoToSeating = 700 + 200 * animTargets.length + 1400 + talkMs + walkInMs;
   after(autoToSeating, () => {
     if (finished || phase !== "versus") return;
     if (skipSeating) { finish(); return; } // 通信対戦: 着席/親決めを省いてそのまま対局へ

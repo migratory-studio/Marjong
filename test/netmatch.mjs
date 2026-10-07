@@ -4,7 +4,10 @@
 //  (1) 時間切れフォールバック：1人で join → matchWaitMs 経過 → 1人＋CPU3 で開始（席0）。
 //  (2) 複数人マッチング：2人が締切内に join → 同卓（席0/1）＋CPU2、最後まで完走。
 //  (3) 満席で即開始：4人 join で締切を待たず即開始。
-//  (4) 探索中は evt.matchWaiting（待機人数）が届く。
+//  (4) 探索中は evt.matchWaiting（待機人数）が届く。締切までの残り(waitMs)は配らない（ブラックボックス）。
+//  (6) 開始ゲート：introGate 付きで join した席が intent.ready を返すまで最初の局を始めない。
+//  (7) 開始ゲートの上限：ready が来なくても startGateMs で始める。
+//  (8) 開始ゲートは申告席だけ待つ：申告なしの席（古いクライアント）は待たない／切断した席も待たない。
 import { createSocketServer, connectSocket } from "../src/net/socketTransport.js";
 import { RoomHost } from "../src/net/onlineServer.js";
 import { ClientSession } from "../src/net/clientSession.js";
@@ -23,13 +26,14 @@ async function makeHost(opts) {
   server.onConnection((conn) => host.handle(conn, { timeout: 4000, pacing: { cpuDelay: 10, nakiWait: 5 }, ...opts }));
   return { host, server };
 }
-async function joinClient(server, charId) {
+async function joinClient(server, charId, extra = {}) {
   const ep = await connectSocket("127.0.0.1", server.port);
   const c = new ClientSession(ep, { makeSeated });
-  ep.send({ type: "intent.join", charId });
+  ep.send({ type: "intent.join", charId, ...extra });
   return { ep, c };
 }
 const welcomeOf = (c) => c.received.find((m) => m.type === "welcome");
+const handStartedOf = (c) => c.received.find((m) => m.type === "handStarted");
 // net.Server.close は既存接続が閉じるまで待つ。後片付けはクライアントを閉じてからサーバを閉じる。
 async function teardown(server, eps) { for (const ep of eps) ep.close(); await wait(30); await server.close(); }
 
@@ -89,6 +93,8 @@ async function teardown(server, eps) { for (const ep of eps) ep.close(); await w
     const b = await joinClient(server, "kuidoshi");
     await until(() => a.c.received.filter((m) => m.type === "evt.matchWaiting").some((m) => m.joined === 2), 2000, "2人目で joined=2 が配信");
     await until(() => host.room != null, 3000, "締切で開始");
+    const waits = [...a.c.received, ...b.c.received].filter((m) => m.type === "evt.matchWaiting");
+    assert(waits.length > 0 && waits.every((m) => !("waitMs" in m)), "matchWaiting に締切までの残り(waitMs)を載せない");
     await teardown(server, [a.ep, b.ep]);
   }
 
@@ -115,7 +121,45 @@ async function teardown(server, eps) { for (const ep of eps) ep.close(); await w
     await teardown(server, [a.ep, b.ep, cc.ep]);
   }
 
-  if (failures === 0) console.log("\n✅ netmatch (待機→時間切れCPU / 複数人同卓 / 満席即開始 / 進捗通知 / 常設マッチメイカー) checks passed");
+  // --- (6) 開始ゲート：演出を閉じる(intent.ready)まで最初の局を始めない ---
+  {
+    const { host, server } = await makeHost({ matchWaitMs: 0, startGateMs: 10000 });
+    const a = await joinClient(server, "shiyue", { introGate: true });
+    await until(() => welcomeOf(a.c), 2000, "ゲート席に welcome");
+    await wait(300);
+    assert(!handStartedOf(a.c), "ready 前は handStarted が来ない（演出の裏で局が進まない）");
+    assert(host.room && !host.room.started, "ready 前は卓が開始前のまま");
+    const t0 = Date.now();
+    a.ep.send({ type: "intent.ready" });
+    await until(() => handStartedOf(a.c), 2000, "ready で最初の局が始まる");
+    assert(Date.now() - t0 < 1500, "ready を受けてすぐ始まる");
+    await teardown(server, [a.ep]);
+  }
+
+  // --- (7) 開始ゲートの上限：ready が来なくても startGateMs で始める ---
+  {
+    const { server } = await makeHost({ matchWaitMs: 0, startGateMs: 250 });
+    const a = await joinClient(server, "shiyue", { introGate: true });
+    await until(() => welcomeOf(a.c), 2000, "ゲート席に welcome");
+    await until(() => handStartedOf(a.c), 3000, "ready なしでも上限で始まる");
+    await teardown(server, [a.ep]);
+  }
+
+  // --- (8) 申告席だけ待つ／切断した席は待たない ---
+  {
+    const { host, server } = await makeHost({ matchWaitMs: 300, startGateMs: 10000 });
+    const a = await joinClient(server, "shiyue", { introGate: true });
+    const b = await joinClient(server, "kuidoshi");        // 申告なし（古いクライアント相当）
+    await until(() => welcomeOf(a.c) && welcomeOf(b.c), 3000, "2人に welcome");
+    await wait(300);
+    assert(!handStartedOf(b.c), "申告席(a)が ready 前なら、申告なしの席(b)にも局は始まらない");
+    a.ep.close();                                          // 申告席が演出中に抜けた
+    await until(() => handStartedOf(b.c), 3000, "抜けた申告席は待たずに始まる");
+    assert(host.room.started, "卓が開始した");
+    await teardown(server, [b.ep]);
+  }
+
+  if (failures === 0) console.log("\n✅ netmatch (待機→時間切れCPU / 複数人同卓 / 満席即開始 / 進捗通知(残り時間なし) / 常設マッチメイカー / 開始ゲート) checks passed");
   else { console.error(`\n❌ ${failures} failure(s)`); process.exit(1); }
   process.exit(0);
 })();

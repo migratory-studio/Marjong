@@ -3998,6 +3998,14 @@ button.secondary { color: var(--ink); }
   border-radius: 999px; padding: 2px 12px; letter-spacing: .04em;
 }
 .mi-card-dan.is-cpu { color: var(--muted); border-color: #3a5446; background: rgba(58,84,70,.25); }
+/* 飛び入り（人が揃わなかった席に座ったキャラ本人）の着席のひと言。札が出そろってから一拍おいて出る。
+   ひと言の長さで札の丈が変わるので、飛び入りのいる卓は札の丈をそろえる（上端が揃う）。 */
+.mi-cards:has(.is-walkin) { align-items: stretch; }
+.mi-card-line.mi-walkin-line {
+  margin: 6px auto 0; max-width: 170px; font-size: 12px; font-weight: 700;
+  opacity: 0; animation: miWalkinLineIn .4s 1.05s ease-out forwards;
+}
+@keyframes miWalkinLineIn { from { opacity: 0; transform: translateY(4px); } to { opacity: .95; transform: none; } }
 .mi-card-oshi { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .mi-card-oshi b { font-weight: 800; }
 
@@ -5536,11 +5544,39 @@ button.primary.danger:hover { color: #ffbcbc; }
 #online-screen .menu-list { flex-direction: row; flex-wrap: wrap; justify-content: center; max-width: 100%; gap: 12px; }
 #online-screen .menu-btn { flex: 1 1 0; min-width: 180px; align-items: center; text-align: center; gap: 4px; padding: 16px 18px; }
 #online-screen .menu-btn-sub { font-size: 12px; }
-/* マッチング探索オーバーレイ（reconnect-overlay/-card を流用） */
+/* マッチング探索オーバーレイ（reconnect-overlay/-card を流用）。相手探しは相棒と一緒に待つ：
+   左に操作キャラの立ち絵、右に吹き出し＋人数。空席を埋めるまでの残り時間は出さない（ブラックボックス）。 */
 .match-search-card { text-align: center; min-width: 280px; }
 .match-search-title { font-weight: 800; color: var(--ink); font-size: 17px; }
 .match-search-count { margin-top: 10px; font-size: 26px; font-weight: 800; color: var(--accent); }
-.match-search-sub { margin-top: 6px; color: var(--muted); font-size: 12px; min-height: 1.2em; }
+.match-search-card.has-buddy {
+  flex-direction: row; align-items: stretch; gap: 0; padding: 0; overflow: hidden;
+  width: 620px; max-width: calc(100% - 32px);
+}
+.ms-buddy {
+  position: relative; flex: 0 0 230px; min-height: 310px;
+  background: radial-gradient(120% 80% at 50% 120%, color-mix(in srgb, var(--char, var(--accent)) 24%, transparent), #0e1813 72%);
+  border-right: 1px solid #2a3f34;
+}
+.ms-buddy .self-portrait, .ms-buddy .self-portrait-fb { position: absolute; inset: 0; }
+.ms-main {
+  flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; padding: 24px 28px;
+}
+.has-buddy .match-search-count { margin-top: 0; }
+.ms-talk {
+  position: relative; align-self: stretch; min-height: 3.1em; margin-bottom: 6px;
+  background: #fff8ec; color: #2a1d12; font-size: 14px; font-weight: 700; line-height: 1.55; text-align: left;
+  border-radius: 12px; padding: 10px 14px; box-shadow: 0 8px 22px #000a;
+  text-wrap: pretty; /* 「♪」だけが次の行に落ちる、のような泣き別れを避ける */
+}
+.ms-talk::before {
+  content: ""; position: absolute; right: 100%; top: 18px;
+  border: 8px solid transparent; border-right-color: #fff8ec;
+}
+.ms-talk:empty { visibility: hidden; }
+.ms-talk.pop { animation: msTalkIn .32s ease-out both; }
+@keyframes msTalkIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: none; } }
 .online-mm-bar {
   margin-top: 12px; height: 8px; border-radius: 999px; background: #0e1813; overflow: hidden;
 }
@@ -7145,7 +7181,7 @@ button.primary.danger:hover { color: #ffbcbc; }
   position: absolute; left: 50%; bottom: calc(100% + 14px);
   width: max-content; max-width: 250px; padding: 9px 13px; border-radius: 12px;
   background: #fff8ec; color: #2a1d12; font-size: 13.5px; font-weight: 700; line-height: 1.5;
-  box-shadow: 0 8px 22px #000a; z-index: 4;
+  box-shadow: 0 8px 22px #000a; z-index: 4; text-wrap: pretty;
   opacity: 0; transform: translateX(-50%) translateY(6px);
   animation: miTalkIn .4s .8s ease-out forwards;
 }
