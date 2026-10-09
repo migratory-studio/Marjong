@@ -3448,6 +3448,21 @@ button.secondary:hover { background: rgba(246,179,82,.12); }
 
 /* ---- naki call banner (ポン/チー/カン) + point deltas ---- */
 .naki-fx, .point-fx { position: absolute; inset: 0; pointer-events: none; z-index: 25; }
+
+/* ---- スプライトエフェクト（購入素材：空想曲線「ゲームエフェクト素材 01」）----
+   コマ送りは src/ui/spriteFx.js、選定（どの瞬間に・どれを・どの色で）は src/data/effectMaster.js。
+   卓の上の演出は #sprite-fx（同じ z の #naki-fx より DOM が前＝席テロップの文字を隠さない）。
+   ダメージカードの行・立ち絵・カットインの演出は、その要素の子として足す（揺れや撤収に追従する）。 */
+.sprite-fx { position: absolute; inset: 0; pointer-events: none; z-index: 25; overflow: hidden; }
+.sfx { position: absolute; z-index: 6; pointer-events: none; background-repeat: no-repeat; }
+/* デバッグ（window.__fxWire）：素材を描かず、枠と名前・コマ番号だけ（位置と尺の確認用）。 */
+.sfx.sfx-wire { outline: 2px dashed #3cf; outline-offset: -2px; background-color: rgba(60, 200, 255, .08); }
+.sfx.sfx-wire::after {
+  content: attr(data-fx) " #" attr(data-frame); position: absolute; left: 4px; top: 3px;
+  font: 700 11px/1.2 monospace; color: #7fe3ff; text-shadow: 0 0 3px #000, 0 0 3px #000; white-space: nowrap;
+}
+/* 子としてエフェクトを足す要素（位置の基準になるように）。 */
+.bond-gain, .draw-card { position: relative; }
 .naki-call {
   position: absolute; transform: translate(-50%, -50%) scale(0.4);
   font-size: 52px; font-weight: 900; color: #fff;

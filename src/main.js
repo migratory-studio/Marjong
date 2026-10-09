@@ -91,6 +91,8 @@ import { isDebugMode } from "./app/debug.js";
 import { applyMatchToCompanion, addCompanionBondExp, detectPlayStyle, topPlayStyle, bondPtView, bondProgressFrac, bondTotalExp } from "./progression/companionBond.js";
 import { bondBandLabel } from "./progression/progressionService.js";
 import { emoteDef } from "./data/emoteMaster.js";
+import { FX_CUES, ABILITY_FX, cueSheetId, fxSheetsForTable } from "./data/effectMaster.js";
+import { playFx, preloadFx } from "./ui/spriteFx.js";
 import { versionLabel, buildEnvReport } from "./config/appInfo.js";
 import { showSupportModal, showResetConfirm } from "./screens/supportModal.js";
 import { initErrorGuard } from "./app/errorGuard.js";
@@ -471,6 +473,32 @@ function reactSeat(pi, kind) {
 // 卓の全員がいっせいに反応するとき（あなたのリーチ等）は、少しずつずらして“ざわっ”とさせる。
 function reactAllSeats(kind) {
   Object.keys(seatBustEls).forEach((pi, i) => setTimeout(() => reactSeat(Number(pi), kind), 90 * i));
+}
+
+// ── 局中の出来事を見張って出すスプライトエフェクト ─────────────────────────────
+// 真守 由紀「放銃、いたしません」— 超危険（赤）と見えていた牌を切り、それが通った瞬間だけ緑の結界。
+// 読みが守った一打を一度だけ絵にする（当たったときは被ダメ演出と「見えていました」が受け持つ）。
+// 自分の手番の情報（自席の危険度）だけで描く＝対人戦でも出る（docs §7 ルール1）。
+let mamoriPassTile = null; // 赤を切って「通るか」を待っている牌 id
+function setupFxWatch(g) {
+  mamoriPassTile = null;
+  doraLastStandShown = false;
+  const passed = () => {
+    if (mamoriPassTile == null) return;
+    const id = mamoriPassTile;
+    mamoriPassTile = null;
+    const cue = abilityCue("danger-sense", "pass");
+    if (!fxAtRiverTile(id, cue, {}, { tag: "mamoriPass" })) fxAtSeat(humanIndex, cue, {}, { tag: "mamoriPass" }); // 鳴かれて河から消えたら席に
+  };
+  g.bus.on(Events.HAND_STARTED, () => { mamoriPassTile = null; });
+  g.bus.on(Events.HAND_WON, () => { mamoriPassTile = null; }); // ロンされた（通らなかった）／誰かが和了った
+  g.bus.on(Events.HAND_DRAWN, () => { mamoriPassTile = null; });
+  g.bus.on(Events.TILE_DISCARDED, ({ player, tile }) => {
+    if (!player || player.index !== humanIndex || !tile || !humanHasAbility("danger-sense")) return;
+    mamoriPassTile = (currentDanger()?.get(tile.kind) || 0) >= 3 ? tile.id : null;
+  });
+  g.bus.on(Events.TILE_DRAWN, passed);  // 次の人がツモった＝誰もロンしなかった
+  g.bus.on(Events.MELD_CALLED, passed); // 鳴かれても、当たってはいない
 }
 
 function setupSeatReactions(g) {
@@ -4854,6 +4882,7 @@ function beginGame(seated, dealerIndex, opts = {}) {
     : null;
   if (typeof window !== "undefined") { window.__game = game; window.__renderer = renderer; window.__audio = audio; window.__teamBattleData = teamBattleData; window.__pairBattleData = pairBattleData; window.__tbFx = showTeamBattleDamageFx; window.__showGameOver = showGameOver; window.__showHandResult = showHandResult; window.__activeVoiceSet = activeVoiceSet; } // debug handle
 
+  preloadMatchFx(); // 卓のキャラぶんのスプライトエフェクトを先読み（低優先度・待たない）
   game.bus.on(Events.STATE_CHANGED, () => render());
   // SE: random dahai sound whenever anyone discards (incl. the human)
   game.bus.on(Events.TILE_DISCARDED, () => audio.playDahai());
@@ -4887,6 +4916,7 @@ function beginGame(seated, dealerIndex, opts = {}) {
     riichiWaitFlag = true;
     audio.playVoice(player.character.id, "riichi");
     showRiichiFx(player.index);
+    fxAtSeat(player.index, FX_CUES.riichiWave, { actor: player.character }, { tag: "riichi" }); // 宣言した席から、その人の色の波紋
     // 楼光の館：リーチ宣言で最大HPの5%を消費（点棒＝HPの独自スケールでは供託0＝ここで実HPを削る）。
     if (pairBattleData?.isRoguelite) {
       const seat = player.index;
@@ -4907,6 +4937,8 @@ function beginGame(seated, dealerIndex, opts = {}) {
     // type is "pon"/"chi"/"kan" — used as the voice key; falls back to shared naki SE.
     audio.playVoice(player.character.id, type);
     showNakiFx(player.index, type);
+    // カンだけは卓に叩きつける重さを足す（ポン・チーは頻度が高いのでテロップだけ）。
+    if (type === "kan") fxAtSeat(player.index, FX_CUES.kanImpact, { actor: player.character }, { tag: "kan" });
   });
   // 北抜き (三麻): ポン/チーと同系の発声演出（キャラの "kita" ボイス→無ければ共有 naki SE
   // ＋席テロップ「北」）。抜いた本人はこの後もう一度行動するので、CPU はその再行動を
@@ -4921,10 +4953,12 @@ function beginGame(seated, dealerIndex, opts = {}) {
     abilityCutInFlag = true;
     audio.playVoice(player.character.id, "ability"); // no clip -> shared naki SE
     showAbilityCutIn(player, name, enemyNoteFor(player, abilityId, params));
+    playAbilityCastFx(player, abilityId, params); // カットインの立ち絵に、そのキャラの絵を重ねる
   });
   // 局中マイクロ反応（自分の状況に応じた一言をバストアップのセリフ枠へ）。
   setupMatchTalk(game);
   setupSeatReactions(game); // 卓を囲む相手の芝居（リーチ・和了・放銃・あなたのリーチへの反応）
+  setupFxWatch(game);       // 局中の出来事を見張って出すスプライトエフェクト（真守の「通した」など）
 
   showScreen("game-screen");
   // 前局の結果画面が右サイドを「立ち絵＋セリフ」枠に転用したまま（side-result）だと、
@@ -5894,6 +5928,8 @@ function showHandResult() {
         <div class="win-buttons"></div>
       </div>`;
     maybeAbyssCollectTalk(r);
+    // カリュブディスにとって流局は和了＝蒐集した局のカードに渦を巻かせる（楼光の館でも数字を出さずに伝わる）。
+    if (abyssCollectSeat(r) >= 0) fxOnEl(abilityCue("abyss-collection", "collect"), overlay.querySelector(".draw-card"), {}, { fy: 0.42, delay: 220, tag: "abyssCollect" });
     appendNextButton(overlay.querySelector(".win-buttons"), r); // r を渡す（ノーテン罰符の適用に必要）
     return;
   }
@@ -5919,6 +5955,7 @@ function showHandResult() {
     audio.playNaki();
     showWinCallFx(r.winner, callType);
   }
+  playWinCallFx(r); // ロン＝放銃した席に和了者の色の衝撃／ツモ＝和了者の席から衝撃波
   setTimeout(() => {
     const overlay = el("win-overlay");
     overlay.classList.remove("hidden");
@@ -6163,6 +6200,10 @@ function showWinResult(overlay, r) {
         paintScoreFx(fxEl, s, false);
         void fxEl.offsetWidth; fxEl.classList.add("show");
       }
+      // 点数を動かした能力の絵を点数に重ねる（焔＝炎／蓮＝泥に沈む・咲く／ネビュラ＝半分…）。
+      const sfx = abilityCue(s.abilityId, up ? "scoreUp" : "scoreDown");
+      // 点数の数字の奥（.win-body の z3 より下）に出す＝変わっていく数字を隠さない。
+      if (sfx && scoreEl) fxOnEl(sfx, scoreEl, { actor: game.players[s.seat]?.character }, { host: overlay.querySelector(".win-rich"), z: 2, tag: `score:${s.abilityId}` });
       audio.playPip?.(up ? 2600 : 360, up ? 0.45 : 0.5);
       winRevealTimer = setTimeout(stepOne, 1150);
     };
@@ -6315,6 +6356,8 @@ function appendNextButton(box, r) {
       if (pairBattleData && deltas && deltas.some((d) => d)) applyPairDrawSettlement(deltas);
       applyRogueliteNotenPenalty(r); // 楼光：荒牌平局のノーテン罰符＝HPダメージ（カリュブディス3倍）
       releaseHpHold(); // 個人戦：止めていた右のボードをここで精算後（テンパイ料）へ動かす
+      // テンパイ料も点棒＝HPの増減。個人戦はボードの行に打撃／回復を当てる（団体戦・ペア戦はHPが動かない）。
+      if (!teamBattleData && !pairBattleData) hpBoardFx(deltas);
       proceed({ floats: true });
     }
   });
@@ -6386,6 +6429,114 @@ function showPointFx(deltas) {
     fx.appendChild(e);
     requestAnimationFrame(() => e.classList.add("show"));
     setTimeout(() => e.remove(), 1800);
+  });
+}
+
+// ── スプライトエフェクト（購入素材：空想曲線「ゲームエフェクト素材 01」）────────────────
+// 「どの瞬間に・どれを・どの色で」は src/data/effectMaster.js（FX_CUES / ABILITY_FX）、コマ送りは
+// src/ui/spriteFx.js。ここは「どこに出すか」（席・牌・行・立ち絵）だけを持つ。選定の理由と規約は
+// docs/sprite-effects.md。どれも進行を待たない＝重ねるだけ（連戦のテンポを殺さない）。
+// who＝{ actor, winner }（キャラ定義）。キューの色が "@actor"/"@winner" のとき、その人の色で引く。
+// z / before … 重なり順（文字や立ち絵の奥に置きたいとき。既定は host の中で一番手前）。
+function playCue(cue, host, x, y, who = {}, { delay = 0, tag = "", z = null, before = null } = {}) {
+  const id = cue && host ? cueSheetId(cue, who) : null;
+  if (!id) return;
+  playFx(id, { host, x, y, size: cue.size, speed: cue.speed || 1, delay: (cue.delay || 0) + delay, opacity: cue.opacity ?? 1, z, before, tag });
+}
+const abilityCue = (abilityId, key) => (abilityId && ABILITY_FX[abilityId]?.[key]) || null;
+// target の中心（fx/fy は割合）を host の中の座標で返す。offset 系で測る＝ステージの縮小・縦持ちの
+// 回転・揺れのアニメに左右されない。host は target の offsetParent をたどった先（position のある祖先）。
+function centerIn(host, target, fx = 0.5, fy = 0.5) {
+  let x = 0, y = 0, n = target;
+  while (n && n !== host) { x += n.offsetLeft; y += n.offsetTop; n = n.offsetParent; }
+  if (n !== host || !target.offsetWidth) return null;
+  return { x: x + target.offsetWidth * fx, y: y + target.offsetHeight * fy };
+}
+// 要素 target の上にキューを出す（host＝位置の基準。既定は target 自身＝その子として足す）。
+function fxOnEl(cue, target, who = {}, { host = target, fx = 0.5, fy = 0.5, delay = 0, tag = "", z = null, before = null } = {}) {
+  if (!cue || !target || !host) return;
+  const p = host === target ? { x: `${fx * 100}%`, y: `${fy * 100}%` } : centerIn(host, target, fx, fy);
+  if (p) playCue(cue, host, p.x, p.y, who, { delay, tag, z, before });
+}
+// 卓の席（ポン/リーチの席テロップと同じ位置＝相手は立ち絵の胸元、自分は手牌の上）。
+function fxAtSeat(playerIndex, cue, who = {}, opts = {}) {
+  if (!cue || !game || playerIndex == null || !game.players[playerIndex]) return;
+  const pos = seatFxPos(visualSeat(playerIndex));
+  playCue(cue, el("sprite-fx"), pos.left, pos.top, who, opts);
+}
+// 卓の上の1点（canvas 座標）。field=true は傾いた卓の面（河・山・ドラ表示）。
+function fxAtTable(cx, cy, cue, who = {}, { field = false, ...opts } = {}) {
+  const pos = cue ? tablePointAt(cx, cy, { field }) : null;
+  if (pos) playCue(cue, el("sprite-fx"), pos.x, pos.y, who, opts);
+}
+// 自分の手牌の1枚／自分の河の1枚（河は見つかったら true）。
+function fxAtHandTile(tileId, cue, who = {}, opts = {}) {
+  const hb = (renderer?.handHitboxes || []).find((h) => h.tileId === tileId);
+  if (hb) fxAtTable(hb.x + hb.w / 2, hb.y + hb.h / 2, cue, who, opts);
+}
+function fxAtRiverTile(tileId, cue, who = {}, opts = {}) {
+  const hb = (renderer?.riverHitboxes || []).find((h) => h.tileId === tileId);
+  if (hb) fxAtTable(hb.x + hb.w / 2, hb.y + hb.h / 2, cue, who, { ...opts, field: true });
+  return !!hb;
+}
+// 自席の持続レイヤー（#ability-aura）のいまのパネルの上。
+function fxOnAura(cue, who = {}, opts = {}) {
+  const host = el("ability-aura");
+  const panel = host?.firstElementChild;
+  if (panel) fxOnEl(cue, panel, who, { host, ...opts });
+}
+// 卓に着くキャラ全員ぶん（団体戦の控え・ペア戦の4人も）のアトラスを先読みする（低優先度）。
+function preloadMatchFx() {
+  if (!game) return;
+  const chars = new Set(game.players.map((p) => p.character));
+  for (const t of teamBattleData?.teams || []) for (const c of t.chars || []) chars.add(c);
+  for (const c of pairBattleData?.chars || []) chars.add(c);
+  preloadFx(fxSheetsForTable([...chars].filter(Boolean)));
+}
+
+// 和了の一撃：ロン＝放銃した人の席に、和了者の色の衝撃（撃ち抜かれた）／ツモ＝和了者の席から
+// 衝撃波（3人いっぺんに払わされる）。席テロップ・カットインと同時に出す。
+function playWinCallFx(r) {
+  const winner = game?.players?.[r?.winner]?.character;
+  if (!winner) return;
+  if (r.tsumo) fxAtSeat(r.winner, FX_CUES.tsumoWave, { winner }, { tag: "tsumoWave" });
+  else if (r.loser != null) fxAtSeat(r.loser, FX_CUES.ronHit, { winner }, { tag: "ronHit" });
+}
+
+// 能力の発動：カットインの立ち絵に、そのキャラの絵を重ねる（ABILITY_FX[id].cast）。相手を縛る能力
+// （沈黙の処方箋）は、カットインが引いた頃に縛られた相手の席にも出す。カットインの撤収で一緒に消える。
+function playAbilityCastFx(player, abilityId, params, host = el("ability-cutin")) {
+  if (!player) return;
+  const set = ABILITY_FX[abilityId];
+  const who = { actor: player.character };
+  const cast = set ? set.cast : FX_CUES.castFallback;
+  const band = host?.querySelector(".cutin-band");
+  if (cast && band) {
+    const art = band.querySelector(".cutin-portrait");
+    const p = (art && centerIn(band, art, 0.5, 0.42)) || { x: "74%", y: "46%" };
+    playCue(cast, band, p.x, p.y, who, { delay: 170, tag: `cast:${abilityId}` }); // 立ち絵が滑り込み終える頃
+  }
+  if (set?.target && params?.targetIndex != null) fxAtSeat(params.targetIndex, set.target, who, { tag: `target:${abilityId}` });
+}
+
+// ── 点棒＝HP の手応え ──
+// ダメージカードの1行：その人の顔（団体戦/ペア戦の行は名前）に当てる。行は揺れるので行の子に足す。
+function dmgRowFx(row, cue, opts = {}) {
+  if (!row || !cue) return;
+  const face = row.querySelector(".dmg-face, .tb-dmg-name");
+  fxOnEl(cue, face || row, {}, { host: row, ...opts });
+}
+// 右の相棒の立ち絵（個人戦）。自分が削られたら立ち絵にも当たる＝相棒が一緒に食らう（ひるむ芝居と同時）。
+function portraitHitFx(big) {
+  if (!selfStageVisible()) return;
+  playCue(big ? FX_CUES.portraitHitBig : FX_CUES.portraitHit, el("self-stage"), "50%", "40%", {}, { tag: "portraitHit" });
+}
+// 右のHPボードの行（カードを出さない局）。削られた行に打撃、増えた行に回復。
+function hpBoardFx(deltas) {
+  (deltas || []).forEach((d, i) => {
+    const row = hpCells?.[i]?.cell;
+    if (!d || !row) return;
+    fxOnEl(d < 0 ? FX_CUES.boardHit : FX_CUES.boardHeal, row.querySelector(".hp-icon") || row, {}, { host: row, tag: d < 0 ? "boardHit" : "boardHeal" });
   });
 }
 
@@ -6491,6 +6642,11 @@ function maybeLotusBloomFx(overlay, r, res) {
   const hasLotus = (winner?.character?.abilities || []).some((a) => a.abilityId === "muddy-lotus");
   if (!hasLotus) return;
   overlay.classList.add("lotus-bloom");
+  // 泥の水面から開く蓮（CSS の .win-rich::after・0.5s 後に開く）に、桃の回復の光を重ねる。
+  setTimeout(() => {
+    const rich = overlay.classList.contains("lotus-bloom") ? overlay.querySelector(".win-rich") : null;
+    if (rich) playCue(abilityCue("muddy-lotus", "bloom"), rich, "50%", "78%", {}, { z: 2, tag: "lotusBloom" }); // 役・点数（z3）の奥
+  }, 480);
   if (r.winner !== humanIndex) return;
   const text = vline(winner.character.id, "lotusBloom", {});
   if (text) setTimeout(() => showSpeakerText(winner.character, text, { duration: 3200 }), 900);
@@ -6691,6 +6847,8 @@ function showRoguelitePenaltyFx({ targets = [], onDone } = {}) {
       row.classList.add("flash");
       const busted = after <= 0;
       if (!busted) row.classList.add("shake");
+      dmgRowFx(row, (before - after) / (max || 1) >= 0.35 || busted ? FX_CUES.dmgHitBig : FX_CUES.dmgHit, { tag: "dmgHit" });
+      if (busted) dmgRowFx(row, FX_CUES.dmgKO, { delay: 620, tag: "ko" });
       row.querySelector(".dmg-pop")?.classList.add("show");
       tweenNum(row.querySelector(".dmg-hp-num"), before, after, 850);
       if (busted) {
@@ -6714,6 +6872,8 @@ function playQuickDamage(r, { hd, spText, reaction }, onDone) {
   audio.playSe(sePath("ボウリングのピンを倒す1.mp3"), hd < 0 ? 0.8 : 0.45);
   releaseHpHold();
   showPointFx(r.deltas || []);
+  hpBoardFx(r.deltas);                // 右のHPボード：削られた行に打撃、増えた行に回復
+  if (hd < 0) portraitHitFx(hd <= -8000); // 相棒の立ち絵にも当たる
   if (spText) showSelfTalk(spText, talkDwellMs(spText) + 800);
   if (reaction) reactPortrait(reaction);
   if (hd < 0) shakeScreen("sm");
@@ -6875,10 +7035,20 @@ function showDamageFx(r, onDone) {
     // 飛んだら小さく。和了だけの局は揺らさない。
     if (hd < 0) shakeScreen(hd <= -8000 || human.points < 0 ? "lg" : "sm");
     else if (someoneBusted) shakeScreen("sm");
+    if (hd < 0) portraitHitFx(hd <= -8000 || human.points < 0); // 相棒の立ち絵にも当たる
     host.querySelectorAll(".dmg-row").forEach((row) => {
       const i = +row.dataset.i;
       const before = +row.dataset.before, after = +row.dataset.after;
       const a = vis(after, i);
+      // 点棒＝HP の手応え：和了者の行は回復、削られた行は打撃（大きな被弾は連打）。守り切った行は
+      // 守りの絵（盾／結界）、呪われた行は防御力ダウンを、膜がかかる瞬間（+360ms）に重ねる。
+      const rowDelta = after - before;
+      const rowGuard = guardOf(i), rowCurse = curseOf(i);
+      if (i === r.winner) { if (rowDelta > 0) dmgRowFx(row, FX_CUES.dmgHeal, { tag: "dmgHeal" }); }
+      else if (!rowGuard && rowDelta < 0) dmgRowFx(row, rowDelta <= -8000 || after < 0 ? FX_CUES.dmgHitBig : FX_CUES.dmgHit, { tag: "dmgHit" });
+      if (rowGuard) dmgRowFx(row, abilityCue(guardDefOfSeat(i)?.id, "guard"), { delay: 360, tag: "guard" });
+      if (rowCurse) dmgRowFx(row, abilityCue(curseDefOfSeat(i)?.id, "curse"), { delay: 360, tag: "curse" });
+      if (i !== r.winner && after < 0) dmgRowFx(row, FX_CUES.dmgKO, { delay: 620, tag: "ko" });
       // 守り切った席：「本来の失点 → 守りの膜が呑む → 実際の増減」を重ねて見せる
       // （回避された未来を一度だけ実体化させる／§8-1）。揺らさない＝受け止めた。
       // ★ここで return してはいけない。凌雲の超越帯（stripMitigation>0）は「盾が剥がれつつ
@@ -7112,6 +7282,9 @@ function showTeamBattleDamageFx(r, onDone) {
       const down = i !== r.winner && after <= 0;
       if (i !== r.winner) row.classList.add("flash");
       if (i !== r.winner && !down) row.classList.add("shake");
+      // 打撃（最大HPの35%以上・撃沈は連打）＋撃沈は白い衝撃。和了者の行はHPが増えないので回復は出さない。
+      if (i !== r.winner && after < before) dmgRowFx(row, (before - after) / (full || 1) >= 0.35 || down ? FX_CUES.dmgHitBig : FX_CUES.dmgHit, { tag: "dmgHit" });
+      if (down) dmgRowFx(row, FX_CUES.dmgKO, { delay: 620, tag: "ko" });
       row.querySelector(".tb-dmg-delta")?.classList.add("show");
       const numEl = row.querySelector(".tb-dmg-num");
       if (numEl) tweenNum(numEl, before, after, 850, fmtNum);
@@ -7406,6 +7579,9 @@ function showPairBattleDamageFx(r, onDone) {
       const down = i !== r.winner && after <= 0;
       if (i !== r.winner) row.classList.add("flash");
       if (i !== r.winner && !down) row.classList.add("shake");
+      // 打撃（最大HPの35%以上・ダウンは連打）＋ダウンは白い衝撃（団体戦と同じ）。
+      if (i !== r.winner && after < before) dmgRowFx(row, (before - after) / (full || 1) >= 0.35 || down ? FX_CUES.dmgHitBig : FX_CUES.dmgHit, { tag: "dmgHit" });
+      if (down) dmgRowFx(row, FX_CUES.dmgKO, { delay: 620, tag: "ko" });
       row.querySelector(".tb-dmg-delta")?.classList.add("show");
       const numEl = row.querySelector(".tb-dmg-num");
       if (numEl) tweenNum(numEl, before, after, 850, fmtNum);
@@ -7493,6 +7669,7 @@ function showFlyingCutIn(flyEvents, onDone) {
   </div>`;
   host.classList.remove("hidden");
   requestAnimationFrame(() => host.classList.add("show", "fly-cut-mode"));
+  fxOnEl(FX_CUES.dmgKO, host.querySelector(".fly-cut"), {}, { fy: 0.45, delay: 60, tag: "ko" }); // 撃沈の白い衝撃
   audio.playSe(sePath("布団に倒れ込む.mp3"), 1.0);                       // 撃沈
   setTimeout(() => audio.playSe(sePath("金額表示.mp3"), 1.0), 620);      // 親満払いを叩きつけ
   let done = false;
@@ -7612,6 +7789,7 @@ function playDoraFlash() {
   fx.style.top = `${pos.y}px`;
   wrap.appendChild(fx);
   setTimeout(() => fx.remove(), 700);
+  fxAtTable(a.x, a.y, abilityCue("dora-pull", "reveal"), {}, { field: true, tag: "doraReveal" }); // 金の閃光
 }
 
 let lastLuckyFxTileId = null;
@@ -7839,6 +8017,7 @@ function syncGardenAura(p) {
   if (!auraFx.moon && (n >= 13 || (held >= 12 && humanShanten() === 0))) {
     auraFx.moon = true;
     panel.insertAdjacentHTML("beforeend", `<span class="garden-moon"></span>`);
+    fxOnAura(abilityCue("rootou", "moon"), {}, { tag: "moon" }); // 満月が昇る光
     showSeatCall(humanIndex, "……揃うと、いいな", "step-call");
   }
 }
@@ -7923,6 +8102,7 @@ function syncLotusAura() {
   // 水位が引く＝沈殿を吸い上げた＝蓮が咲いた瞬間。上がるときは静かに、引くときだけ咲かせる。
   if (auraFx.sunk > 0 && sunk < auraFx.sunk) {
     panel.classList.add("bloom");
+    fxOnAura(abilityCue("muddy-lotus", "auraBloom"), {}, { tag: "lotusAura" });
     setTimeout(() => panel.classList.remove("bloom"), 900);
   }
   panel.classList.toggle("has-mud", sunk > 0);
@@ -7965,6 +8145,7 @@ function syncFlameAura(p) {
   // 満位に届いた瞬間だけ一度あおる（届いてからは静かに燃え続ける＝連戦のテンポを殺さない）。
   if (heat >= HOMURA_FUEL_MAX && auraFx.heat < HOMURA_FUEL_MAX) {
     panel.classList.add("flare");
+    fxOnAura(abilityCue("homura", "flare"), {}, { tag: "flare" }); // 火柱に届いた
     setTimeout(() => panel.classList.remove("flare"), 700);
   }
   panel.classList.toggle("blaze", heat >= HOMURA_FUEL_MAX);
@@ -7985,7 +8166,10 @@ function syncPotAura() {
   auraFx.kind = "kakeha";
   // 局が終わって自分が和了れなかった＝賭け金は戻らない。灰にして結末を見せる。
   const r = game.lastResult;
-  panel.classList.toggle("ash", game.phase === Phase.HAND_OVER && !!r && r.winner !== humanIndex);
+  const ash = game.phase === Phase.HAND_OVER && !!r && r.winner !== humanIndex;
+  // 賭け金が灰になった瞬間（張った局が実らなかった）に、紫の下降を一度だけ。
+  if (ash && !panel.classList.contains("ash") && (auraFx.pot || 0) > 0) fxOnAura(abilityCue("kakeha-bet", "betLost"), {}, { tag: "betLost" });
+  panel.classList.toggle("ash", ash);
   const bet = humanAbilityStatus("kakeha-bet")?.pot?.bet || 0;
   if (bet === auraFx.pot) return;
   const stack = panel.querySelector(".pot-stack");
@@ -7999,6 +8183,7 @@ function syncPotAura() {
   auraFx.pot = bet;
 }
 
+let doraLastStandShown = false; // 背水の天啓のエフェクトを出したか（対局ごと・setupFxWatch で戻す）
 // ドラニエル「天啓ドラ寄せ」— 積み上げた確定ドラの札束と、四開槓の崖（docs §11-2-4 #2#3#4）。
 // 崖は能力の諸刃そのものなのに、いまは「ボタンが黙って押せなくなる」だけで伝わらない。
 // 札束は発動していない局も出す＝崖の監視そのものが彼女の卓上の役割だから。
@@ -8014,6 +8199,8 @@ function syncDoraAura() {
   const d = humanAbilityStatus("dora-pull")?.dora || null;
   const stacked = d?.stacked || 0;
   const stand = d?.lastStand || 0;
+  // 背水の天啓に入った瞬間（持ち点が閾値を割った）に金の上昇を一度だけ。対局をまたいで持ち越さない。
+  if (stand > 0 && !doraLastStandShown) { doraLastStandShown = true; requestAnimationFrame(() => fxOnAura(abilityCue("dora-pull", "lastStand"), {}, { tag: "lastStand" })); }
   const left = Math.max(0, 5 - (d?.revealed ?? 1)); // あと何枚めくれば四開槓の域か
   const key = `${stacked}/${stand}/${left}/${d?.blocked ? 1 : 0}`;
   panel.classList.toggle("cliff", !!d?.blocked || left <= 1);
@@ -8100,6 +8287,7 @@ function maybeAbyssDenyFx() {
   if (!w.includes(drawn.kind)) return;
   lastAbyssFxTileId = p.drawnTileId;
   playTileFx(drawn.id, "fx-abyss");
+  fxAtHandTile(drawn.id, abilityCue("abyss-collection", "deny"), {}, { tag: "abyssDeny" }); // 渦に呑まれる
   const line = vline(p.character.id, "abyssDeny", {});
   if (line) setTimeout(() => showSelfTalk(line), 500);
 }
@@ -8162,6 +8350,7 @@ function playLuxReserveFx() {
   dot.style.top = `${pos.y}px`;
   wrap.appendChild(dot);
   luxPointEl = dot;
+  fxAtTable(a.x, a.y, abilityCue("zero-search", "reserve"), {}, { field: true, tag: "luxReserve" }); // 山を照らして捕捉
 }
 // 回収: 予約した牌を引いた瞬間、光点がその牌へ流れ込んで消える（＋シアンのツモFX）。
 function maybePlayLuxCaptureFx() {
@@ -8178,9 +8367,11 @@ function maybePlayLuxCaptureFx() {
     luxPointEl = null;
     setTimeout(() => { dot.style.opacity = "0"; playTileFx(drawn.id, "fx-scan"); }, 430);
     setTimeout(() => dot.remove(), 700);
+    fxAtHandTile(drawn.id, abilityCue("zero-search", "capture"), {}, { delay: 400, tag: "luxCapture" }); // 光点が届いた瞬間に雷で確保
   } else {
     clearLuxPoint();
     playTileFx(drawn.id, "fx-scan");
+    fxAtHandTile(drawn.id, abilityCue("zero-search", "capture"), {}, { tag: "luxCapture" });
   }
 }
 
@@ -8208,6 +8399,10 @@ function playRecallSwapFx(riverTileId, drawnTileId) {
   };
   fly(river, hand, "in");  // 河の牌 → 手牌（取り戻す）
   fly(hand, river, "out"); // ツモ牌 → 河（手放す＝ロンされない牌になる）
+  // 取引の両端で回転を一度ずつ（手放す側→取り戻す側の順）。
+  const swap = abilityCue("recall-deal", "swap");
+  playCue(swap, el("sprite-fx"), hand.x, hand.y, {}, { tag: "recallOut" });
+  playCue(swap, el("sprite-fx"), river.x, river.y, {}, { delay: 120, tag: "recallIn" });
 }
 
 // 「該当なし」の告知 — 1シャンテンなのに、聴牌を確定できる有効牌が山に尽きている状態。
@@ -8261,8 +8456,10 @@ function bumpSprintStep() {
   if (!humanAbilityActive("chunchan")) return;
   auraFx.steps++;
   showSeatCall(humanIndex, STEP_WORDS[Math.min(auraFx.steps, STEP_WORDS.length) - 1], "step-call");
+  const rushNow = auraFx.steps >= 3 && !auraFx.rush;
   if (auraFx.steps >= 3) auraFx.rush = true;
   updateAbilityAura();
+  if (rushNow) fxOnAura(abilityCue("chunchan", "rush"), {}, { tag: "rush" }); // 「疾走」バッジが点いた瞬間の一閃
 }
 // 聴牌に届いた瞬間の一閃（画面を横切る風）。春嬋の口癖「間に合わせる」の回収。
 function playSprintFlash() {
@@ -8272,6 +8469,7 @@ function playSprintFlash() {
   fx.className = "sprint-flash";
   wrap.appendChild(fx);
   setTimeout(() => fx.remove(), 620);
+  playCue(abilityCue("chunchan", "tenpai"), el("sprite-fx"), "50%", "52%", {}, { tag: "sprint" }); // 卓を横切る風の斬撃
   showSeatCall(humanIndex, "——間に合った", "step-call");
 }
 
@@ -8291,6 +8489,20 @@ function showWinCutIn(playerIndex, type) {
     variant: "band",
     dur: WIN_CALL_WAIT.mangan - 100,
   });
+  playManganBoltFx(el("ability-cutin"));
+}
+// 満貫以上：横帯が止まる頃に、「ロン／ツモ」の大書きの真後ろへ金の稲妻＝大物手の雷鳴
+// （デバッグの演出プレビューと共用）。帯は skew＋横スライドで入ってくるので、文字の位置は
+// レイアウト上の寸法（offset 系＝変形に左右されない）から組み、帯の子として文字の手前（＝奥側）に差し込む。
+function playManganBoltFx(host) {
+  const band = host?.querySelector('.cutin-band[data-variant="band"]');
+  const text = band?.querySelector(".cutin-text");
+  if (!band || !text) return;
+  const cs = getComputedStyle(band);
+  const art = band.querySelector(".cutin-portrait, .cutin-portrait-fallback");
+  const gap = parseFloat(cs.columnGap) || 0;
+  const x = (parseFloat(cs.paddingLeft) || 0) + (art ? art.offsetWidth + gap : 0) + text.offsetWidth / 2;
+  playCue(FX_CUES.manganBolt, band, x, band.offsetHeight / 2, {}, { delay: 150, tag: "manganBolt", z: "auto", before: text });
 }
 
 // 役満専用の特別演出（長尺・新演出）。回転する金光・立ち絵の立ち上がり・「役満」の
@@ -8315,6 +8527,14 @@ function renderYakumanInto(host, character, type, { title, name }, dur) {
       </div>
     </div>`;
   host.classList.remove("hidden");
+  // 役満：開幕の白フラッシュに合わせて、和了者の色の衝撃波が画面いっぱいに広がる。
+  // 金光のレイ・白フラッシュより手前、立ち絵と「役満」の大書きより奥に差し込む（文字を隠さない）。
+  const ym = host.querySelector(".yakuman-fx");
+  if (ym) {
+    const under = { z: "auto", before: ym.querySelector(".ym-portrait") };
+    playCue(FX_CUES.yakumanWave, ym, "50%", "52%", { winner: c }, { delay: 120, tag: "yakumanWave", ...under });
+    playCue(FX_CUES.yakumanFlash, ym, "50%", "46%", { winner: c }, { tag: "yakumanFlash", ...under });
+  }
   host._cutinTimer = setTimeout(() => {
     host.classList.add("hidden");
     host.innerHTML = "";
@@ -8331,6 +8551,15 @@ function showYakumanCutIn(playerIndex, type, data) {
 // 呼ぶだけ＝ゲーム本体と同じ描画パスを通すので、見た目は実機と一致する。
 const DBG_YAKUMAN = ["国士無双", "天和", "大三元", "四暗刻", "字一色", "緑一色", "清老頭", "九蓮宝燈", "四槓子", "国士無双十三面待ち"];
 const DBG_YM_TITLE = ["役満", "ダブル役満", "数え役満"];
+
+// デバッグメニューのスプライト演出の選択肢（共通の瞬間＋能力ごと）。
+function dbgSfxOptions() {
+  const opt = (v, label) => `<option value="${v}">${esc(label)}</option>`;
+  const common = Object.keys(FX_CUES).map((k) => opt(`cue/${k}`, `共通: ${k}`));
+  const abil = Object.entries(ABILITY_FX).flatMap(([id, set]) =>
+    Object.entries(set).filter(([, cue]) => cue).map(([k]) => opt(`${id}/${k}`, `${abilityDef(id).name}: ${k}`)));
+  return [...common, ...abil].join("");
+}
 
 function showDebugMenu() {
   document.getElementById("debug-menu")?.remove();
@@ -8359,6 +8588,10 @@ function showDebugMenu() {
       <div class="dbg-row"><label>役満 特別演出</label><select class="dbg-ymtitle">${opts(DBG_YM_TITLE)}</select><select class="dbg-ym">${opts(DBG_YAKUMAN)}</select>
         <button type="button" class="dbg-btn dbg-mini" data-fx="yakuman-ron">ロン</button>
         <button type="button" class="dbg-btn dbg-mini" data-fx="yakuman-tsumo">ツモ</button></div>
+      <div class="dbg-sec">スプライト演出（購入エフェクト・src/data/effectMaster.js）</div>
+      <div class="dbg-row"><label>演出</label><select class="dbg-sfx">${dbgSfxOptions()}</select>
+        <button type="button" class="dbg-btn dbg-mini dbg-sfx-play">再生</button>
+        <label class="dbg-check"><input type="checkbox" class="dbg-sfx-wire"> 枠だけ</label></div>
       <div class="dbg-sec">栞 模範解答スキルLv</div>
       <div class="dbg-row"><label>Lv（次の対局から）</label><select class="dbg-ma-lv">
         <option value="">既定（Lv5）</option>
@@ -8418,6 +8651,16 @@ function showDebugMenu() {
   }
   const CENTER = { left: "50%", top: "50%" };
   const curChar = () => CHARACTER_MASTER.find((c) => c.id === charSel.value) || CHARACTER_MASTER[0];
+  // スプライト演出の単体再生。色が "@actor/@winner" のものは上で選んだキャラの色で引く。
+  const sfxSel = ov.querySelector(".dbg-sfx");
+  const sfxWire = ov.querySelector(".dbg-sfx-wire");
+  if (sfxWire) { sfxWire.checked = !!window.__fxWire; sfxWire.onchange = () => { window.__fxWire = sfxWire.checked; }; }
+  ov.querySelector(".dbg-sfx-play")?.addEventListener("click", () => {
+    const [group, key] = (sfxSel?.value || "").split("/");
+    const cue = group === "cue" ? FX_CUES[key] : abilityCue(group, key);
+    const ch = curChar();
+    playCue(cue, nakiHost, "72%", "50%", { actor: ch, winner: ch }, { tag: `dbg:${sfxSel.value}` });
+  });
 
   const play = (fx) => {
     const ch = curChar();
@@ -8426,6 +8669,7 @@ function showDebugMenu() {
       const ab = ch.abilities?.[0]?.abilityId;
       audio.playVoice(ch.id, "ability");
       playCutIn(ch, { charLabel: ch.name, bigLabel: (ab && abilityDef(ab)?.name) || "能力発動", variant: "bold", dur: ABILITY_CUTIN_WAIT, host: cutinHost });
+      playAbilityCastFx({ character: ch }, ab, {}, cutinHost);
     } else if (fx === "riichi") {
       audio.playVoice(ch.id, "riichi");
       spawnCall(nakiHost, CENTER, "リーチ", "naki-call riichi-call");
@@ -8441,6 +8685,7 @@ function showDebugMenu() {
     } else if (fx.startsWith("mangan")) {
       audio.playWinHit();
       playCutIn(ch, { charLabel: ch.name, bigLabel: type === "tsumo" ? "ツモ" : "ロン", kind: "win", variant: "band", dur: WIN_CALL_WAIT.mangan - 100, host: cutinHost });
+      playManganBoltFx(cutinHost);
     } else if (fx.startsWith("yakuman")) {
       audio.playFanfare();
       renderYakumanInto(cutinHost, ch, type, { title: ymTitleSel.value, name: ymSel.value }, WIN_CALL_WAIT.yakuman - 100);
@@ -8487,6 +8732,7 @@ function sparkleSpans(n = 16) {
 // 対局の外へ出る前に、対局中だけの演出状態（HP表示止め・ピンチ・立ち絵の一歩下げ）を畳む。
 // ピンチのBGM減衰をホーム画面へ持ち越さないためにも、結果画面の入口で必ず呼ぶ。
 function settleMatchFx() {
+  preloadFx([cueSheetId(FX_CUES.bondHeart)]); // 絆の増分（結果の取得後に出る）に間に合うよう先に読む
   releaseHpHold();
   resetPinchFx();
   setStageEcho(false);
@@ -8520,6 +8766,8 @@ function appendBondGain(speakerEl, { before, after }) {
   requestAnimationFrame(() => {
     box.classList.add("show");
     setTimeout(() => { const f = box.querySelector(".bond-gain-fill"); if (f) f.style.width = `${toPct}%`; }, 250);
+    // 絆が増えた瞬間に「絆」の字からハート（Lv UP は大きく）。
+    if (gain > 0) setTimeout(() => fxOnEl(levelUp ? FX_CUES.bondHeartUp : FX_CUES.bondHeart, box.querySelector(".bond-gain-k") || box, {}, { host: box, tag: "bond" }), 300);
   });
 }
 
@@ -9167,13 +9415,20 @@ function renderPassiveBadges(host, idx, cls = "self-ability") {
     const node = mkPassiveIndicator(a, cls);
     // 盾が1枚減った/増えた瞬間を見せる（守りの資源が動いたことが分かるように）。
     const now = a.meter?.on;
+    let meterCue = null;
     if (now != null) {
       const key = `${idx}:${a.id}`;
       const prev = meterPrev.get(key);
-      if (prev != null && now !== prev) node.classList.add(now < prev ? "meter-break" : "meter-mend");
+      if (prev != null && now !== prev) {
+        node.classList.add(now < prev ? "meter-break" : "meter-mend");
+        // 盾が剥がれた／編み直された瞬間（凌雲）。自分の立ち絵の上のバッジのときだけ。
+        if (host === el("self-abilities") && selfStageVisible()) meterCue = abilityCue(a.id, now < prev ? "break" : "mend");
+      }
       meterPrev.set(key, now);
     }
     host.appendChild(node);
+    // バッジは次の描き直しで作り直されるので、位置だけここで測って立ち絵の枠（#self-stage）に重ねる。
+    if (meterCue) fxOnEl(meterCue, node, {}, { host: el("self-stage"), tag: node.classList.contains("meter-break") ? "shieldBreak" : "shieldMend" });
   }
 }
 // 自分立ち絵の上の「常設バッジ」を、人間プレイヤーのパッシブ能力で更新する。

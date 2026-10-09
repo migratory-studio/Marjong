@@ -335,6 +335,9 @@
         <canvas id="table" width="960" height="720"></canvas>
         <div id="action-bar" class="action-bar"></div>
         <div id="banner" class="banner hidden"></div>
+        <!-- スプライトエフェクト（購入素材）の卓上の層。席テロップ #naki-fx より奥＝文字を隠さない。
+             中身は main.js の fxAtSeat / fxAtTable が足し、src/ui/spriteFx.js が再生後に片付ける。 -->
+        <div id="sprite-fx" class="sprite-fx" aria-hidden="true"></div>
         <div id="naki-fx" class="naki-fx"></div>
         <div id="point-fx" class="point-fx"></div>
         <!-- 模範解答（栞 Lv7+/Lv10）の卓上HUD。トップ捲り条件・押し引き判断を板書する。
