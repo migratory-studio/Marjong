@@ -80,7 +80,10 @@ try {
   assert.ok(batches[1].every(b => !b.ranking_eligible && b.season_score === 0));
   const originalFetch = globalThis.fetch;
   try {
-    globalThis.fetch = async () => new Response(null, { status: 503 });
+    globalThis.fetch = async (_url, init) => {
+      assert.equal(init.redirect, "manual"); // supported by workerd; never forward credentials on a redirect
+      return new Response(null, { status: 503 });
+    };
     await assert.rejects(club.flush({}));
     assert.equal(db.prepare("select count(*) as n from outbox").get().n, 2);
     globalThis.fetch = async () => new Response(null, { status: 204 });

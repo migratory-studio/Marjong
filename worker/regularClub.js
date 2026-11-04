@@ -80,7 +80,7 @@ export class RegularClub {
     for (const { id } of batch) {
       const response = await fetch(env.REGULAR_RESULT_URL + "?match=" + id, {
         method: "POST", headers: { "x-regular-token": env.REGULAR_WRITE_TOKEN,
-          Authorization: "Bearer " + env.SUPABASE_ANON_JWT }, redirect: "error",
+          Authorization: "Bearer " + env.SUPABASE_ANON_JWT }, redirect: "manual",
       });
       if (!response.ok) throw new Error("Regular results delivery failed: HTTP " + response.status);
       this.sql.exec("DELETE FROM outbox WHERE id=?", id);
