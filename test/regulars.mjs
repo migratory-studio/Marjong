@@ -84,7 +84,7 @@ try {
       assert.equal(init.redirect, "manual"); // supported by workerd; never forward credentials on a redirect
       return new Response(null, { status: 503 });
     };
-    await assert.rejects(club.flush({}));
+    await assert.rejects(club.flush({}), /HTTP 503/);
     assert.equal(db.prepare("select count(*) as n from outbox").get().n, 2);
     globalThis.fetch = async () => new Response(null, { status: 204 });
     await new RegularClub(storage).flush({});
