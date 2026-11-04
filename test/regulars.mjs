@@ -87,5 +87,17 @@ try {
     await new RegularClub(storage).flush({});
     assert.equal(db.prepare("select count(*) as n from outbox").get().n, 0);
   } finally { globalThis.fetch = originalFetch; }
+  const originalTimer = globalThis.setTimeout;
+  try {
+    globalThis.setTimeout = callback => { queueMicrotask(callback); return 0; };
+    // A missed window is rechecked next tick. Successful and replayed ticks
+    // respect the half-hour interval, including after a DO restart.
+    await club.tick({ waiting: [{}] }, now);
+    await club.tick({ waiting: [] }, now + 5 * 60000);
+    const restarted = new RegularClub(storage);
+    await restarted.tick({ waiting: [] }, now + 5 * 60000);
+    await restarted.tick({ waiting: [] }, now + 10 * 60000);
+    assert.equal(db.prepare("select count(*) as n from outbox").get().n, 1);
+  } finally { globalThis.setTimeout = originalTimer; }
 } finally { Date.now = realNow; db.close(); }
 console.log("regulars: matching, schedules, ranking limits, midnight, season, persistence and delivery OK");

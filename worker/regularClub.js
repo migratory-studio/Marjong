@@ -57,13 +57,15 @@ export class RegularClub {
     const last = this.sql.exec("SELECT tick FROM clock WHERE id=1").toArray()[0]?.tick ?? 0;
     if (scheduledTime <= last) return;
     this.sql.exec("INSERT OR REPLACE INTO clock VALUES (1, ?)", scheduledTime);
-    if ((last && Math.floor(scheduledTime / 60000) % 30) || host.waiting.length) return;
+    const practiceDue = () => scheduledTime - (this.sql.exec("SELECT tick FROM clock WHERE id=2").toArray()[0]?.tick ?? 0) >= 30 * 60000;
+    if (!practiceDue() || host.waiting.length) return;
     const previousRoom = host.room;
     await new Promise(resolve => setTimeout(resolve, HUMAN_WAIT_MS));
-    if (host.waiting.length || previousRoom !== host.room) return;
+    if (host.waiting.length || previousRoom !== host.room || !practiceDue()) return;
     const bots = this.reserve([], 4, true);
     if (!bots.length) return;
     try {
+      this.sql.exec("INSERT OR REPLACE INTO clock VALUES (2, ?)", scheduledTime);
       const { game } = buildSeatedGame(bots.map(b => b.charId));
       const room = new AuthorityRoom(game);
       await room.run();
