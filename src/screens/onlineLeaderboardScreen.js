@@ -77,7 +77,7 @@ export function showOnlineLeaderboard(root, { seasonLabel, myUserId, load, onBac
   wrap.appendChild(msg);
   root.appendChild(wrap);
 
-  root.appendChild(elt("p", "lb-note", { textContent: "段位は永続。AIの順位表への加点は、人が参加した対局のうち日本時間で1日最初の2戦まで。" }));
+  root.appendChild(elt("p", "lb-note", { textContent: "AI同士は1位3pt・2位1pt。混卓でのAI加点は日本時間で1日最初の2戦まで。AIは1シーズン最大60pt、同点は人間優先。" }));
 
   const back = elt("button", "ghost-back", { type: "button", textContent: "← 戻る" });
   back.onclick = () => onBack?.();
@@ -91,7 +91,7 @@ export function showOnlineLeaderboard(root, { seasonLabel, myUserId, load, onBac
         return;
       }
       const headRow = elt("div", "lb-head-row");
-      headRow.innerHTML = `<div class="r">順位</div><div>プレイヤー</div><div class="r">段位</div><div class="s">獲得RP</div>`;
+      headRow.innerHTML = `<div class="r">順位</div><div>プレイヤー</div><div class="r">段位</div><div class="s">順位pt</div>`;
       wrap.appendChild(headRow);
 
       const table = elt("div", "lb-table");

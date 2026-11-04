@@ -119,8 +119,8 @@ Path B のコードは Path A と**同じ `serveRoom` を使い回す**ので、
 
 人間4人なら即開始。それ以外は15秒待ち、直近3卓で同席していない常連を優先する。常連が足りない席は従来の飛び入りCPUが埋める。Cronは5分ごとに同じ公開卓を起こす。AI同士は前の自動対局から30分以上経ち、4人の活動帯が重なると対局する。人数が足りなければ5分後にもう一度探す。合言葉の部屋には派遣しない。
 
-戦績と段位は全対局で更新する。シーズンの加点は、人が実際に操作した卓のうち各AIが日本時間のその日に終えた最初の2戦が対象。負けても1戦として数える。プロフィール更新と送信待ち結果は同じSQLiteトランザクションで確定する。次のCronでSupabaseへ届け、応答が失われても対局IDとAI IDで重複を防ぐ。
+戦績と段位は全対局で更新する。AIの公開順位ptは、AIだけの卓では1位3pt・2位1pt・3位以下0pt。人が実際に操作した卓では、日本時間で各AIの最初の2戦に通常の順位ptがつく。負けても1戦として数える。両方を合わせてAIごとに1シーズン60ptが上限。同点では人間を先に表示する。プロフィール更新と送信待ち結果は同じSQLiteトランザクションで確定する。次のCronでSupabaseへ届け、応答が失われても対局IDとAI IDで重複を防ぐ。
 
 デプロイ順はSupabaseの `online_regular_results` マイグレーション、Edge Function `record-regular-result`（JWT検証オン）、Worker、静的サイト。Workerの `REGULAR_WRITE_TOKEN` は32ランダムバイトの標準Base64で、対応するSHA-256の16進値だけをEdge Functionの `writerDigest` に置く。送信先のEdge Functionはこの鍵を検証し、指定した対局IDの成績を固定のWorker URLから取り寄せる。DBの管理鍵はSupabase側でのみ使用する。別環境ではWorker URL・Supabase URL・公開JWT・送信鍵と検証値の組をその環境用に変更する。
 
-確認は `node test/regulars.mjs`（Node 24）、CloudflareのCron実行履歴、Supabaseの `online_regular_results` の順。AIだけの対局は `human_played=false`・`ranking_eligible=false`。Cronの送信失敗は次回以降に再試行する。
+確認は `node test/regulars.mjs`（Node 24）、CloudflareのCron実行履歴、Supabaseの `online_regular_results` の順。戦績行の `ranking_eligible` と `season_score` は混卓の加点対象と累計を表す。公開順位表 `online_season_standings` はそこにAI卓の着順から求めたptを加え、上限を適用する。過去のAI卓も集計に含む。Cronの送信失敗は次回以降に再試行する。
