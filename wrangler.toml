@@ -4,6 +4,14 @@ name = "mahjong-online"
 main = "worker/index.js"
 compatibility_date = "2025-01-01"
 
+[triggers]
+crons = ["*/5 * * * *"]
+
+[vars]
+# Public legacy anon JWT for the Supabase gateway. The separate write credential is a Worker secret.
+SUPABASE_ANON_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBiaHhzd2pjdHRvdnNmb2ZyZGRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzMDE3MDEsImV4cCI6MjA5Njg3NzcwMX0.NlaeOKlKI6KOx9xH936-dYlu3KxkfhGT3HPbN-4AY6Y"
+REGULAR_RESULT_URL = "https://pbhxswjcttovsfofrddj.supabase.co/functions/v1/record-regular-result"
+
 # 1卓 = 1 Durable Object。SQLite ストレージ版クラス＝無料プランでも使える（要・時期確認）。
 [[durable_objects.bindings]]
 name = "ROOM"

@@ -34,10 +34,11 @@ export async function pushRanking({ seasonId, username, seasonScore, dan, tierRp
 // シーズンの上位 limit 件（season_score 降順・同点は段位→更新が新しい順）。
 export async function fetchLeaderboard(seasonId, limit = 20) {
   const { data, error } = await supabase
-    .from("online_rankings")
-    .select("user_id, username, season_score, dan, tier_rp, updated_at")
+    .from("online_season_standings")
+    .select("user_id, username, season_score, dan, tier_rp, updated_at, is_bot")
     .eq("season_id", seasonId)
     .order("season_score", { ascending: false })
+    .order("is_bot", { ascending: true })
     .order("dan", { ascending: false })
     .order("updated_at", { ascending: true })
     .limit(limit);
@@ -59,7 +60,7 @@ export async function fetchMyStanding(seasonId) {
   if (!mine) return { row: null, position: null };
   // 自分より高スコアの人数 → 順位。
   const { count, error: e2 } = await supabase
-    .from("online_rankings")
+    .from("online_season_standings")
     .select("user_id", { count: "exact", head: true })
     .eq("season_id", seasonId)
     .gt("season_score", mine.season_score);

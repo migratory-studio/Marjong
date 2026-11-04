@@ -245,13 +245,18 @@ export class RoomHost {
     if (this.timer) { clearTimeout(this.timer); this.timer = null; }
     const seats = this.waiting.slice(0, CAPACITY);
     this.waiting = [];
-    const { game, roster } = buildSeatedGame(seats.map((s) => s.charId));
+    const regulars = this.opts?.regulars;
+    const humanKeys = seats.map(s => s.name ? "human:" + String(s.name).slice(0, 32) : null).filter(Boolean);
+    const bots = regulars ? regulars.reserve(humanKeys, CAPACITY - seats.length) : [];
+    const { game, roster } = buildSeatedGame([...seats, ...bots].map(s => s.charId));
     const connections = {};
     seats.forEach((s, seat) => { connections[seat] = s.connection; });
     // 席ごとの表示情報（対局開始画面/卓上ネームプレート用）。人間席=名前/段位、空席=CPU。
     const playersInfo = roster.map((charId, seat) => {
       const h = seats[seat];
-      return h ? { charId, name: h.name, dan: h.dan, oshi: h.oshi } : { charId, cpu: true };
+      if (h) return { charId, name: h.name, dan: h.dan, oshi: h.oshi };
+      const bot = bots[seat - seats.length];
+      return bot ? { charId, name: bot.name + "（AI）", dan: bot.dan, oshi: bot.oshi, bot: true } : { charId, cpu: true };
     });
     const startGate = seats.flatMap((s, seat) => (s.introGate ? [seat] : []));
     const room = new AuthorityRoom(game, connections, { ...(this.opts || {}), startGate });
@@ -266,6 +271,14 @@ export class RoomHost {
       s.connection.onClose?.(() => room.dropSeat(seat));
     });
     this.room = room;
-    room.run().catch((e) => console.error("room.run crashed", e));
+    const play = room.run().then(() => {
+      if (bots.length) regulars.finish(room, bots, seats.length, humanKeys);
+    }).finally(() => {
+      if (bots.length) {
+        regulars.release(bots);
+        for (const token of Object.values(room.seatTokens)) delete this.tokenSeat[token];
+      }
+    });
+    play.catch((e) => console.error("room.run crashed", e));
   }
 }

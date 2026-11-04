@@ -112,3 +112,15 @@ Path B のコードは Path A と**同じ `serveRoom` を使い回す**ので、
 - Path A なら **どのホスト**（Render / Railway / Fly）にするか（こだわり無ければ私の推奨で）。
 
 決めてくれたら、その場で必要なコード修正（私の担当分）を入れて、あなたのデプロイ手順を**そのルート専用にもう一段細かく**出す。
+
+## 公開卓の常連AI
+
+公開マッチングの `match3` が32人のプロフィールをDurable ObjectのSQLiteに保存する。HNは確認済みの候補を初回にシャッフルする。推し80%、二番手15%、ほか5%。活動帯、休み、1日の対局枠、再戦までの休憩は日本時間。19時から24時の同時着席上限は16人、それ以外は8人。選び方は `worker/regulars.js` にある。
+
+人間4人なら即開始。それ以外は15秒待ち、直近3卓で同席していない常連を優先する。常連が足りない席は従来の飛び入りCPUが埋める。Cronは5分ごとに同じ公開卓を起こし、初回と毎時00分・30分に4人の活動帯が重なればAI同士で対局する。合言葉の部屋には派遣しない。
+
+戦績と段位は全対局で更新する。シーズンの加点は、人が実際に操作した卓のうち各AIが日本時間のその日に終えた最初の2戦が対象。負けても1戦として数える。プロフィール更新と送信待ち結果は同じSQLiteトランザクションで確定する。次のCronでSupabaseへ届け、応答が失われても対局IDとAI IDで重複を防ぐ。
+
+デプロイ順はSupabaseの `online_regular_results` マイグレーション、Edge Function `record-regular-result`（JWT検証オン）、Worker、静的サイト。Workerの `REGULAR_WRITE_TOKEN` は32ランダムバイトの標準Base64で、対応するSHA-256の16進値だけをEdge Functionの `writerDigest` に置く。送信先のEdge Functionはこの鍵を検証し、指定した対局IDの成績を固定のWorker URLから取り寄せる。DBの管理鍵はSupabase側でのみ使用する。別環境ではWorker URL・Supabase URL・公開JWT・送信鍵と検証値の組をその環境用に変更する。
+
+確認は `node test/regulars.mjs`（Node 24）、CloudflareのCron実行履歴、Supabaseの `online_regular_results` の順。AIだけの対局は `human_played=false`・`ranking_eligible=false`。Cronの送信失敗は次回以降に再試行する。

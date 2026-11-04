@@ -53,7 +53,7 @@ function rowEl(r, position, myUserId) {
   const me = r.user_id === myUserId;
   const row = elt("div", `lb-row r${position}` + (me ? " me" : ""));
   row.appendChild(elt("div", "lb-rank", { textContent: position }));
-  row.appendChild(elt("div", "lb-name", { textContent: r.username + (me ? "（あなた）" : "") }));
+  row.appendChild(elt("div", "lb-name", { textContent: r.username + (r.is_bot ? "（AI）" : me ? "（あなた）" : "") }));
   const dan = elt("div", "lb-dan");
   dan.innerHTML = `${info.title}<small>${info.kana}</small>`;
   row.appendChild(dan);
@@ -77,7 +77,7 @@ export function showOnlineLeaderboard(root, { seasonLabel, myUserId, load, onBac
   wrap.appendChild(msg);
   root.appendChild(wrap);
 
-  root.appendChild(elt("p", "lb-note", { textContent: "段位は永続。シーズン順位は「その季に積んだRP（活動量）」で競うよ。" }));
+  root.appendChild(elt("p", "lb-note", { textContent: "段位は永続。AIの順位表への加点は、人が参加した対局のうち日本時間で1日最初の2戦まで。" }));
 
   const back = elt("button", "ghost-back", { type: "button", textContent: "← 戻る" });
   back.onclick = () => onBack?.();

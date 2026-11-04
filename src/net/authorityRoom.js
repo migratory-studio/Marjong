@@ -48,6 +48,7 @@ export class AuthorityRoom {
     this._gateResolve = null;
     this.started = false;       // 最初の局を始めたか（開始前の再接続には盤面を送らない）
     this.done = false;
+    this.humanPlayed = false;
     for (const [seatStr, ep] of Object.entries(connections)) {
       const seat = Number(seatStr);
       ep.onMessage((msg) => this._onIntent(seat, msg));
@@ -116,6 +117,7 @@ export class AuthorityRoom {
     }
     const p = this.pending.get(seat);
     if (p && p.kinds.some((k) => msg.type === `intent.${k}`)) {
+      this.humanPlayed = true;
       this.pending.delete(seat);
       clearTimeout(p.timer);
       p.resolve(msg);
