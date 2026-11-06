@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { DatabaseSync } from "node:sqlite";
-import { createRegulars, selectRegulars, settleRegular } from "../worker/regulars.js";
+import { createRegulars, HUMAN_WAIT_MS, PRACTICE_INTERVAL_MS, selectRegulars, settleRegular } from "../worker/regulars.js";
 import { RegularClub } from "../worker/regularClub.js";
 import { RoomHost, buildSeatedGame } from "../src/net/onlineServer.js";
 import { AuthorityRoom } from "../src/net/authorityRoom.js";
@@ -10,7 +10,11 @@ import { CHARACTERS, instantiateAbilities } from "../src/characters/characters.j
 
 const now = Date.parse("2026-11-04T14:00:00Z"); // 水曜23時
 const pool = createRegulars();
-assert.equal(new Set(pool.map(b => b.name)).size, 32);
+assert.equal(pool.length, 64);
+assert.equal(new Set(pool.map(b => b.name)).size, 64);
+assert.equal(new Set(pool.map(b => b.id)).size, 64);
+assert.equal(HUMAN_WAIT_MS, 15000);
+assert.equal(PRACTICE_INTERVAL_MS, 15 * 60000);
 for (const b of pool) Object.assign(b, { start: 17, off: 0, weekend: false });
 pool[0].recent = [["human:a"]];
 const picks = selectRegulars(pool, ["human:a"], 3, new Set([pool[1].id]), now);
@@ -19,6 +23,13 @@ assert.ok(picks.every(b => b.id !== pool[0].id && b.id !== pool[1].id));
 assert.equal(selectRegulars(pool.slice(0, 3), [], 4, new Set(), now, true).length, 0);
 const capped = { ...pool[0], day: "2026-11-04", played: 5 };
 assert.equal(selectRegulars([capped], [], 1, new Set(), now).length, 0);
+assert.equal(selectRegulars(pool, [], 4, new Set(pool.slice(0, 15).map(b => b.id)), now).length, 1);
+assert.equal(selectRegulars(pool, [], 4, new Set(pool.slice(0, 16).map(b => b.id)), now).length, 0);
+const daytime = Date.parse("2026-11-04T05:00:00Z"); // 14:00 JST
+const daytimePool = pool.map(b => ({ ...b, start: 12 }));
+assert.equal(selectRegulars(daytimePool, [], 4, new Set(pool.slice(0, 7).map(b => b.id)), daytime).length, 1);
+assert.equal(selectRegulars(daytimePool, [], 4, new Set(pool.slice(0, 8).map(b => b.id)), daytime).length, 0);
+assert.equal(selectRegulars([{ ...pool[0], last: now - 34 * 60000, cooldown: 35 }], [], 1, new Set(), now).length, 0);
 const result = { now, charId: "shiyue", points: 40000, placement: 1, matchId: "game", opponents: [] };
 let bot = pool[0];
 for (const [humanPlayed, placement, score] of [[false,1,0],[true,4,0],[true,1,60],[true,1,60]]) {
@@ -41,9 +52,28 @@ const storage = { sql: { exec(query, ...args) {
   db.exec("begin");
   try { fn(); db.exec("commit"); } catch (e) { db.exec("rollback"); throw e; }
 } };
+// Seed a real pre-expansion SQLite database, including nonzero progress and pending delivery.
+db.exec("CREATE TABLE regulars (id TEXT PRIMARY KEY, data TEXT NOT NULL); CREATE TABLE outbox (id TEXT PRIMARY KEY, data TEXT NOT NULL); CREATE TABLE clock (id INTEGER PRIMARY KEY, tick INTEGER NOT NULL)");
+const legacy = pool.slice(0, 32).map((b, i) => ({ ...b, games: 20 + i, played: 2,
+  day: "2026-11-03", last: now - 86400000, recent: [["human:previous"]],
+  rank: { ...b.rank, dan: 3, tierRp: 42, seasonScore: 17 }, extraSavedField: "preserve" }));
+for (const b of legacy) db.prepare("INSERT INTO regulars VALUES (?, ?)").run(b.id, JSON.stringify(b));
+db.prepare("INSERT INTO outbox VALUES (?, ?)").run("pending-before-expansion", "[]");
+db.prepare("INSERT INTO clock VALUES (2, ?)").run(now - 60000);
+const beforeRows = db.prepare("SELECT id, data FROM regulars ORDER BY id").all();
 const club = new RegularClub(storage);
+assert.equal(club.sql.exec("SELECT count(*) AS n FROM regulars").one().n, 64);
+for (const row of beforeRows) assert.equal(db.prepare("SELECT data FROM regulars WHERE id=?").get(row.id).data, row.data);
+assert.equal(db.prepare("SELECT data FROM outbox WHERE id=?").get("pending-before-expansion").data, "[]");
+assert.equal(db.prepare("SELECT tick FROM clock WHERE id=2").get().tick, now - 60000);
+const migrated = db.prepare("SELECT data FROM regulars").all().map(row => JSON.parse(row.data));
+assert.equal(new Set(migrated.map(b => b.name)).size, 64);
+assert.ok(migrated.filter(b => Number(b.id.slice(8)) > 32).every(b => b.games === 0 && b.played === 0));
+const afterRows = db.prepare("SELECT id, data FROM regulars ORDER BY id").all();
 new RegularClub(storage);
-assert.equal(club.sql.exec("SELECT count(*) AS n FROM regulars").one().n, 32);
+assert.deepEqual(db.prepare("SELECT id, data FROM regulars ORDER BY id").all(), afterRows);
+// Remove only this test fixture's pending delivery and schedule, then exercise live room behavior.
+db.exec("DELETE FROM outbox; DELETE FROM clock");
 const realNow = Date.now;
 Date.now = () => now;
 try {
@@ -94,13 +124,19 @@ try {
   try {
     globalThis.setTimeout = callback => { queueMicrotask(callback); return 0; };
     // A missed window is rechecked next tick. Successful and replayed ticks
-    // respect the half-hour interval, including after a DO restart.
+    // respect the quarter-hour interval, including after a DO restart.
     await club.tick({ waiting: [{}] }, now);
     await club.tick({ waiting: [] }, now + 5 * 60000);
     const restarted = new RegularClub(storage);
     await restarted.tick({ waiting: [] }, now + 5 * 60000);
     await restarted.tick({ waiting: [] }, now + 10 * 60000);
     assert.equal(db.prepare("select count(*) as n from outbox").get().n, 1);
+    await restarted.tick({ waiting: [] }, now + 20 * 60000 - 1);
+    assert.equal(db.prepare("select count(*) as n from outbox").get().n, 1);
+    await restarted.tick({ waiting: [] }, now + 20 * 60000);
+    assert.equal(db.prepare("select count(*) as n from outbox").get().n, 2);
+    await new RegularClub(storage).tick({ waiting: [] }, now + 20 * 60000);
+    assert.equal(db.prepare("select count(*) as n from outbox").get().n, 2);
   } finally { globalThis.setTimeout = originalTimer; }
 } finally { Date.now = realNow; db.close(); }
 console.log("regulars: matching, schedules, ranking limits, midnight, season, persistence and delivery OK");

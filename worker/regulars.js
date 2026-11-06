@@ -3,6 +3,8 @@ import { applyMatchToRank, defaultRankState } from "../src/progression/onlineRan
 
 export const PUBLIC_ROOM = "match3";
 export const HUMAN_WAIT_MS = 15000;
+export const REGULAR_COUNT = 64;
+export const PRACTICE_INTERVAL_MS = 15 * 60000;
 const MINUTE = 60000;
 const playable = CHARACTERS.filter(c => !c.locked).map(c => c.id);
 // 完成形を確認したHNだけをシャッフルする。運営名、自由入力、単語の自動連結は使わない。
@@ -11,6 +13,10 @@ const handles = [
   "こたつ番", "ほしラムネ", "川辺のいし", "ゆず文庫", "とびうお", "白いごはん", "月のしおり", "たぬきちどり",
   "きなこ月", "しらす丼", "すみれ色", "ぽんず屋", "こむぎ雲", "北窓", "ねこのひげ", "らむねびん",
   "小石メモ", "つばめ便", "まる湯", "夜ふかし椿", "茶々丸", "りんご飴", "海辺ノート", "まどの雪",
+  "ふくろう便", "ひなた豆", "そらみつ", "花びら餅", "木かげ", "ほうじ丸", "七草ノート", "あおい栞",
+  "月見だんご", "ひつじ雲", "みずたまり", "風待ち鳥", "しおせんべい", "小春びより", "すずめ茶房", "夕なぎ",
+  "くるみパン", "こはく糖", "うたたね舟", "なずな色", "さざ波メモ", "朝のミルク", "ねむり猫", "かえで便り",
+  "星くずソーダ", "白いマグ", "つきあかり", "森のこみち", "くもり空", "あんず日和", "ひだまり窓", "灯台もと",
 ];
 
 function shuffle(items) {
@@ -22,10 +28,17 @@ function shuffle(items) {
   return list;
 }
 
-export function createRegulars() {
+// Return only missing profiles. Persisted identities and results are never regenerated.
+export function createRegulars(existing = []) {
+  const ids = new Set(existing.map(b => b.id));
+  const names = new Set(existing.map(b => b.name));
+  const missing = Array.from({ length: REGULAR_COUNT }, (_, i) => i)
+    .filter(i => !ids.has("regular-" + (i + 1)));
+  const available = shuffle(handles.filter(name => !names.has(name)));
+  if (available.length < missing.length) throw new Error("Not enough unique regular handles");
   const chars = shuffle(playable);
-  return shuffle(handles).map((name, i) => ({
-    id: "regular-" + (i + 1), name, oshi: chars[i % chars.length],
+  return missing.map((i, index) => ({
+    id: "regular-" + (i + 1), name: available[index], oshi: chars[i % chars.length],
     second: chars[(i + 1 + Math.floor(Math.random() * (chars.length - 1))) % chars.length],
     // 夜に厚め、早朝・昼にも重なる活動帯。毎週1〜2日の休みをずらす。
     start: [0, 4, 8, 12, 15, 17, 18, 20][i % 8], off: Math.floor(Math.random() * 7),

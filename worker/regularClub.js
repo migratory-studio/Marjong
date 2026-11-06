@@ -1,6 +1,6 @@
 import { AuthorityRoom } from "../src/net/authorityRoom.js";
 import { buildSeatedGame } from "../src/net/onlineServer.js";
-import { createRegulars, HUMAN_WAIT_MS, selectRegulars, settleRegular } from "./regulars.js";
+import { createRegulars, HUMAN_WAIT_MS, PRACTICE_INTERVAL_MS, selectRegulars, settleRegular } from "./regulars.js";
 
 // The public queue and the cron use the same named Durable Object. Reservations
 // are synchronous; a live bot can occupy only one seat across overlapping rooms.
@@ -9,16 +9,25 @@ export class RegularClub {
     this.storage = storage;
     this.sql = storage.sql;
     this.busy = new Set();
+    let expansion = null;
     storage.transactionSync(() => {
       this.sql.exec("CREATE TABLE IF NOT EXISTS regulars (id TEXT PRIMARY KEY, data TEXT NOT NULL)");
       this.sql.exec("CREATE TABLE IF NOT EXISTS outbox (id TEXT PRIMARY KEY, data TEXT NOT NULL)");
       this.sql.exec("CREATE TABLE IF NOT EXISTS clock (id INTEGER PRIMARY KEY, tick INTEGER NOT NULL)");
-      if (!this.sql.exec("SELECT 1 FROM regulars LIMIT 1").toArray().length) {
-        for (const bot of createRegulars()) {
-          this.sql.exec("INSERT INTO regulars VALUES (?, ?)", bot.id, JSON.stringify(bot));
-        }
+      const before = this.sql.exec("SELECT id, data FROM regulars").toArray();
+      const additions = createRegulars(before.map(row => JSON.parse(row.data)));
+      for (const bot of additions) {
+        this.sql.exec("INSERT INTO regulars VALUES (?, ?)", bot.id, JSON.stringify(bot));
+      }
+      if (additions.length) {
+        const after = new Map(this.sql.exec("SELECT id, data FROM regulars").toArray().map(row => [row.id, row.data]));
+        const existingUnchanged = before.every(row => after.get(row.id) === row.data);
+        if (!existingUnchanged) throw new Error("Existing regular profiles changed during expansion");
+        expansion = { previous: before.length, added: additions.length,
+          total: after.size, existingUnchanged, practiceIntervalMs: PRACTICE_INTERVAL_MS };
       }
     });
+    if (expansion) console.info("regulars roster expanded", expansion);
   }
 
   reserve(humans, count, practice = false) {
@@ -53,11 +62,11 @@ export class RegularClub {
 
   async tick(host, scheduledTime) {
     // Replayed/late Cron requests must not start extra matches. A five-minute
-    // tick also delivers saved results; background matches run at most twice/hour.
+    // tick also delivers saved results; background matches run at most four times/hour.
     const last = this.sql.exec("SELECT tick FROM clock WHERE id=1").toArray()[0]?.tick ?? 0;
     if (scheduledTime <= last) return;
     this.sql.exec("INSERT OR REPLACE INTO clock VALUES (1, ?)", scheduledTime);
-    const practiceDue = () => scheduledTime - (this.sql.exec("SELECT tick FROM clock WHERE id=2").toArray()[0]?.tick ?? 0) >= 30 * 60000;
+    const practiceDue = () => scheduledTime - (this.sql.exec("SELECT tick FROM clock WHERE id=2").toArray()[0]?.tick ?? 0) >= PRACTICE_INTERVAL_MS;
     if (!practiceDue() || host.waiting.length) return;
     const previousRoom = host.room;
     await new Promise(resolve => setTimeout(resolve, HUMAN_WAIT_MS));
