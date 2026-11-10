@@ -12,12 +12,33 @@
 import { AuthorityRoom } from "./authorityRoom.js";
 import { Game } from "../core/game.js";
 import { CHARACTERS, instantiateAbilities } from "../characters/characters.js";
+import { MAX_DAN } from "../progression/onlineRank.js";
 
 const DEFAULT_MATCH_WAIT_MS = 30000; // この時間まで人間を待ち、揃わなければ空席を CPU 補填して開始。
 const CAPACITY = 4;
+const NAME_MAX = 16; // 表示名の上限（クライアントの USERNAME_MAX=12 に余裕を持たせた値）
 
+// 再接続トークン＝その席を名乗る鍵。推測できないよう暗号論的乱数で作る（Math.random は予測されうる）。
 function randomToken() {
-  return Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 12);
+  const bytes = new Uint8Array(16);
+  globalThis.crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+// join の申告（名前/段位/推し/雀士）は他席へそのまま配るので、型・長さ・既知IDに整える。
+const knownCharId = (v) => (typeof v === "string" && CHARACTERS.some((c) => c.id === v) ? v : null);
+function cleanName(v) {
+  if (typeof v !== "string") return null;
+  // 制御文字・ゼロ幅・双方向制御（表示の偽装に使える）を落とし、コードポイント単位で切り詰める。
+  const s = v.replace(/[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, "").trim();
+  return Array.from(s).slice(0, NAME_MAX).join("") || null;
+}
+function cleanDan(v) {
+  const n = Math.floor(Number(v));
+  return Number.isFinite(n) ? Math.min(MAX_DAN, Math.max(1, n)) : null;
+}
+export function joinInfoFrom(msg) {
+  return { charId: knownCharId(msg.charId), name: cleanName(msg.name), dan: cleanDan(msg.dan), oshi: knownCharId(msg.oshi), introGate: msg.introGate === true };
 }
 function shuffled(a) {
   const x = a.slice();
@@ -81,23 +102,29 @@ export class RoomHost {
     this.waiting = [];         // 現在の待機バッチ [{connection, charId}]（着席順＝席番号）
     this.timer = null;         // マッチング締切タイマー（バッチごと）
     this.opts = null;          // AuthorityRoom へ渡す pacing/timeout/matchWaitMs
-    this.tokenSeat = {};       // token -> { room, seat }（全アクティブ卓ぶんの rejoin 照合）
+    // token -> { room, seat }（全アクティブ卓ぶんの rejoin 照合）。プロトタイプ無し＝"__proto__" 等を引かない。
+    this.tokenSeat = Object.create(null);
     this.slots = null;         // ルーム対戦の待合室スロット [CAPACITY]（lobby時のみ生成・人間ゼロで null）
+    this.seated = new WeakSet(); // join/rejoin 済みの接続（1接続＝1席。同じ接続の多重 join で卓を埋めさせない）
   }
 
   handle(connection, opts = {}) {
     connection.onMessage((msg) => {
-      if (!msg) return;
+      if (!msg || typeof msg !== "object") return;
       if (msg.type === "intent.join") {
+        if (this.seated.has(connection)) return;
+        this.seated.add(connection);
         // charId=使用キャラ / name=ユーザー名 / dan=段位 / oshi=推しキャラID（表示用。欠落しうる）。
         // introGate=対局開始演出を見せるので、閉じたら intent.ready を返す（開始ゲートで待ってほしい）。
-        const info = { charId: msg.charId, name: msg.name, dan: msg.dan, oshi: msg.oshi, introGate: !!msg.introGate };
+        const info = joinInfoFrom(msg);
         // lobby=true（ルーム対戦）はホスト主導の待合室へ。未指定（マッチング対戦）は従来の自動待機列へ。
         if (msg.lobby) this._lobbyJoin(connection, info, opts);
         else this._enqueue(connection, info, opts);
       } else if (msg.type === "intent.rejoin") {
-        const e = (msg.token != null) ? this.tokenSeat[msg.token] : undefined;
+        if (this.seated.has(connection)) return;
+        const e = typeof msg.token === "string" ? this.tokenSeat[msg.token] : undefined;
         if (e) {
+          this.seated.add(connection);
           e.room.rejoin(e.seat, connection); // 席を本人へ戻し snapshot 送付
         } else {
           connection.send({ type: "evt.rejoinFailed", reason: "対局が見つかりません" });
@@ -147,7 +174,8 @@ export class RoomHost {
   }
 
   // 待合室で雀士を変更（本人スロットのみ）。
-  _lobbySetChar(connection, charId) {
+  _lobbySetChar(connection, rawCharId) {
+    const charId = knownCharId(rawCharId);
     if (!this.slots || !charId) return;
     const slot = this.slots.find((s) => s.type === "human" && s.conn === connection);
     if (!slot) return;
@@ -206,7 +234,12 @@ export class RoomHost {
     });
     this.room = room;
     this.slots = null; // 待合室を消費（以後の join は新バッチ＝新ホスト扱い）
-    room.run().catch((e) => console.error("room.run crashed", e));
+    room.run().catch((e) => console.error("room.run crashed", e)).finally(() => this._forgetTokens(room));
+  }
+
+  // 終わった卓の再接続トークンを破棄する（卓オブジェクトを抱え続けない＝常設 DO のメモリを増やさない）。
+  _forgetTokens(room) {
+    for (const token of Object.values(room.seatTokens || {})) delete this.tokenSeat[token];
   }
 
   // 待機バッチへ着席。満席＝即開始 / 待機時間ゼロ＝即開始 / それ以外は締切タイマーで人間を待つ。
@@ -274,10 +307,8 @@ export class RoomHost {
     const play = room.run().then(() => {
       if (bots.length) regulars.finish(room, bots, seats.length, humanKeys);
     }).finally(() => {
-      if (bots.length) {
-        regulars.release(bots);
-        for (const token of Object.values(room.seatTokens)) delete this.tokenSeat[token];
-      }
+      if (bots.length) regulars.release(bots);
+      this._forgetTokens(room);
     });
     play.catch((e) => console.error("room.run crashed", e));
   }

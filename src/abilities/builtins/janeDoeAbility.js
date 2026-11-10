@@ -45,7 +45,9 @@ export class JaneDoeAbility extends Ability {
   // （自分・存在しない・リーチ中）なら失敗（チャージ消費なし）。
   apply(game, player, params) {
     const ti = params && params.targetIndex;
-    if (ti == null) return false;
+    // 席番号（整数）だけを受ける。"__proto__" 等の文字列で players[ti] が Array.prototype を指し、
+    // そこへ書き込んでしまう（オンラインでは同居する全卓に波及）のを防ぐ。
+    if (!Number.isInteger(ti) || ti < 0 || ti >= game.players.length) return false;
     const target = game.players[ti];
     if (!target || target === player || target.riichi) return false;
     target.forcedTsumogiri = FORCED_TURNS;

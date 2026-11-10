@@ -26,6 +26,61 @@ function applyTurnDecision(game, seat, d) {
   game.discard(seat, d.tileId, d.riichi);
 }
 
+// --- 遠隔 Intent の検証 -----------------------------------------------------------------------
+// クライアントは改造できる前提で、Intent は「権威が awaitDiscard / awaitCalls で提示した選択肢」の
+// 中からしか受け付けない。エンジン（game.js）はローカル UI が合法手だけを渡す前提で書かれており、
+// 不正値を直接渡すと手牌の外から面子を作る・フリテンでロンする・例外で卓ごと止まる、が起きる。
+// 不正な Intent は「無かったこと」にする（持ち時間はそのまま減る＝連打で卓を止めることもできない）。
+
+// 手番の Intent → 決定。不正なら null。opts は同じ手番で awaitDiscard に載せた actionOptions。
+export function turnDecisionFrom(intent, opts, player) {
+  if (!intent || !opts) return null;
+  const { action } = intent;
+  if (action === "tsumo") return opts.tsumo ? { type: "tsumo" } : null;
+  if (action === "kan") {
+    const k = (opts.kans || []).find((x) => x.kind === intent.kind && x.type === intent.kanType);
+    return k ? { type: "kan", kind: k.kind, kanType: k.type } : null;
+  }
+  if (action === "nuki") return opts.nuki ? { type: "nuki" } : null;
+  if (action != null) return null;
+  const tile = Number.isInteger(intent.tileId) ? player.hand.find((t) => t.id === intent.tileId) : null;
+  if (!tile) return null;
+  // リーチ中・強制ツモ切り中はツモ牌しか切れない（鳴いた直後などツモ牌が無い手番の強制ツモ切りは自由打牌）。
+  const mustTsumogiri = player.riichi || (opts.forcedTsumogiri && player.drawnTileId != null);
+  if (mustTsumogiri && tile.id !== player.drawnTileId) return null;
+  const riichi = intent.riichi === true;
+  if (riichi && !(opts.riichi && (opts.riichiDiscards || []).includes(tile.kind))) return null;
+  return { type: "discard", tileId: tile.id, riichi };
+}
+
+// 鳴き窓の Intent → 決定。不正なら null。action 無しはパス扱い（従来どおり）。
+export function callDecisionFrom(intent, options) {
+  if (!intent || !options) return null;
+  const { action } = intent;
+  if (action == null || action === "pass") return { action: "pass" };
+  if (action === "ron" || action === "pon" || action === "kan") return options[action] ? { action } : null;
+  if (action === "chi") {
+    const m = intent.meta;
+    const seq = Array.isArray(m) && m.length === 2
+      ? (options.chi || []).find((s) => s[0] === m[0] && s[1] === m[1])
+      : null;
+    return seq ? { action: "chi", meta: seq.slice() } : null;
+  }
+  return null;
+}
+
+// 能力の発動パラメータは UI が使う4種だけを、型と範囲を確かめて通す（他のキーは捨てる）。
+export function abilityParamsFrom(raw, game) {
+  const src = raw && typeof raw === "object" ? raw : {};
+  const out = {};
+  const seat = src.targetIndex;
+  if (Number.isInteger(seat) && seat >= 0 && seat < game.players.length) out.targetIndex = seat;
+  if (Number.isInteger(src.riverTileId)) out.riverTileId = src.riverTileId;
+  if (Number.isInteger(src.targetKind) && src.targetKind >= 0 && src.targetKind < 34) out.targetKind = src.targetKind;
+  if (typeof src.betAmount === "number" && Number.isFinite(src.betAmount)) out.betAmount = src.betAmount;
+  return out;
+}
+
 export class AuthorityRoom {
   // game: 権威の実 Game。connections: { [seat]: transportEndpoint } 遠隔(人間)席のみ。
   constructor(game, connections = {}, opts = {}) {
@@ -100,6 +155,7 @@ export class AuthorityRoom {
   }
 
   _onIntent(seat, msg) {
+    if (!msg || typeof msg !== "object" || typeof msg.type !== "string") return; // 壊れたフレームは捨てる
     if (msg.type === "intent.ready") {
       this.readySeats.add(seat);
       this._checkGate();
@@ -117,6 +173,7 @@ export class AuthorityRoom {
     }
     const p = this.pending.get(seat);
     if (p && p.kinds.some((k) => msg.type === `intent.${k}`)) {
+      if (p.validate && !p.validate(msg)) return; // 提示していない手は無視（持ち時間は止めない）
       this.humanPlayed = true;
       this.pending.delete(seat);
       clearTimeout(p.timer);
@@ -125,15 +182,16 @@ export class AuthorityRoom {
   }
 
   // 指定席からの Intent を待つ。kinds は文字列 or 配列（"discard"/["discard","ability"] 等）。
-  // timeout で null を返す（呼び出し側で自動処理）。
-  awaitIntent(seat, kinds) {
+  // timeout で null を返す（呼び出し側で自動処理）。validate(msg) が false の Intent は受理しない。
+  // ms は残り持ち時間（既定は1手ぶん）。
+  awaitIntent(seat, kinds, { validate = null, ms = this.timeout } = {}) {
     const list = Array.isArray(kinds) ? kinds : [kinds];
     return new Promise((resolve) => {
       const timer = setTimeout(() => {
         const p = this.pending.get(seat);
         if (p && p.resolve === resolve) { this.pending.delete(seat); resolve(null); }
-      }, this.timeout);
-      this.pending.set(seat, { kinds: list, resolve, timer });
+      }, Math.max(0, ms));
+      this.pending.set(seat, { kinds: list, resolve, timer, validate });
     });
   }
 
@@ -174,12 +232,17 @@ export class AuthorityRoom {
     const p = g.players[seat];
     // 手番中ループ：能力発動(intent.ability)は権威がその場で適用し、更新した awaitDiscard を再送して
     // 継続する（発動はターンを終わらせない）。打牌/ツモ/カン(intent.discard)で終了。
+    // 持ち時間は発動が成功したときだけ仕切り直す（失敗する発動の連打で手番を引き延ばせない）。
+    let deadline = Date.now() + this.timeout;
     while (true) {
       const opts = g.actionOptions(seat);
+      if (!opts) return null; // 手番が終わっている（局が流れた等）＝ここで選ばせるものは無い
       // リーチ中/強制ツモ切りは権威が自動で裁く（クライアントに委ねない＝L2 と同じ思想）。
       // リーチ中でも選択肢（ツモ/待ち不変カン/北抜き）があるときはクライアントに委ねる。
+      // ツモ牌が無い手番（強制ツモ切り中に鳴いた直後）は自動で切る牌が無いので、通常どおり選ばせる
+      // （ここで tileId:null を返すとエンジンが無視し、同じ席で空回りして DO ごと固まっていた）。
       const riichiNoChoice = p.riichi && opts && !opts.tsumo && opts.kans.length === 0 && !opts.nuki;
-      if (riichiNoChoice || (opts && opts.forcedTsumogiri && !opts.tsumo)) {
+      if (p.drawnTileId != null && (riichiNoChoice || (opts && opts.forcedTsumogiri && !opts.tsumo))) {
         return { type: "discard", tileId: p.drawnTileId, riichi: false };
       }
       // 人間UIの描画材料を権威が計算して同梱（レプリカでは actionOptions 等を再計算できないため）。
@@ -191,7 +254,10 @@ export class AuthorityRoom {
         abilityStatus: (() => { try { return g.abilityStatus(seat); } catch { return []; } })(),
         danger,
       });
-      const intent = await this.awaitIntent(seat, ["discard", "ability"]);
+      const validate = (m) => (m.type === "intent.ability"
+        ? typeof m.abilityId === "string" && (p.abilities || []).some((a) => a.id === m.abilityId)
+        : turnDecisionFrom(m, opts, p) !== null);
+      const intent = await this.awaitIntent(seat, ["discard", "ability"], { validate, ms: deadline - Date.now() });
       if (!intent) {
         // 持ち時間(15s)超過。以後この席は CPU 代打ちへ切替え、本人へモーダル通知。今手も CPU が打つ。
         this._enterAuto(seat, "timeout");
@@ -200,14 +266,13 @@ export class AuthorityRoom {
       if (intent.type === "intent.ability") {
         // ホスト側で能力を発動（recall=河↔手牌 / jane-doe / kakeha / zero-search 等）。発動結果は
         // ABILITY_USED 等の Event で配信され、ループ先頭で更新済み awaitDiscard を再送する。
-        try { g.activateAbility(seat, intent.abilityId, intent.params || {}); }
+        let ok = false;
+        try { ok = g.activateAbility(seat, intent.abilityId, abilityParamsFrom(intent.params, g)); }
         catch (e) { console.error("activateAbility (online) failed", e); }
+        if (ok) deadline = Date.now() + this.timeout;
         continue;
       }
-      if (intent.action === "tsumo") return { type: "tsumo" };
-      if (intent.action === "kan") return { type: "kan", kind: intent.kind, kanType: intent.kanType };
-      if (intent.action === "nuki") return { type: "nuki" };
-      return { type: "discard", tileId: intent.tileId, riichi: !!intent.riichi };
+      return turnDecisionFrom(intent, opts, p);
     }
   }
 
@@ -220,13 +285,12 @@ export class AuthorityRoom {
     const remote = callers.filter((c) => !this._cpuLike(c.index));
     await Promise.all(remote.map(async (c) => {
       this.sendToSeat(c.index, { type: "evt.awaitCalls", you: true, seat: c.index, options: c.options });
-      const intent = await this.awaitIntent(c.index, "call");
+      const intent = await this.awaitIntent(c.index, "call", { validate: (m) => callDecisionFrom(m, c.options) !== null });
       // 鳴き窓も持ち時間超過(null)なら代打ちへ。打牌手番と挙動を揃え、本人にモーダルを出す
       // （以後の手番も CPU 化。明示パスは intent が返るので代打ちには入らない）。
       if (!intent) this._enterAuto(c.index, "timeout");
-      decisions.push(intent && intent.action && intent.action !== "pass"
-        ? { index: c.index, action: intent.action, meta: intent.meta }
-        : { index: c.index, action: "pass" });
+      const d = intent ? callDecisionFrom(intent, c.options) : null;
+      decisions.push(d && d.action !== "pass" ? { index: c.index, ...d } : { index: c.index, action: "pass" });
     }));
     return { decisions };
   }
@@ -265,7 +329,17 @@ export class AuthorityRoom {
         for (const a of acts) g.activateAbility(seat, a.id, a.params);
         // CPU/代打ち席は間合い（カットインが出たら長め）。本人操作の遠隔席は Intent 待ち＝人間のペース。
         if (this._cpuLike(seat)) await this._pace(acts.length ? (P.cutInWait || 0) : (P.cpuDelay || 0));
-        applyTurnDecision(g, seat, await this.decideTurn(seat));
+        const decision = await this.decideTurn(seat);
+        const seq = this.recorder.records.length;
+        applyTurnDecision(g, seat, decision);
+        // 安全網：決定がエンジンに受理されず局面が1つも進まなかったら、CPU の手で進める。待ち合わせの
+        // 無い空回りは DO を CPU 100% で固め、同じ DO にいる全卓を止めてしまうため。
+        const stuck = () => this.recorder.records.length === seq && g.phase === Phase.AWAIT_DISCARD && g.turn === seat;
+        if (stuck()) {
+          console.warn("turn decision made no progress; using the CPU move", { seat, decision });
+          applyTurnDecision(g, seat, decideDiscard(g, seat));
+          if (stuck()) throw new Error("turn made no progress"); // 進められない卓は回し続けず閉じる
+        }
         continue;
       }
       break;

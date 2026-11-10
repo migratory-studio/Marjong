@@ -24,7 +24,8 @@ function wrapSocket(socket) {
       if (!line) continue;
       let msg;
       try { msg = JSON.parse(line); } catch { continue; }
-      deliver(msg);
+      if (!msg || typeof msg !== "object" || Array.isArray(msg)) continue; // Intent はオブジェクトだけ
+      try { deliver(msg); } catch (e) { console.error("socket message handler failed", e); }
     }
   });
   return {

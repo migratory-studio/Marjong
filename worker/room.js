@@ -7,15 +7,24 @@ import { RoomHost } from "../src/net/onlineServer.js";
 import { RegularClub } from "./regularClub.js";
 import { PUBLIC_ROOM, HUMAN_WAIT_MS } from "./regulars.js";
 
+const MAX_FRAME_CHARS = 16384; // クライアントが送るのは小さな Intent だけ（最大でも数百字）
+
 // Workers の WebSocket(server側)を transport 端点（{send,onMessage,onClose,close}）にラップ。
 function wrapServerWs(ws) {
   let handler = null;
   let queue = [];
-  const deliver = (m) => { if (handler) handler(m); else queue.push(m); };
+  const deliver = (m) => { if (handler) handler(m); else if (queue.length < 64) queue.push(m); };
   ws.addEventListener("message", (ev) => {
     let m;
-    try { m = JSON.parse(typeof ev.data === "string" ? ev.data : new TextDecoder().decode(ev.data)); } catch { return; }
-    deliver(m);
+    try {
+      const text = typeof ev.data === "string" ? ev.data : new TextDecoder().decode(ev.data);
+      if (text.length > MAX_FRAME_CHARS) return;
+      m = JSON.parse(text);
+    } catch { return; }
+    // Intent はオブジェクトだけ。null/数値/配列などは捨てる。ハンドラの例外が DO（同居する全卓）へ
+    // 漏れないよう、ここで受け止める。
+    if (!m || typeof m !== "object" || Array.isArray(m)) return;
+    try { deliver(m); } catch (e) { console.error("ws message handler failed", e); }
   });
   return {
     send: (m) => { try { ws.send(JSON.stringify(m)); } catch { /* closed */ } },
@@ -52,7 +61,7 @@ export class MahjongRoom {
     // マッチング待機時間。?wait=ms で上書き可（テスト用。既定 30 秒）。
     // 注意: get("wait") は未指定だと null。Number(null)===0 なので「指定あり」を先に判定すること。
     const waitRaw = new URL(request.url).searchParams.get("wait");
-    const waitParam = (waitRaw == null || waitRaw === "") ? NaN : Number(waitRaw);
+    const waitParam = (waitRaw == null || waitRaw === "") ? NaN : Math.min(Number(waitRaw), 60000);
     const regulars = url.searchParams.get("room") === PUBLIC_ROOM && this.env.REGULAR_WRITE_TOKEN
       ? (this.club ??= new RegularClub(this.state.storage)) : null;
     const matchWaitMs = regulars ? HUMAN_WAIT_MS : (Number.isFinite(waitParam) && waitParam >= 0) ? waitParam : 30000;

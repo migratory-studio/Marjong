@@ -25,6 +25,9 @@ export default {
         return new Response("expected websocket", { status: 426 });
       }
       const room = url.searchParams.get("room") || "default";
+      // 部屋名＝Durable Object 名。クライアントが使うのは match3(-n) / room-XXXX だけなので、
+      // それ以外（巨大な名前・記号まじり）で DO を際限なく作らせない。
+      if (!/^[A-Za-z0-9_-]{1,40}$/.test(room)) return new Response("invalid room", { status: 400 });
       const id = env.ROOM.idFromName(room);
       return env.ROOM.get(id).fetch(request);
     }

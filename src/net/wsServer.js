@@ -15,7 +15,9 @@ function wrapWs(socket) {
   socket.on("message", (data) => {
     let msg;
     try { msg = JSON.parse(data.toString()); } catch { return; }
-    deliver(msg);
+    // worker/room.js と同じ受け口の守り：オブジェクト以外は捨て、ハンドラの例外でプロセスを落とさない。
+    if (!msg || typeof msg !== "object" || Array.isArray(msg)) return;
+    try { deliver(msg); } catch (e) { console.error("ws message handler failed", e); }
   });
   return {
     send: (msg) => { try { socket.send(JSON.stringify(msg)); } catch { /* closed */ } },
