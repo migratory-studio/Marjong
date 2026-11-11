@@ -1,5 +1,7 @@
 import { CHARACTERS } from "../src/characters/characters.js";
-import { applyMatchToRank, defaultRankState } from "../src/progression/onlineRank.js";
+import { deltaRp, defaultRankState } from "../src/progression/onlineRank.js";
+
+import { applyRegularMatchToRank } from "./regularRank.js";
 
 export const PUBLIC_ROOM = "match3";
 export const HUMAN_WAIT_MS = 15000;
@@ -83,10 +85,11 @@ export function selectRegulars(pool, humanKeys, count, busy, now, practice = fal
 export function settleRegular(bot, { now, matchId, placement, points, charId, opponents, humanPlayed }) {
   const { day } = japanClock(now);
   const mixed = (bot.day === day ? bot.mixed : 0) + Number(humanPlayed);
-  const { state, delta } = applyMatchToRank(bot.rank, { placement, numPlayers: 4, finishedAt: now });
+  const { state } = applyRegularMatchToRank(bot.rank, { placement, finishedAt: now });
   const eligible = humanPlayed && mixed <= 2;
   state.seasonScore = (state.seasonId === bot.rank.seasonId ? bot.rank.seasonScore : 0)
-    + (eligible ? Math.max(0, delta) : 0);
+    // Mixed-match public points keep their existing +60/+20 schedule.
+    + (eligible ? Math.max(0, deltaRp(placement, 4)) : 0);
   const next = { ...bot, rank: state, games: bot.games + 1, day, mixed, last: now,
     played: (bot.day === day ? bot.played : 0) + 1, recent: [opponents, ...bot.recent].slice(0, 3) };
   const result = { match_id: matchId, bot_id: bot.id, username: bot.name, char_id: charId,

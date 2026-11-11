@@ -36,7 +36,7 @@ for (const [humanPlayed, placement, score] of [[false,1,0],[true,4,0],[true,1,60
   bot = settleRegular(bot, { ...result, placement, humanPlayed }).next;
   assert.equal(bot.rank.seasonScore, score);
 }
-assert.equal(bot.rank.tierRp, 150);
+assert.equal(bot.rank.tierRp, 195);
 bot = settleRegular(bot, { ...result, now: now + 3600000, humanPlayed: true }).next;
 assert.equal(bot.rank.seasonScore, 120);
 assert.equal(bot.rank.dan, 2);
