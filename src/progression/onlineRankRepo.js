@@ -31,7 +31,7 @@ export async function pushRanking({ seasonId, username, seasonScore, dan, tierRp
   }
 }
 
-// シーズンの上位 limit 件（season_score 降順・同点は段位→更新が新しい順）。
+// シーズンpt、人間優先、段位、更新日時、IDの順。完全同点でも表示位置を固定する。
 export async function fetchLeaderboard(seasonId, limit = 20) {
   const { data, error } = await supabase
     .from("online_season_standings")
@@ -41,29 +41,40 @@ export async function fetchLeaderboard(seasonId, limit = 20) {
     .order("is_bot", { ascending: true })
     .order("dan", { ascending: false })
     .order("updated_at", { ascending: true })
+    .order("user_id", { ascending: true })
     .limit(limit);
   if (error) throw error;
   return data || [];
 }
 
-// 自分の順位（同シーズンで自分より上のスコア件数+1）と自分の行を返す。
+// 上位表と同じ同点処理で、圏外の自分にも連番の表示順位を付ける。
 export async function fetchMyStanding(seasonId) {
   const user = await getUser();
   if (!user) return null;
   const { data: mine, error: e1 } = await supabase
-    .from("online_rankings")
-    .select("user_id, username, season_score, dan, tier_rp")
+    .from("online_season_standings")
+    .select("user_id, username, season_score, dan, tier_rp, updated_at, is_bot")
     .eq("season_id", seasonId)
+    .eq("is_bot", false)
     .eq("user_id", user.id)
     .maybeSingle();
   if (e1) throw e1;
   if (!mine) return { row: null, position: null };
-  // 自分より高スコアの人数 → 順位。
+  // 同点のAIは人間より後ろ。同点の人間は段位→到達時刻→IDで判定する。
+  const tiedHuman = `season_score.eq.${mine.season_score},is_bot.eq.false`;
+  const tiedDan = `${tiedHuman},dan.eq.${mine.dan}`;
+  const updatedAt = `"${mine.updated_at}"`;
+  const ahead = [
+    `season_score.gt.${mine.season_score}`,
+    `and(${tiedHuman},dan.gt.${mine.dan})`,
+    `and(${tiedDan},updated_at.lt.${updatedAt})`,
+    `and(${tiedDan},updated_at.eq.${updatedAt},user_id.lt.${mine.user_id})`,
+  ];
   const { count, error: e2 } = await supabase
     .from("online_season_standings")
     .select("user_id", { count: "exact", head: true })
     .eq("season_id", seasonId)
-    .gt("season_score", mine.season_score);
+    .or(ahead.join(","));
   if (e2) throw e2;
   return { row: mine, position: (count || 0) + 1 };
 }

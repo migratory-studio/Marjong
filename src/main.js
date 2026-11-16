@@ -148,22 +148,6 @@ function matchVoiceCtxFor(charId) {
   };
 }
 
-// フリー対戦（個人）の終局で相棒（＝操作キャラ）との絆・履歴を更新（本気/大会は結果反映側で加算）。
-// アカウント連携時のみ計上する方針（未連携は「一緒に」カウントも絆も記録しない＝対戦ホームでは「—」表示）。
-// 戻り値 { before, after }（絆の前後。対局終了画面で「上げた実感」を返すのに使う）。未連携/失敗は null。
-async function applyFreeMatchToCompanion({ companionId, placement, numPlayers, styleTags }) {
-  if (!companionId) return null;
-  const user = await getUser().catch(() => null);
-  if (!user) return null; // 未連携は記録しない
-  try {
-    const p = await profileRepo.loadProfile();
-    const before = p?.companionBonds?.[companionId] || { level: 1, exp: 0 };
-    const next = applyMatchToCompanion(p, { companionId, placement, numPlayers, styleTags });
-    await profileRepo.saveProfile(next);
-    return { before, after: next.companionBonds?.[companionId] || before };
-  } catch (e) { console.error("companion bond 更新失敗(free):", e); return null; }
-}
-
 // 「前の局」の結果を人間視点で導出（vline の lastHandResult 用）。
 function deriveHandResult(r) {
   if (!r) return null;
@@ -8848,9 +8832,16 @@ function showGameOver() {
   // フリー対戦（個人）：相棒（＝操作キャラ）との絆・履歴を更新（本気/大会は結果反映側で加算）。
   // 操作キャラが修行完了弟子のときは絆を計上しない（弟子は相棒キャラではない＝案A・F6）。
   // 結果（前後の絆）は相棒の台詞の下に「+Npt」とゲージの伸びで返す＝上げた実感をその場で。
-  const bondP = (!honestCtx && !human.character.isCompletedAvatar)
-    ? applyFreeMatchToCompanion({ companionId: human.character.id, placement: hRank, numPlayers: N, styleTags: detectPlayStyle(human, game.lastResult) })
+  const companion = (!honestCtx && !human.character.isCompletedAvatar && human.character.id)
+    ? { companionId: human.character.id, placement: hRank, numPlayers: N, styleTags: detectPlayStyle(human, game.lastResult) }
     : null;
+  const rankedMatch = online && !honestCtx
+    ? { placement: hRank + 1, numPlayers: N, finishedAt: new Date().toISOString() }
+    : null;
+  const progress = saveMatchProgress(companion, rankedMatch).catch((e) => {
+    console.warn("終局のプロフィール保存失敗", e);
+    return null;
+  });
   if (endLine && sideEl) {
     setTimeout(() => {
       sideEl.classList.add("side-result"); // CSS が ログ/見出し/能力欄を隠す
@@ -8859,7 +8850,7 @@ function showGameOver() {
       const sp = buildSpeakerEl(human.character, endLine, "side");
       sideEl.appendChild(sp);
       requestAnimationFrame(() => sp.classList.add("show"));
-      bondP?.then((res) => { if (res && sp.isConnected) appendBondGain(sp, res); });
+      progress.then((res) => { if (res?.bond && sp.isConnected) appendBondGain(sp, res.bond); });
     }, reveal(0) * 1000 + 650);
   }
 
@@ -8896,24 +8887,18 @@ function showGameOver() {
   } else if (online) {
     // 通信対戦（テスト中）：順位を Supabase に記録し、段位を更新し、ロビー/トップへ戻れる。
     const btns = overlay.querySelector(".go-buttons");
-    const finishedAt = new Date().toISOString();
     const opponents = game.players.filter((_, i) => i !== humanIndex).map((p) => p.character.id);
     // 戦績ログ（online_results）。表示は段位モーダル側に集約するので結果は捨てる。
     recordOnlineResult({ charId: human.character.id, rank: hRank + 1, numPlayers: N, finalPoints: human.points, opponents });
     // 段位更新（profile.onlineRank）→ 対局終了の捲り演出が一段落してから「段位モーダル」(FE風)を出す。
     // ※以前は go-overlay 内にパネルを差し込んでいたが「対局終了」バナーに丸被りしたため、独立モーダルへ。
-    let rankRes = null, rankFailed = false;
-    applyOnlineRankUpdate({ placement: hRank + 1, numPlayers: N, finishedAt })
-      .then((res) => { rankRes = res; })
-      .catch((e) => { console.warn("段位更新失敗", e); rankFailed = true; });
-    const popRank = () => {
-      if (rankFailed) return;                              // 取得失敗時はモーダルなし（結果だけ見せる）
-      if (!rankRes) { setTimeout(popRank, 150); return; }  // データ未着なら少し待つ
-      showRankUpModal(rankRes, human.character);
-    };
-    setTimeout(popRank, reveal(0) * 1000 + 900); // 1位の捲り＋点数カウントが終わってから
+    const finishedRoom = online;
+    setTimeout(async () => {
+      const res = await progress;
+      if (res?.rank && online === finishedRoom) showRankUpModal(res.rank, human.character);
+    }, reveal(0) * 1000 + 900);
     // 通信状態を片付けてから遷移（再接続タイマ停止・WS切断・online クリア）。
-    const leave = (target) => {
+    const leave = async (target) => {
       overlay.classList.add("hidden");
       reconnecting = false;
       if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
@@ -8921,6 +8906,7 @@ function showGameOver() {
       onlineWsEp?.close?.();
       online = null;
       resetOnlineTurnUi(); // 長考バッジ/代打ちモーダル/待機トーストの後始末（経路追加時の取りこぼし防止）
+      await progress;
       goScreen(target);
     };
     btns.appendChild(mkBtn("ロビーに戻る", "btn-tsumo", () => leave("online-screen")));
@@ -8934,23 +8920,26 @@ function showGameOver() {
   }
 }
 
-// 対局結果を段位状態へ適用して保存。戻り値 { before, after, delta, promotedTo }。
-// online_results を正とした再計算ではなく increment（高速）。profile.onlineRank を更新。
-async function applyOnlineRankUpdate({ placement, numPlayers, finishedAt }) {
-  const profile = await profileRepo.loadProfile();
-  const before = profile.onlineRank || defaultRankState();
-  const { state, delta, promotedTo } = applyMatchToRank(before, { placement, numPlayers, finishedAt });
-  profile.onlineRank = state;
+// 絆と段位は同じプロフィールに入る。終局ごとに一度だけ読み、両方を反映して保存する。
+async function saveMatchProgress(companion, rankedMatch) {
+  const recordBond = companion && await getUser().catch(() => null);
+  if (!recordBond && !rankedMatch) return null;
+  let profile = await profileRepo.loadProfile();
+  let bond = null, rank = null;
+  if (recordBond) {
+    const before = profile.companionBonds?.[companion.companionId] || { level: 1, exp: 0 };
+    profile = applyMatchToCompanion(profile, companion);
+    bond = { before, after: profile.companionBonds[companion.companionId] };
+  }
+  if (rankedMatch) {
+    const before = profile.onlineRank || defaultRankState();
+    const { state, delta, promotedTo } = applyMatchToRank(before, rankedMatch);
+    profile.onlineRank = state;
+    rank = { before, after: state, delta, promotedTo };
+  }
   await profileRepo.saveProfile(profile);
-  // 順位表（全員が読める集計表）へ自分の当季行を upsert（未ログインは skip）。失敗は握りつぶす。
-  pushRanking({
-    seasonId: state.seasonId,
-    username: profile.profile?.displayName || "名無し",
-    seasonScore: state.seasonScore,
-    dan: state.dan,
-    tierRp: state.tierRp,
-  }).catch(() => {});
-  return { before, after: state, delta, promotedTo };
+  if (rank) await pushRanking({ ...rank.after, username: profile.profile?.displayName || "名無し" });
+  return { bond, rank };
 }
 
 // 順位表を開く（今シーズン）。上位＋自分の順位を取得して描画。
