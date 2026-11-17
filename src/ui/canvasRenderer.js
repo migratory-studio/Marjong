@@ -100,8 +100,10 @@ export class CanvasRenderer {
     // 右サイドの相棒ボードに集約済みで、卓上にはHPバーを描かない。
   }
 
-  setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false, best = null, deadKinds = null, recalled = null } = {}) {
+  setHighlights({ riichiMode = false, riichiKinds = null, danger = null, recallMode = false, best = null, deadKinds = null, recalled = null, forcedTileId = null } = {}) {
     this.riichiMode = riichiMode;
+    // 強制ツモ切り（JaneDoe）中に手番が回ったとき、切ってよいツモ牌の id。null=制限なし。
+    this.forcedTileId = forcedTileId;
     this.riichiKinds = riichiKinds;
     this.danger = danger; // Map kind -> level
     this.recallMode = recallMode; // リコール・ディール: 自分の河の牌を選択中
@@ -585,6 +587,7 @@ export class CanvasRenderer {
         myTurn &&
         // リーチ後の打牌はツモ切りだけ（カン/北抜き選択で手番UIが開いても手牌は崩せない）。
         (!p.riichi || t.id === p.drawnTileId) &&
+        (this.forcedTileId == null || t.id === this.forcedTileId) &&
         (!this.riichiMode || (this.riichiKinds && this.riichiKinds.includes(t.kind)));
       const dim =
         (this.riichiMode && this.riichiKinds && !this.riichiKinds.includes(t.kind)) ||

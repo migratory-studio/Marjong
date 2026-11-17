@@ -5055,8 +5055,10 @@ const LocalController = {
       if (actor.riichi && opts && !opts.tsumo && opts.kans.length === 0 && !opts.nuki) {
         return autoTsumogiri(actor, "リーチ中（自動ツモ切り）");
       }
-      // JaneDoe で強制ツモ切りにされている: ツモ和了以外は自動でツモ切り。
-      if (opts && opts.forcedTsumogiri && !opts.tsumo) return autoTsumogiri(actor, "強制ツモ切り中");
+      // JaneDoe で強制ツモ切りにされている: ツモ和了以外は自動でツモ切り。ただしツモ牌が無い手番
+      // （強制中に鳴いた直後・リコールで交換した後）は切る牌が無いので選ばせる。ここで自動にすると
+      // tileId:null の打牌がエンジンに無視され、同じ手番が延々と繰り返されて進まなくなっていた。
+      if (opts && opts.forcedTsumogiri && !opts.tsumo && actor.drawnTileId != null) return autoTsumogiri(actor, "強制ツモ切り中");
       return waitHumanTurn(seat); // 打牌/ツモ/カンの決定、または SWITCH_TO_AI
     }
     // CPU 席、またはオート観戦 ON で AI に委ねた人間席。どちらも同じ判断ルート。
@@ -5267,6 +5269,9 @@ function discardHintText() {
   // リーチ中に手動になるのはツモ/カン/北抜きの選択があるときだけ。打牌はツモ切りに限る。
   if (game.players[game.turn]?.riichi) {
     return selectedTileId !== null ? "もう一度タップでツモ切り" : "リーチ中：ボタンで選ぶか、ツモ牌をタップしてツモ切り";
+  }
+  if (forcedTileNow() != null) {
+    return selectedTileId !== null ? "もう一度タップでツモ切り" : "強制ツモ切り中：ツモ和了するか、ツモ牌をタップしてツモ切り";
   }
   if (selectedTileId !== null) return riichiMode ? "もう一度タップでリーチ宣言（別の牌で選び直し）" : "もう一度タップで打牌（別の牌で選び直し）";
   return riichiMode ? "リーチ宣言牌をタップ → もう一度で確定" : "牌をタップして選択 → もう一度で打牌";
@@ -5656,7 +5661,20 @@ function refreshHighlights() {
     best: currentBest(),
     deadKinds: luxDeadKinds, // ルクス「該当なし」告知中だけ、河の該当牌を光らせる
     recalled: recalledTileIds, // エージェント・RE: 河から手に戻した牌に諜報マーク
+    forcedTileId: forcedTileNow(),
   });
+}
+
+// JaneDoe の強制ツモ切り中でも、ツモ和了の選択があると手番が人間に回る。そのとき切れるのはツモ牌だけ
+// （ルールどおり。通信対戦の権威もそれ以外の打牌を受け付けない）。ツモ牌が手に無い手番は制限しない。
+// render() から毎回呼ばれるので actionOptions は引かず、強制中かどうかだけを軽く見る。
+function forcedTileNow() {
+  if (!game || game.phase !== Phase.AWAIT_DISCARD) return null;
+  const actor = game.players[game.turn];
+  if (!actor?.isHuman || actor.drawnTileId == null) return null;
+  const forced = online ? !!online.opts?.options?.forcedTsumogiri : actor.forcedTsumogiri > 0;
+  if (!forced) return null;
+  return actor.hand.some((t) => t.id === actor.drawnTileId) ? actor.drawnTileId : null;
 }
 
 // リーチ宣言牌（オンラインは権威配信値、オフラインはレプリカでない実 Game から）。
@@ -5852,6 +5870,7 @@ function render() {
     best: currentBest(),
     deadKinds: luxDeadKinds, // ルクス「該当なし」告知中だけ、河の該当牌を光らせる
     recalled: recalledTileIds, // エージェント・RE: 河から手に戻した牌に諜報マーク
+    forcedTileId: forcedTileNow(),
   });
   renderer.render();
   syncSeatBusts(); // 卓の奥の相手：手番の灯り・交代の差し替え
