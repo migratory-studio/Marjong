@@ -3,6 +3,7 @@
 // All assets are optional. If a file is missing the game still runs (the
 // renderer falls back to procedural tile drawing, audio calls become no-ops).
 import { suitOf, rankOf, honorOf, isHonor, SUITS } from "../core/tiles.js";
+import { isEncryptedBgm, loadBgmUrl, prefetchBgm, readyBgmUrl, setBgmInUseProbe } from "./bgmCrypt.js";
 
 // ----------------------------------------------------------------- tile images
 // FluffyStuff の Riichi Mahjong Tiles（CC0／商用可・帰属不要）。各牌は graphic/tiles/
@@ -217,6 +218,10 @@ export class AudioManager {
     // Per-character voices: charId -> { key -> { audio, ok } }. Populated by
     // registerCharacterVoices(); playVoice() falls back to the shared SE when absent.
     this._voices = new Map();
+    // 復号済み BGM のキャッシュ追い出しで、鳴っている曲の Blob URL を解放しないように。
+    setBgmInUseProbe(() => new Set([this.currentBgm?.src].filter(Boolean)));
+    // タイトル／対戦ホームの曲は起動直後に鳴るので先に取得・復号しておく。
+    prefetchBgm(BGM_HOME, HOME_BGM_CHOICES[0].src);
   }
 
   // Preload a small pool of Audio elements per SE so rapid plays don't cut off.
@@ -337,21 +342,40 @@ export class AudioManager {
   // that same track is already playing, so re-entering a screen doesn't restart it
   // (pass force:true to always swap, e.g. random per-hand picks). If autoplay is
   // blocked (no user gesture yet) currentBgmSrc is cleared so a later retry works.
+  //
+  // BGM は暗号化同梱（src/ui/bgmCrypt.js）。src は参照名（sound/bgm/**/<name>.mp3）のままで、
+  // 実体は .bgm を取得・復号した Blob URL。復号済みなら同期で src を入れて即 play()（ユーザー操作の
+  // 直後に鳴らせる）、未取得なら取得完了後に鳴らす。待っている間に別の曲へ切り替わったら捨てる。
   playBgm(src, { force = false } = {}) {
     if (!this.enabled) return;
     if (!force && this.currentBgm && this.currentBgmSrc === src) return;
     const old = this.currentBgm;
     const next = new Audio();
-    next.src = src;
     next.loop = true;
     next.volume = 0;
     this.currentBgm = next;
     this.currentBgmSrc = src;
-    next.play().then(() => this._fade(next, this._bgmTarget(), 600)).catch(() => {
-      if (this.currentBgm === next) this.currentBgmSrc = null; // allow retry after a gesture
-    });
+    const start = (url) => {
+      if (this.currentBgm !== next) return; // 取得中に別の曲へ切り替わった
+      if (!next.src) next.src = url;
+      if (!this.enabled) { next.volume = this._bgmTarget(); return; } // 無効化中は準備だけ（setEnabled(true) で鳴る）
+      next.play().then(() => this._fade(next, this._bgmTarget(), 600)).catch(() => {
+        if (this.currentBgm === next) this.currentBgmSrc = null; // allow retry after a gesture
+      });
+    };
+    const ready = isEncryptedBgm(src) ? readyBgmUrl(src) : src;
+    if (ready) start(ready);
+    else {
+      loadBgmUrl(src).then(start, (err) => {
+        console.warn("[bgm]", err?.message || err);
+        if (this.currentBgm === next) this.currentBgmSrc = null;
+      });
+    }
     if (old) this._fade(old, 0, 500, () => old.pause());
   }
+
+  // 先読み（起動直後の画面の曲など）。参照名のまま渡す。
+  prefetchBgm(...srcs) { prefetchBgm(...srcs); }
 
   stopBgm() {
     if (this.currentBgm) { this.currentBgm.pause(); this.currentBgm = null; }

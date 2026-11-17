@@ -10,7 +10,8 @@
 // reference/audio.md。**この3者は常に同期させる**（片方だけ増やさない）。
 //
 // 素材の置き場（規約。置けば自動で反映）:
-//   BGM … sound/bgm/scenario/<id>.mp3
+//   BGM … sound/bgm/scenario/<id>.mp3 という名前で参照（実体は暗号化済みの <id>.bgm。
+//         原本を _assets-stock/bgm/scenario/ に置いて node tools/build-bgm.mjs で生成）
 //   SE  … sound/se/scenario/<id>.mp3
 // 既存素材を再利用するエントリは file に実在パスを直接指定している（即・鳴る）。
 const enc = (p) => p.split("/").map(encodeURIComponent).join("/");

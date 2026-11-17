@@ -118,6 +118,12 @@ node test/sanma.mjs   # 3人戦: 牌構成108枚・チーなし・北抜き + 40
 > ファイル名に日本語/全角を含むため `enc()`（URLエンコード）経由で取得。和了演出は画面中央に
 > 大きく表示し、役を1つずつ表示（スキップ可）→ 点数表示。点棒増減は「次の局へ」で各席に +N/−N が浮かびます。
 
+> **BGM は暗号化して同梱**しています（PeriTune 規約の「有償なら直接抽出できないよう暗号化等」への備え）。
+> 実体は `sound/bgm/**/<name>.bgm`（ChaCha20）で、コード上は従来どおり `sound/bgm/<name>.mp3` の名前で参照し、
+> `src/ui/bgmCrypt.js` が `.bgm` を取得・復号して鳴らします。原本 mp3 は `_assets-stock/bgm/`（追跡外）に置き、
+> `node tools/build-bgm.mjs` で `.bgm` を生成（`restore` で原本を復元、`check` で生 mp3 の混入を検出）。
+> `sound/bgm/` に生の mp3 を置かないでください。
+
 > ブラウザの自動再生制限のため、BGMは「対局開始」ボタン押下（ユーザー操作）を起点に再生開始します。
 > 音量は `AudioManager` の `bgmVolume` / `seVolume` で調整できます。
 

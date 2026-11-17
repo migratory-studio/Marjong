@@ -155,6 +155,7 @@ import { BACKGROUND_MASTER } from "./src/data/backgroundMaster.js";
 import { BGM_MASTER, SE_MASTER } from "./src/data/scenarioAudioMaster.js";
 import { EMOTE_MASTER } from "./src/data/emoteMaster.js";
 import { playScenario } from "./src/scenario/scenarioPlayer.js";
+import { loadBgmUrl } from "./src/ui/bgmCrypt.js";
 
 // ── 語彙（scenario-forge/reference/vocab.json と同期。素材系は本体マスタから動的に導出）──
 const CH_FX = ["none","jump","shake","fade_in","fade_out"];
@@ -208,9 +209,13 @@ const audioShim = {
     if (!this.enabled || !src) return;
     if (this._bgm && this._bgm._src === src && !this._bgm.paused) return;
     this._stop();
-    const a = new Audio(src); a._src = src; a.loop = true; a.volume = .45;
-    a.play().catch(() => {});
+    // BGM は暗号化同梱（src は参照名 .mp3 のまま → .bgm を取得・復号した Blob URL で鳴らす）
+    const a = new Audio(); a._src = src; a.loop = true; a.volume = .45;
     this._bgm = a;
+    loadBgmUrl(src).then((url) => {
+      if (this._bgm !== a) return;
+      a.src = url; a.play().catch(() => {});
+    }, (e) => console.warn("[bgm]", e?.message || e));
   },
   stopBgm() { this.currentBgmSrc = null; this._stop(); },
   _stop() { if (this._bgm) { this._bgm.pause(); this._bgm = null; } },
