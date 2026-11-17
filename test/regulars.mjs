@@ -94,7 +94,10 @@ try {
   assert.equal(host.room, null);
   await new Promise(r => setTimeout(r, 120));
   assert.ok(host.room.done && host.room.humanPlayed);
-  assert.equal(host.room.players.filter(s => s.bot).length, 2);
+  const regularSeats = host.room.players.filter(s => s.name && !["a", "b"].includes(s.name));
+  assert.equal(regularSeats.length, 2);
+  // 常連AIは人間席と同じ形で配る（名前に「（AI）」を付けず、bot フラグも載せない）
+  assert.ok(host.room.players.every(s => !("bot" in s) && !String(s.name || "").includes("AI")));
   assert.equal(humans.every(s => s.intentCount > 0), true);
   assert.equal(club.busy.size, 0);
   const bots = club.reserve([], 4, true);

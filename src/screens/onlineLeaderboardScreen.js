@@ -43,7 +43,6 @@ function injectStyle() {
 .lb-head-row .r{text-align:center;} .lb-head-row .s{text-align:right;}
 .lb-me-sep { text-align:center; color:var(--muted); font-size:16px; line-height:1; margin:1px 0; }
 .lb-msg { text-align:center; color:var(--muted); font-size:14px; padding:24px 0; }
-.lb-note { text-align:center; color:var(--muted); font-size:11px; margin-top:8px; }
 `;
   document.head.appendChild(s);
 }
@@ -53,7 +52,7 @@ function rowEl(r, position, myUserId) {
   const me = r.user_id === myUserId;
   const row = elt("div", `lb-row r${position}` + (me ? " me" : ""));
   row.appendChild(elt("div", "lb-rank", { textContent: position }));
-  row.appendChild(elt("div", "lb-name", { textContent: r.username + (r.is_bot ? "（AI）" : me ? "（あなた）" : "") }));
+  row.appendChild(elt("div", "lb-name", { textContent: r.username + (me ? "（あなた）" : "") }));
   const dan = elt("div", "lb-dan");
   dan.innerHTML = `${info.title}<small>${info.kana}</small>`;
   row.appendChild(dan);
@@ -76,8 +75,6 @@ export function showOnlineLeaderboard(root, { seasonLabel, myUserId, load, onBac
   const msg = elt("div", "lb-msg", { textContent: "読み込み中…" });
   wrap.appendChild(msg);
   root.appendChild(wrap);
-
-  root.appendChild(elt("p", "lb-note", { textContent: "AI同士は1位6pt・2位2pt。混卓でのAI加点は日本時間で1日最初の2戦まで。AIは1シーズン最大120pt、同点は人間優先。" }));
 
   const back = elt("button", "ghost-back", { type: "button", textContent: "← 戻る" });
   back.onclick = () => onBack?.();

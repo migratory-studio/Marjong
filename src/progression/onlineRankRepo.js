@@ -35,7 +35,7 @@ export async function pushRanking({ seasonId, username, seasonScore, dan, tierRp
 export async function fetchLeaderboard(seasonId, limit = 20) {
   const { data, error } = await supabase
     .from("online_season_standings")
-    .select("user_id, username, season_score, dan, tier_rp, updated_at, is_bot")
+    .select("user_id, username, season_score, dan, tier_rp, updated_at")
     .eq("season_id", seasonId)
     .order("season_score", { ascending: false })
     .order("is_bot", { ascending: true })
@@ -53,7 +53,7 @@ export async function fetchMyStanding(seasonId) {
   if (!user) return null;
   const { data: mine, error: e1 } = await supabase
     .from("online_season_standings")
-    .select("user_id, username, season_score, dan, tier_rp, updated_at, is_bot")
+    .select("user_id, username, season_score, dan, tier_rp, updated_at")
     .eq("season_id", seasonId)
     .eq("is_bot", false)
     .eq("user_id", user.id)

@@ -285,11 +285,10 @@ export class RoomHost {
     const connections = {};
     seats.forEach((s, seat) => { connections[seat] = s.connection; });
     // 席ごとの表示情報（対局開始画面/卓上ネームプレート用）。人間席=名前/段位、空席=CPU。
+    // 常連AIは人間と同じ形で配る（「（AI）」も bot フラグも載せない＝卓上ではプレイヤーと見分けがつかない）。
     const playersInfo = roster.map((charId, seat) => {
-      const h = seats[seat];
-      if (h) return { charId, name: h.name, dan: h.dan, oshi: h.oshi };
-      const bot = bots[seat - seats.length];
-      return bot ? { charId, name: bot.name + "（AI）", dan: bot.dan, oshi: bot.oshi, bot: true } : { charId, cpu: true };
+      const h = seats[seat] || bots[seat - seats.length];
+      return h ? { charId, name: h.name, dan: h.dan, oshi: h.oshi } : { charId, cpu: true };
     });
     const startGate = seats.flatMap((s, seat) => (s.introGate ? [seat] : []));
     const room = new AuthorityRoom(game, connections, { ...(this.opts || {}), startGate });
