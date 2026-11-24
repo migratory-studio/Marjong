@@ -1,0 +1,170 @@
+/* Companion home: the same ink, ceramic, lacquer and type as the duel table.
+   The fixed stage scales as a unit. Character files and per-character crop tunes stay intact. */
+/* A transformed 1280px stage still has unscaled overflow. Clip the outer viewport
+   so native focus scrolling cannot move the whole home on smaller displays. */
+#stage-viewport:has(#battle-home-screen:not(.hidden)) { overflow:clip; }
+#battle-home-screen {
+  --ink:#f2eee3; --muted:#b4c4cd; --accent:#e5bf80; --danger:#f3a08e;
+  padding:0; overflow:clip; isolation:isolate; background:#0b1725;
+  color:var(--ink); font:400 16px/1.6 "Duel Sans","Yu Gothic",sans-serif;
+}
+#battle-home-screen::before {
+  content:""; position:absolute; inset:0; z-index:-2; pointer-events:none;
+  background:var(--bh-background) center / cover no-repeat;
+  filter:saturate(.4) brightness(.46); opacity:.8;
+}
+#battle-home-screen::after {
+  content:""; position:absolute; inset:0; z-index:-1; pointer-events:none;
+  background:linear-gradient(90deg,#0a1c2c55 0%,#0b1a2cb3 47%,#0a1524f5 72%),
+    linear-gradient(0deg,#091321 0%,transparent 38%,#10233266 85%),
+    radial-gradient(ellipse at 26% 38%,#58979445,transparent 55%);
+}
+#battle-home-screen button { font-family:inherit; cursor:pointer; }
+#battle-home-screen button:focus-visible { outline:2px solid #f0d5a1; outline-offset:4px; }
+#battle-home-screen button:disabled { cursor:default; }
+#battle-home-screen .battle-home { position:relative; display:block; width:100%; height:100%; }
+
+/* Quiet header leaves the character and play modes in the foreground. */
+#battle-home-screen .bh-header {
+  position:absolute; inset:0 0 auto; height:78px; display:flex; align-items:center;
+  gap:24px; padding:0 36px; z-index:4; border-bottom:1px solid #a5906340;
+  background:linear-gradient(180deg,#0b1424f5,#0b1725d9);
+}
+#battle-home-screen .bh-brand { display:flex; align-items:center; gap:12px; white-space:nowrap; font:600 23px/1.3 "Duel Serif","Yu Mincho",serif; letter-spacing:.08em; }
+#battle-home-screen .bh-seal { display:grid; place-items:center; width:29px; height:34px; color:#e4c28b; font-size:18px; border:1px solid #a5906380; border-radius:2px; }
+#battle-home-screen .bh-player { display:flex; align-items:center; gap:14px; padding-left:24px; border-left:1px solid #a5906355; min-width:0; }
+#battle-home-screen #bh-name { max-width:252px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500; }
+#battle-home-screen .bh-streak { flex-shrink:0; color:#f0b393; font-size:14px; }
+#battle-home-screen .bh-util { position:static; margin-left:auto; flex-shrink:0; display:flex; gap:8px; }
+#battle-home-screen .bh-util-btn,#battle-home-screen .bh-change {
+  position:static; color:#d3dce0; background:#112333b3; border:1px solid #73838d70;
+  border-image:none; border-radius:2px; padding:8px 15px; min-height:40px;
+  font-size:14px; line-height:1.5; transition:background .15s,border-color .15s;
+}
+#battle-home-screen .bh-util-btn:hover,#battle-home-screen .bh-change:hover { color:#fff0d6; border-color:#c9b186; background:#243b49; }
+
+/* Existing portrait, with a receding frame and light behind it instead of recolouring it. */
+#battle-home-screen .bh-stage { position:absolute; left:0; top:78px; bottom:0; width:700px; overflow:hidden; }
+#battle-home-screen .bh-halo {
+  position:absolute; width:470px; height:470px; left:109px; top:28px;
+  border:1px solid #aebd9d38; border-radius:50%; pointer-events:none;
+  box-shadow:0 0 0 13px #71919508,0 0 0 14px #a590631c,inset 0 0 70px #7bb7ae14,0 0 100px #7cae9c0d;
+}
+#battle-home-screen .bh-halo::before,#battle-home-screen .bh-halo::after { content:""; position:absolute; inset:44px; border:1px solid #a590632b; transform:rotate(45deg); }
+#battle-home-screen .bh-halo::after { inset:65px; transform:rotate(15deg); border-color:#a5906318; }
+#battle-home-screen .bh-portrait-wrap {
+  inset:16px 0 0; width:100%; height:auto; padding:0; margin:0; border:0; border-radius:0;
+  background:none; appearance:none; color:inherit; text-align:initial;
+  mask-image:linear-gradient(#000 82%,transparent 100%); -webkit-mask-image:linear-gradient(#000 82%,transparent 100%);
+}
+#battle-home-screen .bh-portrait-wrap:focus-visible { outline-offset:-10px; }
+#battle-home-screen .bh-portrait { filter:drop-shadow(-8px 14px 14px #0008); }
+#battle-home-screen .bh-talk-hint { position:absolute; left:36px; top:28px; writing-mode:vertical-rl; color:#becdce; letter-spacing:.08em; font-size:14px; pointer-events:none; }
+#battle-home-screen .bh-talk-hint::before { content:""; display:block; width:1px; height:24px; background:#c9ab75; margin:0 auto 12px; }
+#battle-home-screen .bh-companion {
+  position:absolute; z-index:2; left:36px; right:24px; bottom:32px; padding:16px 22px 14px;
+  border:1px solid #a5906377; border-left:3px solid #c68d70; border-radius:2px;
+  background:linear-gradient(115deg,#132538f5,#0b1729f5); box-shadow:0 8px 0 #07101b80,0 14px 24px #0004,inset 0 1px #c0c6b51a;
+}
+#battle-home-screen .bh-companion-head { display:flex; align-items:center; gap:12px; }
+#battle-home-screen .bh-companion-label { font-size:14px; color:#bdcbd2; }
+#battle-home-screen .bh-charname {
+  position:static; padding:0; margin:0; border:0; border-radius:0; background:none;
+  color:#f2d4b1; font:600 25px/1.4 "Duel Serif","Yu Mincho",serif; letter-spacing:.04em;
+  box-shadow:none; backdrop-filter:none;
+}
+#battle-home-screen .bh-change { margin-left:auto; padding:6px 12px; min-height:34px; }
+#battle-home-screen .bh-talk {
+  position:static; display:block; min-height:58px; margin:10px 0 14px; padding:0;
+  color:#f1eee5; background:none; font:400 17px/1.75 "Duel Sans","Yu Gothic",sans-serif;
+  letter-spacing:0; line-break:strict; word-break:normal; overflow-wrap:anywhere;
+}
+#battle-home-screen .bh-info { display:flex; flex-direction:row; align-items:center; gap:22px; padding-top:11px; border-top:1px solid #82959940; }
+#battle-home-screen .bh-info-row { gap:12px; font-size:14px; }
+#battle-home-screen .bh-info-k { flex:none; color:#b4c4cd; font-size:14px; white-space:nowrap; }
+#battle-home-screen .bh-info-v { font-size:14px; font-weight:500; color:#dce4e4; }
+#battle-home-screen .bh-info-row--bond { flex:1; min-width:0; }
+#battle-home-screen .bh-info-row--together { flex:none; padding-left:20px; border-left:1px solid #82959940; }
+#battle-home-screen .bh-bond { display:flex; align-items:baseline; flex-wrap:wrap; gap:0 8px; color:#e5c38b; }
+#battle-home-screen .bh-bond-pt { margin:0; font-size:13px; color:#c2d0d6; font-variant-numeric:tabular-nums; letter-spacing:0; }
+#battle-home-screen .bh-bond-gauge { height:3px; border-radius:0; background:#90a8b230; }
+#battle-home-screen .bh-bond-fill { border-radius:0; background:#9ebeb2; }
+
+/* Equal sized mode entrances. Ceramic tiles and scenes are existing project assets. */
+#battle-home-screen .bh-side { position:absolute; left:724px; right:36px; top:110px; bottom:44px; max-width:none; display:flex; gap:24px; justify-content:flex-start; }
+#battle-home-screen .bh-intro { padding-left:2px; }
+#battle-home-screen .bh-eyebrow { display:flex; align-items:center; gap:12px; font-size:14px; color:#bdcbd2; }
+#battle-home-screen .bh-eyebrow::before { content:""; width:24px; height:1px; background:#b6996d; }
+#battle-home-screen .bh-title { margin:8px 0 0; padding:0; border:0; border-image:none; text-align:left; color:#f2eee3; font:500 30px/1.5 "Duel Serif","Yu Mincho",serif; letter-spacing:.05em; }
+#battle-home-screen .bh-routes { gap:18px; }
+#battle-home-screen .bh-modes { gap:14px; }
+#battle-home-screen .bh-mode {
+  --mode-line:#9caa9d; position:relative; isolation:isolate; display:flex; align-items:center; justify-content:flex-start;
+  width:100%; height:112px; flex:none; gap:0; overflow:hidden; padding:16px 26px;
+  border:1px solid #9b9d8966; border-left:3px solid var(--mode-line); border-radius:2px;
+  background:linear-gradient(110deg,#233948,#132333); color:#f2eee3; text-align:left;
+  box-shadow:inset 0 0 0 4px #0e1b2880,inset 0 0 0 5px #a5906333,0 6px 0 #060e18,0 8px 0 #73776855,0 13px 18px #0003;
+  transition:transform .16s,border-color .16s,filter .16s;
+}
+#battle-home-screen .bh-mode::before { inset:10px; z-index:2; border:1px solid #a5906320; background:none; opacity:1; }
+#battle-home-screen .bh-mode--taikyoku { --mode-line:#e39070; border-color:#bd8e7180; background:linear-gradient(110deg,#633e3b,#302f3c 64%,#192a36); }
+#battle-home-screen .bh-mode--rokou { --mode-line:#8dabb3; }
+#battle-home-screen .bh-mode:hover { transform:translateY(-3px); border-color:#e0cba1; filter:brightness(1.12); }
+#battle-home-screen .bh-mode:active { transform:translateY(2px); }
+#battle-home-screen .bh-mode-copy { display:flex; flex-direction:column; gap:6px; position:relative; z-index:2; }
+#battle-home-screen .bh-mode-title { position:static; width:auto; height:auto; overflow:visible; clip:auto; font:600 28px/1.35 "Duel Serif","Yu Mincho",serif; letter-spacing:.04em; color:#f5e9d4; }
+#battle-home-screen .bh-mode-sub { color:#c9d4d9; font-size:16px; line-height:1.5; letter-spacing:0; white-space:normal; }
+#battle-home-screen .bh-mode--taikyoku .bh-mode-sub { color:#e6d5ca; }
+#battle-home-screen .bh-mode-tiles { position:absolute; width:132px; right:20px; top:16px; height:88px; pointer-events:none; transform:rotate(-7deg); }
+#battle-home-screen .bh-mode-tiles img { position:absolute; width:50px; height:68px; object-fit:fill; border-radius:5px; background:#f1eee2; border:1px solid #d7d7c3; box-shadow:2px 4px 0 #8daba2,2px 7px 0 #214b4d,6px 12px 12px #0008; }
+#battle-home-screen .bh-mode-tiles img:nth-child(1) { left:0; top:13px; transform:rotate(-15deg); }
+#battle-home-screen .bh-mode-tiles img:nth-child(2) { left:38px; top:0; transform:rotate(2deg); }
+#battle-home-screen .bh-mode-tiles img:nth-child(3) { left:75px; top:12px; transform:rotate(17deg); }
+#battle-home-screen .bh-mode-scene { position:absolute; inset:5px 5px 5px 45%; z-index:0; background-size:cover; background-position:center; opacity:.65; filter:saturate(.5); mask-image:linear-gradient(90deg,transparent,#000 70%); -webkit-mask-image:linear-gradient(90deg,transparent,#000 70%); pointer-events:none; }
+#battle-home-screen .bh-mode--shitei .bh-mode-scene { background-image:linear-gradient(#0f253d22,#0f253d66),url("../../graphic/bg/bg-dojo.png"); }
+#battle-home-screen .bh-mode--rokou .bh-mode-scene { background-image:linear-gradient(#10284033,#10284066),url("../../graphic/bg/sc/bg-dungeon.jpg"); }
+#battle-home-screen .bh-route-grid { gap:14px; }
+#battle-home-screen .bh-route { display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:5px; min-height:82px; padding:12px 20px; border:1px solid #7c8e9666; border-radius:2px; color:#f2eee3; background:linear-gradient(115deg,#1c3041,#101f2e); box-shadow:0 4px 0 #070f19,inset 0 1px #b7c4bc13; transition:background .15s,border-color .15s; }
+#battle-home-screen .bh-route:hover { border-color:#c9b186; background:#263e4b; }
+#battle-home-screen .bh-route .menu-btn-title { font:500 21px/1.4 "Duel Serif","Yu Mincho",serif; letter-spacing:.03em; }
+#battle-home-screen .bh-route .menu-btn-sub { font-size:14px; line-height:1.5; color:#b8c9d2; }
+
+/* Home-owned dialogs use the same materials. Scroll remains inside the asset lists. */
+#battle-home-screen .bh-picker-scrim { background:#020a16b8; backdrop-filter:blur(6px); }
+#battle-home-screen .bh-amb-modal .bh-picker-scrim { background:#020a1670; backdrop-filter:blur(2px); }
+#battle-home-screen .bh-picker-card { background:linear-gradient(125deg,#1b3040fa,#0d1c2afa); border:1px solid #a5906399; border-image:none; border-radius:3px; padding:28px; gap:22px; width:880px; max-height:620px; box-shadow:0 20px 80px #0009,inset 0 0 0 5px #0a1525,inset 0 0 0 6px #a5906333; }
+#battle-home-screen .bh-picker-title { text-align:left; padding-right:50px; color:#f2eee3; font:500 28px/1.4 "Duel Serif","Yu Mincho",serif; }
+#battle-home-screen .bh-picker-x { top:18px; right:20px; width:40px; height:40px; border:1px solid #798e9877; border-radius:2px; font-size:20px; color:#dce5e5; }
+#battle-home-screen .bh-picker-x:hover { background:#294454; color:#fff0d6; }
+#battle-home-screen .bh-pick-grid { grid-template-columns:repeat(6,minmax(0,1fr)); gap:12px; padding:5px; }
+#battle-home-screen .bh-pick { padding:12px 5px; gap:9px; border:1px solid #6d828f77; border-image:none; border-radius:2px; background:#132838; transition:transform .15s,border-color .15s; }
+#battle-home-screen .bh-pick:hover { border-color:#d6bc8d; }
+#battle-home-screen .bh-pick.is-active { background:#3d3636; border-color:#dfaf82; box-shadow:inset 0 0 0 2px #b98f6a66; }
+#battle-home-screen .bh-pick-face { width:76px; height:76px; border-radius:2px; background:#0b1928; }
+#battle-home-screen .bh-pick-name { font-size:14px; font-weight:500; line-height:1.45; }
+#battle-home-screen .bh-amb-modal .bh-picker-card { width:740px; gap:22px; }
+#battle-home-screen .bh-amb-sec-h { font-size:16px; color:#e1c69d; }
+#battle-home-screen .bh-amb-grid { padding:5px 5px 12px; gap:12px; }
+#battle-home-screen .bh-amb-tile { flex-basis:192px; border:1px solid #738d9a; border-image:none; border-radius:2px; box-shadow:0 4px 0 #070f1a; }
+#battle-home-screen .bh-amb-tile-label { padding:5px 8px; font-size:14px; background:#0a1729e8; }
+#battle-home-screen .bh-amb-row { min-height:44px; padding:10px 14px; border:1px solid #738d9a66; border-image:none; border-radius:2px; background:#142a3a; font-size:16px; }
+#battle-home-screen .bh-amb-row.is-selected,#battle-home-screen .bh-amb-tile.is-selected { border-color:#e3bb87; box-shadow:inset 0 0 0 2px #e3bb87; }
+#battle-home-screen .bh-amb-row:hover:not(:disabled) { background:#263f4e; }
+#battle-home-screen .bh-amb-row-cue { font-size:14px; color:#cbd8db; }
+#battle-home-screen .bh-pick.is-locked,#battle-home-screen .bh-amb-row.is-locked,#battle-home-screen .bh-amb-tile.is-locked { opacity:.5; }
+#battle-home-screen .bh-pick-grid,#battle-home-screen .bh-amb-grid,#battle-home-screen .bh-amb-list { scrollbar-width:thin; scrollbar-color:#8a9b9b #0d1b2a; }
+/* Login prompts are mounted beside the screen. Theme them only while home is visible. */
+#app:has(#battle-home-screen:not(.hidden)) > :is(.confirm-overlay,.auth-modal-overlay) { background:#020a16b8; backdrop-filter:blur(5px); color:#f2eee3; font-family:"Duel Sans","Yu Gothic",sans-serif; }
+#app:has(#battle-home-screen:not(.hidden)) :is(.confirm-modal,.auth-modal) { width:580px; max-width:90%; padding:28px; border:1px solid #a5906399; border-image:none; border-radius:3px; background:linear-gradient(125deg,#1b3040fa,#0d1c2afa); box-shadow:0 20px 80px #0009,inset 0 0 0 5px #0a1525,inset 0 0 0 6px #a5906333; }
+#app:has(#battle-home-screen:not(.hidden)) :is(.confirm-title,.auth-modal-title) { color:#f2eee3; text-shadow:none; font:500 27px/1.5 "Duel Serif","Yu Mincho",serif; margin-bottom:16px; }
+#app:has(#battle-home-screen:not(.hidden)) :is(.confirm-msg,.auth-modal-rec) { color:#dce4e6; font-size:16px; line-height:1.8; }
+#app:has(#battle-home-screen:not(.hidden)) .auth-modal-lead { color:#b4c4cd; font-size:16px; }
+#app:has(#battle-home-screen:not(.hidden)) .auth-modal-warn { border:1px solid #a5906344; border-radius:2px; background:#0c1d2cb3; }
+#app:has(#battle-home-screen:not(.hidden)) .auth-modal-warn-list { color:#cbd8dc; font-size:14px; }
+#app:has(#battle-home-screen:not(.hidden)) :is(.confirm-btns,.auth-modal-btns) button { min-height:46px; margin:0; padding:10px 18px; border:1px solid #82939c88; border-image:none; border-radius:2px; background:#152d3e; color:#e1e8e7; font:500 16px/1.5 "Duel Sans",sans-serif; text-shadow:none; box-shadow:0 4px 0 #081320; }
+#app:has(#battle-home-screen:not(.hidden)) :is(.confirm-btns,.auth-modal-btns) button.primary { color:#fff0db; background:linear-gradient(115deg,#793d35,#3c2833); border-color:#c99a7d; }
+#app:has(#battle-home-screen:not(.hidden)) :is(.confirm-btns,.auth-modal-btns) button:hover { filter:brightness(1.2); }
+#app:has(#battle-home-screen:not(.hidden)) :is(.confirm-btns,.auth-modal-btns) button:focus-visible { outline:2px solid #f0d5a1; outline-offset:4px; }
+@media(prefers-reduced-motion:reduce) {
+  #battle-home-screen *,#battle-home-screen *::before,#battle-home-screen *::after { animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+}

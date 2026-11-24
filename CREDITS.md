@@ -115,7 +115,15 @@
 
 ## 🔡 フォント
 
-- 埋め込みフォントは未使用。**OS 標準フォント**（游明朝 / 游ゴシック / ヒラギノ / Noto 等）を CSS で指定するのみ＝**ライセンス対応不要**。
+- ホーム・対局画面: **Noto Sans JP / Noto Serif JP**（Google / Adobe、SIL Open Font License 1.1）。公式Google Fonts配布をWOFF2に変換してローカル同梱。著作権表示・ライセンス全文は `graphic/fonts/NotoSansJP-OFL.txt` と `graphic/fonts/NotoSerifJP-OFL.txt`。
+- 配布元: https://github.com/google/fonts/tree/main/ofl/notosansjp ／ https://github.com/google/fonts/tree/main/ofl/notoserifjp
+- その他の画面とフォールバック: OS標準フォント。
+
+### 卓の布テクスチャ
+
+- **ambientCG — Fabric034**、CC0 1.0。`graphic/materials/Fabric034_Color.jpg`。
+- 素材: https://ambientcg.com/view?id=Fabric034 ／ 規約: https://docs.ambientcg.com/license/
+- 公式1K-JPGパックのColor画像を使用。濃紺の着色はCSSの重ね合わせ。人物画像は加工していない。
 
 ---
 
@@ -145,7 +153,7 @@
 | モブ（シルエット） | `graphic/chars/mobs/` | **素材屋冬青 氏**「★随時追加★ 素材【人物シルエット】」（BOOTH: https://awamurasoyogo.booth.pm/items/3435946 ）。商用可・改変可（原型を留めなくても可）・**クレジット表記は任意**・素材としての二次配布/販売は不可 |
 | 背景 | `graphic/bg/` | **みんちりえ**（`sc/` のほとんど＋`bg-dojo`/`bg-street`）＋ げーむまてりあるず（雀荘4種・上記）＋ くらげ／BOOTH（`bg-dungeon`） |
 | 表情・エモート | `graphic/emo/` | **こぱんだ屋（空想曲線）** — UI一式と同じ配布元。規約は下記「こぱんだ屋」節に従う。※無料素材はクレジット必須・有料素材は不要だが、**本ファイルとゲーム内ロールの両方に掲載しているのでどちらでも要件を満たす** |
-| モードのロゴ（対局開始／師弟モード／楼光の館） | `graphic/ui/modes/`（ホームの入口）・`press/art/logo-*.webp`（募集ページ） | **仮素材（AI生成など）**。本リリース前にデザイナー版へ差し替え必須（[release-blocking-asset-tbd.md](docs/release-blocking-asset-tbd.md)）。2026-10-02 に旧・楼光の館ロゴ `graphic/ui/roguelite/rokou-logo.png` から差し替え |
+| モードのロゴ（対局開始／師弟モード／楼光の館） | `graphic/ui/modes/`（旧ホーム用。現ホームでは文字組みへ変更）・`press/art/logo-*.webp`（募集ページ） | **仮素材（AI生成など）**。本リリース前にデザイナー版へ差し替え必須（[release-blocking-asset-tbd.md](docs/release-blocking-asset-tbd.md)）。2026-10-02 に旧・楼光の館ロゴ `graphic/ui/roguelite/rokou-logo.png` から差し替え |
 
 ### 立ち絵のクレジット表記（必須）
 

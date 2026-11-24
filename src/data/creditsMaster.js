@@ -25,6 +25,8 @@ export const CREDITS_MASTER = {
         { role: "音楽素材", name: "甘茶の音楽工房" },
         { role: "効果音素材", name: "効果音ラボ" },
         { role: "牌画像", name: "FluffyStuff / Riichi Mahjong Tiles（CC0）" },
+        { role: "卓の布素材", name: "ambientCG / Fabric034（CC0）" },
+        { role: "フォント", name: "Noto Sans JP / Noto Serif JP（SIL OFL 1.1）" },
         { role: "開発協力", name: "Claude（Anthropic）" },
       ],
     },

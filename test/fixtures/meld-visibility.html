@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/">
+  <title>副露とHPの配置検証 — ツモノグリフ</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="src/ui/duel.css">
+  <style>
+    #game-screen.duel .duel-heading { left:26px; }
+    #qa-panel { position:absolute; right:10px; top:36px; width:226px; display:grid; gap:18px; padding:18px; border:1px solid #667e89; background:#142634; z-index:30; }
+    #qa-panel h1 { margin:0; font-size:20px; } #qa-panel p { margin:0; color:#b4c4cd; font-size:14px; }
+    #qa-panel label { display:flex; justify-content:space-between; gap:10px; font-size:14px; }
+    #qa-panel select { background:#253c4a; color:#fff; border:1px solid #718c98; padding:4px; }
+    #qa-state { font-size:14px; color:#c6dba8; }
+  </style>
+</head>
+<body><div id="stage-viewport"><div id="app">
+  <section id="game-screen" class="screen seated duel">
+    <div class="duel-heading">副露の配置検証</div><div class="duel-command-rail"></div>
+    <div class="table-wrap">
+      <div id="table-plane" class="table-plane"><div class="tp-frame"></div><div class="tp-felt"></div><canvas id="table-field" width="960" height="720"></canvas></div>
+      <canvas id="table" width="960" height="720"></canvas>
+    </div>
+    <aside class="side"><div id="hp-board" class="hp-board"></div></aside>
+    <form id="qa-panel">
+      <h1>副露 × HP</h1><p>表示だけの検証用。各席の最大配置を同時に並べます。</p>
+      <label>人数<select id="qa-players"><option value="4">4人</option><option value="3">3人</option><option value="2">2人</option></select></label>
+      <label>各席の副露数<select id="qa-melds"><option value="4">4組</option><option value="3">3組</option><option value="2">2組</option><option value="1">1組</option><option value="0">0組</option></select></label>
+      <label>種類<select id="qa-kind"><option value="minkan">大明槓</option><option value="shouminkan">加槓</option><option value="ankan">暗槓</option><option value="pon">ポン</option><option value="chi">チー</option></select></label>
+      <label>大会の拡張HP<input id="qa-delta" type="checkbox" checked></label>
+      <label>共闘用の名札<input id="qa-group" type="checkbox"></label>
+      <output id="qa-state" aria-live="polite">読み込み中</output>
+    </form>
+  </section>
+</div></div>
+<script type="module">
+  import { CanvasRenderer, TILT } from '/src/ui/canvasRenderer.js';
+  import { TileImages } from '/src/ui/assets.js';
+  import { Game, Phase } from '/src/core/game.js';
+  import { CHARACTERS } from '/src/characters/characters.js';
+  import { MeldType } from '/src/core/meld.js';
+  import { initStage } from '/src/app/stage.js';
+  const el=id=>document.getElementById(id);
+  const images=new TileImages();
+  initStage();
+  Object.assign(el('table-plane').style,{left:'0px',top:'0px',width:'960px',height:'720px',transformOrigin:`480px ${TILT.originY}px`,transform:`perspective(${TILT.perspective}px) rotateX(${TILT.deg}deg)`});
+  const tile=(id,kind)=>({id,kind,red:kind===4});
+  function render() {
+    const n=Number(el('qa-players').value), count=Number(el('qa-melds').value), type=el('qa-kind').value;
+    const game=new Game(CHARACTERS.slice(0,n).map(character=>({character,abilities:[]})),0,19);
+    game.startHand(); game.turn=0; game.phase=Phase.AWAIT_DISCARD;
+    game.players.forEach((p,pi)=>{
+      p.hand=Array.from({length:14-count*3},(_,i)=>tile(1000+pi*100+i,(i+pi*3)%27));
+      p.drawnTileId=p.hand.at(-1).id;
+      p.discards=Array.from({length:18},(_,i)=>tile(2000+pi*100+i,(i+pi*4)%34));
+      p.melds=Array.from({length:count},(_,j)=>{
+        const tiles=Array.from({length:type===MeldType.CHI || type===MeldType.PON ? 3 : 4},(_,i)=>tile(3000+pi*100+j*10+i,j*3+(type===MeldType.CHI?i:0)));
+        return {type,tiles,from:type===MeldType.KAN_CLOSED?null:(pi+1)%n,calledTile:tiles[0]};
+      });
+    });
+    const renderer=new CanvasRenderer(el('table'),game,0,images,null,el('table-field'));
+    renderer.seatHud=!el('qa-group').checked;
+    renderer.selectedTileId=game.players[0].hand[0].id;
+    el('hp-board').hidden=!renderer.seatHud;
+    el('hp-board').replaceChildren();
+    for(const [i,seat] of renderer._seatSlots(n).entries()) {
+      const row=document.createElement('div'); row.className=seat===0?'hp-row is-you is-turn':'hp-row'; row.dataset.seat=seat; row.dataset.state=['東・親','南','西','北'][i];
+      row.innerHTML=`<span class="hp-rank">${i+1}</span><div class="hp-main"><div class="hp-head"><span class="hp-name">${['あなた','下家','対面','上家'][seat]}</span><span class="hp-val">14,000</span></div><div class="hp-gauge"><div class="hp-fill high" style="width:80%"></div></div></div><span class="hp-delta" ${el('qa-delta').checked?'':'hidden'}>+1,000</span>`;
+      el('hp-board').appendChild(row);
+    }
+    renderer.render();
+    el('qa-state').textContent=`${n}人・各席${count}副露 / 描画済み`;
+  }
+  el('qa-panel').addEventListener('change',render);
+  el('qa-panel').addEventListener('submit',e=>e.preventDefault());
+  await Promise.all([images.load(),document.fonts.load('600 16px "Duel Sans"'),document.fonts.load('600 24px "Duel Serif"')]);
+  render();
+</script>
+</body>
+</html>

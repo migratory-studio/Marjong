@@ -2,8 +2,8 @@
 //
 // タイトル ― ホーム ― CPU対戦 / オンライン / 楼光の館 / 師弟モード / 宝珠ショップ / 設定
 // どのモードへもここから1手で行き、どのモードからもここへ帰ってくる。
-// 遊びの入口（CPU対戦＝ロゴ「対局開始」／師弟モード／楼光の館）は同じ枠・同じ大きさで同列に並べ、
-// オンラインと宝珠ショップは一段小さく下に置く。ロゴは graphic/ui/modes/。
+// 遊びの入口（対局開始／師弟モード／楼光の館）は同じ大きさで同列に並べ、
+// オンラインと宝珠ショップは一段小さく下に置く。書体・素材感はインゲームと共通。
 // 主役は「お気に入りキャラ」の立ち絵＋出迎えセリフ。出入りのたびに相棒の前を通る＝
 // 愛着の蓄積（毎回顔を合わせる）×固有性（あなたを覚えている）×双方向（タップで返る）。
 //
@@ -27,10 +27,10 @@ import { bondBandLabel } from "../progression/progressionService.js";
 import { HOME_BGM_CHOICES } from "../ui/assets.js";
 import { homeTuneOf } from "../data/imagePos.js";
 
-// 対戦ホームで切替できる背景（画像は graphic/bg/。washi=既定＝#app の青海波をそのまま見せる）。
+// 対戦ホームで切替できる背景（画像は graphic/bg/。青海波も共通の墨藍の照明を通す）。
 // thumb=一覧モーダルのサムネ。locked を付ければ将来の解禁機能でロック表示にできる（後述 isUnlocked）。
 const HOME_BG_CHOICES = [
-  { key: "washi",  label: "青海波", img: null,                       thumb: "graphic/ui/sc/bg.png" },
+  { key: "washi",  label: "青海波", img: "graphic/ui/sc/bg.png",     thumb: "graphic/ui/sc/bg.png" },
   { key: "dojo",   label: "道場",   img: "graphic/bg/bg-dojo.png",   thumb: "graphic/bg/bg-dojo.png" },
   { key: "street", label: "街角",   img: "graphic/bg/bg-street.png", thumb: "graphic/bg/bg-street.png" },
   // 宝珠ショップで解禁する背景（locked=既定は施錠。profile.unlockedBackgrounds に key が入れば解放）。
@@ -182,55 +182,56 @@ export async function showBattleHome(container, opts = {}) {
 
   container.innerHTML = `
     <div class="battle-home">
-      <div class="bh-stage">
-        <div class="bh-talk" id="bh-talk" aria-live="polite"></div>
-        <div class="bh-charname" id="bh-charname"></div>
-        <div class="bh-portrait-wrap" id="bh-portrait-wrap" title="タップで話しかけられるよ"></div>
-        <button type="button" class="bh-change" id="bh-change">相棒をかえる</button>
-        <div class="bh-util">
+      <header class="bh-header">
+        <div class="bh-brand"><span class="bh-seal" aria-hidden="true">牌</span><span>ツモノグリフ</span></div>
+        <div class="bh-player"><span class="bh-info-k">プレイヤー</span><span id="bh-name"></span></div>
+        <div class="bh-streak" id="bh-streak-row" hidden><span id="bh-streak"></span></div>
+        <nav class="bh-util" aria-label="ホームの設定">
           <button type="button" class="bh-util-btn" id="bh-amb-edit">背景・BGM</button>
-          <button type="button" class="bh-util-btn" id="bh-settings" title="音量・テスト版の窓口">⚙ 設定</button>
+          <button type="button" class="bh-util-btn" id="bh-settings" title="音量・テスト版の窓口">設定</button>
           <button type="button" class="bh-util-btn" id="bh-title">タイトル</button>
+        </nav>
+      </header>
+      <div class="bh-stage">
+        <div class="bh-halo" aria-hidden="true"></div>
+        <button type="button" class="bh-portrait-wrap" id="bh-portrait-wrap" title="タップで話しかけられるよ"></button>
+        <span class="bh-talk-hint" aria-hidden="true">相棒にタップで話しかける</span>
+        <div class="bh-companion">
+          <div class="bh-companion-head">
+            <span class="bh-companion-label">相棒</span>
+            <h2 class="bh-charname" id="bh-charname"></h2>
+            <button type="button" class="bh-change" id="bh-change">相棒をかえる</button>
+          </div>
+          <p class="bh-talk" id="bh-talk" aria-live="polite"></p>
+          <div class="bh-info">
+            <div class="bh-info-row bh-info-row--bond"><span class="bh-info-k">絆</span><div class="bh-bond-col"><span class="bh-info-v bh-bond" id="bh-bond"></span><div class="bh-bond-gauge" id="bh-bond-gauge" hidden><div class="bh-bond-fill" id="bh-bond-fill"></div></div></div></div>
+            <div class="bh-info-row bh-info-row--together"><span class="bh-info-k">一緒に</span><span class="bh-info-v" id="bh-together"></span></div>
+          </div>
         </div>
       </div>
       <div class="bh-side">
-        <div class="bh-card">
-          <h1 class="bh-title">ホーム</h1>
-          <div class="bh-info">
-            <div class="bh-info-row"><span class="bh-info-k">プレイヤー</span><span class="bh-info-v" id="bh-name"></span></div>
-            <div class="bh-info-row"><span class="bh-info-k">相棒</span><span class="bh-info-v" id="bh-partner"></span></div>
-            <div class="bh-info-row bh-info-row--bond"><span class="bh-info-k">絆</span><div class="bh-bond-col"><span class="bh-info-v bh-bond" id="bh-bond"></span><div class="bh-bond-gauge" id="bh-bond-gauge" hidden><div class="bh-bond-fill" id="bh-bond-fill"></div></div></div></div>
-            <div class="bh-info-row"><span class="bh-info-k">一緒に</span><span class="bh-info-v" id="bh-together"></span></div>
-            <div class="bh-info-row" id="bh-streak-row" hidden><span class="bh-info-k">連勝中</span><span class="bh-info-v bh-streak" id="bh-streak"></span></div>
-          </div>
-        </div>
+        <div class="bh-intro"><span class="bh-eyebrow">ホーム</span><h1 class="bh-title">相棒と、次の一局へ。</h1></div>
         <nav class="bh-routes" aria-label="あそぶ">
-          <!-- 遊びの入口3つは同じ枠・同じ大きさで並べる（どれが主でも従でもない＝同列）。
-               見出しはロゴが兼ね、文字の見出しは読み上げ用。ロゴが読めないときは .no-logo で文字に戻る。 -->
           <div class="bh-modes">
-            <button type="button" class="menu-btn bh-mode bh-mode--taikyoku" id="bh-cpu">
-              <img class="bh-mode-logo" src="graphic/ui/modes/taikyoku.webp" alt="" onerror="this.closest('.bh-mode').classList.add('no-logo')">
-              <span class="bh-mode-title">CPUと対戦</span>
-              <span class="bh-mode-sub">CPUと対戦（通常・ペア・団体）</span>
+            <button type="button" class="bh-mode bh-mode--taikyoku" id="bh-cpu">
+              <span class="bh-mode-copy"><span class="bh-mode-title">対局開始</span><span class="bh-mode-sub">CPU対戦 · 通常／ペア／団体</span></span>
+              <span class="bh-mode-tiles" aria-hidden="true"><img src="graphic/tiles/Sou1.svg" alt=""><img src="graphic/tiles/Man1.svg" alt=""><img src="graphic/tiles/Chun.svg" alt=""></span>
             </button>
-            <button type="button" class="menu-btn bh-mode bh-mode--shitei" id="bh-mentor">
-              <img class="bh-mode-logo" src="graphic/ui/modes/shitei.webp" alt="" onerror="this.closest('.bh-mode').classList.add('no-logo')">
-              <span class="bh-mode-title">師弟モード</span>
-              <span class="bh-mode-sub">弟子を育てる物語</span>
+            <button type="button" class="bh-mode bh-mode--shitei" id="bh-mentor">
+              <span class="bh-mode-copy"><span class="bh-mode-title">師弟モード</span><span class="bh-mode-sub">弟子を育てる物語</span></span>
+              <span class="bh-mode-scene" aria-hidden="true"></span>
             </button>
-            <button type="button" class="menu-btn bh-mode bh-mode--rokou" id="bh-roguelite">
-              <img class="bh-mode-logo" src="graphic/ui/modes/rokou.webp" alt="" onerror="this.closest('.bh-mode').classList.add('no-logo')">
-              <span class="bh-mode-title">楼光の館</span>
-              <span class="bh-mode-sub">雀士たちと階層を登るローグライト</span>
+            <button type="button" class="bh-mode bh-mode--rokou" id="bh-roguelite">
+              <span class="bh-mode-copy"><span class="bh-mode-title">楼光の館</span><span class="bh-mode-sub">仲間と登るローグライト</span></span>
+              <span class="bh-mode-scene" aria-hidden="true"></span>
             </button>
           </div>
-          <!-- 対人とショップは一段小さく横並び。どれも1手で着く。 -->
           <div class="bh-route-grid">
-            <button type="button" class="menu-btn menu-btn--duo" id="bh-online">
+            <button type="button" class="bh-route" id="bh-online">
               <span class="menu-btn-title">オンライン</span>
               <span class="menu-btn-sub">合言葉 / マッチング</span>
             </button>
-            <button type="button" class="menu-btn menu-btn--duo" id="bh-shop" title="宝珠で恒久強化・背景やBGMを解禁">
+            <button type="button" class="bh-route" id="bh-shop" title="宝珠で恒久強化・背景やBGMを解禁">
               <span class="menu-btn-title">宝珠ショップ</span>
               <span class="menu-btn-sub">恒久強化・解禁</span>
             </button>
@@ -241,7 +242,6 @@ export async function showBattleHome(container, opts = {}) {
 
   const talkEl = container.querySelector("#bh-talk");
   const wrap = container.querySelector("#bh-portrait-wrap");
-  const partnerEl = container.querySelector("#bh-partner");
   const bondEl = container.querySelector("#bh-bond");
   const bondGaugeEl = container.querySelector("#bh-bond-gauge");
   const bondFillEl = container.querySelector("#bh-bond-fill");
@@ -249,7 +249,7 @@ export async function showBattleHome(container, opts = {}) {
   const setTalk = (t) => { if (talkEl) talkEl.textContent = t || "……。"; };
   const nameplateEl = container.querySelector("#bh-charname");
 
-  // 背景・BGM の切替は立ち絵ステージ右上（設定の隣）。いまの組み合わせはボタンのツールチップで見せる。
+  // 背景・BGM の切替はヘッダー（設定の隣）。いまの組み合わせはボタンのツールチップで見せる。
   const ambBtn = container.querySelector("#bh-amb-edit");
   let bgLabel = "", bgmLabel = "";
   const syncAmbTitle = () => { if (ambBtn) ambBtn.title = `背景：${bgLabel}／BGM：${bgmLabel}`; };
@@ -261,16 +261,10 @@ export async function showBattleHome(container, opts = {}) {
     container.querySelector("#bh-streak").textContent = `${winStreak} 連勝`;
   }
 
-  // 背景を適用（washi=既定は #app の青海波をそのまま見せる＝オーバーライド無し）。
+  // 背景を専用レイヤーへ。どの画像も同じ照明を通し、人物絵には色フィルターを掛けない。
   function applyBg(key) {
     const c = HOME_BG_CHOICES.find((x) => x.key === key) || HOME_BG_CHOICES[0];
-    if (c.img) {
-      container.style.backgroundImage = `url("${c.img}")`;
-      container.style.backgroundSize = "cover";
-      container.style.backgroundPosition = "center";
-    } else {
-      container.style.backgroundImage = "";
-    }
+    container.style.setProperty("--bh-background", `url("${new URL(c.img, document.baseURI).href}")`);
     bgLabel = c.label;
     syncAmbTitle();
   }
@@ -299,12 +293,11 @@ export async function showBattleHome(container, opts = {}) {
   function paint() {
     wrap.innerHTML = "";
     wrap.appendChild(portraitNode(current));
-    // 立ち絵のそばに相棒の名前を出す（「このキャラ誰？」を解消・UXテスト指摘）。色はキャラ固有色。
+    wrap.setAttribute("aria-label", `${current?.name || "相棒"}に話しかける`);
+    // 立ち絵のそばに相棒の名前を出し、会話の話者を明確にする。
     if (nameplateEl) {
       nameplateEl.textContent = current?.name || "";
-      nameplateEl.style.setProperty("--name-c", current?.color || "var(--accent)");
     }
-    if (partnerEl) partnerEl.textContent = current?.name || "—";
     // 「一緒に」(キャラ別局数)・絆。未ログイン時もダッシュ(—)ではなく“始まりの言葉”で見せる
     // （数値レス方針 [[bond-display-hybrid-policy]]。ダッシュは「意味不明」とUXテストで指摘されたため、
     //   これから関係が育つことを言葉で伝える。計上は連携時のみ＝ [[companion-bond-system]] は不変）。
@@ -374,6 +367,35 @@ function isCharUnlocked(c, profile) {
   return (profile?.unlockedCharacters || []).includes(c.id);
 }
 
+// モーダル中はホームを操作対象から外し、閉じたら起点へフォーカスを戻す。
+function mountHomeDialog(container, ov) {
+  const opener = document.activeElement;
+  const home = container.querySelector(".battle-home");
+  container.appendChild(ov);
+  if (home) home.inert = true;
+  const card = ov.querySelector("[role=dialog]");
+  const title = ov.querySelector(".bh-picker-title");
+  title.id = "bh-dialog-title";
+  card.setAttribute("aria-labelledby", title.id);
+  const buttons = () => [...card.querySelectorAll("button:not(:disabled)")];
+  const close = () => {
+    ov.remove();
+    if (home) home.inert = false;
+    if (opener?.isConnected) opener.focus({ preventScroll: true });
+  };
+  ov.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { e.preventDefault(); close(); }
+    if (e.key !== "Tab") return;
+    const items = buttons(), first = items[0], last = items[items.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+  });
+  ov.querySelector(".bh-picker-scrim")?.addEventListener("click", close);
+  ov.querySelector(".bh-picker-x")?.addEventListener("click", close);
+  (card.querySelector("button.is-active:not(:disabled), button.is-selected:not(:disabled)") || buttons()[0])?.focus();
+  return close;
+}
+
 // お気に入りキャラ選択モーダル（アイコングリッド）。スクリム/✕/Esc で閉じる。
 // 未解禁キャラ（宝珠ショップ前）は鍵・非アクティブで表示し、選べないようにする。
 function openPicker(container, currentId, profile, onPick) {
@@ -385,7 +407,7 @@ function openPicker(container, currentId, profile, onPick) {
     const face = icon
       ? `<img class="bh-pick-face" src="${icon}" alt="">`
       : `<span class="bh-pick-face bh-pick-fallback" style="background:${c.color || "#444"}">${esc((c.name || "?").slice(0, 1))}</span>`;
-    return `<button type="button" class="bh-pick${c.id === currentId ? " is-active" : ""}${ok ? "" : " is-locked"}" data-id="${esc(c.id)}"${ok ? "" : " disabled"}>
+    return `<button type="button" class="bh-pick${c.id === currentId ? " is-active" : ""}${ok ? "" : " is-locked"}" data-id="${esc(c.id)}" aria-pressed="${c.id === currentId}"${ok ? "" : " disabled"}>
       ${face}<span class="bh-pick-name">${esc(c.name)}${ok ? "" : " 🔒"}</span></button>`;
   }).join("");
   ov.innerHTML =
@@ -395,13 +417,7 @@ function openPicker(container, currentId, profile, onPick) {
       `<div class="bh-pick-grid">${cells}</div>` +
       `<button type="button" class="bh-picker-x" aria-label="閉じる">✕</button>` +
     `</div>`;
-  container.appendChild(ov);
-
-  const close = () => { document.removeEventListener("keydown", onKey); ov.remove(); };
-  const onKey = (e) => { if (e.key === "Escape") close(); };
-  document.addEventListener("keydown", onKey);
-  ov.querySelector(".bh-picker-scrim")?.addEventListener("click", close);
-  ov.querySelector(".bh-picker-x")?.addEventListener("click", close);
+  const close = mountHomeDialog(container, ov);
   for (const btn of ov.querySelectorAll(".bh-pick")) {
     btn.addEventListener("click", () => { const id = btn.dataset.id; close(); onPick?.(id); });
   }
@@ -415,13 +431,13 @@ function openAmbiance(container, { profile, bgKey, bgmKey, onPickBg, onPickBgm }
   const bgTile = (c) => {
     const ok = isUnlocked(c, profile);
     return `<button type="button" class="bh-amb-tile${c.key === curBg ? " is-selected" : ""}${ok ? "" : " is-locked"}"`
-      + ` data-key="${esc(c.key)}"${ok ? "" : " disabled"} style="background-image:url('${esc(c.thumb || "")}')">`
+      + ` data-key="${esc(c.key)}" aria-pressed="${c.key === curBg}"${ok ? "" : " disabled"} style="background-image:url('${esc(c.thumb || "")}')">`
       + `<span class="bh-amb-tile-label">${esc(c.label)}${ok ? "" : " 🔒"}</span></button>`;
   };
   const bgmRow = (c) => {
     const ok = isUnlocked(c, profile);
     return `<button type="button" class="bh-amb-row${c.key === curBgm ? " is-selected" : ""}${ok ? "" : " is-locked"}"`
-      + ` data-key="${esc(c.key)}"${ok ? "" : " disabled"}>`
+      + ` data-key="${esc(c.key)}" aria-pressed="${c.key === curBgm}"${ok ? "" : " disabled"}>`
       + `<span class="bh-amb-row-name">${esc(c.label)}${ok ? "" : " 🔒"}</span>`
       + `<span class="bh-amb-row-cue" aria-hidden="true">▶</span></button>`;
   };
@@ -438,16 +454,13 @@ function openAmbiance(container, { profile, bgKey, bgmKey, onPickBg, onPickBgm }
         `<div class="bh-amb-list" data-kind="bgm">${HOME_BGM_CHOICES.map(bgmRow).join("")}</div></div>` +
       `<button type="button" class="bh-picker-x" aria-label="閉じる">✕</button>` +
     `</div>`;
-  container.appendChild(ov);
-
-  const close = () => { document.removeEventListener("keydown", onKey); ov.remove(); };
-  const onKey = (e) => { if (e.key === "Escape") close(); };
-  document.addEventListener("keydown", onKey);
-  ov.querySelector(".bh-picker-scrim")?.addEventListener("click", close);
-  ov.querySelector(".bh-picker-x")?.addEventListener("click", close);
+  mountHomeDialog(container, ov);
 
   const reselect = (sel, key) => {
-    for (const b of ov.querySelectorAll(sel)) b.classList.toggle("is-selected", b.dataset.key === key);
+    for (const b of ov.querySelectorAll(sel)) {
+      b.classList.toggle("is-selected", b.dataset.key === key);
+      b.setAttribute("aria-pressed", String(b.dataset.key === key));
+    }
   };
   for (const b of ov.querySelectorAll(".bh-amb-grid [data-key]")) {
     b.addEventListener("click", () => { curBg = b.dataset.key; reselect(".bh-amb-grid [data-key]", curBg); onPickBg?.(curBg); });

@@ -7,6 +7,7 @@ import { applyPortraitCrop, installIconPosStyles } from "./data/imagePos.js";
 import { abilityDef } from "./data/abilityMaster.js";
 import { decideDiscard, decideCall, decideAbilityActivations } from "./ai/simpleAI.js";
 import { CanvasRenderer, SEATED_LAYOUT } from "./ui/canvasRenderer.js";
+import { setupDuelPresentation, syncDuelPresentation } from "./ui/duelPresentation.js";
 import { TileImages, CharacterImages, AudioManager, tilePath } from "./ui/assets.js";
 import { initSettingsUI, applyAudioSettings, wireSettingsControls } from "./ui/settings.js";
 import { showScreen } from "./app/router.js";
@@ -362,6 +363,7 @@ function setupSeatedTable() {
   if (!renderer.seated) return;
   scr.style.setProperty("--room-bg", `url("${tableRoomBg()}")`);
   buildSeatBusts();
+  setupDuelPresentation(scr, game, humanIndex, renderer, { groupBattle: !!(teamBattleData || pairBattleData) });
   syncTableLayers();
 }
 
@@ -467,6 +469,9 @@ let mamoriPassTile = null; // 赤を切って「通るか」を待っている�
 function setupFxWatch(g) {
   mamoriPassTile = null;
   doraLastStandShown = false;
+  g.bus.on(Events.TILE_DISCARDED, ({ player, tile }) => {
+    if (renderer?.game === g && player && tile) renderer.animateDiscard(player.index, tile);
+  });
   const passed = () => {
     if (mamoriPassTile == null) return;
     const id = mamoriPassTile;
@@ -5875,6 +5880,7 @@ function render() {
   renderer.render();
   syncSeatBusts(); // 卓の奥の相手：手番の灯り・交代の差し替え
   updateHpBoard(); // 右側の相棒ボードのHP/手番ハイライトを最新状態に同期
+  syncDuelPresentation(el("game-screen"), game, humanIndex, renderer);
   updatePinchFx(); // 自分のHPが残りわずかなら卓の縁を赤く（表示中のHP＝先出し防止後の値で判定）
   updateModelAnswerHud(); // 栞 Lv7+/Lv10 の卓上HUD（捲り条件・押し引き）を同期
   updateAbilityAura();    // 自席の持続レイヤー（姚玖の庭・春嬋の韋駄天…）を同期
@@ -9666,6 +9672,7 @@ function makeHpRow(i) {
   const c = game.players[i].character;
   const row = document.createElement("div");
   row.className = "hp-row";
+  row.dataset.seat = String(visualSeat(i));
   row.style.setProperty("--c", c.color);
   if (i === humanIndex) row.classList.add("is-you");
 
