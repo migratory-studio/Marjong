@@ -6,36 +6,16 @@
 import { RoomHost } from "../src/net/onlineServer.js";
 import { RegularClub } from "./regularClub.js";
 import { PUBLIC_ROOM, HUMAN_WAIT_MS } from "./regulars.js";
-
-const MAX_FRAME_CHARS = 16384; // クライアントが送るのは小さな Intent だけ（最大でも数百字）
-
-// Workers の WebSocket(server側)を transport 端点（{send,onMessage,onClose,close}）にラップ。
-function wrapServerWs(ws) {
-  let handler = null;
-  let queue = [];
-  const deliver = (m) => { if (handler) handler(m); else if (queue.length < 64) queue.push(m); };
-  ws.addEventListener("message", (ev) => {
-    let m;
-    try {
-      const text = typeof ev.data === "string" ? ev.data : new TextDecoder().decode(ev.data);
-      if (text.length > MAX_FRAME_CHARS) return;
-      m = JSON.parse(text);
-    } catch { return; }
-    // Intent はオブジェクトだけ。null/数値/配列などは捨てる。ハンドラの例外が DO（同居する全卓）へ
-    // 漏れないよう、ここで受け止める。
-    if (!m || typeof m !== "object" || Array.isArray(m)) return;
-    try { deliver(m); } catch (e) { console.error("ws message handler failed", e); }
-  });
-  return {
-    send: (m) => { try { ws.send(JSON.stringify(m)); } catch { /* closed */ } },
-    onMessage: (fn) => { handler = fn; const q = queue; queue = []; for (const m of q) fn(m); },
-    onClose: (fn) => ws.addEventListener("close", fn),
-    close: () => { try { ws.close(); } catch { /* already closed */ } },
-  };
-}
+import { APP_VERSION } from "../src/config/appInfo.js";
+import { createConnectionLog, wrapServerWs } from "./connectionLog.js";
 
 export class MahjongRoom {
-  constructor(state, env) { this.state = state; this.env = env; this.host = new RoomHost(); }
+  constructor(state, env) {
+    this.state = state; this.env = env; this.host = new RoomHost();
+    this.instanceId = crypto.randomUUID(); // メモリが作り直されたら変わる（永続IDではない）
+    this.log = createConnectionLog({ instanceId: this.instanceId, build: APP_VERSION });
+    this.log("instance_started");
+  }
 
   async fetch(request) {
     const url = new URL(request.url);
@@ -58,6 +38,9 @@ export class MahjongRoom {
     const client = pair[0];
     const server = pair[1];
     server.accept();
+    const connectionId = crypto.randomUUID();
+    const endpoint = wrapServerWs(server, { connectionId, log: this.log });
+    endpoint.send({ type: "evt.connection", connectionId, instanceId: this.instanceId, build: APP_VERSION });
     // マッチング待機時間。?wait=ms で上書き可（テスト用。既定 30 秒）。
     // 注意: get("wait") は未指定だと null。Number(null)===0 なので「指定あり」を先に判定すること。
     const waitRaw = new URL(request.url).searchParams.get("wait");
@@ -66,7 +49,8 @@ export class MahjongRoom {
       ? (this.club ??= new RegularClub(this.state.storage)) : null;
     const matchWaitMs = regulars ? HUMAN_WAIT_MS : (Number.isFinite(waitParam) && waitParam >= 0) ? waitParam : 30000;
     // join は待機列へ（人間が揃うか時間切れで開始）、rejoin で同じ卓へ復帰（RoomHost が token 照合）。
-    this.host.handle(wrapServerWs(server), {
+    this.host.handle(endpoint, {
+      diagnostic: this.log,
       timeout: 15000, // 1手の持ち時間(ms)。超過席は CPU 代打ち(AuthorityRoom.autoSeats)へ。
       matchWaitMs,
       regulars,

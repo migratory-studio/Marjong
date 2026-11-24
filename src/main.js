@@ -45,6 +45,9 @@ import { createLoopback } from "./net/transport.js";
 import { AuthorityRoom } from "./net/authorityRoom.js";
 import { applyEvent } from "./net/applyEvent.js";
 import { connectWebSocket } from "./net/wsTransport.js";
+import { ReconnectController } from "./net/reconnectController.js";
+import { createOnlineResumeStore } from "./net/onlineResume.js";
+import { installConnectionDiagnostics } from "./net/connectionDiagnostics.js";
 import { showAutoBattle } from "./screens/autoBattleScreen.js";
 import { recordOnlineResult, fetchMyOnlineStats } from "./progression/onlineResults.js";
 import { defaultRankState, applyMatchToRank, describeRank, seasonIdFromDate } from "./progression/onlineRank.js";
@@ -94,7 +97,7 @@ import { bondBandLabel } from "./progression/progressionService.js";
 import { emoteDef } from "./data/emoteMaster.js";
 import { FX_CUES, ABILITY_FX, cueSheetId, fxSheetsForTable } from "./data/effectMaster.js";
 import { playFx, preloadFx } from "./ui/spriteFx.js";
-import { versionLabel, buildEnvReport } from "./config/appInfo.js";
+import { APP_VERSION, versionLabel, buildEnvReport } from "./config/appInfo.js";
 import { showSupportModal, showResetConfirm } from "./screens/supportModal.js";
 import { initErrorGuard } from "./app/errorGuard.js";
 
@@ -663,8 +666,26 @@ let online = null;
 let onlineWsEp = null; // 実 WS 接続時の transport 端点（welcome 受信→beginGame で client 化）
 let onlineWsUrl = null; // 再接続用に接続先URLを保持
 let onlineToken = null; // 再接続用トークン（welcome で受領）。同じ卓へ rejoin する鍵
-let reconnecting = false; // 再接続シーケンス中フラグ
-let reconnectTimer = null;
+const onlineResume = createOnlineResumeStore();
+const onlineRecovery = new ReconnectController({
+  connect: connectWebSocket,
+  onEndpoint: (ep) => {
+    onlineWsEp = ep;
+    window.__onlineEp = ep;
+    if (online) online.send = (m) => ep.send(m);
+  },
+  onMessage: onlineClientMessage,
+  onState: (state, reason) => {
+    if (state === "reconnecting") {
+      if (online) { online.opts = null; online.callOpts = null; }
+      clearActions();
+      showReconnectOverlay("再接続中…");
+    } else if (state === "failed") {
+      if (reason === "missing") { onlineResume.clear(); onlineToken = null; }
+      showReconnectOverlay(reason === "missing" ? "missing" : "fail");
+    } else showReconnectOverlay(null);
+  },
+});
 let matchmaking = null; // マッチング探索中の状態 { base, room, mode, charId, name, dan, attempt }（welcome で解除）
 let roomLobby = null; // ルーム対戦の待合室中の状態 { ep, code, api, myCharId }（welcome で解除）
 let matchSearchTalkTimer = null; // 探索オーバーレイで相棒が言い直すまでのタイマー（残り時間は出さない）
@@ -3993,6 +4014,7 @@ function wireTestBuildUi() {
 }
 
 function bootHome() {
+  installConnectionDiagnostics(APP_VERSION);
   // テスト版の窓口（バージョン表示・報告導線・初期化・縦持ち案内・例外トースト）。
   wireTestBuildUi();
   // トップの左右に起動ごとのランダム立ち絵を“出迎え”として置く（寂しさ解消・共在感）。
@@ -4038,6 +4060,7 @@ function bootHome() {
         try { back = sessionStorage.getItem(BOOT_NAV_KEY); sessionStorage.removeItem(BOOT_NAV_KEY); } catch { back = null; }
         if (back) { navigate(back); return; }
         goScreen("home-screen");
+        resumeOnlineAfterReload();
         // 認証おすすめは「相棒（詩玥）と出会った後」に出す＝第一印象を機能説明でなくキャラ接触に
         // （初回の対戦ホーム表示後に遅延フェードイン。renderBattleHome 側で発火）。UXテスト指摘。
       }, 240);
@@ -4182,7 +4205,8 @@ async function enterRoomLobby(opts = {}) {
   }
   if (!roomLobby) { ep.close?.(); return; } // 接続待ちの間に「戻る」で離脱した
   // welcome 以降の client 化・再接続が使う既存WS状態を確立（connectMatchmaking と揃える）。
-  onlineWsEp = ep; onlineWsUrl = url; onlineToken = null; reconnecting = false;
+  onlineRecovery.stop(); onlineResume.clear();
+  onlineWsEp = ep; onlineWsUrl = url; onlineToken = null;
   roomLobby.ep = ep;
   if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ: 強制切断テスト用
   ep.onMessage(onlineClientMessage); // evt.lobby→待合室更新 / welcome→対局へ
@@ -4345,7 +4369,8 @@ async function connectMatchmaking() {
   if (!mm) return;
   const roomName = mm.attempt === 0 ? mm.room : `${mm.room}-${mm.attempt}`;
   const url = `${mm.base}?room=${encodeURIComponent(roomName)}`;
-  onlineWsUrl = url; onlineToken = null; reconnecting = false;
+  onlineRecovery.stop(); onlineResume.clear();
+  onlineWsUrl = url; onlineToken = null;
   showMatchSearchOverlay();
   let ep;
   try { ep = await connectWebSocket(url); }
@@ -4389,56 +4414,55 @@ function profileStatsForLobby(profile, onlineStats) {
   };
 }
 
-// 接続断の検知 → 対局が生きている間は自動で同じ卓へ再接続（リコネクト・ライト版）。
+// 接続断の検知。以後の再試行・終端状態は onlineRecovery が管理する。
 function handleWsClose(ep) {
   if (ep !== onlineWsEp) return;            // 旧端点の close は無視
-  if (!online || !online.ws || reconnecting) return;
+  if (!online?.ws || onlineRecovery.state === "failed" || onlineRecovery.state === "reconnecting") return;
   if (!game || game.isGameOver()) return;   // 対局が終わっていれば再接続しない
-  reconnecting = true;
-  showReconnectOverlay("再接続中…");
-  tryReconnect(0);
+  onlineRecovery.start(onlineWsUrl, onlineToken);
 }
-function tryReconnect(attempt) {
-  if (!reconnecting) return;
-  connectWebSocket(onlineWsUrl).then((ep) => {
-    if (!reconnecting) { ep.close?.(); return; }
-    onlineWsEp = ep;
-    if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ
-    if (online) online.send = (m) => ep.send(m);
-    ep.onMessage(onlineClientMessage);
-    ep.onClose?.(() => handleWsClose(ep));
-    ep.send({ type: "intent.rejoin", token: onlineToken }); // 成功すると welcome(rejoined)+snapshot が届く
-  }).catch(() => {
-    if (!reconnecting) return;
-    if (attempt < 6) reconnectTimer = setTimeout(() => tryReconnect(attempt + 1), Math.min(1500 * (attempt + 1), 6000));
-    else reconnectGiveUp();
-  });
+
+function resumeOnlineAfterReload() {
+  const saved = onlineResume.load(window.__ONLINE_WS_URL || ONLINE_WS_URL);
+  if (!saved) return;
+  onlineWsUrl = saved.url;
+  onlineToken = saved.token;
+  // welcome(rejoined) で新しいレプリカを組み、snapshot を受けてから操作へ戻す。
+  onlineRecovery.start(onlineWsUrl, onlineToken);
 }
-function reconnectSuccess() {
-  reconnecting = false;
-  if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
-  showReconnectOverlay(null); // 隠す
-}
-function reconnectGiveUp() {
-  reconnecting = false;
-  if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
-  showReconnectOverlay("fail");
+
+function leaveOnlineConnection() {
+  online = null; // close より先に外し、明示退出で自動再接続しない
+  onlineResume.clear();
+  onlineToken = null;
+  onlineRecovery.stop();
+  const ep = onlineWsEp;
+  onlineWsEp = null;
+  ep?.close?.();
+  resetOnlineTurnUi();
 }
 // 再接続オーバーレイ。text=null で隠す / "fail" で「繋がらない」案内（やり直し/ホーム）。
 function showReconnectOverlay(text) {
   let ov = el("reconnect-overlay");
   if (!text) { ov?.remove(); return; }
   if (!ov) { ov = document.createElement("div"); ov.id = "reconnect-overlay"; ov.className = "reconnect-overlay"; (el("app") || document.body).appendChild(ov); }
-  if (text === "fail") {
+  if (text === "fail" || text === "missing") {
+    const missing = text === "missing";
     ov.innerHTML =
-      `<div class="reconnect-card"><div class="reconnect-msg">接続が切れちゃった……もう一度試す？</div>` +
-      `<div class="reconnect-btns"><button class="primary" id="reconnect-retry">もう一度</button>` +
+      `<div class="reconnect-card"><div class="reconnect-msg">${missing
+        ? "元の対局に戻れませんでした。対局が終了したか、サーバーに対局情報が残っていません。"
+        : "接続を回復できませんでした。通信状況を確認して、もう一度試してください。"}</div>` +
+      `<div class="reconnect-btns">${missing ? "" : '<button class="primary" id="reconnect-retry">もう一度</button>'}` +
+      `<button class="secondary" id="reconnect-report">診断情報を確認</button>` +
       `<button class="ghost-back" id="reconnect-home">← ホームへ</button></div></div>`;
-    el("reconnect-retry").onclick = () => { showReconnectOverlay("再接続中…"); reconnecting = true; tryReconnect(0); };
-    el("reconnect-home").onclick = () => { reconnecting = false; onlineWsEp?.close?.(); online = null; showReconnectOverlay(null); goScreen("battle-home-screen"); };
+    const retry = el("reconnect-retry");
+    if (retry) retry.onclick = () => onlineRecovery.start(onlineWsUrl, onlineToken);
+    el("reconnect-home").onclick = () => { leaveOnlineConnection(); goScreen("battle-home-screen"); };
   } else {
-    ov.innerHTML = `<div class="reconnect-card"><span class="online-spinner"></span><span class="reconnect-msg">${text}</span></div>`;
+    ov.innerHTML = `<div class="reconnect-card"><span class="online-spinner"></span><span class="reconnect-msg">${text}</span>` +
+      `<button class="secondary" id="reconnect-report">診断情報を確認</button></div>`;
   }
+  el("reconnect-report").onclick = () => openSupport();
 }
 
 // --- マッチング探索オーバーレイ（接続後〜welcome までの「相手を探しています」表示） ---
@@ -4532,9 +4556,12 @@ function onlineClientMessage(msg) {
   if (msg.type === "evt.lobbyFull") { leaveRoomLobby(); alert("この部屋は満員です。"); goScreen("online-screen"); return; }
   if (msg.type === "welcome") {
     hideMatchSearchOverlay(); matchmaking = null; roomLobby = null; // 探索/待合室 終了 → 対局へ
-    if (msg.token) onlineToken = msg.token; // 再接続トークンを保持
+    if (msg.token) {
+      onlineToken = msg.token;
+      onlineResume.save(onlineWsUrl, onlineToken);
+    }
     onlineSeatInfo = Array.isArray(msg.players) ? msg.players : null; // 席ごとの名前/段位（卓上＆開始画面用）
-    if (msg.rejoined) { reconnectSuccess(); return; } // 再接続: 既存の対局へ復帰（snapshot が続く）
+    if (msg.rejoined && game && online?.ws) return; // 既存盤面は続く snapshot で更新
     // サーバが席割と卓の顔ぶれ(roster=charId列)を通知 → レプリカを構築して対局へ。
     const seated = (msg.roster || []).map((id) => {
       const c = CHARACTERS.find((x) => x.id === id) || CHARACTERS[0];
@@ -4542,18 +4569,32 @@ function onlineClientMessage(msg) {
     });
     for (const s of seated) audio.registerCharacterVoices(s.character.id, s.character.assets?.voices || {});
     humanIndex = msg.seat != null ? msg.seat : 0;
+    selectedPlayers = seated.length; selectedRounds = 1;
+    selectedTeamBattle = false; selectedPairBattle = false;
+    teamBattleData = null; pairBattleData = null;
     // レプリカを先に構築（=以降のサーバイベントが適用される）。対局開始画面はその上に重ねて見せ、
     // 完了で game-screen を表に出す（イベントは画面が隠れている間もレプリカに反映され続ける）。
     beginGame(seated, 0, { online: true, ws: true });
-    showOnlineMatchIntro(seated);
+    if (!msg.rejoined) showOnlineMatchIntro(seated);
     return;
   }
-  if (msg.type === "evt.rejoinFailed") { reconnectGiveUp(); return; }
   if (!game || !online) return; // welcome 前の取りこぼし保険（通常は到達しない）
   if (msg.type === "evt.snapshot") {
     // 再接続: 途中局面からレプリカを組み直して描画再開。
+    resetOnlineTurnUi();
+    clearActions();
+    clearTimeout(winRevealTimer); winRevealTimer = null;
+    el("win-overlay")?.classList.add("hidden");
+    hpHold = null;
+    clearHandEndInfo();
+    setStageEcho(false);
+    online.opts = null; online.callOpts = null;
     applyEvent(game, msg, { viewpoint: humanIndex, emit: true });
-    reconnectSuccess();
+    showScreen("game-screen");
+    if (game.phase === Phase.HAND_OVER && game.lastResult) {
+      if (!msg.acked) showHandResult();
+      else showOnlineWaitToast();
+    }
     return;
   }
   if (msg.type === "evt.gameOver") {
@@ -4561,6 +4602,8 @@ function onlineClientMessage(msg) {
     // この通知は最終局の ack 送出後（結果オーバーレイを閉じた後）に届くので、そのまま結果へ進める。
     // 二重発火（再接続後の重複通知など）に備え一度だけ表示する。
     game.gameOver = true; // 以降 handleWsClose の自動再接続も抑止される
+    onlineResume.clear();
+    onlineRecovery.stop();
     resetOnlineTurnUi(); // 長考バッジ/代打ちモーダル/待機トーストが残らないよう一掃
     if (!game._goShownOnline) { game._goShownOnline = true; showGameOver(); }
     return;
@@ -6326,7 +6369,7 @@ function appendNextButton(box, r) {
   // 和了画面→ダメージ演出で見せ切っているので、ここでは重ねない（同じ結果を何度も出さない）。
   const proceed = ({ floats = false } = {}) => {
     if (game.isGameOver()) {
-      if (online) online.send({ type: "intent.ack" }); // 権威の run() を終了させる
+      if (online) { online.send({ type: "intent.ack" }); return; } // 結果表示は権威のevt.gameOverで一度だけ
       showGameOver();
       return;
     }
@@ -8925,12 +8968,7 @@ function showGameOver() {
     // 通信状態を片付けてから遷移（再接続タイマ停止・WS切断・online クリア）。
     const leave = async (target) => {
       overlay.classList.add("hidden");
-      reconnecting = false;
-      if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; }
-      showReconnectOverlay(null);
-      onlineWsEp?.close?.();
-      online = null;
-      resetOnlineTurnUi(); // 長考バッジ/代打ちモーダル/待機トーストの後始末（経路追加時の取りこぼし防止）
+      leaveOnlineConnection();
       await progress;
       goScreen(target);
     };

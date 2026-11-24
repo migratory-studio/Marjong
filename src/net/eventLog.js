@@ -59,6 +59,9 @@ export function snapshotEvent(game) {
   return {
     type: "evt.snapshot",
     handNumber: game.handNumber,
+    gameOver: game.isGameOver(),
+    result: serializeResult(game.lastResult),
+    drawnTileIds: game.players.map((p) => p.drawnTileId ?? null),
     seatWinds: game.players.map((p) => p.seatWind),
     hands: game.players.map((p) => p.hand.map(tileLite)), // 配信時に自席以外を null 化(redactFor)
     seats: game.players.map((p) => ({

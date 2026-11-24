@@ -26,7 +26,7 @@ async function until(pred, ms, label) { const t0 = Date.now(); while (!pred()) {
   server.onConnection((conn) => { host.handle(conn, { timeout: 5000, matchWaitMs: 0, pacing: { cpuDelay: 25, nakiWait: 10 } }); });
 
   // --- client1: join して数手進める ---
-  const ep1 = await connectSocket("127.0.0.1", server.port);
+  let ep1 = await connectSocket("127.0.0.1", server.port);
   const c1 = new ClientSession(ep1, { seat: 0, makeSeated });
   ep1.send({ type: "intent.join", charId: "shiyue" });
   await until(() => host.room != null, 5000, "room created");
@@ -35,6 +35,16 @@ async function until(pred, ms, label) { const t0 = Date.now(); while (!pred()) {
   assert(!!token, "join welcome carried a reconnect token");
   // 盤面が少し進む（誰かが打牌する）まで待つ
   await until(() => room.game.players.reduce((s, p) => s + p.discards.length, 0) >= 3, 10000, "some discards");
+
+  // F5と同様、旧接続が残っているうちに新クライアントで同じ席へ復帰する。
+  const refreshed = await connectSocket("127.0.0.1", server.port);
+  const freshClient = new ClientSession(refreshed, { seat: 0, makeSeated });
+  refreshed.send({ type: "intent.rejoin", token });
+  await until(() => freshClient.received.some((m) => m.type === "evt.snapshot"), 8000, "reload snapshot received");
+  ep1.close(); // サーバ側closeと重なっても新しい席を落とさない
+  await wait(60);
+  assert(room.isRemote(0), "late close from the pre-reload connection preserves the new seat");
+  ep1 = refreshed;
 
   // --- 切断（席0は CPU 代打ちへ・対局は継続） ---
   ep1.close();

@@ -11,6 +11,7 @@ import { Phase } from "../core/game.js";
 import { decideDiscard, decideCall, decideAbilityActivations } from "../ai/simpleAI.js";
 import { attachRecorder, snapshotEvent } from "./eventLog.js";
 import { redactFor } from "./redact.js";
+import { diagnosticError } from "./diagnosticFields.js";
 
 const INTENT_TIMEOUT = 15000; // ms。1手の持ち時間。超過した遠隔席は CPU 代打ち(autoSeats)へ。
 const START_GATE_TIMEOUT = 12000; // ms。開始ゲートの上限（演出を閉じない席がいても、これを過ぎたら始める）。
@@ -85,6 +86,8 @@ export class AuthorityRoom {
   // game: 権威の実 Game。connections: { [seat]: transportEndpoint } 遠隔(人間)席のみ。
   constructor(game, connections = {}, opts = {}) {
     this.game = game;
+    this.matchId = crypto.randomUUID(); // 認証には使わない診断用ID。tokenとは独立。
+    this.diagnostic = opts.diagnostic;
     this.connections = connections;
     this.timeout = opts.timeout ?? INTENT_TIMEOUT;
     // 演出ペーシング（ブラウザ描画用。ヘッドレス＝省略で 0＝即時）。CPU の間合い/カットイン/鳴き待ち。
@@ -106,7 +109,7 @@ export class AuthorityRoom {
     this.humanPlayed = false;
     for (const [seatStr, ep] of Object.entries(connections)) {
       const seat = Number(seatStr);
-      ep.onMessage((msg) => this._onIntent(seat, msg));
+      ep.onMessage((msg) => { if (this.connections[seat] === ep) this._onIntent(seat, msg); });
     }
     // bus → wire Event を、確定のたび各クライアントへ配信（redaction なし＝L4a。L4b で席別に除去）。
     this.recorder = attachRecorder(game, { onEvent: (rec) => this._broadcast(rec) });
@@ -114,10 +117,18 @@ export class AuthorityRoom {
 
   isRemote(seat) { return Object.prototype.hasOwnProperty.call(this.connections, seat); }
 
+  log(event, fields = {}) {
+    try { this.diagnostic?.(event, { matchId: this.matchId, handNumber: this.game.handNumber,
+      phase: this.game.phase, turn: this.game.turn, ...fields }); } catch { /* 診断のみ */ }
+  }
+
+  reportFailure(error) { this.log(this.done ? "match_finalize_failed" : "match_crashed", diagnosticError(error)); }
+
   // 切断/離席 → その席を CPU 代打ちに切り替える。以後 decideTurn/decideCalls はローカル AI を使い、
   // ack 待ちもこの席を待たない。手番待ち中なら null 解決＝自動ツモ切り/パスで即座に進行を続ける。
-  dropSeat(seat) {
-    if (this.connections[seat]) this.connections[seat]._dropped = true; // 旧端点の close で誤 drop しない印
+  dropSeat(seat, endpoint = this.connections[seat]) {
+    if (this.connections[seat] !== endpoint) return; // F5後の新接続を旧接続の遅いcloseで落とさない
+    this.log("seat_disconnected", { seat, connectionId: endpoint?.connectionId });
     delete this.connections[seat];
     this.autoSeats.delete(seat); // 切断席は connections から消えて isRemote=false＝恒久 CPU 扱い。autoSeats に残しても無意味なのでクリア。
     const p = this.pending.get(seat);
@@ -130,14 +141,24 @@ export class AuthorityRoom {
   // redaction)を送ってクライアントが途中局面から再構築できるようにする。次の手番から本人が打つ。
   rejoin(seat, endpoint) {
     this.readySeats.add(seat); // 繋ぎ直した席は演出を見終えている扱い（開始ゲートで待たない）
+    const old = this.connections[seat];
     this.connections[seat] = endpoint;
+    if (old !== endpoint) old?.close?.(1000, "replaced");
     this.autoSeats.delete(seat); // 本人が戻った＝代打ち解除。次の手番から本人が打つ。
-    endpoint.onMessage((msg) => this._onIntent(seat, msg));
-    endpoint.onClose?.(() => { if (this.connections[seat] === endpoint) this.dropSeat(seat); });
+    endpoint.onMessage((msg) => { if (this.connections[seat] === endpoint) this._onIntent(seat, msg); });
+    endpoint.onClose?.(() => this.dropSeat(seat, endpoint));
     const token = (this.seatTokens && this.seatTokens[seat]) || this.token;
-    endpoint.send({ type: "welcome", seat, roster: this.roster, players: this.players, token, rules: { players: this.game.numPlayers }, rejoined: true });
+    endpoint.send({ type: "welcome", matchId: this.matchId, seat, roster: this.roster, players: this.players, token, rules: { players: this.game.numPlayers }, rejoined: true });
     // 開始前（ゲート待ち）は盤面がまだ無い。最初の局は handStarted で届く。
-    if (this.started) endpoint.send(redactFor(snapshotEvent(this.game), seat));
+    if (this.started) endpoint.send({ ...redactFor(snapshotEvent(this.game), seat), acked: this.acks.has(seat) });
+    // 古い回線のclose検知よりF5後のrejoinが先に来た場合、元の入力待ちはまだ生きている。
+    // 残り時間を延長せず、操作候補を新しい端末に送り直す。
+    const pending = this.pending.get(seat);
+    if (pending?.prompt) {
+      endpoint.send({ type: "evt.turn", seat, ms: Math.max(0, pending.deadline - Date.now()) });
+      endpoint.send(pending.prompt);
+    }
+    this._checkGate();
   }
 
   // wire Event は宛先席ごとに redaction して送る（他席の手牌/ツモは送らない＝漏洩防止）。
@@ -184,14 +205,15 @@ export class AuthorityRoom {
   // 指定席からの Intent を待つ。kinds は文字列 or 配列（"discard"/["discard","ability"] 等）。
   // timeout で null を返す（呼び出し側で自動処理）。validate(msg) が false の Intent は受理しない。
   // ms は残り持ち時間（既定は1手ぶん）。
-  awaitIntent(seat, kinds, { validate = null, ms = this.timeout } = {}) {
+  awaitIntent(seat, kinds, { validate = null, ms = this.timeout, prompt = null } = {}) {
     const list = Array.isArray(kinds) ? kinds : [kinds];
     return new Promise((resolve) => {
       const timer = setTimeout(() => {
         const p = this.pending.get(seat);
         if (p && p.resolve === resolve) { this.pending.delete(seat); resolve(null); }
       }, Math.max(0, ms));
-      this.pending.set(seat, { kinds: list, resolve, timer, validate });
+      this.pending.set(seat, { kinds: list, resolve, timer, validate, prompt, deadline: Date.now() + ms });
+      if (prompt) this.sendToSeat(seat, prompt);
     });
   }
 
@@ -248,16 +270,16 @@ export class AuthorityRoom {
       // 人間UIの描画材料を権威が計算して同梱（レプリカでは actionOptions 等を再計算できないため）。
       let danger = null;
       try { danger = g.abilities.dangerInfo(p) || null; } catch { danger = null; }
-      this.sendToSeat(seat, {
+      const prompt = {
         type: "evt.awaitDiscard", you: true, seat,
         options: opts || null,
         abilityStatus: (() => { try { return g.abilityStatus(seat); } catch { return []; } })(),
         danger,
-      });
+      };
       const validate = (m) => (m.type === "intent.ability"
         ? typeof m.abilityId === "string" && (p.abilities || []).some((a) => a.id === m.abilityId)
         : turnDecisionFrom(m, opts, p) !== null);
-      const intent = await this.awaitIntent(seat, ["discard", "ability"], { validate, ms: deadline - Date.now() });
+      const intent = await this.awaitIntent(seat, ["discard", "ability"], { validate, ms: deadline - Date.now(), prompt });
       if (!intent) {
         // 持ち時間(15s)超過。以後この席は CPU 代打ちへ切替え、本人へモーダル通知。今手も CPU が打つ。
         this._enterAuto(seat, "timeout");
@@ -284,8 +306,8 @@ export class AuthorityRoom {
     }
     const remote = callers.filter((c) => !this._cpuLike(c.index));
     await Promise.all(remote.map(async (c) => {
-      this.sendToSeat(c.index, { type: "evt.awaitCalls", you: true, seat: c.index, options: c.options });
-      const intent = await this.awaitIntent(c.index, "call", { validate: (m) => callDecisionFrom(m, c.options) !== null });
+      const prompt = { type: "evt.awaitCalls", you: true, seat: c.index, options: c.options };
+      const intent = await this.awaitIntent(c.index, "call", { validate: (m) => callDecisionFrom(m, c.options) !== null, prompt });
       // 鳴き窓も持ち時間超過(null)なら代打ちへ。打牌手番と挙動を揃え、本人にモーダルを出す
       // （以後の手番も CPU 化。明示パスは intent が返るので代打ちには入らない）。
       if (!intent) this._enterAuto(c.index, "timeout");
@@ -298,6 +320,7 @@ export class AuthorityRoom {
   // --- ヘッドレス・ポンプ（描画なし。局を跨いで1ゲーム回す） ---
   async run() {
     const g = this.game;
+    this.log("match_started");
     await this._waitGate(); // 対局開始演出を見終えるまで最初の局を始めない
     this.started = true;
     g.startHand();
@@ -345,6 +368,7 @@ export class AuthorityRoom {
       break;
     }
     this.done = true;
+    this.log("match_finished");
     this._broadcast({ type: "evt.gameOver" });
     this.recorder.dispose();
   }

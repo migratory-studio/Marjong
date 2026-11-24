@@ -135,3 +135,37 @@ Path B のコードは Path A と**同じ `serveRoom` を使い回す**ので、
 常連AIの段位RPは `worker/regularRank.js` の専用計算で、1位+80・2位+25・3位−10・4位−45。4着順合計は従来と同じ+50で、勝敗による差を広げる。段位バーが0未満になれば1段下がり、不足分を下位段の満タン量から差し引く。初段は0で止まり、最高段は9。昇段時は従来どおりバーを0に戻す。季替わりだけで段位は変えず、既存の段位・RP・対局履歴を初期化／再計算しない。適用は反映後の対局から。人間の段位計算と降段なしの仕様は変更しない。
 
 公開順位ptは段位RPとは別。自主対局の6pt/2ptと季上限120ptは保存済み対局も再集計する。混卓の最初の2戦の公開加点は従来の1位60pt・2位20ptのままで、AI専用RPの変更では増やさない。シーズンの区切り、権限、既存プロフィール、対局頻度・日次／同時上限は変更しない。確認: `node test/regularrank.mjs`、`node test/regulars.mjs`、`node test/onlinerank.mjs`。
+
+## 接続切れの診断（test.6以降）
+
+静的サイトとWorkerの両方を反映すると、ブラウザの「環境情報をコピー」とCloudflareのログを共通IDで照合できる。
+`wrangler.toml` の `[observability]` でログ保存を有効化。URL中の部屋の合言葉を保存しないよう、呼出し情報の自動ログは `invocation_logs = false` とし、アプリの構造化ログを使う。
+この設定もWorkerの再デプロイで反映される。稼働中の卓の状態はメモリにあるので、反映時には対局中断の影響を考慮する。
+
+### 再発時の手順
+
+1. 再接続画面の「診断情報を確認」または設定の不具合報告から「環境情報をコピー」。ブラウザ診断は同じタブのsessionStorageに直近120件・24時間分を保持し、F5でも残る。保存が制限される環境ではメモリ内のみとなる。
+2. 報告の `connection diagnostics (UTC)` を確認。時刻はUTC（日本時間は+9時間）。発生した操作、スリープやタブ切替の有無も記録する。
+3. Cloudflareの Workers & Pages → mahjong-online → Observability で、該当時刻と `connectionId` を検索する。`scope: mahjong-online` がこのゲームのカスタム診断。
+4. `matchId` で対局の開始・終了・例外を追う。`instanceId` はDOのメモリが作り直されるたびに変わる。復帰前後の `server_connection` でこれが変わり `rejoin_missing` が続く場合、元のメモリが失われた可能性が高い。同じ接続先への復帰だったことも確認する。
+5. `match_crashed` は対局処理の例外、`match_finalize_failed` は完了後の処理の失敗。`errorName` と `frames`（ソース位置）をその `build` のコードと照合する。
+
+### 判断できることと限界
+
+| 記録 | 判断の手掛かり |
+|---|---|
+| `network_offline` → `ws_close` | ブラウザがオフラインを検知。ただしWi-Fi機器や回線事業者のどちらが原因かまでは分からない |
+| `page_hidden` / `visibility_changed` → 受信間隔の増大 | タブ移動・スリープとの関連を確認する。非表示だけで切断原因と断定しない |
+| `localClose: true` | クライアントが明示的にcloseを要求した。直前の再試行・退出・タイムアウトの記録と照合 |
+| 終了コード1006 | Closeフレームを受け取れない異常終了。回線断、サーバー停止等のどれかはコード単独では判別できない |
+| `match_finished` → `rejoin_missing` | 対局終了後に元の卓へ戻ろうとした |
+| `match_crashed` → `rejoin_missing` | 対局処理の例外で復帰先が失われた |
+| `instanceId`の変化 | サーバーのメモリが作り直された手掛かり。デプロイ履歴・Cloudflareのエラー／CPU指標と照合 |
+
+CPU制限や基盤の強制終了では、アプリが最後のログを書けない場合がある。全原因をこのログだけで断定せず、Cloudflare側の指標・デプロイ履歴も確認する。保存期限や上限はプランに依存するため、再発後は早めに回収する。
+
+診断用IDは認証・復帰に使えない乱数。追加する診断には表示名・メール・手牌・全メッセージ本文・復帰token・部屋名・URLを入れない。例外も名前とソース位置だけを記録する。ブラウザ診断は自動送信せず、既存の環境情報コピーに含める。
+
+確認コマンド: `node --test test/netdiagnostics.mjs test/netreconnect-client.mjs test/netreconnect-race.mjs test/netreconnect-ui.mjs`、`node test/netws.mjs`、`node test/netreconnect.mjs`、`npx wrangler deploy --dry-run`。
+
+参考: [Cloudflare Workers Logs](https://developers.cloudflare.com/workers/observability/logs/workers-logs/)、[Durable Objectsの障害調査](https://developers.cloudflare.com/durable-objects/observability/troubleshooting/)、[WebSocket終了コード](https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent/code)。

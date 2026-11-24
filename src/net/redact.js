@@ -22,7 +22,8 @@ export function redactFor(rec, seat) {
     case "evt.snapshot": {
       // 再接続スナップショット：自席の手牌だけ実値、他席は null（枚数は pub.handCounts）。
       const hands = rec.hands.map((h, i) => (i === seat ? h : null));
-      return { ...rec, hands };
+      const drawnTileIds = rec.drawnTileIds?.map((id, i) => i === seat ? id : null);
+      return { ...rec, hands, drawnTileIds };
     }
     default:
       // tileDiscarded / meldCalled / riichiDeclared / handWon / handDrawn は公開情報のみ。

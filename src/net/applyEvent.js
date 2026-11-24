@@ -119,6 +119,8 @@ export function applyEvent(game, evt, opts = {}) {
     case "evt.snapshot": {
       // 再接続：途中局面からレプリカを丸ごと組み直す（席別 redaction 済みを受ける）。
       game.handNumber = evt.handNumber;
+      game.gameOver = !!evt.gameOver;
+      game.lastResult = evt.result ?? null;
       game.players.forEach((p, i) => {
         p.hand = (evt.hands[i] || []).map(tileFrom); // 自席のみ実値、他席は後段の伏せ札正規化
         const s = evt.seats[i];
@@ -129,7 +131,7 @@ export function applyEvent(game, evt, opts = {}) {
         }));
         p.riichi = !!s.riichi;
         p.kita = [];
-        p.drawnTileId = null;
+        p.drawnTileId = evt.drawnTileIds?.[i] ?? null;
         if (evt.seatWinds) p.seatWind = evt.seatWinds[i];
       });
       game.lastDiscard = evt.lastDiscard ? { id: evt.lastDiscard.id, kind: evt.lastDiscard.kind } : null;

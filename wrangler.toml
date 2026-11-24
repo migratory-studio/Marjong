@@ -4,6 +4,14 @@ name = "mahjong-online"
 main = "worker/index.js"
 compatibility_date = "2025-01-01"
 
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[observability.logs]
+# URL中の合言葉を自動記録せず、ID付きの診断ログを保存する。
+invocation_logs = false
+
 [triggers]
 crons = ["*/5 * * * *"]
 

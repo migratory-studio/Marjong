@@ -86,9 +86,9 @@ export function serveRoom(connection, game, roster, { seat = 0, token = null, ..
   const room = new AuthorityRoom(game, { [seat]: connection }, roomOpts);
   room.roster = roster; room.token = token; room.seat = seat; // リコネクト時の welcome/snapshot 用
   room.seatTokens = token ? { [seat]: token } : {};
-  connection.send({ type: "welcome", seat, roster, token, rules: { players: game.numPlayers } });
-  connection.onClose?.(() => room.dropSeat(seat));
-  room.run().catch((e) => console.error("room.run crashed", e));
+  connection.send({ type: "welcome", matchId: room.matchId, seat, roster, token, rules: { players: game.numPlayers } });
+  connection.onClose?.(() => room.dropSeat(seat, connection));
+  room.run().catch((e) => { room.reportFailure(e); if (!room.diagnostic) console.error("room.run crashed", e); });
   return room;
 }
 
@@ -128,7 +128,7 @@ export class RoomHost {
           e.room.rejoin(e.seat, connection); // 席を本人へ戻し snapshot 送付
         } else {
           connection.send({ type: "evt.rejoinFailed", reason: "対局が見つかりません" });
-          connection.close?.();
+          connection.close?.(1000, "rejoin_missing");
         }
       } else if (msg.type === "intent.lobbySetChar") {
         this._lobbySetChar(connection, msg.charId);
@@ -229,12 +229,12 @@ export class RoomHost {
       const token = randomToken();
       room.seatTokens[seat] = token;
       this.tokenSeat[token] = { room, seat };
-      s.conn.send({ type: "welcome", seat, roster, players: playersInfo, token, rules: { players: game.numPlayers } });
-      s.conn.onClose?.(() => room.dropSeat(seat));
+      s.conn.send({ type: "welcome", matchId: room.matchId, seat, roster, players: playersInfo, token, rules: { players: game.numPlayers } });
+      s.conn.onClose?.(() => room.dropSeat(seat, s.conn));
     });
     this.room = room;
     this.slots = null; // 待合室を消費（以後の join は新バッチ＝新ホスト扱い）
-    room.run().catch((e) => console.error("room.run crashed", e)).finally(() => this._forgetTokens(room));
+    room.run().catch((e) => { room.reportFailure(e); if (!room.diagnostic) console.error("room.run crashed", e); }).finally(() => this._forgetTokens(room));
   }
 
   // 終わった卓の再接続トークンを破棄する（卓オブジェクトを抱え続けない＝常設 DO のメモリを増やさない）。
@@ -299,8 +299,8 @@ export class RoomHost {
       const token = randomToken();
       room.seatTokens[seat] = token;
       this.tokenSeat[token] = { room, seat };
-      s.connection.send({ type: "welcome", seat, roster, players: playersInfo, token, rules: { players: game.numPlayers } });
-      s.connection.onClose?.(() => room.dropSeat(seat));
+      s.connection.send({ type: "welcome", matchId: room.matchId, seat, roster, players: playersInfo, token, rules: { players: game.numPlayers } });
+      s.connection.onClose?.(() => room.dropSeat(seat, s.connection));
     });
     this.room = room;
     const play = room.run().then(() => {
@@ -309,6 +309,6 @@ export class RoomHost {
       if (bots.length) regulars.release(bots);
       this._forgetTokens(room);
     });
-    play.catch((e) => console.error("room.run crashed", e));
+    play.catch((e) => { room.reportFailure(e); if (!room.diagnostic) console.error("room.run crashed", e); });
   }
 }

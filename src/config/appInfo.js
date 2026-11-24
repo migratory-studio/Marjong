@@ -6,7 +6,9 @@
 //
 //   import { APP_VERSION, versionLabel } from "./config/appInfo.js";
 
-export const APP_VERSION = "0.9.0-test.4";
+import { connectionDiagnostics } from "../net/connectionDiagnostics.js";
+
+export const APP_VERSION = "0.9.0-test.6";
 export const BUILD_DATE = "2026-11-25";
 
 // 不具合・感想の受け皿（Googleフォーム / Discord 招待 / GitHub Issues など）。
@@ -52,6 +54,8 @@ export function buildEnvReport(extra = {}) {
     lines.push("errors  :");
     for (const e of errs) lines.push(`  - ${e}`);
   }
+  const network = connectionDiagnostics.report();
+  if (network) lines.push("connection diagnostics (UTC):", network);
   return lines.join("\n");
 }
 
