@@ -1,31 +1,26 @@
 // 師弟ホーム (mentor-home) — major_update_specification.md §7.4 / §4.5 / Phase 2B。
 //
-// 師弟モードのハブ。和風ゲームUI（claude-design 由来）で、師匠立ち絵＋一言を主役に、
-// 上部情報帯（章 / ソウル / 継承 / ○日目 / 設定）と、右の修行コマンド掲示板、
-// 下部の弟子ステータス帯（点棒＝HP）＋次の大会CTAで構成する。
-//
-// コマンド種別（§4.5）:
-//   - 軽い日常（休憩 等）… ハブ上モーダルで完結。画面遷移しない＝立ち絵の再デコード無し＆共在感。
-//   - 出かける/対局（鍛錬・二人打ち・雀荘巡り・大会）… 画面遷移。
-// 実データに無いものは段階開示で「準備中」表示（座学/鍛錬/二人打ち/雀荘巡り/大会、章名/○日目/継承）。
+// 左の道場に師匠と弟子の現在値、右の行動帳に今月の修行と目標の大会を表示する。
+// 座学・鍛錬・休憩はこの画面で完結し、対局や物語は対応する画面へ進む。
 //
 //   import { showMentorHome } from "./screens/mentorHomeScreen.js";
 //   showMentorHome(container, { repository, onNavigate, onBack });
 //     onNavigate("growth"|"ability-change"|"avatar"|"scenario"|"settings")
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
-import { portraitStyleAttr } from "../data/imagePos.js";
+import { focusDialog } from "../ui/dialogFocus.js";
+import { bondPtView } from "../progression/companionBond.js";
 import { skillTemplateById, templateForAbility } from "../data/skillTemplateMaster.js";
 import { skillLevelEntry } from "../data/skillLevelMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
-import { rest, trainParam, TRAIN_TUNING, trainOptionsFor, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState, setMentorMemory, mentorGrowthFor } from "../progression/progressionService.js";
+import { rest, trainParam, TRAIN_TUNING, trainOptionsFor, ensureDay, dayInfo, CONDITIONS, ACTIONS_PER_DAY, parlorState, setMentorMemory, mentorGrowthFor, bondBandLabel } from "../progression/progressionService.js";
 import { pickMentorGreeting, pickRestTalk, pickMentorPraise, pickMentorRankUpLine, pickMentorParlorComment, pickLeagueLossTalk, pickMentorDuoInvite, DUO_INVITE_FALLBACK } from "../data/mentorVoiceMaster.js";
 import { PARAM_LABELS } from "../autobattle/autoBattle.js";
 import { statViews, diffRankUps, rankFill, RANK_COLORS } from "../autobattle/statSystem.js";
 import { mentorSkillLevel, isMentorEpilogue } from "../data/mentorCampaignMaster.js";
 import { treasureRankFor, mentorRankFor } from "../data/tournamentMaster.js";
-import { monthInfo, calendarLabel, nextTournamentSchedule } from "../data/calendarMaster.js";
+import { monthInfo, nextTournamentSchedule } from "../data/calendarMaster.js";
 import { buildUnlockContext, evaluateUnlock } from "../scenario/unlockEvaluator.js";
 import { isScenarioRead, unnotifiedUnlocks, markUnlockNotified, episodeNumberOf, mentorPhase } from "../progression/scenarioService.js";
 import { scenariosForMentor } from "./scenarioListScreen.js";
@@ -36,11 +31,9 @@ const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
 // 師匠スキル Lv は基準 5（§10.5）から、覇道編のシナリオ進度で超越帯へ（mentorSkillLevel が正典）。
 // role → 称号（数値でない肩書き。絆とは無関係のフレーバー）。
 const MENTOR_TITLE = {
-  attacker: "攻めの達人", defender: "守りの達人", defense: "守りの達人",
+  attacker: "攻めの達人", blocker: "守りの達人", defender: "守りの達人", defense: "守りの達人",
   gambler: "博打の打ち手", balanced: "型破りの師範", support: "導きの師",
 };
-// 「今月の様子」プール（非数値の質的表現）。月替わりで安定させる。
-const MENTOR_MOODS = ["上機嫌", "穏やか", "いつも通り", "少し眠そう", "鋭い目つき", "上々"];
 // 1ターン＝ひと月。3行動を上旬→中旬→下旬に対応づけて時期表示する（称号の重み＝時間の縮尺）。
 const TIME_OF_DAY = ["上旬", "中旬", "下旬"];
 // 「○ヶ月目」表示。13ヶ月目からは「○年○ヶ月目」に繰り上げて修行の長さを見せる。
@@ -85,20 +78,23 @@ function openModal(container, innerHTML, onClose) {
     `<div class="mhx-modal-card" role="dialog" aria-modal="true">${innerHTML}` +
     `<button type="button" class="mhx-modal-x" aria-label="閉じる">✕</button></div>`;
   container.appendChild(ov);
+  const card = ov.querySelector(".mhx-modal-card");
+  const title = card.querySelector(".mhx-md-by, .mhx-pr-ttl, .mhx-db-day, .mhx-ds-ttl, .mhx-dan-name");
+  card.setAttribute("aria-label", title?.textContent.trim() || "修行の記録");
+  card.tabIndex = -1;
   let closed = false;
-  const onKey = (e) => { if (e.key === "Escape") close(); };
+  const release = focusDialog(card, { background: container.querySelector(".training-hub"), initial: card, cancel: close });
   function close() {
-    if (closed) return; closed = true;
-    document.removeEventListener("keydown", onKey);
+    if (closed || card.getAttribute("aria-busy") === "true") return;
+    closed = true;
+    release();
+    ov.remove();
     onClose?.();
-    ov.classList.remove("is-open");
-    setTimeout(() => ov.remove(), 180);
   }
-  document.addEventListener("keydown", onKey);
   ov.querySelector(".mhx-modal-scrim").addEventListener("click", close);
   ov.querySelector(".mhx-modal-x").addEventListener("click", close);
   requestAnimationFrame(() => ov.classList.add("is-open"));
-  return { card: ov.querySelector(".mhx-modal-card"), close };
+  return { card, close };
 }
 
 export async function showMentorHome(container, { repository, onNavigate, onBack, flash = null, audio = null } = {}) {
@@ -119,7 +115,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   const mentor = charById(avatar.mentorCharacterId);
   const tmpl = skillTemplateById(avatar.skillTemplateId);
   const debug = isDebugMode();
-  const refresh = () => showMentorHome(container, { repository, onNavigate, onBack });
+  const refresh = () => showMentorHome(container, { repository, onNavigate, onBack, audio });
 
   // ---- 日次（1日3行動・日替わり調子）----
   const ds = ensureDay(profile);
@@ -178,7 +174,6 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   const phase = mentorPhase(profile, avatar.mentorCharacterId);
   const isHadou = phase.id === "hadou";
   container.classList.toggle("is-hadou", isHadou);
-  const chapter = `${phase.label} ─ ${phase.subtitle}`;
   const hpMax = avatar.avatarHpMax || 1;
   const hpCur = Math.max(0, Math.min(avatar.avatarHpCurrent ?? hpMax, hpMax));
   const hpPct = Math.round((hpCur / hpMax) * 100);
@@ -228,167 +223,65 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   // 弟子（マイキャラ）のアイコンはプリセットから引く（師匠の立ち絵を流用しない）。
   const discipleIcon = presetById(avatar.presetIds?.icon)?.assetPath || "";
 
-  // ---- レイアウト（和風ゲームUI）----
+  const bond = bondPtView({ level: avatar.bondLevel, exp: avatar.bondExp });
+  const nextCup = tourSched?.info;
+  const scheduleLabel = !tourSched ? "" : tourSched.openNow ? "今月開催" : `${tourSched.openMonth.gameMonth}月開催・あと${tourSched.monthsLeft}ヶ月`;
+  const stats = statViews(avatarParams6(avatar));
   container.innerHTML = `
-    <div class="mhx-bg">
-      <div class="mhx-bg-base"></div>
-      <div class="mhx-shoji"></div>
-      <div class="mhx-floor"></div>
-      <div class="mhx-crest"></div>
-      <div class="mhx-lantern mhx-l1"><div class="mhx-cord"></div><div class="mhx-lbody"></div></div>
-      <div class="mhx-lantern mhx-l2"><div class="mhx-cord"></div><div class="mhx-lbody"></div></div>
-    </div>
-
-    <div class="mhx-topbar">
-      <div class="mhx-chapter">
-        <button type="button" class="mhx-back" title="ホームへ戻る">‹</button>
-        <div class="mhx-seal">${esc(phase.seal)}</div>
-        <div class="mhx-cname">〔 <b>${esc(chapter)}</b> 〕</div>
-      </div>
-      <div class="mhx-topright">
-        <div class="mhx-purse" title="所持通貨">
-          <div class="mhx-cur mhx-soul" title="ソウル（育成通貨）"><div class="mhx-coin">魂</div><div class="mhx-val">${esc(soul.toLocaleString())}</div><div class="mhx-cur-lab">ソウル</div></div>
-          <div class="mhx-cur mhx-kei" title="継承（メタ通貨）"><div class="mhx-coin">継</div><div class="mhx-val">${esc(meta)}</div><div class="mhx-cur-lab">継承</div></div>
+    <div class="training-hub">
+      <header class="mode-heading">
+        <button type="button" class="mode-back" data-back aria-label="師のもとへ戻る"></button>
+        <h1>${esc(phase.label)}</h1><span class="training-chapter">${esc(phase.subtitle)}</span>
+        <div class="training-wallet"><span>ソウル <b>${soul.toLocaleString()}</b></span><span>継承 <b>${meta.toLocaleString()}</b></span></div>
+        <button type="button" class="mode-settings" data-route="settings" aria-label="設定"></button>
+      </header>
+      <section class="training-scene" aria-label="師匠とのひととき">
+        ${portraitSrc ? `<img class="training-portrait" src="${esc(portraitSrc)}" alt="${esc(mentor.name)}">` : ""}
+        <div class="training-dialogue">
+          <button type="button" class="training-speaker" data-mentor aria-label="${esc(mentor?.name || "師匠")}の詳細">
+            <small>師匠</small><b>${esc(mentor?.name || "師匠")}</b><span>詳細 ›</span>
+          </button>
+          <p>${esc(greetLine)}</p>
         </div>
-        <div class="mhx-dayinfo" title="修行 ${esc(monthLabel(day))}（${esc(calendarLabel(day))}）・ひと月に3回まで行動できる">
-          <div class="mhx-cal${calInfo.isMilestone ? " is-milestone" : ""}"><b>${esc(calInfo.year)}</b>年目 <b>${esc(calInfo.gameMonth)}</b>月<span class="mhx-cal-s">${esc(calInfo.seasonLabel)}</span></div>
-          <div class="mhx-day"><b>${day == null ? "—" : esc(day)}</b><span class="mhx-day-u">ヶ月目</span><span class="mhx-time">${esc(timeLabel)}</span></div>
-          <div class="mhx-acts">行動 <b>${actionsLeft}</b><small>/${ACTIONS_PER_DAY}</small></div>
+      </section>
+      <aside class="training-agenda" aria-labelledby="training-agenda-title">
+        <div class="training-calendar">
+          <span>${esc(calInfo.year)}年目　${esc(calInfo.seasonLabel)}</span>
+          <div><b>${esc(calInfo.gameMonth)}</b>月 <strong>${esc(timeLabel)}</strong></div>
+          <p>残り行動 <b>${actionsLeft}</b> / ${ACTIONS_PER_DAY}</p>
         </div>
-        <button type="button" class="mhx-gear" title="設定">⚙</button>
-      </div>
-    </div>
-
-    <div class="mhx-scene">
-      <div class="mhx-master${portraitSrc ? " has-img" : ""}">
-        <div class="mhx-floorglow"></div>
-        ${portraitSrc ? `<img class="mhx-master-img" alt="${esc(mentor?.name || "")}" src="${esc(portraitSrc)}" style="${esc(portraitStyleAttr(mentor))}">` : ""}
-      </div>
-      <div class="mhx-nameplate" role="button" tabindex="0" title="師匠の詳細">
-        <span class="mhx-np-ttl">師匠</span>
-        <div class="mhx-np-main">
-          <span class="mhx-np-nm">${esc(mentor?.name || "師匠")}${mentor?.reading ? `<small>${esc(mentor.reading)}</small>` : ""}</span>
-          <div class="mhx-np-sub">
-            ${mentorRank ? `<span class="mhx-dan-chip" title="異能段位：${esc(mentorRank.reading)}">${esc(mentorRank.name)}</span>` : ""}
-            <span class="mhx-np-title">${esc(mentorTitle)}</span>
-            <span class="mhx-np-lv${mentorSkillLv > 5 ? " mhx-np-trans" : ""}">技 Lv${mentorSkillLv}</span>
-            ${isHadou ? `<span class="mhx-np-lv mhx-np-shugyo" title="覇道編は師匠も一緒に伸びる（座学・鍛錬・二人打ち）。持ち点 +${mGrowth.hpBonus.toLocaleString()}">修行 Lv${mGrowth.level}</span>` : ""}
-            <span class="mhx-np-mood mhx-cond tone-${mentorCond.tone}">今月：${esc(mood)}</span>
-          </div>
+        <h2 id="training-agenda-title">今月の修行</h2>
+        <div class="training-actions">
+          <button type="button" class="mode-button" data-train="study"><b>座学</b><small>読みと守備を磨く</small></button>
+          <button type="button" class="mode-button" data-train="drill"><b>鍛錬</b><small>型を選んで鍛える</small></button>
+          <button type="button" class="mode-button" data-duo><b>二人打ち</b><small>師匠と一局</small></button>
+          <button type="button" class="mode-button" data-parlor><b>雀荘巡り</b><small>外の卓に挑む</small></button>
         </div>
-        ${mAbilityName ? `<div class="mhx-np-tip"><div class="mhx-np-tip-h">能力</div><div class="mhx-np-tip-n">${esc(mAbilityName)}</div><div class="mhx-np-tip-d">${esc(mAbilityDesc)}</div></div>` : ""}
-      </div>
-      <div class="mhx-bubble">
-        <div class="mhx-q">${esc(greetLine)}</div>
-      </div>
-    </div>
-
-    <div class="mhx-menu">
-      <div class="mhx-menu-head"><span class="mhx-line"></span><span class="mhx-mt">修 行 を 選 ぶ</span><span class="mhx-line mhx-r"></span></div>
-
-      <div class="mhx-group">
-        <div class="mhx-cat">日常</div>
-        <div class="mhx-tags">
-          ${tag("休 憩", "点棒を回復する", "rest", false)}
-          ${tagTrain("座 学", "読み・守備を磨く", "study")}
-        </div>
-      </div>
-
-      <div class="mhx-group mhx-jissen">
-        <div class="mhx-cat">実戦</div>
-        <div class="mhx-tags">
-          ${tagTrain("鍛 錬", "型を選んで鍛える", "drill")}
-          <div class="mhx-tag" data-duo="1" role="button" tabindex="0"><span class="mhx-cmd">二人打ち</span><span class="mhx-desc">師匠とタイマン</span></div>
-          <div class="mhx-tag" data-parlor="1" role="button" tabindex="0"><span class="mhx-cmd">雀荘巡り</span><span class="mhx-desc">打ちに出かける</span></div>
-        </div>
-      </div>
-
-      <div class="mhx-group">
-        <div class="mhx-cat">育成</div>
-        <div class="mhx-tags">
-          ${tag("育 成", "才を伸ばす", "growth", false)}
-          ${tag("能力変更", "型を変える", "ability-change", false)}
-        </div>
-      </div>
-
-      <div class="mhx-group">
-        <div class="mhx-cat">物語</div>
-        <div class="mhx-tags">
-          ${tag("シ ナ リ オ", hasScenario ? (unread > 0 ? `未読 ${unread} 件` : "物語を読む") : "まだありません", "scenario", !hasScenario, unread > 0 ? unread : 0)}
-        </div>
-      </div>
-
-      <div class="mhx-stats" role="button" tabindex="0" title="マイキャラの詳細を見る">
-        <div class="mhx-stats-head"><span class="mhx-line"></span><span class="mhx-st-t">能 力 値</span><span class="mhx-line mhx-r"></span></div>
-        <div class="mhx-stats-grid">
-          ${statViews(avatarParams6(avatar)).map((s) => `
-            <div class="mhx-stat" title="${esc(s.label)}（${s.passive ? "パッシブ" : esc(s.command)}）｜${esc(s.affects)}">
-              <span class="mhx-stat-rank rank-${s.rank}">${s.rank}</span>
-              <span class="mhx-stat-lab">${esc(s.label)}</span>
-              <span class="mhx-stat-val">${s.value}</span>
-            </div>`).join("")}
-        </div>
-      </div>
-    </div>
-
-    <div class="mhx-status" role="button" tabindex="0" title="マイキャラの詳細">
-      <div class="mhx-port">${discipleIcon ? `<img class="mhx-port-img" alt="" src="${esc(discipleIcon)}">` : "弟子"}</div>
-      <div class="mhx-who">
-        <div class="mhx-dn">${esc(avatar.name)}${tmpl ? `<small>${esc(tmpl.name)}</small>` : ""}</div>
-        <div class="mhx-lv"><span class="mhx-lvtag">LV</span><b>${esc(avatar.avatarLevel)}</b><span class="mhx-cond tone-${cond.tone}" title="今月の調子">${esc(cond.label)}</span><span class="mhx-dan-chip${deshiRank ? "" : " is-none"}" title="異能段位${deshiRank ? "：" + esc(deshiRank.reading) : "（宝を集めて昇段）"}">${deshiRank ? esc(deshiRank.name) : "無段"}</span></div>
-      </div>
-      <div class="mhx-hp">
-        <div class="mhx-hp-top">
-          <div class="mhx-lab">点棒 <b>＝ HP</b></div>
-          <div class="mhx-num">${esc(hpCur.toLocaleString())}<small> / ${esc(hpMax.toLocaleString())}</small></div>
-        </div>
-        <div class="mhx-bar"><div class="mhx-fill" style="width:${hpPct}%"></div></div>
-      </div>
-    </div>
-
-    ${(() => {
-      const FMT = { solo4: "個人・四麻", solo3: "個人・三麻", pair: "ペア", team: "団体", final: "最終" };
-      if (!tourSched) return `
-        <button type="button" class="mhx-next mhx-next-off" disabled title="九蓮宝士">
-          <div class="mhx-badge"><span class="mhx-b1">宝</span><span class="mhx-b2">九</span></div>
-          <div class="mhx-txt"><div class="mhx-s">九 蓮 宝 士</div><div class="mhx-m">九つの宝、すべて制覇</div></div>
-          <div class="mhx-na">達成</div>
-        </button>`;
-      const nx = tourSched.info;
-      // 「大会へ」＝当月開催から選ぶメニューの入口（常に有効）。目標宝の開催状況をひと言添える。
-      const cd = tourSched.openNow
-        ? `<span class="mhx-cd is-open">目標を含む大会、開催中</span>`
-        : `<span class="mhx-cd">目標は ${tourSched.openMonth.gameMonth}月（あと <b>${tourSched.monthsLeft}</b> ヶ月）</span>`;
-      return `
-        <button type="button" class="mhx-next" data-tournament="1" title="大会メニューを開く">
-          <div class="mhx-badge"><span class="mhx-b1">CUP</span><span class="mhx-b2">杯</span></div>
-          <div class="mhx-txt">
-            <div class="mhx-s">大会へ　${cd}</div>
-            <div class="mhx-m">${esc(nx.name)}<span class="mhx-goal-mk">★目標</span></div>
-            <div class="mhx-tre">宝『<b>${esc(nx.treasure.name)}</b>』<small>${esc(nx.treasure.reading || "")}</small></div>
-          </div>
-          <div class="mhx-na"><span class="mhx-na-fmt">${esc(FMT[nx.format] || "")}</span><span class="mhx-na-tier">T${nx.tier}</span></div>
-        </button>`;
-    })()}
-
-    <div class="mhx-corner mhx-tl"></div>
-    <div class="mhx-corner mhx-tr"></div>
-    <div class="mhx-corner mhx-bl"></div>
-    <div class="mhx-corner mhx-br"></div>
-  `;
-
-  // コマンド札のHTMLを返す。target=null か off=true で無効札（クリック不可）。
-  // 第5引数 badge>0 で右上に未読バッジ。
-  function tag(cmd, desc, target, off, badge = 0) {
-    const cls = "mhx-tag" + (off ? " mhx-tag-off" : "");
-    const data = !off && target ? ` data-nav="${target}"` : "";
-    const b = badge > 0 ? `<span class="mhx-badge2">${badge}</span>` : "";
-    return `<div class="${cls}"${data} role="button" tabindex="${off ? -1 : 0}">${b}<span class="mhx-cmd">${cmd}</span><span class="mhx-desc">${esc(desc)}</span></div>`;
-  }
-  // 訓練コマンド札（6パラメータを伸ばす活動）。data-train で識別。
-  function tagTrain(cmd, desc, key) {
-    return `<div class="mhx-tag" data-train="${key}" role="button" tabindex="0"><span class="mhx-cmd">${cmd}</span><span class="mhx-desc">${esc(desc)}</span></div>`;
-  }
+        <button type="button" class="training-rest" data-rest>休憩する<span>点棒を回復</span></button>
+        <div class="training-collection"><span>集めた宝</span><b>${treasureCount} / 9</b>
+          <progress aria-label="集めた宝" value="${treasureCount}" max="9"></progress></div>
+        ${nextCup ? `<button type="button" class="training-cup" data-route="tournament">
+          <span class="training-cup-meta">次の目標 <strong>${esc(scheduleLabel)}</strong></span>
+          <b>${esc(nextCup.name)}</b><span>宝「${esc(nextCup.treasure.name)}」<em>大会へ ›</em></span>
+        </button>` : `<div class="training-cup complete"><span>九蓮宝士</span><b>九つの宝をすべて制覇</b></div>`}
+        <nav class="training-library" aria-label="成長と物語">
+          <button type="button" data-route="growth">育成</button>
+          <button type="button" data-route="ability-change">能力変更</button>
+          <button type="button" data-route="scenario"${hasScenario ? "" : " disabled"}>物語${unread ? `<small>未読 ${unread}</small>` : ""}</button>
+        </nav>
+      </aside>
+      <button type="button" class="training-disciple" data-route="avatar" aria-label="${esc(avatar.name)}の弟子詳細">
+        ${discipleIcon ? `<img class="disciple-face" src="${esc(discipleIcon)}" alt="">` : ""}
+        <span class="disciple-vitals">
+          <span class="disciple-byline">あなた <span>Lv ${esc(avatar.avatarLevel)}　${esc(cond.label)}</span></span>
+          <strong title="${esc(tmpl?.name)}">${esc(avatar.name)}<small>${esc(deshiRank?.name || "無段")}</small></strong>
+          <span class="disciple-hp">点棒 <b>${hpCur.toLocaleString()}</b> / ${hpMax.toLocaleString()}</span>
+          <span class="disciple-meter"><i style="width:${hpPct}%"></i></span>
+        </span>
+        <span class="disciple-ranks">${stats.map(s => `<span title="${esc(s.affects)}">${esc(s.label)} <b style="--rank-color:${esc(RANK_COLORS[s.rank])}">${esc(s.rank)}</b> <small>${s.value}</small></span>`).join("")}</span>
+        <span class="disciple-bond">師匠との絆　${esc(bondBandLabel(bond.lv))}　Lv ${bond.lv}　${bond.cur} / ${bond.need} pt</span>
+      </button>
+    </div>`;
 
   // ---- 能力値上昇演出（FE 風：ランク内ゲージを満たし、満タンでランクアップ→次ランクのゲージへ）----
   const sleepMs = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -485,7 +378,9 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     const { card, close } = openModal(container, html, () => { if (didRest) refresh(); });
     const btn = card.querySelector(".mhx-md-btn");
     btn?.addEventListener("click", async () => {
-      if (didRest || actionsLeft <= 0) return;
+      if (didRest || btn.disabled || actionsLeft <= 0) return;
+      card.setAttribute("aria-busy", "true");
+      btn.disabled = true;
       try {
         const res = rest(profile);
         await repository.saveProfile(res.profile);
@@ -495,10 +390,10 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
         card.querySelector(".mhx-md-fill").style.width = `${np}%`;
         card.querySelector(".mhx-md-hp-num").textContent =
           `${av2.avatarHpCurrent.toLocaleString()} / ${av2.avatarHpMax.toLocaleString()}`;
-        // 絆は数値で見せない（CLAUDE.md ピラー1）。Lv 上昇は質的な一言で滲ませる。
         const parts = [];
         if (res.healed > 0) parts.push(`HP +${res.healed.toLocaleString()} 回復`);
         parts.push(`ソウル +${res.soul}`);
+        parts.push(`絆 +${res.bondExp} pt${res.bondUp ? `（Lv ${av2.bondLevel}）` : ""}`);
         if (res.conditionUp) parts.push("調子が上向いた");
         if (res.bondUp) parts.push("…師匠との距離が、少し縮まった気がする。");
         const r = card.querySelector(".mhx-md-result");
@@ -515,29 +410,46 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
             <p class="mhx-rt-reply" hidden></p>
             <button type="button" class="mhx-md-btn mhx-rt-done" hidden>うん、また来月</button>`;
           rt.hidden = false;
+          rt.querySelector(".mhx-rt-choice")?.focus();
           const doneBtn = rt.querySelector(".mhx-rt-done");
           let picked = false;
           rt.querySelectorAll(".mhx-rt-choice").forEach((b) => {
             b.addEventListener("click", async () => {
-              if (picked) return; picked = true;
+              if (picked) return;
+              picked = true;
+              card.setAttribute("aria-busy", "true");
               const ch = talk.choices[Number(b.getAttribute("data-i"))];
-              const cur = await repository.loadProfile();
-              await repository.saveProfile(setMentorMemory(cur, { lastChoice: ch.memory }));
               const reply = rt.querySelector(".mhx-rt-reply");
-              reply.textContent = ch.reply; reply.hidden = false;
-              rt.querySelectorAll(".mhx-rt-choice").forEach((x) => { x.disabled = true; });
-              b.classList.add("is-picked");
-              doneBtn.hidden = false;
+              try {
+                const cur = await repository.loadProfile();
+                await repository.saveProfile(setMentorMemory(cur, { lastChoice: ch.memory }));
+                reply.textContent = ch.reply;
+                rt.querySelectorAll(".mhx-rt-choice").forEach(x => { x.disabled = true; });
+                b.classList.add("is-picked");
+                doneBtn.hidden = false;
+                doneBtn.focus();
+              } catch {
+                picked = false;
+                reply.textContent = "返事を保存できませんでした。もう一度選んでください。";
+              } finally {
+                reply.hidden = false;
+                card.removeAttribute("aria-busy");
+              }
             });
           });
           doneBtn.addEventListener("click", () => close());
         } else {
           btn.disabled = false; btn.textContent = "ゆっくり休んだ";
           btn.onclick = () => close();
+          btn.focus();
         }
       } catch (e) {
         const r = card.querySelector(".mhx-md-result");
         r.textContent = e?.message || "休憩に失敗しました。"; r.hidden = false;
+        btn.disabled = false;
+        btn.focus();
+      } finally {
+        card.removeAttribute("aria-busy");
       }
     });
   }
@@ -575,7 +487,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
     let done = false;
     const { card, close } = openModal(container, html, () => { if (done) refresh(); });
     card.querySelectorAll(".mhx-tr-go").forEach((btn) => btn.addEventListener("click", async () => {
-      if (done) return;
+      if (done || card.getAttribute("aria-busy") === "true") return;
+      card.setAttribute("aria-busy", "true");
       const key = btn.getAttribute("data-key");
       try {
         const res = trainParam(profile, key);
@@ -629,6 +542,8 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
       } catch (e) {
         const r = card.querySelector(".mhx-md-result");
         r.textContent = e?.message || "失敗しました。"; r.hidden = false;
+      } finally {
+        card.removeAttribute("aria-busy");
       }
     }));
   }
@@ -713,6 +628,7 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
           <span class="mhx-md-ttl">${esc(mentor?.name || "師匠")}${mentor?.reading ? `<small>${esc(mentor.reading)}</small>` : ""}</span>
           <div class="mhx-md-chips">
             <span class="mhx-chip">${esc(mentorTitle)}</span>
+            ${mentorRank ? `<span class="mhx-chip">${esc(mentorRank.name)}</span>` : ""}
             <span class="mhx-chip mhx-chip-lv">技 Lv${mentorSkillLv}${mentorSkillLv > 5 ? "（超越）" : ""}</span>
             <span class="mhx-chip mhx-chip-mood">今月 ${esc(mood)}</span>
           </div>
@@ -1122,44 +1038,14 @@ export async function showMentorHome(container, { repository, onNavigate, onBack
   }
 
   // ---- イベント結線 ----
-  const fire = (t) => { if (t) onNavigate?.(t); };
-  container.querySelectorAll(".mhx-tag[data-nav]").forEach((node) => {
-    const t = node.getAttribute("data-nav");
-    const handler = t === "rest" ? openRestModal : () => fire(t);
-    node.addEventListener("click", handler);
-    node.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handler(); } });
-  });
-  container.querySelectorAll(".mhx-tag[data-train]").forEach((node) => {
-    const key = node.getAttribute("data-train");
-    node.addEventListener("click", () => openTrainModal(key));
-    node.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openTrainModal(key); } });
-  });
-  const parlorTile = container.querySelector(".mhx-tag[data-parlor]");
-  parlorTile?.addEventListener("click", openParlorModal);
-  parlorTile?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openParlorModal(); } });
-  const duoTile = container.querySelector(".mhx-tag[data-duo]");
-  duoTile?.addEventListener("click", openDuoModal);
-  duoTile?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openDuoModal(); } });
-  container.querySelector(".mhx-next[data-tournament]")?.addEventListener("click", () => onNavigate?.("tournament"));
-  const status = container.querySelector(".mhx-status");
-  status?.addEventListener("click", () => onNavigate?.("avatar"));
-  status?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onNavigate?.("avatar"); } });
-  const statsBlock = container.querySelector(".mhx-stats");
-  statsBlock?.addEventListener("click", () => onNavigate?.("avatar"));
-  statsBlock?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onNavigate?.("avatar"); } });
-  const np = container.querySelector(".mhx-nameplate");
-  np?.addEventListener("click", openMentorModal);
-  np?.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openMentorModal(); } });
-  container.querySelector(".mhx-back")?.addEventListener("click", () => onBack?.());
-  container.querySelector(".mhx-gear")?.addEventListener("click", () => onNavigate?.("settings"));
-
-  // 立ち絵はデコード済みになってからフェードイン（初回入場の「ブランク→ポップ」を防ぐ）。
-  container.querySelectorAll(".mhx-master-img, .mhx-port-img").forEach((img) => {
-    const reveal = () => img.classList.add("is-loaded");
-    if (img.complete && img.naturalWidth > 0) reveal();
-    else img.addEventListener("load", reveal);
-    img.addEventListener("error", () => { img.style.display = "none"; });
-  });
+  const hub = container.querySelector(".training-hub");
+  hub.querySelector("[data-back]").onclick = () => onBack?.();
+  hub.querySelector("[data-mentor]").onclick = openMentorModal;
+  hub.querySelector("[data-rest]").onclick = openRestModal;
+  hub.querySelector("[data-duo]").onclick = openDuoModal;
+  hub.querySelector("[data-parlor]").onclick = openParlorModal;
+  hub.querySelectorAll("[data-train]").forEach(btn => { btn.onclick = () => openTrainModal(btn.dataset.train); });
+  hub.querySelectorAll("[data-route]").forEach(btn => { btn.onclick = () => onNavigate?.(btn.dataset.route); });
 
   // ---- DEBUG: 起動オプション（?debug=tsumoreba 時のみ表示）----
   if (debug) {

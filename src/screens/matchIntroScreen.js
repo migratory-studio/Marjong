@@ -10,15 +10,11 @@
 // seated は main.js が組む [{ character, abilities }] をそのまま受け取る（abilities は未使用）。
 // 立ち絵は character.assets.portrait を直接 src に使い、onerror で色ブロックへフォールバック
 // （CharacterImages のプリロード状態に依存しない＝選択画面と同じ流儀）。
-import { ROLE_MASTER } from "../data/characterMaster.js";
+import { roleDef } from "../data/characterMaster.js";
 import { applyPortraitCrop } from "../data/imagePos.js";
 
 // 起家から各席の自風（東南西北）を引く。SEAT_WINDS は core/game.js と同じ並び。
 const WIND_LABEL = ["東", "南", "西", "北"];
-
-// ロール定義引き（未設定/未知は「アビス」へフォールバック）。main.js の roleDef と同じ。
-const roleDef = (id) =>
-  ROLE_MASTER.find((r) => r.id === id) || { id: "extra", label: "アビス", color: "#a78bfa" };
 
 // 立ち絵 <img>（色ブロックフォールバック付き）。which は "portrait" | "icon"。
 function makeArt(c, which, cls) {

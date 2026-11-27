@@ -51,7 +51,7 @@ export function completedAvatarToChar(ca, startPoints) {
     skillLevel: ca?.skillLevel,
     role: ca?.role,
   }, startPoints ?? ca?.avatarHpMax ?? 25000);
-  return { ...c, isCompletedAvatar: true };
+  return { ...c, params6: { ...ca?.params6 }, isCompletedAvatar: true };
 }
 
 // アクティブ弟子＋修行成果から卒業スナップショットを作る。

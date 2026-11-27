@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="src/ui/duel.css" />
   <link rel="stylesheet" href="src/ui/home.css" />
+  <link rel="stylesheet" href="src/ui/entry.css" />
+  <link rel="stylesheet" href="src/ui/modes.css" />
   <!-- 例外の受け皿（テスト版）。モジュールより前に読ませて、main.js の読み込み失敗まで拾う。
        ここは記録だけ。見せ方（トースト）は src/app/errorGuard.js が引き継ぐ。 -->
   <script>
@@ -60,20 +62,21 @@
 
     <!-- Home: top-level mode entry（初期はロード画面を見せるため hidden） -->
     <section id="home-screen" class="screen menu-screen hidden">
-      <header class="menu-head">
-        <h1 class="home-logo-h1">
-          <img src="graphic/title.png" alt="ツモノグリフ 〜牌と絆のアンサンブル〜" class="title-logo-img" />
-        </h1>
-        <p class="lead">点棒がHP、相棒と挑む“共闘”の麻雀。</p>
-      </header>
-      <!-- タイトルは「はじめる」の一択。モード選択はすべて相棒の待つホームに集約する。 -->
-      <nav class="title-actions">
-        <button type="button" class="menu-btn title-start" data-nav="home">
-          <span class="menu-btn-title">はじめる</span>
-          <span class="menu-btn-sub">相棒が待つホームへ</span>
-        </button>
-        <button type="button" class="ghost-back title-sub" data-nav="settings">設定</button>
-      </nav>
+      <div class="title-leaf">
+        <header class="title-heading">
+          <h1 class="home-logo-h1">
+            <img src="graphic/title.png" alt="ツモノグリフ 〜牌と絆のアンサンブル〜" class="title-logo-img" />
+          </h1>
+          <p class="lead">点棒がHP、相棒と挑む共闘の麻雀。</p>
+        </header>
+        <!-- タイトルは「はじめる」の一択。モード選択はすべて相棒の待つホームに集約する。 -->
+        <nav class="title-actions">
+          <button type="button" class="menu-btn title-start" data-nav="home">
+            <span class="menu-btn-title">はじめる</span>
+          </button>
+          <button type="button" class="title-sub" data-nav="settings">設定</button>
+        </nav>
+      </div>
       <!-- DEBUG: ?debug=tsumoreba 起動時のみ表示（bootHome で出し分け） -->
       <button type="button" id="debug-menu-btn" class="debug-fab hidden">🐛 DEBUG</button>
       <!-- 仮ロゴ注記: 本リリース時にデザイナー版へ差し替え（graphic/title.png） -->
@@ -91,30 +94,37 @@
 
     <!-- Online (テスト中): mode select -->
     <section id="online-screen" class="screen menu-screen hidden">
-      <header class="menu-head"><h1>通信対戦 <span class="test-badge">テスト中</span></h1>
-        <p class="lead">合言葉のルーム戦か、おまかせマッチング。空席は CPU が補う。</p>
+      <header class="mode-heading">
+        <button type="button" class="mode-back" data-nav="home" aria-label="ホームへ戻る"></button>
+        <h1>通信対戦</h1><span class="mode-edition">テスト中</span>
+        <span class="mode-format">四人打ち　東風戦</span>
       </header>
-      <!-- プロフィール帯（名前 / よく使う相棒 / 段位・RP）。online-screen 表示時に main.js が描画 -->
-      <div id="online-profile" class="online-profile" hidden></div>
-      <nav class="menu-list">
-        <button type="button" class="menu-btn" id="online-room-btn">
-          <span class="menu-btn-title">合言葉を作る</span>
-          <span class="menu-btn-sub">合言葉を発行して相手を招く</span>
-        </button>
-        <button type="button" class="menu-btn" id="online-join-btn">
-          <span class="menu-btn-title">合言葉で参加</span>
-          <span class="menu-btn-sub">もらった合言葉で入室する</span>
-        </button>
-        <button type="button" class="menu-btn" id="online-match-btn">
-          <span class="menu-btn-title">マッチング対戦</span>
-          <span class="menu-btn-sub">おまかせで相手を探す</span>
-        </button>
-        <button type="button" class="menu-btn" id="online-rank-btn">
-          <span class="menu-btn-title">順位表</span>
-          <span class="menu-btn-sub">今シーズンの段位ランキング</span>
-        </button>
-      </nav>
-      <button type="button" class="ghost-back" data-nav="home">← ホームへ</button>
+      <div class="online-doors">
+        <section class="public-table" aria-labelledby="public-table-title">
+          <img class="table-companion" src="graphic/chars/chun_chan/portrait.png" alt="">
+          <div class="table-invitation">
+            <h2 id="public-table-title">マッチング対戦</h2>
+            <p>相棒を選んで、全国の雀士が集まる卓へ。</p>
+            <button type="button" class="mode-choice" id="online-match-btn">相棒を選んで対戦へ</button>
+          </div>
+        </section>
+        <section class="private-table" aria-labelledby="private-table-title">
+          <div class="private-scenery" aria-hidden="true"></div>
+          <div class="private-invitation">
+            <h2 id="private-table-title">友だちと打つ</h2>
+            <p>4文字の合言葉で、同じ卓を囲もう。</p>
+            <div class="private-actions">
+              <button type="button" class="mode-button" id="online-room-btn">部屋を作る</button>
+              <button type="button" class="mode-button" id="online-join-btn">合言葉で参加</button>
+            </div>
+          </div>
+        </section>
+      </div>
+      <footer class="online-pass">
+        <div id="online-profile" class="online-profile" hidden></div>
+        <button type="button" class="mode-button" id="online-rank-btn">今季の順位表</button>
+      </footer>
+      <div class="online-notice" role="alert" hidden></div>
     </section>
 
     <!-- Online lobby (JS-rendered: room/matchmaking + char pick) -->
@@ -125,39 +135,41 @@
 
     <!-- Settings -->
     <section id="settings-screen" class="screen menu-screen hidden">
-      <header class="menu-head"><h1>設定</h1></header>
+      <header class="entry-head"><h1>設定</h1></header>
       <!-- 左=音量 / 右=テスト版の窓口。1画面（1280x720）に収めるため横並びにする。 -->
       <div class="settings-cols">
-      <div class="settings-card">
-        <label class="settings-row">
-          <input type="checkbox" id="home-audio-enabled" checked />
-          <span>音声を有効化</span>
-        </label>
-        <div class="settings-row">
-          <label for="home-bgm-volume">BGM 音量 <span id="home-bgm-volume-val" class="vol-val">40%</span></label>
-          <input type="range" id="home-bgm-volume" min="0" max="100" value="40" />
+        <div class="settings-card">
+          <h2>音量</h2>
+          <label class="settings-row">
+            <input type="checkbox" id="home-audio-enabled" checked />
+            <span>音声を有効化</span>
+          </label>
+          <div class="settings-row">
+            <label for="home-bgm-volume">BGM 音量 <span id="home-bgm-volume-val" class="vol-val">40%</span></label>
+            <input type="range" id="home-bgm-volume" min="0" max="100" value="40" />
+          </div>
+          <div class="settings-row">
+            <label for="home-se-volume">SE 音量 <span id="home-se-volume-val" class="vol-val">80%</span></label>
+            <input type="range" id="home-se-volume" min="0" max="100" value="80" />
+          </div>
         </div>
-        <div class="settings-row">
-          <label for="home-se-volume">SE 音量 <span id="home-se-volume-val" class="vol-val">80%</span></label>
-          <input type="range" id="home-se-volume" min="0" max="100" value="80" />
-        </div>
-      </div>
 
-      <!-- テスト版の身元と受け皿。不具合報告の入口はここに集約する。 -->
-      <div class="settings-card settings-test">
-        <div class="settings-row settings-ver">
-          <span>バージョン</span>
-          <span id="settings-version" class="settings-ver-val">—</span>
+        <!-- テスト版の身元と受け皿。不具合報告の入口はここに集約する。 -->
+        <div class="settings-card settings-test">
+          <h2>テスト版・セーブデータ</h2>
+          <div class="settings-row settings-ver">
+            <span>バージョン</span>
+            <span id="settings-version" class="settings-ver-val">—</span>
+          </div>
+          <button type="button" id="settings-support-btn" class="settings-act">
+            <span class="settings-act-t">テスト版について / 不具合を報告</span>
+            <span class="settings-act-s">既知の未実装・報告のしかた・環境情報のコピー</span>
+          </button>
+          <button type="button" id="settings-reset-btn" class="settings-act settings-act-danger">
+            <span class="settings-act-t">セーブデータを初期化</span>
+            <span class="settings-act-s">この端末の進行をすべて消して最初から</span>
+          </button>
         </div>
-        <button type="button" id="settings-support-btn" class="settings-act">
-          <span class="settings-act-t">テスト版について / 不具合を報告</span>
-          <span class="settings-act-s">既知の未実装・報告のしかた・環境情報のコピー</span>
-        </button>
-        <button type="button" id="settings-reset-btn" class="settings-act settings-act-danger">
-          <span class="settings-act-t">セーブデータを初期化</span>
-          <span class="settings-act-s">この端末の進行をすべて消して最初から</span>
-        </button>
-      </div>
       </div><!-- /.settings-cols -->
 
       <button type="button" class="ghost-back" id="settings-back">← もどる</button>
@@ -168,12 +180,12 @@
       <header class="select-head">
         <button type="button" class="ghost-back select-back" data-nav="home">← ホームへ</button>
         <h1>フリー対戦</h1>
-        <ol class="wiz-steps" id="wiz-steps">
-          <li class="wiz-step active" data-step="1"><span class="wiz-step-no">①</span>形式</li>
-          <li class="wiz-step" data-step="2"><span class="wiz-step-no">②</span>卓</li>
-          <li class="wiz-step" data-step="3"><span class="wiz-step-no">③</span>キャラ</li>
-          <li class="wiz-step" data-step="4"><span class="wiz-step-no">④</span>ルール＆開始</li>
-        </ol>
+        <nav class="wiz-steps" id="wiz-steps" aria-label="対局準備の手順">
+          <button type="button" class="wiz-step active" data-step="1">対戦形式</button>
+          <button type="button" class="wiz-step" data-step="2">卓</button>
+          <button type="button" class="wiz-step" data-step="3">キャラ選択</button>
+          <button type="button" class="wiz-step" data-step="4">ルール・確認</button>
+        </nav>
         <button type="button" id="scenario-demo-btn" class="select-scenario">シナリオ（サンプル）</button>
       </header>
 
@@ -183,21 +195,21 @@
           <h2 class="wiz-title">対戦形式を選ぶ</h2>
           <div class="battle-mode-grid" id="battle-mode-toggle">
             <button type="button" class="mode-btn battle-card selected" data-battle="normal">
-              <span class="battle-card-icon">🀄</span>
+              <span class="format-art format-normal" aria-hidden="true"><span class="format-tiles"><img src="graphic/tiles/Ton.svg" alt=""><img src="graphic/tiles/Nan.svg" alt=""><img src="graphic/tiles/Chun.svg" alt=""></span></span>
               <span class="battle-card-text">
                 <span class="battle-card-title">通常対戦</span>
                 <span class="battle-card-sub">個人戦。最大4人で順位を競う基本ルール。</span>
               </span>
             </button>
             <button type="button" class="mode-btn battle-card" data-battle="pair">
-              <span class="battle-card-icon">🤝</span>
+              <span class="format-art format-pair" aria-hidden="true"><img src="graphic/chars/kuidoshi/icon.png" alt=""><img src="graphic/chars/shiyue/icon.png" alt=""></span>
               <span class="battle-card-text">
                 <span class="battle-card-title">ペア戦</span>
                 <span class="battle-card-sub">2対2の共闘。相方との合計点で勝負する。</span>
               </span>
             </button>
             <button type="button" class="mode-btn battle-card" data-battle="team">
-              <span class="battle-card-icon">🚩</span>
+              <span class="format-art format-team" aria-hidden="true"><img src="graphic/chars/chun_chan/icon.png" alt=""><img src="graphic/chars/yao_chu/icon.png" alt=""><img src="graphic/chars/mamori/icon.png" alt=""></span>
               <span class="battle-card-text">
                 <span class="battle-card-title">団体戦</span>
                 <span class="battle-card-sub">3人チームで挑む総力戦。</span>
@@ -205,84 +217,95 @@
             </button>
           </div>
           <!-- クイックスタート: 細かい設定を飛ばし、相棒と通常4人戦を即開始（FTUEの摩擦軽減）。 -->
-          <button type="button" id="wiz-quickstart" class="wiz-quickstart">🎲 おまかせで即対局<small>通常4人戦をすぐ始める／細かい設定は「次へ」</small></button>
+          <button type="button" id="wiz-quickstart" class="wiz-quickstart">おまかせで即対局<small>通常の4人戦</small></button>
         </div>
 
         <!-- ② 卓: 形式に応じて人数 / チーム数を決める。 -->
         <div class="wiz-pane hidden" data-pane="2">
-          <!-- 通常: 人数 + 席プレビュー -->
-          <div id="normal-table-opts" class="table-opts">
-            <h2 class="wiz-title">何人で打つ？</h2>
-            <div class="mode-toggle wiz-players" id="players-toggle">
-              <button type="button" class="mode-btn selected" data-players="4">
-                <span class="choice-main">4人</span>
-                <span class="choice-sub">四人麻雀・東南西北</span>
-              </button>
-              <button type="button" class="mode-btn" data-players="3">
-                <span class="choice-main">3人</span>
-                <span class="choice-sub">三人麻雀（三麻）</span>
-              </button>
-              <button type="button" class="mode-btn" data-players="2">
-                <span class="choice-main">2人</span>
-                <span class="choice-sub">二人麻雀（少牌・暗槓のみ）</span>
-              </button>
+          <div class="table-setup">
+            <div class="table-choices">
+              <!-- 通常: 人数 + 席プレビュー -->
+              <div id="normal-table-opts" class="table-opts">
+                <h2 class="wiz-title">何人で打つ？</h2>
+                <div class="mode-toggle wiz-players" id="players-toggle">
+                  <button type="button" class="mode-btn selected" data-players="4">
+                    <span class="choice-main">4人</span>
+                    <span class="choice-sub">四人麻雀・東南西北</span>
+                  </button>
+                  <button type="button" class="mode-btn" data-players="3">
+                    <span class="choice-main">3人</span>
+                    <span class="choice-sub">三人麻雀（三麻）</span>
+                  </button>
+                  <button type="button" class="mode-btn" data-players="2">
+                    <span class="choice-main">2人</span>
+                    <span class="choice-sub">二人麻雀（少牌・暗槓のみ）</span>
+                  </button>
+                </div>
+                <p class="wiz-note">※ 自分以外の席は<b>おまかせ（ランダム）</b>。次の「キャラ」で相手を指名することもできます。</p>
+              </div>
+
+              <!-- ペア戦: 2対2の共闘。相方は次ステップで指名（おまかせ可） -->
+              <div id="pair-table-opts" class="table-opts hidden">
+                <h2 class="wiz-title">2対2の共闘</h2>
+                <p class="wiz-note">4席を2ペアで分け合います。席は<b>対面どうしが相方</b>。2人の<b>合計点</b>で勝負し、片方が飛んでも<b>相方が単騎で続行</b>します。</p>
+                <p class="wiz-note">※ 次のステップで<b>あなた</b>と<b>相方1人</b>を選んでください（相方はおまかせ可）。相手ペアはランダムで決まります。</p>
+              </div>
+
+              <!-- 団体戦: チーム数 -->
+              <div id="team-table-opts" class="table-opts hidden">
+                <h2 class="wiz-title">チーム数</h2>
+                <div class="mode-toggle wiz-players" id="team-count-toggle">
+                  <button type="button" class="mode-btn selected" data-teams="4">
+                    <span class="choice-main">4チーム</span>
+                    <span class="choice-sub">四人麻雀形式</span>
+                  </button>
+                  <button type="button" class="mode-btn" data-teams="3">
+                    <span class="choice-main">3チーム</span>
+                    <span class="choice-sub">三麻形式</span>
+                  </button>
+                </div>
+                <p class="wiz-note">※ 次のステップで自チームのメンバー3人を選んでください。相手チームはランダムで決まります。</p>
+              </div>
             </div>
             <div class="seat-preview-block">
-              <div class="seat-preview-label">この顔ぶれで卓を囲みます</div>
+              <h3 class="seat-preview-label">卓の顔ぶれ</h3>
               <div class="seat-preview" id="seat-preview"></div>
             </div>
-            <p class="wiz-note">※ 自分以外の席は<b>おまかせ（ランダム）</b>。次の「キャラ」で相手を指名することもできます。</p>
-          </div>
-
-          <!-- ペア戦: 2対2の共闘。相方は次ステップで指名（おまかせ可） -->
-          <div id="pair-table-opts" class="table-opts hidden">
-            <h2 class="wiz-title">2対2の共闘</h2>
-            <p class="wiz-note">4席を2ペアで分け合います。席は<b>対面どうしが相方</b>。2人の<b>合計点</b>で勝負し、片方が飛んでも<b>相方が単騎で続行</b>します。</p>
-            <p class="wiz-note">※ 次のステップで<b>あなた</b>と<b>相方1人</b>を選んでください（相方はおまかせ可）。相手ペアはランダムで決まります。</p>
-          </div>
-
-          <!-- 団体戦: チーム数 -->
-          <div id="team-table-opts" class="table-opts hidden">
-            <h2 class="wiz-title">チーム数</h2>
-            <div class="mode-toggle wiz-players" id="team-count-toggle">
-              <button type="button" class="mode-btn selected" data-teams="4">
-                <span class="choice-main">4チーム</span>
-                <span class="choice-sub">四人麻雀形式</span>
-              </button>
-              <button type="button" class="mode-btn" data-teams="3">
-                <span class="choice-main">3チーム</span>
-                <span class="choice-sub">三麻形式</span>
-              </button>
-            </div>
-            <p class="wiz-note">※ 次のステップで自チームのメンバー3人を選んでください。相手チームはランダムで決まります。</p>
           </div>
         </div>
 
-        <!-- ③ キャラ: ロスターから自分を選択。席を押せばCPUも指名できる。 -->
+        <!-- ③ 候補の詳細を見比べてから、編集中の席へ確定する。 -->
         <div class="wiz-pane hidden" data-pane="3">
-          <div class="seat-bar" id="seat-bar"></div>
+          <div class="seat-bar" id="seat-bar" role="group" aria-label="編集中の席"></div>
           <div class="select-layout">
             <div id="char-list" class="char-list"></div>
-            <aside id="char-detail" class="char-detail"></aside>
+            <aside class="entry-dossier" aria-label="候補の詳細">
+              <div id="char-detail"></div>
+              <button type="button" id="char-assign" class="entry-choice"></button>
+            </aside>
           </div>
         </div>
 
         <!-- ④ ルール＆開始: 対局方式を選び、確認して開始。 -->
         <div class="wiz-pane hidden" data-pane="4">
-          <h2 class="wiz-title">対局方式</h2>
-          <div class="mode-toggle wiz-rounds" id="mode-toggle">
-            <button type="button" class="mode-btn selected" data-rounds="1">
-              <span class="choice-main">東風戦</span>
-              <span class="choice-sub">東場のみ・短期決戦</span>
-            </button>
-            <button type="button" class="mode-btn" data-rounds="2">
-              <span class="choice-main">半荘戦</span>
-              <span class="choice-sub">東南戦・じっくり</span>
-            </button>
-          </div>
-          <div class="wiz-summary-block">
-            <div class="wiz-summary-label">この内容で対局します</div>
-            <div class="wiz-summary" id="wiz-summary"></div>
+          <div class="table-setup">
+            <div class="table-choices">
+              <h2 class="wiz-title">対局方式</h2>
+              <div class="mode-toggle wiz-rounds" id="mode-toggle">
+                <button type="button" class="mode-btn selected" data-rounds="1">
+                  <span class="choice-main">東風戦</span>
+                  <span class="choice-sub">東場のみ・短期決戦</span>
+                </button>
+                <button type="button" class="mode-btn" data-rounds="2">
+                  <span class="choice-main">半荘戦</span>
+                  <span class="choice-sub">東南戦・じっくり</span>
+                </button>
+              </div>
+            </div>
+            <div class="wiz-summary-block">
+              <h3 class="wiz-summary-label">対局の顔ぶれ</h3>
+              <div class="wiz-summary" id="wiz-summary"></div>
+            </div>
           </div>
         </div>
       </div>

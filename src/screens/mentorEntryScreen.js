@@ -1,14 +1,11 @@
 // 師のもとへ画面 (mentor-entry) — 師弟モードの入口。
 //
-// 「新しく弟子入りする」/「修行する（続きから）」の2択と、Googleログイン導線を提供する。
-// 弟子が0体のときは「修行する」を無効化する。
-// 見た目はホームと同じ汎用クラス（menu-head / menu-list / menu-btn / ghost-back）に乗せ、
-// styles.css 末尾の購入UIセット(gameUIset_19)スキンを自動適用する。
+// 入門、前回の修行の再開、保存した記録の切替とアカウント連携の入口。
 //
 //   import { showMentorEntry } from "./screens/mentorEntryScreen.js";
 //   showMentorEntry(container, { profile, isLoggedIn, accountLabel, onCreate, onTrain, onLogin, onLogout, onBack });
 
-const STYLE_ID = "mentor-entry-style";
+import { CHARACTER_MASTER } from "../data/characterMaster.js";
 
 function elt(tag, cls, props = {}) {
   const e = document.createElement(tag);
@@ -17,33 +14,22 @@ function elt(tag, cls, props = {}) {
   return e;
 }
 
-// レイアウト専用の最小スタイル（色・枠・背景はスキン側に任せ、ここでは位置だけ）。
-function injectStyle() {
-  if (document.getElementById(STYLE_ID)) return;
-  const s = document.createElement("style");
-  s.id = STYLE_ID;
-  s.textContent = `
-/* .menu-screen は幅560pxの中央列なので、右上の口座行が列の端＝画面の中ほどに浮いてしまう。
-   この画面だけ全幅にして、口座行を画面の右上隅へ置く（中身は flex 中央寄せのまま）。 */
-#mentor-entry-screen.menu-screen { max-width:none; }
-.mentor-entry-account { position:absolute; top:16px; right:22px; display:flex; flex-direction:column;
-  align-items:flex-end; gap:6px; text-align:right; z-index:2; }
-.mentor-entry-account .mentor-entry-label { font-size:13px; color:var(--accent); max-width:300px; word-break:break-all; }
-.mentor-entry-account .mentor-entry-hint { font-size:11px; color:var(--muted); max-width:340px; }
-.mentor-entry-account button { padding:4px 14px; font-size:13px; }
-`;
-  document.head.appendChild(s);
-}
-
 export function showMentorEntry(
   container,
-  { profile, isLoggedIn, accountLabel, onCreate, onTrain, onLogin, onLogout, onAccount, onBack } = {}
+  { profile, isLoggedIn, accountLabel, onCreate, onTrain, onResume, onLogin, onLogout, onAccount, onBack } = {}
 ) {
-  injectStyle();
   container.innerHTML = "";
 
   const avatars = profile?.avatars || [];
   const hasAvatars = avatars.length > 0;
+  const active = avatars.find((a) => a.avatarId === profile?.activeAvatarId);
+  const mentor = CHARACTER_MASTER.find((c) => c.id === (active?.mentorCharacterId || "shiyue"));
+  if (mentor?.assets?.portrait) {
+    const figure = elt("figure", "mentor-welcome");
+    figure.append(elt("img", null, { src: mentor.assets.portrait, alt: "" }),
+      elt("figcaption", null, { textContent: `師匠　${mentor.name}` }));
+    container.append(figure);
+  }
 
   // ---- 右上アカウント行（ログイン状態） ----
   const account = elt("div", "mentor-entry-account");
@@ -65,7 +51,7 @@ export function showMentorEntry(
   // ---- 見出し ----
   const head = elt("header", "menu-head");
   head.appendChild(elt("h1", null, { textContent: "師のもとへ" }));
-  head.appendChild(elt("p", "lead", { textContent: "弟子を育てる旅へ。" }));
+  head.appendChild(elt("p", "lead", { textContent: "あなたが弟子になるサクセスストーリー" }));
   container.appendChild(head);
 
   // ---- 大きな2択（ホームのメニューボタンと同じ作り＝スキン適用） ----
@@ -73,23 +59,28 @@ export function showMentorEntry(
 
   const create = elt("button", "menu-btn", { type: "button" });
   create.appendChild(elt("span", "menu-btn-title", { textContent: "新しく弟子入りする" }));
-  create.appendChild(elt("span", "menu-btn-sub", { textContent: "新たな弟子を作り、物語をはじめる" }));
+  create.appendChild(elt("span", "menu-btn-sub", { textContent: "自分の名前と姿を決め、師匠のもとへ" }));
   create.onclick = () => onCreate?.();
   nav.appendChild(create);
 
   const train = elt("button", "menu-btn", { type: "button" });
-  train.appendChild(elt("span", "menu-btn-title", { textContent: "修行する" }));
+  train.appendChild(elt("span", "menu-btn-title", { textContent: "修行を続ける" }));
   train.appendChild(
     elt("span", "menu-btn-sub", {
-      textContent: hasAvatars ? "育てた弟子の続きから（セーブデータ）" : "まだ弟子がいません",
+      textContent: active && onResume ? `${active.name}　／　師匠　${mentor?.name || "—"}` : hasAvatars ? "修行の記録を選んで再開" : "弟子入りすると選べます",
     })
   );
   if (hasAvatars) {
-    train.onclick = () => onTrain?.();
+    train.onclick = active && onResume ? () => onResume(active.avatarId) : () => onTrain?.();
   } else {
     train.disabled = true;
   }
-  nav.appendChild(train);
+  if (hasAvatars) nav.prepend(train); else nav.append(train);
+  if (active && onResume) {
+    const records = elt("button", "mode-button entry-records", { type: "button", textContent: "修行の記録を選ぶ" });
+    records.onclick = () => onTrain?.();
+    nav.append(records);
+  }
 
   container.appendChild(nav);
 

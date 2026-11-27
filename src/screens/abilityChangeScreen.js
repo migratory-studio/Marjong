@@ -5,6 +5,7 @@
 //
 //   import { showAbilityChange } from "./screens/abilityChangeScreen.js";
 //   showAbilityChange(container, { repository, onBack });
+import { mountTrainingPage } from "../ui/trainingPage.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { activeAvatar } from "../progression/avatarFactory.js";
@@ -25,18 +26,10 @@ export async function showAbilityChange(container, { repository, onBack } = {}) 
   const render = async () => {
     const profile = await repository.loadProfile();
     const avatar = activeAvatar(profile);
-    container.innerHTML = "";
-    container.classList.add("mentor-screen");
-
-    const head = elt("header", "menu-head");
-    head.appendChild(elt("h1", "mentor-h1", { textContent: "能力変更" }));
-    container.appendChild(head);
+    const content = mountTrainingPage(container, { title: "能力変更", profile, avatar, mentorSide: true, onBack });
 
     if (!avatar) {
-      container.appendChild(elt("p", "lead", { textContent: "マイキャラがいません。" }));
-      const back = elt("button", "ghost-back", { type: "button", textContent: "← 戻る" });
-      back.onclick = () => onBack?.();
-      container.appendChild(back);
+      content.appendChild(elt("p", "lead", { textContent: "マイキャラがいません。" }));
       return;
     }
 
@@ -51,12 +44,12 @@ export async function showAbilityChange(container, { repository, onBack } = {}) 
     top.appendChild(elt("div", "ac-current", {
       textContent: `師匠: ${mentor ? mentor.name : avatar.mentorCharacterId}  ／  現在の能力: ${current ? current.name : "—"}（スキルLv ${avatar.skillLevel}）`,
     }));
-    container.appendChild(top);
+    content.appendChild(top);
 
-    container.appendChild(elt("p", "ac-warn", { textContent: "※ 能力を変更するとスキル Lv は 1 に戻ります。" }));
+    content.appendChild(elt("p", "ac-warn", { textContent: "※ 能力を変更するとスキル Lv は 1 に戻ります。" }));
 
     const err = elt("p", "av-error ac-err hidden");
-    container.appendChild(err);
+    content.appendChild(err);
 
     const options = abilityChangeOptions(profile);
     const list = elt("div", "ac-list");
@@ -76,13 +69,10 @@ export async function showAbilityChange(container, { repository, onBack } = {}) 
       card.onclick = () => { selected = t.skillTemplateId; render(); };
       list.appendChild(card);
     }
-    container.appendChild(list);
+    content.appendChild(list);
 
     // 確認 + 実行
     const footer = elt("div", "ac-footer");
-    const back = elt("button", "ghost-back", { type: "button", textContent: "← 師弟ホームへ" });
-    back.onclick = () => onBack?.();
-    footer.appendChild(back);
 
     const sel = options.find((o) => o.template.skillTemplateId === selected);
     const confirmBtn = elt("button", "primary", { type: "button",
@@ -104,7 +94,7 @@ export async function showAbilityChange(container, { repository, onBack } = {}) 
       }
     };
     footer.appendChild(confirmBtn);
-    container.appendChild(footer);
+    content.appendChild(footer);
   };
 
   await render();

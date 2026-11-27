@@ -1,15 +1,11 @@
-// トップ（ホーム）の左右立ち絵 — 起動ごとにランダムな2キャラを“出迎え”として置く。
-//
-// 「トップがちょっと寂しい」を、相棒候補たちが両脇に立つ画で埋める。麻雀の外でも
-// キャラが“居る”ことで愛着＝固有性に効かせる狙い（CLAUDE.md / 共在感）。
+// タイトルの扉絵。雀荘で出迎える二人を起動ごとに選び、足元に名前を添える。
 //   import { mountHomeCast } from "./screens/homeCast.js";
 //   mountHomeCast(document.getElementById("home-screen"));
 //
 // 設計メモ:
-//  - 1280×720 固定・中央メニュー(幅560px)とは被らせない。左右の各ガター(約360px)に収める
-//    （fixed-stage-no-scroll / 「被らないように大きく」）。
+//  - 1280×720 の右側に二人を並べ、左側に題字と開始ボタンを置く。
 //  - 立ち絵は全身画 graphic/chars/<id>/portrait.png を object-fit:contain で丸ごと見せる。
-//  - 解禁前(locked)のキャラはネタバレ回避で出さない。母集団が薄ければ重複も許容する。
+//  - 初期キャラから重複しない二人を選ぶ。
 //  - 起動ごと＝ページロードごとに1回だけ抽選（bootHome から呼ぶ）。装飾なのでクリックは透過。
 import { CHARACTERS } from "../characters/characters.js";
 import { topCastTuneOf } from "../data/imagePos.js";
@@ -32,7 +28,7 @@ function pickDistinct(pool, n) {
 
 // 1体ぶんの立ち絵ノード（読み込み失敗時はその枠ごと消す＝トップに崩れた絵を残さない）。
 function figureNode(c, side) {
-  const fig = document.createElement("div");
+  const fig = document.createElement("figure");
   fig.className = `home-cast-fig is-${side}`;
   const img = document.createElement("img");
   img.src = c.assets.portrait;
@@ -48,6 +44,9 @@ function figureNode(c, side) {
     img.style.transformOrigin = "bottom center";
   }
   fig.appendChild(img);
+  const name = document.createElement("figcaption");
+  name.textContent = c.name;
+  fig.appendChild(name);
   return fig;
 }
 
@@ -61,7 +60,8 @@ export function mountHomeCast(section) {
 
   const cast = document.createElement("div");
   cast.className = "home-cast";
-  cast.setAttribute("aria-hidden", "true");
+  cast.setAttribute("role", "group");
+  cast.setAttribute("aria-label", "出迎える雀士");
   if (picks[0]) cast.appendChild(figureNode(picks[0], "left"));
   if (picks[1]) cast.appendChild(figureNode(picks[1], "right"));
 

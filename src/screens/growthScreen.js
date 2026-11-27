@@ -5,6 +5,7 @@
 //
 //   import { showGrowth } from "./screens/growthScreen.js";
 //   showGrowth(container, { repository, onBack });
+import { mountTrainingPage } from "../ui/trainingPage.js";
 import { skillTemplateById } from "../data/skillTemplateMaster.js";
 import { activeAvatar } from "../progression/avatarFactory.js";
 import { avatarLevelInfo, skillLevelInfo, levelUpAvatar, upgradeSkill } from "../progression/progressionService.js";
@@ -20,18 +21,10 @@ export async function showGrowth(container, { repository, onBack } = {}) {
   const render = async () => {
     const profile = await repository.loadProfile();
     const avatar = activeAvatar(profile);
-    container.innerHTML = "";
-    container.classList.add("mentor-screen");
-
-    const head = elt("header", "menu-head");
-    head.appendChild(elt("h1", "mentor-h1", { textContent: "育成" }));
-    container.appendChild(head);
+    const content = mountTrainingPage(container, { title: "育成", profile, avatar, onBack });
 
     if (!avatar) {
-      container.appendChild(elt("p", "lead", { textContent: "マイキャラがいません。" }));
-      const back = elt("button", "ghost-back", { type: "button", textContent: "← 戻る" });
-      back.onclick = () => onBack?.();
-      container.appendChild(back);
+      content.appendChild(elt("p", "lead", { textContent: "マイキャラがいません。" }));
       return;
     }
 
@@ -42,13 +35,13 @@ export async function showGrowth(container, { repository, onBack } = {}) {
     const soulBar = elt("div", "growth-soul");
     soulBar.appendChild(elt("span", "mh-soul-label", { textContent: "ソウル" }));
     soulBar.appendChild(elt("span", "mh-soul-val", { textContent: String(soulNow) }));
-    container.appendChild(soulBar);
+    content.appendChild(soulBar);
 
     const err = elt("p", "av-error growth-err hidden");
-    container.appendChild(err);
+    content.appendChild(err);
 
     const cards = elt("div", "growth-cards");
-    container.appendChild(cards);
+    content.appendChild(cards);
 
     const buy = async (action) => {
       err.classList.add("hidden");
@@ -62,11 +55,11 @@ export async function showGrowth(container, { repository, onBack } = {}) {
       }
     };
 
-    // ---- キャラ Lv（HP 成長）----
+    // ---- 弟子 Lv（HP 成長）----
     const lvInfo = avatarLevelInfo(profile);
     {
       const card = elt("div", "growth-card");
-      card.appendChild(elt("div", "growth-card-title", { textContent: "キャラ Lv（HP 成長）" }));
+      card.appendChild(elt("div", "growth-card-title", { textContent: "弟子 Lv（HP 成長）" }));
       card.appendChild(elt("div", "growth-card-now", { textContent: `現在: Lv ${lvInfo.current}  最大HP ${lvInfo.currentHpMax}` }));
       if (lvInfo.next) {
         const gain = lvInfo.next.avatarHpMax - lvInfo.currentHpMax;
@@ -114,9 +107,6 @@ export async function showGrowth(container, { repository, onBack } = {}) {
       cards.appendChild(card);
     }
 
-    const back = elt("button", "ghost-back", { type: "button", textContent: "← 師弟ホームへ" });
-    back.onclick = () => onBack?.();
-    container.appendChild(back);
   };
 
   await render();

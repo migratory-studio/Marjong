@@ -7,12 +7,14 @@
 //   showRogueliteGameOver… ラン終了（撤退で帰還／全滅で没収）
 //
 // 立ち絵/アイコンは charImages（呼び出し側が渡す）から引く。無ければ頭文字フォールバック。
-// 1280×720 ノースクロール方針：ロスターのみ内部スクロールに逃がす（F6 と同様の扱い）。
+// 1280×720の編成では名簿をページ送りにし、長い能力説明は枠の中で読める。
 
 import { RARITY_META, CARD_CATEGORY, cardCategory, cardById, CLUSTER_META, clusterOf } from "../data/rogueliteCardMaster.js";
 import { clusterProgress, clusterPickPreview, HP_SCALE } from "../roguelite/cardEffects.js";
 import { ITEM_KIND_META, itemById, ITEM_SLOTS } from "../data/rogueliteItemMaster.js";
 import { abilityDef } from "../data/abilityMaster.js";
+import { roleDef } from "../data/characterMaster.js";
+import { mountCharacterCatalog } from "../ui/characterCatalog.js";
 import { biomeEffectChips, biomeOf } from "../data/rogueliteBiomeMaster.js";
 import { tableSizeLabel, isSoloTable, ABILITY_SOURCE_MAX, soloPenaltyHint, allyScaledHp } from "../roguelite/run.js";
 import { bondBandLabel } from "../progression/progressionService.js";
@@ -34,7 +36,7 @@ export function applyChapterColorSet(el, cs) {
 
 // 編成カード用：能力名と、楼光の館で実際に出発するHPの「実値」。
 // 「堅/脆」のような曖昧語ではなく、点棒感のある具体的な数字で見せる（誰が削れやすいかが一目で分かる）。
-const ROLE_LABEL = { attacker: "アタッカー", blocker: "ブロッカー", gambler: "ギャンブラー", support: "サポート" };
+const PARTY_ROLES = ["あなた", "相棒", "控え"];
 // 点棒→館HP の写像（run.js の allyScaledHp と同一式）。編成画面と本番の初期HPを一致させる単一情報源。
 function charRogueliteHp(c) {
   return allyScaledHp(c?.avatarHpMax ?? c?.stats?.startingPoints ?? 25000);
@@ -212,16 +214,15 @@ export function showRoguelite(container, opts = {}) {
   const party = []; // 選択順＝席順（先頭=あなた）
 
   container.innerHTML = `
-    <div class="rl-screen">
-      <header class="rl-head">
-        <h1 class="rl-title">楼光の館</h1>
-        <div class="rl-best">これまでの最深到達記録：<b>${bestFloor}</b> 階</div>
+    <div class="rl-screen rl-formation">
+      <header class="rl-head"><h1 class="rl-title">楼光の館</h1><span class="rl-best">最深到達 <b>${bestFloor}</b> 階</span>
+        <details class="formation-rules"><summary>編成・撤退のルール</summary><p>先頭はあなた、2人目は相棒、3人目は控えです。味方2人と敵2人が着卓し、倒れた味方は控えと交代します。勝てば強化を選べます。戦える味方が1人以下になる前に撤退すると記録を持ち帰れます。</p></details>
       </header>
-      <p class="rl-lead">弟子を連れて階層を登る。<b>味方2人が着卓し、敵2人と同卓（2対2）で戦う</b>。勝てばバフを選び、危なくなる前に撤退して記録を持ち帰れ。<b>戦える味方が1人以下になればランは没収</b>だ（一度トべば復活しない）。</p>
       <div class="rl-body">
-        <div class="rl-party">
-          <div class="rl-party-head">パーティ（1〜${MAX_PARTY}人・先頭「あなた」＝操作キャラ／3人目は控え＝倒れたら繰り上がり）</div>
+        <div class="rl-party"><h2>出発メンバー</h2>
           <div class="rl-party-slots" id="rl-party-slots"></div>
+          <div class="formation-detail" id="rl-candidate" aria-label="候補の能力"></div>
+          <button type="button" class="entry-choice" id="rl-assign"></button>
           ${carry.length ? `<div class="rl-carry">
             <div class="rl-carry-head">引き継ぎ中のバフ</div>
             <div class="rl-carry-chips">${carry.map((c) => {
@@ -230,10 +231,7 @@ export function showRoguelite(container, opts = {}) {
             }).join("")}</div>
           </div>` : ""}
         </div>
-        <div class="rl-roster">
-          <div class="rl-roster-head">連れて行く打ち手を選ぶ<span class="rl-roster-legend"><i class="rl-legend-lamp"></i>枠の灯＝絆の深さ　・　数字＝出発時HP</span></div>
-          <div class="rl-roster-grid" id="rl-roster-grid"></div>
-        </div>
+        <div class="rl-roster"><h2>連れて行く打ち手</h2><div id="rl-roster-grid"></div></div>
       </div>
       <div class="rl-foot">
         <button type="button" class="ghost-back" id="rl-back">${backLabel}</button>
@@ -250,9 +248,11 @@ export function showRoguelite(container, opts = {}) {
     slotsEl.innerHTML = "";
     for (let i = 0; i < MAX_PARTY; i++) {
       const c = party[i];
-      const slot = document.createElement("div");
+      const slot = document.createElement(c ? "button" : "div");
       slot.className = "rl-slot" + (c ? " filled" : "") + (i === 0 ? " you" : "") + (c ? ` tone-bond${bondBandIndex(bondLevelOf(c))}` : "");
       if (c) {
+        slot.type = "button";
+        slot.setAttribute("aria-label", `${PARTY_ROLES[i]}の${c.name}を編成から外す`);
         slot.appendChild(faceNode(charImages, c, "rl-slot-face"));
         const meta = document.createElement("div");
         meta.className = "rl-slot-meta";
@@ -267,85 +267,69 @@ export function showRoguelite(container, opts = {}) {
         slot.appendChild(meta);
         const tag = document.createElement("div");
         tag.className = "rl-slot-tag";
-        tag.textContent = i === 0 ? "あなた" : i === MAX_PARTY - 1 ? "控え" : "相棒";
+        tag.textContent = PARTY_ROLES[i];
         slot.appendChild(tag);
         slot.title = "外す";
-        slot.addEventListener("click", () => { party.splice(i, 1); sync(); });
+        slot.addEventListener("click", () => {
+          party.splice(i, 1);
+          sync();
+          (slotsEl.querySelectorAll("button")[i] || slotsEl.querySelector("button") || assign).focus({ preventScroll: true });
+        });
       } else {
-        slot.textContent = i === 0 ? "あなた" : "＋";
+        slot.textContent = `${PARTY_ROLES[i]}　未編成`;
       }
       slotsEl.appendChild(slot);
     }
   };
 
-  const renderGrid = () => {
-    gridEl.innerHTML = "";
-    for (const c of pool) {
-      const locked = isLocked(c);
-      const inParty = party.some((p) => p.id === c.id);
-      const bondLv = bondLevelOf(c);
-      const band = locked ? 0 : bondBandIndex(bondLv); // 未解禁は絆を結べない＝灯さない（tone-bond0固定）
-      const hp = charRogueliteHp(c);
-      const cell = document.createElement("button");
-      cell.type = "button";
-      cell.className = "rl-cell" + ` tone-bond${band}` + (inParty ? " picked" : "") + (c.isCompletedAvatar ? " deshi" : "") + (locked ? " locked" : "");
-      cell.disabled = locked || (!inParty && party.length >= MAX_PARTY);
-      cell.appendChild(faceNode(charImages, c, "rl-cell-face"));
-      const nm = document.createElement("div");
-      nm.className = "rl-cell-name";
-      nm.textContent = c.name || "?";
-      cell.appendChild(nm);
-      // 出発時HPの「実値」＋点棒ゲージ（堅/脆の曖昧語を捨て、削れやすさを数字と長さで見せる）。
-      const role = ROLE_LABEL[c.role] || "";
-      const hpEl = document.createElement("div");
-      hpEl.className = "rl-cell-hp";
-      hpEl.style.setProperty("--fill", String(hpGaugeFill(hp)));
-      hpEl.innerHTML = `<span class="rl-cell-hp-line"><b>${fmtHp(hp)}</b><span class="rl-cell-hp-unit">HP</span></span><span class="rl-cell-hp-gauge"><i></i></span>`;
-      cell.appendChild(hpEl);
-      // 間柄ラベル（枠の灯の色と同色）。絆が深いほど色が変わる＝蓄積の可視化。未解禁は出さない。
-      if (!locked) {
-        const bond = document.createElement("div");
-        bond.className = "rl-cell-bond";
-        bond.textContent = `${bondBandLabel(bondLv)} Lv${bondLv}`;
-        cell.appendChild(bond);
-      }
-      // 能力の「効果」までホバーで見せる（一見さんが手探りで選ばないように）。
-      const abId = c?.abilities?.[0]?.abilityId;
-      const def = abId ? abilityDef(abId) : null;
-      cell.title = `${c.name}｜${role || "打ち手"}\n出発時HP：${fmtHp(hp)}\n間柄：${bondBandLabel(bondLv)}（Lv${bondLv}）${def ? `\n能力「${def.name}」：${def.desc}` : ""}`;
-      const pop = document.createElement("div");
-      pop.className = "rl-cell-pop";
-      pop.innerHTML = `<div class="rl-cell-pop-name">${c.name}<span class="rl-cell-pop-role">${role || "打ち手"}</span></div>`
-        + `<div class="rl-cell-pop-stats"><span class="rl-cell-pop-hp">出発時HP <b>${fmtHp(hp)}</b></span><span class="rl-cell-pop-bond">間柄 <b>${bondBandLabel(bondLv)} Lv${bondLv}</b></span></div>`
-        + `${def ? `<div class="rl-cell-pop-ab"><b>${def.name}</b>${def.desc ? `<span>${def.desc}</span>` : ""}</div>` : ""}`;
-      cell.appendChild(pop);
-      if (c.isCompletedAvatar) {
-        const b = document.createElement("span");
-        b.className = "rl-cell-badge"; b.textContent = "弟子";
-        cell.appendChild(b);
-      }
-      if (locked) { // 宝珠ショップで解禁前＝鍵を表示し、ホバーで解禁先を案内
-        const lk = document.createElement("span");
-        lk.className = "rl-cell-lock"; lk.textContent = "🔒";
-        cell.appendChild(lk);
-        cell.title = `${c.name}｜未解禁\n宝珠ショップで解禁すると連れて行けます`;
-      }
-      if (inParty) { // 選択済みの明示（ロスターでも分かるように）
-        const chk = document.createElement("span");
-        chk.className = "rl-cell-check"; chk.textContent = `✓ ${party.findIndex((p) => p.id === c.id) === 0 ? "あなた" : "出陣中"}`;
-        cell.appendChild(chk);
-      }
-      cell.addEventListener("click", () => {
-        const idx = party.findIndex((p) => p.id === c.id);
-        if (idx >= 0) party.splice(idx, 1);
-        else if (party.length < MAX_PARTY) party.push(c);
-        sync();
-      });
-      gridEl.appendChild(cell);
-    }
-  };
+  let candidate = pool.find((c) => !isLocked(c)) || pool[0] || null;
+  const detail = container.querySelector("#rl-candidate");
+  const assign = container.querySelector("#rl-assign");
 
-  const sync = () => { renderParty(); renderGrid(); startBtn.disabled = party.length < 1; };
+  function renderCandidate() {
+    detail.replaceChildren();
+    if (!candidate) {
+      detail.textContent = "名簿から候補を選んでください";
+      assign.disabled = true; assign.textContent = "候補を選ぶ";
+      return;
+    }
+    const c = candidate;
+    const ability = c.abilities?.[0] && abilityDef(c.abilities[0].abilityId);
+    const name = document.createElement("h3"); name.textContent = c.name;
+    const stats = document.createElement("p");
+    const hp = charRogueliteHp(c);
+    const bond = isLocked(c) ? "" : `　${bondBandLabel(bondLevelOf(c))} Lv${bondLevelOf(c)}`;
+    stats.textContent = `${roleDef(c.role).label}　${fmtHp(hp)} HP${bond}`;
+    const meter = document.createElement("span");
+    meter.className = "formation-hp"; meter.setAttribute("aria-hidden", "true");
+    const fill = document.createElement("i"); fill.style.width = `${hpGaugeFill(hp) * 100}%`; meter.append(fill);
+    const skill = document.createElement("strong"); skill.textContent = ability?.name || "固有能力なし";
+    const desc = document.createElement("p"); desc.textContent = ability?.desc || ability?.blurb || "";
+    detail.append(name, stats, meter, skill, desc);
+    const position = party.findIndex((p) => p.id === c.id);
+    assign.disabled = isLocked(c) || position >= 0 || party.length >= MAX_PARTY;
+    assign.textContent = isLocked(c) ? "未解禁 · 宝珠ショップで解禁" : position >= 0 ? `「${PARTY_ROLES[position]}」で編成中`
+      : party.length >= MAX_PARTY ? "編成は3人まで" : `${PARTY_ROLES[party.length]}として加える`;
+  }
+  const catalog = mountCharacterCatalog(gridEl, {
+    characters: () => pool, isLocked, inspectLocked: true,
+    describe(c) {
+      const index = party.findIndex((p) => p.id === c.id);
+      return { active: c.id === candidate?.id, badge: PARTY_ROLES[index] || (c.isCompletedAvatar ? "弟子" : ""),
+        note: isLocked(c) ? roleDef(c.role).label : `${fmtHp(charRogueliteHp(c))} HP · 絆Lv${bondLevelOf(c)}` };
+    },
+    onPick(c) { candidate = c; renderCandidate(); catalog.refresh(); },
+    onBrowse(visible) {
+      if (!visible.some((c) => c.id === candidate?.id)) { candidate = visible[0] || null; renderCandidate(); }
+    },
+  });
+  function sync() { renderParty(); renderCandidate(); catalog.refresh(); startBtn.disabled = !party.length; }
+  assign.onclick = () => {
+    if (assign.disabled || !candidate) return;
+    party.push(candidate);
+    sync();
+    gridEl.querySelector('[aria-pressed="true"]')?.focus({ preventScroll: true });
+  };
   sync();
 
   container.querySelector("#rl-back")?.addEventListener("click", () => onBack?.());

@@ -6,6 +6,8 @@
 //   import { showConfirm } from "./screens/confirmModal.js";
 //   showConfirm({ title, message, confirmLabel, danger, onConfirm, onCancel });
 
+import { focusDialog } from "../ui/dialogFocus.js";
+
 function elt(tag, cls, props = {}) {
   const e = document.createElement(tag);
   if (cls) e.className = cls;
@@ -19,14 +21,19 @@ export function showConfirm({
   confirmLabel = "OK",
   cancelLabel = "やめる",
   danger = false,
+  background,
   onConfirm,
   onCancel,
 } = {}) {
   const host = document.getElementById("app") || document.body;
   const overlay = elt("div", "confirm-overlay");
-  const close = () => overlay.remove();
+  let release;
+  const close = () => { release?.(); overlay.remove(); };
 
   const modal = elt("div", "confirm-modal");
+  modal.setAttribute("role", "dialog");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-label", title);
   modal.appendChild(elt("h2", "confirm-title", { textContent: title }));
   // message は改行を活かす（\n で段落）。
   const msg = elt("p", "confirm-msg");
@@ -47,5 +54,6 @@ export function showConfirm({
 
   overlay.appendChild(modal);
   host.appendChild(overlay);
+  if (background) release = focusDialog(modal, { background, initial: cancel, cancel: () => cancel.click() });
   return close;
 }

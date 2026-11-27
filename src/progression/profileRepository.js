@@ -19,7 +19,7 @@ export function createDefaultProfile() {
     wallet: { soul: 0 },
     activeAvatarId: null,
     favoriteCharId: null, // 対戦ホームに常駐させる「お気に入りキャラ」。未選択は絆最上位→既定で補う。
-    homeBg: null,         // 対戦ホームの背景キー（"washi"|"dojo"|"street"）。null=既定(washi)。
+    homeBg: null,         // 相棒ホームで選んだ背景キー。null のときは道場。
     homeBgm: null,        // 対戦ホームのBGMキー（HOME_BGM_CHOICES）。null=既定(hanadoki)。
     orbs: 0,              // アカウント通貨「宝珠」。宝珠ショップで恒久強化/解禁に使う。
     rogueliteShopBuffs: {}, // 宝珠で買った恒久バフ（shopMaster の id → 購入レベル）。run生成時に適用。

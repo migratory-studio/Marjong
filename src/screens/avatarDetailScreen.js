@@ -5,9 +5,9 @@
 //
 //   import { showAvatarDetail } from "./screens/avatarDetailScreen.js";
 //   showAvatarDetail(container, { profile, onBack });
+import { mountTrainingPage } from "../ui/trainingPage.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { skillTemplateById } from "../data/skillTemplateMaster.js";
-import { presetById } from "../data/avatarPresetMaster.js";
 import { activeAvatar, avatarParams6 } from "../progression/avatarFactory.js";
 import { bondBandLabel } from "../progression/progressionService.js";
 import { bondPtView } from "../progression/companionBond.js";
@@ -24,46 +24,15 @@ function elt(tag, cls, props = {}) {
 
 export function showAvatarDetail(container, { profile, onBack } = {}) {
   const avatar = activeAvatar(profile);
-  container.innerHTML = "";
-  container.classList.add("avatar-screen");
-
-  const head = elt("header", "menu-head");
-  head.appendChild(elt("h1", null, { textContent: "マイキャラ" }));
-  container.appendChild(head);
+  const content = mountTrainingPage(container, { title: "弟子手帳", profile, avatar, onBack });
 
   if (!avatar) {
-    container.appendChild(elt("p", "lead", { textContent: "まだマイキャラがいません。" }));
-    const back = elt("button", "ghost-back", { type: "button", textContent: "← ホームへ" });
-    back.onclick = () => onBack?.();
-    container.appendChild(back);
+    content.appendChild(elt("p", "lead", { textContent: "まだマイキャラがいません。" }));
     return;
   }
 
   const mentor = charById(avatar.mentorCharacterId);
   const tmpl = skillTemplateById(avatar.skillTemplateId);
-  const iconP = presetById(avatar.presetIds?.icon);
-  const frameP = presetById(avatar.presetIds?.frame);
-  const bgP = presetById(avatar.presetIds?.background);
-
-  const layout = elt("div", "avatar-detail-layout");
-  container.appendChild(layout);
-
-  // ---- 見た目 ----
-  const portrait = elt("aside", "avatar-preview");
-  const bg = elt("div", "av-preview-bg");
-  bg.style.background = bgP?.css || "var(--felt)";
-  const iconWrap = elt("div", "av-preview-icon");
-  iconWrap.style.borderColor = frameP?.css || "var(--accent)";
-  const img = elt("img", "av-preview-img", { alt: "" });
-  if (iconP?.assetPath) img.src = iconP.assetPath; else img.style.visibility = "hidden";
-  img.onerror = () => { img.style.visibility = "hidden"; };
-  iconWrap.appendChild(img);
-  bg.appendChild(iconWrap);
-  portrait.appendChild(bg);
-  portrait.appendChild(elt("div", "av-preview-name", { textContent: avatar.name }));
-  if (avatar.profileText) portrait.appendChild(elt("p", "av-detail-bio", { textContent: avatar.profileText }));
-  layout.appendChild(portrait);
-
   // ---- ステータス ----
   const stats = elt("div", "avatar-stats");
   const hpPct = Math.max(0, Math.min(100, Math.round((avatar.avatarHpCurrent / avatar.avatarHpMax) * 100)));
@@ -71,10 +40,10 @@ export function showAvatarDetail(container, { profile, onBack } = {}) {
     ["師匠", mentor ? mentor.name : avatar.mentorCharacterId],
     ["能力種類", tmpl ? `${tmpl.name}（${tmpl.rarity}）` : avatar.skillTemplateId],
     ["スキル Lv", `Lv ${avatar.skillLevel}`],
-    ["キャラ Lv", `Lv ${avatar.avatarLevel}`],
+    ["弟子 Lv", `Lv ${avatar.avatarLevel}`],
     ["師匠との間柄", (() => {
       const { lv, cur, need } = bondPtView({ level: avatar.bondLevel, exp: avatar.bondExp });
-      return `${bondBandLabel(avatar.bondLevel)}　Lv${lv}（${cur}/${need}）`;
+      return `${bondBandLabel(avatar.bondLevel)}　Lv${lv}（${cur}/${need} pt）`;
     })()],
     ["ソウル", `${profile.wallet?.soul ?? 0}`],
   ];
@@ -97,7 +66,7 @@ export function showAvatarDetail(container, { profile, onBack } = {}) {
 
   if (tmpl) stats.appendChild(elt("p", "av-detail-bio", { textContent: tmpl.description }));
 
-  layout.appendChild(stats);
+  content.appendChild(stats);
 
   // ---- オートバトル能力値（6 パラメータ：レベル＋ランク＋上げ方＋効果）----
   const panel = elt("section", "av-params");
@@ -133,9 +102,6 @@ export function showAvatarDetail(container, { profile, onBack } = {}) {
     grid.appendChild(card);
   }
   panel.appendChild(grid);
-  container.appendChild(panel);
+  content.appendChild(panel);
 
-  const back = elt("button", "ghost-back", { type: "button", textContent: "← 師弟ホームへ" });
-  back.onclick = () => onBack?.();
-  container.appendChild(back);
 }

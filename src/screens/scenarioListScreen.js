@@ -7,6 +7,8 @@
 //   import { showScenarioList } from "./screens/scenarioListScreen.js";
 //   showScenarioList(container, { repository, onPlay, onBack });
 //     onPlay(scenarioId, onEnd): 親が playScenario して終了時に onEnd() を呼ぶ。
+import { mountTrainingPage } from "../ui/trainingPage.js";
+import { focusDialog } from "../ui/dialogFocus.js";
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { SCENARIO_MASTER } from "../data/scenarioMaster.js";
 import { activeAvatar } from "../progression/avatarFactory.js";
@@ -43,18 +45,10 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
   const render = async (flash = null) => {
     const profile = await repository.loadProfile();
     const avatar = activeAvatar(profile);
-    container.innerHTML = "";
-    container.classList.add("mentor-screen");
-
-    const head = elt("header", "menu-head");
-    head.appendChild(elt("h1", "mentor-h1", { textContent: "シナリオ" }));
-    container.appendChild(head);
+    const content = mountTrainingPage(container, { title: "師匠との物語", profile, avatar, mentorSide: true, onBack });
 
     if (!avatar) {
-      container.appendChild(elt("p", "lead", { textContent: "マイキャラがいません。" }));
-      const back0 = elt("button", "ghost-back", { type: "button", textContent: "← 戻る" });
-      back0.onclick = () => onBack?.();
-      container.appendChild(back0);
+      content.appendChild(elt("p", "lead", { textContent: "マイキャラがいません。" }));
       return;
     }
 
@@ -72,8 +66,8 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
       const ov = elt("div", "scgate");
       ov.innerHTML = `
         <div class="scgate-scrim"></div>
-        <div class="scgate-card${unlocked ? " is-unlocked" : ""}">
-          <div class="scgate-ttl">${unlocked ? "シナリオ解禁！" : "次の物語まで"}</div>
+        <div class="scgate-card${unlocked ? " is-unlocked" : ""}" role="dialog" aria-modal="true" aria-labelledby="story-gate-title">
+          <div class="scgate-ttl" id="story-gate-title">${unlocked ? "シナリオ解禁！" : "次の物語まで"}</div>
           <div class="scgate-rail">
             <div class="scgate-ava">${discipleIconSc ? `<img src="${esc(discipleIconSc)}" alt="">` : "弟子"}</div>
             <div class="scgate-bar"><div class="scgate-fill" style="width:${unlocked ? 0 : pct}%"></div></div>
@@ -83,8 +77,9 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
             ? `<p class="scgate-msg">「${esc(s.title)}」が読めるようになった。</p><div class="scgate-btns"><button type="button" class="scgate-go">読む</button></div>`
             : `<p class="scgate-cond-h">解禁の条件</p><p class="scgate-cond">${ev.unmet.map((u) => `・${esc(u)}`).join("<br>")}</p><div class="scgate-btns"><button type="button" class="scgate-close">閉じる</button></div>`}
         </div>`;
-      container.appendChild(ov);
-      const close = () => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 200); };
+      (document.getElementById("app") || document.body).append(ov);
+      const release = focusDialog(ov.querySelector(".scgate-card"), { background: container, cancel: close });
+      function close() { release(); ov.remove(); }
       requestAnimationFrame(() => {
         ov.classList.add("is-open");
         if (unlocked) {
@@ -104,20 +99,19 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
     soul.appendChild(elt("span", "mh-soul-label", { textContent: "ソウル" }));
     soul.appendChild(elt("span", "mh-soul-val", { textContent: String(profile.wallet?.soul ?? 0) }));
     topbar.appendChild(soul);
-    topbar.appendChild(elt("span", "mh-summary", { textContent: `師匠：${mentor ? mentor.name : "—"}` }));
-    container.appendChild(topbar);
+    content.appendChild(topbar);
 
     const debug = isDebugMode();
-    if (debug) container.appendChild(elt("p", "sclist-debug", { textContent: "🛠 DEBUG：全シナリオ解放中" }));
+    if (debug) content.appendChild(elt("p", "sclist-debug", { textContent: "🛠 DEBUG：全シナリオ解放中" }));
 
     const flashLine = elt("p", "sclist-flash", { textContent: flash || "" });
-    container.appendChild(flashLine);
+    content.appendChild(flashLine);
 
     const list = scenariosForMentor(avatar.mentorCharacterId);
     const ctx = buildUnlockContext(profile);
 
     if (list.length === 0) {
-      container.appendChild(elt("p", "sclist-empty", { textContent: "この師匠の物語は、まだありません。" }));
+      content.appendChild(elt("p", "sclist-empty", { textContent: "この師匠の物語は、まだありません。" }));
     } else {
       const wrap = elt("div", "sclist");
       list.forEach((s, idx) => {
@@ -177,12 +171,9 @@ export async function showScenarioList(container, { repository, onPlay, onBack }
         }
         wrap.appendChild(row);
       });
-      container.appendChild(wrap);
+      content.appendChild(wrap);
     }
 
-    const back = elt("button", "ghost-back", { type: "button", textContent: "← 師弟ホームへ" });
-    back.onclick = () => onBack?.();
-    container.appendChild(back);
   };
 
   await render();

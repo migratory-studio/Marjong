@@ -1,211 +1,136 @@
-// 弟子一覧画面 (mentor-roster) — これまで育てた弟子（アバター）をグリッドで一覧する。
-//
-// 各カードはアイコン・名前・師匠名・キャラLvを表示し、修行中の弟子を強調する。
-// カードクリックで選択、末尾の点線カードから新規作成へ。
-// 「整理」モード中は各カードに削除ボタン(🗑)が出て、確認モーダルを経て削除する（誤削除防止）。
-// 見出し(menu-head)・カード枠(.mentor-roster-card)・戻る(ghost-back)は styles.css 末尾の
-// 購入UIセット(gameUIset_19)スキンで装飾する（ここでは配置のみ）。
-//
-//   import { showMentorRoster } from "./screens/mentorRosterScreen.js";
-//   showMentorRoster(container, { profile, isLoggedIn, onSelect, onCreate, onDelete, onBack });
-//     onDelete(avatarId) は削除後の最新 profile を返すこと（その場で再描画して整理モードを維持する）。
+// 道場の修行記録。閲覧中の記録と、実際に再開する記録を分ける。
 import { CHARACTER_MASTER } from "../data/characterMaster.js";
 import { presetById } from "../data/avatarPresetMaster.js";
+import { monthInfo } from "../data/calendarMaster.js";
+import { bondBandLabel } from "../progression/progressionService.js";
+import { bondPtView } from "../progression/companionBond.js";
 import { showConfirm } from "./confirmModal.js";
-
-const STYLE_ID = "mentor-roster-style";
-
-const charById = (id) => CHARACTER_MASTER.find((c) => c.id === id) || null;
-
-function elt(tag, cls, props = {}) {
-  const e = document.createElement(tag);
-  if (cls) e.className = cls;
-  Object.assign(e, props);
-  return e;
-}
-
-// レイアウト専用の最小スタイル（枠・色はスキン側＝styles.css に任せる）。
-function injectStyle() {
-  if (document.getElementById(STYLE_ID)) return;
-  const s = document.createElement("style");
-  s.id = STYLE_ID;
-  s.textContent = `
-.mentor-roster-head { display:flex; align-items:center; justify-content:space-between; gap:16px;
-  width:100%; max-width:1040px; margin:0 auto; }
-.mentor-roster-head .mentor-roster-titles { display:flex; flex-direction:column; align-items:flex-start; gap:2px; }
-.mentor-roster-head .mentor-roster-subhead { font-size:13px; color:var(--muted); }
-.mentor-roster-headright { display:flex; align-items:center; gap:12px; }
-.mentor-roster-storage { font-size:12px; color:var(--accent); white-space:nowrap; }
-.mentor-roster-manage { padding:4px 14px; font-size:13px; }
-.mentor-roster-grid { display:grid; grid-template-columns:repeat(5, 1fr); gap:14px;
-  width:100%; max-width:1040px; margin:18px auto 0; }
-.mentor-roster-cell { position:relative; display:flex; }
-.mentor-roster-card { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; padding:12px 8px; }
-.mentor-roster-bg { width:84px; height:84px; border-radius:10px; display:flex; align-items:center;
-  justify-content:center; overflow:hidden; }
-.mentor-roster-icon { width:72px; height:72px; border-radius:50%; border:3px solid var(--accent);
-  overflow:hidden; background:rgba(0,0,0,.2); display:flex; align-items:center; justify-content:center; }
-.mentor-roster-icon img { width:100%; height:100%; object-fit:cover; }
-.mentor-roster-name { font-size:15px; font-weight:700; }
-.mentor-roster-mentor { font-size:12px; color:var(--muted); }
-.mentor-roster-lv { font-size:12px; color:var(--accent); }
-.mentor-roster-badge { font-size:11px; font-weight:700; color:#1a1a1a; background:#ffd766;
-  border-radius:6px; padding:1px 8px; }
-.mentor-roster-del { position:absolute; top:6px; right:6px; z-index:3; width:30px; height:30px;
-  display:flex; align-items:center; justify-content:center; font-size:15px; cursor:pointer;
-  border-radius:50%; border:1px solid #c66; background:rgba(40,10,10,.92); color:#ffd3d3; }
-.mentor-roster-del:hover { background:rgba(120,20,20,.95); color:#fff; }
-.mentor-roster-add .mentor-roster-plus { font-size:30px; line-height:1; color:var(--accent); }
-.mentor-roster-add .mentor-roster-addtxt { font-size:13px; }
-.mentor-roster-empty { margin:28px auto 0; max-width:1040px; display:flex; flex-direction:column;
-  gap:18px; align-items:flex-start; }
-.mentor-roster-empty p { margin:0; color:var(--muted); }
-`;
-  document.head.appendChild(s);
-}
-
-function applyPresets(bg, iconWrap, img, presetIds) {
-  const iconP = presetById(presetIds?.icon);
-  const frameP = presetById(presetIds?.frame);
-  const bgP = presetById(presetIds?.background);
-  bg.style.background = bgP?.css || "var(--felt)";
-  iconWrap.style.borderColor = frameP?.css || "var(--accent)";
-  if (iconP?.assetPath) {
-    img.src = iconP.assetPath;
-  } else {
-    img.style.visibility = "hidden";
-  }
-  img.onerror = () => {
-    img.style.visibility = "hidden";
-  };
-}
+import { searchKey } from "../ui/characterCatalog.js";
 
 export function showMentorRoster(container, { profile, isLoggedIn, onSelect, onCreate, onDelete, onBack } = {}) {
-  injectStyle();
-
-  let current = profile; // 削除で差し替わる最新プロフィール
-  let manageMode = false; // 「整理」モード
-
-  function render() {
-    container.innerHTML = "";
-    const avatars = current?.avatars || [];
-    const activeId = current?.activeAvatarId ?? null;
-
-    // ---- 見出し＋（保存先チップ・整理トグル）----
-    const head = elt("header", "menu-head mentor-roster-head");
-    const titles = elt("div", "mentor-roster-titles");
-    titles.appendChild(elt("h1", null, { textContent: "弟子一覧" }));
-    titles.appendChild(elt("span", "mentor-roster-subhead", { textContent: "これまで育てた弟子たち" }));
-    head.appendChild(titles);
-
-    const right = elt("div", "mentor-roster-headright");
-    right.appendChild(
-      elt("span", "mentor-roster-storage", { textContent: isLoggedIn ? "☁ クラウド保存" : "▤ この端末に保存" })
-    );
-    if (avatars.length > 0) {
-      const manage = elt("button", "secondary mentor-roster-manage", {
-        type: "button",
-        textContent: manageMode ? "完了" : "整理",
-      });
-      manage.onclick = () => { manageMode = !manageMode; render(); };
-      right.appendChild(manage);
-    }
-    head.appendChild(right);
-    container.appendChild(head);
-
-    // ---- 0体のとき ----
-    if (avatars.length === 0) {
-      const empty = elt("div", "mentor-roster-empty");
-      empty.appendChild(
-        elt("p", null, { textContent: "まだ弟子がいません。『新しく弟子入りする』から始めましょう。" })
-      );
-      const add = elt("button", "menu-btn", { type: "button" });
-      add.appendChild(elt("span", "menu-btn-title", { textContent: "＋ 新しく弟子入りする" }));
-      add.onclick = () => onCreate?.();
-      empty.appendChild(add);
-      container.appendChild(empty);
-
-      const back0 = elt("button", "ghost-back", { type: "button", textContent: "← 戻る" });
-      back0.onclick = () => onBack?.();
-      container.appendChild(back0);
+  const perPage = 6;
+  let current = profile;
+  let selectedId = current?.activeAvatarId;
+  let page = 0;
+  let managing = false;
+  const mentorOf = a => CHARACTER_MASTER.find(c => c.id === a.mentorCharacterId);
+  container.innerHTML = `
+    <header class="mode-heading">
+      <button type="button" class="mode-back" aria-label="師のもとへ戻る"></button>
+      <h1>修行の記録</h1><span class="mode-format">${isLoggedIn ? "クラウドに保存" : "この端末に保存"}</span>
+    </header>
+    <div class="records-layout">
+      <section class="record-preview" aria-label="選択中の記録"></section>
+      <section class="record-ledger" aria-label="記録一覧">
+        <div class="record-tools"><h2>記録一覧</h2><button type="button" class="mode-button record-manage">整理</button></div>
+        <input type="search" class="record-search" aria-label="弟子名・師匠名で検索" placeholder="弟子名・師匠名で検索">
+        <div class="record-rows"></div>
+        <footer class="record-footer">
+          <button type="button" class="record-prev" aria-label="前のページ"></button>
+          <span class="record-page" role="status"></span>
+          <button type="button" class="record-next" aria-label="次のページ"></button>
+        </footer>
+        <button type="button" class="mode-button record-new">新しく弟子入りする</button>
+      </section>
+    </div>`;
+  const get = sel => container.querySelector(sel);
+  const preview = get(".record-preview");
+  const rows = get(".record-rows");
+  const search = get(".record-search");
+  const manage = get(".record-manage");
+  const prev = get(".record-prev");
+  const next = get(".record-next");
+  const add = get(".record-new");
+  function element(tag, cls, value) {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    if (value != null) node.textContent = value;
+    return node;
+  }
+  function showDetails(a) {
+    preview.replaceChildren();
+    if (!a) {
+      preview.append(element("h2", "", current?.avatars?.length ? "該当する記録がありません" : "最初の修行の記録"),
+        element("p", "", current?.avatars?.length ? "名前を変えて検索してください。" : "弟子入りすると、ここに師匠との歩みが残ります。"));
       return;
     }
-
-    // ---- グリッド ----
-    const grid = elt("div", "mentor-roster-grid");
-    for (const avatar of avatars) {
-      const isActive = avatar.avatarId === activeId;
-      const cell = elt("div", "mentor-roster-cell");
-
-      const card = elt("button", "mentor-roster-card" + (isActive ? " is-active" : ""), { type: "button" });
-
-      const bg = elt("div", "mentor-roster-bg");
-      const iconWrap = elt("div", "mentor-roster-icon");
-      const img = elt("img", null, { alt: "" });
-      applyPresets(bg, iconWrap, img, avatar.presetIds);
-      iconWrap.appendChild(img);
-      bg.appendChild(iconWrap);
-      card.appendChild(bg);
-
-      if (isActive) card.appendChild(elt("span", "mentor-roster-badge", { textContent: "修行中" }));
-      card.appendChild(elt("div", "mentor-roster-name", { textContent: avatar.name }));
-      const mentor = charById(avatar.mentorCharacterId);
-      card.appendChild(
-        elt("div", "mentor-roster-mentor", { textContent: mentor ? mentor.name : avatar.mentorCharacterId })
-      );
-      card.appendChild(elt("div", "mentor-roster-lv", { textContent: `Lv ${avatar.avatarLevel}` }));
-
-      if (manageMode) {
-        card.disabled = true; // 整理中は選択を無効化（誤って入門しないように）
-      } else {
-        card.onclick = () => onSelect?.(avatar.avatarId);
-      }
-      cell.appendChild(card);
-
-      // 整理モード: 削除ボタン
-      if (manageMode) {
-        const del = elt("button", "mentor-roster-del", { type: "button", title: "この弟子を削除", textContent: "🗑" });
-        del.onclick = () => askDelete(avatar);
-        cell.appendChild(del);
-      }
-
-      grid.appendChild(cell);
+    const master = mentorOf(a);
+    const art = element("div", "record-art");
+    if (master?.assets?.portrait) {
+      const img = element("img"); img.src = master.assets.portrait; img.alt = ""; art.append(img);
     }
-
-    // ---- 新規作成カード（整理モードでは隠す） ----
-    if (!manageMode) {
-      const addCell = elt("div", "mentor-roster-cell");
-      const addCard = elt("button", "mentor-roster-card mentor-roster-add", { type: "button" });
-      addCard.appendChild(elt("div", "mentor-roster-plus", { textContent: "＋" }));
-      addCard.appendChild(elt("div", "mentor-roster-addtxt", { textContent: "新しく弟子入りする" }));
-      addCard.onclick = () => onCreate?.();
-      addCell.appendChild(addCard);
-      grid.appendChild(addCell);
-    }
-
-    container.appendChild(grid);
-
-    // ---- 戻る ----
-    const back = elt("button", "ghost-back", { type: "button", textContent: "← 戻る" });
-    back.onclick = () => onBack?.();
-    container.appendChild(back);
+    const sheet = element("div", "record-sheet");
+    const month = monthInfo((a.avatarId === current.activeAvatarId ? current.dayCount : a.run?.dayCount) || 1);
+    const bond = bondPtView({ level: a.bondLevel, exp: a.bondExp });
+    sheet.append(element("p", "record-master", `師匠　${master?.name || "—"}`),
+      element("h2", "", a.name), element("p", "record-date", `${month.year}年目 ${month.gameMonth}月　／　弟子 Lv ${a.avatarLevel ?? 1}`),
+      element("p", "record-bond", `絆　${bondBandLabel(bond.lv)}　Lv ${bond.lv}　${bond.cur} / ${bond.need} pt`));
+    const action = element("button", managing ? "mode-button record-remove" : "mode-choice record-resume", managing ? "この記録を削除" : "この修行を再開");
+    action.type = "button";
+    action.onclick = managing ? () => askDelete(a) : () => onSelect?.(a.avatarId);
+    sheet.append(action);
+    preview.append(art, sheet);
   }
-
-  function askDelete(avatar) {
+  function render(preferActivePage = false) {
+    const all = current?.avatars || [];
+    const term = searchKey(search.value);
+    const matches = all.filter(a => {
+      const master = mentorOf(a);
+      return [a.name, master?.name, master?.reading].some(label => searchKey(label).includes(term));
+    });
+    if (preferActivePage) page = Math.floor(Math.max(0, matches.findIndex(a => a.avatarId === selectedId)) / perPage);
+    const pages = Math.ceil(matches.length / perPage);
+    page = Math.max(0, Math.min(page, pages - 1));
+    const slice = matches.slice(page * perPage, (page + 1) * perPage);
+    const selected = slice.find(a => a.avatarId === selectedId) || slice[0];
+    selectedId = selected?.avatarId;
+    manage.disabled = !all.length;
+    manage.textContent = managing ? "整理を終える" : "記録を整理";
+    manage.setAttribute("aria-pressed", String(managing));
+    add.hidden = managing;
+    prev.disabled = page === 0;
+    next.disabled = page + 1 >= pages;
+    get(".record-page").textContent = `${matches.length}件${pages ? `　${page + 1} / ${pages}` : ""}`;
+    const activeRow = document.activeElement?.closest(".record-row");
+    rows.replaceChildren();
+    for (const a of slice) {
+      const row = element("button", "record-row"); row.type = "button";
+      row.dataset.id = a.avatarId;
+      row.setAttribute("aria-pressed", String(a === selected));
+      const face = element("span", "record-icon");
+      const icon = presetById(a.presetIds?.icon);
+      face.style.background = presetById(a.presetIds?.background)?.css || "";
+      face.style.borderColor = presetById(a.presetIds?.frame)?.css || "";
+      if (icon?.assetPath) {
+        const img = element("img"); img.src = icon.assetPath; img.alt = ""; face.append(img);
+      }
+      const label = element("span", "record-row-label");
+      label.append(element("strong", "", a.name), element("small", "", `師匠　${mentorOf(a)?.name || "—"}`));
+      row.append(face, label, element("span", "record-level", `${a.avatarId === current.activeAvatarId ? "修行中　" : ""}Lv ${a.avatarLevel ?? 1}`));
+      row.onclick = () => { selectedId = a.avatarId; render(); };
+      rows.append(row);
+    }
+    if (activeRow) rows.querySelector("[aria-pressed=true]")?.focus({ preventScroll: true });
+    showDetails(selected);
+  }
+  function askDelete(a) {
     showConfirm({
-      title: "弟子を削除",
-      message: `「${avatar.name}」を削除しますか？\n育てた記録（Lv・絆・装備）は元に戻せません。`,
-      confirmLabel: "削除する",
-      cancelLabel: "やめる",
-      danger: true,
+      title: "修行の記録を削除",
+      message: `「${a.name}」の修行の記録を削除しますか？\nLv・絆・装備は元に戻せません。`,
+      confirmLabel: "削除する", cancelLabel: "やめる", danger: true, background: container,
       onConfirm: async () => {
-        const fresh = await onDelete?.(avatar.avatarId);
+        const fresh = await onDelete?.(a.avatarId);
         if (fresh) current = fresh;
-        if ((current?.avatars || []).length === 0) manageMode = false; // 空になったら整理モード解除
+        if (!current?.avatars?.length) managing = false;
         render();
       },
     });
   }
-
-  render();
+  get(".mode-back").onclick = () => onBack?.();
+  add.onclick = () => onCreate?.();
+  manage.onclick = () => { managing = !managing; render(); };
+  search.oninput = () => { page = 0; render(); };
+  prev.onclick = () => { page--; render(); };
+  next.onclick = () => { page++; render(); };
+  render(true);
 }

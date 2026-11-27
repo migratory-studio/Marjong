@@ -2,9 +2,10 @@
 // human input. Engine stays synchronous; this file owns orchestration & timing.
 import { Game, Phase, Events } from "./core/game.js";
 import { CHARACTERS, instantiateAbilities, setModelAnswerLevelOverride, getModelAnswerLevelOverride, setMuddyLotusLevelOverride, getMuddyLotusLevelOverride } from "./characters/characters.js";
-import { CHARACTER_MASTER, ROLE_MASTER } from "./data/characterMaster.js";
+import { CHARACTER_MASTER, roleDef } from "./data/characterMaster.js";
 import { applyPortraitCrop, installIconPosStyles } from "./data/imagePos.js";
 import { abilityDef } from "./data/abilityMaster.js";
+import { mountCharacterCatalog } from "./ui/characterCatalog.js";
 import { decideDiscard, decideCall, decideAbilityActivations } from "./ai/simpleAI.js";
 import { CanvasRenderer, SEATED_LAYOUT } from "./ui/canvasRenderer.js";
 import { setupDuelPresentation, syncDuelPresentation } from "./ui/duelPresentation.js";
@@ -41,6 +42,7 @@ import { markScenarioRead, tournamentStoryGate, episodeNumberOf } from "./progre
 import { showMatchIntro } from "./screens/matchIntroScreen.js";
 import { showOnlineLobby, showRoomLobby, makeCode } from "./screens/onlineLobbyScreen.js";
 import { showRoomCodeModal } from "./screens/roomCodeModal.js";
+import { focusDialog } from "./ui/dialogFocus.js";
 import { createLoopback } from "./net/transport.js";
 import { AuthorityRoom } from "./net/authorityRoom.js";
 import { applyEvent } from "./net/applyEvent.js";
@@ -80,6 +82,7 @@ import { tournamentsOpenAt, monthInfo, calendarLabel } from "./data/calendarMast
 import { showCreditsRoll } from "./screens/creditsRoll.js";
 import { evaluateSuccession } from "./progression/successionResult.js";
 import { buildCompletedAvatar, addCompletedAvatar, markGraduated, deshiCharFrom, completedAvatarToChar } from "./progression/completedAvatar.js";
+import { statViews } from "./autobattle/statSystem.js";
 import { MeldType } from "./core/meld.js";
 import { kindLabel, isTerminalOrHonor } from "./core/tiles.js";
 import { waits } from "./core/rules/winCheck.js";
@@ -690,6 +693,7 @@ let matchmaking = null; // マッチング探索中の状態 { base, room, mode,
 let roomLobby = null; // ルーム対戦の待合室中の状態 { ep, code, api, myCharId }（welcome で解除）
 let matchSearchTalkTimer = null; // 探索オーバーレイで相棒が言い直すまでのタイマー（残り時間は出さない）
 let matchSearchJoined = 1;       // 探索オーバーレイが最後に見た待機人数（増えたら相棒が反応する）
+let releaseSearchFocus = null;
 let onlineSeatInfo = null; // 通信対戦の席ごと表示情報 [{charId,name,dan}|{charId,cpu}]（welcome で受領）
 // 通信対戦の手番/待機 UI 状態。
 let onlineTurnSeat = null;      // 直近の evt.turn の席（手番中の席）。
@@ -783,14 +787,8 @@ function makeCharPortrait(c) {
   return fb;
 }
 
-// ロール（種別）の定義引き。未設定/未知の role はフォールバック扱い。
-const roleDef = (id) =>
-  ROLE_MASTER.find((r) => r.id === id) || { id: "extra", label: "アビス", color: "#a78bfa" };
-
-// Map a character's starting points to gauge pips (1..5) relative to the roster's
-// highest HP, so the bar scales automatically if values are retuned.
+// Base for HP gauges that scale relative to the roster's highest starting points.
 const MAX_HP = Math.max(...CHARACTERS.map((c) => c.stats.startingPoints));
-const hpPips = (sp) => Math.max(1, Math.min(5, Math.round((sp / MAX_HP) * 5)));
 
 // ---- 周回ゲージ（点数がHP満タン=初期持ち点を超えたとき、2週目以降を重ねて見せる）----
 // 1週目は通常色(low/mid/high)。2週目=ゴールド固定。3週目以降は色を変えて周回継続。
@@ -820,58 +818,60 @@ function lapState(points, full) {
   return { lap, fillPct: frac === 0 ? 100 : frac * 100, basePct: lap >= 2 ? 100 : 0 };
 }
 
-// One ▮▮▮▯▯ gauge row. `value` filled of `max` segments. `overlay` (optional)
-// draws a value on top of the pips (used for the HP number).
-function gaugeRow(label, value, accent, overlay) {
+function gaugeRow(label, value, accent) {
   let pips = "";
   for (let i = 0; i < 5; i++) pips += `<span class="pip${i < value ? " on" : ""}"></span>`;
   const style = accent ? ` style="--pip-on:${accent}"` : "";
-  const ov = overlay != null ? `<span class="g-overlay">${overlay}</span>` : "";
-  return `<div class="gauge"${style}><span class="g-label">${label}</span><span class="g-pips">${pips}${ov}</span></div>`;
+  return `<div class="gauge"${style}><span class="g-label">${label}</span><span class="g-pips">${pips}</span></div>`;
 }
 
-// Render the right-hand detail panel for a character (or a prompt when null).
+// 候補を閲覧中の人物帳。能力と人物紹介はタップ・キーボードでも切り替えられる。
 function renderCharDetail(c) {
   const detail = el("char-detail");
   if (!c) {
-    detail.classList.add("empty");
-    detail.innerHTML = `<div class="detail-prompt">← アイコンにカーソルを合わせると<br>ここに詳細が表示されます</div>`;
+    detail.innerHTML = '<p class="entry-detail-empty">名簿からキャラを選ぶと、ここに能力が表示されます。</p>';
     return;
   }
-  detail.classList.remove("empty");
-  const p = c.params || { attack: 3, defense: 3, quirk: 3, difficulty: 3 };
-  // The ability is the key gameplay info, so it's shown expanded (name + desc).
-  const ability = c.abilities.map((a) => {
-    const d = abilityDef(a.abilityId);
-    return `<div class="ability-item"><div class="detail-ability-name">${d.name}</div><div class="detail-ability-desc">${d.desc}</div></div>`;
-  }).join("");
-  // Flavor text (bio + profile) is secondary, so it lives in a popover revealed
-  // by hovering the name (see .detail-name-wrap:hover in styles.css).
-  const flavor = `${c.bio ? `<div class="detail-bio">${c.bio}</div>` : ""}${c.profile ? `<div class="detail-profile">${c.profile}</div>` : ""}`;
-  const sp = c.stats.startingPoints;
-  const role = roleDef(c.role);
-  const locked = isCharLocked(c); // 未解禁キャラは解禁案内を出し、選べない旨を示す
-  detail.classList.toggle("locked", locked);
-  detail.innerHTML = `
-    <div class="detail-portrait-wrap"></div>
-    <div class="detail-body">
-      ${locked ? `<div class="detail-lock-note">🔒 未解禁　<b>宝珠ショップ</b>で解禁すると選べます</div>` : ""}
-      <div class="detail-reading">${c.reading || ""}</div>
-      <div class="detail-name-wrap">
-        <span class="detail-name" style="color:${c.color}">${c.name}</span>
-        ${flavor ? `<div class="detail-flavor">${flavor}</div>` : ""}
-      </div>
-      <div class="detail-role" style="--role:${role.color}">${role.label}</div>
-      <div class="detail-gauges">
-        ${gaugeRow("ＨＰ", hpPips(sp), c.color, sp)}
-        ${gaugeRow("攻め", p.attack, "#e85d75")}
-        ${gaugeRow("守り", p.defense, "#4ea1d3")}
-        ${gaugeRow("癖", p.quirk, "#a78bfa")}
-        ${gaugeRow("難易度", p.difficulty, "#f6b352")}
-      </div>
-      <div class="detail-ability"><div class="detail-ability-head">固有能力</div>${ability}</div>
+  const p = c.params;
+  let stats = "";
+  if (c.isCompletedAvatar) {
+    const trained = statViews(c.params6).filter((s) => Number.isFinite(c.params6?.[s.key]));
+    if (trained.length) stats = `<div class="dossier-training">${trained.map((s) =>
+      `<span>${esc(s.label)}<b>${s.rank}　${s.value}</b></span>`).join("")}</div>`;
+  } else if (p) {
+    stats = `<div class="detail-gauges">
+      ${gaugeRow("攻め", p.attack, "#e85d75")}${gaugeRow("守り", p.defense, "#4ea1d3")}
+      ${gaugeRow("癖", p.quirk, "#a78bfa")}${gaugeRow("難易度", p.difficulty, "#f6b352")}
     </div>`;
-  detail.querySelector(".detail-portrait-wrap").appendChild(makeCharPortrait(c));
+  }
+  const role = roleDef(c.role);
+  const abilities = (c.abilities || []).map((a) => abilityDef(a.abilityId)).filter(Boolean);
+  const sp = c.stats?.startingPoints ?? 0;
+  detail.innerHTML = `
+    <div class="dossier-hero"><div class="dossier-portrait"></div>
+      <div class="dossier-identity"><span>${esc(role.label)}</span>
+        <small>${esc(c.reading)}</small><h2>${esc(c.name)}</h2>
+        <p>開始HP <b>${sp.toLocaleString("ja-JP")}</b></p>
+      </div>
+    </div>
+    <div class="dossier-tabs" role="group" aria-label="表示項目">
+      <button type="button" data-view="ability">固有能力</button>
+      <button type="button" data-view="profile">人物・能力値</button>
+    </div>
+    <div class="dossier-text" tabindex="0" aria-label="候補の解説">
+      <div data-content="ability">${abilities.map((a) => `<h3>${esc(a.name)}</h3><p>${esc(a.desc || a.blurb)}</p>`).join("") || "<p>固有能力なし</p>"}
+        ${c.bio ? `<p class="dossier-bio">${esc(c.bio)}</p>` : ""}</div>
+      <div data-content="profile">${stats}<p>${esc(c.profile || c.bio || "人物紹介はまだありません。")}</p></div>
+    </div>`;
+  detail.querySelector(".dossier-portrait").appendChild(makeCharPortrait(c));
+  const switchView = (view) => {
+    detail.dataset.view = view;
+    for (const b of detail.querySelectorAll("[data-view]")) b.setAttribute("aria-pressed", String(b.dataset.view === view));
+    for (const pane of detail.querySelectorAll("[data-content]")) pane.hidden = pane.dataset.content !== view;
+    detail.querySelector(".dossier-text").scrollTop = 0;
+  };
+  for (const b of detail.querySelectorAll("[data-view]")) b.onclick = () => switchView(b.dataset.view);
+  switchView(detail.dataset.view || "ability");
 }
 
 // CPU席ラベル（CPU①②③）。席オフセット 0..2 を丸数字に。
@@ -882,8 +882,17 @@ function buildSelectScreen() {
   const list = el("char-list");
   list.innerHTML = "";
   const selectedChar = () => charById(selectedCharId);
-  // ロスターのカードをキャラID で引けるようにして、席割りの選択ハイライトを更新できる。
-  const cardById = new Map();
+  const assign = el("char-assign");
+  let previewId = null;
+  let needsNewPick = false;
+  let catalog;
+  const pool = () => [
+    ...(!selectedPairBattle && !selectedTeamBattle && activeSeat === 0 ? completedRoster : []),
+    ...CHARACTERS.filter((c) => !c.isMob),
+  ];
+  const seatName = (s) => selectedTeamBattle ? `メンバー${TEAM_MARKS[s]}`
+    : s === 0 ? "あなた" : selectedPairBattle ? "相方" : `CPU${SEAT_MARKS[s - 1]}`;
+  const pickForSeat = () => activeSeat === 0 ? selectedCharId : cpuPicks[activeSeat - 1];
 
   // どのキャラがどの席に着いているかのラベル（"あなた"/①②③）。未着席は null。
   // 現在の人数を超える席に残った指名は無視する（人数を減らしたときの保険）。
@@ -904,28 +913,34 @@ function buildSelectScreen() {
     return off >= 0 && off < selectedPlayers - 1 ? `CPU${SEAT_MARKS[off]}` : null;
   };
 
-  // カードのハイライト＋席バッジを現在の席割りに合わせて更新。
-  function refreshCards() {
-    for (const [id, card] of cardById) {
-      const locked = isCharLocked(charById(id));
-      card.classList.toggle("locked", locked);
-      // 未解禁カードは hover で即「どうすれば使えるか」が分かるよう native ツールチップを付ける
-      // （詳細パネルの解禁注記に加えての即時ヒント。UXテスト＝鍵の条件が分からない、への対処）。
-      card.title = locked ? "🔒 宝珠ショップで解禁すると選べます" : "";
-      const lock = card.querySelector(".card-lock");
-      if (lock) { lock.classList.toggle("hidden", !locked); lock.title = "宝珠ショップで解禁すると選べます"; }
-      const label = locked ? null : seatLabelOf(id); // 未解禁は着席しないので選択ハイライトも出さない
-      card.classList.toggle("selected", label !== null);
-      const badge = card.querySelector(".card-seat-badge");
-      badge.textContent = label || "";
-      badge.classList.toggle("hidden", label === null);
-    }
+  function showPreview(c, needsPick = false) {
+    previewId = c?.id || null;
+    needsNewPick = needsPick;
+    renderCharDetail(c);
+    const locked = isCharLocked(c);
+    const previousSeat = c && seatLabelOf(c.id);
+    const target = seatName(activeSeat);
+    assign.disabled = !c || locked || needsNewPick || previousSeat === target;
+    if (locked) assign.textContent = "未解禁 · 宝珠ショップで解禁";
+    else if (!c || needsNewPick) assign.textContent = `${target}の候補を選ぶ`;
+    else if (previousSeat === target) assign.textContent = `「${target}」に着席中`;
+    else if (previousSeat && previousSeat !== target) assign.textContent = `${previousSeat}から「${target}」へ移す`;
+    else assign.textContent = `「${target}」の席に決める`;
   }
 
-  const refreshAll = () => { renderSeats(); refreshCards(); updateWizNav(); };
-
-  // アクティブ席（クリックでキャラを入れる席）を切り替える。
-  function setActiveSeat(s) { activeSeat = s; refreshAll(); }
+  function seatCandidate() {
+    const candidates = pool();
+    return candidates.find((c) => c.id === pickForSeat()) ||
+      candidates.find((c) => !isCharLocked(c) && !seatLabelOf(c.id)) || null;
+  }
+  function refreshAll(browse = false) { renderSeats(); catalog?.refresh({ browse }); updateWizNav(); }
+  function setActiveSeat(s) {
+    activeSeat = s;
+    const candidate = seatCandidate();
+    showPreview(candidate);
+    renderSeats(); catalog.refresh({ revealId: candidate?.id, browse: true }); updateWizNav();
+    el("seat-bar").querySelector(".seat-chip.active")?.focus({ preventScroll: true });
+  }
 
   // 次の空席へ進む（現在の人数の範囲で巡回）。全席埋まっていれば現状維持。
   function nextEmptySeat() {
@@ -941,20 +956,20 @@ function buildSelectScreen() {
   // アクティブ席にキャラを着席させる。同キャラが他席にいれば自動で外す（重複防止）。
   // 修行完了弟子（completed-*）は「あなた席（席0）」専用＝CPU/相方/チームには出さない（F6）。
   function assignToActiveSeat(c) {
-    if (isCharLocked(c)) { renderCharDetail(c); return; } // 未解禁キャラはどの席にも着けない（鍵・非アクティブ）
-    if (c.isCompletedAvatar) {
-      if (selectedTeamBattle || selectedPairBattle) return; // 弟子は通常フリー対戦の席0だけ
-      activeSeat = 0;
-    }
+    if (!c || needsNewPick || isCharLocked(c) || !pool().some((ch) => ch.id === c.id)) return;
     if (activeSeat !== 0 && selectedCharId === c.id) selectedCharId = null;
     for (let i = 0; i < cpuPicks.length; i++) {
       if (cpuPicks[i] === c.id && i !== activeSeat - 1) cpuPicks[i] = null;
     }
+    const filled = activeSeat;
     if (activeSeat === 0) selectedCharId = c.id;
     else cpuPicks[activeSeat - 1] = c.id;
     activeSeat = nextEmptySeat();
-    refreshAll(); // updateWizNav() inside re-gates 次へ on the human seat
-    renderCharDetail(c);
+    // 二度押しで直前のキャラを次の空席へ移さない。次の候補は名簿から選ぶ。
+    const nextCandidate = pool().some((ch) => ch.id === c.id) ? c : seatCandidate();
+    showPreview(nextCandidate, activeSeat !== filled);
+    refreshAll(true);
+    if (assign.disabled) list.querySelector(".catalog-tile:not(:disabled)")?.focus({ preventScroll: true });
   }
 
   // 1席ぶんのチップを作る。先頭=あなた、以降=CPU席。CPU席は未指名なら「おまかせ
@@ -965,7 +980,7 @@ function buildSelectScreen() {
     const charId = s === 0 ? selectedCharId : cpuPicks[s - 1];
     const ch = charId ? charById(charId) : null; // 席0は弟子（completed-*）も解決
     const chip = document.createElement(interactive ? "button" : "div");
-    if (interactive) chip.type = "button";
+    if (interactive) { chip.type = "button"; chip.setAttribute("aria-pressed", String(s === activeSeat)); }
     chip.className = "seat-chip" + (interactive && s === activeSeat ? " active" : "") + (interactive ? "" : " static");
     const role = document.createElement("span");
     role.className = "seat-role";
@@ -983,17 +998,21 @@ function buildSelectScreen() {
     } else if (isHuman) {
       pick.classList.add("empty"); pick.textContent = "未選択";
     } else {
-      pick.classList.add("random"); pick.textContent = "🎲 おまかせ";
+      pick.classList.add("random"); pick.textContent = "おまかせ";
     }
     chip.appendChild(pick);
     if (interactive) {
       chip.onclick = () => { audio.playClick?.(); setActiveSeat(s); };
-      // 通常モードのCPU席のみ「おまかせに戻す」ボタンを表示
+      // 指名を取り消す操作も、席切替とは独立したキーボード操作にする。
       if (!isTeamMode && !isHuman && ch) {
-        const rs = document.createElement("span");
-        rs.className = "seat-reset"; rs.textContent = "🎲"; rs.title = "おまかせに戻す";
-        rs.onclick = (e) => { e.stopPropagation(); audio.playClick?.(); cpuPicks[s - 1] = null; setActiveSeat(s); };
-        chip.appendChild(rs);
+        const slot = document.createElement("div");
+        slot.className = "entry-seat-slot";
+        const rs = document.createElement("button");
+        rs.type = "button"; rs.className = "seat-reset"; rs.textContent = "×";
+        rs.setAttribute("aria-label", `${seatName(s)}をおまかせに戻す`); rs.title = "おまかせに戻す";
+        rs.onclick = () => { audio.playClick?.(); cpuPicks[s - 1] = null; setActiveSeat(s); };
+        slot.append(chip, rs);
+        return slot;
       }
     }
     return chip;
@@ -1011,100 +1030,49 @@ function buildSelectScreen() {
         const all = document.createElement("button");
         all.type = "button";
         all.className = "seat-allrandom";
-        all.textContent = "全員おまかせ";
+        all.textContent = "CPUをおまかせ";
         all.title = "CPU相手をすべてランダムに戻す";
-        all.onclick = () => { audio.playClick?.(); cpuPicks = [null, null, null]; refreshAll(); };
+        all.onclick = () => {
+          audio.playClick?.();
+          cpuPicks = [null, null, null];
+          setActiveSeat(activeSeat);
+          bar.querySelector(".seat-allrandom").focus({ preventScroll: true });
+        };
         bar.appendChild(all);
       }
     }
     const prev = el("seat-preview");
     if (prev) {
       prev.innerHTML = "";
-      if (!selectedTeamBattle && !selectedPairBattle) {
-        for (let s = 0; s < selectedPlayers; s++) prev.appendChild(makeSeatChip(s, false));
+      const seats = selectedTeamBattle ? 3 : selectedPairBattle ? 2 : selectedPlayers;
+      for (let s = 0; s < seats; s++) prev.appendChild(makeSeatChip(s, false));
+      if (selectedPairBattle || selectedTeamBattle) {
+        const rivals = document.createElement("p");
+        rivals.className = "entry-rivals";
+        rivals.textContent = selectedPairBattle ? "対戦相手はおまかせの2人" : `対戦相手はおまかせの${selectedTeamCount - 1}チーム`;
+        prev.appendChild(rivals);
       }
     }
   }
 
-  // Build one roster tile (icon + HP) whose frame is tinted by its role color.
-  const makeCard = (c) => {
-    const role = roleDef(c.role);
-    const card = document.createElement("div");
-    card.className = "char-card";
-    card.style.setProperty("--role", role.color);
-    card.appendChild(makeCharIcon(c));
-    // Horizontal card: icon + name (HP is shown in the detail panel's gauges).
-    const name = document.createElement("div");
-    name.className = "card-name";
-    name.textContent = c.name;
-    card.appendChild(name);
-    // 席割りバッジ（"あなた"/①②③）。未着席時は hidden。
-    const badge = document.createElement("span");
-    badge.className = "card-seat-badge hidden";
-    card.appendChild(badge);
-    // 未解禁キャラの鍵オーバーレイ（表示の出し分けは refreshCards で解禁状態に同期）。
-    const lock = document.createElement("span");
-    lock.className = "card-lock hidden";
-    lock.textContent = "🔒";
-    card.appendChild(lock);
-    card.onmouseenter = () => { audio.playClick(); renderCharDetail(c); };
-    card.onclick = () => assignToActiveSeat(c);
-    cardById.set(c.id, card);
-    return card;
+  catalog = mountCharacterCatalog(list, {
+    characters: pool, isLocked: isCharLocked, inspectLocked: true,
+    describe: (c) => ({
+      active: c.id === previewId, badge: seatLabelOf(c.id),
+      note: c.isCompletedAvatar ? "修行完了の弟子" : roleDef(c.role).label,
+    }),
+    onPick(c) { showPreview(c); catalog.refresh(); },
+    onBrowse(visible) {
+      if (!visible.some((c) => c.id === previewId)) showPreview(visible[0] || null);
+    },
+  });
+  assign.onclick = () => assignToActiveSeat(charById(previewId));
+  refreshDeshiRoster = () => {
+    const candidate = pool().find((c) => c.id === previewId) || seatCandidate();
+    showPreview(candidate, needsNewPick && candidate?.id === previewId);
+    refreshAll(true);
   };
-
-  // Group the roster by role and emit a labeled section per role (in ROLE_MASTER
-  // order). Empty roles are skipped; unknown roles fall through to "extra".
-  for (const role of ROLE_MASTER) {
-    const members = CHARACTERS.filter((c) => roleDef(c.role).id === role.id);
-    if (members.length === 0) continue;
-    const group = document.createElement("div");
-    group.className = "role-group";
-    group.style.setProperty("--role", role.color);
-    const head = document.createElement("div");
-    head.className = "role-header";
-    head.innerHTML = `<span class="role-name">${role.label}</span><span class="role-line"></span>`;
-    group.appendChild(head);
-    const cards = document.createElement("div");
-    cards.className = "role-cards";
-    for (const c of members) cards.appendChild(makeCard(c));
-    group.appendChild(cards);
-    list.appendChild(group);
-  }
-  // 修行完了弟子（completedRoster）のセクション。育てた弟子を「あなたの弟子」として
-  // ロスター先頭に出す＝育成⇔対戦の接続を体験で完成させる（F6）。席0専用は assignToActiveSeat 側で担保。
-  // select-screen を開くたびに refreshDeshiRoster() で作り直す（completedAvatars は増減する）。
-  let deshiGroupEl = null;
-  let deshiCardIds = []; // 実際に登録した弟子カードの id（再描画時の cardById 掃除用）
-  function renderDeshiSection() {
-    if (deshiGroupEl) { // 旧セクション分の card 登録を解除してから作り直す
-      for (const id of deshiCardIds) cardById.delete(id);
-      deshiGroupEl.remove();
-      deshiGroupEl = null;
-      deshiCardIds = [];
-    }
-    if (!completedRoster.length) { refreshCards(); return; }
-    const group = document.createElement("div");
-    group.className = "role-group deshi-group";
-    group.style.setProperty("--role", "#e0b85a");
-    const head = document.createElement("div");
-    head.className = "role-header";
-    head.innerHTML = `<span class="role-name">あなたの弟子</span><span class="role-line"></span>`;
-    group.appendChild(head);
-    const cards = document.createElement("div");
-    cards.className = "role-cards";
-    for (const c of completedRoster) { cards.appendChild(makeCard(c)); deshiCardIds.push(c.id); }
-    group.appendChild(cards);
-    list.prepend(group);
-    deshiGroupEl = group;
-    refreshCards(); // 弟子カードのハイライト＋席バッジを現在の席割りに同期
-  }
-  refreshDeshiRoster = renderDeshiSection;
-
-  // Leaving the roster restores the selected character's detail (or the prompt).
-  list.onmouseleave = () => renderCharDetail(selectedChar());
-  renderCharDetail(null);
-  renderDeshiSection();
+  showPreview(seatCandidate());
   renderSeats();
 
   // 人数 (4人 / 3人) toggle
@@ -1128,6 +1096,7 @@ function buildSelectScreen() {
       selectedRounds = Number(btn.dataset.rounds);
       toggle.querySelectorAll(".mode-btn").forEach((b) => b.classList.remove("selected"));
       btn.classList.add("selected");
+      updateWizNav();
     };
   }
 
@@ -1149,6 +1118,11 @@ function buildSelectScreen() {
     next.classList.toggle("hidden", wizStep === 4);
     start.classList.toggle("hidden", wizStep !== 4);
     next.disabled = wizStep === 3 && !canReach(4);
+    next.textContent = ["", "卓を選ぶ", "キャラを選ぶ", "ルールを確認"][wizStep] || "次へ";
+    for (const step of el("wiz-steps").querySelectorAll("button")) step.disabled = !canReach(Number(step.dataset.step));
+    for (const btn of el("select-screen").querySelectorAll(".mode-btn")) {
+      btn.setAttribute("aria-pressed", String(btn.classList.contains("selected")));
+    }
     // デバッグボタンは step4 かつデバッグモードのときだけ（start と並べる）。
     const dbg = el("debug-mob-btn");
     if (dbg) dbg.classList.toggle("hidden", !(wizStep === 4 && isDebugMode()));
@@ -1201,7 +1175,7 @@ function buildSelectScreen() {
     }
   }
 
-  function gotoStep(step) {
+  function gotoStep(step, focusStep = false) {
     if (!canReach(step)) return;
     wizStep = step;
     // ③キャラに入る時、自分が未選択ならアクティブ席を「あなた」に。最初のクリックが
@@ -1214,19 +1188,28 @@ function buildSelectScreen() {
       const n = Number(li.dataset.step);
       li.classList.toggle("active", n === step);
       li.classList.toggle("done", n < step);
+      if (n === step) li.setAttribute("aria-current", "step"); else li.removeAttribute("aria-current");
     }
     if (step === 2) renderSeats();   // ②卓の席プレビューを最新の席割りで
+    if (step === 3) {
+      const candidate = seatCandidate();
+      showPreview(candidate);
+      catalog.refresh({ revealId: candidate?.id, browse: true });
+    }
     if (step === 4) renderSummary();
     updateWizNav();
+    if (focusStep) el("wiz-steps").querySelector(".active").focus({ preventScroll: true });
   }
 
-  el("wiz-back").onclick = () => { audio.playClick?.(); gotoStep(wizStep - 1); };
-  el("wiz-next").onclick = () => { audio.playClick?.(); gotoStep(wizStep + 1); };
+  el("wiz-back").onclick = () => { audio.playClick?.(); gotoStep(wizStep - 1, true); };
+  el("wiz-next").onclick = () => { audio.playClick?.(); gotoStep(wizStep + 1, true); };
   el("start-btn").onclick = startGame;
   // クイックスタート：4ステップを飛ばし通常4人戦を即開始（ウィザードが重い＝UXテスト全視点指摘）。
   // 席0が未選択/未解禁なら主役・詩玥で。CPUはおまかせ（ランダム）。
   function quickStart() {
     selectedTeamBattle = false; selectedPairBattle = false; selectedPlayers = 4;
+    selectedRounds = 1;
+    cpuPicks = [null, null, null];
     const cur = selectedChar();
     if (!cur || isCharLocked(cur)) {
       const def = CHARACTERS.find((c) => c.id === "shiyue") || CHARACTERS.find((c) => !isCharLocked(c)) || CHARACTERS[0];
@@ -1247,6 +1230,7 @@ function buildSelectScreen() {
   for (const btn of battleModeToggle.querySelectorAll(".mode-btn")) {
     btn.onclick = () => {
       const mode = btn.dataset.battle; // "normal" | "pair" | "team"
+      if (btn.classList.contains("selected")) return;
       selectedTeamBattle = mode === "team";
       selectedPairBattle = mode === "pair";
       battleModeToggle.querySelectorAll(".mode-btn").forEach((b) => b.classList.remove("selected"));
@@ -1267,6 +1251,10 @@ function buildSelectScreen() {
       } else if (selectedPairBattle) {
         selectedPlayers = 4; // 卓は4席（2ペア×2）
         // ペア戦では cpuPicks[0] を相方枠として使う。既存CPU指名はクリア。
+        cpuPicks = [null, null, null];
+        activeSeat = 0;
+      } else {
+        selectedPlayers = Number(playersToggle.querySelector(".selected").dataset.players);
         cpuPicks = [null, null, null];
         activeSeat = 0;
       }
@@ -1295,6 +1283,10 @@ function buildSelectScreen() {
     selectedTeamCount = 4;
     selectedPlayers = 4;
     selectedRounds = 1; // 楼光ボス戦（=99）等の残留を掃除（Game側の東風クランプ頼みにしない）
+    catalog.resetFilters();
+    for (const [id, key, value] of [["players-toggle", "players", 4], ["team-count-toggle", "teams", 4], ["mode-toggle", "rounds", 1]]) {
+      for (const btn of el(id).querySelectorAll(".mode-btn")) btn.classList.toggle("selected", Number(btn.dataset[key]) === value);
+    }
     battleModeToggle.querySelectorAll(".mode-btn").forEach((b) =>
       b.classList.toggle("selected", b.dataset.battle === "normal"));
     el("normal-table-opts").classList.remove("hidden");
@@ -1358,18 +1350,24 @@ function goScreen(id) {
 // フリー対戦 select-screen 用：プロフィールの修行完了弟子（completedAvatars）を読み、席0で
 // 選べるよう CHARACTER 互換へ変換してロスターへ反映する（F6）。立ち絵/アイコンも描画キャッシュへ。
 // goScreen("select-screen") から毎回（非同期・fire-and-forget）。完了データ無しなら弟子セクションは出ない。
+let rosterLoad = 0;
 async function loadCompletedRoster() {
+  const request = ++rosterLoad;
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 未ログイン/読込失敗は弟子なし */ }
+  if (request !== rosterLoad) return;
   unlockedCharIds = new Set(profile?.unlockedCharacters || []); // 宝珠ショップの解禁状態を反映（鍵カードの解放）
   completedRoster = (profile?.completedAvatars || []).map((ca) => completedAvatarToChar(ca));
   // 選択中の弟子が（入替などで）消えていたら選択解除＝stale な selectedCharId を残さない。
-  if (selectedCharId && !charById(selectedCharId)) selectedCharId = null;
+  if (selectedCharId && (!charById(selectedCharId) || isCharLocked(charById(selectedCharId)))) selectedCharId = null;
+  cpuPicks = cpuPicks.map((id) => isCharLocked(charById(id)) ? null : id);
+  refreshDeshiRoster();
   if (completedRoster.length) {
     try { await charImages.load(completedRoster); } catch { /* 画像なしはフォールバック描画 */ }
+    if (request !== rosterLoad) return;
     for (const c of completedRoster) audio.registerCharacterVoices(c.id, c.assets?.voices || {});
+    refreshDeshiRoster();
   }
-  refreshDeshiRoster();
 }
 
 // 対戦ホーム: お気に入りキャラの立ち絵＋出迎えセリフを描く。開くたびに最新プロフィールで再描画。
@@ -1415,6 +1413,7 @@ function renderShop() {
 async function renderOnlineProfile() {
   const panel = el("online-profile");
   if (!panel) return;
+  el("online-screen").querySelector(".online-notice").hidden = true;
   let profile = null;
   try { profile = await profileRepo.loadProfile(); } catch { /* 未ログイン/読込失敗は既定値で描く */ }
   const name = normalizeUsername(profile?.profile?.displayName || "") || "名無し";
@@ -1450,6 +1449,8 @@ async function renderOnlineProfile() {
   // 名前/相棒名はユーザー入力・マスタ文字列なので textContent で安全に入れる。
   panel.querySelector(".op-name").textContent = name;
   if (topChar) panel.querySelector(".op-bd-name").textContent = topChar.name;
+  const portrait = el("online-screen").querySelector(".table-companion");
+  portrait.src = topChar?.assets?.portrait || "graphic/chars/chun_chan/portrait.png";
 }
 // 師弟モード（Phase 6）: 入口メニュー（新規入門 / 修行＝弟子一覧 / ログイン）を挟む。
 // profileRepo はログイン中=Supabase / 未ログイン=Local を自動で選ぶファサード。
@@ -1483,6 +1484,7 @@ async function openMentorMode() {
     accountLabel: user?.email ?? "",
     onCreate: () => openMentorCreate(),
     onTrain: () => openMentorRoster(),
+    onResume: (avatarId) => selectAvatarThenHome(avatarId),
     onLogin: () => loginThenReopenMentor(),
     onLogout: () => logoutThenReopenMentor(),
     onAccount: () => openAccount(),
@@ -1761,7 +1763,7 @@ function playFirstChapterThenHome(avatar) {
 function openMentorHome(flash = null) {
   showMentorHome(el("mentor-home-screen"), {
     repository: profileRepo,
-    onBack: () => navigate("home"),
+    onBack: () => openMentorMode(),
     onNavigate: (target, payload) => openMentorSub(target, payload),
     flash, // 戻り時に出すリザルト等（例: 雀荘巡りの結果）
     audio, // 能力値上昇カウントのSE等
@@ -1960,7 +1962,6 @@ function showTournamentMenu(profile, av) {
       ? `<span class="tmenu-eval ok">挑める（${esc(c.gate.tier?.label || "互角")}）</span>`
       : `<span class="tmenu-eval ng">門前払い必至（${esc(c.gate.tier?.label || "大劣勢")}）</span>`;
     return `<button type="button" class="tmenu-card${c.isGoal ? " is-goal" : ""}" data-i="${i}">
-      <div class="tmenu-badge"><span>CUP</span></div>
       <div class="tmenu-body">
         <div class="tmenu-tags">${tags.join("")}</div>
         <div class="tmenu-name">${esc(c.t.name)}</div>
@@ -1974,9 +1975,9 @@ function showTournamentMenu(profile, av) {
   ov.className = "tourney-menu";
   ov.innerHTML = `
     <div class="ts-scrim"></div>
-    <div class="tmenu-wrap">
+    <div class="tmenu-wrap" role="dialog" aria-modal="true" aria-labelledby="tournament-title" tabindex="-1">
       <div class="tmenu-head">
-        <div class="tmenu-h-l"><div class="tmenu-h-ttl">大会に挑む</div><div class="tmenu-h-sub">${esc(calendarLabel(day))}　開催中の卓から選ぶ</div></div>
+        <div class="tmenu-h-l"><h2 class="tmenu-h-ttl" id="tournament-title">大会に挑む</h2><div class="tmenu-h-sub">${esc(calendarLabel(day))}　開催中の卓から選ぶ</div></div>
         <div class="tmenu-rank">${rank ? `異能段位 <b>${esc(rank.name)}</b>` : "<b>無段</b>"}<small>宝 ${won.length} / 9</small></div>
       </div>
       <div class="tmc-collection">${collection}</div>
@@ -1985,15 +1986,17 @@ function showTournamentMenu(profile, av) {
     </div>`;
   host.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("is-open"));
-  const close = () => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); };
+  const panel = ov.querySelector(".tmenu-wrap");
+  const release = focusDialog(panel, { background: el("mentor-home-screen"), initial: panel, cancel: close });
+  function close() { release(); ov.remove(); }
   ov.querySelectorAll(".tmenu-card").forEach((b) => b.addEventListener("click", () => {
     const c = cards[Number(b.getAttribute("data-i"))];
     close();
     openTournamentForStep(c.step);
   }));
-  ov.querySelector(".ts-scrim")?.addEventListener("click", () => { close(); openMentorHome(); });
+  ov.querySelector(".ts-scrim")?.addEventListener("click", close);
   const btns = ov.querySelector(".tmenu-btns");
-  btns.appendChild(mkBtn("やめておく", "btn-ron", () => { close(); openMentorHome(); }));
+  btns.appendChild(mkBtn("修行に戻る", "mode-button", close));
 }
 
 // 選ばれた大会（step）で従来の大会フローを起動（物語ゲート→門前払い→要項→開幕）。
@@ -2076,11 +2079,10 @@ function showTournamentBriefing(t, rUnits, onStart, onCancel) {
   ov.className = "tourney-brief";
   ov.innerHTML = `
     <div class="ts-scrim"></div>
-    <div class="tb-card">
+    <div class="tb-card" role="dialog" aria-modal="true" aria-labelledby="briefing-title" tabindex="-1">
       <div class="tb-head">
-        <div class="tb-cup">CUP</div>
         <div class="tb-head-txt">
-          <div class="tb-name">${esc(t.name)}</div>
+          <div class="tb-name" id="briefing-title">${esc(t.name)}</div>
           <div class="tb-tier">${esc(fmtLabel)}　・　ティア ${t.tier}</div>
         </div>
       </div>
@@ -2100,10 +2102,12 @@ function showTournamentBriefing(t, rUnits, onStart, onCancel) {
     </div>`;
   host.appendChild(ov);
   requestAnimationFrame(() => ov.classList.add("is-open"));
-  const close = (go) => { ov.classList.remove("is-open"); setTimeout(() => ov.remove(), 180); go ? onStart() : onCancel(); };
+  const panel = ov.querySelector(".tb-card");
+  const release = focusDialog(panel, { background: el("mentor-home-screen"), initial: panel, cancel: () => close(false) });
+  function close(go) { release(); ov.remove(); go ? onStart() : onCancel(); }
   const btns = ov.querySelector(".tb-btns");
-  btns.appendChild(mkBtn("やめておく", "btn-ron", () => close(false)));
-  btns.appendChild(mkBtn("この卓に挑む", "btn-tsumo", () => close(true)));
+  btns.appendChild(mkBtn("大会一覧に戻る", "mode-button", () => close(false)));
+  btns.appendChild(mkBtn("この卓に挑む", "mode-choice", () => close(true)));
 }
 
 async function playTournamentMatch() {
@@ -4134,15 +4138,11 @@ async function openOnlineLobby(mode, opts = {}) {
   showScreen("online-lobby-screen");
   // マッチング対戦のロビー左側は戦績を見せる（卓表示だと「ここでマッチング中」と誤解されるため）。
   // 戦績は「オンライン対戦だけ」の集計（online_results）。プロフィールは段位/名前/推し用。
-  let profile = null, onlineStats = null;
-  try { profile = await profileRepo.loadProfile(); } catch { /* 未ログインは段位等を既定で描く */ }
-  try { onlineStats = await fetchMyOnlineStats(); } catch { /* 取得失敗は戦績なし扱い */ }
-  showOnlineLobby(el("online-lobby-screen"), {
+  const lobby = showOnlineLobby(el("online-lobby-screen"), {
     mode,
     characters: CHARACTERS,
     audio,
     joinCode: opts.joinCode || null, // 合言葉で参加するときの既定コード
-    stats: profileStatsForLobby(profile, onlineStats), // 戦績パネル用
     onBack: () => goScreen("online-screen"),
     onStart: ({ charId, code }) => {
       const ov = (typeof window !== "undefined") ? window.__ONLINE_WS_URL : undefined;
@@ -4157,6 +4157,10 @@ async function openOnlineLobby(mode, opts = {}) {
       startMatchmaking(charId, base, room, mode);
     },
   });
+  const [profile, stats] = await Promise.all([
+    profileRepo.loadProfile().catch(() => null), fetchMyOnlineStats().catch(() => null),
+  ]);
+  lobby.updateStats(profileStatsForLobby(profile, stats));
 }
 
 // ルーム対戦の待合室へ入る：画面を出してから即WS接続し intent.join{lobby:true} を送る。
@@ -4169,16 +4173,6 @@ async function enterRoomLobby(opts = {}) {
   teamBattleData = null; pairBattleData = null;
   selectedTeamBattle = false; selectedPairBattle = false;
   selectedPlayers = 4; selectedRounds = 1; // テスト中は4人東風固定
-
-  // 自分の表示情報（ユーザー名/段位/推し）を join に同梱（startMatchmaking と同じ取得）。
-  let name = null, dan = 1, oshi = null, prof = null;
-  try {
-    const p = prof = await profileRepo.loadProfile();
-    name = normalizeUsername(p?.profile?.displayName || "") || null;
-    dan = describeRank(p?.onlineRank || defaultRankState()).dan;
-    oshi = topCompanionId(p?.companionBonds);
-  } catch { /* 未ログイン等は名無しで参加 */ }
-  await primeMatchVoiceState(prof); // 相棒の絆・履歴（VS 画面のひと言／局中セリフの段階解放に使う）
 
   let myCharId = (CHARACTERS[0] && CHARACTERS[0].id) || null; // 既定キャラ（待合室で変更可）
   const ov = (typeof window !== "undefined") ? window.__ONLINE_WS_URL : undefined;
@@ -4193,32 +4187,40 @@ async function enterRoomLobby(opts = {}) {
     onStart: () => sendLobbyStart(),
     onBack: () => { leaveRoomLobby(); goScreen("online-screen"); },
   });
-  roomLobby = { ep: null, code, api, myCharId: () => myCharId }; // 待合室入室の印（接続中・ep は接続後に差す）
+  const session = { ep: null, code, api, myCharId: () => myCharId };
+  roomLobby = session;
+  const profile = await profileRepo.loadProfile().catch(() => null);
+  if (roomLobby !== session) return;
+  const name = normalizeUsername(profile?.profile?.displayName || "") || null;
+  const dan = describeRank(profile?.onlineRank || defaultRankState()).dan;
+  const oshi = topCompanionId(profile?.companionBonds);
+  await primeMatchVoiceState(profile);
+  if (roomLobby !== session) return;
 
   const url = `${base}?room=room-${encodeURIComponent(code)}`;
   let ep;
   try { ep = await connectWebSocket(url); }
   catch (e) {
     console.error("WS接続失敗", e);
-    if (roomLobby) { roomLobby = null; alert("オンラインサーバに接続できませんでした：" + url); goScreen("online-screen"); }
+    if (roomLobby === session) { roomLobby = null; onlineNotice("卓に接続できませんでした。通信状態を確認して、もう一度入室してください。"); }
     return;
   }
-  if (!roomLobby) { ep.close?.(); return; } // 接続待ちの間に「戻る」で離脱した
+  if (roomLobby !== session) { ep.close?.(); return; }
   // welcome 以降の client 化・再接続が使う既存WS状態を確立（connectMatchmaking と揃える）。
   onlineRecovery.stop(); onlineResume.clear();
   onlineWsEp = ep; onlineWsUrl = url; onlineToken = null;
   roomLobby.ep = ep;
   if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ: 強制切断テスト用
-  ep.onMessage(onlineClientMessage); // evt.lobby→待合室更新 / welcome→対局へ
+  ep.onMessage(msg => { if (ep === onlineWsEp) onlineClientMessage(msg); });
   ep.onClose?.(() => handleWsClose(ep)); // 切断時は既存の再接続/終了ハンドラへ委譲（待合室中は online=null で no-op）
   // introGate: VS 画面を閉じたら intent.ready を返す（権威はそれまで最初の局を始めない）。
   ep.send({ type: "intent.join", charId: myCharId, name, dan, oshi, lobby: true, introGate: true });
 }
 
 // 待合室の操作を権威へ送る（待合室中のみ。roomLobby が無ければ no-op）。
-function sendLobbySetChar(charId) { roomLobby?.ep.send({ type: "intent.lobbySetChar", charId }); }
-function sendLobbySlot(seat, state) { roomLobby?.ep.send({ type: "intent.lobbySlot", slot: seat, state }); }
-function sendLobbyStart() { roomLobby?.ep.send({ type: "intent.lobbyStart" }); }
+function sendLobbySetChar(charId) { roomLobby?.ep?.send({ type: "intent.lobbySetChar", charId }); }
+function sendLobbySlot(seat, state) { roomLobby?.ep?.send({ type: "intent.lobbySlot", slot: seat, state }); }
+function sendLobbyStart() { roomLobby?.ep?.send({ type: "intent.lobbyStart" }); }
 // 待合室から手動で抜ける（戻るボタン）。接続を閉じて状態を消す。
 function leaveRoomLobby() {
   const ep = roomLobby?.ep;
@@ -4346,6 +4348,10 @@ function sendOnlineReady() {
 // 探索中は「対戦相手を探しています」オーバーレイを出し、welcome 受信で対局へ移る。match モードで
 // 卓が満席/対局中(evt.matchClosed)だった場合は別バケツ（match-1, match-2, …）へ自動で繋ぎ直す。
 async function startMatchmaking(charId, base, room, mode) {
+  if (matchmaking) return;
+  const session = { base, room, mode, charId, attempt: 0 };
+  matchmaking = session;
+  showMatchSearchOverlay();
   humanIndex = 0;
   teamBattleData = null; pairBattleData = null;
   selectedTeamBattle = false; selectedPairBattle = false;
@@ -4358,8 +4364,11 @@ async function startMatchmaking(charId, base, room, mode) {
     dan = describeRank(p?.onlineRank || defaultRankState()).dan;
     oshi = topCompanionId(p?.companionBonds);
   } catch { /* 未ログイン等は名前なしで参加（CPU同様 名無し扱い） */ }
-  await primeMatchVoiceState(prof); // 相棒の絆・履歴（探索中のひと言／VS 画面／局中セリフの段階解放に使う）
-  matchmaking = { base, room, mode, charId, name, dan, oshi, attempt: 0 };
+  if (matchmaking !== session) return;
+  await primeMatchVoiceState(prof);
+  if (matchmaking !== session) return;
+  Object.assign(session, { name, dan, oshi });
+  sayMatchSearch("queueWait");
   connectMatchmaking();
 }
 
@@ -4371,20 +4380,20 @@ async function connectMatchmaking() {
   const url = `${mm.base}?room=${encodeURIComponent(roomName)}`;
   onlineRecovery.stop(); onlineResume.clear();
   onlineWsUrl = url; onlineToken = null;
-  showMatchSearchOverlay();
   let ep;
   try { ep = await connectWebSocket(url); }
   catch (e) {
+    if (matchmaking !== mm) return;
     console.error("WS接続失敗", e);
     hideMatchSearchOverlay(); matchmaking = null;
-    alert("オンラインサーバに接続できませんでした：" + url);
-    goScreen("online-screen");
+    onlineNotice("対戦相手を探せませんでした。通信状態を確認して、もう一度お試しください。");
     return;
   }
-  if (!matchmaking) { ep.close?.(); return; } // 接続待ちの間にキャンセルされた
+  if (matchmaking !== mm) { ep.close?.(); return; }
+  mm.ep = ep;
   onlineWsEp = ep;
   if (typeof window !== "undefined") window.__onlineEp = ep; // デバッグ: 強制切断テスト用
-  ep.onMessage(onlineClientMessage); // matchWaiting→探索表示 / welcome→beginGame(client化) / 以降 wire Event
+  ep.onMessage(msg => { if (ep === onlineWsEp) onlineClientMessage(msg); });
   ep.onClose?.(() => handleWsClose(ep));
   // introGate: VS 画面を閉じたら intent.ready を返す（権威はそれまで最初の局を始めない）。
   ep.send({ type: "intent.join", charId: mm.charId, name: mm.name, dan: mm.dan, oshi: mm.oshi, introGate: true });
@@ -4417,6 +4426,12 @@ function profileStatsForLobby(profile, onlineStats) {
 // 接続断の検知。以後の再試行・終端状態は onlineRecovery が管理する。
 function handleWsClose(ep) {
   if (ep !== onlineWsEp) return;            // 旧端点の close は無視
+  if (roomLobby?.ep === ep || matchmaking?.ep === ep) {
+    roomLobby = null; matchmaking = null; onlineWsEp = null;
+    hideMatchSearchOverlay();
+    onlineNotice("卓との接続が切れました。通信対戦から入り直せます。");
+    return;
+  }
   if (!online?.ws || onlineRecovery.state === "failed" || onlineRecovery.state === "reconnecting") return;
   if (!game || game.isGameOver()) return;   // 対局が終わっていれば再接続しない
   onlineRecovery.start(onlineWsUrl, onlineToken);
@@ -4471,26 +4486,34 @@ function showReconnectOverlay(text) {
 // 残り時間は出さない（ブラックボックス。サーバも配らない）。
 const MATCH_SEARCH_TALK_EVERY = 13000; // ms。相棒が言い直す間隔
 function showMatchSearchOverlay() {
-  let ov = el("match-search-overlay");
-  if (!ov) { ov = document.createElement("div"); ov.id = "match-search-overlay"; ov.className = "reconnect-overlay"; (el("app") || document.body).appendChild(ov); }
-  const buddy = CHARACTERS.find((c) => c.id === matchmaking?.charId) || null;
-  ov.innerHTML =
-    `<div class="reconnect-card match-search-card${buddy ? " has-buddy" : ""}">` +
-    (buddy ? `<div class="ms-buddy"></div>` : "") +
-    `<div class="ms-main">` +
-    (buddy ? `<div class="ms-talk" id="match-search-talk"></div>` : "") +
-    `<div class="match-search-title">対戦相手を探しています<span class="online-dots"></span></div>` +
-    `<div class="match-search-count"><span id="match-search-joined">1</span> / 4 人</div>` +
-    `<div class="reconnect-btns"><button class="ghost-back" id="match-search-cancel">← やめる</button></div>` +
-    `</div></div>`;
+  const ov = document.createElement("div");
+  ov.id = "match-search-overlay";
+  const buddy = CHARACTERS.find(c => c.id === matchmaking?.charId);
+  ov.innerHTML = `
+    <section class="queue-room" role="dialog" aria-modal="true" aria-labelledby="queue-title">
+      <div class="queue-scene">
+        <div class="queue-partner"></div>
+        <div class="queue-dialogue"><strong></strong><p id="match-search-talk"></p></div>
+      </div>
+      <div class="queue-status">
+        <span>マッチング対戦　／　東風戦</span>
+        <h2 id="queue-title">対戦相手を<br>探しています</h2>
+        <div class="queue-count" role="status"><span id="match-search-joined">—</span> / 4 人<span id="queue-state">卓に接続中…</span></div>
+        <div class="queue-seats" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <p>空席にはCPUが加わります。</p>
+        <button type="button" class="mode-button" id="match-search-cancel">探索をやめる</button>
+      </div>
+    </section>`;
+  (el("app") || document.body).append(ov);
   if (buddy) {
-    const art = ov.querySelector(".ms-buddy");
-    art.style.setProperty("--char", buddy.color || "#f6b352");
-    fillPortrait(art, buddy);
+    fillPortrait(ov.querySelector(".queue-partner"), buddy);
+    ov.querySelector(".queue-dialogue strong").textContent = buddy.name;
   }
-  el("match-search-cancel").onclick = () => { audio?.playClick?.(); cancelMatchmaking(); };
+  const cancel = () => { audio.playClick?.(); cancelMatchmaking(); };
+  const btn = el("match-search-cancel");
+  btn.onclick = cancel;
+  releaseSearchFocus = focusDialog(ov.querySelector(".queue-room"), { background: el("online-lobby-screen"), initial: btn, cancel });
   matchSearchJoined = 1;
-  sayMatchSearch("queueWait");
 }
 // 相棒の吹き出しを差し替え、間をおいて次の queueWait を予約する（誰か来たら queueJoin で割り込む）。
 function sayMatchSearch(event) {
@@ -4511,35 +4534,51 @@ function updateMatchSearchOverlay(info) {
   if (info.joined == null) return;
   const j = el("match-search-joined");
   if (j) j.textContent = info.joined;
+  const state = el("queue-state");
+  if (state) state.textContent = "参加中";
+  el("match-search-overlay")?.querySelectorAll(".queue-seats i").forEach((seat, i) => seat.classList.toggle("occupied", i < info.joined));
   if (info.joined > matchSearchJoined) sayMatchSearch("queueJoin"); // 誰か来た（減ったときは数字だけ）
   matchSearchJoined = info.joined;
 }
 function hideMatchSearchOverlay() {
   clearTimeout(matchSearchTalkTimer); matchSearchTalkTimer = null;
+  releaseSearchFocus?.();
+  releaseSearchFocus = null;
   el("match-search-overlay")?.remove();
+}
+function onlineNotice(message) {
+  goScreen("online-screen");
+  const notice = el("online-screen").querySelector(".online-notice");
+  const dismiss = document.createElement("button");
+  dismiss.type = "button"; dismiss.className = "mode-button"; dismiss.textContent = "閉じる";
+  dismiss.onclick = () => { notice.hidden = true; el("online-match-btn").focus(); };
+  notice.replaceChildren(document.createTextNode(message), dismiss);
+  notice.hidden = false;
+  dismiss.focus();
 }
 // 探索を中止してオンライン入口へ戻る。
 function cancelMatchmaking() {
+  const ep = matchmaking?.ep;
   matchmaking = null;
   hideMatchSearchOverlay();
-  onlineWsEp?.close?.(); onlineWsEp = null;
+  if (ep === onlineWsEp) onlineWsEp = null;
+  ep?.close?.();
   goScreen("online-screen");
+  el("online-match-btn").focus();
 }
 // 卓が対局中(evt.matchClosed)だったときの再試行。match は別バケツへ、room(招待制)は諦める。
 function retryMatchmaking() {
   if (!matchmaking) return;
-  onlineWsEp?.close?.(); onlineWsEp = null;
+  const ep = onlineWsEp; onlineWsEp = null; ep?.close?.();
   if (matchmaking.mode === "room") {
     hideMatchSearchOverlay(); matchmaking = null;
-    alert("この合言葉の卓はすでに対局中です。別の合言葉でやり直してください。");
-    goScreen("online-screen");
+    onlineNotice("この卓はすでに対局中です。別の合言葉で参加してください。");
     return;
   }
   matchmaking.attempt += 1;
   if (matchmaking.attempt > 5) {
     hideMatchSearchOverlay(); matchmaking = null;
-    alert("空いている卓が見つかりませんでした。少し待ってからもう一度お試しください。");
-    goScreen("online-screen");
+    onlineNotice("空いている卓が見つかりませんでした。少し待ってからもう一度お試しください。");
     return;
   }
   connectMatchmaking(); // 次のバケツ（match-1, match-2, …）へ繋ぎ直す
@@ -4550,10 +4589,14 @@ function retryMatchmaking() {
 function onlineClientMessage(msg) {
   // 探索中（welcome 前）のマッチング進捗。game/online がまだ無い段階で届くため最初に処理する。
   if (msg.type === "evt.matchWaiting") { updateMatchSearchOverlay(msg); return; }
-  if (msg.type === "evt.matchClosed") { retryMatchmaking(); return; }
+  if (msg.type === "evt.matchClosed") {
+    if (roomLobby) { leaveRoomLobby(); onlineNotice("この卓はすでに対局中です。別の合言葉で参加してください。"); }
+    else retryMatchmaking();
+    return;
+  }
   // ルーム対戦の待合室（welcome 前）。members の人数/顔ぶれ・ホストUIを随時更新する。
   if (msg.type === "evt.lobby") { roomLobby?.api?.update(msg); return; }
-  if (msg.type === "evt.lobbyFull") { leaveRoomLobby(); alert("この部屋は満員です。"); goScreen("online-screen"); return; }
+  if (msg.type === "evt.lobbyFull") { leaveRoomLobby(); onlineNotice("この卓は満員です。別の合言葉で参加してください。"); return; }
   if (msg.type === "welcome") {
     hideMatchSearchOverlay(); matchmaking = null; roomLobby = null; // 探索/待合室 終了 → 対局へ
     if (msg.token) {
@@ -9008,17 +9051,16 @@ async function saveMatchProgress(companion, rankedMatch) {
 // 順位表を開く（今シーズン）。上位＋自分の順位を取得して描画。
 async function openOnlineLeaderboard() {
   const seasonId = seasonIdFromDate(new Date());
-  const user = await getUser().catch(() => null);
   showScreen("online-leaderboard-screen");
   showOnlineLeaderboard(el("online-leaderboard-screen"), {
     seasonLabel: seasonId,
-    myUserId: user?.id || null,
     load: async () => {
-      const [top, me] = await Promise.all([
+      const [top, standing, user] = await Promise.all([
         fetchLeaderboard(seasonId, 7),
-        fetchMyStanding(seasonId).catch(() => null),
+        fetchMyStanding(seasonId).then(me => ({ me }), () => ({ personalUnavailable: true })),
+        getUser().catch(() => null),
       ]);
-      return { top, me };
+      return { top, ...standing, userId: user?.id };
     },
     onBack: () => goScreen("online-screen"),
   });

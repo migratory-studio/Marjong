@@ -60,6 +60,10 @@ export const ROLE_MASTER = [
   { id: "extra",    label: "アビス", color: "#a78bfa" },
 ];
 
+export function roleDef(id) {
+  return ROLE_MASTER.find((role) => role.id === id) || ROLE_MASTER.find((role) => role.id === "extra");
+}
+
 export const CHARACTER_MASTER = [
   {
     id: "shiyue",

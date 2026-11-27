@@ -40,7 +40,7 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
   container.classList.add("avatar-screen");
 
   const head = elt("header", "menu-head avatar-head");
-  head.appendChild(elt("h1", null, { textContent: "マイキャラ作成" }));
+  head.appendChild(elt("h1", null, { textContent: "弟子入りの支度" }));
   container.appendChild(head);
 
   const layout = elt("div", "avatar-create-layout avatar-create-layout--create");
@@ -68,12 +68,13 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
   identity.appendChild(bioField);
 
   const lookField = elt("div", "av-field");
-  lookField.appendChild(elt("div", "av-label", { textContent: "見た目" }));
+  lookField.appendChild(elt("h2", "av-label", { textContent: "あなたの姿" }));
 
   // 弟子グラフィック: アイコン＋立ち絵をセットで選ぶ（プリセット選択は常にペアで設定）。
   const deshiWrap = elt("div", "av-deshi-wrap");
-  deshiWrap.appendChild(elt("span", "av-look-label", { textContent: "弟子グラフィック（アイコン＋立ち絵）" }));
   const deshiGrid = elt("div", "av-deshi-grid");
+  deshiGrid.setAttribute("role", "group");
+  deshiGrid.setAttribute("aria-label", "あなたの姿");
   deshiWrap.appendChild(deshiGrid);
   lookField.appendChild(deshiWrap);
   // ※ 個別設定（アイコン/立ち絵の差し替え）は将来の画像アップロード対応で解禁予定だが、
@@ -90,13 +91,17 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
       if (!unlocked.has(s.iconPresetId)) continue;
       const selected = state.presetIds.icon === s.iconPresetId;
       const btn = elt("button", "av-deshi-card" + (selected ? " selected" : ""), { type: "button", title: s.name });
+      btn.setAttribute("aria-pressed", String(selected));
       const img = elt("img", "av-deshi-img", { src: s.thumbPath, alt: s.name });
       img.onerror = () => { img.style.visibility = "hidden"; };
       btn.appendChild(img);
       btn.onclick = () => {
         state.presetIds.icon = s.iconPresetId;
         state.presetIds.standing = s.standingPresetId;
-        renderDeshi();
+        for (const b of deshiGrid.children) {
+          b.classList.toggle("selected", b === btn);
+          b.setAttribute("aria-pressed", String(b === btn));
+        }
         renderPreview();
       };
       deshiGrid.appendChild(btn);
@@ -104,7 +109,6 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
   }
 
   const PRESET_LABELS = { background: "背景", frame: "枠" };
-  const selects = {};
   for (const type of ["background", "frame"]) {
     const wrap = elt("label", "av-look-item");
     wrap.appendChild(elt("span", "av-look-label", { textContent: PRESET_LABELS[type] }));
@@ -114,7 +118,6 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
     }
     sel.value = state.presetIds[type] || "";
     sel.onchange = () => { state.presetIds[type] = sel.value; renderPreview(); };
-    selects[type] = sel;
     wrap.appendChild(sel);
     lookGrid.appendChild(wrap);
   }
@@ -140,11 +143,12 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
   const footer = elt("div", "av-footer");
   layout.appendChild(footer);
   const errMsg = elt("p", "av-error hidden");
+  errMsg.setAttribute("role", "alert");
   footer.appendChild(errMsg);
   const backBtn = elt("button", "ghost-back", { type: "button", textContent: "← 戻る" });
   backBtn.onclick = () => onBack?.();
   footer.appendChild(backBtn);
-  const nextBtn = elt("button", "primary", { type: "button", textContent: "師匠を選ぶ →" });
+  const nextBtn = elt("button", "primary entry-choice", { type: "button", textContent: "師匠を選ぶ" });
   footer.appendChild(nextBtn);
 
   function renderPreview() {
@@ -164,13 +168,20 @@ export async function showAvatarCreate(container, { repository, draft, onNext, o
     previewName.textContent = nameInput.value.trim() || "（名前未入力）";
   }
 
-  nameInput.oninput = renderPreview;
+  nameInput.oninput = () => {
+    if (nameInput.value.trim()) {
+      nameInput.removeAttribute("aria-invalid");
+      errMsg.classList.add("hidden");
+    }
+    renderPreview();
+  };
 
   nextBtn.onclick = () => {
     errMsg.classList.add("hidden");
     if (!nameInput.value.trim()) {
       errMsg.textContent = "名前を入力してください。";
       errMsg.classList.remove("hidden");
+      nameInput.setAttribute("aria-invalid", "true");
       nameInput.focus();
       return;
     }
